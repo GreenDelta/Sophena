@@ -19,7 +19,7 @@
 		<delete>
 			<fileset dir="${basedir}/packages" includes="*.exe,*.zip"/>
 		</delete>
-		<eclipse.refreshLocal resource="olca-app-build" depth="infinite" />
+		<eclipse.refreshLocal resource="build" depth="infinite" />
 	</target>
 
 	<!--
