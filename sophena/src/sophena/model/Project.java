@@ -1,9 +1,14 @@
 package sophena.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Project {
 
 	private String name;
 	private String description;
+	private final List<Producer> producers = new ArrayList<>();
+	private final List<Consumer> consumers = new ArrayList<>();
 
 	public String getName() {
 		return name;
@@ -19,6 +24,14 @@ public class Project {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public List<Producer> getProducers() {
+		return producers;
+	}
+
+	public List<Consumer> getConsumers() {
+		return consumers;
 	}
 
 }
