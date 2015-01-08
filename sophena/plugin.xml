@@ -30,10 +30,20 @@
 	<extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="%Perspective"
+            name="Perspective"
             class="sophena.rcp.Perspective"
             id="perspectives.standard">
       </perspective>
    </extension>
+   
+ <extension
+       point="org.eclipse.ui.editors">
+    <editor
+          class="sophena.editors.graph.GraphEditor"
+          icon="icons/sample.gif"
+          id="sophena.editors.graph.GraphEditor"
+          name="GraphEditor">
+    </editor>
+ </extension>
 
 </plugin>

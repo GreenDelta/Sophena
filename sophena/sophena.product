@@ -42,6 +42,7 @@
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.commands.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
@@ -87,6 +88,7 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.nl_de" fragment="true"/>
       <plugin id="org.eclipse.jface"/>
@@ -112,8 +114,10 @@
       <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.aix.ppc64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.hpux.ia64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.hpux.ia64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.hpux.ia64_32.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
