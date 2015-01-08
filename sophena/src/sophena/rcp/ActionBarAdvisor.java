@@ -42,7 +42,6 @@ public class ActionBarAdvisor extends
 	protected void fillCoolBar(ICoolBarManager coolBar) {
 		IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.LEFT);
 		coolBar.add(new ToolBarContributionItem(toolbar, "main"));
-		toolbar.add(new HomeAction());
 		toolbar.add(saveAction);
 		toolbar.add(saveAsAction);
 		toolbar.add(saveAllAction);
@@ -57,7 +56,7 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillHelpMenu(IMenuManager menuBar) {
-		MenuManager helpMenu = new MenuManager("%Help",
+		MenuManager helpMenu = new MenuManager(Messages.Help,
 				IWorkbenchActionConstants.M_HELP);
 		HelpAction helpAction = new HelpAction();
 		helpMenu.add(helpAction);
@@ -69,7 +68,7 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillFileMenu(IMenuManager menuBar) {
-		MenuManager fileMenu = new MenuManager("%File",
+		MenuManager fileMenu = new MenuManager(Messages.File,
 				IWorkbenchActionConstants.M_FILE);
 		fileMenu.add(saveAction);
 		fileMenu.add(saveAsAction);
@@ -88,10 +87,10 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillWindowMenu(IMenuManager menuBar) {
-		MenuManager windowMenu = new MenuManager("%Window",
+		MenuManager windowMenu = new MenuManager(Messages.Window,
 				IWorkbenchActionConstants.M_WINDOW);
 		windowMenu.add(newWindowAction);
-		MenuManager viewMenu = new MenuManager("%Show views");
+		MenuManager viewMenu = new MenuManager(Messages.ShowViews);
 		viewMenu.add(showViews);
 		windowMenu.add(viewMenu);
 		menuBar.add(windowMenu);
@@ -116,8 +115,8 @@ public class ActionBarAdvisor extends
 	private class HelpAction extends Action {
 
 		public HelpAction() {
-			setText("%Help");
-			setToolTipText("%Help");
+			setText(Messages.Help);
+			setToolTipText(Messages.Help);
 			// setImageDescriptor(ImageType.HELP_ICON.getDescriptor());
 		}
 
@@ -125,18 +124,6 @@ public class ActionBarAdvisor extends
 		public void run() {
 		}
 
-	}
-
-	private class HomeAction extends Action {
-		public HomeAction() {
-			// setImageDescriptor(ImageType.HOME_ICON.getDescriptor());
-			setText("%Home");
-		}
-
-		@Override
-		public void run() {
-			// StartPage.open();
-		}
 	}
 
 }
