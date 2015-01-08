@@ -3,12 +3,17 @@ package sophena.editors.graph;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.ui.parts.GraphicalEditor;
+import org.eclipse.gef.palette.CreationToolEntry;
+import org.eclipse.gef.palette.MarqueeToolEntry;
+import org.eclipse.gef.palette.PaletteGroup;
+import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.palette.SelectionToolEntry;
+import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.ui.IEditorInput;
 
 import sophena.model.Sample;
 
-public class GraphEditor extends GraphicalEditor {
+public class GraphEditor extends GraphicalEditorWithPalette {
 
 	public GraphEditor() {
 		setEditDomain(new DefaultEditDomain(this));
@@ -34,6 +39,23 @@ public class GraphEditor extends GraphicalEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
+	}
+
+	@Override
+	protected PaletteRoot getPaletteRoot() {
+		PaletteRoot root = new PaletteRoot();
+		PaletteGroup group = new PaletteGroup("@Editing");
+		root.add(group);
+		SelectionToolEntry selectionEntry = new SelectionToolEntry();
+		group.add(selectionEntry);
+		root.setDefaultEntry(selectionEntry);
+		group.add(new MarqueeToolEntry());
+
+		CreationToolEntry producerEntry = new CreationToolEntry("@Producer",
+				"@Creates a producer", new ProducerFactory(), null, null);
+		group.add(producerEntry);
+
+		return root;
 	}
 
 }
