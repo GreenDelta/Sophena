@@ -30,8 +30,10 @@ public class FacilityPart extends AbstractGraphicalEditPart implements
 
 	@Override
 	protected IFigure createFigure() {
-		// TODO: create consumer figure
-		return new ProducerFigure();
+		if (type == FacilityType.CONSUMER)
+			return new ConsumerFigure();
+		else
+			return new ProducerFigure();
 	}
 
 	@Override
@@ -42,8 +44,7 @@ public class FacilityPart extends AbstractGraphicalEditPart implements
 
 	@Override
 	protected void refreshVisuals() {
-		// TODO: consumer figure
-		ProducerFigure figure = (ProducerFigure) getFigure();
+		FacilityFigure figure = (FacilityFigure) getFigure();
 		Facility facility = (Facility) getModel();
 		figure.setLabel(facility.getName());
 		figure.getParent().setConstraint(figure,
