@@ -17,7 +17,6 @@ public class PipePart extends AbstractConnectionEditPart {
 
 	@Override
 	protected void createEditPolicies() {
-
 	}
 
 }

@@ -2,9 +2,13 @@ package sophena.editors.graph;
 
 import java.util.List;
 
+import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.SWT;
 
 import sophena.model.Project;
 
@@ -13,11 +17,9 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 	@Override
 	protected IFigure createFigure() {
 		ProjectFigure figure = new ProjectFigure();
-		// ConnectionLayer connLayer = (ConnectionLayer)
-		// getLayer(LayerConstants.CONNECTION_LAYER);
-		// connLayer.setAntialias(SWT.ON);
-		// connLayer.setConnectionRouter(new
-		// ShortestPathConnectionRouter(figure));
+		ConnectionLayer layer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
+		layer.setAntialias(SWT.ON);
+		layer.setConnectionRouter(new ManhattanConnectionRouter());
 		return figure;
 	}
 
