@@ -12,8 +12,8 @@ public class PipePart extends AbstractConnectionEditPart {
 	@Override
 	protected IFigure createFigure() {
 		PolylineConnection con = (PolylineConnection) super.createFigure();
-		con.setLineWidth(3);
-		con.setForegroundColor(ColorConstants.lightBlue);
+		con.setLineWidth(2);
+		con.setForegroundColor(ColorConstants.blue);
 		return con;
 	}
 

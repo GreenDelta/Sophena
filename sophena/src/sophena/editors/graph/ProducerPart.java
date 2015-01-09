@@ -40,7 +40,7 @@ public class ProducerPart extends AbstractGraphicalEditPart implements
 		Producer producer = (Producer) getModel();
 		figure.setLabel(producer.getName());
 		figure.getParent().setConstraint(figure,
-				new Rectangle(producer.getX(), producer.getY(), 100, 100));
+				new Rectangle(producer.getX(), producer.getY(), 50, 50));
 	}
 
 	@Override
