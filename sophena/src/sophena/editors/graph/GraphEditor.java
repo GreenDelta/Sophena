@@ -3,6 +3,7 @@ package sophena.editors.graph;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteGroup;
@@ -54,7 +55,7 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 		CreationToolEntry producerEntry = new CreationToolEntry("@Producer",
 				"@Creates a producer", new ProducerFactory(), null, null);
 		group.add(producerEntry);
-		CreationToolEntry pipeEntry = new CreationToolEntry("@Pipe",
+		CreationToolEntry pipeEntry = new ConnectionCreationToolEntry("@Pipe",
 				"@Creates a new pipe between two facilities",
 				new PipeCreationFactory(), null, null);
 		group.add(pipeEntry);

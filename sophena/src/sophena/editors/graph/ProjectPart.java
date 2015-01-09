@@ -8,6 +8,7 @@ import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.swt.SWT;
 
 import sophena.model.Project;
@@ -25,6 +26,8 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected void createEditPolicies() {
+		installEditPolicy(EditPolicy.COMPONENT_ROLE,
+				new RootComponentEditPolicy());
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ProjectEditPolicy());
 	}
 
