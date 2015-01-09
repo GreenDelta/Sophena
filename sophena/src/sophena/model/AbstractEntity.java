@@ -13,6 +13,11 @@ public class AbstractEntity {
 	}
 
 	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[id = " + id + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		if (id == null)
 			return super.hashCode();

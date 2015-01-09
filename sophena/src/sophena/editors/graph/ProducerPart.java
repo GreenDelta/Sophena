@@ -21,6 +21,8 @@ import sophena.model.Project;
 public class ProducerPart extends AbstractGraphicalEditPart implements
 		NodeEditPart {
 
+	private ConnectionAnchor anchor;
+
 	@Override
 	protected IFigure createFigure() {
 		return new ProducerFigure();
@@ -61,7 +63,7 @@ public class ProducerPart extends AbstractGraphicalEditPart implements
 		for (Pipe pipe : project.getPipes()) {
 			if (asProvider && id.equals(pipe.getProviderId()))
 				pipes.add(pipe);
-			else if (id.equals(pipe.getRecipientId()))
+			else if (!asProvider && id.equals(pipe.getRecipientId()))
 				pipes.add(pipe);
 		}
 		return pipes;
@@ -69,22 +71,28 @@ public class ProducerPart extends AbstractGraphicalEditPart implements
 
 	@Override
 	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart con) {
-		return new ChopboxAnchor(getFigure());
+		return getConnectionAnchor();
 	}
 
 	@Override
 	public ConnectionAnchor getSourceConnectionAnchor(Request req) {
-		return new ChopboxAnchor(getFigure());
+		return getConnectionAnchor();
 	}
 
 	@Override
 	public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart con) {
-		return new ChopboxAnchor(getFigure());
+		return getConnectionAnchor();
 	}
 
 	@Override
 	public ConnectionAnchor getTargetConnectionAnchor(Request req) {
-		return new ChopboxAnchor(getFigure());
+		return getConnectionAnchor();
+	}
+
+	private ConnectionAnchor getConnectionAnchor() {
+		if (anchor == null)
+			anchor = new ChopboxAnchor(getFigure());
+		return anchor;
 	}
 
 }
