@@ -3,33 +3,33 @@ package sophena.editors.graph;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 
-import sophena.model.Producer;
+import sophena.model.Facility;
 
-public class ProducerLayoutCommand extends Command {
+public class FacilityLayoutCommand extends Command {
 
 	private EditPart parent;
-	private Producer producer;
+	private Facility facility;
 	private int x;
 	private int y;
 
-	public ProducerLayoutCommand(EditPart parent) {
+	public FacilityLayoutCommand(EditPart parent) {
 		this.parent = parent;
 	}
 
 	@Override
 	public boolean canExecute() {
-		return producer != null;
+		return facility != null;
 	}
 
 	@Override
 	public void execute() {
-		producer.setX(x);
-		producer.setY(y);
+		facility.setX(x);
+		facility.setY(y);
 		parent.refresh();
 	}
 
-	public void setProducer(Producer producer) {
-		this.producer = producer;
+	public void setFacility(Facility facility) {
+		this.facility = facility;
 	}
 
 	public void setX(int x) {

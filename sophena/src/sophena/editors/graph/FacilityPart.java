@@ -14,17 +14,23 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import sophena.model.Facility;
+import sophena.model.FacilityType;
 import sophena.model.Pipe;
-import sophena.model.Producer;
 import sophena.model.Project;
 
-public class ProducerPart extends AbstractGraphicalEditPart implements
+public class FacilityPart extends AbstractGraphicalEditPart implements
 		NodeEditPart {
 
+	private final FacilityType type;
 	private ConnectionAnchor anchor;
+
+	public FacilityPart(FacilityType type) {
+		this.type = type;
+	}
 
 	@Override
 	protected IFigure createFigure() {
+		// TODO: create consumer figure
 		return new ProducerFigure();
 	}
 
@@ -36,11 +42,12 @@ public class ProducerPart extends AbstractGraphicalEditPart implements
 
 	@Override
 	protected void refreshVisuals() {
+		// TODO: consumer figure
 		ProducerFigure figure = (ProducerFigure) getFigure();
-		Producer producer = (Producer) getModel();
-		figure.setLabel(producer.getName());
+		Facility facility = (Facility) getModel();
+		figure.setLabel(facility.getName());
 		figure.getParent().setConstraint(figure,
-				new Rectangle(producer.getX(), producer.getY(), 50, 50));
+				new Rectangle(facility.getX(), facility.getY(), 50, 50));
 	}
 
 	@Override

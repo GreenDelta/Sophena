@@ -7,21 +7,21 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
-import sophena.model.Producer;
+import sophena.model.Facility;
 import sophena.model.Project;
 
-public class ProjectEditPolicy extends XYLayoutEditPolicy {
+public class FacilityEditPolicy extends XYLayoutEditPolicy {
 
 	@Override
 	protected Command createChangeConstraintCommand(
 			ChangeBoundsRequest request, EditPart child, Object constraint) {
-		if (!(child instanceof ProducerPart))
+		if (!(child instanceof FacilityPart))
 			return null;
 		if (!(constraint instanceof Rectangle))
 			return null;
-		ProducerLayoutCommand command = new ProducerLayoutCommand(getHost());
+		FacilityLayoutCommand command = new FacilityLayoutCommand(getHost());
 		Rectangle rect = (Rectangle) constraint;
-		command.setProducer((Producer) child.getModel());
+		command.setFacility((Facility) child.getModel());
 		command.setX(rect.x);
 		command.setY(rect.y);
 		return command;
@@ -34,17 +34,16 @@ public class ProjectEditPolicy extends XYLayoutEditPolicy {
 			return null;
 		if (request.getType() != REQ_CREATE)
 			return null;
-		Object type = request.getNewObjectType();
-		if (!Producer.class.equals(type)) // TODO consumers
+		Object obj = request.getNewObject();
+		if (!(obj instanceof Facility))
 			return null;
-		Producer producer = (Producer) request.getNewObject();
+		Facility facility = (Facility) obj;
 		Project project = (Project) host.getModel();
-		ProducerCreationCommand command = new ProducerCreationCommand(host);
+		FacilityCreationCommand command = new FacilityCreationCommand(host);
 		command.setX(request.getLocation().x);
 		command.setY(request.getLocation().y);
-		command.setProducer(producer);
+		command.setFacility(facility);
 		command.setProject(project);
 		return command;
 	}
-
 }

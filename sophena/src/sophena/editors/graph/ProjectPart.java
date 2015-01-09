@@ -28,7 +28,7 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new RootComponentEditPolicy());
-		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ProjectEditPolicy());
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, new FacilityEditPolicy());
 	}
 
 	@Override
@@ -37,9 +37,8 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 		ProjectFigure figure = (ProjectFigure) getFigure();
 		figure.setLabel(project.getName());
 		for (Object child : getChildren()) {
-			if (child instanceof ProducerPart) {
-				ProducerPart part = (ProducerPart) child;
-				// part.refreshVisuals();
+			if (child instanceof FacilityPart) {
+				FacilityPart part = (FacilityPart) child;
 				part.refresh();
 			}
 		}
@@ -48,6 +47,6 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 	@Override
 	protected List<?> getModelChildren() {
 		Project project = (Project) getModel();
-		return project.getProducers();
+		return project.getFacilities();
 	}
 }

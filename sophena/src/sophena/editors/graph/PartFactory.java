@@ -4,6 +4,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
+import sophena.model.Consumer;
+import sophena.model.FacilityType;
 import sophena.model.Pipe;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -16,7 +18,9 @@ public class PartFactory implements EditPartFactory {
 		if (model instanceof Project)
 			part = new ProjectPart();
 		if (model instanceof Producer)
-			part = new ProducerPart();
+			part = new FacilityPart(FacilityType.PRODUCER);
+		if (model instanceof Consumer)
+			part = new FacilityPart(FacilityType.CONSUMER);
 		if (model instanceof Pipe)
 			part = new PipePart();
 		part.setModel(model);

@@ -12,6 +12,7 @@ import org.eclipse.gef.palette.SelectionToolEntry;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.ui.IEditorInput;
 
+import sophena.model.FacilityType;
 import sophena.model.Sample;
 
 public class GraphEditor extends GraphicalEditorWithPalette {
@@ -53,8 +54,13 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 		group.add(new MarqueeToolEntry());
 
 		CreationToolEntry producerEntry = new CreationToolEntry("@Producer",
-				"@Creates a producer", new ProducerFactory(), null, null);
+				"@Creates a producer", new FacilityFactory(
+						FacilityType.PRODUCER), null, null);
 		group.add(producerEntry);
+		CreationToolEntry consumerEntry = new CreationToolEntry("@Consumer",
+				"@Creates a consumer", new FacilityFactory(
+						FacilityType.CONSUMER), null, null);
+		group.add(consumerEntry);
 		CreationToolEntry pipeEntry = new ConnectionCreationToolEntry("@Pipe",
 				"@Creates a new pipe between two facilities",
 				new PipeCreationFactory(), null, null);
