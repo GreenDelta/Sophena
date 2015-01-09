@@ -54,7 +54,10 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 		CreationToolEntry producerEntry = new CreationToolEntry("@Producer",
 				"@Creates a producer", new ProducerFactory(), null, null);
 		group.add(producerEntry);
-
+		CreationToolEntry pipeEntry = new CreationToolEntry("@Pipe",
+				"@Creates a new pipe between two facilities",
+				new PipeCreationFactory(), null, null);
+		group.add(pipeEntry);
 		return root;
 	}
 

@@ -12,7 +12,13 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected IFigure createFigure() {
-		return new ProjectFigure();
+		ProjectFigure figure = new ProjectFigure();
+		// ConnectionLayer connLayer = (ConnectionLayer)
+		// getLayer(LayerConstants.CONNECTION_LAYER);
+		// connLayer.setAntialias(SWT.ON);
+		// connLayer.setConnectionRouter(new
+		// ShortestPathConnectionRouter(figure));
+		return figure;
 	}
 
 	@Override
@@ -26,8 +32,11 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 		ProjectFigure figure = (ProjectFigure) getFigure();
 		figure.setLabel(project.getName());
 		for (Object child : getChildren()) {
-			if (child instanceof ProducerPart)
-				((ProducerPart) child).refreshVisuals();
+			if (child instanceof ProducerPart) {
+				ProducerPart part = (ProducerPart) child;
+				// part.refreshVisuals();
+				part.refresh();
+			}
 		}
 	}
 
