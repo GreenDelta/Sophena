@@ -1,0 +1,10 @@
+<svg width="50" height="50">
+    <g>
+        <circle cx="25" cy="25" r="22"
+                stroke="blue" stroke-width="2"
+                fill="white" fill-opacity="0"/>
+        <polyline points="15,15 22,25 15,35 35,35 28,25 35,15 15,15"
+                  stroke="blue" stroke-width="1"
+                  fill="white" fill-opacity="0"/>
+    </g>
+</svg>
