@@ -7,8 +7,9 @@ import sophena.model.Consumer;
 import sophena.model.Facility;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.Pump;
 
-public class FacilityCreationCommand extends Command {
+class FacilityCreationCommand extends Command {
 
 	private EditPart parent;
 	private Project project;
@@ -49,6 +50,8 @@ public class FacilityCreationCommand extends Command {
 			project.getProducers().add((Producer) facility);
 		else if (facility instanceof Consumer)
 			project.getConsumers().add((Consumer) facility);
+		else if (facility instanceof Pump)
+			project.getPumps().add((Pump) facility);
 		parent.refresh();
 	}
 
@@ -56,11 +59,13 @@ public class FacilityCreationCommand extends Command {
 	public boolean canUndo() {
 		if (project == null || facility == null)
 			return false;
+		// TODO: handle other types
 		return project.getProducers().contains(facility);
 	}
 
 	@Override
 	public void undo() {
+		// TODO: handle other types
 		project.getProducers().remove(facility);
 	}
 

@@ -10,7 +10,7 @@ import org.eclipse.gef.requests.CreateRequest;
 import sophena.model.Facility;
 import sophena.model.Project;
 
-public class FacilityEditPolicy extends XYLayoutEditPolicy {
+class FacilityEditPolicy extends XYLayoutEditPolicy {
 
 	@Override
 	protected Command createChangeConstraintCommand(

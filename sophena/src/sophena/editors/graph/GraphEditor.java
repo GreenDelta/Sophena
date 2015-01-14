@@ -61,6 +61,11 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 				"@Creates a consumer", new FacilityFactory(
 						FacilityType.CONSUMER), null, null);
 		group.add(consumerEntry);
+		CreationToolEntry pumpEntry = new CreationToolEntry("@Pump",
+				"@Creates a pump", new FacilityFactory(FacilityType.PUMP),
+				null, null);
+		group.add(pumpEntry);
+
 		CreationToolEntry pipeEntry = new ConnectionCreationToolEntry("@Pipe",
 				"@Creates a new pipe between two facilities",
 				new PipeCreationFactory(), null, null);

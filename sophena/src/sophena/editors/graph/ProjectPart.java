@@ -5,12 +5,20 @@ import java.util.List;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
+import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.swt.SWT;
 
+import sophena.editors.graph.figures.ProjectFigure;
+import sophena.model.Facility;
 import sophena.model.Project;
 
 public class ProjectPart extends AbstractGraphicalEditPart {
@@ -49,4 +57,43 @@ public class ProjectPart extends AbstractGraphicalEditPart {
 		Project project = (Project) getModel();
 		return project.getFacilities();
 	}
+
+	class FacilityEditPolicy extends XYLayoutEditPolicy {
+
+		@Override
+		protected Command createChangeConstraintCommand(
+				ChangeBoundsRequest request, EditPart child, Object constraint) {
+			if (!(child instanceof FacilityPart))
+				return null;
+			if (!(constraint instanceof Rectangle))
+				return null;
+			FacilityLayoutCommand command = new FacilityLayoutCommand(getHost());
+			Rectangle rect = (Rectangle) constraint;
+			command.setFacility((Facility) child.getModel());
+			command.setX(rect.x);
+			command.setY(rect.y);
+			return command;
+		}
+
+		@Override
+		protected Command getCreateCommand(CreateRequest request) {
+			EditPart host = getHost();
+			if (!(host instanceof ProjectPart))
+				return null;
+			if (request.getType() != REQ_CREATE)
+				return null;
+			Object obj = request.getNewObject();
+			if (!(obj instanceof Facility))
+				return null;
+			Facility facility = (Facility) obj;
+			Project project = (Project) host.getModel();
+			FacilityCreationCommand command = new FacilityCreationCommand(host);
+			command.setX(request.getLocation().x);
+			command.setY(request.getLocation().y);
+			command.setFacility(facility);
+			command.setProject(project);
+			return command;
+		}
+	}
+
 }

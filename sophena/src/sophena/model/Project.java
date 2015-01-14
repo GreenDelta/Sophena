@@ -8,6 +8,7 @@ public class Project extends RootEntity {
 	private String description;
 	private final List<Producer> producers = new ArrayList<>();
 	private final List<Consumer> consumers = new ArrayList<>();
+	private final List<Pump> pumps = new ArrayList<>();
 	private final List<Pipe> pipes = new ArrayList<>();
 
 	public String getDescription() {
@@ -30,6 +31,10 @@ public class Project extends RootEntity {
 		return pipes;
 	}
 
+	public List<Pump> getPumps() {
+		return pumps;
+	}
+
 	/**
 	 * Returns a new list with all facilities (producers and consumers)
 	 * contained.
@@ -39,6 +44,7 @@ public class Project extends RootEntity {
 				+ consumers.size());
 		list.addAll(producers);
 		list.addAll(consumers);
+		list.addAll(pumps);
 		return list;
 	}
 }

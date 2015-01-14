@@ -1,4 +1,4 @@
-package sophena.editors.graph;
+package sophena.editors.graph.figures;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -13,9 +13,10 @@ public class ConsumerFigure extends FacilityFigure {
 		Point loc = getLocation();
 		g.drawOval(loc.x + 3, loc.y + 3, 44, 44);
 		g.setLineWidth(1);
+		g.setForegroundColor(ColorConstants.red);
 		g.drawLine(loc.x + 17, loc.y + 15, loc.x + 27, loc.y + 35);
+		g.setForegroundColor(ColorConstants.blue);
 		g.drawLine(loc.x + 23, loc.y + 15, loc.x + 33, loc.y + 35);
-
 	}
 
 }

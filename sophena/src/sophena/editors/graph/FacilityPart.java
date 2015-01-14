@@ -13,6 +13,10 @@ import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
+import sophena.editors.graph.figures.ConsumerFigure;
+import sophena.editors.graph.figures.FacilityFigure;
+import sophena.editors.graph.figures.ProducerFigure;
+import sophena.editors.graph.figures.PumpFigure;
 import sophena.model.Facility;
 import sophena.model.FacilityType;
 import sophena.model.Pipe;
@@ -30,10 +34,16 @@ public class FacilityPart extends AbstractGraphicalEditPart implements
 
 	@Override
 	protected IFigure createFigure() {
-		if (type == FacilityType.CONSUMER)
+		switch (type) {
+		case CONSUMER:
 			return new ConsumerFigure();
-		else
+		case PRODUCER:
 			return new ProducerFigure();
+		case PUMP:
+			return new PumpFigure();
+		default:
+			return new PumpFigure(); // TODO: distributor
+		}
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import sophena.model.FacilityType;
 import sophena.model.Pipe;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.Pump;
 
 public class PartFactory implements EditPartFactory {
 
@@ -21,6 +22,8 @@ public class PartFactory implements EditPartFactory {
 			part = new FacilityPart(FacilityType.PRODUCER);
 		if (model instanceof Consumer)
 			part = new FacilityPart(FacilityType.CONSUMER);
+		if (model instanceof Pump)
+			part = new FacilityPart(FacilityType.PUMP);
 		if (model instanceof Pipe)
 			part = new PipePart();
 		part.setModel(model);

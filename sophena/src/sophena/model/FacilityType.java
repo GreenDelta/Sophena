@@ -4,6 +4,8 @@ public enum FacilityType {
 
 	PRODUCER,
 
-	CONSUMER
+	CONSUMER,
+
+	PUMP
 
 }

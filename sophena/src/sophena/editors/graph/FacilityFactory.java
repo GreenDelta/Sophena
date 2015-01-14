@@ -8,6 +8,7 @@ import sophena.model.Consumer;
 import sophena.model.Facility;
 import sophena.model.FacilityType;
 import sophena.model.Producer;
+import sophena.model.Pump;
 
 public class FacilityFactory implements CreationFactory {
 
@@ -33,6 +34,8 @@ public class FacilityFactory implements CreationFactory {
 			return new Consumer();
 		case PRODUCER:
 			return new Producer();
+		case PUMP:
+			return new Pump();
 		default:
 			return null;
 		}
@@ -46,6 +49,8 @@ public class FacilityFactory implements CreationFactory {
 			return "@New consumer";
 		case PRODUCER:
 			return "@New producer";
+		case PUMP:
+			return "@New pump";
 		default:
 			return "@Unknown";
 		}
