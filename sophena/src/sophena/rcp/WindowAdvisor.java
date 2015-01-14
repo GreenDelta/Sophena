@@ -36,7 +36,13 @@ public class WindowAdvisor extends WorkbenchWindowAdvisor {
 	@Override
 	public boolean preWindowShellClose() {
 		// TODO: Editors.closeAll();
+
 		return super.preWindowShellClose();
+	}
+
+	@Override
+	public void postWindowClose() {
+		ImageManager.dispose();
 	}
 
 }

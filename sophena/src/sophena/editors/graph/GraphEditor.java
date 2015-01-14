@@ -14,6 +14,7 @@ import org.eclipse.ui.IEditorInput;
 
 import sophena.model.FacilityType;
 import sophena.model.Sample;
+import sophena.rcp.Images;
 
 public class GraphEditor extends GraphicalEditorWithPalette {
 
@@ -55,15 +56,16 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 
 		CreationToolEntry producerEntry = new CreationToolEntry("@Producer",
 				"@Creates a producer", new FacilityFactory(
-						FacilityType.PRODUCER), null, null);
+						FacilityType.PRODUCER), Images.PRODUCER_16.des(), null);
 		group.add(producerEntry);
 		CreationToolEntry consumerEntry = new CreationToolEntry("@Consumer",
 				"@Creates a consumer", new FacilityFactory(
-						FacilityType.CONSUMER), null, null);
+						FacilityType.CONSUMER), Images.CONSUMER_16.des(), null);
+
 		group.add(consumerEntry);
 		CreationToolEntry pumpEntry = new CreationToolEntry("@Pump",
 				"@Creates a pump", new FacilityFactory(FacilityType.PUMP),
-				null, null);
+				Images.PUMP_16.des(), null);
 		group.add(pumpEntry);
 
 		CreationToolEntry pipeEntry = new ConnectionCreationToolEntry("@Pipe",
