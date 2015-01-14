@@ -1,0 +1,1 @@
+START inkscape -z -e png\producer.png -w 16 -h 16 svg\producer.svg
