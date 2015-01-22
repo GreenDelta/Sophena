@@ -38,6 +38,8 @@ public class GraphEditor extends GraphicalEditorWithPalette {
 		super.configureGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setEditPartFactory(new PartFactory());
+		ContextMenu menu = new ContextMenu(viewer, getActionRegistry());
+		viewer.setContextMenu(menu);
 	}
 
 	@Override

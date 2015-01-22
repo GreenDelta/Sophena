@@ -50,6 +50,7 @@ public class FacilityPart extends AbstractGraphicalEditPart implements
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
 				new PipeConnectionPolicy());
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new FacilityDeletePolicy());
 	}
 
 	@Override
