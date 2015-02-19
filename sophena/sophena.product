@@ -141,6 +141,8 @@
       <plugin id="org.eclipse.ui.forms.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.intro"/>
       <plugin id="org.eclipse.ui.intro.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.navigator"/>
+      <plugin id="org.eclipse.ui.navigator.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.views"/>
       <plugin id="org.eclipse.ui.views.nl_de" fragment="true"/>

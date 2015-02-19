@@ -1,67 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
 
-	<extension
-		id="product"
-	    point="org.eclipse.core.runtime.products">
-	    <product
-           application="sophena.application"
-           name="Sophena">
-        <property
-              name="appName"
-              value="Sophena">
-        </property>
-	    </product>
-	</extension>
-
-	<extension
-          id="application"
-          point="org.eclipse.core.runtime.applications">
-	    <application
-	          cardinality="singleton-global"
-	          thread="main"
-	          visible="true">
-	          <run
-	                class="sophena.rcp.Application">
-	          </run>
-	    </application>
+	<extension 
+		id="product" 
+		point="org.eclipse.core.runtime.products">
+		<product 
+			application="sophena.application" 
+			name="Sophena">
+			<property name="appName" value="Sophena"/>
+		</product>
 	</extension>
 	
-	<extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            name="Perspective"
-            class="sophena.rcp.Perspective"
-            id="perspectives.standard">
-      </perspective>
-   </extension>
-   
-   <!-- Wizards -->
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            class="sophena.rcp.wizards.ProjectWizard"
-            id="sophena.ProjectWizard"
-            name="#Projekt">
-      </wizard>
-   </extension>
-   
-   <!-- Editors -->
-	 <extension
-	       point="org.eclipse.ui.editors">
-	       
-	    <editor
-	          class="sophena.rcp.editors.projects.ProjectEditor"
-	          id="sophena.ProjectEditor"
-	          name="#Project editor">
-	    </editor>   
-	    
-	    <editor
-	          class="sophena.rcp.editors.graph.GraphEditor"
-	          icon="icons/sample.gif"
-	          id="sophena.GraphEditor"
-	          name="GraphEditor">
-	    </editor>
-	 </extension>
-
+	<extension 
+		id="application" 
+		point="org.eclipse.core.runtime.applications">
+		<application 
+			cardinality="singleton-global" 
+			thread="main" 
+			visible="true">
+			<run class="sophena.rcp.Application"/>
+		</application>
+	</extension>
+	
+	<extension 
+		point="org.eclipse.ui.perspectives">
+		<perspective 
+			name="Perspective" 
+			class="sophena.rcp.Perspective" 
+			id="perspectives.standard"/>
+	</extension>
+	
+	<!-- Navigation -->
+	<extension 
+		point="org.eclipse.ui.views">
+		<view 
+			allowMultiple="false" 
+			class="sophena.rcp.navigation.Navigator" 
+			id="sophena.Navigator" 
+			name="#Navigation"/>
+	</extension>
+	
+	<extension point="org.eclipse.ui.navigator.viewer">
+		<viewer viewerId="sophena.Navigator"/>
+		<viewerContentBinding viewerId="sophena.Navigator">
+			<includes>
+				<contentExtension 
+					isRoot="true" 
+					pattern="sophena.NavigationContent"/>
+			</includes>
+		</viewerContentBinding>
+		<viewerActionBinding viewerId="sophena.Navigator">
+			<includes>
+				<actionExtension pattern="sophena.NavigationMenu"/>
+			</includes>
+		</viewerActionBinding>
+	</extension>
+	
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+		
+		<navigatorContent 
+			activeByDefault="true" 
+			contentProvider="sophena.rcp.navigation.NavigationContent" 
+			id="sophena.NavigationContent" 
+			labelProvider="sophena.rcp.navigation.NavigationLabel" 
+			name="#Navigation content" 
+			priority="normal">
+			<triggerPoints>
+				<instanceof value="sophena.rcp.navigation.NavigationElement"/>
+			</triggerPoints>
+			<commonSorter class="sophena.rcp.navigation.NavigationSorter"/>
+			<possibleChildren>
+				<instanceof value="sophena.rcp.navigation.NavigationElement"/>
+			</possibleChildren>
+		</navigatorContent>
+		
+		<actionProvider 
+			class="sophena.rcp.navigation.NavigationMenu" 
+			id="sophena.NavigationMenu" 
+			priority="normal">
+			
+		</actionProvider>
+		
+	</extension>
+	
+	<!-- Wizards -->
+	<extension point="org.eclipse.ui.newWizards">
+		<wizard 
+			class="sophena.rcp.wizards.ProjectWizard" 
+			id="sophena.ProjectWizard" 
+			name="#Projekt"/>
+	</extension>
+	
+	<!-- Editors -->
+	<extension point="org.eclipse.ui.editors">
+		<editor 
+			class="sophena.rcp.editors.projects.ProjectEditor" 
+			id="sophena.ProjectEditor" 
+			name="#Project editor"/>
+			
+		<editor 
+			class="sophena.rcp.editors.graph.GraphEditor" 
+			icon="icons/sample.gif" 
+			id="sophena.GraphEditor" 
+			name="GraphEditor"/>
+	</extension>
 </plugin>
