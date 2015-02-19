@@ -15,4 +15,4 @@ CREATE TABLE tbl_projects (
     description CLOB(64 K),
 
     PRIMARY KEY (id)
-)
+);
