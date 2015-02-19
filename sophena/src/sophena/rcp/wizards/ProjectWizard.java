@@ -11,14 +11,20 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard implements INewWizard {
 
 	private static final String ID = "sophena.ProjectWizard";
+
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private Page page;
 
@@ -44,9 +50,16 @@ public class ProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		Project p = page.getProject();
-		ProjectEditor.open(p);
-		return true;
+		try {
+			Project p = page.getProject();
+			ProjectDao dao = new ProjectDao(App.getDb());
+			ProjectEditor.open(p);
+			dao.insert(p);
+			return true;
+		} catch (Exception e) {
+			log.error("failed to create project", e);
+			return false;
+		}
 	}
 
 	@Override

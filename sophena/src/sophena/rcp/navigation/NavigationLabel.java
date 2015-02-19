@@ -5,8 +5,6 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 
-import sophena.model.Descriptor;
-
 public class NavigationLabel extends ColumnLabelProvider implements
 		ICommonLabelProvider {
 
@@ -14,19 +12,13 @@ public class NavigationLabel extends ColumnLabelProvider implements
 	public String getText(Object element) {
 		if (!(element instanceof NavigationElement))
 			return super.getText(element);
-		Descriptor d = ((NavigationElement) element).getDescriptor();
-		if (d == null)
-			return super.getText(element);
 		else
-			return d.getName();
+			return element.toString();
 	}
 
 	@Override
 	public String getDescription(Object element) {
-		if (!(element instanceof NavigationElement))
-			return null;
-		Descriptor d = ((NavigationElement) element).getDescriptor();
-		return d == null ? null : d.getDescription();
+		return null;
 	}
 
 	@Override
