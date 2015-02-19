@@ -36,14 +36,25 @@
       </perspective>
    </extension>
    
- <extension
-       point="org.eclipse.ui.editors">
-    <editor
-          class="sophena.editors.graph.GraphEditor"
-          icon="icons/sample.gif"
-          id="sophena.editors.graph.GraphEditor"
-          name="GraphEditor">
-    </editor>
- </extension>
+   <!-- Wizards -->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="sophena.rcp.wizards.ProjectWizard"
+            id="sophena.ProjectWizard"
+            name="#Projekt">
+      </wizard>
+   </extension>
+   
+   <!-- Editors -->
+	 <extension
+	       point="org.eclipse.ui.editors">
+	    <editor
+	          class="sophena.editors.graph.GraphEditor"
+	          icon="icons/sample.gif"
+	          id="sophena.editors.graph.GraphEditor"
+	          name="GraphEditor">
+	    </editor>
+	 </extension>
 
 </plugin>

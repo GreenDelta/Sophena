@@ -21,6 +21,8 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.editors.graph.GraphEditorInput;
 import sophena.model.ProjectDescriptor;
+import sophena.rcp.utils.Actions;
+import sophena.rcp.wizards.ProjectWizard;
 
 public class ActionBarAdvisor extends
 		org.eclipse.ui.application.ActionBarAdvisor {
@@ -32,7 +34,6 @@ public class ActionBarAdvisor extends
 	private IWorkbenchAction exportAction;
 
 	private IWorkbenchAction importAction;
-	private IWorkbenchAction newWindowAction;
 	private IWorkbenchAction preferencesAction;
 	private IWorkbenchAction saveAction;
 	private IWorkbenchAction saveAllAction;
@@ -54,11 +55,22 @@ public class ActionBarAdvisor extends
 	}
 
 	@Override
-	protected void fillMenuBar(IMenuManager menuBar) {
-		super.fillMenuBar(menuBar);
-		fillFileMenu(menuBar);
-		fillWindowMenu(menuBar);
-		fillHelpMenu(menuBar);
+	protected void fillMenuBar(IMenuManager menu) {
+		super.fillMenuBar(menu);
+		fillProjectMenu(menu);
+		fillFileMenu(menu);
+		fillWindowMenu(menu);
+		fillHelpMenu(menu);
+	}
+
+	private void fillProjectMenu(IMenuManager menu) {
+		MenuManager projectMenu = new MenuManager("#Projekt");
+		Action newAction = Actions.create("#Neues Projekt",
+				Images.PRODUCER_16.des(), () -> {
+					ProjectWizard.open();
+				});
+		projectMenu.add(newAction);
+		menu.add(projectMenu);
 	}
 
 	private void fillHelpMenu(IMenuManager menuBar) {
@@ -67,8 +79,6 @@ public class ActionBarAdvisor extends
 		HelpAction helpAction = new HelpAction();
 		helpMenu.add(helpAction);
 		helpMenu.add(new Separator());
-		// Plugin manager can be shown if version check is implemented correctly
-		// helpMenu.add(new PluginAction());
 		helpMenu.add(aboutAction);
 		menuBar.add(helpMenu);
 	}
@@ -95,7 +105,6 @@ public class ActionBarAdvisor extends
 	private void fillWindowMenu(IMenuManager menuBar) {
 		MenuManager windowMenu = new MenuManager(Messages.Window,
 				IWorkbenchActionConstants.M_WINDOW);
-		windowMenu.add(newWindowAction);
 		MenuManager viewMenu = new MenuManager(Messages.ShowViews);
 		viewMenu.add(showViews);
 		windowMenu.add(viewMenu);
@@ -113,7 +122,6 @@ public class ActionBarAdvisor extends
 		importAction = ActionFactory.IMPORT.create(window);
 		exportAction = ActionFactory.EXPORT.create(window);
 		exitAction = ActionFactory.QUIT.create(window);
-		newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
 		showViews = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 		aboutAction = ActionFactory.ABOUT.create(window);
 	}
