@@ -7,7 +7,7 @@ INSERT INTO SEQUENCE(SEQ_NAME, SEQ_COUNT) VALUES('entity_seq', 0);
 CREATE TABLE sophena_version (
 	version SMALLINT
 );
-INSERT INTO openlca_version (version) VALUES (1);
+INSERT INTO sophena_version (version) VALUES (1);
 
 CREATE TABLE tbl_projects (
     id VARCHAR(36),

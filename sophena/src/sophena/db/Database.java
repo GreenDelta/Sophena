@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -146,6 +147,21 @@ public class Database implements Closeable {
 
 	public EntityManagerFactory getEntityFactory() {
 		return entityFactory;
+	}
+
+	public int getVersion() {
+		try {
+			AtomicInteger aint = new AtomicInteger();
+			String query = "select version from sophena_version";
+			NativeSql.on(this).query(query, (result) -> {
+				aint.set(result.getInt(1));
+				return true;
+			});
+			return aint.get();
+		} catch (Exception e) {
+			log.error("failed to get the database version", e);
+			return -1;
+		}
 	}
 
 }
