@@ -3,6 +3,7 @@ package sophena.rcp;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.IViewLayout;
 
 public class Perspective implements IPerspectiveFactory {
 
@@ -13,9 +14,8 @@ public class Perspective implements IPerspectiveFactory {
 		layout.setFixed(false);
 		IFolderLayout naviLayout = layout.createFolder("Others",
 				IPageLayout.LEFT, 0.31f, editorArea);
-		// naviLayout.addView(Navigator.ID);
-		// outline place holder
-		layout.addPlaceholder(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, 0.8f,
-				editorArea);
+		naviLayout.addView("sophena.Navigator");
+		IViewLayout vLayout = layout.getViewLayout("sophena.Navigator");
+		vLayout.setCloseable(false);
 	}
 }

@@ -8,14 +8,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
-import com.zaxxer.hikari.HikariDataSource;
+
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.eclipse.persistence.jpa.PersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Database implements Closeable{
+import com.zaxxer.hikari.HikariDataSource;
+
+public class Database implements Closeable {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private EntityManagerFactory entityFactory;
@@ -29,7 +32,7 @@ public class Database implements Closeable{
 		this.folder = folder;
 		registerDriver();
 		url = "jdbc:derby:" + folder.getAbsolutePath().replace('\\', '/');
-		if(shouldCreateNew())
+		if (shouldCreateNew())
 			createNew(url);
 		connect(url);
 	}
@@ -59,7 +62,7 @@ public class Database implements Closeable{
 	private void createNew(String url) {
 		log.info("create new database {}", url);
 		try {
-			Connection con = DriverManager.getConnection(url);
+			Connection con = DriverManager.getConnection(url + ";create=true");
 			con.close();
 			ScriptRunner runner = new ScriptRunner(this);
 			runner.run(getClass().getResourceAsStream("db.sql"), "utf-8");
@@ -144,6 +147,5 @@ public class Database implements Closeable{
 	public EntityManagerFactory getEntityFactory() {
 		return entityFactory;
 	}
-
 
 }
