@@ -1,5 +1,7 @@
 package sophena.rcp.wizards;
 
+import java.util.UUID;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -10,6 +12,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
+import sophena.model.Project;
+import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard implements INewWizard {
@@ -26,7 +30,6 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			dialog.setTitle("#Neues Projekt erstellen");
 			dialog.setPageSize(150, 350);
 			dialog.open();
-			UI.center(UI.shell(), dialog.getShell());
 			// TODO: Navigator.refresh(parent);
 		} catch (Exception e) {
 			e.printStackTrace(); // TODO: log
@@ -41,7 +44,8 @@ public class ProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		// TODO create Project
+		Project p = page.getProject();
+		ProjectEditor.open(p);
 		return true;
 	}
 
@@ -70,6 +74,14 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			descriptionText = UI.formMultiText(composite, "#Beschreibung");
 			timeText = UI.formText(composite, "#Projektlaufzeit (Jahre)");
 			timeText.setText("5");
+		}
+
+		private Project getProject() {
+			Project p = new Project();
+			p.setId(UUID.randomUUID().toString());
+			p.setName(nameText.getText());
+			p.setDescription(descriptionText.getText());
+			return p;
 		}
 
 	}

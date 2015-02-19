@@ -49,6 +49,13 @@
    <!-- Editors -->
 	 <extension
 	       point="org.eclipse.ui.editors">
+	       
+	    <editor
+	          class="sophena.rcp.editors.projects.ProjectEditor"
+	          id="sophena.ProjectEditor"
+	          name="#Project editor">
+	    </editor>   
+	    
 	    <editor
 	          class="sophena.editors.graph.GraphEditor"
 	          icon="icons/sample.gif"
