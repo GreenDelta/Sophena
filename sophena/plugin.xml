@@ -57,9 +57,9 @@
 	    </editor>   
 	    
 	    <editor
-	          class="sophena.editors.graph.GraphEditor"
+	          class="sophena.rcp.editors.graph.GraphEditor"
 	          icon="icons/sample.gif"
-	          id="sophena.editors.graph.GraphEditor"
+	          id="sophena.GraphEditor"
 	          name="GraphEditor">
 	    </editor>
 	 </extension>

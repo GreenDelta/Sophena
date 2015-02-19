@@ -1,4 +1,4 @@
-package sophena.editors.graph;
+package sophena.rcp.editors.graph;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.swt.SWT;
 
-import sophena.editors.graph.figures.ProjectFigure;
 import sophena.model.Facility;
 import sophena.model.Project;
+import sophena.rcp.editors.graph.figures.ProjectFigure;
 
 public class ProjectPart extends AbstractGraphicalEditPart {
 

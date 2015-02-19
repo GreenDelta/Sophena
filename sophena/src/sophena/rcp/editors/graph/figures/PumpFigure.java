@@ -1,4 +1,4 @@
-package sophena.editors.graph.figures;
+package sophena.rcp.editors.graph.figures;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;

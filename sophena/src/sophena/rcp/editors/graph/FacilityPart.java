@@ -1,4 +1,4 @@
-package sophena.editors.graph;
+package sophena.rcp.editors.graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
-import sophena.editors.graph.figures.ConsumerFigure;
-import sophena.editors.graph.figures.FacilityFigure;
-import sophena.editors.graph.figures.ProducerFigure;
-import sophena.editors.graph.figures.PumpFigure;
 import sophena.model.Facility;
 import sophena.model.FacilityType;
 import sophena.model.Pipe;
 import sophena.model.Project;
+import sophena.rcp.editors.graph.figures.ConsumerFigure;
+import sophena.rcp.editors.graph.figures.FacilityFigure;
+import sophena.rcp.editors.graph.figures.ProducerFigure;
+import sophena.rcp.editors.graph.figures.PumpFigure;
 
 public class FacilityPart extends AbstractGraphicalEditPart implements
 		NodeEditPart {

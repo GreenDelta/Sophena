@@ -1,4 +1,4 @@
-package sophena.editors.graph;
+package sophena.rcp.editors.graph;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;

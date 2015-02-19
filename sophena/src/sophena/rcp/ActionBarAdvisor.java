@@ -11,16 +11,12 @@ import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
-import sophena.editors.graph.GraphEditorInput;
-import sophena.model.ProjectDescriptor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.wizards.ProjectWizard;
 
@@ -51,7 +47,6 @@ public class ActionBarAdvisor extends
 		toolbar.add(saveAction);
 		toolbar.add(saveAsAction);
 		toolbar.add(saveAllAction);
-		toolbar.add(new OpenEditorAction());
 	}
 
 	@Override
@@ -137,28 +132,6 @@ public class ActionBarAdvisor extends
 		@Override
 		public void run() {
 		}
-	}
-
-	private class OpenEditorAction extends Action {
-
-		public OpenEditorAction() {
-			setText("Test");
-		}
-
-		@Override
-		public void run() {
-			try {
-				ProjectDescriptor descriptor = new ProjectDescriptor();
-				descriptor.setName("Test");
-				IWorkbenchPage page = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage();
-				page.openEditor(new GraphEditorInput(descriptor),
-						"sophena.editors.graph.GraphEditor", false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 }
