@@ -7,14 +7,14 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 
 import sophena.rcp.navigation.actions.DeleteAction;
 import sophena.rcp.navigation.actions.NavigationAction;
-import sophena.rcp.navigation.actions.NewAction;
+import sophena.rcp.navigation.actions.AddAction;
 import sophena.rcp.navigation.actions.OpenAction;
 import sophena.rcp.utils.Viewers;
 
 public class NavigationMenu extends CommonActionProvider {
 
 	private NavigationAction[] menuActions = {
-			new NewAction(),
+			new AddAction(),
 			new OpenAction(),
 			new DeleteAction()
 	};

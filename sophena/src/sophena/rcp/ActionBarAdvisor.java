@@ -61,7 +61,7 @@ public class ActionBarAdvisor extends
 	private void fillProjectMenu(IMenuManager menu) {
 		MenuManager projectMenu = new MenuManager("#Projekt");
 		Action newAction = Actions.create("#Neues Projekt",
-				Images.PRODUCER_16.des(), () -> {
+				Images.NEW_PROJECT_16.des(), () -> {
 					ProjectWizard.open();
 				});
 		projectMenu.add(newAction);

@@ -1,5 +1,6 @@
 package sophena.rcp.navigation.actions;
 
+import sophena.rcp.Images;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
@@ -10,6 +11,7 @@ public class OpenAction extends NavigationAction {
 
 	public OpenAction() {
 		setText("#Öffnen");
+		setImageDescriptor(Images.OPEN_16.des());
 	}
 
 	@Override

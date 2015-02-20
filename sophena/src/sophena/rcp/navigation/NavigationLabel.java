@@ -3,6 +3,7 @@ package sophena.rcp.navigation;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
@@ -20,6 +21,14 @@ public class NavigationLabel extends ColumnLabelProvider implements
 			return super.getText(element);
 		else
 			return ((NavigationElement) element).getLabel();
+	}
+
+	@Override
+	public Image getImage(Object element) {
+		if (!(element instanceof NavigationElement))
+			return super.getImage(element);
+		else
+			return ((NavigationElement) element).getImage();
 	}
 
 	@Override

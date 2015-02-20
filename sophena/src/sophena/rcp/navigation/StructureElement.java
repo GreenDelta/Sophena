@@ -2,12 +2,16 @@ package sophena.rcp.navigation;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.eclipse.swt.graphics.Image;
+
 import sophena.model.Project;
+import sophena.rcp.Images;
 
 public class StructureElement implements NavigationElement {
 
 	public static final int DISTRIBUTION = 0;
-	public static final int USAGE = 1;
+	public static final int CONSUMPTION = 1;
 	public static final int COSTS = 2;
 
 	private final int type;
@@ -23,7 +27,7 @@ public class StructureElement implements NavigationElement {
 	}
 
 	public Project getProject() {
-		if(parent != null)
+		if (parent != null)
 			return parent.getProject();
 		else
 			return null;
@@ -44,7 +48,7 @@ public class StructureElement implements NavigationElement {
 		switch (type) {
 		case DISTRIBUTION:
 			return "#Wärmeverteilung";
-		case USAGE:
+		case CONSUMPTION:
 			return "#Wärmenutzung";
 		case COSTS:
 			return "#Kosten";
@@ -69,6 +73,18 @@ public class StructureElement implements NavigationElement {
 	@Override
 	public void update() {
 		// TODO update project content
+	}
+
+	@Override
+	public Image getImage() {
+		switch (type) {
+		case CONSUMPTION:
+			return Images.CONSUMER_16.img();
+		case COSTS:
+			return Images.COSTS_16.img();
+		default:
+			return null;
+		}
 	}
 
 }

@@ -1,11 +1,11 @@
 <svg width="50" height="50">
     <g>
         <circle cx="25" cy="25" r="22"
-                stroke="blue" stroke-width="2"
+                stroke-width="4" style="stroke:#4472A2;"
                 fill="white" fill-opacity="0"/>
-        <line x1="17" y1="15" x2="27" y2="35"
-                  stroke="red" stroke-width="1"/>
-        <line x1="23" y1="15" x2="33" y2="35"
-                  stroke="blue" stroke-width="1"/>
+        <line x1="16" y1="15" x2="26" y2="35"
+                  style="stroke:#4472A2;" stroke-width="4"/>
+        <line x1="25" y1="15" x2="35" y2="35"
+                  style="stroke:#B41A1E;" stroke-width="4"/>
     </g>
 </svg>

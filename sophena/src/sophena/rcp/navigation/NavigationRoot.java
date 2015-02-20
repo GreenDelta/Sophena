@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.swt.graphics.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,11 @@ public class NavigationRoot implements NavigationElement {
 	@Override
 	public Object getContent() {
 		return this;
+	}
+
+	@Override
+	public Image getImage() {
+		return null;
 	}
 
 }

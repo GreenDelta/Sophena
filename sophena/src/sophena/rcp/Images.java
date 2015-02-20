@@ -5,7 +5,21 @@ import org.eclipse.swt.graphics.Image;
 
 public enum Images {
 
-	CONSUMER_16("consumer.png"),
+	ADD_16("add_16.png"),
+
+	CONSUMER_16("consumer_16.png"),
+
+	COSTS_16("costs_16.png"),
+
+	DELETE_16("delete_16.png"),
+
+	NEW_16("new_16.png"),
+
+	NEW_PROJECT_16("new_project_16.png"),
+
+	OPEN_16("open_16.png"),
+
+	PROJECT_16("project_16.png"),
 
 	PRODUCER_16("producer.png"),
 

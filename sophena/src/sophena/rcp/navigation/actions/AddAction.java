@@ -1,10 +1,13 @@
 package sophena.rcp.navigation.actions;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
+import sophena.rcp.Images;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.StructureElement;
 import sophena.rcp.wizards.ConsumerWizard;
 
-public class NewAction extends NavigationAction {
+public class AddAction extends NavigationAction {
 
 	private StructureElement elem;
 
@@ -12,9 +15,14 @@ public class NewAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof StructureElement) {
 			elem = (StructureElement) element;
-			return elem.getType() == StructureElement.USAGE;
+			return elem.getType() == StructureElement.CONSUMPTION;
 		}
 		return false;
+	}
+
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return Images.ADD_16.des();
 	}
 
 	@Override
@@ -22,10 +30,10 @@ public class NewAction extends NavigationAction {
 		if (elem == null)
 			return "#Neu";
 		switch (elem.getType()) {
-			case StructureElement.USAGE:
-				return "#Neuer Wärmeabnehmer";
-			default:
-				return "#Neu";
+		case StructureElement.CONSUMPTION:
+			return "#Neuer Wärmeabnehmer";
+		default:
+			return "#Neu";
 		}
 	}
 

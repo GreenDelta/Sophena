@@ -3,7 +3,10 @@ package sophena.rcp.navigation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.graphics.Image;
+
 import sophena.model.Project;
+import sophena.rcp.Images;
 import sophena.rcp.utils.Strings;
 
 public class ProjectElement implements NavigationElement {
@@ -16,7 +19,7 @@ public class ProjectElement implements NavigationElement {
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		int[] types = { StructureElement.DISTRIBUTION, StructureElement.USAGE,
+		int[] types = { StructureElement.DISTRIBUTION, StructureElement.CONSUMPTION,
 				StructureElement.COSTS };
 		List<NavigationElement> elems = new ArrayList<>();
 		for (int type : types) {
@@ -58,6 +61,11 @@ public class ProjectElement implements NavigationElement {
 
 	@Override
 	public void update() {
+	}
+
+	@Override
+	public Image getImage() {
+		return Images.PROJECT_16.img();
 	}
 
 }
