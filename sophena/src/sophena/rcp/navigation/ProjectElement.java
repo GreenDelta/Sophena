@@ -6,7 +6,7 @@ import java.util.List;
 import sophena.model.Project;
 import sophena.rcp.utils.Strings;
 
-class ProjectElement implements NavigationElement {
+public class ProjectElement implements NavigationElement {
 
 	private Project project;
 
@@ -49,6 +49,10 @@ class ProjectElement implements NavigationElement {
 
 	@Override
 	public Object getContent() {
+		return project;
+	}
+
+	public Project getProject() {
 		return project;
 	}
 

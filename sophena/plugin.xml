@@ -78,7 +78,7 @@
 			class="sophena.rcp.navigation.NavigationMenu" 
 			id="sophena.NavigationMenu" 
 			priority="normal">
-			
+			<enablement></enablement>
 		</actionProvider>
 		
 	</extension>
