@@ -7,6 +7,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
@@ -14,25 +15,24 @@ import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.db.daos.ProjectDao;
+import sophena.model.Consumer;
 import sophena.model.Project;
-import sophena.rcp.App;
-import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
 
-public class ProjectWizard extends Wizard implements INewWizard {
+public class ConsumerWizard extends Wizard implements INewWizard {
 
-	private static final String ID = "sophena.ProjectWizard";
+	private static final String ID = "sophena.ConsumerWizard";
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-
 	private Page page;
+	private Project project;
 
-	public static void open() {
+	public static void open(Project project) {
 		try {
-			ProjectWizard wizard = new ProjectWizard();
-			wizard.setWindowTitle("#Neues Projekt erstellen");
+			ConsumerWizard wizard = new ConsumerWizard();
+			wizard.setWindowTitle("#Neuen Abnehmer erfassen");
+			wizard.project = project;
 			WizardDialog dialog = new WizardDialog(UI.shell(), wizard);
 			dialog.setPageSize(150, 350);
 			if (dialog.open() == Window.OK)
@@ -44,23 +44,8 @@ public class ProjectWizard extends Wizard implements INewWizard {
 	}
 
 	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle("#Neues Projekt erstellen");
-		// TODO: set project image
-	}
-
-	@Override
 	public boolean performFinish() {
-		try {
-			Project p = page.getProject();
-			ProjectDao dao = new ProjectDao(App.getDb());
-			ProjectEditor.open(p);
-			dao.insert(p);
-			return true;
-		} catch (Exception e) {
-			log.error("failed to create project", e);
-			return false;
-		}
+		return false;
 	}
 
 	@Override
@@ -69,14 +54,19 @@ public class ProjectWizard extends Wizard implements INewWizard {
 		addPage(page);
 	}
 
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	}
+
 	private class Page extends WizardPage {
 
 		private Text nameText;
 		private Text descriptionText;
-		private Text timeText;
+		private Combo typeCombo;
+		private Combo stateCombo;
 
-		protected Page() {
-			super("ProjectWizardPage", "#Neues Projekt erstellen", null);
+		private Page() {
+			super("ConsumerWizardPage", "#Neuen Abnehmer erfassen", null);
 		}
 
 		@Override
@@ -84,20 +74,19 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
 			nameText = UI.formText(composite, "#Name");
-			nameText.setText("#Neues Projekt");
+			nameText.setText("#Neuer Abnehmer");
 			descriptionText = UI.formMultiText(composite, "#Beschreibung");
-			timeText = UI.formText(composite, "#Projektlaufzeit (Jahre)");
-			timeText.setText("5");
+			typeCombo = UI.formCombo(composite, "#Gebäudetype");
+			stateCombo = UI.formCombo(composite, "#Gebäudezustand");
 		}
 
-		private Project getProject() {
-			Project p = new Project();
-			p.setId(UUID.randomUUID().toString());
-			p.setName(nameText.getText());
-			p.setDescription(descriptionText.getText());
-			return p;
+		private Consumer getConsumer() {
+			Consumer c = new Consumer();
+			c.setId(UUID.randomUUID().toString());
+			c.setName(nameText.getText());
+			c.setDescription(descriptionText.getText());
+			return c;
 		}
-
 	}
 
 }

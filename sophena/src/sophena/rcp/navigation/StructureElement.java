@@ -2,12 +2,13 @@ package sophena.rcp.navigation;
 
 import java.util.Collections;
 import java.util.List;
+import sophena.model.Project;
 
-class StructureElement implements NavigationElement {
+public class StructureElement implements NavigationElement {
 
-	static final int DISTRIBUTION = 0;
-	static final int USAGE = 1;
-	static final int COSTS = 2;
+	public static final int DISTRIBUTION = 0;
+	public static final int USAGE = 1;
+	public static final int COSTS = 2;
 
 	private final int type;
 	private final ProjectElement parent;
@@ -15,6 +16,17 @@ class StructureElement implements NavigationElement {
 	public StructureElement(int type, ProjectElement parent) {
 		this.type = type;
 		this.parent = parent;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public Project getProject() {
+		if(parent != null)
+			return parent.getProject();
+		else
+			return null;
 	}
 
 	@Override
