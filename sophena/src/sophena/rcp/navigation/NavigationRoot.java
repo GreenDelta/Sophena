@@ -4,24 +4,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.rcp.App;
 
 public class NavigationRoot implements NavigationElement {
 
+	private List<NavigationElement> childs;
+
 	@Override
 	public List<NavigationElement> getChilds() {
+		if (childs != null)
+			return childs;
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			List<NavigationElement> list = new ArrayList<>();
-			for (Project p : dao.getAll()) {
-				list.add(new ProjectElement(p));
-			}
-			return list;
+			childs = new ArrayList<>();
+			for (Project p : dao.getAll())
+				childs.add(new ProjectElement(p));
+			return childs;
 		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("failed to get projects from database", e);
 			return Collections.emptyList();
 		}
+	}
+
+	@Override
+	public void update() {
+		childs = null;
 	}
 
 	@Override
@@ -37,6 +50,11 @@ public class NavigationRoot implements NavigationElement {
 	@Override
 	public int compareTo(NavigationElement other) {
 		return 0;
+	}
+
+	@Override
+	public Object getContent() {
+		return this;
 	}
 
 }

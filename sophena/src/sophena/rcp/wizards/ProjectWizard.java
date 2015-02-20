@@ -18,6 +18,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.editors.projects.ProjectEditor;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard implements INewWizard {
@@ -36,7 +37,7 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			dialog.setTitle("#Neues Projekt erstellen");
 			dialog.setPageSize(150, 350);
 			dialog.open();
-			// TODO: Navigator.refresh(parent);
+			Navigator.refresh();
 		} catch (Exception e) {
 			e.printStackTrace(); // TODO: log
 		}

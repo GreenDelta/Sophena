@@ -11,6 +11,9 @@ import org.eclipse.ui.navigator.ICommonLabelProvider;
 public class NavigationLabel extends ColumnLabelProvider implements
 		ICommonLabelProvider {
 
+	private Font boldFont;
+	private FontRegistry fontReg;
+
 	@Override
 	public String getText(Object element) {
 		if (!(element instanceof NavigationElement))
@@ -34,14 +37,22 @@ public class NavigationLabel extends ColumnLabelProvider implements
 
 	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
+		fontReg = new FontRegistry();
+		Display display = Display.getCurrent();
+		if (display == null)
+			return;
+		Font sysFont = display.getSystemFont();
+		boldFont = fontReg.getBold(sysFont.getFontData()[0].getName());
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		FontRegistry registry = new FontRegistry();
-		return registry.getBold(Display.getCurrent().getSystemFont()
-				.getFontData()[0].getName());
-
+		if (element instanceof ProjectElement)
+			return boldFont;
+		if (element instanceof StructureElement)
+			return boldFont;
+		else
+			return null;
 	}
 
 }

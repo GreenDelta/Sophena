@@ -12,4 +12,8 @@ public interface NavigationElement {
 
 	int compareTo(NavigationElement other);
 
+	Object getContent();
+
+	void update();
+
 }

@@ -49,4 +49,14 @@ class StructureElement implements NavigationElement {
 		return Integer.compare(this.type, otherElem.type);
 	}
 
+	@Override
+	public Object getContent() {
+		return this;
+	}
+
+	@Override
+	public void update() {
+		// TODO update project content
+	}
+
 }

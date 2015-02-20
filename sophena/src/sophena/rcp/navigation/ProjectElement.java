@@ -47,4 +47,13 @@ class ProjectElement implements NavigationElement {
 			return Strings.compare(project.getName(), otherProject.getName());
 	}
 
+	@Override
+	public Object getContent() {
+		return project;
+	}
+
+	@Override
+	public void update() {
+	}
+
 }
