@@ -1,6 +1,9 @@
 package sophena.rcp.navigation;
 
+import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
@@ -13,7 +16,7 @@ public class NavigationLabel extends ColumnLabelProvider implements
 		if (!(element instanceof NavigationElement))
 			return super.getText(element);
 		else
-			return element.toString();
+			return ((NavigationElement) element).getLabel();
 	}
 
 	@Override
@@ -31,6 +34,14 @@ public class NavigationLabel extends ColumnLabelProvider implements
 
 	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
+	}
+
+	@Override
+	public Font getFont(Object element) {
+		FontRegistry registry = new FontRegistry();
+		return registry.getBold(Display.getCurrent().getSystemFont()
+				.getFontData()[0].getName());
+
 	}
 
 }

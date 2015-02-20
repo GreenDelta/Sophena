@@ -8,4 +8,8 @@ public interface NavigationElement {
 
 	NavigationElement getParent();
 
+	String getLabel();
+
+	int compareTo(NavigationElement other);
+
 }

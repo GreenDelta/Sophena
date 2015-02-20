@@ -29,4 +29,14 @@ public class NavigationRoot implements NavigationElement {
 		return null;
 	}
 
+	@Override
+	public String getLabel() {
+		return null;
+	}
+
+	@Override
+	public int compareTo(NavigationElement other) {
+		return 0;
+	}
+
 }
