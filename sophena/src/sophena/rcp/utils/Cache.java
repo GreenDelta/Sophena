@@ -2,6 +2,8 @@ package sophena.rcp.utils;
 
 import java.util.HashMap;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cache {
 
@@ -16,12 +18,13 @@ public class Cache {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T get(String key) {
+	public static <T> T remove(String key) {
 		try {
-			Object obj = map.get(key);
+			Object obj = map.remove(key);
 			return (T) obj;
 		} catch (Exception e) {
-			e.printStackTrace(); // TODO: log
+			Logger log = LoggerFactory.getLogger(Cache.class);
+			log.error("failed to get " + key + " from cache", e);
 			return null;
 		}
 	}

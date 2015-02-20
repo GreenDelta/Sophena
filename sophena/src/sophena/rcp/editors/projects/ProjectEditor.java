@@ -3,6 +3,8 @@ package sophena.rcp.editors.projects;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.forms.editor.FormEditor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sophena.model.Project;
 import sophena.model.ProjectDescriptor;
 import sophena.rcp.editors.graph.GraphEditor;
@@ -12,6 +14,8 @@ import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
 public class ProjectEditor extends FormEditor {
+
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	public static void open(Project project) {
 		if (project == null)
@@ -31,7 +35,7 @@ public class ProjectEditor extends FormEditor {
 			int graphIdx = addPage(new GraphEditor(), input);
 			setPageText(graphIdx, "#Projektgraph");
 		} catch (Exception e) {
-			e.printStackTrace(); // TODO: log
+			log.error("failed to add editor pages", e);
 		}
 	}
 

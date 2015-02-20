@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.Consumer;
 import sophena.model.Project;
+import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
 
@@ -45,7 +46,15 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		return false;
+		try {
+			Consumer consumer = page.getConsumer();
+			// TODO: save consumer
+			ConsumerEditor.open(consumer);
+			return true;
+		} catch (Exception e) {
+			log.error("failed to save consumer", e);
+			return false;
+		}
 	}
 
 	@Override

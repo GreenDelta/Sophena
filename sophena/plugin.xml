@@ -97,7 +97,12 @@
 			class="sophena.rcp.editors.projects.ProjectEditor" 
 			id="sophena.ProjectEditor" 
 			name="#Project editor"/>
-			
+
+        <editor
+            class="sophena.rcp.editors.consumers.ConsumerEditor"
+            id="sophena.ConsumerEditor"
+            name="#Consumer editor"/>
+
 		<editor 
 			class="sophena.rcp.editors.graph.GraphEditor" 
 			icon="icons/sample.gif" 
