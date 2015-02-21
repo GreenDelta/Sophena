@@ -69,7 +69,7 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillHelpMenu(IMenuManager menuBar) {
-		MenuManager helpMenu = new MenuManager(Messages.Help,
+		MenuManager helpMenu = new MenuManager(M.Help,
 				IWorkbenchActionConstants.M_HELP);
 		HelpAction helpAction = new HelpAction();
 		helpMenu.add(helpAction);
@@ -79,7 +79,7 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillFileMenu(IMenuManager menuBar) {
-		MenuManager fileMenu = new MenuManager(Messages.File,
+		MenuManager fileMenu = new MenuManager(M.File,
 				IWorkbenchActionConstants.M_FILE);
 		fileMenu.add(saveAction);
 		fileMenu.add(saveAsAction);
@@ -98,9 +98,9 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillWindowMenu(IMenuManager menuBar) {
-		MenuManager windowMenu = new MenuManager(Messages.Window,
+		MenuManager windowMenu = new MenuManager(M.Window,
 				IWorkbenchActionConstants.M_WINDOW);
-		MenuManager viewMenu = new MenuManager(Messages.ShowViews);
+		MenuManager viewMenu = new MenuManager(M.ShowViews);
 		viewMenu.add(showViews);
 		windowMenu.add(viewMenu);
 		menuBar.add(windowMenu);
@@ -124,8 +124,8 @@ public class ActionBarAdvisor extends
 	private class HelpAction extends Action {
 
 		public HelpAction() {
-			setText(Messages.Help);
-			setToolTipText(Messages.Help);
+			setText(M.Help);
+			setToolTipText(M.Help);
 			// setImageDescriptor(ImageType.HELP_ICON.getDescriptor());
 		}
 

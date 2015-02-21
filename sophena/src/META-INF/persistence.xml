@@ -9,6 +9,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		
 		<class>sophena.model.Project</class>
+        <class>sophena.model.Fuel</class>
 
 		<properties>
 			<property name="eclipselink.connection-pool.default.max"

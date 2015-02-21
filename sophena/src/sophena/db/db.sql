@@ -10,8 +10,17 @@ CREATE TABLE sophena_version (
 INSERT INTO sophena_version (version) VALUES (1);
 
 CREATE TABLE tbl_projects (
-    id VARCHAR(36),
+    id CHAR(36),
     name VARCHAR(255),
+    description CLOB(64 K),
+	project_duration SMALLINT,
+
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE tbl_fuels (
+	id CHAR(36),
+	name VARCHAR(255),
     description CLOB(64 K),
 
     PRIMARY KEY (id)

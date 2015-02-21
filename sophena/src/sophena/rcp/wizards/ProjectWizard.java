@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.rcp.App;
+import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
@@ -32,7 +33,7 @@ public class ProjectWizard extends Wizard implements INewWizard {
 	public static void open() {
 		try {
 			ProjectWizard wizard = new ProjectWizard();
-			wizard.setWindowTitle("#Neues Projekt erstellen");
+			wizard.setWindowTitle(M.CreateNewProject);
 			WizardDialog dialog = new WizardDialog(UI.shell(), wizard);
 			dialog.setPageSize(150, 350);
 			if (dialog.open() == Window.OK)
@@ -45,7 +46,7 @@ public class ProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle("#Neues Projekt erstellen");
+		setWindowTitle(M.CreateNewProject);
 		// TODO: set project image
 	}
 
@@ -76,17 +77,17 @@ public class ProjectWizard extends Wizard implements INewWizard {
 		private Text timeText;
 
 		protected Page() {
-			super("ProjectWizardPage", "#Neues Projekt erstellen", null);
+			super("ProjectWizardPage", M.CreateNewProject, null);
 		}
 
 		@Override
 		public void createControl(Composite parent) {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
-			nameText = UI.formText(composite, "#Name");
-			nameText.setText("#Neues Projekt");
-			descriptionText = UI.formMultiText(composite, "#Beschreibung");
-			timeText = UI.formText(composite, "#Projektlaufzeit (Jahre)");
+			nameText = UI.formText(composite, M.Name);
+			nameText.setText(M.NewProject);
+			descriptionText = UI.formMultiText(composite, M.Description);
+			timeText = UI.formText(composite, M.ProjectDurationYears);
 			timeText.setText("5");
 		}
 

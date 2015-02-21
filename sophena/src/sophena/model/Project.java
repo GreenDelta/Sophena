@@ -3,6 +3,7 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -10,6 +11,9 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "tbl_projects")
 public class Project extends RootEntity {
+
+	@Column(name = "project_duration")
+	private int projectDuration;
 
 	@Transient
 	private final List<Producer> producers = new ArrayList<>();
@@ -50,5 +54,13 @@ public class Project extends RootEntity {
 		list.addAll(consumers);
 		list.addAll(pumps);
 		return list;
+	}
+
+	public int getProjectDuration() {
+		return projectDuration;
+	}
+
+	public void setProjectDuration(int projectDuration) {
+		this.projectDuration = projectDuration;
 	}
 }
