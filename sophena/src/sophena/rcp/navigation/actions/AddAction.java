@@ -3,6 +3,7 @@ package sophena.rcp.navigation.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.rcp.Images;
+import sophena.rcp.M;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.StructureElement;
 import sophena.rcp.wizards.ConsumerWizard;
@@ -31,7 +32,7 @@ public class AddAction extends NavigationAction {
 			return "#Neu";
 		switch (elem.getType()) {
 		case StructureElement.CONSUMPTION:
-			return "#Neuer Wärmeabnehmer";
+			return M.NewConsumer;
 		default:
 			return "#Neu";
 		}

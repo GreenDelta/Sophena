@@ -14,6 +14,11 @@ public class M extends NLS {
 	public static String Description;
 	public static String NewProject;
 	public static String CreateNewProject;
+	public static String Consumer;
+	public static String CreateNewConsumer;
+	public static String NewConsumer;
+	public static String BuildingType;
+	public static String BuildingState;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
