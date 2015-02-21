@@ -3,8 +3,11 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -18,7 +21,8 @@ public class Project extends RootEntity {
 	@Transient
 	private final List<Producer> producers = new ArrayList<>();
 
-	@Transient
+	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
 	private final List<Consumer> consumers = new ArrayList<>();
 
 	@Transient

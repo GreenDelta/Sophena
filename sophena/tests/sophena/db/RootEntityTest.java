@@ -9,6 +9,7 @@ import sophena.Tests;
 import sophena.db.daos.Dao;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
+import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Project;
 import sophena.model.RootEntity;
@@ -19,6 +20,7 @@ public class RootEntityTest {
 	private Class<? extends RootEntity>[] classes = new Class[] {
 			BuildingState.class,
 			BuildingType.class,
+			Consumer.class,
 			Fuel.class,
 			Project.class
 	};

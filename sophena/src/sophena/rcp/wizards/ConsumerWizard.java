@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sophena.db.Database;
 import sophena.db.daos.Dao;
+import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
@@ -56,7 +57,11 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			// TODO: save consumer
+			Consumer consumer = page.consumer;
+			project.getConsumers().add(consumer);
+			ProjectDao dao = new ProjectDao(App.getDb());
+			dao.update(project);
+			Navigator.refresh();
 			ConsumerEditor.open(page.consumer);
 			return true;
 		} catch (Exception e) {

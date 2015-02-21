@@ -1,12 +1,12 @@
 package sophena.rcp.navigation;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.swt.graphics.Image;
-
+import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.rcp.Images;
+import sophena.rcp.M;
 
 public class StructureElement implements NavigationElement {
 
@@ -16,6 +16,7 @@ public class StructureElement implements NavigationElement {
 
 	private final int type;
 	private final ProjectElement parent;
+	private List<NavigationElement> childs;
 
 	public StructureElement(int type, ProjectElement parent) {
 		this.type = type;
@@ -35,7 +36,21 @@ public class StructureElement implements NavigationElement {
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		return Collections.emptyList();
+		if(childs != null)
+			return childs;
+		childs = new ArrayList<>();
+		if(type == CONSUMPTION)
+			addConsumers(childs);
+		return childs;
+	}
+
+	private void addConsumers(List<NavigationElement> childs) {
+		Project p = getProject();
+		if(p == null)
+			return;
+		for(Consumer c : p.getConsumers()) {
+			 childs.add(new FacilityElement(this, c));
+		}
 	}
 
 	@Override
@@ -47,13 +62,13 @@ public class StructureElement implements NavigationElement {
 	public String getLabel() {
 		switch (type) {
 		case DISTRIBUTION:
-			return "#Wärmeverteilung";
+			return M.HeatDistribution;
 		case CONSUMPTION:
-			return "#Wärmenutzung";
+			return M.HeatUsage;
 		case COSTS:
-			return "#Kosten";
+			return M.Costs;
 		default:
-			return "#unknown";
+			return M.Unknown;
 		}
 	}
 
@@ -72,7 +87,7 @@ public class StructureElement implements NavigationElement {
 
 	@Override
 	public void update() {
-		// TODO update project content
+		childs = null;
 	}
 
 	@Override

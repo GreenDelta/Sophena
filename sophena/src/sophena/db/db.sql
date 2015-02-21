@@ -8,7 +8,7 @@ CREATE TABLE tbl_projects (
     id CHAR(36),
     name VARCHAR(255),
     description CLOB(64 K),
-	project_duration SMALLINT,
+	project_duration INTEGER,
 
     PRIMARY KEY (id)
 );
@@ -71,6 +71,10 @@ CREATE TABLE tbl_consumers (
    name VARCHAR(255),
    description CLOB(64 K),
 
+   graph_x INTEGER,
+   graph_y INTEGER,
+
+   f_project CHAR(36),
    f_building_type CHAR(36),
    f_building_state CHAR(36),
 
