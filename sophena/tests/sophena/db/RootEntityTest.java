@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.Dao;
+import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Fuel;
 import sophena.model.Project;
@@ -16,6 +17,7 @@ public class RootEntityTest {
 
 	@SuppressWarnings("unchecked")
 	private Class<? extends RootEntity>[] classes = new Class[] {
+			BuildingState.class,
 			BuildingType.class,
 			Fuel.class,
 			Project.class

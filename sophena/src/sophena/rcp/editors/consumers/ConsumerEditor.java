@@ -18,7 +18,7 @@ public class ConsumerEditor extends FormEditor {
 	private Consumer consumer;
 
 	public static void open(Consumer consumer) {
-		if(consumer == null)
+		if (consumer == null)
 			return;
 		String key = Cache.put(consumer);
 		KeyEditorInput input = new KeyEditorInput(key, consumer.getName());
@@ -26,9 +26,10 @@ public class ConsumerEditor extends FormEditor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
 		super.init(site, input);
-		KeyEditorInput kIn = (KeyEditorInput)input;
+		KeyEditorInput kIn = (KeyEditorInput) input;
 		consumer = Cache.remove(kIn.getKey());
 	}
 

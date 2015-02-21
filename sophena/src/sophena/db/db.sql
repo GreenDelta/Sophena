@@ -3,6 +3,7 @@ CREATE TABLE sophena_version (
 );
 INSERT INTO sophena_version (version) VALUES (1);
 
+
 CREATE TABLE tbl_projects (
     id CHAR(36),
     name VARCHAR(255),
@@ -12,6 +13,7 @@ CREATE TABLE tbl_projects (
     PRIMARY KEY (id)
 );
 
+
 CREATE TABLE tbl_fuels (
 	id CHAR(36),
 	name VARCHAR(255),
@@ -19,6 +21,7 @@ CREATE TABLE tbl_fuels (
 
     PRIMARY KEY (id)
 );
+
 
 CREATE TABLE tbl_building_types (
    id CHAR(36),
@@ -43,6 +46,23 @@ INSERT INTO tbl_building_types (id, name) VALUES ('5de90f24-f00e-4361-9a7b-9c520
 INSERT INTO tbl_building_types (id, name) VALUES ('92d3ae90-4a80-4511-9536-5206014c94bc', 'Kirche');
 
 
+CREATE TABLE tbl_building_states (
+   id CHAR(36),
+   name VARCHAR(255),
+   description CLOB(64 K),
+
+   PRIMARY KEY (id)
+);
+INSERT INTO tbl_building_states (id, name) VALUES ('71828b10-1851-424d-833c-d2d1f74cefa5', 'Altbau');
+INSERT INTO tbl_building_states (id, name) VALUES ('c71f03c2-fe3a-4a12-8fa4-6d837c735da7', 'Stand 60er Jahre');
+INSERT INTO tbl_building_states (id, name) VALUES ('b5972d9b-8e0a-4374-b004-efb84f8ec0b9', 'Stand 70er Jahre');
+INSERT INTO tbl_building_states (id, name) VALUES ('28a0b292-0066-4bf2-8691-a28527ea8ebf', 'Stand 80er Jahre');
+INSERT INTO tbl_building_states (id, name) VALUES ('8e64c6cf-1ab3-4f0c-a041-4450fecc105c', 'Stand 90er Jahre');
+INSERT INTO tbl_building_states (id, name) VALUES ('bc2ab8a9-6596-484b-aa11-978741c4c0e1', 'Stand 00er Jahre');
+INSERT INTO tbl_building_states (id, name) VALUES ('bc22815b-1ffe-4f83-8e1b-3b11751a9323', 'ENEV');
+INSERT INTO tbl_building_states (id, name) VALUES ('b3352b90-a9e3-4c97-91e0-626d73e7d84a', 'KfW 70');
+INSERT INTO tbl_building_states (id, name) VALUES ('b28f6c18-3c9b-4ab8-b665-724d1cf1e7c6', 'KfW 40');
+INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c27b549e7e', 'Passivhaus');
 
 
 CREATE TABLE tbl_consumers (
@@ -51,7 +71,8 @@ CREATE TABLE tbl_consumers (
    name VARCHAR(255),
    description CLOB(64 K),
 
-
+   f_building_type CHAR(36),
+   f_building_state CHAR(36),
 
    PRIMARY KEY (id)
 );

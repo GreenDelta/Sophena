@@ -8,6 +8,7 @@
 	
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
+        <class>sophena.model.BuildingState</class>
         <class>sophena.model.BuildingType</class>
 		<class>sophena.model.Project</class>
         <class>sophena.model.Fuel</class>
