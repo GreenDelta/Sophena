@@ -23,6 +23,7 @@ public class M extends NLS {
 	public static String HeatUsage;
 	public static String Costs;
 	public static String Unknown;
+	public static String ConsumerInformation;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

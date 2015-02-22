@@ -62,7 +62,7 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
-			ConsumerEditor.open(page.consumer);
+			ConsumerEditor.open(project, consumer);
 			return true;
 		} catch (Exception e) {
 			log.error("failed to save consumer", e);

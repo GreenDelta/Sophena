@@ -7,8 +7,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.model.Consumer;
+import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
 class InfoPage extends FormPage {
@@ -16,7 +16,7 @@ class InfoPage extends FormPage {
 	private ConsumerEditor editor;
 
 	public InfoPage(ConsumerEditor editor) {
-		super(editor, "sophena.ConsumerInfoPage", "#Abnehmerinformationen");
+		super(editor, "sophena.ConsumerInfoPage", M.ConsumerInformation);
 		this.editor = editor;
 	}
 
@@ -26,23 +26,13 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		ScrolledForm form = UI.formHeader(managedForm, "#Project name");
+		ScrolledForm form = UI.formHeader(managedForm, consumer().getName());
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		createInfoSection(body, toolkit);
+		InfoSection.of(editor).create(body, toolkit);
 		createAddressSection(body, toolkit);
 		createConsumptionSection(body, toolkit);
 		form.reflow(true);
-	}
-
-	private void createInfoSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit, "#Abnehmer");
-		Text nt = UI.formText(composite, toolkit, "#Name");
-		nt.addModifyListener((e) -> consumer().setName(nt.getText()));
-		Text dt = UI.formMultiText(composite, toolkit, "#Beschreibung");
-		dt.addModifyListener((e) -> consumer().setDescription(dt.getText()));
-		UI.formCombo(composite, toolkit, "#Gebäudetype");
-		UI.formCombo(composite, toolkit, "#Gebäudezustand");
 	}
 
 	private void createAddressSection(Composite body, FormToolkit toolkit) {
