@@ -13,6 +13,8 @@ public enum Images {
 
 	DELETE_16("delete_16.png"),
 
+	EDIT_16("edit_16.png"),
+
 	NEW_16("new_16.png"),
 
 	NEW_PROJECT_16("new_project_16.png"),

@@ -12,6 +12,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.rcp.App;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -39,6 +40,7 @@ public class ConsumerEditor extends FormEditor {
 		EditorInput i = (EditorInput) input;
 		project = Cache.remove(i.getKey());
 		consumer = findConsumer(project, i.consumerKey);
+		setPartName(consumer.getName());
 	}
 
 	private Consumer findConsumer(Project project, String consumerKey) {
@@ -87,6 +89,8 @@ public class ConsumerEditor extends FormEditor {
 			 project = dao.update(project);
 			 consumer = findConsumer(project, consumer.getId());
 			 dirty = false;
+			 setPartName(consumer.getName());
+			 Navigator.refresh(consumer);
 			 editorDirtyStateChanged();
 		 } catch (Exception e) {
 			 log.error("failed to update project " + project, e);

@@ -56,7 +56,7 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 			project.getConsumers().add(consumer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
-			Navigator.refresh();
+			Navigator.refresh(project);
 			ConsumerEditor.open(project, consumer);
 			return true;
 		} catch (Exception e) {

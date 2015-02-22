@@ -2,7 +2,9 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.rcp.Images;
@@ -36,20 +38,20 @@ public class StructureElement implements NavigationElement {
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		if(childs != null)
+		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
-		if(type == CONSUMPTION)
+		if (type == CONSUMPTION)
 			addConsumers(childs);
 		return childs;
 	}
 
 	private void addConsumers(List<NavigationElement> childs) {
 		Project p = getProject();
-		if(p == null)
+		if (p == null)
 			return;
-		for(Consumer c : p.getConsumers()) {
-			 childs.add(new FacilityElement(this, c));
+		for (Consumer c : p.getConsumers()) {
+			childs.add(new FacilityElement(this, c));
 		}
 	}
 
@@ -82,7 +84,10 @@ public class StructureElement implements NavigationElement {
 
 	@Override
 	public Object getContent() {
-		return this;
+		if (getProject() == null)
+			return null;
+		else
+			return getProject().getId() + "_" + type;
 	}
 
 	@Override

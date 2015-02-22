@@ -31,18 +31,30 @@ class InfoSection {
 
 	void create(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit, M.ConsumerInformation);
+		createNameText(toolkit, composite);
+		createDescriptionText(toolkit, composite);
+		createTypeCombo(composite, toolkit);
+		createStateCombo(composite, toolkit);
+	}
+
+	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text nt = UI.formText(composite, toolkit, M.Name);
+		if(consumer().getName() != null)
+			nt.setText(consumer().getName());
 		nt.addModifyListener((e) -> {
 			consumer().setName(nt.getText());
 			editor.setDirty();
 		});
+	}
+
+	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
 		Text dt = UI.formMultiText(composite, toolkit, M.Description);
+		if(consumer().getDescription() != null)
+			dt.setText(consumer().getDescription());
 		dt.addModifyListener((e) -> {
 			consumer().setDescription(dt.getText());
 			editor.setDirty();
 		});
-		createTypeCombo(composite, toolkit);
-		createStateCombo(composite, toolkit);
 	}
 
 	private void createTypeCombo(Composite composite, FormToolkit toolkit) {

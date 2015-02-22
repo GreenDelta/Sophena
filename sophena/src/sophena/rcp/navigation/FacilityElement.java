@@ -3,8 +3,11 @@ package sophena.rcp.navigation;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.swt.graphics.Image;
+import sophena.db.daos.Dao;
 import sophena.model.Consumer;
 import sophena.model.Facility;
+import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Strings;
 
@@ -48,8 +51,16 @@ class FacilityElement implements NavigationElement {
 		return facility;
 	}
 
+	public Project getProject() {
+		return parent == null ? null : parent.getProject();
+	}
+
 	@Override
 	public void update() {
+		if(facility instanceof Consumer) {
+			Dao<Consumer> dao = new Dao<>(Consumer.class, App.getDb());
+			facility = dao.get(facility.getId());
+		}
 	}
 
 	@Override

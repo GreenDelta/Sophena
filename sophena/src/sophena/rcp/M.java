@@ -4,6 +4,9 @@ import org.eclipse.osgi.util.NLS;
 
 public class M extends NLS {
 
+	public static String Add;
+	public static String Remove;
+	public static String Edit;
 	public static String File;
 	public static String Help;
 	public static String ShowViews;
@@ -25,6 +28,7 @@ public class M extends NLS {
 	public static String Unknown;
 	public static String ConsumerInformation;
 	public static String NoEmptyNameAllowed;
+	public static String ConsumptionData;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
