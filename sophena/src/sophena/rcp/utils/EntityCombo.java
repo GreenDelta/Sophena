@@ -22,8 +22,16 @@ public class EntityCombo<T extends RootEntity> {
 		this.label = label;
 	}
 
+	public void create(Composite parent) {
+		create(parent, null);
+	}
+
 	public void create(Composite parent, FormToolkit toolkit) {
-		Combo combo = UI.formCombo(parent, toolkit, label);
+		Combo combo = null;
+		if(toolkit == null)
+			combo = UI.formCombo(parent, label);
+		else
+			combo = UI.formCombo(parent, toolkit, label);
 		viewer = new ComboViewer(combo);
 		viewer.setLabelProvider(new Label());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());

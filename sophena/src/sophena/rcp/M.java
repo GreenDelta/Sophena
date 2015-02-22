@@ -24,6 +24,7 @@ public class M extends NLS {
 	public static String Costs;
 	public static String Unknown;
 	public static String ConsumerInformation;
+	public static String NoEmptyNameAllowed;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

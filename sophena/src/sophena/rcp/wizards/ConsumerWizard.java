@@ -8,32 +8,27 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sophena.db.Database;
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.model.Project;
-import sophena.model.RootEntity;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
 public class ConsumerWizard extends Wizard implements INewWizard {
-
-	private static final String ID = "sophena.ConsumerWizard";
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
@@ -83,58 +78,12 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 	private class Page extends WizardPage {
 
 		private Consumer consumer;
-		private List<BuildingType> types;
-		private String[] typeNames;
-		private List<BuildingState> states;
-		private String[] stateNames;
 
 		private Page() {
 			super("ConsumerWizardPage", M.CreateNewConsumer, null);
-			initData();
-		}
-
-		private void initData() {
 			consumer = new Consumer();
 			consumer.setId(UUID.randomUUID().toString());
 			consumer.setName(M.NewConsumer);
-			try {
-				initTypes();
-				initStates();
-			} catch (Exception e) {
-				types = Collections.emptyList();
-				typeNames = new String[0];
-				states = Collections.emptyList();
-				stateNames = new String[0];
-				log.error("failed to load building types / states", e);
-			}
-		}
-
-		private void initTypes() {
-			Database db = App.getDb();
-			Dao<BuildingType> dao = new Dao<>(BuildingType.class, db);
-			types = dao.getAll();
-			typeNames = getNames(types);
-			if (!types.isEmpty())
-				consumer.setBuildingType(types.get(0));
-		}
-
-		private void initStates() {
-			Database db = App.getDb();
-			Dao<BuildingState> dao = new Dao<>(BuildingState.class, db);
-			states = dao.getAll();
-			stateNames = getNames(states);
-			if (!states.isEmpty())
-				consumer.setBuildingState(states.get(0));
-		}
-
-		private String[] getNames(List<? extends RootEntity> list) {
-			Collections.sort(list, (e1, e2)
-					-> Strings.compare(e1.getName(), e2.getName()));
-			String[] names = new String[list.size()];
-			for (int i = 0; i < list.size(); i++) {
-				names[i] = list.get(i).getName();
-			}
-			return names;
 		}
 
 		@Override
@@ -148,37 +97,49 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 				validate();
 			});
 			Text dt = UI.formMultiText(composite, M.Description);
-			dt.addModifyListener((e) -> {
-				consumer.setDescription(dt.getText());
-			});
+			dt.addModifyListener((e) -> consumer.setDescription(dt.getText()));
 			createTypeCombo(composite);
 			createStateCombo(composite);
 		}
 
 		private void createTypeCombo(Composite composite) {
-			Combo c = UI.formCombo(composite, M.BuildingType);
-			c.setItems(typeNames);
-			if (typeNames.length > 0)
-				c.select(0);
-			Controls.onSelect(c, (e) -> {
-				int i = c.getSelectionIndex();
-				consumer.setBuildingType(types.get(i));
-			});
+			EntityCombo<BuildingType> combo = new EntityCombo<>(M.BuildingType);
+			combo.create(composite);
+			Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
+			List<BuildingType> types = dao.getAll();
+			if (types.isEmpty())
+				return;
+			Collections.sort(types, (e1, e2)
+					-> Strings.compare(e1.getName(), e2.getName()));
+			combo.setInput(types);
+			combo.select(types.get(0));
+			consumer.setBuildingType(types.get(0));
+			combo.onSelect(consumer::setBuildingType);
 		}
 
 		private void createStateCombo(Composite composite) {
-			Combo c = UI.formCombo(composite, M.BuildingState);
-			c.setItems(stateNames);
-			if (stateNames.length > 0)
-				c.select(0);
-			Controls.onSelect(c, (e) -> {
-				int i = c.getSelectionIndex();
-				consumer.setBuildingState(states.get(i));
-			});
+			EntityCombo<BuildingState> combo = new EntityCombo<>(M.BuildingState);
+			combo.create(composite);
+			Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
+			List<BuildingState> states = dao.getAll();
+			if (states.isEmpty())
+				return;
+			Collections.sort(states, (s1, s2)
+					-> Strings.compare(s1.getName(), s2.getName()));
+			combo.setInput(states);
+			combo.select(states.get(0));
+			consumer.setBuildingState(states.get(0));
+			combo.onSelect(consumer::setBuildingState);
 		}
 
 		private void validate() {
-			// TODO implement validation function
+			if (Strings.nullOrEmpty(consumer.getName())) {
+				setErrorMessage(M.NoEmptyNameAllowed);
+				setPageComplete(false);
+			} else {
+				setErrorMessage(null);
+				setPageComplete(true);
+			}
 		}
 	}
 
