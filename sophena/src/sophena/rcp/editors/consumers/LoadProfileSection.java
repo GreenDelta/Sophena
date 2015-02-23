@@ -11,18 +11,18 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
-import sophena.rcp.wizards.BaseLoadWizard;
+import sophena.rcp.wizards.LoadProfileWizard;
 
-class BaseLoadSection {
+class LoadProfileSection {
 
 	private ConsumerEditor editor;
 	private TableViewer table;
 
-	private BaseLoadSection() {
+	private LoadProfileSection() {
 	}
 
-	static BaseLoadSection of(ConsumerEditor editor) {
-		BaseLoadSection section = new BaseLoadSection();
+	static LoadProfileSection of(ConsumerEditor editor) {
+		LoadProfileSection section = new LoadProfileSection();
 		section.editor = editor;
 		return section;
 	}
@@ -32,22 +32,21 @@ class BaseLoadSection {
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
-		Section section = UI.section(body, toolkit, M.BaseLoads);
+		Section section = UI.section(body, toolkit, M.LoadProfiles);
 		Composite composite = UI.sectionClient(section, toolkit);
 		table = createTable(composite, toolkit);
 		bindActions(section, table);
 	}
 
 	private TableViewer createTable(Composite composite, FormToolkit toolkit) {
-		TableViewer table = Tables.createViewer(composite, M.Name, M.Power,
-				M.Start, M.End);
-		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
+		TableViewer table = Tables.createViewer(composite, M.Name, M.Power);
+		Tables.bindColumnWidths(table, 0.25, 0.25);
 		return table;
 	}
 
 	private void bindActions(Section section, TableViewer table) {
 		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
-			BaseLoadWizard.open(consumer());
+			LoadProfileWizard.open(consumer());
 		});
 		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
 

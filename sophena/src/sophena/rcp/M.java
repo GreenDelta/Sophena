@@ -50,6 +50,9 @@ public class M extends NLS {
 	public static String Start;
 	public static String End;
 	public static String Power;
+	public static String LoadProfile;
+	public static String LoadProfiles;
+	public static String SelectFile;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

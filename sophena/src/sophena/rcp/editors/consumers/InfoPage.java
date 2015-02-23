@@ -5,6 +5,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.model.Consumer;
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
@@ -31,6 +32,7 @@ class InfoPage extends FormPage {
 		createAddressSection(body, toolkit);
 		ConsumptionSection.of(editor).create(body, toolkit);
 		BaseLoadSection.of(editor).create(body, toolkit);
+		LoadProfileSection.of(editor).create(body, toolkit);
 		form.reflow(true);
 	}
 
