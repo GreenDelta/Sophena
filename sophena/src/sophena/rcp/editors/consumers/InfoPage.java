@@ -30,6 +30,7 @@ class InfoPage extends FormPage {
 		InfoSection.of(editor).create(body, toolkit);
 		createAddressSection(body, toolkit);
 		ConsumptionSection.of(editor).create(body, toolkit);
+		BaseLoadSection.of(editor).create(body, toolkit);
 		form.reflow(true);
 	}
 
@@ -39,5 +40,4 @@ class InfoPage extends FormPage {
 		UI.formText(composite, toolkit, M.ZipCode);
 		UI.formText(composite, toolkit, M.City);
 	}
-
 }

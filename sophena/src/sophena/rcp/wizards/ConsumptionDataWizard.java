@@ -31,7 +31,7 @@ public class ConsumptionDataWizard extends Wizard {
 		wiz.setWindowTitle(M.CollectConsumptionData);
 		wiz.consumer = consumer;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 350);
+		dialog.setPageSize(150, 400);
 		dialog.open();
 	}
 
