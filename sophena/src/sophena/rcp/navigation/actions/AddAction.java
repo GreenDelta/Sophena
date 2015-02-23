@@ -1,12 +1,12 @@
 package sophena.rcp.navigation.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.StructureElement;
 import sophena.rcp.wizards.ConsumerWizard;
+import sophena.rcp.wizards.ProducerWizard;
 
 public class AddAction extends NavigationAction {
 
@@ -16,7 +16,9 @@ public class AddAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof StructureElement) {
 			elem = (StructureElement) element;
-			return elem.getType() == StructureElement.CONSUMPTION;
+			setText(getText(elem.getType()));
+			return elem.getType() == StructureElement.CONSUMPTION
+					|| elem.getType() == StructureElement.PRODUCTION;
 		}
 		return false;
 	}
@@ -26,20 +28,26 @@ public class AddAction extends NavigationAction {
 		return Images.ADD_16.des();
 	}
 
-	@Override
-	public String getText() {
-		if (elem == null)
-			return "#Neu";
-		switch (elem.getType()) {
-		case StructureElement.CONSUMPTION:
-			return M.NewConsumer;
-		default:
-			return "#Neu";
+	private String getText(int type) {
+		switch (type) {
+			case StructureElement.CONSUMPTION:
+				return M.NewConsumer;
+			case StructureElement.PRODUCTION:
+				return M.NewProducer;
+			default:
+				return "#Neu";
 		}
 	}
 
 	@Override
 	public void run() {
-		ConsumerWizard.open(elem.getProject());
+		switch (elem.getType()) {
+			case StructureElement.PRODUCTION:
+				ProducerWizard.open(elem.getProject());
+				break;
+			case StructureElement.CONSUMPTION:
+				ConsumerWizard.open(elem.getProject());
+				break;
+		}
 	}
 }

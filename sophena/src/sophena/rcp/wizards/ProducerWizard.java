@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
@@ -8,28 +9,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.model.Project;
+import sophena.rcp.M;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
 
-public class NetComponentWizard extends Wizard {
+public class ProducerWizard extends Wizard {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Project project;
 
 	public static void open(Project project) {
-		try {
-			NetComponentWizard wiz = new NetComponentWizard();
-			wiz.setWindowTitle("#Neue Komponente");
-			wiz.project = project;
-			WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-			dialog.setPageSize(150, 400);
-			dialog.open();
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(ProjectWizard.class);
-			log.error("failed to create project", e);
-		}
+		ProducerWizard wiz = new ProducerWizard();
+		wiz.setWindowTitle(M.CreateNewProducer);
+		wiz.project = project;
+		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
+		dialog.setPageSize(150, 400);
+		if (dialog.open() == Window.OK)
+			Navigator.refresh();
 	}
 
 	@Override
@@ -46,7 +44,7 @@ public class NetComponentWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private Page() {
-			super("NetComponentWizardPage", "#Neue Komponente", null);
+			super("ProducerWizardPage", M.CreateNewProducer, null);
 		}
 
 		@Override
@@ -56,14 +54,14 @@ public class NetComponentWizard extends Wizard {
 			UI.gridLayout(root, 1, 5, 5);
 			createComboGroup(root);
 			createList(root);
-			createAmountRow(root);
+			createFunctionFields(root);
 		}
 
 		private void createComboGroup(Composite root) {
 			Composite composite = UI.formComposite(root);
 			UI.gridData(composite, true, false);
-			UI.formCombo(composite, "#Komponente");
-			UI.formCombo(composite, "#Größenklasse");
+			UI.formCombo(composite, "#Erzeugertyp");
+			UI.formCombo(composite, "#Anlagengröße");
 		}
 
 		private void createList(Composite root) {
@@ -74,12 +72,11 @@ public class NetComponentWizard extends Wizard {
 			UI.gridData(list, true, true);
 		}
 
-		private void createAmountRow(Composite root) {
-			Composite composite = new Composite(root, SWT.NONE);
+		private void createFunctionFields(Composite root) {
+			Composite composite = UI.formComposite(root);
 			UI.gridData(composite, true, false);
-			UI.gridLayout(composite, 3);
-			UI.formText(composite, "#Menge");
-			UI.formLabel(composite, "#Einheit");
+			UI.formText(composite, "#Rang");
+			UI.formCombo(composite, "#Funktion");
 		}
 	}
 }

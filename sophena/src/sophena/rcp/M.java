@@ -55,6 +55,9 @@ public class M extends NLS {
 	public static String SelectFile;
 	public static String ProjectInformation;
 	public static String HeatingNetwork;
+	public static String HeatProduction;
+	public static String NewProducer;
+	public static String CreateNewProducer;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

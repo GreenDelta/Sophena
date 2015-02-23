@@ -19,7 +19,9 @@ public class ProjectElement implements NavigationElement {
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		int[] types = { StructureElement.DISTRIBUTION,
+		int[] types = {
+				StructureElement.PRODUCTION,
+				StructureElement.DISTRIBUTION,
 				StructureElement.CONSUMPTION,
 				StructureElement.COSTS };
 		List<NavigationElement> elems = new ArrayList<>();
