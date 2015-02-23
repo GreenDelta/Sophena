@@ -3,19 +3,19 @@ package sophena.rcp.wizards;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
@@ -42,7 +42,7 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 			wiz.setWindowTitle(M.CreateNewConsumer);
 			wiz.project = project;
 			WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-			dialog.setPageSize(150, 350);
+			dialog.setPageSize(150, 400);
 			if (dialog.open() == Window.OK)
 				Navigator.refresh();
 		} catch (Exception e) {
@@ -102,6 +102,7 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 			dt.addModifyListener((e) -> consumer.setDescription(dt.getText()));
 			createTypeCombo(composite);
 			createStateCombo(composite);
+			createCalculationRadios(composite);
 		}
 
 		private void createTypeCombo(Composite composite) {
@@ -132,6 +133,16 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 			combo.select(states.get(0));
 			consumer.setBuildingState(states.get(0));
 			combo.onSelect(consumer::setBuildingState);
+		}
+
+		private void createCalculationRadios(Composite composite) {
+			UI.formLabel(composite, "");
+			Button consumption = new Button(composite, SWT.RADIO);
+			consumption.setText(M.ConsumptionBasedCalculation);
+			UI.formLabel(composite, "");
+			Button demand = new Button(composite, SWT.RADIO);
+			demand.setText(M.DemandBasedCalculation);
+			// TODO: add data binding
 		}
 
 		private void validate() {

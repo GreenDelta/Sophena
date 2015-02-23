@@ -4,14 +4,18 @@ CREATE TABLE sophena_version (
 INSERT INTO sophena_version (version) VALUES (1);
 
 
-CREATE TABLE tbl_projects (
-    id CHAR(36),
-    name VARCHAR(255),
-    description CLOB(64 K),
-	project_duration INTEGER,
+CREATE TABLE tbl_units (
+   id CHAR(36),
+   name VARCHAR(255),
+   description CLOB(64 K),
 
-    PRIMARY KEY (id)
+   quantity VARCHAR(255),
+   is_reference_unit BOOLEAN,
+   conversion_factor DOUBLE,
+
+   PRIMARY KEY (id)
 );
+
 
 
 CREATE TABLE tbl_fuels (
@@ -21,6 +25,13 @@ CREATE TABLE tbl_fuels (
 
     PRIMARY KEY (id)
 );
+INSERT INTO tbl_fuels (id, name) VALUES ('0c67a964-a8e3-4596-b823-1ae507bcb281', 'Heizöl');
+INSERT INTO tbl_fuels (id, name) VALUES ('39ee53bd-e5d0-4373-b1d5-7e1641dd1596', 'Flüssiggas');
+INSERT INTO tbl_fuels (id, name) VALUES ('b4e9670a-1905-4524-8ae9-7404d77b84b5', 'Erdgas');
+INSERT INTO tbl_fuels (id, name) VALUES ('4912c757-f345-4ebc-94bc-ab7ef1acf6be', 'Hackschnitzel');
+INSERT INTO tbl_fuels (id, name) VALUES ('826cda96-d051-4d11-a03b-fd89d600cf8b', 'Pellets');
+INSERT INTO tbl_fuels (id, name) VALUES ('92466799-79b9-479f-a749-93c6f22e7ba3', 'Scheitholz');
+INSERT INTO tbl_fuels (id, name) VALUES ('a65b9fe8-13fe-41e4-a8bc-15647e50046b', 'Strom');
 
 
 CREATE TABLE tbl_building_types (
@@ -63,6 +74,16 @@ INSERT INTO tbl_building_states (id, name) VALUES ('bc22815b-1ffe-4f83-8e1b-3b11
 INSERT INTO tbl_building_states (id, name) VALUES ('b3352b90-a9e3-4c97-91e0-626d73e7d84a', 'KfW 70');
 INSERT INTO tbl_building_states (id, name) VALUES ('b28f6c18-3c9b-4ab8-b665-724d1cf1e7c6', 'KfW 40');
 INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c27b549e7e', 'Passivhaus');
+
+
+CREATE TABLE tbl_projects (
+    id CHAR(36),
+    name VARCHAR(255),
+    description CLOB(64 K),
+	project_duration INTEGER,
+
+    PRIMARY KEY (id)
+);
 
 
 CREATE TABLE tbl_consumers (

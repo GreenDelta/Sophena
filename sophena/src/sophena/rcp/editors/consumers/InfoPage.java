@@ -1,8 +1,6 @@
 package sophena.rcp.editors.consumers;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -32,33 +30,14 @@ class InfoPage extends FormPage {
 		InfoSection.of(editor).create(body, toolkit);
 		createAddressSection(body, toolkit);
 		ConsumptionSection.of(editor).create(body, toolkit);
-		createConsumptionSection(body, toolkit);
 		form.reflow(true);
 	}
 
 	private void createAddressSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit, "#Adresse");
-		UI.formText(composite, toolkit, "#Straße");
-		UI.formText(composite, toolkit, "#Nummer");
-		UI.formText(composite, toolkit, "#PLZ");
-		UI.formText(composite, toolkit, "#Ort");
-		UI.formText(composite, toolkit, "#GIS-Koordinaten");
-	}
-
-	private void createConsumptionSection(Composite body, FormToolkit tk) {
-		Composite comp = UI.formSection(body, tk, "#Verbrach");
-		tk.createLabel(comp, null);
-		tk.createButton(comp, "#Verbrauchsgebundene Ermittlung", SWT.RADIO);
-		tk.createLabel(comp, null);
-		tk.createButton(comp, "#Bedarfsgebundene Ermittlung", SWT.RADIO);
-		tk.createLabel(comp, "#Heizlast");
-		Composite childComp = tk.createComposite(comp);
-		UI.gridLayout(childComp, 2, 10, 0);
-		Text heatLoad = tk.createText(childComp, null);
-		UI.gridData(heatLoad, true, false);
-		tk.createLabel(childComp, "#kW");
-		tk.createLabel(comp, null);
-		tk.createButton(comp, "#Verbrauchsdaten erfassen", SWT.NONE);
+		Composite composite = UI.formSection(body, toolkit, M.Address);
+		UI.formText(composite, toolkit, M.Street);
+		UI.formText(composite, toolkit, M.ZipCode);
+		UI.formText(composite, toolkit, M.City);
 	}
 
 }

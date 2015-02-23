@@ -37,6 +37,7 @@ class InfoSection {
 		createDescriptionText(toolkit, composite);
 		createTypeCombo(composite, toolkit);
 		createStateCombo(composite, toolkit);
+		createLoadText(composite, toolkit);
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -81,5 +82,10 @@ class InfoSection {
 			consumer().setBuildingState(s);
 			editor.setDirty();
 		});
+	}
+
+	private void createLoadText(Composite composite, FormToolkit toolkit) {
+		Text t = UI.formText(composite, toolkit, M.HeatingLoad);
+		// TODO: bind heating load
 	}
 }

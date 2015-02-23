@@ -36,6 +36,13 @@ public class M extends NLS {
 	public static String BoilerEfficiency;
 	public static String UtilisationRate;
 	public static String EfficiencyRate;
+	public static String Address;
+	public static String Street;
+	public static String ZipCode;
+	public static String City;
+	public static String HeatingLoad;
+	public static String DemandBasedCalculation;
+	public static String ConsumptionBasedCalculation;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
