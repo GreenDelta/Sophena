@@ -2,7 +2,9 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.rcp.Images;
@@ -62,16 +64,16 @@ public class StructureElement implements NavigationElement {
 	@Override
 	public String getLabel() {
 		switch (type) {
-			case PRODUCTION:
-				return M.HeatProduction;
-			case DISTRIBUTION:
-				return M.HeatDistribution;
-			case CONSUMPTION:
-				return M.HeatUsage;
-			case COSTS:
-				return M.Costs;
-			default:
-				return M.Unknown;
+		case PRODUCTION:
+			return M.HeatProduction;
+		case DISTRIBUTION:
+			return M.HeatDistribution;
+		case CONSUMPTION:
+			return M.HeatUsage;
+		case COSTS:
+			return M.Costs;
+		default:
+			return M.Unknown;
 		}
 	}
 
@@ -99,12 +101,16 @@ public class StructureElement implements NavigationElement {
 	@Override
 	public Image getImage() {
 		switch (type) {
-			case CONSUMPTION:
-				return Images.CONSUMER_16.img();
-			case COSTS:
-				return Images.COSTS_16.img();
-			default:
-				return null;
+		case CONSUMPTION:
+			return Images.CONSUMER_16.img();
+		case COSTS:
+			return Images.COSTS_16.img();
+		case PRODUCTION:
+			return Images.PRODUCER_16.img();
+		case DISTRIBUTION:
+			return Images.PUMP_16.img();
+		default:
+			return null;
 		}
 	}
 
