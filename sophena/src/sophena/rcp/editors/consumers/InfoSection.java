@@ -3,6 +3,7 @@ package sophena.rcp.editors.consumers;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import sophena.db.daos.Dao;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
@@ -30,7 +31,8 @@ class InfoSection {
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit, M.ConsumerInformation);
+		Composite composite = UI.formSection(body, toolkit,
+				M.ConsumerInformation);
 		createNameText(toolkit, composite);
 		createDescriptionText(toolkit, composite);
 		createTypeCombo(composite, toolkit);
@@ -39,7 +41,7 @@ class InfoSection {
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text nt = UI.formText(composite, toolkit, M.Name);
-		if(consumer().getName() != null)
+		if (consumer().getName() != null)
 			nt.setText(consumer().getName());
 		nt.addModifyListener((e) -> {
 			consumer().setName(nt.getText());
@@ -49,7 +51,7 @@ class InfoSection {
 
 	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
 		Text dt = UI.formMultiText(composite, toolkit, M.Description);
-		if(consumer().getDescription() != null)
+		if (consumer().getDescription() != null)
 			dt.setText(consumer().getDescription());
 		dt.addModifyListener((e) -> {
 			consumer().setDescription(dt.getText());
@@ -58,8 +60,8 @@ class InfoSection {
 	}
 
 	private void createTypeCombo(Composite composite, FormToolkit toolkit) {
-		EntityCombo<BuildingType> combo = new EntityCombo<>(M.BuildingType);
-		combo.create(composite, toolkit);
+		EntityCombo<BuildingType> combo = new EntityCombo<>();
+		combo.create(M.BuildingType, composite, toolkit);
 		Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
 		combo.setInput(dao.getAll());
 		combo.select(consumer().getBuildingType());
@@ -70,8 +72,8 @@ class InfoSection {
 	}
 
 	private void createStateCombo(Composite composite, FormToolkit toolkit) {
-		EntityCombo<BuildingState> combo = new EntityCombo<>(M.BuildingState);
-		combo.create(composite, toolkit);
+		EntityCombo<BuildingState> combo = new EntityCombo<>();
+		combo.create(M.BuildingState, composite, toolkit);
 		Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
 		combo.setInput(dao.getAll());
 		combo.select(consumer().getBuildingState());

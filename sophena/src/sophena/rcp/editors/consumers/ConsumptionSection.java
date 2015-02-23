@@ -4,10 +4,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import sophena.model.Consumer;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
+import sophena.rcp.wizards.ConsumptionDataWizard;
 
 class ConsumptionSection {
 
@@ -22,6 +24,10 @@ class ConsumptionSection {
 		return section;
 	}
 
+	private Consumer consumer() {
+		return editor.getConsumer();
+	}
+
 	void create(Composite body, FormToolkit toolkit) {
 		Section section = UI.section(body, toolkit, M.ConsumptionData);
 		Composite composite = UI.sectionClient(section, toolkit);
@@ -30,7 +36,7 @@ class ConsumptionSection {
 
 	private void bindActions(Section section) {
 		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
-
+			ConsumptionDataWizard.open(consumer());
 		});
 		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
 

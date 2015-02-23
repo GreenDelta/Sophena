@@ -29,6 +29,13 @@ public class M extends NLS {
 	public static String ConsumerInformation;
 	public static String NoEmptyNameAllowed;
 	public static String ConsumptionData;
+	public static String CollectConsumptionData;
+	public static String Fuel;
+	public static String ConsumptionPerYear;
+	public static String WaterContent;
+	public static String BoilerEfficiency;
+	public static String UtilisationRate;
+	public static String EfficiencyRate;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

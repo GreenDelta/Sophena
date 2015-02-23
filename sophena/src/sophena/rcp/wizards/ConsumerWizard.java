@@ -3,6 +3,7 @@ package sophena.rcp.wizards;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
@@ -14,6 +15,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
@@ -103,8 +105,8 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 		}
 
 		private void createTypeCombo(Composite composite) {
-			EntityCombo<BuildingType> combo = new EntityCombo<>(M.BuildingType);
-			combo.create(composite);
+			EntityCombo<BuildingType> combo = new EntityCombo<>();
+			combo.create(M.BuildingType, composite);
 			Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
 			List<BuildingType> types = dao.getAll();
 			if (types.isEmpty())
@@ -118,8 +120,8 @@ public class ConsumerWizard extends Wizard implements INewWizard {
 		}
 
 		private void createStateCombo(Composite composite) {
-			EntityCombo<BuildingState> combo = new EntityCombo<>(M.BuildingState);
-			combo.create(composite);
+			EntityCombo<BuildingState> combo = new EntityCombo<>();
+			combo.create(M.BuildingState, composite);
 			Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
 			List<BuildingState> states = dao.getAll();
 			if (states.isEmpty())

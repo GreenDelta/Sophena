@@ -15,23 +15,27 @@ import sophena.model.RootEntity;
 public class EntityCombo<T extends RootEntity> {
 
 	private String label;
-
 	private ComboViewer viewer;
 
-	public EntityCombo(String label) {
+	public void create(String label, Composite parent) {
+		create(label, parent, null);
+	}
+
+	public void create(String label, Composite parent, FormToolkit toolkit) {
 		this.label = label;
-	}
-
-	public void create(Composite parent) {
-		create(parent, null);
-	}
-
-	public void create(Composite parent, FormToolkit toolkit) {
 		Combo combo = null;
 		if(toolkit == null)
 			combo = UI.formCombo(parent, label);
 		else
 			combo = UI.formCombo(parent, toolkit, label);
+		makeViewer(combo);
+	}
+
+	public void create(Combo combo) {
+		makeViewer(combo);
+	}
+
+	private void makeViewer(Combo combo) {
 		viewer = new ComboViewer(combo);
 		viewer.setLabelProvider(new Label());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
