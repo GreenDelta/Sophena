@@ -53,6 +53,8 @@ public class M extends NLS {
 	public static String LoadProfile;
 	public static String LoadProfiles;
 	public static String SelectFile;
+	public static String ProjectInformation;
+	public static String HeatingNetwork;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
