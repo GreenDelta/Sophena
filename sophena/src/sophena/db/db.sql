@@ -4,6 +4,17 @@ CREATE TABLE sophena_version (
 INSERT INTO sophena_version (version) VALUES (1);
 
 
+CREATE TABLE tbl_weather_stations (
+   id CHAR(36),
+   name VARCHAR(255),
+   description CLOB(64 K),
+
+   data BLOB (80 K),
+
+   PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_units (
    id CHAR(36),
    name VARCHAR(255),
@@ -15,7 +26,6 @@ CREATE TABLE tbl_units (
 
    PRIMARY KEY (id)
 );
-
 
 
 CREATE TABLE tbl_fuels (

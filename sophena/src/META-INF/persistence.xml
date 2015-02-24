@@ -13,6 +13,7 @@
         <class>sophena.model.Consumer</class>
 		<class>sophena.model.Project</class>
         <class>sophena.model.Fuel</class>
+        <class>sophena.model.WeatherStation</class>
 
 		<properties>
 			<property name="eclipselink.connection-pool.default.max"

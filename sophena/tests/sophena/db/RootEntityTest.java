@@ -13,6 +13,7 @@ import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Project;
 import sophena.model.RootEntity;
+import sophena.model.WeatherStation;
 
 public class RootEntityTest {
 
@@ -22,7 +23,8 @@ public class RootEntityTest {
 			BuildingType.class,
 			Consumer.class,
 			Fuel.class,
-			Project.class
+			Project.class,
+			WeatherStation.class
 	};
 
 	@Test
