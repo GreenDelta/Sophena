@@ -27,6 +27,7 @@ public class WeatherDataIOTest {
 		dao.insert(station);
 		WeatherStation copy = dao.get(id);
 		Assert.assertArrayEquals(station.getData(), copy.getData(), 1e-10);
+		dao.delete(station);
 	}
 
 }

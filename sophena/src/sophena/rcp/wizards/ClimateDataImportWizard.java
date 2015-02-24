@@ -1,6 +1,8 @@
 package sophena.rcp.wizards;
 
 import java.io.File;
+import java.util.UUID;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -12,9 +14,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sophena.db.daos.Dao;
 import sophena.io.ClimateFileReader;
 import sophena.io.ClimateFileSettings;
 import sophena.model.WeatherStation;
+import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
@@ -37,16 +42,24 @@ public class ClimateDataImportWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		if(page.file == null)
+		if (page.file == null)
 			return false;
 		try {
+			WeatherStation station = page.station;
+			station.setId(UUID.randomUUID().toString());
 			ClimateFileReader reader = new ClimateFileReader(page.file,
 					page.settings);
-			getContainer().run(false, false, (m) -> {
-				m.beginTask("#Importiere", IProgressMonitor.UNKNOWN);
-				reader.run();
-			});
-			System.out.println(reader.getResult().isWithoutError());
+			getContainer().run(false,
+					false,
+					(m) -> {
+						m.beginTask("#Importiere", IProgressMonitor.UNKNOWN);
+						reader.run();
+						station.setData(reader.getResult().getData());
+						// TODO: add error handling
+					Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
+							App.getDb());
+					dao.insert(station);
+				});
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -81,6 +94,7 @@ public class ClimateDataImportWizard extends Wizard {
 		private void createTextFields(Composite comp) {
 			Text t = UI.formText(comp, "#Name");
 			t.setText("Neue Wetterstation");
+			station.setName("Neue Wetterstation");
 			t.addModifyListener((e) -> station.setName(t.getText()));
 			UI.formLabel(comp, "");
 			createStartText(comp);
@@ -118,7 +132,7 @@ public class ClimateDataImportWizard extends Wizard {
 			button.setText("#Auswählen");
 			Controls.onSelect(button, (e) -> {
 				FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-				dialog.setFilterExtensions(new String[]{"*.txt", "*.csv"});
+				dialog.setFilterExtensions(new String[] { "*.txt", "*.csv" });
 				dialog.setText(M.SelectFile);
 				String path = dialog.open();
 				if (path != null) {
