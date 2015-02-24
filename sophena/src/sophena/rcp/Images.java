@@ -21,6 +21,8 @@ public enum Images {
 
 	FILE_16("file_16.png"),
 
+	IMPORT_16("import_16.png"),
+
 	INFO_16("info_16.png"),
 
 	NEW_16("new_16.png"),

@@ -1,6 +1,7 @@
 package sophena.rcp.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -11,11 +12,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.wizards.ClimateDataImportWizard;
 
 public class ClimateDataEditor extends FormEditor {
 
@@ -67,7 +71,15 @@ public class ClimateDataEditor extends FormEditor {
 			TableViewer table = Tables.createViewer(comp, "#Wetterstation",
 					"#Längengrad", "#Breitengrad", "#Normaußentemperatur");
 			Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
+			bindActions(section, table);
 			form.reflow(true);
+		}
+
+		private void bindActions(Section section, TableViewer table) {
+			Action input = Actions.create("#Importieren", Images.IMPORT_16.des(),
+					ClimateDataImportWizard::open);
+			Actions.bind(section, input);
+			Actions.bind(table, input);
 		}
 	}
 }
