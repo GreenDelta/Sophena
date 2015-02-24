@@ -58,6 +58,8 @@ public class M extends NLS {
 	public static String HeatProduction;
 	public static String NewProducer;
 	public static String CreateNewProducer;
+	public static String BaseData;
+	public static String ClimateData;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

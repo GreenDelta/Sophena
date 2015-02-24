@@ -37,7 +37,8 @@
 			allowMultiple="false" 
 			class="sophena.rcp.navigation.Navigator" 
 			id="sophena.Navigator" 
-			name="#Navigation"/>
+			name="Navigation"
+			icon="icons/navigation_16.png"/>
 	</extension>
 	
 	<extension point="org.eclipse.ui.navigator.viewer">
@@ -108,5 +109,11 @@
 			icon="icons/sample.gif" 
 			id="sophena.GraphEditor" 
 			name="GraphEditor"/>
+
+        <editor
+            class="sophena.rcp.editors.ClimateDataEditor"
+            icon="icons/climate_16.png"
+            id="sophena.ClimateDataEditor"
+            name="#Klimadaten" />
 	</extension>
 </plugin>

@@ -7,6 +7,10 @@ public enum Images {
 
 	ADD_16("add_16.png"),
 
+	CHART_WIZ("chart_wiz.png"),
+
+	CLIMATE_16("climate_16.png"),
+
 	CONSUMER_16("consumer_16.png"),
 
 	COSTS_16("costs_16.png"),

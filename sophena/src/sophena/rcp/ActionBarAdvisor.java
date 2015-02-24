@@ -1,7 +1,6 @@
 package sophena.rcp;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -14,9 +13,9 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
+import sophena.rcp.editors.ClimateDataEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.wizards.ProjectWizard;
 
@@ -27,14 +26,11 @@ public class ActionBarAdvisor extends
 	private IWorkbenchAction closeAction;
 	private IWorkbenchAction closeAllAction;
 	private IWorkbenchAction exitAction;
-	private IWorkbenchAction exportAction;
 
-	private IWorkbenchAction importAction;
 	private IWorkbenchAction preferencesAction;
 	private IWorkbenchAction saveAction;
 	private IWorkbenchAction saveAllAction;
 	private IWorkbenchAction saveAsAction;
-	private IContributionItem showViews;
 
 	public ActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -52,28 +48,30 @@ public class ActionBarAdvisor extends
 	@Override
 	protected void fillMenuBar(IMenuManager menu) {
 		super.fillMenuBar(menu);
-		fillProjectMenu(menu);
 		fillFileMenu(menu);
-		fillWindowMenu(menu);
+		fillProjectMenu(menu);
+		fillBaseDataMenu(menu);
 		fillHelpMenu(menu);
 	}
 
 	private void fillProjectMenu(IMenuManager menu) {
-		MenuManager projectMenu = new MenuManager("#Projekt");
-		Action newAction = Actions.create("#Neues Projekt",
-				Images.NEW_PROJECT_16.des(), () -> {
-					ProjectWizard.open();
-				});
+		MenuManager projectMenu = new MenuManager(M.Project);
+		Action newAction = Actions.create(M.NewProject,
+				Images.NEW_PROJECT_16.des(), ProjectWizard::open);
 		projectMenu.add(newAction);
 		menu.add(projectMenu);
 	}
 
+	private void fillBaseDataMenu(IMenuManager menu) {
+		MenuManager dataMenu = new MenuManager(M.BaseData);
+		Action climateData = Actions.create(M.ClimateData,
+				Images.CLIMATE_16.des(), ClimateDataEditor::open);
+		dataMenu.add(climateData);
+		menu.add(dataMenu);
+	}
+
 	private void fillHelpMenu(IMenuManager menuBar) {
-		MenuManager helpMenu = new MenuManager(M.Help,
-				IWorkbenchActionConstants.M_HELP);
-		HelpAction helpAction = new HelpAction();
-		helpMenu.add(helpAction);
-		helpMenu.add(new Separator());
+		MenuManager helpMenu = new MenuManager(M.Help);
 		helpMenu.add(aboutAction);
 		menuBar.add(helpMenu);
 	}
@@ -89,21 +87,8 @@ public class ActionBarAdvisor extends
 		fileMenu.add(closeAllAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(preferencesAction);
-		fileMenu.add(new Separator());
-		fileMenu.add(importAction);
-		fileMenu.add(exportAction);
-		fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
 		menuBar.add(fileMenu);
-	}
-
-	private void fillWindowMenu(IMenuManager menuBar) {
-		MenuManager windowMenu = new MenuManager(M.Window,
-				IWorkbenchActionConstants.M_WINDOW);
-		MenuManager viewMenu = new MenuManager(M.ShowViews);
-		viewMenu.add(showViews);
-		windowMenu.add(viewMenu);
-		menuBar.add(windowMenu);
 	}
 
 	@Override
@@ -114,24 +99,8 @@ public class ActionBarAdvisor extends
 		closeAction = ActionFactory.CLOSE.create(window);
 		closeAllAction = ActionFactory.CLOSE_ALL.create(window);
 		preferencesAction = ActionFactory.PREFERENCES.create(window);
-		importAction = ActionFactory.IMPORT.create(window);
-		exportAction = ActionFactory.EXPORT.create(window);
 		exitAction = ActionFactory.QUIT.create(window);
-		showViews = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 		aboutAction = ActionFactory.ABOUT.create(window);
-	}
-
-	private class HelpAction extends Action {
-
-		public HelpAction() {
-			setText(M.Help);
-			setToolTipText(M.Help);
-			// setImageDescriptor(ImageType.HELP_ICON.getDescriptor());
-		}
-
-		@Override
-		public void run() {
-		}
 	}
 
 }

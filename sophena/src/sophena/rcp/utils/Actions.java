@@ -14,8 +14,23 @@ public class Actions {
 	private Actions() {
 	}
 
+	public static Action create(final String title, final Runnable fn) {
+		return new Action() {
+			{
+				setText(title);
+				setToolTipText(title);
+			}
+
+			@Override
+			public void run() {
+				if (fn != null)
+					fn.run();
+			}
+		};
+	}
+
 	public static Action create(final String title,
-			final ImageDescriptor image, final Runnable runnable) {
+			final ImageDescriptor image, final Runnable fn) {
 		return new Action() {
 			{
 				setText(title);
@@ -25,7 +40,8 @@ public class Actions {
 
 			@Override
 			public void run() {
-				runnable.run();
+				if (fn != null)
+					fn.run();
 			}
 		};
 	}
