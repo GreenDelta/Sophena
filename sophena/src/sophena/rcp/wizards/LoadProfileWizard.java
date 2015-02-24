@@ -115,12 +115,14 @@ public class LoadProfileWizard extends Wizard {
 			g.setShowLegend(false);
 			CircularBufferDataProvider provider = new CircularBufferDataProvider(
 					true);
+			provider.setBufferSize(8760);
 			provider.setCurrentYDataArray(data);
 			Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 					provider);
 			trace.setPointStyle(Trace.PointStyle.NONE);
 			g.addTrace(trace);
-			g.getXAxisList().get(0).setVisible(false);
+			g.primaryXAxis.setVisible(false);
+			g.primaryXAxis.setRange(0, 8760);
 			formatY(g, data);
 		}
 

@@ -5,7 +5,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -45,7 +44,7 @@ class ClimateDataChart extends Dialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(800, 300);
+		return new Point(1200, 300);
 	}
 
 	private void createChart(Canvas canvas) {
@@ -56,13 +55,15 @@ class ClimateDataChart extends Dialog {
 		g.setShowLegend(false);
 		CircularBufferDataProvider provider = new CircularBufferDataProvider(
 				true);
+		provider.setBufferSize(8760);
 		provider.setCurrentYDataArray(station.getData());
+		provider.setConcatenate_data(false);
 		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 				provider);
-		trace.setTraceType(TraceType.LINE_AREA);
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		g.addTrace(trace);
 		g.getXAxisList().get(0).setVisible(false);
+		g.primaryXAxis.setRange(0, 8760);
 		formatY(g);
 	}
 
