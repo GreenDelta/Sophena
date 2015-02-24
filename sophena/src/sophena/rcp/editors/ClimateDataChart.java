@@ -5,6 +5,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -13,16 +14,18 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+
 import sophena.model.Statistics;
 import sophena.model.WeatherStation;
 
-class ClimateDataChart extends Dialog{
+class ClimateDataChart extends Dialog {
 
 	private WeatherStation station;
 
 	public ClimateDataChart(Shell parentShell, WeatherStation station) {
 		super(parentShell);
 		this.station = station;
+		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX | SWT.MIN);
 	}
 
 	@Override
@@ -56,6 +59,7 @@ class ClimateDataChart extends Dialog{
 		provider.setCurrentYDataArray(station.getData());
 		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 				provider);
+		trace.setTraceType(TraceType.LINE_AREA);
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		g.addTrace(trace);
 		g.getXAxisList().get(0).setVisible(false);
@@ -67,7 +71,7 @@ class ClimateDataChart extends Dialog{
 		double min = Statistics.min(station.getData());
 		Axis y = g.getYAxisList().get(0);
 		y.setTitle("°C");
-		y.setRange(min-2, max+2);
+		y.setRange(min - 2, max + 2);
 		y.setTitleFont(y.getFont());
 	}
 

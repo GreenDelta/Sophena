@@ -89,8 +89,8 @@ public class ClimateFileReader implements Runnable {
 			if (idx < 0)
 				continue;
 			Double val = getValue(row);
-			if (val == null) {
-				log.warn("invalid temperature format at row {}", rowNum);
+			if (val == null || val < -100 || val > 100) {
+				log.warn("invalid temperature {} at row {}", val, rowNum);
 				result.setWithoutError(false);
 				continue;
 			}
