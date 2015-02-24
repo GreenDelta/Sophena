@@ -2,6 +2,9 @@ package sophena.rcp;
 
 import java.io.File;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -32,6 +35,11 @@ public class Activator extends AbstractUIPlugin {
 				log.error("database initialization failed", e);
 			}
 		});
+		// TODO: add log file etc
+		org.apache.log4j.Logger log = org.apache.log4j.Logger.getRootLogger();
+		log.setLevel(Level.ALL);
+		log.addAppender(new ConsoleAppender(new PatternLayout(
+				"%-4r %-5p %c %x - %m%n")));
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

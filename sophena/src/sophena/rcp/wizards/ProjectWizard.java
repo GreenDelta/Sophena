@@ -7,6 +7,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
@@ -20,6 +21,7 @@ import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard implements INewWizard {
@@ -85,10 +87,14 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
 			nameText = UI.formText(composite, M.Name);
+			nameText.setBackground(Colors
+					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 			nameText.setText(M.NewProject);
 			descriptionText = UI.formMultiText(composite, M.Description);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
 			timeText.setText("5");
+			timeText.setBackground(Colors
+					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 		}
 
 		private Project getProject() {

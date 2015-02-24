@@ -5,7 +5,7 @@ public class ClimateFileSettings {
 	private String separator = ";";
 	private int dateColumn = 1;
 	private int temperatureColumn = 5;
-	private int startYear = 1993;
+	private int startYear = 1994;
 	private int endYear = 2013;
 
 	public static ClimateFileSettings getDefault() {

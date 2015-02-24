@@ -6,8 +6,10 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.model.Statistics;
 
 public class ClimateFileReader implements Runnable {
@@ -43,7 +45,7 @@ public class ClimateFileReader implements Runnable {
 	public void run() {
 		setUp();
 		try (Reader reader = new FileReader(file);
-		     BufferedReader buffer = new BufferedReader(reader)) {
+				BufferedReader buffer = new BufferedReader(reader)) {
 			readLines(buffer);
 		} catch (Exception e) {
 			log.error("failed to reade climate file", e);
@@ -70,6 +72,9 @@ public class ClimateFileReader implements Runnable {
 		String line;
 		int rowNum = 1;
 		while ((line = buffer.readLine()) != null) {
+			rowNum++;
+			if (!line.contains(settings.getSeparator()))
+				continue;
 			String[] row = line.split(settings.getSeparator());
 			String date = getDate(row);
 			if (date == null) {
@@ -97,7 +102,7 @@ public class ClimateFileReader implements Runnable {
 	private Double getValue(String[] row) {
 		if (row == null)
 			return null;
-		if(settings.getTemperatureColumn() >= row.length)
+		if (settings.getTemperatureColumn() >= row.length)
 			return null;
 		String val = row[settings.getTemperatureColumn()].trim();
 		try {
@@ -154,9 +159,9 @@ public class ClimateFileReader implements Runnable {
 	}
 
 	private Map<String, Integer> createIndex() {
-		String[] months = {"01", "02", "03", "04", "05", "06",
-				"07", "08", "09", "10", "11", "12"};
-		int[] days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		String[] months = { "01", "02", "03", "04", "05", "06",
+				"07", "08", "09", "10", "11", "12" };
+		int[] days = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 		Map<String, Integer> index = new HashMap<>(8760);
 		int idx = 0;
 		for (int month = 0; month < months.length; month++) {
