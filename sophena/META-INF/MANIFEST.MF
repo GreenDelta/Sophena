@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.event,
  org.eclipse.equinox.util,
  org.eclipse.gef,
- org.eclipse.ui.navigator
+ org.eclipse.ui.navigator,
+ org.eclipse.nebula.visualization.xygraph
 Bundle-ClassPath: .,
  libs/commons-io-2.4.jar,
  libs/gson-2.3.1.jar,

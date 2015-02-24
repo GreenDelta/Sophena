@@ -1,16 +1,27 @@
 package sophena.rcp.wizards;
 
+import java.io.File;
+
+import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
+import org.eclipse.nebula.visualization.xygraph.figures.Axis;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace;
+import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sophena.io.HoursProfile;
 import sophena.model.Consumer;
+import sophena.model.Statistics;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
@@ -46,6 +57,8 @@ public class LoadProfileWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
+		private Canvas canvas;
+
 		private Page() {
 			super("LoadProfileWizardPage", M.LoadProfile, null);
 		}
@@ -58,6 +71,7 @@ public class LoadProfileWizard extends Wizard {
 			createNameText(composite);
 			createDescriptionText(composite);
 			createFileSection(composite);
+			createChartCanvas(composite);
 		}
 
 		private void createNameText(Composite composite) {
@@ -77,10 +91,46 @@ public class LoadProfileWizard extends Wizard {
 			button.setText(M.SelectFile);
 			Controls.onSelect(button, (e) -> {
 				FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-				dialog.setFilterExtensions(new String[] {"*.csv", "*.txt"});
+				dialog.setFilterExtensions(new String[] { "*.txt", "*.csv" });
 				dialog.setText(M.SelectFile);
-				dialog.open();
+				String path = dialog.open();
+				if (path != null) {
+					double[] data = HoursProfile.read(new File(path));
+					createChart(data);
+				}
 			});
+		}
+
+		private void createChartCanvas(Composite composite) {
+			UI.formLabel(composite, "");
+			canvas = new Canvas(composite, SWT.NONE);
+			UI.gridData(canvas, true, true);
+		}
+
+		private void createChart(double[] data) {
+			LightweightSystem lws = new LightweightSystem(canvas);
+			XYGraph g = new XYGraph();
+			lws.setContents(g);
+			g.setShowTitle(false);
+			g.setShowLegend(false);
+			CircularBufferDataProvider provider = new CircularBufferDataProvider(
+					true);
+			provider.setCurrentYDataArray(data);
+			Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
+					provider);
+			trace.setPointStyle(Trace.PointStyle.NONE);
+			g.addTrace(trace);
+			g.getXAxisList().get(0).setVisible(false);
+			formatY(g, data);
+		}
+
+		private void formatY(XYGraph g, double[] data) {
+			double max = Statistics.max(data);
+			max = Statistics.nextStep(max, 5);
+			Axis y = g.getYAxisList().get(0);
+			y.setTitle("kW");
+			y.setRange(0, max);
+			y.setTitleFont(y.getFont());
 		}
 	}
 }
