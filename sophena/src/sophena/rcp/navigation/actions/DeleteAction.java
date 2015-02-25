@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProjectDao;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.M;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProjectElement;
@@ -16,7 +17,7 @@ public class DeleteAction extends NavigationAction {
 	private NavigationElement elem;
 
 	public DeleteAction() {
-		setText("#Löschen");
+		setText(M.Delete);
 		setImageDescriptor(Images.DELETE_16.des());
 	}
 

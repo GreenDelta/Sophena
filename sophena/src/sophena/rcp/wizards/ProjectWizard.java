@@ -10,7 +10,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,7 @@ import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-public class ProjectWizard extends Wizard implements INewWizard {
-
-	private static final String ID = "sophena.ProjectWizard";
+public class ProjectWizard extends Wizard {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -44,12 +41,6 @@ public class ProjectWizard extends Wizard implements INewWizard {
 			Logger log = LoggerFactory.getLogger(ProjectWizard.class);
 			log.error("failed to create project", e);
 		}
-	}
-
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle(M.CreateNewProject);
-		// TODO: set project image
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Strings;
 
-class FacilityElement implements NavigationElement {
+public class FacilityElement implements NavigationElement {
 
 	private StructureElement parent;
 	private Facility facility;
