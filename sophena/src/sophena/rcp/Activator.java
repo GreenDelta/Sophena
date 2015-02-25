@@ -25,21 +25,19 @@ public class Activator extends AbstractUIPlugin {
 
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		Rcp.run("initialize database", () -> {
-			try {
-				File workspace = Rcp.getWorkspace();
-				File dbDir = new File(workspace, "database");
-				Database db = new Database(dbDir);
-				App.init(db);
-			} catch (Exception e) {
-				log.error("database initialization failed", e);
-			}
-		});
 		// TODO: add log file etc
 		org.apache.log4j.Logger log = org.apache.log4j.Logger.getRootLogger();
 		log.setLevel(Level.ALL);
 		log.addAppender(new ConsoleAppender(new PatternLayout(
 				"%-4r %-5p %c %x - %m%n")));
+		try {
+			File workspace = Rcp.getWorkspace();
+			File dbDir = new File(workspace, "database");
+			Database db = new Database(dbDir);
+			App.init(db);
+		} catch (Exception e) {
+			log.error("database initialization failed", e);
+		}
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

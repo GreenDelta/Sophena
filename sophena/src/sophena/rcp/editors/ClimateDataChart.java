@@ -44,7 +44,7 @@ class ClimateDataChart extends Dialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(1200, 300);
+		return new Point(800, 300);
 	}
 
 	private void createChart(Canvas canvas) {
