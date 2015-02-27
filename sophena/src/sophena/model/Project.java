@@ -2,6 +2,7 @@ package sophena.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,12 +19,19 @@ public class Project extends RootEntity {
 	@Column(name = "project_duration")
 	private int projectDuration;
 
+	@Column(name = "is_variant")
+	private boolean variant;
+
 	@Transient
 	private final List<Producer> producers = new ArrayList<>();
 
-	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
 	private final List<Consumer> consumers = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
+	private final List<Project> variants = new ArrayList<>();
 
 	@Transient
 	private final List<Pump> pumps = new ArrayList<>();
@@ -66,5 +74,30 @@ public class Project extends RootEntity {
 
 	public void setProjectDuration(int projectDuration) {
 		this.projectDuration = projectDuration;
+	}
+
+	public List<Project> getVariants() {
+		return variants;
+	}
+
+	public boolean isVariant() {
+		return variant;
+	}
+
+	public void setVariant(boolean variant) {
+		this.variant = variant;
+	}
+
+	@Override
+	public Project clone() {
+		Project clone = new Project();
+		clone.setId(UUID.randomUUID().toString());
+		clone.setName(this.getName());
+		clone.setDescription(this.getDescription());
+		clone.setProjectDuration(this.getProjectDuration());
+		for(Consumer consumer : this.getConsumers())
+				clone.getConsumers().add(consumer.clone());
+		// TODO: clone other elements
+		return clone;
 	}
 }

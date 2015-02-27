@@ -90,7 +90,10 @@ CREATE TABLE tbl_projects (
     id CHAR(36),
     name VARCHAR(255),
     description CLOB(64 K),
+
+    is_variant BOOLEAN,
 	project_duration INTEGER,
+	f_project CHAR(36),
 
     PRIMARY KEY (id)
 );

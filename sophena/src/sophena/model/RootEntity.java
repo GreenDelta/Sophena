@@ -27,4 +27,5 @@ public abstract class RootEntity extends AbstractEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 }
