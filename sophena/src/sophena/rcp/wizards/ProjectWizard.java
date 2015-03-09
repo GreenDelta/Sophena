@@ -1,8 +1,6 @@
 package sophena.rcp.wizards;
 
 import java.util.UUID;
-
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -10,10 +8,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.rcp.App;
@@ -78,12 +74,11 @@ public class ProjectWizard extends Wizard {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
 			nameText = UI.formText(composite, M.Name);
-			nameText.setBackground(Colors
-					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+			nameText.setBackground(Colors.forRequiredField());
 			nameText.setText(M.NewProject);
 			descriptionText = UI.formMultiText(composite, M.Description);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
-			timeText.setText("5");
+			timeText.setText("20");
 			timeText.setBackground(Colors
 					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 		}

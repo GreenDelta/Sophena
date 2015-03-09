@@ -105,6 +105,9 @@ CREATE TABLE tbl_consumers (
    name VARCHAR(255),
    description CLOB(64 K),
 
+   demand_based BOOLEAN,
+   heating_load DOUBLE,
+
    graph_x INTEGER,
    graph_y INTEGER,
 

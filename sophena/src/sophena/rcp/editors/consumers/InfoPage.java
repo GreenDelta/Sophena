@@ -30,9 +30,10 @@ class InfoPage extends FormPage {
 		Composite body = UI.formBody(form, toolkit);
 		InfoSection.of(editor).create(body, toolkit);
 		createAddressSection(body, toolkit);
-		ConsumptionSection.of(editor).create(body, toolkit);
-		BaseLoadSection.of(editor).create(body, toolkit);
-		LoadProfileSection.of(editor).create(body, toolkit);
+		if(!consumer().isDemandBased()) {
+			ConsumptionSection.of(editor).create(body, toolkit);
+			LoadProfileSection.of(editor).create(body, toolkit);
+		}
 		form.reflow(true);
 	}
 

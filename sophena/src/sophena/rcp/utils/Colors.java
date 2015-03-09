@@ -69,6 +69,10 @@ public class Colors {
 		return display.getSystemColor(swt);
 	}
 
+	public static Color forRequiredField() {
+		return display.getSystemColor(SWT.COLOR_INFO_BACKGROUND);
+	}
+
 	private static class ShutDown implements IWorkbenchListener {
 		@Override
 		public boolean preShutdown(IWorkbench workbench, boolean forced) {

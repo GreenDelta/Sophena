@@ -160,6 +160,10 @@ public class UI {
 		return gridLayout(composite, columns, 10, 10);
 	}
 
+	public static GridLayout innerGrid(Composite composite, int columns) {
+		return gridLayout(composite, columns, 5, 0);
+	}
+
 	public static GridLayout gridLayout(Composite composite, int columns,
 			int spacing, int margin) {
 		final GridLayout layout = new GridLayout(columns, false);

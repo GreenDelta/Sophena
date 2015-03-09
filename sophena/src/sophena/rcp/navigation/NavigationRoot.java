@@ -23,8 +23,10 @@ public class NavigationRoot implements NavigationElement {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			childs = new ArrayList<>();
-			for (Project p : dao.getAll())
-				childs.add(new ProjectElement(this, p));
+			for (Project p : dao.getAll()) {
+				if (!p.isVariant())
+					childs.add(new ProjectElement(this, p));
+			}
 			return childs;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());

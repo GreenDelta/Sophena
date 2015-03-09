@@ -1,7 +1,6 @@
 package sophena.rcp.utils;
 
 import java.util.function.Consumer;
-
 import org.eclipse.swt.widgets.Text;
 
 public final class Texts {
@@ -27,4 +26,5 @@ public final class Texts {
 			}
 		});
 	}
+
 }

@@ -21,8 +21,11 @@ import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.Numbers;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
@@ -74,6 +77,7 @@ public class ConsumerWizard extends Wizard {
 			consumer = new Consumer();
 			consumer.setId(UUID.randomUUID().toString());
 			consumer.setName(M.NewConsumer);
+			consumer.setDemandBased(false);
 		}
 
 		@Override
@@ -81,6 +85,7 @@ public class ConsumerWizard extends Wizard {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
 			Text nt = UI.formText(composite, M.Name);
+			nt.setBackground(Colors.forRequiredField());
 			nt.setText(consumer.getName());
 			nt.addModifyListener((e) -> {
 				consumer.setName(nt.getText());
@@ -127,10 +132,25 @@ public class ConsumerWizard extends Wizard {
 			UI.formLabel(composite, "");
 			Button consumption = new Button(composite, SWT.RADIO);
 			consumption.setText(M.ConsumptionBasedCalculation);
+			consumption.setSelection(true);
 			UI.formLabel(composite, "");
 			Button demand = new Button(composite, SWT.RADIO);
 			demand.setText(M.DemandBasedCalculation);
-			// TODO: add data binding
+			UI.formLabel(composite, "");
+			Composite inner = new Composite(composite, SWT.NONE);
+			UI.innerGrid(inner, 2);
+			Text text = UI.formText(inner, M.HeatingLoad);
+			text.addModifyListener((e) ->
+				consumer.setHeatingLoad(Numbers.read(text.getText())));
+			inner.setVisible(false);
+			Controls.onSelect(consumption, (e) -> {
+				consumer.setDemandBased(false);
+				inner.setVisible(false);
+			});
+			Controls.onSelect(demand, (e) -> {
+				consumer.setDemandBased(true);
+				inner.setVisible(true);
+			});
 		}
 
 		private void validate() {

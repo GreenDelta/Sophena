@@ -3,6 +3,7 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -20,6 +21,12 @@ public class Consumer extends Facility {
 	@OneToOne
 	@JoinColumn(name = "f_building_type")
 	private BuildingType buildingType;
+
+	@Column(name = "demand_based")
+	private boolean demandBased;
+
+	@Column(name = "heating_load")
+	private double heatingLoad;
 
 	@Transient
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
@@ -42,6 +49,22 @@ public class Consumer extends Facility {
 
 	public List<LoadProfile> getLoadProfiles() {
 		return loadProfiles;
+	}
+
+	public boolean isDemandBased() {
+		return demandBased;
+	}
+
+	public void setDemandBased(boolean demandBased) {
+		this.demandBased = demandBased;
+	}
+
+	public double getHeatingLoad() {
+		return heatingLoad;
+	}
+
+	public void setHeatingLoad(double heatingLoad) {
+		this.heatingLoad = heatingLoad;
 	}
 
 	@Override
