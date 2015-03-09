@@ -29,18 +29,11 @@ class InfoPage extends FormPage {
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		InfoSection.of(editor).create(body, toolkit);
-		createAddressSection(body, toolkit);
+		HeatDemandSection.of(editor).create(body, toolkit);
 		if(!consumer().isDemandBased()) {
 			ConsumptionSection.of(editor).create(body, toolkit);
 			LoadProfileSection.of(editor).create(body, toolkit);
 		}
 		form.reflow(true);
-	}
-
-	private void createAddressSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit, M.Address);
-		UI.formText(composite, toolkit, M.Street);
-		UI.formText(composite, toolkit, M.ZipCode);
-		UI.formText(composite, toolkit, M.City);
 	}
 }

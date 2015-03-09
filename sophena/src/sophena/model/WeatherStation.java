@@ -14,12 +14,23 @@ import javax.persistence.Transient;
 @Table(name = "tbl_weather_stations")
 public class WeatherStation extends RootEntity {
 
+	@Column(name = "norm_temperature")
+	private double normTemperature;
+
 	@Lob
 	@Column(name = "data")
 	private byte[] bytes;
 
 	@Transient
 	private double[] data;
+
+	public double getNormTemperature() {
+		return normTemperature;
+	}
+
+	public void setNormTemperature(double normTemperature) {
+		this.normTemperature = normTemperature;
+	}
 
 	public double[] getData() {
 		return data;

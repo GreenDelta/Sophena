@@ -76,6 +76,7 @@ public class ConsumerEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(new InfoPage(this));
+			addPage(new LocationPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}

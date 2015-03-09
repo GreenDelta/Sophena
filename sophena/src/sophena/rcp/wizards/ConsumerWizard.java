@@ -78,6 +78,8 @@ public class ConsumerWizard extends Wizard {
 			consumer.setId(UUID.randomUUID().toString());
 			consumer.setName(M.NewConsumer);
 			consumer.setDemandBased(false);
+			consumer.setWaterFraction(10);
+			consumer.setHeatingLimit(15);
 		}
 
 		@Override

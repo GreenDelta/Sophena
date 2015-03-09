@@ -28,6 +28,15 @@ public class Consumer extends Facility {
 	@Column(name = "heating_load")
 	private double heatingLoad;
 
+	@Column(name = "water_fraction")
+	private double waterFraction;
+
+	@Column(name = "load_hours")
+	private int loadHours;
+
+	@Column(name = "heating_limit")
+	private double heatingLimit;
+
 	@Transient
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
 
@@ -67,6 +76,30 @@ public class Consumer extends Facility {
 		this.heatingLoad = heatingLoad;
 	}
 
+	public double getWaterFraction() {
+		return waterFraction;
+	}
+
+	public void setWaterFraction(double waterFraction) {
+		this.waterFraction = waterFraction;
+	}
+
+	public void setLoadHours(int loadHours) {
+		this.loadHours = loadHours;
+	}
+
+	public int getLoadHours() {
+		return loadHours;
+	}
+
+	public double getHeatingLimit() {
+		return heatingLimit;
+	}
+
+	public void setHeatingLimit(double heatingLimit) {
+		this.heatingLimit = heatingLimit;
+	}
+
 	@Override
 	public Consumer clone() {
 		Consumer clone = new Consumer();
@@ -75,6 +108,10 @@ public class Consumer extends Facility {
 		clone.setDescription(this.getDescription());
 		clone.setBuildingState(this.getBuildingState());
 		clone.setBuildingType(this.getBuildingType());
+		clone.setDemandBased(this.isDemandBased());
+		clone.setHeatingLoad(this.getHeatingLoad());
+		clone.setWaterFraction(this.getWaterFraction());
+		clone.setLoadHours(getLoadHours());
 		return clone;
 	}
 }
