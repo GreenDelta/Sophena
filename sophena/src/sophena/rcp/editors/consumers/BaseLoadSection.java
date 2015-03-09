@@ -49,9 +49,10 @@ class BaseLoadSection {
 		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
 			BaseLoadWizard.open(consumer());
 		});
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
+		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
+				() -> {
 
-		});
+				});
 		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> {
 
 		});

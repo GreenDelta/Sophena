@@ -24,7 +24,7 @@ public class EntityCombo<T extends RootEntity> {
 	public void create(String label, Composite parent, FormToolkit toolkit) {
 		this.label = label;
 		Combo combo = null;
-		if(toolkit == null)
+		if (toolkit == null)
 			combo = UI.formCombo(parent, label);
 		else
 			combo = UI.formCombo(parent, toolkit, label);
@@ -56,7 +56,7 @@ public class EntityCombo<T extends RootEntity> {
 	}
 
 	public void select(T entity) {
-		if(entity == null)
+		if (entity == null)
 			return;
 		viewer.setSelection(new StructuredSelection(entity));
 	}

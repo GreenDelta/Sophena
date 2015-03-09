@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+
 /**
  * A helper class for creating tables, table viewers and related resources.
  */
@@ -44,6 +45,7 @@ public class Tables {
 		UI.gridData(table, true, true).minimumHeight = 150;
 		return viewer;
 	}
+
 	public static void createColumns(Table table, String[] labels) {
 		for (String label : labels) {
 			TableColumn c = new TableColumn(table, SWT.NULL);
@@ -56,6 +58,7 @@ public class Tables {
 	public static void bindColumnWidths(TableViewer viewer, double... percents) {
 		bindColumnWidths(viewer.getTable(), percents);
 	}
+
 	/**
 	 * Binds the given percentage values (values between 0 and 1) to the column
 	 * widths of the given table
@@ -80,6 +83,7 @@ public class Tables {
 			}
 		});
 	}
+
 	public static <T> void makeSortable(Class<T> contentType,
 			TableViewer viewer, ITableLabelProvider labelProvider, int... cols) {
 		TableColumnSorter<?>[] sorters = new TableColumnSorter<?>[cols.length];
@@ -89,6 +93,7 @@ public class Tables {
 		}
 		registerSorters(viewer, sorters);
 	}
+
 	public static void registerSorters(final TableViewer viewer,
 			TableColumnSorter<?>... sorters) {
 		if (viewer == null || sorters == null)
@@ -116,6 +121,7 @@ public class Tables {
 			});
 		}
 	}
+
 	/** Add an event handler for double clicks on the given table viewer. */
 	public static void onDoubleClick(TableViewer viewer,
 			Consumer<MouseEvent> handler) {
@@ -128,6 +134,7 @@ public class Tables {
 			}
 		});
 	}
+
 	/**
 	 * Get the table item where the given event occurred. Returns null if the
 	 * event occurred in the empty table area.
@@ -140,6 +147,7 @@ public class Tables {
 			return null;
 		return table.getItem(new Point(event.x, event.y));
 	}
+
 	public static void onDeletePressed(TableViewer viewer,
 			Consumer<Event> handler) {
 		if (viewer == null || viewer.getTable() == null || handler == null)

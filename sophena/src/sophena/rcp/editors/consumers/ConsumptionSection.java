@@ -39,7 +39,8 @@ class ConsumptionSection {
 	}
 
 	private TableViewer createTable(Composite composite, FormToolkit toolkit) {
-		TableViewer table = Tables.createViewer(composite, M.Fuel, M.Consumption,
+		TableViewer table = Tables.createViewer(composite, M.Fuel,
+				M.Consumption,
 				M.BoilerEfficiency, M.DeliveredHeat);
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
 		return table;
@@ -49,9 +50,10 @@ class ConsumptionSection {
 		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
 			ConsumptionDataWizard.open(consumer());
 		});
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
+		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
+				() -> {
 
-		});
+				});
 		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> {
 
 		});

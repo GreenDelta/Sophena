@@ -57,7 +57,7 @@ public class FacilityElement implements NavigationElement {
 
 	@Override
 	public void update() {
-		if(facility instanceof Consumer) {
+		if (facility instanceof Consumer) {
 			Dao<Consumer> dao = new Dao<>(Consumer.class, App.getDb());
 			facility = dao.get(facility.getId());
 		}

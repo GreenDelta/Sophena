@@ -37,7 +37,6 @@ public class ClimateDataEditor extends FormEditor {
 		Editors.open(input, "sophena.ClimateDataEditor");
 	}
 
-
 	@Override
 	protected void addPages() {
 		try {
@@ -62,10 +61,12 @@ public class ClimateDataEditor extends FormEditor {
 
 	private class Page extends FormPage {
 
-		private Dao<WeatherStation> dao = new Dao<>(WeatherStation.class, App.getDb());
+		private Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
+				App.getDb());
 
 		public Page() {
-			super(ClimateDataEditor.this, "ClimateDataEditor.Page", M.ClimateData);
+			super(ClimateDataEditor.this, "ClimateDataEditor.Page",
+					M.ClimateData);
 		}
 
 		@Override
@@ -87,18 +88,23 @@ public class ClimateDataEditor extends FormEditor {
 		}
 
 		private void bindActions(Section section, TableViewer table) {
-			Action input = Actions.create("#Importieren", Images.IMPORT_16.des(),
+			Action input = Actions.create("#Importieren",
+					Images.IMPORT_16.des(),
 					() -> {
 						ClimateDataImportWizard.open();
 						table.setInput(dao.getAll());
 					});
-			Action open = Actions.create("#Öffnen", Images.OPEN_16.des(), () -> {
-				WeatherStation s = Viewers.getFirstSelected(table);
-				if(s == null)
-					return;
-				ClimateDataChart chart = new ClimateDataChart(UI.shell(), s);
-				chart.open();
-			});
+			Action open = Actions.create(
+					"#Öffnen",
+					Images.OPEN_16.des(),
+					() -> {
+						WeatherStation s = Viewers.getFirstSelected(table);
+						if (s == null)
+							return;
+						ClimateDataChart chart = new ClimateDataChart(UI
+								.shell(), s);
+						chart.open();
+					});
 			Actions.bind(section, input, open);
 			Actions.bind(table, input, open);
 		}

@@ -30,24 +30,24 @@ public class AddAction extends NavigationAction {
 
 	private String getText(int type) {
 		switch (type) {
-			case StructureElement.CONSUMPTION:
-				return M.NewConsumer;
-			case StructureElement.PRODUCTION:
-				return M.NewProducer;
-			default:
-				return "#Neu";
+		case StructureElement.CONSUMPTION:
+			return M.NewConsumer;
+		case StructureElement.PRODUCTION:
+			return M.NewProducer;
+		default:
+			return "#Neu";
 		}
 	}
 
 	@Override
 	public void run() {
 		switch (elem.getType()) {
-			case StructureElement.PRODUCTION:
-				ProducerWizard.open(elem.getProject());
-				break;
-			case StructureElement.CONSUMPTION:
-				ConsumerWizard.open(elem.getProject());
-				break;
+		case StructureElement.PRODUCTION:
+			ProducerWizard.open(elem.getProject());
+			break;
+		case StructureElement.CONSUMPTION:
+			ConsumerWizard.open(elem.getProject());
+			break;
 		}
 	}
 }

@@ -44,8 +44,8 @@ public class ConsumerEditor extends FormEditor {
 	}
 
 	private Consumer findConsumer(Project project, String consumerKey) {
-		for(Consumer c : project.getConsumers()) {
-			if(Objects.equals(consumerKey, c.getId()))
+		for (Consumer c : project.getConsumers()) {
+			if (Objects.equals(consumerKey, c.getId()))
 				return c;
 		}
 		log.error("did not found consumer {} in {}", consumerKey, project);
@@ -61,7 +61,7 @@ public class ConsumerEditor extends FormEditor {
 	}
 
 	public void setDirty() {
-		if(dirty)
+		if (dirty)
 			return;
 		dirty = true;
 		editorDirtyStateChanged();
@@ -83,18 +83,18 @@ public class ConsumerEditor extends FormEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		 try {
-			 log.info("update consumer {} in project {}", consumer, project);
-			 ProjectDao dao = new ProjectDao(App.getDb());
-			 project = dao.update(project);
-			 consumer = findConsumer(project, consumer.getId());
-			 dirty = false;
-			 setPartName(consumer.getName());
-			 Navigator.refresh(consumer);
-			 editorDirtyStateChanged();
-		 } catch (Exception e) {
-			 log.error("failed to update project " + project, e);
-		 }
+		try {
+			log.info("update consumer {} in project {}", consumer, project);
+			ProjectDao dao = new ProjectDao(App.getDb());
+			project = dao.update(project);
+			consumer = findConsumer(project, consumer.getId());
+			dirty = false;
+			setPartName(consumer.getName());
+			Navigator.refresh(consumer);
+			editorDirtyStateChanged();
+		} catch (Exception e) {
+			log.error("failed to update project " + project, e);
+		}
 	}
 
 	@Override

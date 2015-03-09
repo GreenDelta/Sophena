@@ -63,6 +63,7 @@ public class M extends NLS {
 
 	public static String Open;
 	public static String Delete;
+	public static String Variants;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

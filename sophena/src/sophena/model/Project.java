@@ -29,8 +29,8 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_project")
 	private final List<Consumer> consumers = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Project> variants = new ArrayList<>();
 
 	@Transient
@@ -95,8 +95,8 @@ public class Project extends RootEntity {
 		clone.setName(this.getName());
 		clone.setDescription(this.getDescription());
 		clone.setProjectDuration(this.getProjectDuration());
-		for(Consumer consumer : this.getConsumers())
-				clone.getConsumers().add(consumer.clone());
+		for (Consumer consumer : this.getConsumers())
+			clone.getConsumers().add(consumer.clone());
 		// TODO: clone other elements
 		return clone;
 	}

@@ -16,6 +16,7 @@ public class StructureElement implements NavigationElement {
 	public static final int DISTRIBUTION = 1;
 	public static final int CONSUMPTION = 2;
 	public static final int COSTS = 3;
+	public static final int VARIANTS = 4;
 
 	private final int type;
 	private final ProjectElement parent;
@@ -44,7 +45,17 @@ public class StructureElement implements NavigationElement {
 		childs = new ArrayList<>();
 		if (type == CONSUMPTION)
 			addConsumers(childs);
+		if (type == VARIANTS)
+			addVariants(childs);
 		return childs;
+	}
+
+	private void addVariants(List<NavigationElement> childs) {
+		Project p = getProject();
+		if (p == null)
+			return;
+		for (Project v : p.getVariants())
+			childs.add(new ProjectElement(this, v));
 	}
 
 	private void addConsumers(List<NavigationElement> childs) {
@@ -72,6 +83,8 @@ public class StructureElement implements NavigationElement {
 			return M.HeatUsage;
 		case COSTS:
 			return M.Costs;
+		case VARIANTS:
+			return M.Variants;
 		default:
 			return M.Unknown;
 		}
@@ -109,6 +122,8 @@ public class StructureElement implements NavigationElement {
 			return Images.PRODUCER_16.img();
 		case DISTRIBUTION:
 			return Images.PUMP_16.img();
+		case VARIANTS:
+			return Images.PROJECT_16.img();
 		default:
 			return null;
 		}

@@ -1,6 +1,7 @@
 package sophena.rcp.utils;
 
 import java.util.function.Consumer;
+
 import org.eclipse.swt.widgets.Text;
 
 public final class Texts {
@@ -9,12 +10,12 @@ public final class Texts {
 	}
 
 	public static void onInt(Text text, Consumer<Integer> fn) {
-		if(text == null || fn == null)
+		if (text == null || fn == null)
 			return;
 		text.addModifyListener((e) -> {
 			try {
 				String t = text.getText().trim();
-				if(t.isEmpty())
+				if (t.isEmpty())
 					fn.accept(null);
 				else
 					fn.accept(Integer.parseInt(t, 10));

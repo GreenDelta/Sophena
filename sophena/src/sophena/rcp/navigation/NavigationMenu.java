@@ -9,6 +9,7 @@ import sophena.rcp.navigation.actions.AddAction;
 import sophena.rcp.navigation.actions.DeleteAction;
 import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
+import sophena.rcp.navigation.actions.NewVariantAction;
 import sophena.rcp.navigation.actions.OpenAction;
 import sophena.rcp.utils.Viewers;
 
@@ -17,6 +18,7 @@ public class NavigationMenu extends CommonActionProvider {
 	private NavigationAction[] menuActions = {
 			new AddAction(),
 			new OpenAction(),
+			new NewVariantAction(),
 			new DeleteAction()
 	};
 

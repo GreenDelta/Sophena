@@ -2,39 +2,48 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.swt.graphics.Image;
-
 import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Strings;
 
 public class ProjectElement implements NavigationElement {
 
+	private NavigationElement parent;
 	private Project project;
 
-	public ProjectElement(Project project) {
+	public ProjectElement(NavigationElement parent, Project project) {
 		this.project = project;
+		this.parent = parent;
 	}
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		int[] types = {
-				StructureElement.PRODUCTION,
-				StructureElement.DISTRIBUTION,
-				StructureElement.CONSUMPTION,
-				StructureElement.COSTS };
 		List<NavigationElement> elems = new ArrayList<>();
-		for (int type : types) {
+		for (int type : getChildTypes()) {
 			StructureElement se = new StructureElement(type, this);
 			elems.add(se);
 		}
 		return elems;
 	}
 
+	private int[] getChildTypes() {
+		if (project == null)
+			return new int[0];
+		int count = project.isVariant() ? 4 : 5;
+		int[] types = new int[count];
+		types[0] = StructureElement.CONSUMPTION;
+		types[1] = StructureElement.PRODUCTION;
+		types[2] = StructureElement.DISTRIBUTION;
+		types[3] = StructureElement.COSTS;
+		if (!project.isVariant())
+			types[4] = StructureElement.VARIANTS;
+		return types;
+	}
+
 	@Override
 	public NavigationElement getParent() {
-		return null;
+		return parent;
 	}
 
 	@Override

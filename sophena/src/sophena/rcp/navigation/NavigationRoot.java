@@ -24,7 +24,7 @@ public class NavigationRoot implements NavigationElement {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			childs = new ArrayList<>();
 			for (Project p : dao.getAll())
-				childs.add(new ProjectElement(p));
+				childs.add(new ProjectElement(this, p));
 			return childs;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
