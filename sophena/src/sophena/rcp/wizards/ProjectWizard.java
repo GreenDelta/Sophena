@@ -1,5 +1,7 @@
 package sophena.rcp.wizards;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
@@ -10,13 +12,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.model.WeatherStation;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard {
@@ -64,6 +70,7 @@ public class ProjectWizard extends Wizard {
 		private Text nameText;
 		private Text descriptionText;
 		private Text timeText;
+		private EntityCombo<WeatherStation> stationCombo;
 
 		protected Page() {
 			super("ProjectWizardPage", M.CreateNewProject, null);
@@ -73,6 +80,7 @@ public class ProjectWizard extends Wizard {
 		public void createControl(Composite parent) {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
+			// TODO: validation
 			nameText = UI.formText(composite, M.Name);
 			nameText.setBackground(Colors.forRequiredField());
 			nameText.setText(M.NewProject);
@@ -81,6 +89,26 @@ public class ProjectWizard extends Wizard {
 			timeText.setText("20");
 			timeText.setBackground(Colors
 					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+			createStationCombo(composite);
+		}
+
+		private void createStationCombo(Composite composite) {
+			stationCombo = new EntityCombo<>();
+			stationCombo.create("#Wetterstation", composite);
+			try {
+				Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
+						App.getDb());
+				List<WeatherStation> list = dao.getAll();
+				Collections.sort(list, (w1, w2)
+						-> Strings.compare(w1.getName(), w2.getName()));
+				stationCombo.setInput(list);
+				if(!list.isEmpty())
+					stationCombo.select(list.get(0));
+				else
+					setPageComplete(false);
+			} catch (Exception e) {
+				log.error("failed to load wetter stations", e);
+			}
 		}
 
 		private Project getProject() {
@@ -88,6 +116,7 @@ public class ProjectWizard extends Wizard {
 			p.setId(UUID.randomUUID().toString());
 			p.setName(nameText.getText());
 			p.setDescription(descriptionText.getText());
+			p.setWeatherStation(stationCombo.getSelected());
 			return p;
 		}
 

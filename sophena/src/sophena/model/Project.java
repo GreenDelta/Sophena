@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -32,6 +33,10 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_project")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Project> variants = new ArrayList<>();
+
+	@OneToOne
+	@JoinColumn(name = "f_weather_station")
+	private WeatherStation weatherStation;
 
 	@Transient
 	private final List<Pump> pumps = new ArrayList<>();
@@ -86,6 +91,14 @@ public class Project extends RootEntity {
 
 	public void setVariant(boolean variant) {
 		this.variant = variant;
+	}
+
+	public WeatherStation getWeatherStation() {
+		return weatherStation;
+	}
+
+	public void setWeatherStation(WeatherStation weatherStation) {
+		this.weatherStation = weatherStation;
 	}
 
 	@Override

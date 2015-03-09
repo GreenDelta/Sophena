@@ -61,6 +61,10 @@ public class EntityCombo<T extends RootEntity> {
 		viewer.setSelection(new StructuredSelection(entity));
 	}
 
+	public T getSelected() {
+		return Viewers.getFirstSelected(viewer);
+	}
+
 	private class Label extends LabelProvider {
 		@Override
 		public String getText(Object element) {

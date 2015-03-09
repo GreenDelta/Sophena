@@ -95,6 +95,7 @@ CREATE TABLE tbl_projects (
     is_variant BOOLEAN,
 	project_duration INTEGER,
 	f_project CHAR(36),
+	f_weather_station CHAR(36),
 
     PRIMARY KEY (id)
 );
