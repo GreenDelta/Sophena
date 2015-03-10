@@ -26,13 +26,15 @@ class InfoPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 		ScrolledForm form = UI.formHeader(managedForm, consumer().getName());
-		FormToolkit toolkit = managedForm.getToolkit();
-		Composite body = UI.formBody(form, toolkit);
-		InfoSection.of(editor).create(body, toolkit);
-		HeatDemandSection.of(editor).create(body, toolkit);
+		FormToolkit tk = managedForm.getToolkit();
+		Composite body = UI.formBody(form, tk);
+		InfoSection.of(editor).create(body, tk);
+		LoadCurveSection curve = new LoadCurveSection(editor);
+		curve.render(body, tk);
+		HeatDemandSection.of(editor).create(body, tk);
 		if(!consumer().isDemandBased()) {
-			ConsumptionSection.of(editor).create(body, toolkit);
-			LoadProfileSection.of(editor).create(body, toolkit);
+			ConsumptionSection.of(editor).create(body, tk);
+			LoadProfileSection.of(editor).create(body, tk);
 		}
 		form.reflow(true);
 	}

@@ -63,7 +63,6 @@ public class WeatherStation extends RootEntity {
 			double d = ByteBuffer.wrap(bytes, i, 8).getDouble();
 			data[i / 8] = d;
 		}
-		bytes = null;
 	}
 
 }
