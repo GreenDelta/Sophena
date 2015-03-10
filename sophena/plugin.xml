@@ -115,5 +115,12 @@
             icon="icons/climate_16.png"
             id="sophena.ClimateDataEditor"
             name="#Klimadaten" />
+
+        <editor
+            class="sophena.rcp.editors.fuels.FuelEditor"
+            icon="icons/fuel_16.png"
+            id="sophena.FuelEditor"
+            name="#Brennstoffe" />
+
 	</extension>
 </plugin>

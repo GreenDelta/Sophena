@@ -10,8 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.Database;
+import sophena.model.AbstractEntity;
 
-public class Dao<T> {
+public class Dao<T extends AbstractEntity> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -25,6 +26,10 @@ public class Dao<T> {
 
 	protected Class<T> getType() {
 		return type;
+	}
+
+	public boolean contains(String id) {
+		return get(id) != null;
 	}
 
 	public T get(String id) {

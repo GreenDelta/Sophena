@@ -4,7 +4,7 @@ import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.model.WeatherStation;
 
-class ConsumerLoadCurve {
+public class ConsumerLoadCurve {
 
 	private final int HOURS = 8760;
 

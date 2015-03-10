@@ -14,8 +14,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
-
 import sophena.rcp.editors.ClimateDataEditor;
+import sophena.rcp.editors.fuels.FuelEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.wizards.ProjectWizard;
 
@@ -63,11 +63,12 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillBaseDataMenu(IMenuManager menu) {
-		MenuManager dataMenu = new MenuManager(M.BaseData);
-		Action climateData = Actions.create(M.ClimateData,
-				Images.CLIMATE_16.des(), ClimateDataEditor::open);
-		dataMenu.add(climateData);
-		menu.add(dataMenu);
+		MenuManager m = new MenuManager(M.BaseData);
+		m.add(Actions.create(M.ClimateData, Images.CLIMATE_16.des(),
+				ClimateDataEditor::open));
+		m.add(Actions.create(M.Fuels, Images.FUEL_16.des(),
+				FuelEditor::open));
+		menu.add(m);
 	}
 
 	private void fillHelpMenu(IMenuManager menuBar) {
