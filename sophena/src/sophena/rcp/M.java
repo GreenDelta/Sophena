@@ -67,6 +67,10 @@ public class M extends NLS {
 	public static String Location;
 	public static String HeatDemand;
 	public static String Fuels;
+	public static String WoodFuels;
+	public static String WoodFuel;
+	public static String Unit;
+	public static String CalorificValue;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

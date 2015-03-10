@@ -1,7 +1,16 @@
 package sophena.rcp.editors.fuels;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -11,11 +20,20 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sophena.db.daos.FuelDao;
+import sophena.model.Fuel;
+import sophena.rcp.App;
+import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.Numbers;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 public class FuelEditor extends FormEditor {
 
@@ -50,8 +68,19 @@ public class FuelEditor extends FormEditor {
 
 	private class Page extends FormPage {
 
+		private FuelDao dao = new FuelDao(App.getDb());
+
+		private List<Fuel> fuels = new ArrayList<>();
+
 		public Page() {
 			super(FuelEditor.this, "FuelEditorPage", M.Fuels);
+			initData();
+		}
+
+		private void initData() {
+			fuels = dao.getAll(); // TODO: list for wood fuels
+			Collections.sort(fuels, (f1, f2) -> Strings.compare(
+					f1.getName(), f2.getName()));
 		}
 
 		@Override
@@ -59,17 +88,119 @@ public class FuelEditor extends FormEditor {
 			ScrolledForm form = UI.formHeader(managedForm, M.Fuels);
 			FormToolkit toolkit = managedForm.getToolkit();
 			Composite body = UI.formBody(form, toolkit);
-			Section section = UI.section(body, toolkit, M.ClimateData);
+			creatFuelSection(body, toolkit);
+			creatWoodSection(body, toolkit);
+			form.reflow(true);
+		}
+
+		private void creatFuelSection(Composite body, FormToolkit toolkit) {
+			Section section = UI.section(body, toolkit, M.Fuels);
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.Fuel,
-					"#Standardeinheit", "Heizwert");
-			Tables.bindColumnWidths(table, 0.40, 0.30, 0.30);
-			form.reflow(true);
+					M.CalorificValue);
+			table.setLabelProvider(new FuelLabel());
+			table.setInput(fuels);
+			Tables.bindColumnWidths(table, 0.5, 0.5);
+			bindFuelActions(section, table);
 		}
 
+		private void bindFuelActions(Section section, TableViewer table) {
+			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+					() -> addFuel(table));
+			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+					() -> editFuel(table));
+			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+					() -> deleteFuel(table));
+			Actions.bind(section, add, edit, del);
+			Actions.bind(table, add, edit, del);
+		}
+
+		private void addFuel(TableViewer table) {
+			Fuel fuel = new Fuel();
+			fuel.setId(UUID.randomUUID().toString());
+			fuel.setName(M.Fuel);
+			fuel.setUnit("L");
+			fuel.setCalorificValue(10);
+			if (FuelWizard.open(fuel) != Window.OK)
+				return;
+			try {
+				fuel = dao.insert(fuel);
+				fuels.add(fuel);
+				table.setInput(fuels);
+			} catch (Exception e) {
+				log.error("failed to add fuel " + fuel, e);
+			}
+		}
+
+		private void editFuel(TableViewer table) {
+			Fuel f = Viewers.getFirstSelected(table);
+			if (f == null)
+				return;
+			if (FuelWizard.open(f) != Window.OK)
+				return;
+			try {
+				int idx = fuels.indexOf(f);
+				f = dao.update(f);
+				fuels.set(idx, f);
+				table.setInput(fuels);
+			} catch (Exception e) {
+				log.error("failed to update fuel " + f, e);
+			}
+		}
+
+		private void deleteFuel(TableViewer table) {
+			Fuel f = Viewers.getFirstSelected(table);
+			if (f == null)
+				return;
+			boolean doIt = MsgBox.ask(M.Delete,
+					"#Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
+			if (!doIt)
+				return;
+			try {
+				dao.delete(f);
+				fuels.remove(f);
+				table.setInput(fuels);
+			} catch (Exception e) {
+				log.error("failed to delete fuel " + f, e);
+			}
+		}
+
+		private void creatWoodSection(Composite body, FormToolkit toolkit) {
+			Section section = UI.section(body, toolkit, M.WoodFuels);
+			UI.gridData(section, true, true);
+			Composite comp = UI.sectionClient(section, toolkit);
+			UI.gridLayout(comp, 1);
+			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
+					"#Standardeinheit", "Heizwert");
+			Tables.bindColumnWidths(table, 0.40, 0.30, 0.30);
+		}
+
+
+		private class FuelLabel extends LabelProvider implements
+				ITableLabelProvider {
+
+			@Override
+			public Image getColumnImage(Object element, int col) {
+				return col == 0 ? Images.FUEL_16.img() : null;
+			}
+
+			@Override
+			public String getColumnText(Object element, int col) {
+				if (!(element instanceof Fuel))
+					return null;
+				Fuel f = (Fuel) element;
+				switch (col) {
+					case 0:
+						return f.getName();
+					case 1:
+						return Numbers.toString(f.getCalorificValue())
+								+ " kWh/" + f.getUnit();
+					default:
+						return null;
+				}
+			}
+		}
 	}
-
-
 }

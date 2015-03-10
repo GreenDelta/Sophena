@@ -34,16 +34,14 @@ CREATE TABLE tbl_fuels (
 	name VARCHAR(255),
     description CLOB(64 K),
 
+	unit VARCHAR(255),
+	calorific_value DOUBLE,
+
+    wood_type VARCHAR(255),
+    density DOUBLE,
+
     PRIMARY KEY (id)
 );
-INSERT INTO tbl_fuels (id, name) VALUES ('0c67a964-a8e3-4596-b823-1ae507bcb281', 'Heizöl');
-INSERT INTO tbl_fuels (id, name) VALUES ('39ee53bd-e5d0-4373-b1d5-7e1641dd1596', 'Flüssiggas');
-INSERT INTO tbl_fuels (id, name) VALUES ('b4e9670a-1905-4524-8ae9-7404d77b84b5', 'Erdgas');
-INSERT INTO tbl_fuels (id, name) VALUES ('4912c757-f345-4ebc-94bc-ab7ef1acf6be', 'Hackschnitzel');
-INSERT INTO tbl_fuels (id, name) VALUES ('826cda96-d051-4d11-a03b-fd89d600cf8b', 'Pellets');
-INSERT INTO tbl_fuels (id, name) VALUES ('92466799-79b9-479f-a749-93c6f22e7ba3', 'Scheitholz');
-INSERT INTO tbl_fuels (id, name) VALUES ('a65b9fe8-13fe-41e4-a8bc-15647e50046b', 'Strom');
-
 
 CREATE TABLE tbl_building_types (
    id CHAR(36),
