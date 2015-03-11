@@ -6,10 +6,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sophena.model.Fuel;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
@@ -17,17 +14,16 @@ import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
-class FuelWizard extends Wizard {
+class WoodFuelWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Fuel fuel;
 
 	public static int open(Fuel fuel) {
 		if(fuel == null)
 			return Window.CANCEL;
-		FuelWizard wiz = new FuelWizard();
-		wiz.setWindowTitle(M.Fuel);
+		WoodFuelWizard wiz = new WoodFuelWizard();
+		wiz.setWindowTitle(M.WoodFuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 400);
@@ -36,6 +32,8 @@ class FuelWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		fuel.setWood(true);
+		fuel.setUnit("kg");
 		return true;
 	}
 
@@ -48,10 +46,9 @@ class FuelWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private Label unitLabel;
 
 		private Page() {
-			super("FuelWizardPage", M.Fuel, null);
+			super("FuelWizardPage", M.WoodFuel, null);
 		}
 
 		@Override
@@ -60,7 +57,7 @@ class FuelWizard extends Wizard {
 			setControl(composite);
 			UI.gridLayout(composite, 3);
 			createNameText(composite);
-			createUnitText(composite);
+			createDensityText(composite);
 			createCalText(composite);
 			createDescriptionText(composite);
 			validate();
@@ -88,18 +85,13 @@ class FuelWizard extends Wizard {
 			t.addModifyListener((e) ->  fuel.setDescription(t.getText()));
 		}
 
-		private void createUnitText(Composite composite) {
-			Text t = UI.formText(composite, M.Unit);
+		private void createDensityText(Composite composite) {
+			Text t = UI.formText(composite, "#Dichte");
 			t.setBackground(Colors.forRequiredField());
-			if(fuel.getUnit() != null)
-				t.setText(fuel.getUnit());
-			UI.formLabel(composite, "");
+			t.setText(Numbers.toString(fuel.getDensity()));
+			UI.formLabel(composite, "kg/FM");
 			t.addModifyListener((e) -> {
-				String unit = t.getText();
-				unit = unit == null ? "" : unit.trim();
-				fuel.setUnit(unit);
-				unitLabel.setText("kWh/" + fuel.getUnit());
-				composite.layout();
+				fuel.setDensity(Numbers.read(t.getText()));
 				validate();
 			});
 		}
@@ -108,9 +100,7 @@ class FuelWizard extends Wizard {
 			Text t = UI.formText(composite, M.CalorificValue);
 			t.setBackground(Colors.forRequiredField());
 			t.setText(Numbers.toString(fuel.getCalorificValue()));
-			unitLabel = UI.formLabel(composite, "");
-			if(fuel.getUnit() != null)
-				unitLabel.setText("kWh/" + fuel.getUnit());
+			UI.formLabel(composite, "kWh/kg atro");
 			t.addModifyListener((e) -> {
 				double v = Numbers.read(t.getText());
 				fuel.setCalorificValue(v);

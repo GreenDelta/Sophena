@@ -2,8 +2,6 @@ package sophena.model;
 
 public enum WoodType {
 
-	NONE("-", 1.0),
-
 	CHIPS("Srm", 0.4),
 
 	LOGS("Ster", 0.7);

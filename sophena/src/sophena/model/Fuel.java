@@ -2,15 +2,14 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_fuels")
 public class Fuel extends RootEntity {
 
-	// the standard unit of the fuel (e.g. L, m3, kg)
+	// the standard unit of the fuel (e.g. L, m3, kg); for wood types this
+	// should be always kg
 	@Column(name = "unit")
 	private String unit;
 
@@ -19,14 +18,13 @@ public class Fuel extends RootEntity {
 	@Column(name = "calorific_value")
 	private double calorificValue;
 
-    // only for wood fuels
-	@Enumerated(EnumType.STRING)
-	@Column(name = "wood_type")
-	private WoodType woodType;
-
 	// only for wood fuels: density in kg per solid cubic meter
 	@Column(name = "density")
 	private double density;
+
+	// indicates whether the fuel is a wood fuel
+	@Column(name = "is_wood")
+	private boolean wood;
 
 	public String getUnit() {
 		return unit;
@@ -44,19 +42,19 @@ public class Fuel extends RootEntity {
 		this.calorificValue = calorificValue;
 	}
 
-	public WoodType getWoodType() {
-		return woodType;
-	}
-
-	public void setWoodType(WoodType woodType) {
-		this.woodType = woodType;
-	}
-
 	public double getDensity() {
 		return density;
 	}
 
 	public void setDensity(double density) {
 		this.density = density;
+	}
+
+	public boolean isWood() {
+		return wood;
+	}
+
+	public void setWood(boolean wood) {
+		this.wood = wood;
 	}
 }

@@ -36,9 +36,8 @@ CREATE TABLE tbl_fuels (
 
 	unit VARCHAR(255),
 	calorific_value DOUBLE,
-
-    wood_type VARCHAR(255),
     density DOUBLE,
+	is_wood BOOLEAN,
 
     PRIMARY KEY (id)
 );
