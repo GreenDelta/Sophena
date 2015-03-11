@@ -11,6 +11,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -46,16 +47,14 @@ class LoadCurveSection {
 	void update() {
 		double[] data = ConsumerLoadCurve.calculate(editor.getConsumer(),
 				editor.getProject().getWeatherStation(), App.getDb());
-		if (!sorted) {
-			chartData.setCurrentYDataArray(data);
-			return;
-		}
-		Arrays.sort(data);
-		for (int i = 0; i < data.length / 2; i++) {
-			int j = data.length - i - 1;
-			double v = data[i];
-			data[i] = data[j];
-			data[j] = v;
+		if (sorted) {
+			Arrays.sort(data);
+			for (int i = 0; i < data.length / 2; i++) {
+				int j = data.length - i - 1;
+				double v = data[i];
+				data[i] = data[j];
+				data[j] = v;
+			}
 		}
 		chartData.setCurrentYDataArray(data);
 		formatAxis(data);
@@ -63,7 +62,9 @@ class LoadCurveSection {
 
 	private void render(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, "#Jahresdauerlinie");
-		UI.gridData(section, true, true).minimumHeight = 200;
+		GridData grid = UI.gridData(section, true, true);
+		grid.minimumHeight = 250;
+		grid.grabExcessVerticalSpace = true;
 		Composite composite = UI.sectionClient(section, tk);
 		composite.setLayout(new FillLayout());
 		Canvas canvas = new Canvas(composite, SWT.NONE);
@@ -83,7 +84,6 @@ class LoadCurveSection {
 		trace.setTraceType(TraceType.AREA);
 		trace.setTraceColor(Colors.getLinkBlue());
 		g.addTrace(trace);
-		// g.getXAxisList().get(0).setVisible(false);
 		g.primaryXAxis.setRange(0, 8760);
 		g.primaryXAxis.setTitle("");
 		return g;
