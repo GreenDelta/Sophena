@@ -6,6 +6,7 @@ import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -40,7 +41,7 @@ class LoadCurveSection {
 
 	void render(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, "#Jahresdauerlinie");
-		UI.gridData(section, true, true).minimumHeight = 150;
+		UI.gridData(section, true, true).minimumHeight = 200;
 		Composite composite = UI.sectionClient(section, tk);
 		composite.setLayout(new FillLayout());
 		Canvas canvas = new Canvas(composite, SWT.NONE);
@@ -57,7 +58,7 @@ class LoadCurveSection {
 		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 				provider);
 		trace.setPointStyle(Trace.PointStyle.NONE);
-		// trace.setTraceType(TraceType.BAR);
+		trace.setTraceType(TraceType.AREA);
 		g.addTrace(trace);
 		// g.getXAxisList().get(0).setVisible(false);
 		g.primaryXAxis.setRange(0, 8760);
@@ -66,11 +67,15 @@ class LoadCurveSection {
 	}
 
 	private void formatY(XYGraph g) {
-		double max = Statistics.max(data);
+		double max = Statistics.nextStep(Statistics.max(data), 5);
 		Axis y = g.getYAxisList().get(0);
 		y.setTitle("kW");
-		y.setRange(0, max + 2);
+		y.setRange(0, max);
 		y.setTitleFont(y.getFont());
+	}
+
+	private void update() {
+
 	}
 
 }

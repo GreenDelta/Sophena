@@ -24,6 +24,8 @@ public class ConsumerEditor extends FormEditor {
 	private Consumer consumer;
 	private boolean dirty;
 
+	private LoadCurveSection loadCurveSection;
+
 	public static void open(Project project, Consumer consumer) {
 		if (consumer == null)
 			return;
@@ -58,6 +60,14 @@ public class ConsumerEditor extends FormEditor {
 
 	public Project getProject() {
 		return project;
+	}
+
+	void setLoadCurveSection(LoadCurveSection section) {
+		this.loadCurveSection = section;
+	}
+
+	void updateLoadCurve() {
+
 	}
 
 	public void setDirty() {
