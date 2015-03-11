@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.Consumer;
+import sophena.model.Statistics;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.UI;
@@ -43,7 +44,7 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "kW");
 		t.addModifyListener((e) -> {
 			consumer().setHeatingLoad(Numbers.read(t.getText()));
-			editor.updateLoadCurve();
+			editor.calculate();
 			editor.setDirty();
 		});
 	}
@@ -54,7 +55,7 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "%");
 		t.addModifyListener((e) -> {
 			consumer().setWaterFraction(Numbers.read(t.getText()));
-			editor.updateLoadCurve();
+			editor.calculate();
 			editor.setDirty();
 		});
 	}
@@ -65,7 +66,7 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "°C");
 		t.addModifyListener((e) -> {
 			consumer().setHeatingLimit(Numbers.read(t.getText()));
-			editor.updateLoadCurve();
+			editor.calculate();
 			editor.setDirty();
 		});
 	}
@@ -84,6 +85,10 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, M.HeatDemand);
 		t.setEditable(false);
 		UI.formLabel(composite, tk, "kWh");
+		editor.onCalculated((values) -> {
+			double sum = Statistics.sum(values);
+			t.setText(Numbers.toString(sum));
+		});
 	}
 
 }

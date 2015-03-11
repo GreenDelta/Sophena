@@ -1,6 +1,9 @@
 package sophena.rcp.editors.consumers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -8,6 +11,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Project;
@@ -24,7 +29,7 @@ public class ConsumerEditor extends FormEditor {
 	private Consumer consumer;
 	private boolean dirty;
 
-	private LoadCurveSection loadCurveSection;
+	private List<java.util.function.Consumer<double[]>> calcListeners = new ArrayList<>();
 
 	public static void open(Project project, Consumer consumer) {
 		if (consumer == null)
@@ -62,13 +67,16 @@ public class ConsumerEditor extends FormEditor {
 		return project;
 	}
 
-	void setLoadCurveSection(LoadCurveSection section) {
-		this.loadCurveSection = section;
+	public void calculate() {
+		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
+				project.getWeatherStation(), App.getDb());
+		for(java.util.function.Consumer<double[]> fn : calcListeners) {
+			fn.accept(loadCurve);
+		}
 	}
 
-	void updateLoadCurve() {
-		if(loadCurveSection != null)
-			loadCurveSection.update();
+	public void onCalculated(java.util.function.Consumer<double[]> fn) {
+		calcListeners.add(fn);
 	}
 
 	public void setDirty() {

@@ -17,9 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.ConsumerLoadCurve;
 import sophena.model.Statistics;
-import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
@@ -40,13 +38,10 @@ class LoadCurveSection {
 		chartData.setBufferSize(8760);
 		chartData.setConcatenate_data(false);
 		render(body, tk);
-		editor.setLoadCurveSection(this);
-		update();
+		editor.onCalculated(this::update);
 	}
 
-	void update() {
-		double[] data = ConsumerLoadCurve.calculate(editor.getConsumer(),
-				editor.getProject().getWeatherStation(), App.getDb());
+	private void update(double[] data) {
 		if (sorted) {
 			Arrays.sort(data);
 			for (int i = 0; i < data.length / 2; i++) {
@@ -113,7 +108,7 @@ class LoadCurveSection {
 				sorted = true;
 				setText("#Unsortiert");
 			}
-			update();
+			editor.calculate();
 		}
 	}
 

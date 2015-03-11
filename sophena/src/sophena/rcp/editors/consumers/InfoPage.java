@@ -36,5 +36,6 @@ class InfoPage extends FormPage {
 			LoadProfileSection.of(editor).create(body, tk);
 		}
 		form.reflow(true);
+		editor.calculate();
 	}
 }

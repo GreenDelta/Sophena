@@ -5,6 +5,13 @@ public final class Statistics {
 	private Statistics() {
 	}
 
+	public static double sum(double[] vals) {
+		double sum = 0;
+		for (double v : vals)
+			sum += v;
+		return sum;
+	}
+
 	public static double max(double[] vals) {
 		if (vals == null || vals.length == 0)
 			return 0;
