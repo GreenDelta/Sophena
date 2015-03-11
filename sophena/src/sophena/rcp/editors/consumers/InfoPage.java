@@ -29,10 +29,9 @@ class InfoPage extends FormPage {
 		FormToolkit tk = managedForm.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		InfoSection.of(editor).create(body, tk);
-		LoadCurveSection curve = new LoadCurveSection(editor);
-		curve.render(body, tk);
+		new LoadCurveSection(editor, body, tk);
 		HeatDemandSection.of(editor).create(body, tk);
-		if(!consumer().isDemandBased()) {
+		if (!consumer().isDemandBased()) {
 			ConsumptionSection.of(editor).create(body, tk);
 			LoadProfileSection.of(editor).create(body, tk);
 		}

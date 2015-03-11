@@ -10,7 +10,6 @@ import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.rcp.App;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.UI;
 
@@ -38,9 +37,6 @@ class InfoSection {
 		createDescriptionText(toolkit, composite);
 		createTypeCombo(composite, toolkit);
 		createStateCombo(composite, toolkit);
-		if(consumer().isDemandBased()) {
-			createLoadText(composite, toolkit);
-		}
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -85,12 +81,5 @@ class InfoSection {
 			consumer().setBuildingState(s);
 			editor.setDirty();
 		});
-	}
-
-	private void createLoadText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, M.HeatingLoad);
-		t.setText(Numbers.toString(consumer().getHeatingLoad()));
-		t.addModifyListener((e) -> consumer().setHeatingLoad(
-				Numbers.read(t.getText())));
 	}
 }

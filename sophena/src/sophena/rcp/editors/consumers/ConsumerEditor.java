@@ -67,7 +67,8 @@ public class ConsumerEditor extends FormEditor {
 	}
 
 	void updateLoadCurve() {
-
+		if(loadCurveSection != null)
+			loadCurveSection.update();
 	}
 
 	public void setDirty() {

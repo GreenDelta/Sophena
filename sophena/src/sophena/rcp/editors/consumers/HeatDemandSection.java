@@ -3,6 +3,7 @@ package sophena.rcp.editors.consumers;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
@@ -10,7 +11,7 @@ class HeatDemandSection {
 
 	private ConsumerEditor editor;
 
-	private HeatDemandSection(){
+	private HeatDemandSection() {
 	}
 
 	static HeatDemandSection of(ConsumerEditor editor) {
@@ -20,11 +21,14 @@ class HeatDemandSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Composite composite = UI.formSection(body, tk,  M.HeatDemand);
+		Composite composite = UI.formSection(body, tk, M.HeatDemand);
+
 		Text totalPowerText = UI.formText(composite, tk, "#Gesamtleistung");
+
 		Text heatDemandText = UI.formText(composite, tk, M.HeatDemand);
 		Text loadHoursText = UI.formText(composite, tk, "#Vollaststunden");
-		Text waterFractionText = UI.formText(composite, tk, "#Warmwasseranteil");
+		Text waterFractionText = UI
+				.formText(composite, tk, "#Warmwasseranteil");
 		Text heatLimitText = UI.formText(composite, tk, "#Heizgrenzleistung");
 	}
 

@@ -37,7 +37,9 @@ public enum Images {
 
 	PRODUCER_16("producer_16.png"),
 
-	PUMP_16("pump_16.png");
+	PUMP_16("pump_16.png"),
+
+	SORTING_16("sorting_16.png");
 
 	private final String fileName;
 
