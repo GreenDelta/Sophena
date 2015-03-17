@@ -1,4 +1,7 @@
-package sophena.rcp.wizards;
+package sophena.rcp.editors.consumers;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -11,14 +14,18 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sophena.db.daos.FuelDao;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Unit;
+import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
-public class ConsumptionDataWizard extends Wizard {
+class ConsumptionDataWizard extends Wizard {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
@@ -60,18 +67,24 @@ public class ConsumptionDataWizard extends Wizard {
 			createFuelCombo(composite);
 			createConsumptionRow(composite);
 			createWaterContentRow(composite);
-			createEfficiencyRow(composite);
 			createRadioRow(composite);
 		}
 
 		private void createFuelCombo(Composite composite) {
 			EntityCombo<Fuel> combo = new EntityCombo<>();
 			combo.create(M.Fuel, composite);
+			FuelDao dao = new FuelDao(App.getDb());
+			List<Fuel> fuels = dao.getAll();
+			Collections.sort(fuels,
+					(f1, f2) -> Strings.compare(f1.getName(), f2.getName()));
+			combo.setInput(fuels);
+			if (fuels.size() > 0)
+				combo.select(fuels.get(0));
 			new Label(composite, SWT.NONE);
 		}
 
 		private void createConsumptionRow(Composite composite) {
-			Text t = UI.formText(composite, M.ConsumptionData);
+			Text t = UI.formText(composite, "#Verbrauch pro Jahr");
 			EntityCombo<Unit> combo = new EntityCombo<>();
 			combo.create(new Combo(composite, SWT.READ_ONLY));
 		}
@@ -87,15 +100,21 @@ public class ConsumptionDataWizard extends Wizard {
 		}
 
 		private void createRadioRow(Composite composite) {
+			UI.formLabel(composite, M.BoilerEfficiency);
+			Button effiButton = new Button(composite, SWT.RADIO);
+			effiButton.setText(M.EfficiencyRate);
+			UI.formLabel(composite, "");
+			Text effiText = UI.formText(composite, "");
+			UI.formLabel(composite, "%");
+
 			UI.formLabel(composite, "");
 			Button utilButton = new Button(composite, SWT.RADIO);
 			utilButton.setText(M.UtilisationRate);
-			utilButton.setToolTipText("#Help text");
 			UI.formLabel(composite, "");
-			UI.formLabel(composite, "");
-			Button effiButton = new Button(composite, SWT.RADIO);
-			effiButton.setText(M.EfficiencyRate);
-			effiButton.setToolTipText("#Help text");
+			Text utilText = UI.formText(composite, "");
+			utilText.setEnabled(false);
+			UI.formLabel(composite, "%");
+
 		}
 	}
 

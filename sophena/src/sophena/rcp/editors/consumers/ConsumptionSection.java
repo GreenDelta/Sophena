@@ -11,7 +11,6 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
-import sophena.rcp.wizards.ConsumptionDataWizard;
 
 class ConsumptionSection {
 

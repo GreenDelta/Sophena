@@ -31,10 +31,9 @@ class InfoPage extends FormPage {
 		InfoSection.of(editor).create(body, tk);
 		new LoadCurveSection(editor, body, tk);
 		HeatDemandSection.of(editor).create(body, tk);
-		if (!consumer().isDemandBased()) {
+		if (!consumer().isDemandBased())
 			ConsumptionSection.of(editor).create(body, tk);
-			LoadProfileSection.of(editor).create(body, tk);
-		}
+		LoadProfileSection.of(editor).create(body, tk);
 		form.reflow(true);
 		editor.calculate();
 	}
