@@ -70,6 +70,7 @@ public class FuelEditor extends FormEditor {
 
 		private FuelDao dao = new FuelDao(App.getDb());
 
+		private List<Fuel> woodFuels = new ArrayList<>();
 		private List<Fuel> fuels = new ArrayList<>();
 
 		public Page() {
@@ -78,9 +79,15 @@ public class FuelEditor extends FormEditor {
 		}
 
 		private void initData() {
-			fuels = dao.getAll(); // TODO: list for wood fuels
-			Collections.sort(fuels, (f1, f2) -> Strings.compare(
+			List<Fuel> all = dao.getAll();
+			Collections.sort(all, (f1, f2) -> Strings.compare(
 					f1.getName(), f2.getName()));
+			for(Fuel f : all) {
+				if(f.isWood())
+					woodFuels.add(f);
+				else
+					fuels.add(f);
+			}
 		}
 
 		@Override
@@ -110,9 +117,9 @@ public class FuelEditor extends FormEditor {
 			Action add = Actions.create(M.Add, Images.ADD_16.des(),
 					() -> addFuel(table));
 			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
-					() -> editFuel(table));
+					() -> edit(table, fuels, false));
 			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
-					() -> deleteFuel(table));
+					() -> delete(table, fuels, false));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
 		}
@@ -123,6 +130,7 @@ public class FuelEditor extends FormEditor {
 			fuel.setName(M.Fuel);
 			fuel.setUnit("L");
 			fuel.setCalorificValue(10);
+			fuel.setWood(false);
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -134,23 +142,24 @@ public class FuelEditor extends FormEditor {
 			}
 		}
 
-		private void editFuel(TableViewer table) {
+		private void edit(TableViewer table, List<Fuel> list, boolean wood) {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null)
 				return;
-			if (FuelWizard.open(f) != Window.OK)
+			int code = wood ? WoodFuelWizard.open(f) : FuelWizard.open(f);
+			if (code != Window.OK)
 				return;
 			try {
-				int idx = fuels.indexOf(f);
+				int idx = list.indexOf(f);
 				f = dao.update(f);
-				fuels.set(idx, f);
-				table.setInput(fuels);
+				list.set(idx, f);
+				table.setInput(list);
 			} catch (Exception e) {
 				log.error("failed to update fuel " + f, e);
 			}
 		}
 
-		private void deleteFuel(TableViewer table) {
+		private void delete(TableViewer table, List<Fuel> list, boolean wood) {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null)
 				return;
@@ -160,8 +169,8 @@ public class FuelEditor extends FormEditor {
 				return;
 			try {
 				dao.delete(f);
-				fuels.remove(f);
-				table.setInput(fuels);
+				list.remove(f);
+				table.setInput(list);
 			} catch (Exception e) {
 				log.error("failed to delete fuel " + f, e);
 			}
@@ -173,10 +182,42 @@ public class FuelEditor extends FormEditor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
-					"#Standardeinheit", "Heizwert");
+					"#Dichte", "Heizwert");
+			table.setLabelProvider(new WoodLabel());
 			Tables.bindColumnWidths(table, 0.40, 0.30, 0.30);
+			table.setInput(woodFuels);
+			bindWoodActions(section, table);
 		}
 
+		private void bindWoodActions(Section section, TableViewer table) {
+			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+					() -> addWood(table));
+			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+					() -> edit(table, woodFuels, true));
+			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+					() -> delete(table, woodFuels, true));
+			Actions.bind(section, add, edit, del);
+			Actions.bind(table, add, edit, del);
+		}
+
+		private void addWood(TableViewer table) {
+			Fuel fuel = new Fuel();
+			fuel.setId(UUID.randomUUID().toString());
+			fuel.setName(M.WoodFuel);
+			fuel.setUnit("kg");
+			fuel.setCalorificValue(5);
+			fuel.setDensity(450);
+			fuel.setWood(true);
+			if (WoodFuelWizard.open(fuel) != Window.OK)
+				return;
+			try {
+				fuel = dao.insert(fuel);
+				woodFuels.add(fuel);
+				table.setInput(woodFuels);
+			} catch (Exception e) {
+				log.error("failed to add fuel " + fuel, e);
+			}
+		}
 
 		private class FuelLabel extends LabelProvider implements
 				ITableLabelProvider {
@@ -197,6 +238,33 @@ public class FuelEditor extends FormEditor {
 					case 1:
 						return Numbers.toString(f.getCalorificValue())
 								+ " kWh/" + f.getUnit();
+					default:
+						return null;
+				}
+			}
+		}
+
+		private class WoodLabel extends LabelProvider implements
+				ITableLabelProvider {
+
+			@Override
+			public Image getColumnImage(Object element, int col) {
+				return col == 0 ? Images.FUEL_16.img() : null;
+			}
+
+			@Override
+			public String getColumnText(Object element, int col) {
+				if (!(element instanceof Fuel))
+					return null;
+				Fuel f = (Fuel) element;
+				switch (col) {
+					case 0:
+						return f.getName();
+					case 1:
+						return Numbers.toString(f.getDensity()) + " kg/fm";
+					case 2:
+						return Numbers.toString(f.getCalorificValue())
+								+ "kWh/kg atro";
 					default:
 						return null;
 				}

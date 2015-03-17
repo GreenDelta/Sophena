@@ -32,6 +32,10 @@ public class Numbers {
 		}
 	}
 
+	public static boolean isNumeric(String text) {
+		return readNumber(text) != null;
+	}
+
 	public static String toString(double val) {
 		return format.format(val);
 	}

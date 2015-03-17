@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.model.Fuel;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
@@ -24,7 +25,7 @@ class FuelWizard extends Wizard {
 	private Fuel fuel;
 
 	public static int open(Fuel fuel) {
-		if(fuel == null)
+		if (fuel == null)
 			return Window.CANCEL;
 		FuelWizard wiz = new FuelWizard();
 		wiz.setWindowTitle(M.Fuel);
@@ -36,7 +37,17 @@ class FuelWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		return true;
+		try {
+			fuel.setName(page.nameText.getText());
+			fuel.setDescription(page.descriptionText.getText());
+			fuel.setUnit(page.unitText.getText());
+			fuel.setCalorificValue(Numbers.read(page.calText.getText()));
+			fuel.setWood(false);
+			return true;
+		} catch (Exception e) {
+			log.error("failed to set fuel data " + fuel, e);
+			return false;
+		}
 	}
 
 	@Override
@@ -45,10 +56,14 @@ class FuelWizard extends Wizard {
 		addPage(page);
 	}
 
-
 	private class Page extends WizardPage {
 
 		private Label unitLabel;
+
+		private Text nameText;
+		private Text unitText;
+		private Text calText;
+		private Text descriptionText;
 
 		private Page() {
 			super("FuelWizardPage", M.Fuel, null);
@@ -67,37 +82,32 @@ class FuelWizard extends Wizard {
 		}
 
 		private void createNameText(Composite composite) {
-			Text t = UI.formText(composite, M.Name);
-			t.setBackground(Colors.forRequiredField());
-			if(fuel.getName() != null)
-				t.setText(fuel.getName());
+			nameText = UI.formText(composite, M.Name);
+			nameText.setBackground(Colors.forRequiredField());
+			if (fuel.getName() != null)
+				nameText.setText(fuel.getName());
 			UI.formLabel(composite, "");
-			t.addModifyListener((e) -> {
-				String name = t.getText();
-				name = name == null ? "" : name.trim();
-				fuel.setName(name);
+			nameText.addModifyListener((e) -> {
 				validate();
 			});
 		}
 
 		private void createDescriptionText(Composite composite) {
-			Text t = UI.formMultiText(composite, M.Description);
-			if(fuel.getDescription() != null)
-				t.setText(fuel.getDescription());
+			descriptionText = UI.formMultiText(composite, M.Description);
+			if (fuel.getDescription() != null)
+				descriptionText.setText(fuel.getDescription());
 			UI.formLabel(composite, "");
-			t.addModifyListener((e) ->  fuel.setDescription(t.getText()));
 		}
 
 		private void createUnitText(Composite composite) {
-			Text t = UI.formText(composite, M.Unit);
-			t.setBackground(Colors.forRequiredField());
-			if(fuel.getUnit() != null)
-				t.setText(fuel.getUnit());
+			unitText = UI.formText(composite, M.Unit);
+			unitText.setBackground(Colors.forRequiredField());
+			if (fuel.getUnit() != null)
+				unitText.setText(fuel.getUnit());
 			UI.formLabel(composite, "");
-			t.addModifyListener((e) -> {
-				String unit = t.getText();
+			unitText.addModifyListener((e) -> {
+				String unit = unitText.getText();
 				unit = unit == null ? "" : unit.trim();
-				fuel.setUnit(unit);
 				unitLabel.setText("kWh/" + fuel.getUnit());
 				composite.layout();
 				validate();
@@ -105,22 +115,35 @@ class FuelWizard extends Wizard {
 		}
 
 		private void createCalText(Composite composite) {
-			Text t = UI.formText(composite, M.CalorificValue);
-			t.setBackground(Colors.forRequiredField());
-			t.setText(Numbers.toString(fuel.getCalorificValue()));
+			calText = UI.formText(composite, M.CalorificValue);
+			calText.setBackground(Colors.forRequiredField());
+			calText.setText(Numbers.toString(fuel.getCalorificValue()));
 			unitLabel = UI.formLabel(composite, "");
-			if(fuel.getUnit() != null)
+			if (fuel.getUnit() != null)
 				unitLabel.setText("kWh/" + fuel.getUnit());
-			t.addModifyListener((e) -> {
-				double v = Numbers.read(t.getText());
-				fuel.setCalorificValue(v);
+			calText.addModifyListener((e) -> {
 				validate();
 			});
 		}
 
-		private void validate() {
-			if(Strings.nullOrEmpty(fuel.getName()))
-				setPageComplete(false);
+		private boolean validate() {
+			if (Strings.nullOrEmpty(nameText.getText()))
+				return error("#Es muss ein Name angegeben werden.");
+			if (Strings.nullOrEmpty(unitText.getText()))
+				return error("#Es muss eine Einheit angegeben werden.");
+			if (!Numbers.isNumeric(calText.getText()))
+				return error("#Es muss ein Heizwert angegeben werden.");
+			else {
+				setPageComplete(true);
+				setErrorMessage(null);
+				return true;
+			}
+		}
+
+		private boolean error(String message) {
+			setErrorMessage(message);
+			setPageComplete(false);
+			return false;
 		}
 	}
 
