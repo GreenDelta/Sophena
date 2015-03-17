@@ -3,6 +3,7 @@ package sophena.rcp.wizards;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -13,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
@@ -80,6 +82,7 @@ public class ConsumerWizard extends Wizard {
 			consumer.setDemandBased(false);
 			consumer.setWaterFraction(10);
 			consumer.setHeatingLimit(15);
+			consumer.setLoadHours(1800); // TODO: default value?
 		}
 
 		@Override
@@ -143,7 +146,7 @@ public class ConsumerWizard extends Wizard {
 			UI.innerGrid(inner, 2);
 			Text text = UI.formText(inner, M.HeatingLoad);
 			text.addModifyListener((e) ->
-				consumer.setHeatingLoad(Numbers.read(text.getText())));
+					consumer.setHeatingLoad(Numbers.read(text.getText())));
 			inner.setVisible(false);
 			Controls.onSelect(consumption, (e) -> {
 				consumer.setDemandBased(false);
