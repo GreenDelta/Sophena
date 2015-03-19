@@ -1,6 +1,6 @@
 package sophena.rcp;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 
 public class Numbers {
 
-	private static NumberFormat format = NumberFormat
+	private static DecimalFormat format = (DecimalFormat) DecimalFormat
 			.getInstance(Locale.GERMAN);
+
+	public static DecimalFormat getFormat() {
+		return format;
+	}
 
 	public static double read(String text) {
 		Number n = readNumber(text);
