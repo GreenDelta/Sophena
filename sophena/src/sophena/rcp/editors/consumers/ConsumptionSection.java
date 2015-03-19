@@ -2,6 +2,7 @@ package sophena.rcp.editors.consumers;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -73,27 +74,30 @@ class ConsumptionSection {
 		if (code == Window.OK) {
 			consumer().getFuelConsumptions().add(c);
 			table.setInput(consumer().getFuelConsumptions());
+			editor.calculate();
 			editor.setDirty();
 		}
 	}
 
 	private void onRemove() {
 		List<FuelConsumption> list = Viewers.getAllSelected(table);
-		if(list == null || list.isEmpty())
+		if (list == null || list.isEmpty())
 			return;
 		consumer().getFuelConsumptions().removeAll(list);
 		table.setInput(consumer().getFuelConsumptions());
+		editor.calculate();
 		editor.setDirty();
 	}
 
 	private void onEdit() {
 		FuelConsumption c = Viewers.getFirstSelected(table);
-		if(c == null)
+		if (c == null)
 			return;
 		int code = ConsumptionDataWizard.open(c, consumer()
 				.getLoadHours());
-		if(code == Window.OK) {
+		if (code == Window.OK) {
 			table.setInput(consumer().getFuelConsumptions());
+			editor.calculate();
 			editor.setDirty();
 		}
 	}
