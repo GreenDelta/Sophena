@@ -1,7 +1,6 @@
 package sophena.model;
 
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -71,6 +70,25 @@ public class FuelConsumption extends AbstractEntity {
 
 	public void setWaterContent(double waterContent) {
 		this.waterContent = waterContent;
+	}
+
+	public double getUsedHeat() {
+		if (fuel == null)
+			return 0;
+		double ur = utilisationRate / 100;
+		if (!fuel.isWood())
+			return ur * fuel.getCalorificValue() * amount;
+		double mass;
+		double wc = waterContent / 100;
+		if (woodAmountType == null || woodAmountType == WoodAmountType.MASS)
+			mass = amount;
+		else {
+			// TODO: I think this formula is not correct
+			mass = woodAmountType.getFactor() * fuel.getDensity() / (1 - wc);
+		}
+		// 0.68: vaporization enthalpy of water
+		double heat = mass * ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);
+		return ur * heat;
 	}
 
 	@Override

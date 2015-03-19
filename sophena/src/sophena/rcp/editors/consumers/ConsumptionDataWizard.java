@@ -3,6 +3,7 @@ package sophena.rcp.editors.consumers;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
@@ -36,16 +37,16 @@ class ConsumptionDataWizard extends Wizard {
 	private FuelConsumption consumption;
 	private int loadHours;
 
-	public static void open(FuelConsumption consumption, int loadHours) {
+	public static int open(FuelConsumption consumption, int loadHours) {
 		if (consumption == null)
-			return;
+			return Window.CANCEL;
 		ConsumptionDataWizard wiz = new ConsumptionDataWizard();
 		wiz.setWindowTitle(M.CollectConsumptionData);
 		wiz.consumption = consumption;
 		wiz.loadHours = loadHours;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 400);
-		dialog.open();
+		return dialog.open();
 	}
 
 	@Override

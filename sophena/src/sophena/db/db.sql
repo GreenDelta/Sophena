@@ -125,6 +125,7 @@ CREATE TABLE tbl_fuel_consumptions (
 
 	id CHAR(36),
 
+	f_consumer CHAR(36),
 	f_fuel CHAR(36),
 	amount DOUBLE,
 	utilisation_rate DOUBLE,
