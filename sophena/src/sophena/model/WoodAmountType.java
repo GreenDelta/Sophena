@@ -1,6 +1,8 @@
 package sophena.model;
 
-public enum WoodType {
+public enum WoodAmountType {
+
+	MASS("kg atro", 1),
 
 	CHIPS("Srm", 0.4),
 
@@ -13,7 +15,7 @@ public enum WoodType {
 	// cubic meters
 	private final double factor;
 
-	private WoodType(String unit, double factor){
+	private WoodAmountType(String unit, double factor) {
 		this.unit = unit;
 		this.factor = factor;
 	}

@@ -5,49 +5,49 @@ INSERT INTO sophena_version (version) VALUES (1);
 
 
 CREATE TABLE tbl_weather_stations (
-   id CHAR(36),
-   name VARCHAR(255),
-   description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-   norm_temperature DOUBLE,
-   data BLOB (80 K),
+	norm_temperature DOUBLE,
+	data BLOB (80 K),
 
-   PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 
 
 CREATE TABLE tbl_units (
-   id CHAR(36),
-   name VARCHAR(255),
-   description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-   quantity VARCHAR(255),
-   is_reference_unit BOOLEAN,
-   conversion_factor DOUBLE,
+	quantity VARCHAR(255),
+	is_reference_unit BOOLEAN,
+	conversion_factor DOUBLE,
 
-   PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 
 
 CREATE TABLE tbl_fuels (
 	id CHAR(36),
 	name VARCHAR(255),
-    description CLOB(64 K),
+	description CLOB(64 K),
 
 	unit VARCHAR(255),
 	calorific_value DOUBLE,
-    density DOUBLE,
+	density DOUBLE,
 	is_wood BOOLEAN,
 
-    PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE tbl_building_types (
-   id CHAR(36),
-   name VARCHAR(255),
-   description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-   PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 INSERT INTO tbl_building_types (id, name) VALUES ('c39f721d-f804-4a73-a4bf-b218d832fb47', 'Einfamilienhaus');
 INSERT INTO tbl_building_types (id, name) VALUES ('2b5f3318-f892-4993-a4dd-5f1898449059', 'Mehrfamilienhaus');
@@ -66,11 +66,11 @@ INSERT INTO tbl_building_types (id, name) VALUES ('92d3ae90-4a80-4511-9536-52060
 
 
 CREATE TABLE tbl_building_states (
-   id CHAR(36),
-   name VARCHAR(255),
-   description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-   PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 INSERT INTO tbl_building_states (id, name) VALUES ('71828b10-1851-424d-833c-d2d1f74cefa5', 'Altbau');
 INSERT INTO tbl_building_states (id, name) VALUES ('c71f03c2-fe3a-4a12-8fa4-6d837c735da7', 'Stand 60er Jahre');
@@ -85,37 +85,51 @@ INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c2
 
 
 CREATE TABLE tbl_projects (
-    id CHAR(36),
-    name VARCHAR(255),
-    description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-    is_variant BOOLEAN,
+	is_variant BOOLEAN,
 	project_duration INTEGER,
 	f_project CHAR(36),
 	f_weather_station CHAR(36),
 
-    PRIMARY KEY (id)
+	PRIMARY KEY (id)
 );
 
 
 CREATE TABLE tbl_consumers (
 
-   id CHAR(36),
-   name VARCHAR(255),
-   description CLOB(64 K),
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
 
-   demand_based BOOLEAN,
-   heating_load DOUBLE,
-   water_fraction DOUBLE,
-   load_hours INTEGER,
-   heating_limit DOUBLE,
+	demand_based BOOLEAN,
+	heating_load DOUBLE,
+	water_fraction DOUBLE,
+	load_hours INTEGER,
+	heating_limit DOUBLE,
 
-   graph_x INTEGER,
-   graph_y INTEGER,
+	graph_x INTEGER,
+	graph_y INTEGER,
 
-   f_project CHAR(36),
-   f_building_type CHAR(36),
-   f_building_state CHAR(36),
+	f_project CHAR(36),
+	f_building_type CHAR(36),
+	f_building_state CHAR(36),
 
-   PRIMARY KEY (id)
+	PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_fuel_consumptions (
+
+	id CHAR(36),
+
+	f_fuel CHAR(36),
+	amount DOUBLE,
+	utilisation_rate DOUBLE,
+	wood_amount_type VARCHAR(255),
+	water_content DOUBLE,
+
+	PRIMARY KEY (id)
 );

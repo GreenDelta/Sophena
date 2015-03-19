@@ -11,6 +11,7 @@
         <class>sophena.model.BuildingState</class>
         <class>sophena.model.BuildingType</class>
         <class>sophena.model.Consumer</class>
+        <class>sophena.model.FuelConsumption</class>
 		<class>sophena.model.Project</class>
         <class>sophena.model.Fuel</class>
         <class>sophena.model.WeatherStation</class>

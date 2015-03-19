@@ -3,9 +3,12 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -36,6 +39,10 @@ public class Consumer extends Facility {
 
 	@Column(name = "heating_limit")
 	private double heatingLimit;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_consumer")
+	private final List<FuelConsumption> fuelConsumptions = new ArrayList<>();
 
 	@Transient
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
@@ -100,6 +107,10 @@ public class Consumer extends Facility {
 		this.heatingLimit = heatingLimit;
 	}
 
+	public List<FuelConsumption> getFuelConsumptions() {
+		return fuelConsumptions;
+	}
+
 	@Override
 	public Consumer clone() {
 		Consumer clone = new Consumer();
@@ -109,9 +120,12 @@ public class Consumer extends Facility {
 		clone.setBuildingState(this.getBuildingState());
 		clone.setBuildingType(this.getBuildingType());
 		clone.setDemandBased(this.isDemandBased());
+		clone.setHeatingLimit(this.getHeatingLimit());
 		clone.setHeatingLoad(this.getHeatingLoad());
 		clone.setWaterFraction(this.getWaterFraction());
-		clone.setLoadHours(getLoadHours());
+		clone.setLoadHours(this.getLoadHours());
+		for (FuelConsumption cons : this.getFuelConsumptions())
+			clone.getFuelConsumptions().add(cons.clone());
 		return clone;
 	}
 }
