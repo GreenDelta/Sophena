@@ -2,12 +2,14 @@ package sophena.rcp;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Numbers {
 
-	private static NumberFormat format = NumberFormat.getInstance(Locale.GERMAN);
+	private static NumberFormat format = NumberFormat
+			.getInstance(Locale.GERMAN);
 
 	public static double read(String text) {
 		Number n = readNumber(text);
@@ -20,14 +22,14 @@ public class Numbers {
 	}
 
 	public static Number readNumber(String text) {
-		if(text == null || text.trim().isEmpty())
+		if (text == null || text.trim().isEmpty())
 			return null;
 		try {
 			Number n = format.parse(text.trim());
 			return n;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(Numbers.class);
-			log.warn("unknown number format " + text, e);
+			log.trace("invalid number " + text);
 			return null;
 		}
 	}

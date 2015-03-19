@@ -5,7 +5,9 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.model.Consumer;
+import sophena.model.FuelConsumption;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
@@ -47,7 +49,8 @@ class ConsumptionSection {
 
 	private void bindActions(Section section, TableViewer table) {
 		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
-			ConsumptionDataWizard.open(consumer());
+			FuelConsumption c = new FuelConsumption();
+			ConsumptionDataWizard.open(c, consumer().getLoadHours());
 		});
 		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
 				() -> {
