@@ -146,6 +146,7 @@ CREATE TABLE tbl_boilers (
 	efficiency_rate DOUBLE,
 
 	f_fuel CHAR(36),
+	wood_amount_type VARCHAR(255),
 
     PRIMARY KEY (id)
 );

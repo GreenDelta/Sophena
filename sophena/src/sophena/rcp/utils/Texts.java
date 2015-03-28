@@ -118,6 +118,13 @@ public final class Texts {
 			return this;
 		}
 
+		public TextDispatch validate(Runnable fn) {
+			if(text == null || fn == null)
+				return this;
+			text.addModifyListener((e) -> fn.run());
+			return this;
+		}
+
 
 	}
 

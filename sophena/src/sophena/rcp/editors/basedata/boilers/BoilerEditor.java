@@ -144,7 +144,7 @@ public class BoilerEditor extends FormEditor {
 			if (boiler == null)
 				return;
 			boolean doIt = MsgBox.ask(M.Delete,
-					"Soll der ausgewählte Heizkessel wirklich gelöscht werden?");
+					"Soll der ausgewÃ¤hlte Heizkessel wirklich gelÃ¶scht werden?");
 			if (!doIt)
 				return;
 			try {

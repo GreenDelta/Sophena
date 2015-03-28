@@ -2,10 +2,16 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+/**
+ * If the boiler is for wood fuels the field <code>fuel</code> must be
+ * <code>null</code> and the field <code>woodAmountType</code> must be set.
+ */
 @Entity
 @Table(name = "tbl_boilers")
 public class Boiler extends RootEntity {
@@ -14,7 +20,7 @@ public class Boiler extends RootEntity {
 	private Double purchasePrice;
 
 	@Column(name = "tbl_url")
-	private Double url;
+	private String url;
 
 	@Column(name = "tbl_max_power")
 	private double maxPower;
@@ -29,6 +35,10 @@ public class Boiler extends RootEntity {
 	@Column(name = "efficiency_rate")
 	private double efficiencyRate;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "wood_amount_type")
+	private WoodAmountType woodAmountType;
+
 	public Double getPurchasePrice() {
 		return purchasePrice;
 	}
@@ -37,11 +47,11 @@ public class Boiler extends RootEntity {
 		this.purchasePrice = purchasePrice;
 	}
 
-	public Double getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(Double url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 
@@ -75,5 +85,17 @@ public class Boiler extends RootEntity {
 
 	public void setEfficiencyRate(double efficiencyRate) {
 		this.efficiencyRate = efficiencyRate;
+	}
+
+	public WoodAmountType getWoodAmountType() {
+		return woodAmountType;
+	}
+
+	public void setWoodAmountType(WoodAmountType woodAmountType) {
+		this.woodAmountType = woodAmountType;
+	}
+
+	public boolean isForWood() {
+		return woodAmountType != null;
 	}
 }
