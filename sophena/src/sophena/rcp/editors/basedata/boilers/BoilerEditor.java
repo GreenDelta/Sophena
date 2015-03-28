@@ -3,11 +3,13 @@ package sophena.rcp.editors.basedata.boilers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -26,6 +28,7 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -110,21 +113,47 @@ public class BoilerEditor extends FormEditor {
 
 		private void addBoiler(TableViewer table) {
 			Boiler boiler = new Boiler();
-			// ...
+			boiler.setId(UUID.randomUUID().toString());
+			boiler.setName("Neuer Heizkessel");
+			boiler.setEfficiencyRate(80);
+			if(BoilerWizard.open(boiler) != Window.OK)
+				return;
+			dao.insert(boiler);
+			boilers.add(boiler);
+			table.setInput(boilers);
 		}
 
 		private void editBoiler(TableViewer table) {
 			Boiler boiler = Viewers.getFirstSelected(table);
 			if (boiler == null)
 				return;
-			// ...
+			if(BoilerWizard.open(boiler) != Window.OK)
+				return;
+			try {
+				int idx = boilers.indexOf(boiler);
+				boiler = dao.update(boiler);
+				boilers.set(idx, boiler);
+				table.setInput(boilers);
+			} catch(Exception e) {
+				log.error("failed to update boiler ", boiler, e);
+			}
 		}
 
 		private void deleteBoiler(TableViewer table) {
 			Boiler boiler = Viewers.getFirstSelected(table);
 			if (boiler == null)
 				return;
-			// ...
+			boolean doIt = MsgBox.ask(M.Delete,
+					"Soll der ausgewählte Heizkessel wirklich gelöscht werden?");
+			if (!doIt)
+				return;
+			try {
+				dao.delete(boiler);
+				boilers.remove(boiler);
+				table.setInput(boilers);
+			} catch (Exception e) {
+				log.error("failed to delete boiler " + boiler, e);
+			}
 		}
 
 		private class BoilerLabel extends LabelProvider

@@ -164,7 +164,7 @@ public class FuelEditor extends FormEditor {
 			if (f == null)
 				return;
 			boolean doIt = MsgBox.ask(M.Delete,
-					"#Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
+					"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			try {
