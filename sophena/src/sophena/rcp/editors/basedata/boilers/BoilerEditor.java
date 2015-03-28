@@ -24,7 +24,9 @@ import sophena.db.daos.BoilerDao;
 import sophena.model.Boiler;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
+import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -77,7 +79,6 @@ public class BoilerEditor extends FormEditor {
 					(b1, b2) -> Strings.compare(b1.getName(), b2.getName()));
 		}
 
-
 		@Override
 		protected void createFormContent(IManagedForm managedForm) {
 			ScrolledForm form = UI.formHeader(managedForm, "Heizkessel");
@@ -116,7 +117,7 @@ public class BoilerEditor extends FormEditor {
 			boiler.setId(UUID.randomUUID().toString());
 			boiler.setName("Neuer Heizkessel");
 			boiler.setEfficiencyRate(80);
-			if(BoilerWizard.open(boiler) != Window.OK)
+			if (BoilerWizard.open(boiler) != Window.OK)
 				return;
 			dao.insert(boiler);
 			boilers.add(boiler);
@@ -127,14 +128,14 @@ public class BoilerEditor extends FormEditor {
 			Boiler boiler = Viewers.getFirstSelected(table);
 			if (boiler == null)
 				return;
-			if(BoilerWizard.open(boiler) != Window.OK)
+			if (BoilerWizard.open(boiler) != Window.OK)
 				return;
 			try {
 				int idx = boilers.indexOf(boiler);
 				boiler = dao.update(boiler);
 				boilers.set(idx, boiler);
 				table.setInput(boilers);
-			} catch(Exception e) {
+			} catch (Exception e) {
 				log.error("failed to update boiler ", boiler, e);
 			}
 		}
@@ -143,8 +144,9 @@ public class BoilerEditor extends FormEditor {
 			Boiler boiler = Viewers.getFirstSelected(table);
 			if (boiler == null)
 				return;
-			boolean doIt = MsgBox.ask(M.Delete,
-					"Soll der ausgewählte Heizkessel wirklich gelöscht werden?");
+			boolean doIt = MsgBox
+					.ask(M.Delete,
+							"Soll der ausgewählte Heizkessel wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			try {
@@ -172,13 +174,42 @@ public class BoilerEditor extends FormEditor {
 				switch (col) {
 					case 0:
 						return boiler.getName();
+					case 1:
+						return boiler.getUrl();
+					case 2:
+						return getPrice(boiler);
+					case 3:
+						return getPowerInfo(boiler);
+					case 4:
+						return getFuelLabel(boiler);
 					default:
 						return null;
 				}
 			}
+
+			private String getPrice(Boiler boiler) {
+				if (boiler == null || boiler.getPurchasePrice() == null)
+					return null;
+				else
+					return Numbers.toString(boiler.getPurchasePrice()) + " EUR";
+			}
+
+			private String getPowerInfo(Boiler boiler) {
+				if(boiler == null)
+					return null;
+				String min = Numbers.toString(boiler.getMinPower());
+				String max = Numbers.toString(boiler.getMaxPower());
+				String eta = Numbers.toString(boiler.getEfficiencyRate());
+				return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
+			}
+
+			private String getFuelLabel(Boiler boiler) {
+				if(boiler.getFuel() != null)
+					return boiler.getFuel().getName();
+				else
+					return Labels.get(boiler.getWoodAmountType());
+			}
 		}
-
 	}
-
 
 }

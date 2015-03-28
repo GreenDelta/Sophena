@@ -29,6 +29,36 @@ public final class Texts {
 		});
 	}
 
+	public static void set(Text text, String value) {
+		if(text == null || value == null)
+			return;
+		text.setText(value);
+	}
+
+	public static void set(Text text, double d) {
+		if(text == null)
+			return;
+		text.setText(Numbers.toString(d));
+	}
+
+	public static void set(Text text, Double d){
+		if(text == null || d == null)
+			return;
+		text.setText(Numbers.toString(d));
+	}
+
+	public static void set(Text text, int i) {
+		if(text == null)
+			return;
+		text.setText(Numbers.toString(i));
+	}
+
+	public static void set(Text text, Integer i){
+		if(text == null || i == null)
+			return;
+		text.setText(Numbers.toString(i));
+	}
+
 	public static boolean isEmpty(Text text) {
 		if(text == null)
 			return true;
