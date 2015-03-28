@@ -111,16 +111,22 @@
 			name="GraphEditor"/>
 
         <editor
-            class="sophena.rcp.editors.ClimateDataEditor"
+            class="sophena.rcp.editors.basedata.climate.ClimateDataEditor"
             icon="icons/climate_16.png"
             id="sophena.ClimateDataEditor"
             name="#Klimadaten" />
 
         <editor
-            class="sophena.rcp.editors.fuels.FuelEditor"
+            class="sophena.rcp.editors.basedata.fuels.FuelEditor"
             icon="icons/fuel_16.png"
             id="sophena.FuelEditor"
             name="#Brennstoffe" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.boilers.BoilerEditor"
+			icon="icons/boiler_16.png"
+			id="sophena.BoilerEditor"
+			name="Boiler" />
 
 	</extension>
 </plugin>

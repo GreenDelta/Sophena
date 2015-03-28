@@ -7,6 +7,8 @@ public enum Images {
 
 	ADD_16("add_16.png"),
 
+	BOILER_16("boiler_16.png"),
+
 	CHART_WIZ("chart_wiz.png"),
 
 	CLIMATE_16("climate_16.png"),

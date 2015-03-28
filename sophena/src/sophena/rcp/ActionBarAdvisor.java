@@ -14,8 +14,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
-import sophena.rcp.editors.ClimateDataEditor;
-import sophena.rcp.editors.fuels.FuelEditor;
+
+import sophena.rcp.editors.basedata.boilers.BoilerEditor;
+import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
+import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.wizards.ProjectWizard;
 
@@ -68,6 +70,8 @@ public class ActionBarAdvisor extends
 				ClimateDataEditor::open));
 		m.add(Actions.create(M.Fuels, Images.FUEL_16.des(),
 				FuelEditor::open));
+		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
+				BoilerEditor::open));
 		menu.add(m);
 	}
 

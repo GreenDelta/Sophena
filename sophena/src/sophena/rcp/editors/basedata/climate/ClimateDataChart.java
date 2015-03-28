@@ -1,4 +1,4 @@
-package sophena.rcp.editors;
+package sophena.rcp.editors.basedata.climate;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.dialogs.Dialog;

@@ -1,4 +1,4 @@
-package sophena.rcp.editors;
+package sophena.rcp.editors.basedata.climate;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;

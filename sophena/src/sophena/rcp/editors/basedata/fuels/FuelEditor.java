@@ -1,4 +1,4 @@
-package sophena.rcp.editors.fuels;
+package sophena.rcp.editors.basedata.fuels;
 
 import java.util.ArrayList;
 import java.util.Collections;

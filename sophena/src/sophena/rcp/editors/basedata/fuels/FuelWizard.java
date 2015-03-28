@@ -1,4 +1,4 @@
-package sophena.rcp.editors.fuels;
+package sophena.rcp.editors.basedata.fuels;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
