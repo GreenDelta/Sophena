@@ -110,9 +110,6 @@ CREATE TABLE tbl_consumers (
 	load_hours INTEGER,
 	heating_limit DOUBLE,
 
-	graph_x INTEGER,
-	graph_y INTEGER,
-
 	f_project CHAR(36),
 	f_building_type CHAR(36),
 	f_building_state CHAR(36),
@@ -133,4 +130,34 @@ CREATE TABLE tbl_fuel_consumptions (
 	water_content DOUBLE,
 
 	PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_boilers (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	tbl_purchase_price DOUBLE,
+	tbl_url VARCHAR(255),
+	tbl_max_power DOUBLE,
+	tbl_min_power DOUBLE,
+	efficiency_rate DOUBLE,
+
+	f_fuel CHAR(36),
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_producers (
+
+	id CHAR(36),
+    name VARCHAR(255),
+    description CLOB(64 K),
+
+    f_boiler VARCHAR(36),
+
+    PRIMARY KEY (id)
 );

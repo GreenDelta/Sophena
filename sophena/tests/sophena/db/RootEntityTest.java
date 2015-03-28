@@ -7,10 +7,12 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.Dao;
+import sophena.model.Boiler;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
+import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.WeatherStation;
@@ -24,7 +26,9 @@ public class RootEntityTest {
 			Consumer.class,
 			Fuel.class,
 			Project.class,
-			WeatherStation.class
+			WeatherStation.class,
+			Boiler.class,
+			Producer.class
 	};
 
 	@Test

@@ -39,9 +39,6 @@ public class Project extends RootEntity {
 	private WeatherStation weatherStation;
 
 	@Transient
-	private final List<Pump> pumps = new ArrayList<>();
-
-	@Transient
 	private final List<Pipe> pipes = new ArrayList<>();
 
 	public List<Producer> getProducers() {
@@ -54,23 +51,6 @@ public class Project extends RootEntity {
 
 	public List<Pipe> getPipes() {
 		return pipes;
-	}
-
-	public List<Pump> getPumps() {
-		return pumps;
-	}
-
-	/**
-	 * Returns a new list with all facilities (producers and consumers)
-	 * contained.
-	 */
-	public List<Facility> getFacilities() {
-		List<Facility> list = new ArrayList<>(producers.size()
-				+ consumers.size());
-		list.addAll(producers);
-		list.addAll(consumers);
-		list.addAll(pumps);
-		return list;
 	}
 
 	public int getProjectDuration() {
