@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "byline": "^4.2.1",
     "gulp": "^3.8.11",
     "mkdirp": "^0.5.0",
     "node-uuid": "^1.4.3"
