@@ -2,22 +2,29 @@
     byline = require('byline'),
     split = require('./climate_data_split.js');
 
-var path = './climate_data/raw_data/sy_ds_abgabe011_15_10elc.txt';
-var stream = fs.createReadStream(path, { encoding: 'utf8' });
-stream = byline.createStream(stream);
+var splitter = split.splitter('climate_data/out/splitted');
 
-var splitter = split.splitter('climate_data/out');
+var basePath = './climate_data/raw_data/sy_ds_abgabe011_15_';
+for (var i = 1; i < 11; i++) {
+    var path = basePath + i + 'elc.txt';
+    streamDataFile(path);
+}
 
-var count = 0;
-stream.on('readable', function () {
-    var line;
-    while (null !== (line = stream.read())) {
-        splitter.handle(line);
-        count++;
-    }    
-});
-
-stream.on('end', function () {
-    console.log(count, 'lines');
-});
+function streamDataFile(path) {
+    var stream = fs.createReadStream(path, { encoding: 'utf8' }),
+        lineCount = 0;
+    stream = byline.createStream(stream);
+    stream.on('readable', function () {
+        var line;
+        while (null !== (line = stream.read())) {
+            splitter.handleLine(line);
+            count++;
+        }
+    });
+    
+    stream.on('end', function () {
+        splitter.flush();
+        console.log(count, 'lines handled');
+    });
+}
 

@@ -34,7 +34,7 @@ module.exports.splitter = function (baseDir) {
         currentYear = null,
         data = {};
     
-    var handle = function (line) {
+    var handleLine = function (line) {
         if (!line)
             return;
         var feed = line.trim(),
@@ -56,8 +56,8 @@ module.exports.splitter = function (baseDir) {
             return;
         var folder = baseDir + '/' + station;
         mkdir.mkdirp(folder, function (err) {
-            if (err)                
-                return console.error(err);            
+            if (err)
+                return console.error(err);
             var file = folder + '/' + year + '.csv',
                 text = '';
             for (var i = 0; i < index.length; i++) {
@@ -71,12 +71,17 @@ module.exports.splitter = function (baseDir) {
             }
             console.log("write file", file);
             fs.writeFile(file, text, function (err) {
-                if (err) 
+                if (err)
                     return console.log(err);
-            }); 
+            });
         });
     }
     
-    return { handle: handle };
+    return {
+        handleLine: handleLine, 
+        flush: function () {
+            writeData(currentStation, currentYear, data);
+        }
+    }
 }
 
