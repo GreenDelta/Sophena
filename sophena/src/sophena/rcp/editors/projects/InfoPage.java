@@ -34,7 +34,7 @@ class InfoPage extends FormPage {
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
-		createHeatNetSection(body, toolkit);
+		new HeatNetSection(editor).create(body, toolkit);
 		createInterruptionSection(body, toolkit);
 		createComponentSection(body, toolkit);
 		form.reflow(true);
@@ -49,21 +49,6 @@ class InfoPage extends FormPage {
 		Text timeText = UI.formText(composite, toolkit, M.ProjectDurationYears);
 	}
 
-	private void createHeatNetSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit,
-				M.HeatingNetwork);
-		UI.gridLayout(composite, 3);
-		UI.formText(composite, toolkit, "#Länge");
-		UI.formLabel(composite, toolkit, "m");
-		UI.formText(composite, toolkit, "#Verlustleistung");
-		UI.formLabel(composite, toolkit, "W/m");
-		UI.formText(composite, toolkit, "#Gleichzeitigkeitsfaktor");
-		UI.formLabel(composite, toolkit, "");
-		UI.formText(composite, toolkit, "Vorlauftemperatur");
-		UI.formLabel(composite, toolkit, "°C");
-		UI.formText(composite, toolkit, "Rücklauflauftemperatur");
-		UI.formLabel(composite, toolkit, "°C");
-	}
 
 	private void createInterruptionSection(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit,

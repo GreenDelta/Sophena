@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
+import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
 import sophena.rcp.App;
@@ -49,6 +50,10 @@ public class ProjectWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			Project p = page.getProject();
+			HeatNet n = p.getHeatNet();
+			n.setSimultaneityFactor(1);
+			n.setSupplyTemperature(80);
+			n.setReturnTemperature(50);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			ProjectEditor.open(p);
 			dao.insert(p);

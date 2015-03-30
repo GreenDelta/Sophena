@@ -8,7 +8,10 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.rcp.App;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -17,6 +20,7 @@ public class ProjectEditor extends FormEditor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Project project;
+	private boolean dirty;
 
 	public static void open(Project project) {
 		if (project == null)
@@ -39,6 +43,18 @@ public class ProjectEditor extends FormEditor {
 		setPartName(project.getName());
 	}
 
+	public void setDirty() {
+		if (dirty)
+			return;
+		dirty = true;
+		editorDirtyStateChanged();
+	}
+
+	@Override
+	public boolean isDirty() {
+		return dirty;
+	}
+
 	@Override
 	protected void addPages() {
 		try {
@@ -55,6 +71,17 @@ public class ProjectEditor extends FormEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
+		try {
+			log.info("update project {}", project);
+			ProjectDao dao = new ProjectDao(App.getDb());
+			project = dao.update(project);
+			dirty = false;
+			setPartName(project.getName());
+			Navigator.refresh(project);
+			editorDirtyStateChanged();
+		} catch (Exception e) {
+		   log.error("failed to update project " + project, e);
+		}
 	}
 
 	@Override
