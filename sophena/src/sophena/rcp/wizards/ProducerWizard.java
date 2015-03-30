@@ -2,6 +2,8 @@ package sophena.rcp.wizards;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -14,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sophena.db.daos.BoilerDao;
@@ -22,6 +25,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.Producer;
+import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
@@ -31,6 +35,7 @@ import sophena.rcp.Numbers;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 
@@ -79,6 +84,8 @@ public class ProducerWizard extends Wizard {
 
 		private Combo fuelCombo;
 		private ListViewer boilerList;
+		private Text rankText;
+		private Combo functionCombo;
 
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
@@ -121,8 +128,9 @@ public class ProducerWizard extends Wizard {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridLayout(composite, 4);
 			UI.gridData(composite, true, false);
-			UI.formText(composite, "Rang");
-			UI.formCombo(composite, "Funktion");
+			rankText = UI.formText(composite, "Rang");
+			Texts.on(rankText).integer().required().validate(data::validate);
+			functionCombo = UI.formCombo(composite, "Funktion");
 		}
 
 		private class BoilerLabel extends LabelProvider {
@@ -148,13 +156,20 @@ public class ProducerWizard extends Wizard {
 				producer.setBoiler(b);
 				if(b != null)
 					producer.setName(b.getName());
-				// TODO rank + function + costs
+				producer.setRank(Texts.getInt(rankText));
+				int fnIdx = functionCombo.getSelectionIndex();
+				if(fnIdx == 0)
+					producer.setFunction(ProducerFunction.BASE_LOAD);
+				else
+					producer.setFunction(ProducerFunction.PEAK_LOAD);
 			}
 
 			private void bindToUI() {
 				fuelCombo.setItems(getFuelItems());
 				fuelCombo.select(0);
+				Texts.set(rankText, getNextRank());
 				updateBoilers();
+				fillFunctionCombo();
 				setPageComplete(false);
 			}
 
@@ -169,6 +184,31 @@ public class ProducerWizard extends Wizard {
 				}
 				Collections.sort(list);
 				return list.toArray(new String[list.size()]);
+			}
+
+			private int getNextRank() {
+				Set<Integer> set = new HashSet<>();
+				for(Producer p : project.getProducers())
+					set.add(p.getRank());
+				int next = 1;
+				while(set.contains(next))
+					next++;
+				return next;
+			}
+
+			private void fillFunctionCombo() {
+				String[] items = new String[2];
+				items[0] = Labels.get(ProducerFunction.BASE_LOAD);
+				items[1] = Labels.get(ProducerFunction.PEAK_LOAD);
+				int selection = 0;
+				for(Producer p : project.getProducers()) {
+					if(p.getFunction() == ProducerFunction.BASE_LOAD){
+						selection = 1;
+						break;
+					}
+				}
+				functionCombo.setItems(items);
+				functionCombo.select(selection);
 			}
 
 			private void updateBoilers() {
@@ -199,17 +239,20 @@ public class ProducerWizard extends Wizard {
 			}
 
 			private boolean validate() {
+				if(!Texts.hasNumber(rankText)){
+					setPageComplete(false);
+					setErrorMessage("Der Rang muss ein numerischer Wert sein");
+					return false;
+				}
+				setErrorMessage(null);
 				if(Viewers.getFirstSelected(boilerList) == null) {
 					setPageComplete(false);
 					return false;
 				} else {
 					setPageComplete(true);
-					setErrorMessage(null);
 					return true;
 				}
 			}
-
 		}
-
 	}
 }

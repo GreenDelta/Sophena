@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.Consumer;
+import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -43,6 +44,8 @@ public class StructureElement implements NavigationElement {
 		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
+		if(type == PRODUCTION)
+			addProducers(childs);
 		if (type == CONSUMPTION)
 			addConsumers(childs);
 		if (type == VARIANTS)
@@ -65,6 +68,14 @@ public class StructureElement implements NavigationElement {
 		for (Consumer c : p.getConsumers()) {
 			childs.add(new FacilityElement(this, c));
 		}
+	}
+
+	private void addProducers(List<NavigationElement> childs) {
+		Project p = getProject();
+		if (p == null)
+			return;
+		for(Producer producer : p.getProducers())
+			childs.add(new FacilityElement(this, producer));
 	}
 
 	@Override

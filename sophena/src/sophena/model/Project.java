@@ -3,7 +3,6 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -86,11 +85,17 @@ public class Project extends RootEntity {
 	public Project clone() {
 		Project clone = new Project();
 		clone.setId(UUID.randomUUID().toString());
-		clone.setName(this.getName());
-		clone.setDescription(this.getDescription());
-		clone.setProjectDuration(this.getProjectDuration());
-		for (Consumer consumer : this.getConsumers())
+		clone.setName(getName());
+		clone.setDescription(getDescription());
+		clone.setProjectDuration(getProjectDuration());
+		clone.setWeatherStation(getWeatherStation());
+		clone.setVariant(isVariant());
+		for (Consumer consumer : getConsumers())
 			clone.getConsumers().add(consumer.clone());
+		for (Producer producer : getProducers())
+			clone.getProducers().add(producer.clone());
+		for (Project variant : getVariants())
+			clone.getVariants().add(variant.clone());
 		// TODO: clone other elements
 		return clone;
 	}

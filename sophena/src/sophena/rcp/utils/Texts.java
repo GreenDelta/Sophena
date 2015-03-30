@@ -79,6 +79,13 @@ public final class Texts {
 			return Numbers.read(text.getText());
 	}
 
+	public static int getInt(Text text){
+		if(text == null)
+			return 0;
+		else
+			return Numbers.readInt(text.getText());
+	}
+
 	public static boolean hasPercentage(Text text) {
 		if(text == null)
 			return false;

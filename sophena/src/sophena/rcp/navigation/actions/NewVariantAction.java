@@ -19,7 +19,7 @@ public class NewVariantAction extends NavigationAction {
 	private Project project;
 
 	public NewVariantAction() {
-		setText("#Neue Variante");
+		setText("Neue Variante");
 		setImageDescriptor(Images.NEW_PROJECT_16.des());
 	}
 
@@ -57,8 +57,8 @@ public class NewVariantAction extends NavigationAction {
 	public void run() {
 		if (project == null)
 			return;
-		InputDialog dialog = new InputDialog(UI.shell(), "#Neue Variante",
-				"#Name der Variante", "#Neue Variante", this::checkName);
+		InputDialog dialog = new InputDialog(UI.shell(), "Neue Variante",
+				"Name der Variante", "Neue Variante", this::checkName);
 		if (dialog.open() == Window.OK) {
 			String val = dialog.getValue();
 			if (val == null)
@@ -71,6 +71,7 @@ public class NewVariantAction extends NavigationAction {
 		Project variant = project.clone();
 		variant.setName(val);
 		variant.setVariant(true);
+		variant.getVariants().clear();
 		project.getVariants().add(variant);
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -84,11 +85,11 @@ public class NewVariantAction extends NavigationAction {
 
 	private String checkName(String name) {
 		if (name == null || name.trim().length() == 0)
-			return "#Der Name darf nicht leer sein";
+			return "Der Name darf nicht leer sein";
 		String n = name.trim();
 		for (Project var : project.getVariants()) {
 			if (n.equalsIgnoreCase(var.getName()))
-				return "#Es existiert schon eine Variante mit diesem Namen";
+				return "Es existiert schon eine Variante mit diesem Namen";
 		}
 		return null;
 	}

@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import sophena.db.daos.Dao;
 import sophena.model.Consumer;
 import sophena.model.Facility;
+import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -60,6 +61,9 @@ public class FacilityElement implements NavigationElement {
 		if (facility instanceof Consumer) {
 			Dao<Consumer> dao = new Dao<>(Consumer.class, App.getDb());
 			facility = dao.get(facility.getId());
+		} else if (facility instanceof Producer) {
+			Dao<Producer> dao = new Dao<>(Producer.class, App.getDb());
+			facility = dao.get(facility.getId());
 		}
 	}
 
@@ -67,6 +71,8 @@ public class FacilityElement implements NavigationElement {
 	public Image getImage() {
 		if (facility instanceof Consumer)
 			return Images.CONSUMER_16.img();
+		if (facility instanceof Producer)
+			return Images.PRODUCER_16.img();
 		else
 			return null;
 	}
