@@ -1,6 +1,5 @@
 package sophena.calc;
 
-import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.model.FuelConsumption;
 import sophena.model.WeatherStation;
@@ -11,17 +10,14 @@ public class ConsumerLoadCurve {
 
 	private Consumer consumer;
 	private WeatherStation station;
-	private Database db;
 
 	private ConsumerLoadCurve() {
 	}
 
-	public static double[] calculate(Consumer consumer, WeatherStation station,
-			Database db) {
+	public static double[] calculate(Consumer consumer, WeatherStation station) {
 		ConsumerLoadCurve curve = new ConsumerLoadCurve();
 		curve.consumer = consumer;
 		curve.station = station;
-		curve.db = db;
 		return curve.calc();
 	}
 

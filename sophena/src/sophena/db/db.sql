@@ -89,6 +89,13 @@ CREATE TABLE tbl_projects (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+    net_length DOUBLE,
+    supply_temperature DOUBLE,
+    return_temperature DOUBLE,
+    simultaneity_factor DOUBLE,
+    buffer_tank_volume DOUBLE,
+    power_loss DOUBLE,
+
 	is_variant BOOLEAN,
 	project_duration INTEGER,
 	f_project CHAR(36),

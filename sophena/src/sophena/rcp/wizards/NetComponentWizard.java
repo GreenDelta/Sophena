@@ -14,7 +14,6 @@ import sophena.rcp.utils.UI;
 
 public class NetComponentWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Project project;
 

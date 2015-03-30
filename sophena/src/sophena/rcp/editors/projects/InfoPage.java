@@ -53,17 +53,15 @@ class InfoPage extends FormPage {
 		Composite composite = UI.formSection(body, toolkit,
 				M.HeatingNetwork);
 		UI.gridLayout(composite, 3);
-		UI.formCombo(composite, toolkit, "#Ort");
-		UI.formLabel(composite, toolkit, "");
 		UI.formText(composite, toolkit, "#Länge");
 		UI.formLabel(composite, toolkit, "m");
 		UI.formText(composite, toolkit, "#Verlustleistung");
 		UI.formLabel(composite, toolkit, "W/m");
 		UI.formText(composite, toolkit, "#Gleichzeitigkeitsfaktor");
 		UI.formLabel(composite, toolkit, "");
-		UI.formText(composite, toolkit, "#Vorlauftemperatur");
+		UI.formText(composite, toolkit, "Vorlauftemperatur");
 		UI.formLabel(composite, toolkit, "°C");
-		UI.formText(composite, toolkit, "#Rücklauflauftemperatur");
+		UI.formText(composite, toolkit, "Rücklauflauftemperatur");
 		UI.formLabel(composite, toolkit, "°C");
 	}
 

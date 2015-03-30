@@ -16,8 +16,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sophena.io.HoursProfile;
 import sophena.model.Consumer;
@@ -29,7 +27,6 @@ import sophena.rcp.utils.UI;
 
 public class LoadProfileWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Consumer consumer;
 

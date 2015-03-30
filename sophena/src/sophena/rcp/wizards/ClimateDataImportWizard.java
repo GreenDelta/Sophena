@@ -12,8 +12,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.Dao;
 import sophena.io.ClimateFileReader;
@@ -28,7 +26,6 @@ import sophena.rcp.utils.UI;
 
 public class ClimateDataImportWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 
 	public static void open() {
@@ -56,7 +53,7 @@ public class ClimateDataImportWizard extends Wizard {
 						reader.run();
 						station.setData(reader.getResult().getData());
 						station.setNormTemperature(-12); // TODO: read from file
-						// TODO: add error handling
+					// TODO: add error handling
 					Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
 							App.getDb());
 					dao.insert(station);

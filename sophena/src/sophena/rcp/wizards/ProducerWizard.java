@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
@@ -68,6 +70,7 @@ public class ProducerWizard extends Wizard {
 			// TODO: open producer editor
 			return true;
 		} catch (Exception e) {
+			log.error("failed to update project with new producer", e);
 			return false;
 		}
 	}
@@ -150,15 +153,15 @@ public class ProducerWizard extends Wizard {
 		private class DataBinding {
 
 			private void bindToModel(Producer producer) {
-				if(producer == null)
+				if (producer == null)
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerList);
 				producer.setBoiler(b);
-				if(b != null)
+				if (b != null)
 					producer.setName(b.getName());
 				producer.setRank(Texts.getInt(rankText));
 				int fnIdx = functionCombo.getSelectionIndex();
-				if(fnIdx == 0)
+				if (fnIdx == 0)
 					producer.setFunction(ProducerFunction.BASE_LOAD);
 				else
 					producer.setFunction(ProducerFunction.PEAK_LOAD);
@@ -188,10 +191,10 @@ public class ProducerWizard extends Wizard {
 
 			private int getNextRank() {
 				Set<Integer> set = new HashSet<>();
-				for(Producer p : project.getProducers())
+				for (Producer p : project.getProducers())
 					set.add(p.getRank());
 				int next = 1;
-				while(set.contains(next))
+				while (set.contains(next))
 					next++;
 				return next;
 			}
@@ -201,8 +204,8 @@ public class ProducerWizard extends Wizard {
 				items[0] = Labels.get(ProducerFunction.BASE_LOAD);
 				items[1] = Labels.get(ProducerFunction.PEAK_LOAD);
 				int selection = 0;
-				for(Producer p : project.getProducers()) {
-					if(p.getFunction() == ProducerFunction.BASE_LOAD){
+				for (Producer p : project.getProducers()) {
+					if (p.getFunction() == ProducerFunction.BASE_LOAD) {
 						selection = 1;
 						break;
 					}
@@ -239,13 +242,13 @@ public class ProducerWizard extends Wizard {
 			}
 
 			private boolean validate() {
-				if(!Texts.hasNumber(rankText)){
+				if (!Texts.hasNumber(rankText)) {
 					setPageComplete(false);
 					setErrorMessage("Der Rang muss ein numerischer Wert sein");
 					return false;
 				}
 				setErrorMessage(null);
-				if(Viewers.getFirstSelected(boilerList) == null) {
+				if (Viewers.getFirstSelected(boilerList) == null) {
 					setPageComplete(false);
 					return false;
 				} else {

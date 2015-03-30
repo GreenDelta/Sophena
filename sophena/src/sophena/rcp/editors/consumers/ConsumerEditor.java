@@ -69,7 +69,7 @@ public class ConsumerEditor extends FormEditor {
 
 	public void calculate() {
 		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
-				project.getWeatherStation(), App.getDb());
+				project.getWeatherStation());
 		for(java.util.function.Consumer<double[]> fn : calcListeners) {
 			fn.accept(loadCurve);
 		}

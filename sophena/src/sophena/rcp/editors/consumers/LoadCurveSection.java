@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import sophena.calc.ConsumerLoadCurve;
 import sophena.io.HoursProfile;
 import sophena.model.Statistics;
-import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
@@ -139,7 +138,7 @@ class LoadCurveSection {
 		private void doExport(String path) {
 			try {
 				double[] data = ConsumerLoadCurve.calculate(editor.getConsumer(),
-						editor.getProject().getWeatherStation(), App.getDb());
+						editor.getProject().getWeatherStation());
 				File file = new File(path);
 				HoursProfile.write(data, file);
 			} catch (Exception e) {

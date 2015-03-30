@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tbl_projects")
@@ -38,8 +38,8 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_weather_station")
 	private WeatherStation weatherStation;
 
-	@Transient
-	private final List<Pipe> pipes = new ArrayList<>();
+	@Embedded
+	private HeatNet heatNet = new HeatNet();
 
 	public List<Producer> getProducers() {
 		return producers;
@@ -47,10 +47,6 @@ public class Project extends RootEntity {
 
 	public List<Consumer> getConsumers() {
 		return consumers;
-	}
-
-	public List<Pipe> getPipes() {
-		return pipes;
 	}
 
 	public int getProjectDuration() {
@@ -81,6 +77,14 @@ public class Project extends RootEntity {
 		this.weatherStation = weatherStation;
 	}
 
+	public HeatNet getHeatNet() {
+		return heatNet;
+	}
+
+	public void setHeatNet(HeatNet heatNet) {
+		this.heatNet = heatNet;
+	}
+
 	@Override
 	public Project clone() {
 		Project clone = new Project();
@@ -96,6 +100,8 @@ public class Project extends RootEntity {
 			clone.getProducers().add(producer.clone());
 		for (Project variant : getVariants())
 			clone.getVariants().add(variant.clone());
+		if(getHeatNet() != null)
+			clone.setHeatNet(getHeatNet().clone());
 		// TODO: clone other elements
 		return clone;
 	}
