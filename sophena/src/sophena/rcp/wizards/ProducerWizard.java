@@ -1,18 +1,38 @@
 package sophena.rcp.wizards;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.UUID;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sophena.db.daos.BoilerDao;
+import sophena.db.daos.FuelDao;
+import sophena.db.daos.ProjectDao;
+import sophena.model.Boiler;
+import sophena.model.Fuel;
+import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.WoodAmountType;
+import sophena.rcp.App;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
+import sophena.rcp.Numbers;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 public class ProducerWizard extends Wizard {
 
@@ -32,7 +52,19 @@ public class ProducerWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		return true;
+		try {
+			Producer producer = new Producer();
+			producer.setId(UUID.randomUUID().toString());
+			page.data.bindToModel(producer);
+			project.getProducers().add(producer);
+			ProjectDao dao = new ProjectDao(App.getDb());
+			dao.update(project);
+			Navigator.refresh(project);
+			// TODO: open producer editor
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -43,6 +75,11 @@ public class ProducerWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
+		private DataBinding data = new DataBinding();
+
+		private Combo fuelCombo;
+		private ListViewer boilerList;
+
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
 		}
@@ -52,16 +89,18 @@ public class ProducerWizard extends Wizard {
 			Composite root = new Composite(parent, SWT.NONE);
 			setControl(root);
 			UI.gridLayout(root, 1, 5, 5);
-			createComboGroup(root);
+			createCombos(root);
 			createList(root);
 			createFunctionFields(root);
+			data.bindToUI();
 		}
 
-		private void createComboGroup(Composite root) {
+		private void createCombos(Composite root) {
 			Composite composite = UI.formComposite(root);
 			UI.gridData(composite, true, false);
-			UI.formCombo(composite, "#Erzeugertyp");
-			UI.formCombo(composite, "#Anlagengröße");
+			fuelCombo = UI.formCombo(composite, "Brennstoff");
+			Controls.onSelect(fuelCombo, (e) -> data.updateBoilers());
+			UI.formCombo(composite, "Anlagengröße");
 		}
 
 		private void createList(Composite root) {
@@ -69,14 +108,108 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(composite, true, true);
 			UI.gridLayout(composite, 1);
 			List list = new List(composite, SWT.BORDER);
+			boilerList = new ListViewer(list);
+			boilerList.setContentProvider(ArrayContentProvider.getInstance());
+			boilerList.setLabelProvider(new BoilerLabel());
+			boilerList.addSelectionChangedListener((e) -> {
+				data.validate();
+			});
 			UI.gridData(list, true, true);
 		}
 
 		private void createFunctionFields(Composite root) {
-			Composite composite = UI.formComposite(root);
+			Composite composite = new Composite(root, SWT.NONE);
+			UI.gridLayout(composite, 4);
 			UI.gridData(composite, true, false);
-			UI.formText(composite, "#Rang");
-			UI.formCombo(composite, "#Funktion");
+			UI.formText(composite, "Rang");
+			UI.formCombo(composite, "Funktion");
 		}
+
+		private class BoilerLabel extends LabelProvider {
+			@Override
+			public String getText(Object element) {
+				if (!(element instanceof Boiler))
+					return null;
+				Boiler boiler = (Boiler) element;
+				String label = boiler.getName()
+						+ " (" + Numbers.toString(boiler.getMinPower())
+						+ " kW - " + Numbers.toString(boiler.getMaxPower())
+						+ " kW)";
+				return label;
+			}
+		}
+
+		private class DataBinding {
+
+			private void bindToModel(Producer producer) {
+				if(producer == null)
+					return;
+				Boiler b = Viewers.getFirstSelected(boilerList);
+				producer.setBoiler(b);
+				if(b != null)
+					producer.setName(b.getName());
+				// TODO rank + function + costs
+			}
+
+			private void bindToUI() {
+				fuelCombo.setItems(getFuelItems());
+				fuelCombo.select(0);
+				updateBoilers();
+				setPageComplete(false);
+			}
+
+			private String[] getFuelItems() {
+				java.util.List<String> list = new ArrayList<>();
+				list.add(Labels.get(WoodAmountType.CHIPS));
+				list.add(Labels.get(WoodAmountType.LOGS));
+				FuelDao dao = new FuelDao(App.getDb());
+				for (Fuel fuel : dao.getAll()) {
+					if (!fuel.isWood())
+						list.add(fuel.getName());
+				}
+				Collections.sort(list);
+				return list.toArray(new String[list.size()]);
+			}
+
+			private void updateBoilers() {
+				BoilerDao dao = new BoilerDao(App.getDb());
+				ArrayList<Boiler> input = new ArrayList<>();
+				for (Boiler b : dao.getAll()) {
+					if (matchSelection(b))
+						input.add(b);
+				}
+				input.sort((b1, b2) -> Strings.compare(b1.getName(),
+						b2.getName()));
+				boilerList.setInput(input);
+				setPageComplete(false);
+			}
+
+			private boolean matchSelection(Boiler b) {
+				if (b == null)
+					return false;
+				int idx = fuelCombo.getSelectionIndex();
+				String fuel = fuelCombo.getItem(idx);
+				if (b.getFuel() != null)
+					return Strings.nullOrEqual(fuel, b.getFuel().getName());
+				if (b.getWoodAmountType() != null)
+					return Strings.nullOrEqual(
+							fuel, Labels.get(b.getWoodAmountType()));
+				else
+					return false;
+			}
+
+			private boolean validate() {
+				if(Viewers.getFirstSelected(boilerList) == null) {
+					setPageComplete(false);
+					return false;
+				} else {
+					setPageComplete(true);
+					setErrorMessage(null);
+					return true;
+				}
+			}
+
+		}
+
 	}
 }

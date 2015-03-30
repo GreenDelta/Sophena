@@ -23,7 +23,8 @@ public class Project extends RootEntity {
 	@Column(name = "is_variant")
 	private boolean variant;
 
-	@Transient
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
 	private final List<Producer> producers = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -157,7 +157,10 @@ CREATE TABLE tbl_producers (
 	id CHAR(36),
     name VARCHAR(255),
     description CLOB(64 K),
+    rank INTEGER,
+    producer_function VARCHAR(255),
 
+	f_project CHAR(36),
     f_boiler VARCHAR(36),
 
     PRIMARY KEY (id)
