@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.model.Statistics;
+import sophena.model.Stats;
 
 public class ClimateFileReader implements Runnable {
 
@@ -62,7 +62,7 @@ public class ClimateFileReader implements Runnable {
 			data[i] = data[i] / ((double) n);
 		}
 		int expected = settings.getEndYear() - settings.getStartYear() + 1;
-		int min = Statistics.min(items);
+		int min = Stats.min(items);
 		if (min < expected)
 			result.setComplete(false);
 	}
@@ -150,8 +150,8 @@ public class ClimateFileReader implements Runnable {
 
 	private void setUp() {
 		result = new ClimateFileResult();
-		data = new double[8760];
-		items = new int[8760];
+		data = new double[Stats.HOURS];
+		items = new int[Stats.HOURS];
 		result.setData(data);
 		result.setItemsPerDatum(items);
 		result.setWithoutError(true);
@@ -162,7 +162,7 @@ public class ClimateFileReader implements Runnable {
 		String[] months = { "01", "02", "03", "04", "05", "06",
 				"07", "08", "09", "10", "11", "12" };
 		int[] days = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-		Map<String, Integer> index = new HashMap<>(8760);
+		Map<String, Integer> index = new HashMap<>(Stats.HOURS);
 		int idx = 0;
 		for (int month = 0; month < months.length; month++) {
 			for (int day = 1; day <= days[month]; day++) {

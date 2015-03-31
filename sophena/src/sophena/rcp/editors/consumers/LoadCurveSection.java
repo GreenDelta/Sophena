@@ -2,6 +2,7 @@ package sophena.rcp.editors.consumers;
 
 import java.io.File;
 import java.util.Arrays;
+
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
@@ -19,9 +20,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.calc.ConsumerLoadCurve;
 import sophena.io.HoursProfile;
-import sophena.model.Statistics;
+import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
@@ -40,7 +42,7 @@ class LoadCurveSection {
 			FormToolkit tk) {
 		this.editor = editor;
 		chartData = new CircularBufferDataProvider(true);
-		chartData.setBufferSize(8760);
+		chartData.setBufferSize(Stats.HOURS);
 		chartData.setConcatenate_data(false);
 		render(body, tk);
 		editor.onCalculated(this::update);
@@ -84,13 +86,13 @@ class LoadCurveSection {
 		trace.setTraceType(TraceType.AREA);
 		trace.setTraceColor(Colors.getLinkBlue());
 		g.addTrace(trace);
-		g.primaryXAxis.setRange(0, 8760);
+		g.primaryXAxis.setRange(0, Stats.HOURS);
 		g.primaryXAxis.setTitle("");
 		return g;
 	}
 
 	private void formatAxis(double[] data) {
-		double max = Statistics.nextStep(Statistics.max(data), 5);
+		double max = Stats.nextStep(Stats.max(data), 5);
 		Axis y = graph.primaryYAxis;
 		y.setTitle("kW");
 		y.setRange(0, max);
@@ -127,7 +129,7 @@ class LoadCurveSection {
 		@Override
 		public void run() {
 			FileDialog dialog = new FileDialog(UI.shell(), SWT.SAVE);
-			dialog.setFilterExtensions(new String[]{"*.csv"});
+			dialog.setFilterExtensions(new String[] { "*.csv" });
 			dialog.setText("Jahresdauerlinie speichern");
 			String path = dialog.open();
 			if (path != null) {
@@ -137,7 +139,8 @@ class LoadCurveSection {
 
 		private void doExport(String path) {
 			try {
-				double[] data = ConsumerLoadCurve.calculate(editor.getConsumer(),
+				double[] data = ConsumerLoadCurve.calculate(
+						editor.getConsumer(),
 						editor.getProject().getWeatherStation());
 				File file = new File(path);
 				HoursProfile.write(data, file);

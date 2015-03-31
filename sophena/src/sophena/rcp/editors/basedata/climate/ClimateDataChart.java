@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import sophena.model.Statistics;
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 
 class ClimateDataChart extends Dialog {
@@ -55,7 +55,7 @@ class ClimateDataChart extends Dialog {
 		g.setShowLegend(false);
 		CircularBufferDataProvider provider = new CircularBufferDataProvider(
 				true);
-		provider.setBufferSize(8760);
+		provider.setBufferSize(Stats.HOURS);
 		provider.setCurrentYDataArray(station.getData());
 		provider.setConcatenate_data(false);
 		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
@@ -63,13 +63,13 @@ class ClimateDataChart extends Dialog {
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		g.addTrace(trace);
 		g.getXAxisList().get(0).setVisible(false);
-		g.primaryXAxis.setRange(0, 8760);
+		g.primaryXAxis.setRange(0, Stats.HOURS);
 		formatY(g);
 	}
 
 	private void formatY(XYGraph g) {
-		double max = Statistics.max(station.getData());
-		double min = Statistics.min(station.getData());
+		double max = Stats.max(station.getData());
+		double min = Stats.min(station.getData());
 		Axis y = g.getYAxisList().get(0);
 		y.setTitle("°C");
 		y.setRange(min - 2, max + 2);

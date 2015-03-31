@@ -23,15 +23,14 @@ class InfoPage extends FormPage {
 	private ProjectEditor editor;
 
 	public InfoPage(ProjectEditor editor) {
-		super(editor, "sophena.ProjectInfoPage", "#Projektinformationen");
+		super(editor, "sophena.ProjectInfoPage", "Projektinformationen");
 		this.editor = editor;
 	}
 
 	@Override
-	protected void createFormContent(IManagedForm managedForm) {
-		ScrolledForm form = UI.formHeader(managedForm, editor.getProject()
-				.getName());
-		FormToolkit toolkit = managedForm.getToolkit();
+	protected void createFormContent(IManagedForm mform) {
+		ScrolledForm form = UI.formHeader(mform, editor.getProject().getName());
+		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
 		new HeatNetSection(editor).create(body, toolkit);

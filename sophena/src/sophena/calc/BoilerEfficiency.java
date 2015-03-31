@@ -1,5 +1,7 @@
 package sophena.calc;
 
+import sophena.model.Stats;
+
 public final class BoilerEfficiency {
 
 	private BoilerEfficiency() {
@@ -9,7 +11,7 @@ public final class BoilerEfficiency {
 			int fullLoadHours) {
 		if (fullLoadHours < 1)
 			return 0;
-		double nk = 8760;
+		double nk = Stats.HOURS;
 		double av = fullLoadHours;
 		double bv = 0.014;
 		double bw = 1 / ((nk / av - 1) * bv + 1);
@@ -20,7 +22,7 @@ public final class BoilerEfficiency {
 			int fullLoadHours) {
 		if (fullLoadHours < 1)
 			return 0;
-		double nk = 8760;
+		double nk = Stats.HOURS;
 		double av = fullLoadHours;
 		double bv = 0.014;
 		return utilisationRate * ((nk / av - 1) * bv + 1);

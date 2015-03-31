@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.Consumer;
-import sophena.model.Statistics;
+import sophena.model.Stats;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.UI;
@@ -86,7 +86,7 @@ class HeatDemandSection {
 		t.setEditable(false);
 		UI.formLabel(composite, tk, "kWh");
 		editor.onCalculated((values) -> {
-			double sum = Statistics.sum(values);
+			double sum = Stats.sum(values);
 			t.setText(Numbers.toString(sum));
 		});
 	}

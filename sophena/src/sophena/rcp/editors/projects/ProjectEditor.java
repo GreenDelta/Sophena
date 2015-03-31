@@ -59,6 +59,7 @@ public class ProjectEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(new InfoPage(this));
+			addPage(new ResultPage(this));
 			// ProjectDescriptor descriptor = new ProjectDescriptor();
 			// descriptor.setName("Test");
 			// GraphEditorInput input = new GraphEditorInput(descriptor);
@@ -80,7 +81,7 @@ public class ProjectEditor extends FormEditor {
 			Navigator.refresh(project);
 			editorDirtyStateChanged();
 		} catch (Exception e) {
-		   log.error("failed to update project " + project, e);
+			log.error("failed to update project " + project, e);
 		}
 	}
 

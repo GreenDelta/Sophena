@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.model.Stats;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.Strings;
 
@@ -25,8 +26,6 @@ import sophena.rcp.utils.Strings;
  * We try to identify the column separator in the reader.
  */
 public final class HoursProfile {
-
-	private static final int ITEMS = 8760;
 
 	public static double[] read(File file) {
 		return new Reader().read(file);
@@ -74,12 +73,12 @@ public final class HoursProfile {
 
 		public double[] read(File file) {
 			log.info("read profile from file {}", file);
-			double[] profile = new double[ITEMS];
+			double[] profile = new double[Stats.HOURS];
 			try {
 				List<String> rows = Files.readAllLines(file.toPath());
-				if (rows.size() != (ITEMS + 1)) {
+				if (rows.size() != (Stats.HOURS + 1)) {
 					log.warn("file contains {} rows but should contain {}",
-							rows.size(), ITEMS);
+							rows.size(), Stats.HOURS);
 				}
 				readRows(rows, profile);
 			} catch (Exception e) {
@@ -110,7 +109,7 @@ public final class HoursProfile {
 			}
 
 			boolean isValid() {
-				return 0 <= index && index < ITEMS;
+				return 0 <= index && index < Stats.HOURS;
 			}
 
 			static Entry read(String row) {

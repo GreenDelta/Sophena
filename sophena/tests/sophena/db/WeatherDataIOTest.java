@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.Dao;
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 
 public class WeatherDataIOTest {
@@ -19,7 +20,7 @@ public class WeatherDataIOTest {
 		String id = UUID.randomUUID().toString();
 		WeatherStation station = new WeatherStation();
 		station.setId(id);
-		double[] data = new double[8760];
+		double[] data = new double[Stats.HOURS];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = 10 * Math.random();
 		}

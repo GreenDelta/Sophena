@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.io.HoursProfile;
 import sophena.model.Consumer;
-import sophena.model.Statistics;
+import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
@@ -112,20 +112,20 @@ public class LoadProfileWizard extends Wizard {
 			g.setShowLegend(false);
 			CircularBufferDataProvider provider = new CircularBufferDataProvider(
 					true);
-			provider.setBufferSize(8760);
+			provider.setBufferSize(Stats.HOURS);
 			provider.setCurrentYDataArray(data);
 			Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 					provider);
 			trace.setPointStyle(Trace.PointStyle.NONE);
 			g.addTrace(trace);
 			g.primaryXAxis.setVisible(false);
-			g.primaryXAxis.setRange(0, 8760);
+			g.primaryXAxis.setRange(0, Stats.HOURS);
 			formatY(g, data);
 		}
 
 		private void formatY(XYGraph g, double[] data) {
-			double max = Statistics.max(data);
-			max = Statistics.nextStep(max, 5);
+			double max = Stats.max(data);
+			max = Stats.nextStep(max, 5);
 			Axis y = g.getYAxisList().get(0);
 			y.setTitle("kW");
 			y.setRange(0, max);

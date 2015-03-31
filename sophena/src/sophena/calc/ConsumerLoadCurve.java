@@ -2,11 +2,10 @@ package sophena.calc;
 
 import sophena.model.Consumer;
 import sophena.model.FuelConsumption;
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 
 public class ConsumerLoadCurve {
-
-	private final int HOURS = 8760;
 
 	private Consumer consumer;
 	private WeatherStation station;
@@ -22,7 +21,7 @@ public class ConsumerLoadCurve {
 	}
 
 	private double[] calc() {
-		double[] data = new double[HOURS];
+		double[] data = new double[Stats.HOURS];
 		if (consumer == null || station == null)
 			return data;
 		if (consumer.isDemandBased()) {
@@ -52,7 +51,7 @@ public class ConsumerLoadCurve {
 		double[] climateData = station.getData();
 		double tn = station.getNormTemperature();
 		double tmax = consumer.getHeatingLimit();
-		for (int h = 0; h < HOURS; h++) {
+		for (int h = 0; h < Stats.HOURS; h++) {
 			double t = climateData[h];
 			if (t >= tmax)
 				data[h] = pMin;

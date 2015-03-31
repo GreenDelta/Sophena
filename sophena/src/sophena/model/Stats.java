@@ -1,8 +1,13 @@
 package sophena.model;
 
-public final class Statistics {
+public final class Stats {
 
-	private Statistics() {
+	/**
+	 * The number of annual hours (365 * 24).
+	 */
+	public static final int HOURS = 8760;
+
+	private Stats() {
 	}
 
 	public static double sum(double[] vals) {
