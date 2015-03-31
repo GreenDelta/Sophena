@@ -1,6 +1,5 @@
 package sophena.calc;
 
-import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -9,7 +8,7 @@ public class ProjectLoadCurve {
 
 	// TODO: this is currently just a test implementation
 
-	public static double[] calulate(Project project, Database db) {
+	public static double[] calulate(Project project) {
 		double[] curve = new double[Stats.HOURS];
 		if (project == null)
 			return curve;
