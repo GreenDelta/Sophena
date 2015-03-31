@@ -80,7 +80,6 @@ public class ProjectCalculator {
 		double power;
 		Boiler boiler = producer.getBoiler();
 		if (producer.getFunction() == ProducerFunction.BASE_LOAD) {
-			// TODO: producer running? -> buffer sufficient?
 			power = maxLoad;
 			if (boiler.getMaxPower() < maxLoad)
 				power = boiler.getMaxPower();

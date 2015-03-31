@@ -37,7 +37,7 @@ class BoilerWizard extends Wizard {
 		if (boiler == null)
 			return Window.CANCEL;
 		BoilerWizard wiz = new BoilerWizard();
-		wiz.setWindowTitle("Boiler");
+		wiz.setWindowTitle("Heizkessel");
 		wiz.boiler = boiler;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 400);
