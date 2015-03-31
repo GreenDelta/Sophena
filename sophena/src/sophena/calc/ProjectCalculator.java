@@ -24,6 +24,7 @@ public class ProjectCalculator {
 	private ProjectResult doIt() {
 		maxBufferCapacity = calcMaxBufferCapacity();
 		ProjectResult r = new ProjectResult(project);
+		r.printHeader();
 		for (int i = 0; i < Stats.HOURS; i++) {
 
 			double requiredLoad = r.loadCurve[i];
@@ -42,27 +43,32 @@ public class ProjectCalculator {
 					continue;
 
 				double power = getSuppliedPower(requiredLoad, maxLoad, producer);
+				if (power > requiredLoad) {
+					bufferCapacity -= (power - requiredLoad);
+				}
 				suppliedPower += power;
 				maxLoad -= power;
 				requiredLoad -= power;
 				r.producerResults[k][i] = power;
 
-				if (suppliedPower < requiredLoad && bufferPotential >= requiredLoad) {
+				if (suppliedPower < requiredLoad
+						&& bufferPotential >= requiredLoad) {
 					// take rest from buffer
 					break;
 				}
 			}
 
-			if(suppliedPower < requiredLoad && bufferPotential > 0) {
+			if (suppliedPower < requiredLoad && bufferPotential > 0) {
 				double bufferPower = requiredLoad;
-				if(bufferPotential < requiredLoad)
+				if (bufferPotential < requiredLoad)
 					bufferPower = bufferPotential;
 				suppliedPower += bufferPower;
 				r.suppliedBufferHeat[i] = bufferPower;
-				bufferCapacity -= bufferPower;
+				bufferCapacity += bufferPower;
 			}
 			r.bufferCapacity[i] = bufferCapacity;
 			r.suppliedPower[i] = suppliedPower;
+			r.printRow(i);
 		}
 
 		return r;

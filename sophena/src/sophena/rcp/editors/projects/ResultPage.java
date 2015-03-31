@@ -7,8 +7,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.calc.ProjectCalculator;
-import sophena.calc.ProjectResult;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.UI;
 
@@ -28,8 +28,8 @@ class ResultPage extends FormPage {
 		Composite body = UI.formBody(form, toolkit);
 		Button button = toolkit.createButton(body, "Berechnen", SWT.NONE);
 		Controls.onSelect(button, (e) -> {
-			ProjectResult r = ProjectCalculator.calculate(editor.getProject());
-			r.print();
+			ProjectCalculator.calculate(editor.getProject());
+
 		});
 	}
 }
