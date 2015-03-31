@@ -25,16 +25,17 @@ public class ProjectCalculator {
 		maxBufferCapacity = calcMaxBufferCapacity();
 		ProjectResult r = new ProjectResult(project);
 		r.printHeader();
+		r.bufferCapacity[0] = 0.5 * maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
 
 			double requiredLoad = r.loadCurve[i];
-			double bufferCapacity = getBufferCapacity(r, i);
+			double bufferCapacity = r.bufferCapacity[i];
 			double maxLoad = requiredLoad + bufferCapacity;
 			double bufferPotential = maxBufferCapacity - bufferCapacity;
 
 			double suppliedPower = 0;
 			for (int k = 0; k < r.producers.length; k++) {
-				if (suppliedPower >= requiredLoad)
+				if (requiredLoad <= 0)
 					break;
 
 				Producer producer = r.producers[k];
@@ -51,14 +52,13 @@ public class ProjectCalculator {
 				requiredLoad -= power;
 				r.producerResults[k][i] = power;
 
-				if (suppliedPower < requiredLoad
-						&& bufferPotential >= requiredLoad) {
+				if (bufferPotential >= requiredLoad) {
 					// take rest from buffer
 					break;
 				}
 			}
 
-			if (suppliedPower < requiredLoad && bufferPotential > 0) {
+			if (requiredLoad >= 0 && bufferPotential > 0) {
 				double bufferPower = requiredLoad;
 				if (bufferPotential < requiredLoad)
 					bufferPower = bufferPotential;
@@ -66,7 +66,8 @@ public class ProjectCalculator {
 				r.suppliedBufferHeat[i] = bufferPower;
 				bufferCapacity += bufferPower;
 			}
-			r.bufferCapacity[i] = bufferCapacity;
+			if ((i + 1) < Stats.HOURS)
+				r.bufferCapacity[i + 1] = bufferCapacity;
 			r.suppliedPower[i] = suppliedPower;
 			r.printRow(i);
 		}
@@ -89,13 +90,6 @@ public class ProjectCalculator {
 				power = boiler.getMinPower();
 		}
 		return power;
-	}
-
-	private double getBufferCapacity(ProjectResult r, int i) {
-		if (i == 0)
-			return 0.5 * maxBufferCapacity;
-		else
-			return r.bufferCapacity[i - 1];
 	}
 
 	private double calcMaxBufferCapacity() {
