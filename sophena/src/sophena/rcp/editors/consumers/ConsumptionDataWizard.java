@@ -209,13 +209,13 @@ class ConsumptionDataWizard extends Wizard {
 
 			void bindToUI() {
 				initFuels();
-				amountText.setText(Numbers.toString(consumption.getAmount()));
+				Texts.set(amountText, consumption.getAmount());
 				double util = consumption.getUtilisationRate();
 				if(util == 0)
 					util = 75.892;
-				utilText.setText(Numbers.toString(util));
+				Texts.set(utilText, util);
 				double effi =BoilerEfficiency.getEfficiencyRate(util, loadHours);
-				effiText.setText(Numbers.toString(effi));
+				Texts.set(effiText, effi);
 				validate();
 			}
 

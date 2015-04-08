@@ -29,6 +29,8 @@ public enum Images {
 
 	INFO_16("info_16.png"),
 
+	LOAD_PROFILE_16("load_profile_16.png"),
+
 	NEW_16("new_16.png"),
 
 	NEW_PROJECT_16("new_project_16.png"),

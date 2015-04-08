@@ -27,8 +27,11 @@ public class LoadCurveChart {
 	}
 
 	public void setData(double[] data) {
-		chartData.setCurrentYDataArray(data);
-		double max = Stats.nextStep(Stats.max(data), 5);
+		double[] curve = data;
+		if(curve == null)
+			curve = new double[Stats.HOURS];
+		chartData.setCurrentYDataArray(curve);
+		double max = Stats.nextStep(Stats.max(curve), 5);
 		Axis y = graph.primaryYAxis;
 		y.setRange(0, max);
 	}
