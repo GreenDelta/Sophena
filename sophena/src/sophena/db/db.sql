@@ -140,6 +140,19 @@ CREATE TABLE tbl_fuel_consumptions (
 );
 
 
+CREATE TABLE tbl_load_profiles (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+    data BLOB (80 K),
+    f_consumer CHAR(36),
+
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_boilers (
 
 	id CHAR(36),

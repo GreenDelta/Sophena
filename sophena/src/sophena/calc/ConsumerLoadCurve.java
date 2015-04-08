@@ -2,6 +2,7 @@ package sophena.calc;
 
 import sophena.model.Consumer;
 import sophena.model.FuelConsumption;
+import sophena.model.LoadProfile;
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
 
@@ -30,7 +31,7 @@ public class ConsumerLoadCurve {
 		} else {
 			calcUsageBased(data);
 		}
-		// TODO: add load curves
+		addLoadProfiles(data);
 		return data;
 	}
 
@@ -75,4 +76,14 @@ public class ConsumerLoadCurve {
 		}
 	}
 
+	private void addLoadProfiles(double[] data) {
+		for (LoadProfile profile : consumer.getLoadProfiles()) {
+			double[] p = profile.getData();
+			if (p == null)
+				continue;
+			for (int i = 0; i < Stats.HOURS; i++) {
+				data[i] += p[i];
+			}
+		}
+	}
 }

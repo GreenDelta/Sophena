@@ -3,7 +3,6 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tbl_consumers")
@@ -44,7 +42,8 @@ public class Consumer extends Facility {
 	@JoinColumn(name = "f_consumer")
 	private final List<FuelConsumption> fuelConsumptions = new ArrayList<>();
 
-	@Transient
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_consumer")
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
 
 	public BuildingState getBuildingState() {

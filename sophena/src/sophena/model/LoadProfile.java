@@ -2,15 +2,19 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.eclipse.persistence.annotations.Convert;
+import org.eclipse.persistence.annotations.Converter;
 
 @Entity
 @Table(name = "tbl_load_profiles")
+@Converter(name = "DoubleArrayConverter",
+		converterClass = DoubleArrayConverter.class)
 public class LoadProfile extends RootEntity {
 
-	@Lob
 	@Column(name = "data")
+	@Convert("DoubleArrayConverter")
 	private double[] data;
 
 	public double[] getData() {
@@ -20,4 +24,5 @@ public class LoadProfile extends RootEntity {
 	public void setData(double[] data) {
 		this.data = data;
 	}
+
 }

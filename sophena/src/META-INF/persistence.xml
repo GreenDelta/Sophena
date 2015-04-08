@@ -14,6 +14,7 @@
         <class>sophena.model.Consumer</class>
         <class>sophena.model.FuelConsumption</class>
         <class>sophena.model.Fuel</class>
+        <class>sophena.model.LoadProfile</class>
 		<class>sophena.model.Producer</class>
 		<class>sophena.model.Project</class>
 		<class>sophena.model.WeatherStation</class>
