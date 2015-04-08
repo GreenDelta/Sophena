@@ -49,6 +49,14 @@ public class Colors {
 		return display.getSystemColor(SWT.COLOR_WHITE);
 	}
 
+	public static Color getChartBlue() {
+		return getColor(68, 114, 162);
+	}
+
+	public static Color getChartRed() {
+		return getColor(180, 26, 30);
+	}
+
 	public static Color getDarkGray() {
 		return display.getSystemColor(SWT.COLOR_DARK_GRAY);
 	}

@@ -5,13 +5,13 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.model.Consumer;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
-import sophena.rcp.wizards.LoadProfileWizard;
 
 class LoadProfileSection {
 
