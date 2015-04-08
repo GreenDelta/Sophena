@@ -26,37 +26,50 @@ public class ConsumerLoadCurve {
 			return data;
 		if (consumer.isDemandBased()) {
 			double pMax = consumer.getHeatingLoad();
-			calcLoadValues(data, pMax);
+			calcDemandBased(data, pMax);
 		} else {
-			double pMax = getUsageLoad();
-			calcLoadValues(data, pMax);
+			calcUsageBased(data);
 		}
 		// TODO: add load curves
 		return data;
 	}
 
-	private double getUsageLoad() {
-		if (consumer.getLoadHours() == 0)
-			return 0;
-		double pMax = 0;
+	private void calcUsageBased(double[] data) {
+		double usedHeat = 0;
 		for (FuelConsumption c : consumer.getFuelConsumptions())
-			pMax += (c.getUsedHeat() / (double) consumer.getLoadHours());
-		return pMax;
+			usedHeat += c.getUsedHeat();
+		double heatForWater = usedHeat * consumer.getWaterFraction() / 100;
+		double pMin = heatForWater / Stats.HOURS;
+		double heatingDegrees = 0;
+		double tmax = consumer.getHeatingLimit();
+		for (double temperature : station.getData()) {
+			if (temperature < tmax)
+				heatingDegrees += (tmax - temperature);
+		}
+		double heatPerHeatingDegree = (usedHeat - heatForWater)
+				/ heatingDegrees;
+		for (int i = 0; i < Stats.HOURS; i++) {
+			double temperature = station.getData()[i];
+			if (temperature < tmax)
+				data[i] = pMin + ((tmax - temperature) * heatPerHeatingDegree);
+			else
+				data[i] = pMin;
+		}
 	}
 
-	private void calcLoadValues(double[] data, double pMax) {
+	private void calcDemandBased(double[] data, double pMax) {
 		if (pMax == 0)
 			return;
 		double pMin = pMax * consumer.getWaterFraction() / 100;
 		double[] climateData = station.getData();
-		double tn = station.getNormTemperature();
+		double tmin = Stats.min(climateData);
 		double tmax = consumer.getHeatingLimit();
 		for (int h = 0; h < Stats.HOURS; h++) {
 			double t = climateData[h];
 			if (t >= tmax)
 				data[h] = pMin;
 			else {
-				double p = pMin + (pMax - pMin) * (tmax - t) / (tmax - tn);
+				double p = pMin + (pMax - pMin) * (tmax - t) / (tmax - tmin);
 				data[h] = p;
 			}
 		}
