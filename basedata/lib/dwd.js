@@ -99,6 +99,10 @@ Reader.prototype.readDataFile = function(filePath) {
 	});	
 };
 
+Reader.prototype.end = function() {
+	this.emit('end');
+};
+
 function filterFiles(fileNames, suffix) {
 	var files = [];
 	for (var i = 0; i < fileNames.length; i++) {
@@ -137,47 +141,3 @@ function parseDataLine(line) {
 }
 
 module.exports.Reader = Reader; 
-
-var r = new Reader();
-r.on('file', function(file) {
-	console.log(file);
-});
-r.on('error', function(err) {
-	console.log(err);
-});
-r.on('end-folder', function(path) {
-	console.log('finished folder', path);
-});
-
-
-r.on('station', function(station) {
-	// console.log('station: ', station);
-});
-
-var recordCount = 0;
-
-r.on('record', function(record) {
-	recordCount++;
-	if(recordCount % 10000 === 0) {
-		console.log(recordCount, "records handled");
-		console.log('last record: ', record);
-	}
-});
-
-r.readFolder('C:/Users/Besitzer/Projects/sophena/repo/basedata/climate_data/raw_data');
-
-
-//var folder = 'C:/Users/Besitzer/Projects/sophena/repo/basedata/climate_data/raw_data';
-//readFolder(folder);
-
-
-
-/*
-var metaFile = 'C:/Users/Besitzer/Projects/sophena/repo/basedata/climate_data/raw_data/sy_ds_abgabe011_15_1bestand.txt';
-
-readMetaDataFile(metaFile, function(station) {
-	console.log(station);
-}, function() {
-	console.log('all done');
-});
-*/
