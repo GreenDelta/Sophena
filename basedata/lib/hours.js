@@ -1,7 +1,26 @@
-﻿
+﻿var Index = function() {
+
+    var keyArray = keys();
+    var keyIndex = {};
+    for (var i = 0; i < keyArray.length; i++) {
+        keyIndex[keyArray[i]] = i + 1;
+    }
+
+    this.getHour = function(key) {
+        return keyIndex[key];
+    };
+
+    this.getKey = function(hour) {
+        return keyArray[hour - 1];
+    };
+
+};
+
+
 function keys() {
     var months = ["01", "02", "03", "04", "05", "06",
-				"07", "08", "09", "10", "11", "12"];
+        "07", "08", "09", "10", "11", "12"
+    ];
     var days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     var index = [];
     var idx = 0;
@@ -24,14 +43,4 @@ function format(val) {
         return val.toString();
 }
 
-function keyIndexMap() {
-    var keySet = keys();
-    var map = {};
-    for (var i = 0; i < keySet.length; i++) {
-        map[keySet[i]] = i;
-    }
-    return map;
-} 
-
-module.exports.keys = keys;
-module.exports.keyIndexMap = keyIndexMap;
+module.exports.Index = Index;
