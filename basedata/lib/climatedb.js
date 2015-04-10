@@ -14,6 +14,8 @@ var Import = function(config, reader) {
 	var openRequests = 0;
 	var readerFinished = false;
 
+	var recordBatch = [];
+
 	function handleStation(station) {
 		if (handledStations[station.id])
 			return;
@@ -25,10 +27,15 @@ var Import = function(config, reader) {
 
 	function handleRecord(rec) {
 		var sql = "INSERT INTO tbl_data(f_station, year, hour, temperature) " +
-			"VALUES(?, ?, ?, ?) ";
+			"VALUES (?) ";
 		var hour = hourIdx.getHour(rec.hour);
-		var values = [rec.station, rec.year, hour, rec.value];		
-		execSql(sql, values);
+		var values = [rec.station, rec.year, hour, rec.value];
+		recordBatch.push(values);
+		if(recordBatch.length > 1000) {
+			execSql(sql, recordBatch);
+			console.log("batch executed");
+			recordBatch = [];
+		}			
 	}
 
 	function execSql(sql, values) {

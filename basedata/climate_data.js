@@ -2,7 +2,7 @@
     fs = require('fs'), 
     byline = require('byline'),
     mysql = require('mysql'),
-    hours = require('./hour.js');
+    hours = require('./lib/hours.js');
 
 
 var eventEmitter = new events.EventEmitter();
@@ -13,7 +13,7 @@ for (var i = 1; i < 11; i++) {
     streamDataFile(path);
 }
 */
-streamDataFile('./climate_data/raw_data/xxx_test_file.txt')
+streamDataFile('./climate_data/raw_data/sy_ds_abgabe011_15_10elc.txt')
 
 
 function streamDataFile(path) {
@@ -26,7 +26,7 @@ function streamDataFile(path) {
         port : 3306
     });
     
-    var hourIndex = hours.keyIndexMap();
+    var hourIndex = new hours.Index();
     
     var stream = fs.createReadStream(path, { encoding: 'utf8' }),
         lineCount = 0,
@@ -62,7 +62,7 @@ function handleLine(line, pool, hourIndex) {
         station = feed.substring(0, 5).trim(),
         year = parseInt(feed.substring(5, 9).trim(), 10),
         key = feed.substring(9, 15),
-        hour = hourIndex[key] + 1;
+        hour = hourIndex.getHour(key);
     
     if (!hour) {
         console.log('unkown hour: ' + key);
