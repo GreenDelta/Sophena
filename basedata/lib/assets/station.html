@@ -7,32 +7,102 @@
         <link rel="stylesheet" type="text/css" href="style.css">        
     </head>
     <body>
-        <p>Available stations:</p>
+        <h3 id="header"></h3>
+        <p id="info"></p>
         <table>
             <thead>
-                <tr>
-                    <td><strong>ID</strong></td>
-                    <td><strong>Name</strong></td>   
+                <tr id="data_header">
                 </tr>                             
             </thead>
-            <tbody id='table_body'>               
+            <tbody id='data_content'>               
             </tbody>
         </table>
         <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript">
+        
         $(function() {
 
-            $.get( "/stations", function( data ) {
-                var tableBody = $('#table_body');
-                $.each(data, function(idx, station) {
-                    var pref = '<td><a href="#">';
-                    var suff = '</a></td>';
-                    var row = '<tr>' + pref + station.id + suff + pref + station.name + suff + '</tr>';
-                    tableBody.append(row);
-                });    
+            var id = getStationId();
+
+            $.get('/station/' + id, function(info) {
+                var text = info.id + ' ' + info.name;
+                $('#header').text(text);                  
+            });
+
+            $.get('/data/' + id, function(data) {
+                var infoText = 'Got ' + data.length + ' data from server';
+                $('#info').text(infoText);
+                if(data) {
+                    renderData(data);
+                }
             });
 
         });
+
+        function getStationId() {
+            var search = location.search;
+            var id = search.substring(4);
+            return id;
+        }
+
+        function renderData(data) {
+            var years = getYears(data);
+            if(!years)
+                return;
+            renderHeader(years);
+            data.sort(function(d1, d2) {
+                if(d1.hour !== d2.hour)
+                    return d1.hour - d2.hour;
+                else
+                    return d1.year - d2.year; 
+            });
+            renderContent(data);
+        }
+
+        function renderHeader(years) {
+            var header = $('#data_header');
+            header.append('<td>hour</td>');
+            $.each(years, function(idx, year) {
+                header.append('<td>' + year + '</td>');
+            });
+        }
+
+        function renderContent(data) {
+            var content = $('#data_content');
+            var hour = -1; // TODO: missing hours
+            var lastYear = -1;
+            var row = null;
+            for(var i = 0; i < data.length; i++) {
+                var d = data[i];
+                if(d.hour !== hour) {
+                    lastYear = d.year - 1;
+                    hour = d.hour;
+                    row = content.append('<tr></tr>');
+                    row.append('<td>' + hour + '</td>');
+                }
+                var yearDiff = d.year - lastYear;
+                if(yearDiff === 0)
+                    continue; // TODO: duplicate
+                for(var dx = 1; dx < yearDiff; dx++) {
+                    // missing entries
+                    row.append('<td>---</td>');
+                }
+                lastYear = d.year;
+                row.append('<td>' + d.val + '</td>');
+            }
+        }
+
+        function getYears(data) {
+            var years = [];
+            for(var i = 0; i < data.length; i++) {
+                var year = data[i].year;
+                if($.inArray(year, years) < 0)
+                    years.push(year);
+            }
+            years.sort();
+            return years;
+        }
+
         </script>
     </body>
 </html>
