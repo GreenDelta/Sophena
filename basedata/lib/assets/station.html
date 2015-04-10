@@ -25,7 +25,7 @@
             $.get( "/stations", function( data ) {
                 var tableBody = $('#table_body');
                 $.each(data, function(idx, station) {
-                    var pref = '<td><a href="station.html?id=' + station.id + '">';
+                    var pref = '<td><a href="#">';
                     var suff = '</a></td>';
                     var row = '<tr>' + pref + station.id + suff + pref + station.name + suff + '</tr>';
                     tableBody.append(row);
