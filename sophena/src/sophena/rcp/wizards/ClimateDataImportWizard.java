@@ -52,8 +52,7 @@ public class ClimateDataImportWizard extends Wizard {
 						m.beginTask("#Importiere", IProgressMonitor.UNKNOWN);
 						reader.run();
 						station.setData(reader.getResult().getData());
-						station.setNormTemperature(-12); // TODO: read from file
-					// TODO: add error handling
+						// TODO: add error handling
 					Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
 							App.getDb());
 					dao.insert(station);

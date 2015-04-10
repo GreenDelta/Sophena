@@ -13,20 +13,9 @@ import org.eclipse.persistence.annotations.Converter;
 		converterClass = DoubleArrayConverter.class)
 public class WeatherStation extends RootEntity {
 
-	@Column(name = "norm_temperature")
-	private double normTemperature;
-
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
 	private double[] data;
-
-	public double getNormTemperature() {
-		return normTemperature;
-	}
-
-	public void setNormTemperature(double normTemperature) {
-		this.normTemperature = normTemperature;
-	}
 
 	public double[] getData() {
 		return data;

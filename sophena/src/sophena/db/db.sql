@@ -9,7 +9,6 @@ CREATE TABLE tbl_weather_stations (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
-	norm_temperature DOUBLE,
 	data BLOB (80 K),
 
 	PRIMARY KEY (id)

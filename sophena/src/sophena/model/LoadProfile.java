@@ -24,5 +24,4 @@ public class LoadProfile extends RootEntity {
 	public void setData(double[] data) {
 		this.data = data;
 	}
-
 }
