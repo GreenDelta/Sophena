@@ -23,6 +23,8 @@ reader.on('record', function(rec) {
 		return;
 	}
 	hour = hourIndex.getHour(rec.hour);
+	if(!hour)
+		return;
 	var line = rec.station + ',' + rec.year + ',' + hour + ',' + rec.value + '\n';
 	dataBlock += line;
 	dataCount++;
@@ -49,6 +51,7 @@ reader.on('end-folder', function() {
 	dataOut.end();
 	metaOut.end();
 	console.log('all finished')
+	console.log(errorCount, 'error rows')
 });
 
 function writeDataBlock() {
