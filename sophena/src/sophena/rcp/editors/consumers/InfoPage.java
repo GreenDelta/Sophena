@@ -8,6 +8,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.Consumer;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.UI;
 
 class InfoPage extends FormPage {
@@ -29,7 +30,8 @@ class InfoPage extends FormPage {
 		FormToolkit tk = managedForm.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		InfoSection.of(editor).create(body, tk);
-		new LoadCurveSection(editor, body, tk);
+		LoadCurveSection loadCurve = new LoadCurveSection(body, tk);
+		editor.onCalculated((data) -> loadCurve.setData(data));
 		HeatDemandSection.of(editor).create(body, tk);
 		if (!consumer().isDemandBased())
 			ConsumptionSection.of(editor).create(body, tk);
