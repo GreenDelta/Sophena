@@ -23,3 +23,14 @@ CREATE TABLE tbl_data (
 	INDEX(year)
 
 );
+
+CREATE TABLE tbl_average_curves (
+
+	f_station CHAR(5),	 
+	hour SMALLINT, -- 1..8760
+	temperature FLOAT,
+
+	INDEX(f_station),
+	INDEX(year)
+
+);

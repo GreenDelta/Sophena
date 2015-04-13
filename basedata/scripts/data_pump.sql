@@ -21,6 +21,19 @@ CREATE TABLE tbl_data (
 
 ) Engine=MyISAM;
 
+
+CREATE TABLE tbl_average_curves (
+
+	f_station CHAR(5),	 
+	hour SMALLINT, -- 1..8760
+	temperature FLOAT,
+
+	INDEX(f_station),
+	INDEX(year)
+
+) Engine=MyISAM;
+
+
 LOAD DATA INFILE 'C:/Users/Besitzer/Projects/sophena/repo/basedata/climate_data/out/meta_out.csv' 
 	INTO TABLE tbl_stations FIELDS TERMINATED BY ',';
 
