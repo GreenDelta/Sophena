@@ -37,6 +37,10 @@ public class ProjectResult {
 				-> Integer.compare(p1.getRank(), p2.getRank()));
 	}
 
+	public double[] getLoadCurve() {
+		return loadCurve;
+	}
+
 	public void print() {
 		printHeader();
 		for (int i = 0; i < Stats.HOURS; i++) {

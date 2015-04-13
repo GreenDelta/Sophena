@@ -7,8 +7,9 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.calc.ProjectCalculator;
+import sophena.calc.ProjectResult;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.UI;
 
@@ -27,9 +28,11 @@ class ResultPage extends FormPage {
 		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		Button button = toolkit.createButton(body, "Berechnen", SWT.NONE);
+		LoadCurveSection loadCurveSection = new LoadCurveSection(body, toolkit);
+		loadCurveSection.setSorted(false);
 		Controls.onSelect(button, (e) -> {
-			ProjectCalculator.calculate(editor.getProject());
-
+			ProjectResult r = ProjectCalculator.calculate(editor.getProject());
+			loadCurveSection.setData(r.getLoadCurve());
 		});
 	}
 }
