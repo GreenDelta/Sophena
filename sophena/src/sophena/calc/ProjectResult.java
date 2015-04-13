@@ -41,6 +41,26 @@ public class ProjectResult {
 		return loadCurve;
 	}
 
+	public double[] getSuppliedPower() {
+		return suppliedPower;
+	}
+
+	public Producer[] getProducers() {
+		return producers;
+	}
+
+	public double[][] getProducerResults() {
+		return producerResults;
+	}
+
+	public double[] getSuppliedBufferHeat() {
+		return suppliedBufferHeat;
+	}
+
+	public double[] getBufferCapacity() {
+		return bufferCapacity;
+	}
+
 	public void print() {
 		printHeader();
 		for (int i = 0; i < Stats.HOURS; i++) {

@@ -26,6 +26,27 @@ public class Colors {
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDown());
 	}
 
+	private static RGB[] chartColors = {
+			new RGB(41, 111, 196),
+			new RGB(229, 48, 57),
+			new RGB(255, 201, 35),
+			new RGB(82, 168, 77),
+			new RGB(132, 76, 173),
+			new RGB(127, 183, 229),
+			new RGB(255, 137, 0),
+			new RGB(128, 0, 128),
+			new RGB(135, 76, 63),
+			new RGB(252, 255, 100),
+			new RGB(0, 177, 241),
+			new RGB(112, 187, 40),
+			new RGB(18, 89, 133),
+			new RGB(226, 0, 115),
+			new RGB(255, 255, 85),
+			new RGB(218, 0, 24),
+			new RGB(0, 111, 154),
+			new RGB(255, 153, 0)
+	};
+
 	public static Color getErrorColor() {
 		RGB rgb = new RGB(255, 180, 180);
 		return getColor(rgb);
@@ -47,6 +68,34 @@ public class Colors {
 
 	public static Color getWhite() {
 		return display.getSystemColor(SWT.COLOR_WHITE);
+	}
+
+	/**
+	 * Returns the defined chart color for the given index. If the index is out
+	 * of the range of the pre-defined colors, a random color is returned.
+	 */
+	public static Color getForChart(int idx) {
+		return Colors.getColor(getRgbForChart(idx));
+	}
+
+	/**
+	 * Returns the defined chart color for the given index. If the index is out
+	 * of the range of the pre-defined colors, a random color is returned.
+	 */
+	public static RGB getRgbForChart(int idx) {
+		if (idx < 0 || idx >= chartColors.length)
+			return next(idx);
+		RGB rgb = chartColors[idx];
+		return rgb != null ? rgb : next(idx);
+	}
+
+	private static RGB next(int idx) {
+		if (idx == 0)
+			return new RGB(255, 255, 255);
+		int blue = 255 / Math.abs(idx);
+		int red = 255 - blue;
+		int green = (blue + red) / 2;
+		return new RGB(red, green, blue);
 	}
 
 	public static Color getChartBlue() {
