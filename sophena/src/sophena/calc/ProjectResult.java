@@ -17,6 +17,9 @@ public class ProjectResult {
 	double[] suppliedBufferHeat;
 	double[] bufferCapacity;
 
+	private ProjectResult(){
+	}
+
 	ProjectResult(Project project) {
 		loadCurve = ProjectLoadCurve.calulate(project);
 		suppliedPower = new double[Stats.HOURS];
@@ -24,6 +27,7 @@ public class ProjectResult {
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
 	}
+
 
 	private void initProducerData(Project project) {
 		int count = project.getProducers().size();
@@ -59,6 +63,25 @@ public class ProjectResult {
 
 	public double[] getBufferCapacity() {
 		return bufferCapacity;
+	}
+
+	public ProjectResult sort() {
+		return ProjectResultSorter.sort(this);
+	}
+
+	public ProjectResult clone() {
+		ProjectResult clone = new ProjectResult();
+		clone.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);
+		clone.suppliedPower = Arrays.copyOf(suppliedPower, Stats.HOURS);
+		clone.producers = Arrays.copyOf(producers, producers.length);
+		clone.producerResults = new double[producers.length][];
+		for(int i = 0; i < producers.length; i++){
+			clone.producerResults[i] = Arrays.copyOf(producerResults[i],
+					Stats.HOURS);
+		}
+		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat, Stats.HOURS);
+		clone.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
+		return clone;
 	}
 
 	public void print() {

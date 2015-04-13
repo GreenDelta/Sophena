@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -21,6 +21,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
+import sophena.rcp.Images;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -28,6 +30,9 @@ class BoilerSection {
 
 	private XYGraph chart;
 	private List<Trace> traces = new ArrayList<>();
+	private boolean sorted = false;
+	private ProjectResult result;
+	private ProjectResult sortedResult;
 
 	BoilerSection(Composite body, FormToolkit tk) {
 		render(body, tk);
@@ -44,7 +49,7 @@ class BoilerSection {
 		Canvas canvas = new Canvas(composite, SWT.NONE);
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
-		// Actions.bind(section, new SortAction(), new ExportAction());
+		Actions.bind(section, new SortAction());
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -63,6 +68,20 @@ class BoilerSection {
 	}
 
 	public void setResult(ProjectResult pr) {
+		this.result = pr;
+		this.sortedResult = null;
+		if (!sorted)
+			renderChart(result);
+		else {
+			sortedResult = pr.sort();
+			renderChart(sortedResult);
+		}
+	}
+
+	private void renderChart(ProjectResult pr) {
+		for (Trace trace : traces)
+			chart.removeTrace(trace);
+
 		double[] top = Arrays.copyOf(pr.getSuppliedPower(), Stats.HOURS);
 		double max = Stats.nextStep(Stats.max(top), 5);
 		chart.primaryYAxis.setRange(0, max);
@@ -75,6 +94,7 @@ class BoilerSection {
 		Trace bufferTrace = createTrace("Pufferspeicher", top);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
 		chart.addTrace(bufferTrace);
+		traces.add(bufferTrace);
 		substract(top, pr.getSuppliedBufferHeat());
 
 		for (int i = producers.length - 1; i >= 0; i--) {
@@ -82,6 +102,7 @@ class BoilerSection {
 			Trace boilerTrace = createTrace(label, top);
 			boilerTrace.setTraceColor(Colors.getForChart(i));
 			chart.addTrace(boilerTrace);
+			traces.add(boilerTrace);
 			substract(top, results[i]);
 		}
 	}
@@ -103,8 +124,30 @@ class BoilerSection {
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
 		t.setAreaAlpha(255);
-		t.setToolTip(new Label(label));
 		return t;
+	}
+
+	private class SortAction extends Action {
+
+		public SortAction() {
+			setText("Unsortiert");
+			setImageDescriptor(Images.SORTING_16.des());
+		}
+
+		@Override
+		public void run() {
+			if (sorted) {
+				sorted = false;
+				setText("Sortiert");
+				renderChart(result);
+			} else {
+				sorted = true;
+				setText("Unsortiert");
+				if (sortedResult == null)
+					sortedResult = result.sort();
+				renderChart(sortedResult);
+			}
+		}
 	}
 
 }
