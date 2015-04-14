@@ -9,6 +9,10 @@
     <body>
         <h3 id="header"></h3>
         <canvas id="chart" width="1000" height="400"></canvas>
+        <p>Download average data: 
+            <a href='#' onclick='saveText()'>avg.txt</a> | 
+            <a href='#' onclick='saveJson()'>avg.json</a>
+        </p>
         <p id="info"></p>
         <table>
             <thead>
@@ -22,13 +26,31 @@
         <script type="text/javascript" src="bower_components/chartjs/Chart.min.js"></script>
         <script type="text/javascript">
         
+        var stationInfo;
+        var avgData;
+
+        function saveText() {
+            var csv = 'hour\tvalue\n';
+            for(var i = 0; i < 8760; i++) {
+                csv += (i + 1) + '\t' + avgData[i] + '\n';
+            }
+            window.open('data:text/csv;charset=utf-8,' + escape(csv));
+        }
+
+        function saveJson() {
+            var obj = {
+                id: stationInfo.id,
+                name: stationInfo.name,
+                data: avgData
+            };
+            var s = JSON.stringify(obj);
+            window.open('data:application/json;charset=utf-8,' + escape(s));
+        }
+
         $(function() {
 
             var id = getStationId();
-            var stationInfo;
-            var avgData;
-            var data;
-
+        
             $.get('/station/' + id, function(info) {
                 stationInfo = info;
                 var text = info.id + ' ' + info.name;
@@ -36,6 +58,7 @@
             });
 
             $.get('/avgdata/' + id, function(data) {
+                avgData = data;
                 var labels = [];
                 for(var i = 1; i <= 8760; i++) {
                     labels[i-1] = ''; //i.toString();
@@ -59,14 +82,14 @@
                 });
             });
 
-            $.get('/data/' + id, function(data) {
+            $.get('/data/' + id, function(data) {                
                 var years = getYears(data);
                 var count = years.length * 8760;
-                var infoText = 'Got ' + count + ' data rows from server';
-                $('#info').text(infoText);
                 if(years) {
                     renderHeader(years);
-                    renderContent(years, data);
+                    window.requestAnimationFrame(function() {
+                        renderContent(years, data);
+                    });                    
                 }
             });
 
@@ -88,15 +111,21 @@
 
         function renderContent(years, data) {
             var content = $('#data_content'); 
-            var buffer = '';           
+            var buffer = '';
+            var dataCount = 0;
+            var errorCount = 0;           
             for(var i = 0; i < 8760; i++) {
                 var hour = i + 1;
                 buffer += '<tr><td>' + hour + '</td>';
                 for(var k = 0; k < years.length; k++) {
                     var year = years[k];
-                    var val = data[year][i];
-                    if(val === -999)
+                    var val = data[year][i];                    
+                    if(val === -999) {
+                        errorCount++;
                         val = '';
+                    } else {
+                        dataCount++;
+                    }
                     buffer += '<td>' + val + '</td>';
                 }
                 buffer += '</tr>';
@@ -106,6 +135,9 @@
                 }           
             }
             content.append(buffer);
+            var infoText = dataCount + ' values loaded; ' + 
+                            errorCount + ' values missing';
+            $('#info').text(infoText);
         }
 
         function getYears(data) {
