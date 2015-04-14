@@ -8,6 +8,7 @@
     </head>
     <body>
         <h3 id="header"></h3>
+        <canvas id="chart" width="1000" height="400"></canvas>
         <p id="info"></p>
         <table>
             <thead>
@@ -18,21 +19,50 @@
             </tbody>
         </table>
         <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="bower_components/chartjs/Chart.min.js"></script>
         <script type="text/javascript">
         
         $(function() {
 
             var id = getStationId();
+            var stationInfo;
+            var avgData;
+            var data;
 
             $.get('/station/' + id, function(info) {
+                stationInfo = info;
                 var text = info.id + ' ' + info.name;
                 $('#header').text(text);                  
+            });
+
+            $.get('/avgdata/' + id, function(data) {
+                var labels = [];
+                for(var i = 1; i <= 8760; i++) {
+                    labels[i-1] = ''; //i.toString();
+                }
+                var chartData = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'avgdata',
+                        strokeColor: '#353535',
+                        data: data
+                    }]
+                };
+                var ctx = $("#chart").get(0).getContext("2d");
+                new Chart(ctx).Line(chartData, {
+                    pointDot: false,
+                    animation: false,
+                    showTooltips: false,
+                    scaleShowGridLines: false,
+                    datasetFill: false,
+                    bezierCurve: false
+                });
             });
 
             $.get('/data/' + id, function(data) {
                 var years = getYears(data);
                 var count = years.length * 8760;
-                var infoText = 'Got ' + count + ' data from server';
+                var infoText = 'Got ' + count + ' data rows from server';
                 $('#info').text(infoText);
                 if(years) {
                     renderHeader(years);

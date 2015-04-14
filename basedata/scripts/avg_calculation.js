@@ -15,19 +15,6 @@ var pool = mysql.createPool(config);
 calc.calculateStation('10004', 2005, 2014);
 
 
-var AvgCalculator = function(config) {
-
-	this.calculateStation = function(station, startYear, endYear) {
-		var pool = mysql.createPool(config);
-		var sql = 'SELECT year, hour, temperature AS val FROM tbl_data WHERE f_station=?';
-		pool.query(sql, [station], function(err, rows, fields) {
-			if (err)
-				throw err;
-			var curve = calculateAvgCurve(startYear, endYear, rows);
-			pool.end();
-		});
-	};
-};
 
 
 var calculateAvgCurve = function(startYear, endYear, rows) {
