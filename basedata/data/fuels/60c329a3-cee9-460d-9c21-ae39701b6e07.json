@@ -1,0 +1,7 @@
+{
+	"id": "60c329a3-cee9-460d-9c21-ae39701b6e07",
+	"name": "Erdgas",
+	"unit": "m3",
+	"calorificValue": 10,
+	"wood": false
+}

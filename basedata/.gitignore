@@ -1,9 +1,5 @@
 
-# IDE settings
-basedata.njsproj
-.ntvs_analysis.dat
-basedata.v12.suo
-basedata.sln
-
 /climate_data/
 /node_modules/
+
+data_package.sophena

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "archiver": "^0.14.3",
     "byline": "^4.2.1",
     "chai": "^2.2.0",
     "express": "^4.12.3",

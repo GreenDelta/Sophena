@@ -1,0 +1,8 @@
+{
+	"id": "d3c17a44-f7e9-4549-8c46-1946c156847a",
+	"name": "Pappel",
+	"unit": "kg",
+	"calorificValue": 5.0,
+	"wood": true,
+	"density": 353
+}

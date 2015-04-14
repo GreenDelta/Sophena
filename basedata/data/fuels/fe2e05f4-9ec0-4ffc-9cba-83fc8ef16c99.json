@@ -1,0 +1,8 @@
+{
+	"id": "fe2e05f4-9ec0-4ffc-9cba-83fc8ef16c99",
+	"name": "Buche",
+	"unit": "kg",
+	"calorificValue": 5.0,
+	"wood": true,
+	"density": 558
+}
