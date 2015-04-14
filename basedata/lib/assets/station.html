@@ -30,10 +30,13 @@
             });
 
             $.get('/data/' + id, function(data) {
-                var infoText = 'Got ' + data.length + ' data from server';
+                var years = getYears(data);
+                var count = years.length * 8760;
+                var infoText = 'Got ' + count + ' data from server';
                 $('#info').text(infoText);
-                if(data) {
-                    renderData(data);
+                if(years) {
+                    renderHeader(years);
+                    renderContent(years, data);
                 }
             });
 
@@ -44,21 +47,7 @@
             var id = search.substring(4);
             return id;
         }
-
-        function renderData(data) {
-            var years = getYears(data);
-            if(!years)
-                return;
-            renderHeader(years);
-            data.sort(function(d1, d2) {
-                if(d1.hour !== d2.hour)
-                    return d1.hour - d2.hour;
-                else
-                    return d1.year - d2.year; 
-            });
-            renderContent(data);
-        }
-
+        
         function renderHeader(years) {
             var header = $('#data_header');
             header.append('<td>hour</td>');
@@ -67,37 +56,32 @@
             });
         }
 
-        function renderContent(data) {
-            var content = $('#data_content');
-            var hour = -1; // TODO: missing hours
-            var lastYear = -1;
-            var row = null;
-            for(var i = 0; i < data.length; i++) {
-                var d = data[i];
-                if(d.hour !== hour) {
-                    lastYear = d.year - 1;
-                    hour = d.hour;
-                    row = content.append('<tr></tr>');
-                    row.append('<td>' + hour + '</td>');
+        function renderContent(years, data) {
+            var content = $('#data_content'); 
+            var buffer = '';           
+            for(var i = 0; i < 8760; i++) {
+                var hour = i + 1;
+                buffer += '<tr><td>' + hour + '</td>';
+                for(var k = 0; k < years.length; k++) {
+                    var year = years[k];
+                    var val = data[year][i];
+                    if(val === -999)
+                        val = '';
+                    buffer += '<td>' + val + '</td>';
                 }
-                var yearDiff = d.year - lastYear;
-                if(yearDiff === 0)
-                    continue; // TODO: duplicate
-                for(var dx = 1; dx < yearDiff; dx++) {
-                    // missing entries
-                    row.append('<td>---</td>');
-                }
-                lastYear = d.year;
-                row.append('<td>' + d.val + '</td>');
+                buffer += '</tr>';
+                if(i > 0 && i % 1000 === 0) {
+                    content.append(buffer);  
+                    buffer = '';
+                }           
             }
+            content.append(buffer);
         }
 
         function getYears(data) {
             var years = [];
-            for(var i = 0; i < data.length; i++) {
-                var year = data[i].year;
-                if($.inArray(year, years) < 0)
-                    years.push(year);
+            for(var year in data) {
+                years.push(year);
             }
             years.sort();
             return years;

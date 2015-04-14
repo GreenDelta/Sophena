@@ -1,5 +1,6 @@
 var express = require('express'),
-	mysql = require('mysql');
+	mysql = require('mysql'),
+	climatedb = require('./climatedb.js');
 
 var app = express(),
 	pool = mysql.createPool({
@@ -33,11 +34,31 @@ app.get('/station/:id', function(req, res) {
 
 app.get('/data/:station', function(req, res) {
 	var station = req.params['station'];
-	var sql = 'SELECT year, hour, temperature as val from tbl_data where f_station=?';
-	pool.query(sql, [station], function(err, rows, fields) {
-		if(err)
+	var conf = {
+		con: pool,
+		station: station,
+		startYear: 2005,
+		endYear: 2014
+	};
+	climatedb.getDataTable(conf, function(err, table) {
+		if (err)
 			throw err;
-		res.json(rows);
+		res.send(table);
+	});
+});
+
+app.get('/avgdata/:station', function(req, res) {
+	var station = req.params['station'];
+	var conf = {
+		con: pool,
+		station: station,
+		startYear: 2005,
+		endYear: 2014
+	};
+	climatedb.getAverageData(conf, function(err, data) {
+		if (err)
+			throw err;
+		res.send(data);
 	});
 });
 
