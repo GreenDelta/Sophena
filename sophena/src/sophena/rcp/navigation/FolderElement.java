@@ -2,6 +2,7 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
 
@@ -11,24 +12,18 @@ import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 
-public class StructureElement implements NavigationElement {
+public class FolderElement implements NavigationElement {
 
-	public static final int PRODUCTION = 0;
-	public static final int DISTRIBUTION = 1;
-	public static final int CONSUMPTION = 2;
-	public static final int COSTS = 3;
-	public static final int VARIANTS = 4;
-
-	private final int type;
+	private final FolderType type;
 	private final ProjectElement parent;
 	private List<NavigationElement> childs;
 
-	public StructureElement(int type, ProjectElement parent) {
+	public FolderElement(FolderType type, ProjectElement parent) {
 		this.type = type;
 		this.parent = parent;
 	}
 
-	public int getType() {
+	public FolderType getType() {
 		return type;
 	}
 
@@ -44,11 +39,11 @@ public class StructureElement implements NavigationElement {
 		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
-		if(type == PRODUCTION)
+		if (type == FolderType.PRODUCTION)
 			addProducers(childs);
-		if (type == CONSUMPTION)
+		if (type == FolderType.CONSUMPTION)
 			addConsumers(childs);
-		if (type == VARIANTS)
+		if (type == FolderType.VARIANTS)
 			addVariants(childs);
 		return childs;
 	}
@@ -74,7 +69,7 @@ public class StructureElement implements NavigationElement {
 		Project p = getProject();
 		if (p == null)
 			return;
-		for(Producer producer : p.getProducers())
+		for (Producer producer : p.getProducers())
 			childs.add(new FacilityElement(this, producer));
 	}
 
@@ -94,6 +89,8 @@ public class StructureElement implements NavigationElement {
 			return M.HeatUsage;
 		case COSTS:
 			return M.Costs;
+		case ENERGY_RESULT:
+			return "Ergebnis - Energie";
 		case VARIANTS:
 			return M.Variants;
 		default:
@@ -102,11 +99,13 @@ public class StructureElement implements NavigationElement {
 	}
 
 	@Override
-	public int compareTo(NavigationElement other) {
-		if (!(other instanceof StructureElement))
+	public int compareTo(NavigationElement obj) {
+		if (!(obj instanceof FolderElement))
 			return 0;
-		StructureElement otherElem = (StructureElement) other;
-		return Integer.compare(this.type, otherElem.type);
+		FolderElement other = (FolderElement) obj;
+		if (this.type == null || other.type == null)
+			return 0;
+		return this.type.ordinal() - other.type.ordinal();
 	}
 
 	@Override
@@ -133,11 +132,26 @@ public class StructureElement implements NavigationElement {
 			return Images.PRODUCER_16.img();
 		case DISTRIBUTION:
 			return Images.PUMP_16.img();
+		case ENERGY_RESULT:
+			return Images.LOAD_PROFILE_16.img();
 		case VARIANTS:
 			return Images.PROJECT_16.img();
 		default:
 			return null;
 		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj == this)
+			return true;
+		if (!(obj instanceof FolderElement))
+			return false;
+		FolderElement other = (FolderElement) obj;
+		return Objects.equals(this.getProject(), other.getProject())
+				&& Objects.equals(this.type, other.type);
 	}
 
 }

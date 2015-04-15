@@ -2,7 +2,9 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.utils.Strings;
@@ -20,24 +22,25 @@ public class ProjectElement implements NavigationElement {
 	@Override
 	public List<NavigationElement> getChilds() {
 		List<NavigationElement> elems = new ArrayList<>();
-		for (int type : getChildTypes()) {
-			StructureElement se = new StructureElement(type, this);
+		for (FolderType type : getChildTypes()) {
+			FolderElement se = new FolderElement(type, this);
 			elems.add(se);
 		}
 		return elems;
 	}
 
-	private int[] getChildTypes() {
+	private FolderType[] getChildTypes() {
 		if (project == null)
-			return new int[0];
-		int count = project.isVariant() ? 4 : 5;
-		int[] types = new int[count];
-		types[0] = StructureElement.CONSUMPTION;
-		types[1] = StructureElement.PRODUCTION;
-		types[2] = StructureElement.DISTRIBUTION;
-		types[3] = StructureElement.COSTS;
+			return new FolderType[0];
+		int count = project.isVariant() ? 5 : 6;
+		FolderType[] types = new FolderType[count];
+		types[0] = FolderType.CONSUMPTION;
+		types[1] = FolderType.PRODUCTION;
+		types[2] = FolderType.DISTRIBUTION;
+		types[3] = FolderType.COSTS;
+		types[4] = FolderType.ENERGY_RESULT;
 		if (!project.isVariant())
-			types[4] = StructureElement.VARIANTS;
+			types[5] = FolderType.VARIANTS;
 		return types;
 	}
 

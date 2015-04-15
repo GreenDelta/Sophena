@@ -58,7 +58,7 @@ public class NavigationLabel extends ColumnLabelProvider implements
 	public Font getFont(Object element) {
 		if (element instanceof ProjectElement)
 			return boldFont;
-		if (element instanceof StructureElement)
+		if (element instanceof FolderElement)
 			return boldFont;
 		else
 			return null;

@@ -4,14 +4,16 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.navigation.FolderElement;
+import sophena.rcp.navigation.FolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProjectElement;
-import sophena.rcp.navigation.StructureElement;
 import sophena.rcp.utils.UI;
 
 public class NewVariantAction extends NavigationAction {
@@ -27,15 +29,15 @@ public class NewVariantAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof ProjectElement)
 			return acceptProjectElement((ProjectElement) element);
-		if (element instanceof StructureElement)
-			return acceptStructureElement((StructureElement) element);
+		if (element instanceof FolderElement)
+			return acceptStructureElement((FolderElement) element);
 		else
 			return false;
 	}
 
-	private boolean acceptStructureElement(StructureElement element) {
-		StructureElement e = element;
-		if (e.getType() != StructureElement.VARIANTS)
+	private boolean acceptStructureElement(FolderElement element) {
+		FolderElement e = element;
+		if (e.getType() != FolderType.VARIANTS)
 			return false;
 		Project p = e.getProject();
 		if (p == null || p.isVariant())

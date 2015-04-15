@@ -14,10 +14,10 @@ import sophena.rcp.utils.Strings;
 
 public class FacilityElement implements NavigationElement {
 
-	private StructureElement parent;
+	private FolderElement parent;
 	private Facility facility;
 
-	public FacilityElement(StructureElement parent, Facility facility) {
+	public FacilityElement(FolderElement parent, Facility facility) {
 		this.parent = parent;
 		this.facility = facility;
 	}
