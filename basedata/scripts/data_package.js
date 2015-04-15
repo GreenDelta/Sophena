@@ -30,6 +30,12 @@ fs.unlink(file, function(err) {
 	}]);
 	archive.bulk([{
 		expand: true,
+		cwd: '../data/boilers',
+		src: ['**'],
+		dest: 'boilers'
+	}]);
+	archive.bulk([{
+		expand: true,
 		cwd: '../climate_data/out/json',
 		src: ['**'],
 		dest: 'weather_stations'

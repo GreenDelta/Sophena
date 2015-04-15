@@ -1,0 +1,10 @@
+{
+	"id": "ebf84baf-a051-40f1-9af2-0ea5488e719e",
+	"name": "Hackschnitzel-Kessel klein",
+	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
+	"purchasePrice": 25000,
+	"maxPower": 250,
+	"minPower": 100,
+	"woodAmountType": "CHIPS",
+	"efficiencyRate": 0.9
+}

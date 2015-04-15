@@ -131,6 +131,8 @@ public class DataPack implements Closeable {
 		if(type == null)
 			return "unknown";
 		switch (type) {
+			case BOILER:
+				return "boilers";
 			case FUEL:
 				return "fuels";
 			case WEATHER_STATION:
