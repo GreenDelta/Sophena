@@ -150,8 +150,11 @@ public class FolderElement implements NavigationElement {
 		if (!(obj instanceof FolderElement))
 			return false;
 		FolderElement other = (FolderElement) obj;
-		return Objects.equals(this.getProject(), other.getProject())
-				&& Objects.equals(this.type, other.type);
+		return Objects.equals(this.getContent(), other.getContent());
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getContent());
+	}
 }

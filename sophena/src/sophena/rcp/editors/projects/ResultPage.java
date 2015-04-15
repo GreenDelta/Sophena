@@ -31,11 +31,9 @@ class ResultPage extends FormPage {
 		Button button = tk.createButton(body, "Berechnen", SWT.NONE);
 		LoadCurveSection loadCurveSection = new LoadCurveSection(body, tk);
 		loadCurveSection.setSorted(false);
-		BoilerSection boilerSection = new BoilerSection(body, tk);
 		Controls.onSelect(button, (e) -> {
 			ProjectResult r = ProjectCalculator.calculate(editor.getProject());
 			loadCurveSection.setData(r.getLoadCurve());
-			boilerSection.setResult(r);
 		});
 	}
 }

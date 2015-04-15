@@ -6,6 +6,7 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.navigator.CommonActionProvider;
 
 import sophena.rcp.navigation.actions.AddAction;
+import sophena.rcp.navigation.actions.CalculateAction;
 import sophena.rcp.navigation.actions.DeleteAction;
 import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
@@ -19,7 +20,8 @@ public class NavigationMenu extends CommonActionProvider {
 			new AddAction(),
 			new OpenAction(),
 			new NewVariantAction(),
-			new DeleteAction()
+			new DeleteAction(),
+			new CalculateAction()
 	};
 
 	@Override

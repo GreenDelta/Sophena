@@ -38,8 +38,8 @@ public class DeleteAction extends NavigationAction {
 	}
 
 	private void deleteProject() {
-		boolean del = MsgBox.ask("#Projekt löschen?",
-				"#Soll das Projekt wirklich endgültig gelöscht werden?");
+		boolean del = MsgBox.ask("Projekt löschen?",
+				"Soll das Projekt wirklich endgültig gelöscht werden?");
 		if (!del)
 			return;
 		try {

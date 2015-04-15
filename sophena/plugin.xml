@@ -122,5 +122,11 @@
 			id="sophena.BoilerEditor"
 			name="Heizkessel" />
 
+		<editor
+			class="sophena.rcp.editors.results.energy.EnergyResultEditor"
+			icon="icons/load_profile_16.png"
+			id="sophena.EnergyResultEditor"
+			name="Ergebnisse" />
+
 	</extension>
 </plugin>
