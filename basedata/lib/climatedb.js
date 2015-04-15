@@ -69,6 +69,15 @@ var Import = function(config, reader) {
 };
 util.inherits(Import, EventEmitter);
 
+function getStations(con, cb) {
+	var sql = 'SELECT id, name FROM tbl_stations';
+	con.query(sql, function(err, rows, fields) {
+		if (err)
+			return cb(err);
+		cb(null, rows);
+	});
+}
+
 function getAverageData(config, cb) {
 	getDataTable(config, function(err, table) {
 		if (err)
@@ -90,7 +99,6 @@ function getAverageData(config, cb) {
 				}
 			}
 			if (entries === 0) {
-				console.log('no entries for h=', h);
 				avgs[h] = -999;
 			} else {
 				avgs[h] = sum / entries;
@@ -164,4 +172,5 @@ function fillDataTable(table, rows) {
 
 module.exports.getDataTable = getDataTable;
 module.exports.getAverageData = getAverageData;
+module.exports.getStations = getStations;
 module.exports.Import = Import;

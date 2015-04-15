@@ -15,6 +15,6 @@ archive.on('error', function(err){
 
 archive.pipe(output);
 archive.bulk([
-    { expand: true, cwd: '../data', src: ['**'], dest: 'sophena'}
+    { expand: true, cwd: '../data/fuels', src: ['**'], dest: 'fuels'}
 ]);
 archive.finalize();

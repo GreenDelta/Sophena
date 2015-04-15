@@ -14,11 +14,10 @@ var app = express(),
 app.use(express.static('assets'));
 
 app.get('/stations', function(req, res) {
-	var sql = 'SELECT id, name FROM tbl_stations';
-	pool.query(sql, function(err, rows, fields) {
+	climatedb.getStations(pool, function(err, stations) {
 		if (err)
 			throw err;
-		res.json(rows);
+		res.send(stations);
 	});
 });
 
