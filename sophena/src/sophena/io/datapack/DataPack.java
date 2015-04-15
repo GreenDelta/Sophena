@@ -133,6 +133,8 @@ public class DataPack implements Closeable {
 		switch (type) {
 			case FUEL:
 				return "fuels";
+			case WEATHER_STATION:
+				return "weather_stations";
 			default:
 				return "unknown";
 		}

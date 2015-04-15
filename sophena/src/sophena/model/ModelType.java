@@ -2,6 +2,8 @@ package sophena.model;
 
 public enum ModelType {
 
-	FUEL
+	FUEL,
+
+	WEATHER_STATION
 
 }

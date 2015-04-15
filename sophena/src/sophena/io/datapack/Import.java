@@ -8,6 +8,8 @@ import sophena.db.Database;
 import sophena.db.daos.Dao;
 import sophena.model.Fuel;
 import sophena.model.ModelType;
+import sophena.model.RootEntity;
+import sophena.model.WeatherStation;
 
 public class Import implements Runnable {
 
@@ -24,30 +26,30 @@ public class Import implements Runnable {
 	@Override
 	public void run() {
 		try {
-			importFuels();
+			importEntities(ModelType.FUEL, Fuel.class);
+			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
 		}
 	}
 
-	private void importFuels() {
-		Gson gson = new Gson();
-		Dao<Fuel> dao = new Dao<>(Fuel.class, db);
-		for(String fuelId : pack.getIds(ModelType.FUEL))
-			importFuel(fuelId, gson, dao);
-	}
-
-	private void importFuel(String fuelId, Gson gson, Dao<Fuel> dao) {
+	private <T extends RootEntity> void importEntities(ModelType type,
+			Class<T> clazz) {
 		try {
-			if(dao.contains(fuelId)) {
-				log.trace("Fuel {} already exists: not imported");
-				return;
+			Gson gson = new Gson();
+			Dao<T> dao = new Dao<>(clazz, db);
+			for (String id : pack.getIds(type)) {
+				if (dao.contains(id)) {
+					log.info("{} with id={} is already exists: not imported",
+							clazz, id);
+					continue;
+				}
+				JsonObject json = pack.get(type, id);
+				T instance = gson.fromJson(json, clazz);
+				dao.insert(instance);
 			}
-			JsonObject obj = pack.get(ModelType.FUEL, fuelId);
-			Fuel fuel = gson.fromJson(obj, Fuel.class);
-			dao.insert(fuel);
-		} catch (Exception e) {
-			log.error("failed to import fuel " + fuelId, e);
+		} catch(Exception e) {
+			log.error("failed to import instances of " + clazz, e);
 		}
 	}
 }
