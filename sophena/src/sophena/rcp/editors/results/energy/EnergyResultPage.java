@@ -22,6 +22,8 @@ class EnergyResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisse");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
+		BoilerTableSection tableSection = new BoilerTableSection(result);
+		tableSection.render(body, tk);
 		BoilerSection boilerChart = new BoilerSection(body, tk);
 		boilerChart.setResult(result);
 	}
