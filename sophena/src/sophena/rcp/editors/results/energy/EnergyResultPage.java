@@ -5,6 +5,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.calc.ProjectResult;
 import sophena.rcp.utils.UI;
 
@@ -24,7 +25,14 @@ class EnergyResultPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		BoilerTableSection tableSection = new BoilerTableSection(result);
 		tableSection.render(body, tk);
-		BoilerSection boilerChart = new BoilerSection(body, tk);
-		boilerChart.setResult(result);
+		BoilerChart unsortedChart = new BoilerChart(result);
+		unsortedChart.setSorted(false);
+		unsortedChart.render(body, tk);
+		BoilerChart sortedChart = new BoilerChart(result);
+		sortedChart.setSorted(true);
+		sortedChart.render(body, tk);
+		form.reflow(true);
+		unsortedChart.fillData();
+		sortedChart.fillData();
 	}
 }

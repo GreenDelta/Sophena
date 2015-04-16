@@ -5,14 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -21,35 +18,36 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
-import sophena.rcp.Images;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-class BoilerSection {
+class BoilerChart {
+
+	private ProjectResult result;
+	private boolean sorted = false;
 
 	private XYGraph chart;
 	private List<Trace> traces = new ArrayList<>();
-	private boolean sorted = false;
-	private ProjectResult result;
-	private ProjectResult sortedResult;
 
-	BoilerSection(Composite body, FormToolkit tk) {
-		render(body, tk);
+	public BoilerChart(ProjectResult result) {
+		this.result = result;
 	}
 
-	private void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Kesselbelegung");
-		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
-		section.setLayoutData(gridData);
-		gridData.heightHint = 250;
-		gridData.minimumHeight = 250;
+	public void setSorted(boolean sorted) {
+		this.sorted = sorted;
+	}
+
+	public void render(Composite body, FormToolkit tk) {
+		String title = sorted ? "Geordnete Jahresdauerlinie" :
+				"Ungeordnete Jahresdauerlinie";
+		Section section = UI.section(body, tk, title);
+		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
-		composite.setLayout(new FillLayout());
+		UI.gridLayout(composite, 1);
 		Canvas canvas = new Canvas(composite, SWT.NONE);
+		UI.gridData(canvas, true, true).minimumHeight = 250;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
-		Actions.bind(section, new SortAction());
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -67,15 +65,12 @@ class BoilerSection {
 		return g;
 	}
 
-	public void setResult(ProjectResult pr) {
-		this.result = pr;
-		this.sortedResult = null;
-		if (!sorted)
-			renderChart(result);
-		else {
-			sortedResult = pr.sort();
-			renderChart(sortedResult);
-		}
+	public void fillData() {
+		if (result == null)
+			return;
+		if (sorted)
+			result = result.sort();
+		renderChart(result);
 	}
 
 	private void renderChart(ProjectResult pr) {
@@ -126,28 +121,4 @@ class BoilerSection {
 		t.setAreaAlpha(255);
 		return t;
 	}
-
-	private class SortAction extends Action {
-
-		public SortAction() {
-			setText("Unsortiert");
-			setImageDescriptor(Images.SORTING_16.des());
-		}
-
-		@Override
-		public void run() {
-			if (sorted) {
-				sorted = false;
-				setText("Sortiert");
-				renderChart(result);
-			} else {
-				sorted = true;
-				setText("Unsortiert");
-				if (sortedResult == null)
-					sortedResult = result.sort();
-				renderChart(sortedResult);
-			}
-		}
-	}
-
 }
