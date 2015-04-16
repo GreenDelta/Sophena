@@ -43,6 +43,8 @@ public enum Images {
 
 	PUMP_16("pump_16.png"),
 
+	REQUIRED_LOAD_16("required_load_16.png"),
+
 	SORTING_16("sorting_16.png");
 
 	private final String fileName;

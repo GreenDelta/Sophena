@@ -77,18 +77,12 @@ public class ProjectCalculator {
 
 	private double getSuppliedPower(double requiredLoad, double maxLoad,
 			Producer producer) {
-		double power;
 		Boiler boiler = producer.getBoiler();
-		if (producer.getFunction() == ProducerFunction.BASE_LOAD) {
-			power = maxLoad;
-			if (boiler.getMaxPower() < maxLoad)
-				power = boiler.getMaxPower();
-		} else {
-			power = requiredLoad;
-			if (boiler.getMinPower() > requiredLoad)
-				power = boiler.getMinPower();
-		}
-		return power;
+		double bMin = boiler.getMinPower();
+		double bMax = boiler.getMaxPower();
+		double load = producer.getFunction() == ProducerFunction.PEAK_LOAD ?
+				requiredLoad : maxLoad;
+		return Math.min(Math.max(load, bMin), bMax);
 	}
 
 	private double calcMaxBufferCapacity() {

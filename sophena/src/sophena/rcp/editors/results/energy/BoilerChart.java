@@ -3,8 +3,10 @@ package sophena.rcp.editors.results.energy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -18,6 +20,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
+import sophena.rcp.Images;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -27,6 +31,7 @@ class BoilerChart {
 	private boolean sorted = false;
 
 	private XYGraph chart;
+	private Trace loadTrace;
 
 	public BoilerChart(ProjectResult result) {
 		this.result = result;
@@ -40,15 +45,21 @@ class BoilerChart {
 		String title = sorted ? "Geordnete Jahresdauerlinie" :
 				"Ungeordnete Jahresdauerlinie";
 		Section section = UI.section(body, tk, title);
+		if (!sorted)
+			Actions.bind(section, new LoadTraceSwitch());
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);
-		Canvas canvas = new Canvas(composite, SWT.NONE);
+		Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
 		UI.gridData(canvas, true, true).minimumHeight = 250;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
+		AtomicBoolean first = new AtomicBoolean(true);
 		canvas.addPaintListener((e) -> {
+			if (!first.get())
+				return;
 			fillData(); // avoid chart flickering
+			first.set(false);
 		});
 	}
 
@@ -77,9 +88,10 @@ class BoilerChart {
 
 	private void renderChart(ProjectResult pr) {
 
-		double[] top = Arrays.copyOf(pr.getSuppliedPower(), Stats.HOURS);
-		double max = Stats.nextStep(Stats.max(top), 5);
-		chart.primaryYAxis.setRange(0, max);
+		double[] supTop = Arrays.copyOf(pr.getSuppliedPower(), Stats.HOURS);
+		double supMax = Stats.nextStep(Stats.max(supTop), 5);
+		double reqMax = Stats.nextStep(Stats.max(pr.getLoadCurve()), 5);
+		chart.primaryYAxis.setRange(0, Math.max(supMax, reqMax));
 
 		Producer[] producers = pr.getProducers();
 		double[][] results = pr.getProducerResults();
@@ -88,17 +100,17 @@ class BoilerChart {
 
 		// top area for buffer result
 		int idx = producers.length;
-		Trace bufferTrace = createTrace("Pufferspeicher", top);
+		Trace bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
 		traces.add(bufferTrace);
-		substract(top, pr.getSuppliedBufferHeat());
+		substract(supTop, pr.getSuppliedBufferHeat());
 
 		for (int i = producers.length - 1; i >= 0; i--) {
 			String label = producers[i].getName();
-			Trace boilerTrace = createTrace(label, top);
+			Trace boilerTrace = makeSuplierTrace(label, supTop);
 			boilerTrace.setTraceColor(Colors.getForChart(i));
 			traces.add(boilerTrace);
-			substract(top, results[i]);
+			substract(supTop, results[i]);
 		}
 
 		for (Trace trace : traces)
@@ -113,15 +125,53 @@ class BoilerChart {
 		}
 	}
 
-	private Trace createTrace(String label, double[] data) {
-		CircularBufferDataProvider d = new CircularBufferDataProvider(true);
-		d.setBufferSize(Stats.HOURS);
-		d.setConcatenate_data(true);
-		d.setCurrentYDataArray(data);
+	private Trace makeSuplierTrace(String label, double[] data) {
+		CircularBufferDataProvider d = createDataProvider(data);
 		Trace t = new Trace(label, chart.primaryXAxis, chart.primaryYAxis, d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
 		t.setAreaAlpha(255);
 		return t;
+	}
+
+	private Trace makeLoadTrace(double[] load) {
+		CircularBufferDataProvider d = createDataProvider(load);
+		Trace t = new Trace("Req", chart.primaryXAxis, chart.primaryYAxis, d);
+		t.setPointStyle(Trace.PointStyle.NONE);
+		t.setTraceType(Trace.TraceType.SOLID_LINE);
+		t.setTraceColor(Colors.getSystemColor(SWT.COLOR_RED));
+		return t;
+	}
+
+	private CircularBufferDataProvider createDataProvider(double[] data) {
+		CircularBufferDataProvider d = new CircularBufferDataProvider(true);
+		d.setBufferSize(Stats.HOURS);
+		d.setConcatenate_data(true);
+		d.setCurrentYDataArray(data);
+		return d;
+	}
+
+	private class LoadTraceSwitch extends Action {
+
+		private boolean active = false;
+
+		public LoadTraceSwitch() {
+			setImageDescriptor(Images.REQUIRED_LOAD_16.des());
+			setText("Lastkurve anzeigen");
+		}
+
+		@Override
+		public void run() {
+			if (active) {
+				chart.removeTrace(loadTrace);
+				setText("Lastkurve anzeigen");
+			} else {
+				if (loadTrace == null)
+					loadTrace = makeLoadTrace(result.getLoadCurve());
+				chart.addTrace(loadTrace);
+				setText("Lastkurve entfernen");
+			}
+			active = !active;
+		}
 	}
 }
