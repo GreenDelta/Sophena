@@ -27,7 +27,6 @@ class BoilerChart {
 	private boolean sorted = false;
 
 	private XYGraph chart;
-	private List<Trace> traces = new ArrayList<>();
 
 	public BoilerChart(ProjectResult result) {
 		this.result = result;
@@ -48,6 +47,9 @@ class BoilerChart {
 		UI.gridData(canvas, true, true).minimumHeight = 250;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
+		canvas.addPaintListener((e) -> {
+			fillData(); // avoid chart flickering
+		});
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -65,7 +67,7 @@ class BoilerChart {
 		return g;
 	}
 
-	public void fillData() {
+	private void fillData() {
 		if (result == null)
 			return;
 		if (sorted)
@@ -74,8 +76,6 @@ class BoilerChart {
 	}
 
 	private void renderChart(ProjectResult pr) {
-		for (Trace trace : traces)
-			chart.removeTrace(trace);
 
 		double[] top = Arrays.copyOf(pr.getSuppliedPower(), Stats.HOURS);
 		double max = Stats.nextStep(Stats.max(top), 5);
@@ -84,11 +84,12 @@ class BoilerChart {
 		Producer[] producers = pr.getProducers();
 		double[][] results = pr.getProducerResults();
 
+		List<Trace> traces = new ArrayList<>();
+
 		// top area for buffer result
 		int idx = producers.length;
 		Trace bufferTrace = createTrace("Pufferspeicher", top);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
-		chart.addTrace(bufferTrace);
 		traces.add(bufferTrace);
 		substract(top, pr.getSuppliedBufferHeat());
 
@@ -96,10 +97,12 @@ class BoilerChart {
 			String label = producers[i].getName();
 			Trace boilerTrace = createTrace(label, top);
 			boilerTrace.setTraceColor(Colors.getForChart(i));
-			chart.addTrace(boilerTrace);
 			traces.add(boilerTrace);
 			substract(top, results[i]);
 		}
+
+		for (Trace trace : traces)
+			chart.addTrace(trace);
 	}
 
 	private void substract(double[] top, double[] result) {

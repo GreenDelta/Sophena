@@ -32,7 +32,5 @@ class EnergyResultPage extends FormPage {
 		sortedChart.setSorted(true);
 		sortedChart.render(body, tk);
 		form.reflow(true);
-		unsortedChart.fillData();
-		sortedChart.fillData();
 	}
 }
