@@ -1,16 +1,16 @@
 package sophena.db;
 
+import java.util.Objects;
 import java.util.UUID;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import sophena.Tests;
-import sophena.db.daos.Dao;
+import sophena.db.daos.RootEntityDao;
 import sophena.model.Boiler;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
+import sophena.model.Descriptor;
 import sophena.model.Fuel;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -40,14 +40,23 @@ public class RootEntityTest {
 
 	private <T extends RootEntity> void test(Class<T> clazz) throws Exception {
 		T entity = clazz.newInstance();
-		Dao<T> dao = new Dao<>(clazz, Tests.getDb());
+		RootEntityDao<T> dao = new RootEntityDao<>(clazz, Tests.getDb());
 		entity.setId(UUID.randomUUID().toString());
 		entity.setName("test");
 		dao.insert(entity);
+		testFindDescriptor(dao, entity.getId());
 		T clone = dao.get(entity.getId());
 		Assert.assertEquals(entity, clone);
 		dao.delete(entity);
 		clone = dao.get(entity.getId());
 		Assert.assertNull(clone);
+	}
+
+	private void testFindDescriptor(RootEntityDao<?> dao, String id) {
+		for(Descriptor d : dao.getDescriptors()) {
+			if(Objects.equals(id, d.getId()))
+				return;
+		}
+		Assert.fail("could not find descriptor for id=" + id);
 	}
 }

@@ -14,9 +14,9 @@ import sophena.model.AbstractEntity;
 
 public class Dao<T extends AbstractEntity> {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	protected Logger log = LoggerFactory.getLogger(getClass());
 
-	private Database db;
+	protected Database db;
 	private Class<T> type;
 
 	public Dao(Class<T> type, Database db) {
