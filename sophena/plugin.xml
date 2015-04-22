@@ -42,7 +42,23 @@
 	</extension>
 	
 	<extension point="org.eclipse.ui.navigator.viewer">
-		<viewer viewerId="sophena.Navigator"/>
+	
+		<viewer viewerId="sophena.Navigator">		
+			<options>
+		        <property
+		            name="org.eclipse.ui.navigator.hideLinkWithEditorAction"
+		            value="true">
+		         </property>
+		         <property
+		            name="org.eclipse.ui.navigator.hideCollapseAllAction"
+		            value="true">
+		         </property>
+		         <property
+		            name="org.eclipse.ui.navigator.hideAvailableCustomizationsDialog"
+		            value="true">
+		         </property>
+			</options>
+		</viewer>
 		<viewerContentBinding viewerId="sophena.Navigator">
 			<includes>
 				<contentExtension 

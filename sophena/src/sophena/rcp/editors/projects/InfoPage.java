@@ -11,10 +11,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.wizards.NetComponentWizard;
 
@@ -25,6 +27,10 @@ class InfoPage extends FormPage {
 	public InfoPage(ProjectEditor editor) {
 		super(editor, "sophena.ProjectInfoPage", "Projektinformationen");
 		this.editor = editor;
+	}
+
+	private Project project() {
+		return editor.getProject();
 	}
 
 	@Override
@@ -43,11 +49,15 @@ class InfoPage extends FormPage {
 		Composite composite = UI.formSection(body, toolkit,
 				M.ProjectInformation);
 		Text nameText = UI.formText(composite, toolkit, M.Name);
+		Texts.set(nameText, project().getName());
+		Texts.on(nameText).onChanged(() -> {
+			project().setName(nameText.getText());
+			editor.setDirty();
+		});
 		Text descriptionText = UI.formMultiText(composite, toolkit,
 				M.Description);
 		Text timeText = UI.formText(composite, toolkit, M.ProjectDurationYears);
 	}
-
 
 	private void createInterruptionSection(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit,

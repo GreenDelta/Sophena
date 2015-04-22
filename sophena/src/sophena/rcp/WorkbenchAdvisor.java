@@ -23,7 +23,7 @@ public class WorkbenchAdvisor extends
 	@Override
 	public void initialize(final IWorkbenchConfigurer configurer) {
 		super.initialize(configurer);
-		configurer.setSaveAndRestore(true);
+		configurer.setSaveAndRestore(false);
 	}
 
 	@Override

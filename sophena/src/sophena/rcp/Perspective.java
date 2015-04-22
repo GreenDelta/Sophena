@@ -11,11 +11,11 @@ public class Perspective implements IPerspectiveFactory {
 	public void createInitialLayout(final IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(true);
-		layout.setFixed(false);
-		IFolderLayout naviLayout = layout.createFolder("Others",
+		IFolderLayout naviLayout = layout.createFolder("Navigation",
 				IPageLayout.LEFT, 0.31f, editorArea);
 		naviLayout.addView("sophena.Navigator");
 		IViewLayout vLayout = layout.getViewLayout("sophena.Navigator");
 		vLayout.setCloseable(false);
+		vLayout.setMoveable(false);
 	}
 }
