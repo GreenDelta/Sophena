@@ -13,20 +13,24 @@ public class ProjectElement implements NavigationElement {
 
 	private NavigationElement parent;
 	private Project project;
+	private List<NavigationElement> childs;
 
 	public ProjectElement(NavigationElement parent, Project project) {
 		this.project = project;
 		this.parent = parent;
+
 	}
 
 	@Override
 	public List<NavigationElement> getChilds() {
-		List<NavigationElement> elems = new ArrayList<>();
+		if (childs != null)
+			return childs;
+		childs = new ArrayList<>();
 		for (FolderType type : getChildTypes()) {
 			FolderElement se = new FolderElement(type, this);
-			elems.add(se);
+			childs.add(se);
 		}
-		return elems;
+		return childs;
 	}
 
 	private FolderType[] getChildTypes() {
@@ -76,6 +80,10 @@ public class ProjectElement implements NavigationElement {
 
 	@Override
 	public void update() {
+		if (childs == null)
+			return;
+		for (NavigationElement child : childs)
+			child.update();
 	}
 
 	@Override

@@ -21,6 +21,8 @@ public enum Images {
 
 	EDIT_16("edit_16.png"),
 
+	ERROR_16("error_16.png"),
+
 	FILE_16("file_16.png"),
 
 	FUEL_16("fuel_16.png"),
@@ -45,7 +47,9 @@ public enum Images {
 
 	REQUIRED_LOAD_16("required_load_16.png"),
 
-	SORTING_16("sorting_16.png");
+	SORTING_16("sorting_16.png"),
+
+	WARNING_16("warning_16.png");
 
 	private final String fileName;
 
