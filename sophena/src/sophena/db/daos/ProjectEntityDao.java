@@ -9,14 +9,18 @@ import sophena.model.Descriptor;
 import sophena.model.ModelType;
 import sophena.model.RootEntity;
 
-public class RootEntityDao<T extends RootEntity> extends Dao<T> {
+/**
+ * Dao for root entities that live in a project.
+ */
+class ProjectEntityDao<T extends RootEntity> extends RootEntityDao<T> {
 
-	public RootEntityDao(Class<T> type, Database db) {
+	public ProjectEntityDao(Class<T> type, Database db) {
 		super(type, db);
 	}
 
-	public List<Descriptor> getDescriptors() {
-		String sql = "SELECT id, name, description FROM " + getTable();
+	public List<Descriptor> getProjectContent(String projectId) {
+		String sql = "SELECT id, name, description FROM " + getTable()
+				+ " WHERE f_project = '" + projectId + "'";
 		List<Descriptor> list = new ArrayList<>();
 		ModelType type = ModelType.forModelClass(getType());
 		try {

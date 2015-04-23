@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -26,6 +27,13 @@ public class Dao<T extends AbstractEntity> {
 
 	protected Class<T> getType() {
 		return type;
+	}
+
+	protected String getTable() {
+		if (!type.isAnnotationPresent(Table.class))
+			return null;
+		Table t = type.getAnnotation(Table.class);
+		return t.name();
 	}
 
 	public boolean contains(String id) {
