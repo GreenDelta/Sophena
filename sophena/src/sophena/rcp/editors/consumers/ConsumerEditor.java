@@ -16,9 +16,10 @@ import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Project;
+import sophena.model.descriptors.ConsumerDescriptor;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
@@ -31,12 +32,11 @@ public class ConsumerEditor extends FormEditor {
 
 	private List<java.util.function.Consumer<double[]>> calcListeners = new ArrayList<>();
 
-	public static void open(Project project, Consumer consumer) {
-		if (consumer == null)
+	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
+		if (p == null || c == null)
 			return;
-		String key = Cache.put(project);
-		EditorInput input = new EditorInput(key, consumer.getName());
-		input.consumerKey = consumer.getId();
+		EditorInput input = new EditorInput(p.getId(), c.getName());
+		input.consumerKey = c.getId();
 		Editors.open(input, "sophena.ConsumerEditor");
 	}
 
@@ -45,7 +45,8 @@ public class ConsumerEditor extends FormEditor {
 			throws PartInitException {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
-		project = Cache.remove(i.getKey());
+		ProjectDao dao = new ProjectDao(App.getDb());
+		project = dao.get(i.getKey());
 		consumer = findConsumer(project, i.consumerKey);
 		setPartName(consumer.getName());
 	}
@@ -70,7 +71,7 @@ public class ConsumerEditor extends FormEditor {
 	public void calculate() {
 		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
 				project.getWeatherStation());
-		for(java.util.function.Consumer<double[]> fn : calcListeners) {
+		for (java.util.function.Consumer<double[]> fn : calcListeners) {
 			fn.accept(loadCurve);
 		}
 	}

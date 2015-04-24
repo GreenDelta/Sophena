@@ -3,6 +3,7 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import sophena.model.descriptors.ConsumerDescriptor;
 
 @Entity
 @Table(name = "tbl_consumers")
@@ -126,5 +129,13 @@ public class Consumer extends Facility {
 		for (FuelConsumption cons : this.getFuelConsumptions())
 			clone.getFuelConsumptions().add(cons.clone());
 		return clone;
+	}
+
+	public ConsumerDescriptor toDescriptor() {
+		ConsumerDescriptor d = new ConsumerDescriptor();
+		d.setId(getId());
+		d.setName(getName());
+		d.setDescription(getDescription());
+		return d;
 	}
 }

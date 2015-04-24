@@ -3,6 +3,7 @@ package sophena.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import sophena.model.descriptors.ProjectDescriptor;
 
 @Entity
 @Table(name = "tbl_projects")
@@ -100,9 +103,18 @@ public class Project extends RootEntity {
 			clone.getProducers().add(producer.clone());
 		for (Project variant : getVariants())
 			clone.getVariants().add(variant.clone());
-		if(getHeatNet() != null)
+		if (getHeatNet() != null)
 			clone.setHeatNet(getHeatNet().clone());
 		// TODO: clone other elements
 		return clone;
+	}
+
+	public ProjectDescriptor toDescriptor() {
+		ProjectDescriptor d = new ProjectDescriptor();
+		d.setId(getId());
+		d.setName(getName());
+		d.setDescription(getDescription());
+		d.setVariant(isVariant());
+		return d;
 	}
 }

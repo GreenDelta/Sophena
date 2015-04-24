@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
+import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -45,7 +46,8 @@ public class DeleteAction extends NavigationAction {
 		try {
 			ProjectElement e = (ProjectElement) elem;
 			ProjectDao dao = new ProjectDao(App.getDb());
-			dao.delete(e.getProject());
+			Project p = dao.get(e.getDescriptor().getId());
+			dao.delete(p);
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());

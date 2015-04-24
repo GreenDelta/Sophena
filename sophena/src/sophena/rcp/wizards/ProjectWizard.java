@@ -3,6 +3,7 @@ package sophena.rcp.wizards;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -12,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.HeatNet;
@@ -55,7 +57,7 @@ public class ProjectWizard extends Wizard {
 			n.setSupplyTemperature(80);
 			n.setReturnTemperature(50);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			ProjectEditor.open(p);
+			ProjectEditor.open(p.toDescriptor());
 			dao.insert(p);
 			return true;
 		} catch (Exception e) {
@@ -107,7 +109,7 @@ public class ProjectWizard extends Wizard {
 				Collections.sort(list, (w1, w2)
 						-> Strings.compare(w1.getName(), w2.getName()));
 				stationCombo.setInput(list);
-				if(!list.isEmpty())
+				if (!list.isEmpty())
 					stationCombo.select(list.get(0));
 				else
 					setPageComplete(false);

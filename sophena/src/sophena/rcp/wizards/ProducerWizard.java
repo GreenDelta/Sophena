@@ -30,6 +30,7 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
@@ -47,7 +48,16 @@ public class ProducerWizard extends Wizard {
 	private Page page;
 	private Project project;
 
+	public static void open(ProjectDescriptor d) {
+		if (d == null)
+			return;
+		ProjectDao dao = new ProjectDao(App.getDb());
+		open(dao.get(d.getId()));
+	}
+
 	public static void open(Project project) {
+		if (project == null)
+			return;
 		ProducerWizard wiz = new ProducerWizard();
 		wiz.setWindowTitle(M.CreateNewProducer);
 		wiz.project = project;
@@ -66,7 +76,7 @@ public class ProducerWizard extends Wizard {
 			project.getProducers().add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
-			Navigator.refresh(project);
+			Navigator.refresh();
 			// TODO: open producer editor
 			return true;
 		} catch (Exception e) {

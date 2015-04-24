@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
@@ -22,11 +22,10 @@ public class ProjectEditor extends FormEditor {
 	private Project project;
 	private boolean dirty;
 
-	public static void open(Project project) {
-		if (project == null)
+	public static void open(ProjectDescriptor d) {
+		if (d == null)
 			return;
-		String key = Cache.put(project);
-		KeyEditorInput input = new KeyEditorInput(key, project.getName());
+		KeyEditorInput input = new KeyEditorInput(d.getId(), d.getName());
 		Editors.open(input, "sophena.ProjectEditor");
 	}
 
@@ -39,7 +38,8 @@ public class ProjectEditor extends FormEditor {
 			throws PartInitException {
 		super.init(site, input);
 		KeyEditorInput ki = (KeyEditorInput) input;
-		project = Cache.remove(ki.getKey());
+		ProjectDao dao = new ProjectDao(App.getDb());
+		project = dao.get(ki.getKey());
 		setPartName(project.getName());
 	}
 

@@ -21,6 +21,7 @@ import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
@@ -38,7 +39,16 @@ public class ConsumerWizard extends Wizard {
 	private Page page;
 	private Project project;
 
+	public static void open(ProjectDescriptor d) {
+		if (d == null)
+			return;
+		ProjectDao dao = new ProjectDao(App.getDb());
+		open(dao.get(d.getId()));
+	}
+
 	public static void open(Project project) {
+		if (project == null)
+			return;
 		ConsumerWizard wiz = new ConsumerWizard();
 		wiz.setWindowTitle(M.CreateNewConsumer);
 		wiz.project = project;
@@ -55,8 +65,9 @@ public class ConsumerWizard extends Wizard {
 			project.getConsumers().add(consumer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
-			Navigator.refresh(project);
-			ConsumerEditor.open(project, consumer);
+			Navigator.refresh();
+			ConsumerEditor.open(project.toDescriptor(),
+					consumer.toDescriptor());
 			return true;
 		} catch (Exception e) {
 			log.error("failed to save consumer", e);

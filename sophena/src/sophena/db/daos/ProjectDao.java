@@ -39,7 +39,7 @@ public class ProjectDao extends RootEntityDao<Project> {
 		if (pd == null)
 			return Collections.emptyList();
 		String sql = "SELECT id, name, description FROM tbl_projects WHERE "
-				+ " f_project = " + pd.getId();
+				+ " f_project = '" + pd.getId() + "'";
 		List<ProjectDescriptor> list = new ArrayList<>();
 		try {
 			NativeSql.on(db).query(sql, (r) -> {
