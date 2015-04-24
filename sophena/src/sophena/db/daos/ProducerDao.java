@@ -1,12 +1,40 @@
 package sophena.db.daos;
 
-import sophena.db.Database;
-import sophena.model.Producer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class ProducerDao extends ProjectEntityDao<Producer> {
+import sophena.db.Database;
+import sophena.db.NativeSql;
+import sophena.model.Producer;
+import sophena.model.descriptors.ProducerDescriptor;
+import sophena.model.descriptors.ProjectDescriptor;
+
+public class ProducerDao extends RootEntityDao<Producer> {
 
 	public ProducerDao(Database db) {
 		super(Producer.class, db);
+	}
+
+	public List<ProducerDescriptor> getDescriptors(ProjectDescriptor pd) {
+		if (pd == null)
+			return Collections.emptyList();
+		String sql = "SELECT id, name, description FROM " + getTable()
+				+ " WHERE f_project = '" + pd.getId() + "'";
+		List<ProducerDescriptor> list = new ArrayList<>();
+		try {
+			NativeSql.on(db).query(sql, (r) -> {
+				ProducerDescriptor d = new ProducerDescriptor();
+				d.setId(r.getString(1));
+				d.setName(r.getString(2));
+				d.setDescription(r.getString(3));
+				list.add(d);
+				return true;
+			});
+		} catch (Exception e) {
+			log.error("failed to get descriptors for " + getType(), e);
+		}
+		return list;
 	}
 
 }

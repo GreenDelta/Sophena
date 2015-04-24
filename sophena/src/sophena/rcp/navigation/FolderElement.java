@@ -3,12 +3,12 @@ package sophena.rcp.navigation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.eclipse.swt.graphics.Image;
-
-import sophena.model.Consumer;
-import sophena.model.Producer;
-import sophena.model.Project;
+import sophena.db.daos.ConsumerDao;
+import sophena.db.daos.ProducerDao;
+import sophena.db.daos.ProjectDao;
+import sophena.model.descriptors.ProjectDescriptor;
+import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 
@@ -27,9 +27,9 @@ public class FolderElement implements NavigationElement {
 		return type;
 	}
 
-	public Project getProject() {
+	public ProjectDescriptor getProject() {
 		if (parent != null)
-			return parent.getProject();
+			return parent.getDescriptor();
 		else
 			return null;
 	}
@@ -39,38 +39,46 @@ public class FolderElement implements NavigationElement {
 		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
-		if (type == FolderType.PRODUCTION)
-			addProducers(childs);
-		if (type == FolderType.CONSUMPTION)
-			addConsumers(childs);
-		if (type == FolderType.VARIANTS)
-			addVariants(childs);
+		update();
 		return childs;
 	}
 
-	private void addVariants(List<NavigationElement> childs) {
-		Project p = getProject();
-		if (p == null)
+	@Override
+	public void update() {
+		if (childs == null)
 			return;
-		for (Project v : p.getVariants())
-			childs.add(new ProjectElement(this, v));
-	}
-
-	private void addConsumers(List<NavigationElement> childs) {
-		Project p = getProject();
-		if (p == null)
-			return;
-		for (Consumer c : p.getConsumers()) {
-			childs.add(new FacilityElement(this, c));
+		switch (type) {
+			case CONSUMPTION:
+				syncConsumers();
+				break;
+			case PRODUCTION:
+				syncProducers();
+				break;
+			case VARIANTS:
+				syncVariants();
+				break;
 		}
 	}
 
-	private void addProducers(List<NavigationElement> childs) {
-		Project p = getProject();
-		if (p == null)
-			return;
-		for (Producer producer : p.getProducers())
-			childs.add(new FacilityElement(this, producer));
+	private void syncConsumers() {
+		ConsumerDao dao = new ConsumerDao(App.getDb());
+		ChildSync.sync(childs,
+				dao.getDescriptors(getProject()),
+				(d) -> new ConsumerElement(this, d));
+	}
+
+	private void syncProducers() {
+		ProducerDao dao = new ProducerDao(App.getDb());
+		ChildSync.sync(childs,
+				dao.getDescriptors(getProject()),
+				(d) -> new ProducerElement(this, d));
+	}
+
+	private void syncVariants() {
+		ProjectDao dao = new ProjectDao(App.getDb());
+		ChildSync.sync(childs,
+				dao.getVariantDescriptors(getProject()),
+				(d) -> new ProjectElement(this, d));
 	}
 
 	@Override
@@ -81,20 +89,20 @@ public class FolderElement implements NavigationElement {
 	@Override
 	public String getLabel() {
 		switch (type) {
-		case PRODUCTION:
-			return M.HeatProduction;
-		case DISTRIBUTION:
-			return M.HeatDistribution;
-		case CONSUMPTION:
-			return M.HeatUsage;
-		case COSTS:
-			return M.Costs;
-		case ENERGY_RESULT:
-			return "Ergebnis - Energie";
-		case VARIANTS:
-			return M.Variants;
-		default:
-			return M.Unknown;
+			case PRODUCTION:
+				return M.HeatProduction;
+			case DISTRIBUTION:
+				return M.HeatDistribution;
+			case CONSUMPTION:
+				return M.HeatUsage;
+			case COSTS:
+				return M.Costs;
+			case ENERGY_RESULT:
+				return "Ergebnis - Energie";
+			case VARIANTS:
+				return M.Variants;
+			default:
+				return M.Unknown;
 		}
 	}
 
@@ -108,36 +116,24 @@ public class FolderElement implements NavigationElement {
 		return this.type.ordinal() - other.type.ordinal();
 	}
 
-	@Override
-	public Object getContent() {
-		if (getProject() == null)
-			return null;
-		else
-			return getProject().getId() + "_" + type;
-	}
-
-	@Override
-	public void update() {
-		childs = null;
-	}
 
 	@Override
 	public Image getImage() {
 		switch (type) {
-		case CONSUMPTION:
-			return Images.CONSUMER_16.img();
-		case COSTS:
-			return Images.COSTS_16.img();
-		case PRODUCTION:
-			return Images.PRODUCER_16.img();
-		case DISTRIBUTION:
-			return Images.PUMP_16.img();
-		case ENERGY_RESULT:
-			return Images.LOAD_PROFILE_16.img();
-		case VARIANTS:
-			return Images.PROJECT_16.img();
-		default:
-			return null;
+			case CONSUMPTION:
+				return Images.CONSUMER_16.img();
+			case COSTS:
+				return Images.COSTS_16.img();
+			case PRODUCTION:
+				return Images.PRODUCER_16.img();
+			case DISTRIBUTION:
+				return Images.PUMP_16.img();
+			case ENERGY_RESULT:
+				return Images.LOAD_PROFILE_16.img();
+			case VARIANTS:
+				return Images.PROJECT_16.img();
+			default:
+				return null;
 		}
 	}
 
@@ -150,11 +146,12 @@ public class FolderElement implements NavigationElement {
 		if (!(obj instanceof FolderElement))
 			return false;
 		FolderElement other = (FolderElement) obj;
-		return Objects.equals(this.getContent(), other.getContent());
+		return Objects.equals(this.getProject(), other.getProject())
+				&& this.type == other.type;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(getContent());
+		return Objects.hash(getProject(), getType());
 	}
 }

@@ -2,23 +2,16 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.swt.graphics.Image;
-
-import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Images;
-import sophena.rcp.utils.Strings;
 
-public class ProjectElement implements NavigationElement {
+public class ProjectElement extends ContentElement<ProjectDescriptor> {
 
-	private NavigationElement parent;
-	private Project project;
 	private List<NavigationElement> childs;
 
-	public ProjectElement(NavigationElement parent, Project project) {
-		this.project = project;
-		this.parent = parent;
-
+	public ProjectElement(NavigationElement parent, ProjectDescriptor project) {
+		super(parent, project) ;
 	}
 
 	@Override
@@ -34,51 +27,21 @@ public class ProjectElement implements NavigationElement {
 	}
 
 	private FolderType[] getChildTypes() {
-		if (project == null)
+		ProjectDescriptor p = getDescriptor();
+		if (p == null)
 			return new FolderType[0];
-		int count = project.isVariant() ? 5 : 6;
+		int count = p.isVariant() ? 5 : 6;
 		FolderType[] types = new FolderType[count];
 		types[0] = FolderType.CONSUMPTION;
 		types[1] = FolderType.PRODUCTION;
 		types[2] = FolderType.DISTRIBUTION;
 		types[3] = FolderType.COSTS;
 		types[4] = FolderType.ENERGY_RESULT;
-		if (!project.isVariant())
+		if (!p.isVariant())
 			types[5] = FolderType.VARIANTS;
 		return types;
 	}
 
-	@Override
-	public NavigationElement getParent() {
-		return parent;
-	}
-
-	@Override
-	public String getLabel() {
-		return project == null ? "#no name" : project.getName();
-	}
-
-	@Override
-	public int compareTo(NavigationElement other) {
-		if (!(other instanceof ProjectElement))
-			return 0;
-		Project otherProject = ((ProjectElement) other).project;
-		if (this.project == null || otherProject == null)
-			return 0;
-		else
-			return Strings.compare(project.getName(), otherProject.getName());
-	}
-
-	@Override
-	public Object getContent() {
-		return project;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	@Override
 	public void update() {
 		if (childs == null)
 			return;

@@ -10,14 +10,11 @@ public interface NavigationElement {
 
 	NavigationElement getParent();
 
-	String getLabel();
-
 	int compareTo(NavigationElement other);
 
-	Object getContent();
-
-	void update();
+	String getLabel();
 
 	Image getImage();
 
+	void update();
 }

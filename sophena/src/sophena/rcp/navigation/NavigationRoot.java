@@ -1,15 +1,11 @@
 package sophena.rcp.navigation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.eclipse.swt.graphics.Image;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.ProjectDao;
-import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 
 public class NavigationRoot implements NavigationElement {
@@ -20,24 +16,21 @@ public class NavigationRoot implements NavigationElement {
 	public List<NavigationElement> getChilds() {
 		if (childs != null)
 			return childs;
-		try {
-			ProjectDao dao = new ProjectDao(App.getDb());
-			childs = new ArrayList<>();
-			for (Project p : dao.getAll()) {
-				if (!p.isVariant())
-					childs.add(new ProjectElement(this, p));
-			}
-			return childs;
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to get projects from database", e);
-			return Collections.emptyList();
-		}
+		childs = new ArrayList<>();
+		update();
+		return childs;
 	}
 
 	@Override
 	public void update() {
-		childs = null;
+		if (childs == null)
+			return;
+		ProjectDao dao = new ProjectDao(App.getDb());
+		List<ProjectDescriptor> dbContent = dao.getDescriptors().stream()
+				.filter((d) -> !d.isVariant())
+				.collect(Collectors.toList());
+		ChildSync.sync(childs, dbContent,
+				(d) -> new ProjectElement(this, d));
 	}
 
 	@Override
@@ -53,11 +46,6 @@ public class NavigationRoot implements NavigationElement {
 	@Override
 	public int compareTo(NavigationElement other) {
 		return 0;
-	}
-
-	@Override
-	public Object getContent() {
-		return this;
 	}
 
 	@Override
