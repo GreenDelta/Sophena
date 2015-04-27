@@ -3,23 +3,35 @@
 
 <product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="0.0.1" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <programArgs>-nl
+de
+      </programArgs>
+      <vmArgs>-Xmx1024m
+      </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
 
-   <launcher>
+   <windowImages/>
+
+
+   <launcher name="Sophena">
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/sophena/icons/sophena.ico"/>
          <bmp/>
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
