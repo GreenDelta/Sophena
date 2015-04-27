@@ -14,13 +14,17 @@ class ChildSync {
 	/**
 	 * Synchronizes a list of navigation elements with the content of the
 	 * database: creates new elements that do not yet exist, removes elements
-	 * that are not anymore in the database, and refreshes the descriptors
-	 * in the existing elements.
+	 * that are not anymore in the database, and refreshes the descriptors in
+	 * the existing elements.
 	 *
-	 * @param naviContent The elements in the navigation tree (a live list).
-	 * @param dbContent   The fresh descriptors from the database.
-	 * @param factory     A factory function for creating new elements.
-	 * @param <T>         The descriptor type of the elements.
+	 * @param naviContent
+	 *            The elements in the navigation tree (a live list).
+	 * @param dbContent
+	 *            The fresh descriptors from the database.
+	 * @param factory
+	 *            A factory function for creating new elements.
+	 * @param <T>
+	 *            The descriptor type of the elements.
 	 */
 	public static <T extends Descriptor> void sync(
 			List<NavigationElement> naviContent,
@@ -31,7 +35,7 @@ class ChildSync {
 		List<NavigationElement> synced = new ArrayList<>();
 		for (T descriptor : dbContent) {
 			ContentElement<T> e = findExistingElement(naviContent, descriptor);
-			if(e == null) {
+			if (e == null) {
 				e = factory.apply(descriptor);
 				naviContent.add(e);
 			} else {

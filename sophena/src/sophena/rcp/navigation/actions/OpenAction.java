@@ -1,5 +1,10 @@
 package sophena.rcp.navigation.actions;
 
+import java.lang.reflect.Method;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
@@ -10,7 +15,10 @@ import sophena.rcp.navigation.ProjectElement;
 
 public class OpenAction extends NavigationAction {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	private NavigationElement elem;
+	private Method handler;
 
 	public OpenAction() {
 		setText(M.Open);
@@ -19,30 +27,35 @@ public class OpenAction extends NavigationAction {
 
 	@Override
 	public boolean accept(NavigationElement element) {
-		if (element instanceof ProjectElement) {
+		handler = Handlers.find(element, this);
+		if (handler == null) {
+			elem = null;
+			return false;
+		} else {
 			elem = element;
 			return true;
 		}
-		if (element instanceof ConsumerElement) {
-			elem = element;
-			return true;
-		}
-		return false;
 	}
 
 	@Override
 	public void run() {
-		if (elem instanceof ProjectElement)
-			openProject();
-		if (elem instanceof ConsumerElement)
-			openFacility();
+		try {
+			log.trace("call {} with {}", handler, elem);
+			handler.invoke(this);
+		} catch (Exception e) {
+			log.error("failed to call " + handler + " with " + elem, e);
+		}
 	}
 
+	@Handler(type = ProjectElement.class,
+			title = "Öffne Projektinformationen")
 	private void openProject() {
 		ProjectElement e = (ProjectElement) elem;
 		ProjectEditor.open(e.getDescriptor());
 	}
 
+	@Handler(type = ConsumerElement.class,
+			title = "Öffne Abnehmer")
 	private void openFacility() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ConsumerEditor.open(e.getProject(), e.getDescriptor());

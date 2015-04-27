@@ -1,6 +1,7 @@
 package sophena.rcp.navigation;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.navigator.CommonActionProvider;
@@ -16,12 +17,14 @@ import sophena.rcp.utils.Viewers;
 
 public class NavigationMenu extends CommonActionProvider {
 
-	private NavigationAction[] menuActions = {
+	private NavigationAction[][] actionGroups = { {
 			new AddAction(),
 			new OpenAction(),
+			new DeleteAction()
+	}, {
 			new NewVariantAction(),
-			new DeleteAction(),
 			new CalculateAction()
+	}
 	};
 
 	@Override
@@ -34,10 +37,18 @@ public class NavigationMenu extends CommonActionProvider {
 			return;
 		}
 		NavigationElement element = Viewers.getFirst(selection);
-		for (NavigationAction action : menuActions) {
-			if (action.accept(element))
+		for (NavigationAction[] group : actionGroups) {
+			int count = 0;
+			for (NavigationAction action : group) {
+				if (!action.accept(element))
+					continue;
 				menu.add(action);
+				count++;
+			}
+			if (count > 0)
+				menu.add(new Separator());
 		}
+		menu.add(new NewProjectAction());
 	}
 
 }

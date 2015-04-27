@@ -11,7 +11,7 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 	private List<NavigationElement> childs;
 
 	public ProjectElement(NavigationElement parent, ProjectDescriptor project) {
-		super(parent, project) ;
+		super(parent, project);
 	}
 
 	@Override

@@ -48,15 +48,15 @@ public class FolderElement implements NavigationElement {
 		if (childs == null)
 			return;
 		switch (type) {
-			case CONSUMPTION:
-				syncConsumers();
-				break;
-			case PRODUCTION:
-				syncProducers();
-				break;
-			case VARIANTS:
-				syncVariants();
-				break;
+		case CONSUMPTION:
+			syncConsumers();
+			break;
+		case PRODUCTION:
+			syncProducers();
+			break;
+		case VARIANTS:
+			syncVariants();
+			break;
 		}
 	}
 
@@ -89,20 +89,20 @@ public class FolderElement implements NavigationElement {
 	@Override
 	public String getLabel() {
 		switch (type) {
-			case PRODUCTION:
-				return M.HeatProduction;
-			case DISTRIBUTION:
-				return M.HeatDistribution;
-			case CONSUMPTION:
-				return M.HeatUsage;
-			case COSTS:
-				return M.Costs;
-			case ENERGY_RESULT:
-				return "Ergebnis - Energie";
-			case VARIANTS:
-				return M.Variants;
-			default:
-				return M.Unknown;
+		case PRODUCTION:
+			return M.HeatProduction;
+		case DISTRIBUTION:
+			return M.HeatDistribution;
+		case CONSUMPTION:
+			return M.HeatUsage;
+		case COSTS:
+			return M.Costs;
+		case ENERGY_RESULT:
+			return "Ergebnis - Energie";
+		case VARIANTS:
+			return M.Variants;
+		default:
+			return M.Unknown;
 		}
 	}
 
@@ -116,24 +116,23 @@ public class FolderElement implements NavigationElement {
 		return this.type.ordinal() - other.type.ordinal();
 	}
 
-
 	@Override
 	public Image getImage() {
 		switch (type) {
-			case CONSUMPTION:
-				return Images.CONSUMER_16.img();
-			case COSTS:
-				return Images.COSTS_16.img();
-			case PRODUCTION:
-				return Images.PRODUCER_16.img();
-			case DISTRIBUTION:
-				return Images.PUMP_16.img();
-			case ENERGY_RESULT:
-				return Images.LOAD_PROFILE_16.img();
-			case VARIANTS:
-				return Images.PROJECT_16.img();
-			default:
-				return null;
+		case CONSUMPTION:
+			return Images.CONSUMER_16.img();
+		case COSTS:
+			return Images.COSTS_16.img();
+		case PRODUCTION:
+			return Images.PRODUCER_16.img();
+		case DISTRIBUTION:
+			return Images.PUMP_16.img();
+		case ENERGY_RESULT:
+			return Images.LOAD_PROFILE_16.img();
+		case VARIANTS:
+			return Images.PROJECT_16.img();
+		default:
+			return null;
 		}
 	}
 
