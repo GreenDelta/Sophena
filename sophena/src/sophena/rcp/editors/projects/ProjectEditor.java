@@ -78,7 +78,7 @@ public class ProjectEditor extends FormEditor {
 			project = dao.update(project);
 			dirty = false;
 			setPartName(project.getName());
-			Navigator.refresh(project);
+			Navigator.refresh();
 			editorDirtyStateChanged();
 		} catch (Exception e) {
 			log.error("failed to update project " + project, e);

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.navigation.FolderElement;
@@ -18,7 +19,7 @@ import sophena.rcp.utils.UI;
 
 public class NewVariantAction extends NavigationAction {
 
-	private Project project;
+	private ProjectDescriptor descriptor;
 
 	public NewVariantAction() {
 		setText("Neue Variante");
@@ -39,25 +40,25 @@ public class NewVariantAction extends NavigationAction {
 		FolderElement e = element;
 		if (e.getType() != FolderType.VARIANTS)
 			return false;
-		Project p = e.getProject();
+		ProjectDescriptor p = e.getProject();
 		if (p == null || p.isVariant())
 			return false;
-		this.project = p;
+		this.descriptor = p;
 		return true;
 	}
 
 	private boolean acceptProjectElement(ProjectElement element) {
 		ProjectElement e = element;
-		Project p = e.getProject();
+		ProjectDescriptor p = e.getDescriptor();
 		if (p == null || p.isVariant())
 			return false;
-		this.project = p;
+		this.descriptor = p;
 		return true;
 	}
 
 	@Override
 	public void run() {
-		if (project == null)
+		if (descriptor == null)
 			return;
 		InputDialog dialog = new InputDialog(UI.shell(), "Neue Variante",
 				"Name der Variante", "Neue Variante", this::checkName);
@@ -70,15 +71,16 @@ public class NewVariantAction extends NavigationAction {
 	}
 
 	private void createVariant(String val) {
-		Project variant = project.clone();
-		variant.setName(val);
-		variant.setVariant(true);
-		variant.getVariants().clear();
-		project.getVariants().add(variant);
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			dao.update(project);
-			Navigator.refresh(project);
+			Project p = dao.get(descriptor.getId());
+			Project variant = p.clone();
+			variant.setName(val);
+			variant.setVariant(true);
+			variant.getVariants().clear();
+			p.getVariants().add(variant);
+			dao.update(p);
+			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to save project variant", e);
@@ -89,10 +91,11 @@ public class NewVariantAction extends NavigationAction {
 		if (name == null || name.trim().length() == 0)
 			return "Der Name darf nicht leer sein";
 		String n = name.trim();
-		for (Project var : project.getVariants()) {
-			if (n.equalsIgnoreCase(var.getName()))
-				return "Es existiert schon eine Variante mit diesem Namen";
-		}
+		// TODO: search in database
+		// for (Project var : descriptor.getVariants()) {
+		// if (n.equalsIgnoreCase(var.getName()))
+		// return "Es existiert schon eine Variante mit diesem Namen";
+		// }
 		return null;
 	}
 }

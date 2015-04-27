@@ -1,11 +1,10 @@
 package sophena.rcp.navigation.actions;
 
-import sophena.model.Consumer;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
-import sophena.rcp.navigation.FacilityElement;
+import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
 
@@ -24,7 +23,7 @@ public class OpenAction extends NavigationAction {
 			elem = element;
 			return true;
 		}
-		if (element instanceof FacilityElement) {
+		if (element instanceof ConsumerElement) {
 			elem = element;
 			return true;
 		}
@@ -35,21 +34,18 @@ public class OpenAction extends NavigationAction {
 	public void run() {
 		if (elem instanceof ProjectElement)
 			openProject();
-		if (elem instanceof FacilityElement)
+		if (elem instanceof ConsumerElement)
 			openFacility();
 	}
 
 	private void openProject() {
 		ProjectElement e = (ProjectElement) elem;
-		ProjectEditor.open(e.getProject());
+		ProjectEditor.open(e.getDescriptor());
 	}
 
 	private void openFacility() {
-		FacilityElement e = (FacilityElement) elem;
-		Object content = e.getContent();
-		if (content instanceof Consumer) {
-			ConsumerEditor.open(e.getProject(), (Consumer) content);
-		}
+		ConsumerElement e = (ConsumerElement) elem;
+		ConsumerEditor.open(e.getProject(), e.getDescriptor());
 	}
 
 }

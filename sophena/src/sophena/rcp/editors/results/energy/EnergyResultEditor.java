@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import sophena.calc.ProjectCalculator;
 import sophena.calc.ProjectResult;
+import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
+import sophena.model.descriptors.ProjectDescriptor;
+import sophena.rcp.App;
 import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -21,14 +24,16 @@ public class EnergyResultEditor extends FormEditor {
 	private Project project;
 	private ProjectResult result;
 
-	public static void open(Project project) {
-		if (project == null)
+	public static void open(ProjectDescriptor d) {
+		if (d == null)
 			return;
 		Rcp.run("Berechne...", () -> {
-			ProjectResult result = ProjectCalculator.calculate(project);
-			Object[] data = new Object[] { project, result };
+			ProjectDao dao = new ProjectDao(App.getDb());
+			Project p = dao.get(d.getId());
+			ProjectResult result = ProjectCalculator.calculate(p);
+			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
-			KeyEditorInput input = new KeyEditorInput(key, project.getName());
+			KeyEditorInput input = new KeyEditorInput(key, p.getName());
 			Editors.open(input, "sophena.EnergyResultEditor");
 		});
 	}
