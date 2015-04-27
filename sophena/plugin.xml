@@ -113,12 +113,20 @@
 		<editor 
 			class="sophena.rcp.editors.projects.ProjectEditor" 
 			id="sophena.ProjectEditor" 
-			name="#Project editor"/>
+			name="Projekt"
+            icon="icons/project_16.png" />
 
         <editor
             class="sophena.rcp.editors.consumers.ConsumerEditor"
             id="sophena.ConsumerEditor"
-            name="#Consumer editor"/>
+            name="Abnehmer"
+            icon="icons/consumer_16.png" />
+
+		<editor
+            class="sophena.rcp.editors.producers.ProducerEditor"
+            id="sophena.ProducerEditor"
+            name="Erzeuger"
+            icon="icons/producer_16.png" />
 
         <editor
             class="sophena.rcp.editors.basedata.climate.ClimateDataEditor"

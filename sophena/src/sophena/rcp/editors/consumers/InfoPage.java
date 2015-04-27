@@ -25,9 +25,9 @@ class InfoPage extends FormPage {
 	}
 
 	@Override
-	protected void createFormContent(IManagedForm managedForm) {
-		ScrolledForm form = UI.formHeader(managedForm, consumer().getName());
-		FormToolkit tk = managedForm.getToolkit();
+	protected void createFormContent(IManagedForm mform) {
+		ScrolledForm form = UI.formHeader(mform, consumer().getName());
+		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		InfoSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection(body, tk);

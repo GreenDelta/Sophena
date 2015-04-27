@@ -1,9 +1,6 @@
-package sophena.rcp.editors.consumers;
+package sophena.rcp.editors.producers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -11,33 +8,31 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
-import sophena.model.Consumer;
+import sophena.model.Producer;
 import sophena.model.Project;
-import sophena.model.descriptors.ConsumerDescriptor;
+import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
-public class ConsumerEditor extends FormEditor {
+public class ProducerEditor extends FormEditor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Project project;
-	private Consumer consumer;
+	private Producer producer;
 	private boolean dirty;
 
-	private List<java.util.function.Consumer<double[]>> calcListeners = new ArrayList<>();
-
-	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
-		if (p == null || c == null)
+	public static void open(ProjectDescriptor project,
+			ProducerDescriptor producer) {
+		if (project == null || producer == null)
 			return;
-		EditorInput input = new EditorInput(c.getId(), c.getName());
-		input.projectKey = p.getId();
-		Editors.open(input, "sophena.ConsumerEditor");
+		EditorInput input = new EditorInput(producer.getId(),
+				producer.getName());
+		input.projectKey = project.getId();
+		Editors.open(input, "sophena.ProducerEditor");
 	}
 
 	@Override
@@ -47,39 +42,26 @@ public class ConsumerEditor extends FormEditor {
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		project = dao.get(i.projectKey);
-		consumer = findConsumer(project, i.getKey());
-		setPartName(consumer.getName());
+		producer = findProducer(project, i.getKey());
+		setPartName(producer.getName());
 	}
 
-	private Consumer findConsumer(Project project, String consumerKey) {
+	private Producer findProducer(Project project, String producerKey) {
 		if (project == null)
 			return null;
-		for (Consumer c : project.getConsumers()) {
-			if (Objects.equals(consumerKey, c.getId()))
-				return c;
+		for (Producer p : project.getProducers()) {
+			if (Objects.equals(producerKey, p.getId()))
+				return p;
 		}
-		log.error("did not found consumer {} in {}", consumerKey, project);
 		return null;
 	}
 
-	public Consumer getConsumer() {
-		return consumer;
+	public Producer getProducer() {
+		return producer;
 	}
 
 	public Project getProject() {
 		return project;
-	}
-
-	public void calculate() {
-		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
-				project.getWeatherStation());
-		for (java.util.function.Consumer<double[]> fn : calcListeners) {
-			fn.accept(loadCurve);
-		}
-	}
-
-	public void onCalculated(java.util.function.Consumer<double[]> fn) {
-		calcListeners.add(fn);
 	}
 
 	public void setDirty() {
@@ -98,7 +80,6 @@ public class ConsumerEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(new InfoPage(this));
-			addPage(new LocationPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}
@@ -107,12 +88,12 @@ public class ConsumerEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			log.info("update consumer {} in project {}", consumer, project);
+			log.info("update producer {} in project {}", producer, project);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			project = dao.update(project);
-			consumer = findConsumer(project, consumer.getId());
+			producer = findProducer(project, producer.getId());
 			dirty = false;
-			setPartName(consumer.getName());
+			setPartName(producer.getName());
 			Navigator.refresh();
 			editorDirtyStateChanged();
 		} catch (Exception e) {
@@ -137,4 +118,5 @@ public class ConsumerEditor extends FormEditor {
 			super(consumerKey, name);
 		}
 	}
+
 }

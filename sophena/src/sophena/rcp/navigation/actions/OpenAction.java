@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
+import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
 
 public class OpenAction extends NavigationAction {
@@ -56,9 +58,16 @@ public class OpenAction extends NavigationAction {
 
 	@Handler(type = ConsumerElement.class,
 			title = "Öffne Abnehmer")
-	private void openFacility() {
+	private void openConsumer() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ConsumerEditor.open(e.getProject(), e.getDescriptor());
+	}
+
+	@Handler(type = ProducerElement.class,
+			title = "Öffne Erzeuger")
+	private void openProducer() {
+		ProducerElement e = (ProducerElement) elem;
+		ProducerEditor.open(e.getProject(), e.getDescriptor());
 	}
 
 }
