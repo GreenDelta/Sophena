@@ -16,8 +16,9 @@ public class ConsumerElement extends ContentElement<ConsumerDescriptor> {
 	}
 
 	public ProjectDescriptor getProject() {
-		if (getParent() instanceof ProjectElement)
-			return ((ProjectElement) getParent()).getDescriptor();
+		NavigationElement parent = getParent();
+		if (parent instanceof FolderElement)
+			return ((FolderElement) parent).getProject();
 		else
 			return null;
 	}

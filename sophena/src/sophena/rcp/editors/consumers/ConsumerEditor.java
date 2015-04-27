@@ -35,8 +35,8 @@ public class ConsumerEditor extends FormEditor {
 	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
 		if (p == null || c == null)
 			return;
-		EditorInput input = new EditorInput(p.getId(), c.getName());
-		input.consumerKey = c.getId();
+		EditorInput input = new EditorInput(c.getId(), c.getName());
+		input.projectKey = p.getId();
 		Editors.open(input, "sophena.ConsumerEditor");
 	}
 
@@ -46,8 +46,8 @@ public class ConsumerEditor extends FormEditor {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		project = dao.get(i.getKey());
-		consumer = findConsumer(project, i.consumerKey);
+		project = dao.get(i.projectKey);
+		consumer = findConsumer(project, i.getKey());
 		setPartName(consumer.getName());
 	}
 
@@ -129,10 +129,10 @@ public class ConsumerEditor extends FormEditor {
 
 	private static class EditorInput extends KeyEditorInput {
 
-		private String consumerKey;
+		private String projectKey;
 
-		private EditorInput(String projectKey, String name) {
-			super(projectKey, name);
+		private EditorInput(String consumerKey, String name) {
+			super(consumerKey, name);
 		}
 	}
 }
