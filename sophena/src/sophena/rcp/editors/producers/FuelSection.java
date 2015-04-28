@@ -21,6 +21,7 @@ import sophena.rcp.Numbers;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class FuelSection {
@@ -104,6 +105,7 @@ class FuelSection {
 	private void createVatRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Mehrwertsteuersatz");
 		UI.formLabel(composite, tk, "%");
+		Texts.set(t, 19);
 	}
 
 }

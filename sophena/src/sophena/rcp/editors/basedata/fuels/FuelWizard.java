@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import sophena.model.Fuel;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
-import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class FuelWizard extends Wizard {
@@ -83,61 +83,56 @@ class FuelWizard extends Wizard {
 
 		private void createNameText(Composite composite) {
 			nameText = UI.formText(composite, M.Name);
-			nameText.setBackground(Colors.forRequiredField());
-			if (fuel.getName() != null)
-				nameText.setText(fuel.getName());
+			Texts.on(nameText)
+					.init(fuel.getName())
+					.required()
+					.onChanged(this::validate);
 			UI.formLabel(composite, "");
-			nameText.addModifyListener((e) -> {
-				validate();
-			});
 		}
 
 		private void createDescriptionText(Composite composite) {
 			descriptionText = UI.formMultiText(composite, M.Description);
-			if (fuel.getDescription() != null)
-				descriptionText.setText(fuel.getDescription());
+			Texts.set(descriptionText, fuel.getDescription());
 			UI.formLabel(composite, "");
 		}
 
 		private void createUnitText(Composite composite) {
 			unitText = UI.formText(composite, M.Unit);
-			unitText.setBackground(Colors.forRequiredField());
-			if (fuel.getUnit() != null)
-				unitText.setText(fuel.getUnit());
+			Texts.on(unitText)
+					.init(fuel.getUnit())
+					.required()
+					.onChanged(() -> {
+						String unit = unitText.getText();
+						unit = unit == null ? "" : unit.trim();
+						unitLabel.setText("kWh/" + fuel.getUnit());
+						composite.layout();
+						validate();
+					});
 			UI.formLabel(composite, "");
-			unitText.addModifyListener((e) -> {
-				String unit = unitText.getText();
-				unit = unit == null ? "" : unit.trim();
-				unitLabel.setText("kWh/" + fuel.getUnit());
-				composite.layout();
-				validate();
-			});
 		}
 
 		private void createCalText(Composite composite) {
 			calText = UI.formText(composite, M.CalorificValue);
-			calText.setBackground(Colors.forRequiredField());
-			calText.setText(Numbers.toString(fuel.getCalorificValue()));
+			Texts.on(calText)
+					.init(fuel.getCalorificValue())
+					.required()
+					.decimal()
+					.onChanged(this::validate);
 			unitLabel = UI.formLabel(composite, "");
 			if (fuel.getUnit() != null)
 				unitLabel.setText("kWh/" + fuel.getUnit());
-			calText.addModifyListener((e) -> {
-				validate();
-			});
 		}
 
 		private boolean validate() {
-			if (Strings.nullOrEmpty(nameText.getText()))
-				return error("#Es muss ein Name angegeben werden.");
+			if (Texts.isEmpty(nameText))
+				return error("Es muss ein Name angegeben werden.");
 			if (Strings.nullOrEmpty(unitText.getText()))
-				return error("#Es muss eine Einheit angegeben werden.");
+				return error("Es muss eine Einheit angegeben werden.");
 			if (!Numbers.isNumeric(calText.getText()))
-				return error("#Es muss ein Heizwert angegeben werden.");
-			else {
-				setPageComplete(true);
-				setErrorMessage(null);
-				return true;
-			}
+				return error("Es muss ein Heizwert angegeben werden.");
+			setPageComplete(true);
+			setErrorMessage(null);
+			return true;
 		}
 
 		private boolean error(String message) {

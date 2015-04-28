@@ -7,11 +7,10 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+
 import sophena.model.Fuel;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
-import sophena.rcp.utils.Colors;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class WoodFuelWizard extends Wizard {
@@ -20,7 +19,7 @@ class WoodFuelWizard extends Wizard {
 	private Fuel fuel;
 
 	public static int open(Fuel fuel) {
-		if(fuel == null)
+		if (fuel == null)
 			return Window.CANCEL;
 		WoodFuelWizard wiz = new WoodFuelWizard();
 		wiz.setWindowTitle(M.WoodFuel);
@@ -34,6 +33,7 @@ class WoodFuelWizard extends Wizard {
 	public boolean performFinish() {
 		fuel.setWood(true);
 		fuel.setUnit("kg");
+		page.data.bindToModel();
 		return true;
 	}
 
@@ -43,9 +43,14 @@ class WoodFuelWizard extends Wizard {
 		addPage(page);
 	}
 
-
 	private class Page extends WizardPage {
 
+		private DataBinding data = new DataBinding();
+
+		private Text nameText;
+		private Text descriptionText;
+		private Text densityText;
+		private Text calText;
 
 		private Page() {
 			super("FuelWizardPage", M.WoodFuel, null);
@@ -60,58 +65,70 @@ class WoodFuelWizard extends Wizard {
 			createDensityText(composite);
 			createCalText(composite);
 			createDescriptionText(composite);
-			validate();
+			data.validate();
 		}
 
 		private void createNameText(Composite composite) {
-			Text t = UI.formText(composite, M.Name);
-			t.setBackground(Colors.forRequiredField());
-			if(fuel.getName() != null)
-				t.setText(fuel.getName());
+			nameText = UI.formText(composite, M.Name);
+			Texts.on(nameText)
+					.init(fuel.getName())
+					.required()
+					.onChanged(data::validate);
 			UI.formLabel(composite, "");
-			t.addModifyListener((e) -> {
-				String name = t.getText();
-				name = name == null ? "" : name.trim();
-				fuel.setName(name);
-				validate();
-			});
 		}
 
 		private void createDescriptionText(Composite composite) {
-			Text t = UI.formMultiText(composite, M.Description);
-			if(fuel.getDescription() != null)
-				t.setText(fuel.getDescription());
+			descriptionText = UI.formMultiText(composite, M.Description);
+			Texts.set(descriptionText, fuel.getDescription());
 			UI.formLabel(composite, "");
-			t.addModifyListener((e) ->  fuel.setDescription(t.getText()));
 		}
 
 		private void createDensityText(Composite composite) {
-			Text t = UI.formText(composite, "#Dichte");
-			t.setBackground(Colors.forRequiredField());
-			t.setText(Numbers.toString(fuel.getDensity()));
+			densityText = UI.formText(composite, "Dichte");
+			Texts.on(densityText)
+					.init(fuel.getDensity())
+					.required()
+					.decimal()
+					.onChanged(data::validate);
 			UI.formLabel(composite, "kg/FM");
-			t.addModifyListener((e) -> {
-				fuel.setDensity(Numbers.read(t.getText()));
-				validate();
-			});
 		}
 
 		private void createCalText(Composite composite) {
-			Text t = UI.formText(composite, M.CalorificValue);
-			t.setBackground(Colors.forRequiredField());
-			t.setText(Numbers.toString(fuel.getCalorificValue()));
+			calText = UI.formText(composite, M.CalorificValue);
+			Texts.on(calText)
+					.init(fuel.getCalorificValue())
+					.required()
+					.decimal()
+					.onChanged(data::validate);
 			UI.formLabel(composite, "kWh/kg atro");
-			t.addModifyListener((e) -> {
-				double v = Numbers.read(t.getText());
-				fuel.setCalorificValue(v);
-				validate();
-			});
 		}
 
-		private void validate() {
-			if(Strings.nullOrEmpty(fuel.getName()))
+		private class DataBinding {
+
+			void bindToModel() {
+				fuel.setName(nameText.getText());
+				fuel.setDescription(descriptionText.getText());
+				fuel.setDensity(Texts.getDouble(densityText));
+				fuel.setCalorificValue(Texts.getDouble(calText));
+			}
+
+			private boolean validate() {
+				if (Texts.isEmpty(nameText))
+					return error("Es muss ein Name angegeben werden.");
+				if (!Texts.hasNumber(densityText))
+					return error("Die Dichte muss numerisch sein");
+				if (!Texts.hasNumber(calText))
+					return error("Der Heizwert muss numerisch sein");
+				setPageComplete(true);
+				setErrorMessage(null);
+				return true;
+			}
+
+			private boolean error(String message) {
+				setErrorMessage(message);
 				setPageComplete(false);
+				return false;
+			}
 		}
 	}
-
 }
