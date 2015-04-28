@@ -1,5 +1,7 @@
 package sophena.rcp.utils;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,6 +42,24 @@ public class Editors {
 
 	public static void open(IEditorInput input, String editorId) {
 		new OpenInUIJob(input, editorId).schedule();
+	}
+
+	public static void close(String key) {
+		if (key == null)
+			return;
+		try {
+			for (IEditorReference ref : Editors.getReferences()) {
+				IEditorInput input = ref.getEditorInput();
+				if (!(input instanceof KeyEditorInput))
+					continue;
+				KeyEditorInput ki = (KeyEditorInput) input;
+				if (Objects.equals(ki.getKey(), key))
+					Editors.close(ref);
+			}
+		} catch (Exception e) {
+			log.error("failed to search and close editor with input " + key, e);
+		}
+
 	}
 
 	public static void close(IEditorReference ref) {

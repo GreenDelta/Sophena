@@ -21,6 +21,7 @@ import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
+import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.MsgBox;
 
 public class DeleteAction extends NavigationAction {
@@ -69,6 +70,7 @@ public class DeleteAction extends NavigationAction {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(e.getDescriptor().getId());
 			dao.delete(p);
+			Editors.close(p.getId());
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
@@ -94,6 +96,7 @@ public class DeleteAction extends NavigationAction {
 				return;
 			p.getConsumers().remove(c);
 			dao.update(p);
+			Editors.close(c.getId());
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
@@ -119,6 +122,7 @@ public class DeleteAction extends NavigationAction {
 				return;
 			p.getProducers().remove(prod);
 			dao.update(p);
+			Editors.close(prod.getId());
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
