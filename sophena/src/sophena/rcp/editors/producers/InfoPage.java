@@ -25,7 +25,7 @@ import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-public class InfoPage extends FormPage {
+class InfoPage extends FormPage {
 
 	private ProducerEditor editor;
 
@@ -49,6 +49,7 @@ public class InfoPage extends FormPage {
 		createBoilerLink(tk, composite);
 		createFunctionCombo(tk, composite);
 		createRankText(tk, composite);
+		new FuelSection(editor).render(body, tk);
 	}
 
 	private void createNameText(FormToolkit tk, Composite composite) {
