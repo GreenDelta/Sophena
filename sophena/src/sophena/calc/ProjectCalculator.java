@@ -24,7 +24,6 @@ public class ProjectCalculator {
 	private ProjectResult doIt() {
 		maxBufferCapacity = calcMaxBufferCapacity();
 		ProjectResult r = new ProjectResult(project);
-		r.printHeader();
 		r.bufferCapacity[0] = 0.5 * maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
 
@@ -69,7 +68,6 @@ public class ProjectCalculator {
 			if ((i + 1) < Stats.HOURS)
 				r.bufferCapacity[i + 1] = bufferCapacity;
 			r.suppliedPower[i] = suppliedPower;
-			r.printRow(i);
 		}
 
 		return r;

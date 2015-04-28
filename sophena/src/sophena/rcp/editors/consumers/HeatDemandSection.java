@@ -8,6 +8,7 @@ import sophena.model.Consumer;
 import sophena.model.Stats;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class HeatDemandSection {
@@ -33,24 +34,26 @@ class HeatDemandSection {
 		createPowerText(composite, tk);
 		createWaterText(composite, tk);
 		createHeatLimitText(composite, tk);
-		createHoursText(composite, tk);
 		createHeatDemandText(composite, tk);
 	}
 
 	private void createPowerText(Composite composite, FormToolkit tk) {
-		Text t = UI.formText(composite, tk, "#Gesamtleistung");
-		t.setEditable(consumer().isDemandBased());
-		t.setText(Numbers.toString(consumer().getHeatingLoad()));
+		Text t = UI.formText(composite, tk, "Gesamtleistung");
+		Texts.set(t, consumer().getHeatingLoad());
 		UI.formLabel(composite, tk, "kW");
-		t.addModifyListener((e) -> {
-			consumer().setHeatingLoad(Numbers.read(t.getText()));
-			editor.calculate();
-			editor.setDirty();
-		});
+		if (!consumer().isDemandBased())
+			t.setEditable(false);
+		else {
+			Texts.on(t).required().decimal().onChanged(() -> {
+				consumer().setHeatingLoad(Numbers.read(t.getText()));
+				editor.calculate();
+				editor.setDirty();
+			});
+		}
 	}
 
 	private void createWaterText(Composite composite, FormToolkit tk) {
-		Text t = UI.formText(composite, tk, "#Warmwasseranteil");
+		Text t = UI.formText(composite, tk, "Warmwasseranteil");
 		t.setText(Numbers.toString(consumer().getWaterFraction()));
 		UI.formLabel(composite, tk, "%");
 		t.addModifyListener((e) -> {
@@ -61,22 +64,12 @@ class HeatDemandSection {
 	}
 
 	private void createHeatLimitText(Composite composite, FormToolkit tk) {
-		Text t = UI.formText(composite, tk, "#Heizgrenze");
+		Text t = UI.formText(composite, tk, "Heizgrenze");
 		t.setText(Numbers.toString(consumer().getHeatingLimit()));
 		UI.formLabel(composite, tk, "°C");
 		t.addModifyListener((e) -> {
 			consumer().setHeatingLimit(Numbers.read(t.getText()));
 			editor.calculate();
-			editor.setDirty();
-		});
-	}
-
-	private void createHoursText(Composite composite, FormToolkit tk) {
-		Text t = UI.formText(composite, tk, "#Vollaststunden");
-		t.setText(Numbers.toString(consumer().getLoadHours()));
-		UI.formLabel(composite, tk, "h");
-		t.addModifyListener((e) -> {
-			consumer().setLoadHours(Numbers.readInt(t.getText()));
 			editor.setDirty();
 		});
 	}

@@ -11,6 +11,7 @@ import sophena.model.Consumer;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class InfoSection {
@@ -41,18 +42,16 @@ class InfoSection {
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text nt = UI.formText(composite, toolkit, M.Name);
-		if (consumer().getName() != null)
-			nt.setText(consumer().getName());
-		nt.addModifyListener((e) -> {
+		Texts.on(nt).required().onChanged(() -> {
 			consumer().setName(nt.getText());
 			editor.setDirty();
 		});
+		Texts.set(nt, consumer().getName());
 	}
 
 	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
 		Text dt = UI.formMultiText(composite, toolkit, M.Description);
-		if (consumer().getDescription() != null)
-			dt.setText(consumer().getDescription());
+		Texts.set(dt, consumer().getDescription());
 		dt.addModifyListener((e) -> {
 			consumer().setDescription(dt.getText());
 			editor.setDirty();

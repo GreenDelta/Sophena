@@ -8,24 +8,24 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
+import sophena.db.daos.WeatherStationDao;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
+import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard {
@@ -51,7 +51,9 @@ public class ProjectWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			Project p = page.getProject();
+			Project p = new Project();
+			p.setId(UUID.randomUUID().toString());
+			page.data.bindToModel(p);
 			HeatNet n = p.getHeatNet();
 			n.setSimultaneityFactor(1);
 			n.setSupplyTemperature(80);
@@ -59,6 +61,7 @@ public class ProjectWizard extends Wizard {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			ProjectEditor.open(p.toDescriptor());
 			dao.insert(p);
+			Navigator.refresh();
 			return true;
 		} catch (Exception e) {
 			log.error("failed to create project", e);
@@ -74,10 +77,12 @@ public class ProjectWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
+		private DataBinding data = new DataBinding();
+
 		private Text nameText;
 		private Text descriptionText;
 		private Text timeText;
-		private EntityCombo<WeatherStation> stationCombo;
+		private EntityCombo<WeatherStationDescriptor> stationCombo;
 
 		protected Page() {
 			super("ProjectWizardPage", M.CreateNewProject, null);
@@ -87,25 +92,46 @@ public class ProjectWizard extends Wizard {
 		public void createControl(Composite parent) {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
-			// TODO: validation
 			nameText = UI.formText(composite, M.Name);
-			nameText.setBackground(Colors.forRequiredField());
-			nameText.setText(M.NewProject);
+			Texts.on(nameText).required().onChanged(data::validate);
 			descriptionText = UI.formMultiText(composite, M.Description);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
-			timeText.setText("20");
-			timeText.setBackground(Colors
-					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-			createStationCombo(composite);
+			Texts.on(timeText).required().integer().onChanged(data::validate);
+			stationCombo = new EntityCombo<>();
+			stationCombo.create("Wetterstation", composite);
+			stationCombo.onSelect((d) -> data.validate());
+			data.bindToUI();
 		}
 
-		private void createStationCombo(Composite composite) {
-			stationCombo = new EntityCombo<>();
-			stationCombo.create("#Wetterstation", composite);
-			try {
-				Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
-						App.getDb());
-				List<WeatherStation> list = dao.getAll();
+		private class DataBinding {
+
+			void bindToModel(Project p) {
+				if (p == null)
+					return;
+				p.setName(nameText.getText());
+				p.setDescription(descriptionText.getText());
+				p.setProjectDuration(Texts.getInt(timeText));
+				p.setWeatherStation(getWeatherStation());
+			}
+
+			private WeatherStation getWeatherStation() {
+				WeatherStationDescriptor d = stationCombo.getSelected();
+				if (d == null)
+					return null;
+				WeatherStationDao dao = new WeatherStationDao(App.getDb());
+				return dao.get(d.getId());
+			}
+
+			void bindToUI() {
+				nameText.setText(M.NewProject);
+				Texts.set(timeText, 20);
+				initWeatherStations();
+				validate();
+			}
+
+			private void initWeatherStations() {
+				WeatherStationDao dao = new WeatherStationDao(App.getDb());
+				List<WeatherStationDescriptor> list = dao.getDescriptors();
 				Collections.sort(list, (w1, w2)
 						-> Strings.compare(w1.getName(), w2.getName()));
 				stationCombo.setInput(list);
@@ -113,20 +139,27 @@ public class ProjectWizard extends Wizard {
 					stationCombo.select(list.get(0));
 				else
 					setPageComplete(false);
-			} catch (Exception e) {
-				log.error("failed to load wetter stations", e);
+			}
+
+			private boolean validate() {
+				if (Texts.isEmpty(nameText))
+					return error("Es muss ein Name angegeben werden.");
+				int time = Texts.getInt(timeText);
+				if (time < 1 || time > 1000)
+					return error("Die Projektlaufzeit enthält keinen gültigen Wert.");
+				WeatherStationDescriptor d = stationCombo.getSelected();
+				if (d == null)
+					return error("Es wurde keine Wetterstation ausgewählt.");
+				setErrorMessage(null);
+				setPageComplete(true);
+				return true;
+			}
+
+			private boolean error(String message) {
+				setErrorMessage(message);
+				setPageComplete(false);
+				return false;
 			}
 		}
-
-		private Project getProject() {
-			Project p = new Project();
-			p.setId(UUID.randomUUID().toString());
-			p.setName(nameText.getText());
-			p.setDescription(descriptionText.getText());
-			p.setWeatherStation(stationCombo.getSelected());
-			return p;
-		}
-
 	}
-
 }
