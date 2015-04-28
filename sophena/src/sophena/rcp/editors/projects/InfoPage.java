@@ -48,20 +48,47 @@ class InfoPage extends FormPage {
 	private void createInfoSection(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit,
 				M.ProjectInformation);
-		Text nameText = UI.formText(composite, toolkit, M.Name);
-		Texts.set(nameText, project().getName());
-		Texts.on(nameText).onChanged(() -> {
-			project().setName(nameText.getText());
-			editor.setDirty();
-		});
-		Text descriptionText = UI.formMultiText(composite, toolkit,
-				M.Description);
-		Text timeText = UI.formText(composite, toolkit, M.ProjectDurationYears);
+		createNameText(toolkit, composite);
+		createDescriptionText(toolkit, composite);
+		createDurationText(toolkit, composite);
+	}
+
+	private void createNameText(FormToolkit toolkit, Composite composite) {
+		Text t = UI.formText(composite, toolkit, M.Name);
+		Texts.on(t)
+				.init(project().getName())
+				.required()
+				.onChanged(() -> {
+					project().setName(t.getText());
+					editor.setDirty();
+				});
+	}
+
+	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
+		Text t = UI.formMultiText(composite, toolkit, M.Description);
+		Texts.on(t)
+				.init(project().getDescription())
+				.onChanged(() -> {
+					project().setDescription(t.getText());
+					editor.setDirty();
+				});
+	}
+
+	private void createDurationText(FormToolkit toolkit, Composite composite) {
+		Text t = UI.formText(composite, toolkit, M.ProjectDurationYears);
+		Texts.on(t)
+				.init(project().getProjectDuration())
+				.required()
+				.integer()
+				.onChanged(() -> {
+					project().setProjectDuration(Texts.getInt(t));
+					editor.setDirty();
+				});
 	}
 
 	private void createInterruptionSection(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit,
-				"#Wärmenetz - Unterbrechung");
+				"Wärmenetz - Unterbrechung");
 		UI.gridLayout(composite, 2);
 		UI.formLabel(composite, toolkit, M.Start);
 		DateTime start = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
@@ -70,11 +97,11 @@ class InfoPage extends FormPage {
 	}
 
 	private void createComponentSection(Composite body, FormToolkit toolkit) {
-		Section section = UI.section(body, toolkit, "#Wärmenetz - Komponenten");
+		Section section = UI.section(body, toolkit, "Wärmenetz - Komponenten");
 		Composite composite = UI.sectionClient(section, toolkit);
 		UI.gridLayout(composite, 2);
-		Tables.createViewer(composite, "#Komponente", "#Anzahl");
-		Action add = Actions.create("#Neue Komponente", Images.ADD_16.des(),
+		Tables.createViewer(composite, "Komponente", "Anzahl");
+		Action add = Actions.create("Neue Komponente", Images.ADD_16.des(),
 				() -> {
 					NetComponentWizard.open(editor.getProject());
 				});
