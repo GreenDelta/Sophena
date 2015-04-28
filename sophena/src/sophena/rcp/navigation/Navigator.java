@@ -11,6 +11,7 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.utils.Viewers;
 
@@ -44,6 +45,9 @@ public class Navigator extends CommonNavigator {
 			} else if (nav instanceof ConsumerElement) {
 				ConsumerElement e = (ConsumerElement) nav;
 				ConsumerEditor.open(e.getProject(), e.getDescriptor());
+			} else if (nav instanceof ProducerElement) {
+				ProducerElement e = (ProducerElement) nav;
+				ProducerEditor.open(e.getProject(), e.getDescriptor());
 			}
 		});
 	}

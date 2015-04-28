@@ -125,8 +125,15 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(composite, true, false);
 			nameText = UI.formText(composite, M.Name);
 			nameEdited = false;
+			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged(() -> {
-				nameEdited = true;
+				Boiler b = Viewers.getFirstSelected(boilerList);
+				if (b == null) {
+					nameEdited = true;
+				} else {
+					nameEdited = !Strings.nullOrEqual(
+							nameText.getText(), b.getName());
+				}
 			});
 		}
 
