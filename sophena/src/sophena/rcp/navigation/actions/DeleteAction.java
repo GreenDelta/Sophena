@@ -77,7 +77,7 @@ public class DeleteAction extends NavigationAction {
 	}
 
 	@Handler(type = ConsumerElement.class,
-			title = "Lösche Abnehmer")
+			title = "Lösche Wärmeabnehmer")
 	private void deleteConsumer() {
 		boolean del = MsgBox.ask("Abnehmer löschen?",
 				"Soll der ausgewählte Abnehmer wirklich gelöscht werden?");
@@ -102,7 +102,7 @@ public class DeleteAction extends NavigationAction {
 	}
 
 	@Handler(type = ProducerElement.class,
-			title = "Lösche Erzeuger")
+			title = "Lösche Wärmeerzeuger")
 	private void deleteProducer() {
 		boolean del = MsgBox.ask("Erzeuger löschen?",
 				"Soll der ausgewählte Erzeuger wirklich gelöscht werden?");

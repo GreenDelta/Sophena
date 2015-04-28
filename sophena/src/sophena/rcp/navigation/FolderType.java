@@ -12,6 +12,8 @@ public enum FolderType {
 
 	COSTS,
 
-	VARIANTS;
+	VARIANTS,
+
+	NONE;
 
 }

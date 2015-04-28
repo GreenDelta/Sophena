@@ -18,8 +18,8 @@ import sophena.rcp.utils.Viewers;
 public class NavigationMenu extends CommonActionProvider {
 
 	private NavigationAction[][] actionGroups = { {
-			new AddAction(),
 			new OpenAction(),
+			new AddAction(),
 			new DeleteAction()
 	}, {
 			new NewVariantAction(),

@@ -57,14 +57,14 @@ public class OpenAction extends NavigationAction {
 	}
 
 	@Handler(type = ConsumerElement.class,
-			title = "Öffne Abnehmer")
+			title = "Öffne Wärmeabnehmer")
 	private void openConsumer() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ConsumerEditor.open(e.getProject(), e.getDescriptor());
 	}
 
 	@Handler(type = ProducerElement.class,
-			title = "Öffne Erzeuger")
+			title = "Öffne Wärmeerzeuger")
 	private void openProducer() {
 		ProducerElement e = (ProducerElement) elem;
 		ProducerEditor.open(e.getProject(), e.getDescriptor());
