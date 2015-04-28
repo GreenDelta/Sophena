@@ -35,6 +35,7 @@ import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
+import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
@@ -77,7 +78,8 @@ public class ProducerWizard extends Wizard {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
-			// TODO: open producer editor
+			ProducerEditor
+					.open(project.toDescriptor(), producer.toDescriptor());
 			return true;
 		} catch (Exception e) {
 			log.error("failed to update project with new producer", e);
@@ -95,6 +97,8 @@ public class ProducerWizard extends Wizard {
 
 		private DataBinding data = new DataBinding();
 
+		private Text nameText;
+		private boolean nameEdited;
 		private Combo fuelCombo;
 		private ListViewer boilerList;
 		private Text rankText;
@@ -109,17 +113,31 @@ public class ProducerWizard extends Wizard {
 			Composite root = new Composite(parent, SWT.NONE);
 			setControl(root);
 			UI.gridLayout(root, 1, 5, 5);
+			createNameField(root);
 			createCombos(root);
 			createList(root);
 			createFunctionFields(root);
 			data.bindToUI();
 		}
 
+		private void createNameField(Composite root) {
+			Composite composite = UI.formComposite(root);
+			UI.gridData(composite, true, false);
+			nameText = UI.formText(composite, M.Name);
+			nameEdited = false;
+			Texts.on(nameText).required().onChanged(() -> {
+				nameEdited = true;
+			});
+		}
+
 		private void createCombos(Composite root) {
 			Composite composite = UI.formComposite(root);
 			UI.gridData(composite, true, false);
 			fuelCombo = UI.formCombo(composite, "Brennstoff");
-			Controls.onSelect(fuelCombo, (e) -> data.updateBoilers());
+			Controls.onSelect(fuelCombo, (e) -> {
+				data.updateBoilers();
+				data.suggestName();
+			});
 			UI.formCombo(composite, "Anlagengröße");
 		}
 
@@ -132,6 +150,7 @@ public class ProducerWizard extends Wizard {
 			boilerList.setContentProvider(ArrayContentProvider.getInstance());
 			boilerList.setLabelProvider(new BoilerLabel());
 			boilerList.addSelectionChangedListener((e) -> {
+				data.suggestName();
 				data.validate();
 			});
 			UI.gridData(list, true, true);
@@ -152,10 +171,9 @@ public class ProducerWizard extends Wizard {
 				if (!(element instanceof Boiler))
 					return null;
 				Boiler boiler = (Boiler) element;
-				String label = boiler.getName()
-						+ " (" + Numbers.toString(boiler.getMinPower())
-						+ " kW - " + Numbers.toString(boiler.getMaxPower())
-						+ " kW)";
+				String label = boiler.getName() + " ("
+						+ Numbers.toString(boiler.getMinPower()) + " kW - "
+						+ Numbers.toString(boiler.getMaxPower()) + " kW)";
 				return label;
 			}
 		}
@@ -167,8 +185,7 @@ public class ProducerWizard extends Wizard {
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerList);
 				producer.setBoiler(b);
-				if (b != null)
-					producer.setName(b.getName());
+				producer.setName(nameText.getText());
 				producer.setRank(Texts.getInt(rankText));
 				int fnIdx = functionCombo.getSelectionIndex();
 				if (fnIdx == 0)
@@ -184,6 +201,16 @@ public class ProducerWizard extends Wizard {
 				updateBoilers();
 				fillFunctionCombo();
 				setPageComplete(false);
+			}
+
+			private void suggestName() {
+				if (nameEdited && !Texts.isEmpty(nameText))
+					return;
+				Boiler b = Viewers.getFirstSelected(boilerList);
+				if (b == null)
+					nameText.setText("");
+				else
+					Texts.set(nameText, b.getName());
 			}
 
 			private String[] getFuelItems() {
@@ -245,8 +272,8 @@ public class ProducerWizard extends Wizard {
 				if (b.getFuel() != null)
 					return Strings.nullOrEqual(fuel, b.getFuel().getName());
 				if (b.getWoodAmountType() != null)
-					return Strings.nullOrEqual(
-							fuel, Labels.get(b.getWoodAmountType()));
+					return Strings.nullOrEqual(fuel,
+							Labels.get(b.getWoodAmountType()));
 				else
 					return false;
 			}

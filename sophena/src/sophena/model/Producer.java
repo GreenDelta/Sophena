@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import sophena.model.descriptors.ProducerDescriptor;
+
 @Entity
 @Table(name = "tbl_producers")
 public class Producer extends Facility {
@@ -57,6 +59,14 @@ public class Producer extends Facility {
 		clone.setRank(getRank());
 		clone.setDescription(getDescription());
 		return clone;
+	}
+
+	public ProducerDescriptor toDescriptor() {
+		ProducerDescriptor d = new ProducerDescriptor();
+		d.setId(getId());
+		d.setName(getName());
+		d.setDescription(getDescription());
+		return d;
 	}
 
 }
