@@ -21,7 +21,7 @@ public class ProjectResult {
 	}
 
 	ProjectResult(Project project) {
-		loadCurve = ProjectLoadCurve.calulate(project);
+		loadCurve = ProjectLoadCurve.get(project);
 		suppliedPower = new double[Stats.HOURS];
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];

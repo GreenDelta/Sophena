@@ -56,6 +56,7 @@ public class ProjectWizard extends Wizard {
 			page.data.bindToModel(p);
 			HeatNet n = p.getHeatNet();
 			n.setSimultaneityFactor(1);
+			n.setPowerLoss(20);
 			n.setSupplyTemperature(80);
 			n.setReturnTemperature(50);
 			ProjectDao dao = new ProjectDao(App.getDb());

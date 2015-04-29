@@ -38,6 +38,10 @@ class InfoSection {
 		createDescriptionText(toolkit, composite);
 		createTypeCombo(composite, toolkit);
 		createStateCombo(composite, toolkit);
+		Text loadHoursText = UI.formText(composite, toolkit, "Vollaststunden");
+		Texts.on(loadHoursText)
+				.init(consumer().getLoadHours())
+				.readOnly();
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -81,4 +85,5 @@ class InfoSection {
 			editor.setDirty();
 		});
 	}
+
 }

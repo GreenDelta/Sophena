@@ -25,12 +25,10 @@ public class ConsumerLoadCurve {
 		double[] data = new double[Stats.HOURS];
 		if (consumer == null || station == null)
 			return data;
-		if (consumer.isDemandBased()) {
-			double pMax = consumer.getHeatingLoad();
-			calcDemandBased(data, pMax);
-		} else {
+		if (consumer.isDemandBased())
+			calcDemandBased(data);
+		else
 			calcUsageBased(data);
-		}
 		addLoadProfiles(data);
 		return data;
 	}
@@ -58,10 +56,12 @@ public class ConsumerLoadCurve {
 		}
 	}
 
-	private void calcDemandBased(double[] data, double pMax) {
+	private void calcDemandBased(double[] data) {
+		double pMax = consumer.getHeatingLoad();
 		if (pMax == 0)
 			return;
-		double pMin = pMax * consumer.getWaterFraction() / 100;
+		double ww = consumer.getWaterFraction() / 100;
+		double pMin = ww * pMax * consumer.getLoadHours() / 8760;
 		double[] climateData = station.getData();
 		double tmin = Stats.min(climateData);
 		double tmax = consumer.getHeatingLimit();
