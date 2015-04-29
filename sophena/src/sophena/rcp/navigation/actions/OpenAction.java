@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.ConsumerElement;
+import sophena.rcp.navigation.FolderElement;
+import sophena.rcp.navigation.FolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
@@ -68,6 +71,14 @@ public class OpenAction extends NavigationAction {
 	private void openProducer() {
 		ProducerElement e = (ProducerElement) elem;
 		ProducerEditor.open(e.getProject(), e.getDescriptor());
+	}
+
+	@Handler(type = FolderElement.class,
+			title = "Öffne Wärmenetzinformationen",
+			folderType = FolderType.DISTRIBUTION)
+	private void openDistributionInfo() {
+		FolderElement e = (FolderElement) elem;
+		HeatNetEditor.open(e.getProject());
 	}
 
 }

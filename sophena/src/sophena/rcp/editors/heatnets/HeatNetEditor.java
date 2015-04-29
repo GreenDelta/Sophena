@@ -1,4 +1,4 @@
-package sophena.rcp.editors.projects;
+package sophena.rcp.editors.heatnets;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
@@ -9,38 +9,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
+import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
-public class ProjectEditor extends FormEditor {
+public class HeatNetEditor extends FormEditor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private Project project;
+
+	private String projectId;
+	private HeatNet heatNet;
 	private boolean dirty;
 
-	public static void open(ProjectDescriptor d) {
-		if (d == null)
+	public static void open(ProjectDescriptor project) {
+		if (project == null)
 			return;
-		KeyEditorInput input = new KeyEditorInput(d.getId(), d.getName());
-		Editors.open(input, "sophena.ProjectEditor");
-	}
-
-	public Project getProject() {
-		return project;
+		EditorInput input = new EditorInput(project.getId() + "/net",
+				project.getName());
+		input.projectId = project.getId();
+		Editors.open(input, "sophena.HeatNetEditor");
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		KeyEditorInput ki = (KeyEditorInput) input;
+		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		project = dao.get(ki.getKey());
-		setPartName(project.getName());
+		Project p = dao.get(i.projectId);
+		projectId = p.getId();
+		heatNet = p.getHeatNet();
+		setPartName(p.getName());
+	}
+
+	public HeatNet getHeatNet() {
+		return heatNet;
 	}
 
 	public void setDirty() {
@@ -58,12 +64,7 @@ public class ProjectEditor extends FormEditor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new InfoPage(this));
-			// ProjectDescriptor descriptor = new ProjectDescriptor();
-			// descriptor.setName("Test");
-			// GraphEditorInput input = new GraphEditorInput(descriptor);
-			// int graphIdx = addPage(new GraphEditor(), input);
-			// setPageText(graphIdx, "#Projektgraph");
+			addPage(new HeatNetPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}
@@ -72,15 +73,15 @@ public class ProjectEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			log.info("update project {}", project);
+			log.info("update heat net in project {}", projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			project = dao.update(project);
+			Project p = dao.get(projectId);
+			p.setHeatNet(heatNet);
+			dao.update(p);
 			dirty = false;
-			setPartName(project.getName());
-			Navigator.refresh();
 			editorDirtyStateChanged();
 		} catch (Exception e) {
-			log.error("failed to update project " + project, e);
+			log.error("failed to update heat net in project " + projectId, e);
 		}
 	}
 
@@ -93,4 +94,13 @@ public class ProjectEditor extends FormEditor {
 		return false;
 	}
 
+	private static class EditorInput extends KeyEditorInput {
+
+		private String projectId;
+
+		public EditorInput(String key, String name) {
+			super(key, name);
+		}
+
+	}
 }

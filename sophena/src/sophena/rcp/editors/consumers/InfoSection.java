@@ -38,7 +38,7 @@ class InfoSection {
 		createDescriptionText(toolkit, composite);
 		createTypeCombo(composite, toolkit);
 		createStateCombo(composite, toolkit);
-		Text loadHoursText = UI.formText(composite, toolkit, "Vollaststunden");
+		Text loadHoursText = UI.formText(composite, toolkit, "Volllaststunden");
 		Texts.on(loadHoursText)
 				.init(consumer().getLoadHours())
 				.readOnly();
