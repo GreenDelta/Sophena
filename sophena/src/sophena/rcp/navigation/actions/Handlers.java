@@ -2,6 +2,7 @@ package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jface.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ class Handlers {
 	private Handlers() {
 	}
 
-	public static Method find(NavigationElement element, NavigationAction action) {
+	public static Method find(NavigationElement element, Action action) {
 		if (element == null || action == null)
 			return null;
 		try {
