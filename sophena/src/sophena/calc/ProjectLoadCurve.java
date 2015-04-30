@@ -25,9 +25,15 @@ public class ProjectLoadCurve {
 	}
 
 	public static double getNetLoad(Project project) {
-		if (project == null || project.getHeatNet() == null)
+		if (project == null)
 			return 0;
-		HeatNet net = project.getHeatNet();
+		else
+			return getNetLoad(project.getHeatNet());
+	}
+
+	public static double getNetLoad(HeatNet net) {
+		if (net == null)
+			return 0;
 		double netLoad = (net.getPowerLoss() * net.getLength()) / 1000;
 		return netLoad;
 	}

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.io.HoursProfile;
+import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.charts.LoadCurveChart;
 import sophena.rcp.utils.Actions;
@@ -25,15 +26,23 @@ public class LoadCurveSection {
 
 	private LoadCurveChart chart;
 	private boolean sorted = true;
+	private String title = "Jahresdauerlinie";
 	private double[] rawData;
 	private double[] chartData;
 
-	public LoadCurveSection(Composite body, FormToolkit tk) {
-		render(body, tk);
-	}
-
 	public void setSorted(boolean sorted) {
 		this.sorted = sorted;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setConstant(double d) {
+		this.sorted = false;
+		double[] data = new double[Stats.HOURS];
+		Arrays.setAll(data, (i) -> d);
+		setData(data);
 	}
 
 	public void setData(double[] data) {
@@ -41,6 +50,8 @@ public class LoadCurveSection {
 			return;
 		rawData = data;
 		chartData = sorted ? getSortedCopy(rawData) : rawData;
+		if (chart == null)
+			return;
 		chart.setData(chartData);
 	}
 
@@ -56,8 +67,8 @@ public class LoadCurveSection {
 		return copy;
 	}
 
-	private void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Jahresdauerlinie");
+	public void render(Composite body, FormToolkit tk) {
+		Section section = UI.section(body, tk, title);
 		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
 		section.setLayoutData(gridData);
 		gridData.heightHint = 250;
@@ -66,6 +77,8 @@ public class LoadCurveSection {
 		composite.setLayout(new FillLayout());
 		chart = new LoadCurveChart(composite);
 		Actions.bind(section, new SortAction(), new ExportAction());
+		if (chartData != null)
+			chart.setData(chartData);
 	}
 
 	private class SortAction extends Action {

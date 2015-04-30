@@ -10,9 +10,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -36,10 +38,22 @@ class HeatNetPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wärmeverteilung");
 		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		new HeatNetSection(editor).create(body, toolkit);
+		HeatNetSection heatNetSection = new HeatNetSection(editor);
+		heatNetSection.create(body, toolkit);
 		createInterruptionSection(body, toolkit);
+		LoadCurveSection loadCurve = createLoadCurve(toolkit, body);
+		heatNetSection.setLoadCurve(loadCurve);
 		createComponentSection(body, toolkit);
 		form.reflow(true);
+	}
+
+	private LoadCurveSection createLoadCurve(FormToolkit toolkit, Composite body) {
+		LoadCurveSection loadCurve = new LoadCurveSection();
+		double netLoad = ProjectLoadCurve.getNetLoad(heatNet());
+		loadCurve.setTitle("Netzlast");
+		loadCurve.render(body, toolkit);
+		loadCurve.setConstant(netLoad);
+		return loadCurve;
 	}
 
 	private void createInterruptionSection(Composite body, FormToolkit toolkit) {

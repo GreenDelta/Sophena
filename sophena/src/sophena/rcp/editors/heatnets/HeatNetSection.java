@@ -4,15 +4,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class HeatNetSection {
 
 	private HeatNetEditor editor;
+	private LoadCurveSection loadCurve;
 
 	HeatNetSection(HeatNetEditor editor) {
 		this.editor = editor;
@@ -20,6 +23,10 @@ class HeatNetSection {
 
 	private HeatNet heatNet() {
 		return editor.getHeatNet();
+	}
+
+	public void setLoadCurve(LoadCurveSection loadCurve) {
+		this.loadCurve = loadCurve;
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
@@ -80,6 +87,7 @@ class HeatNetSection {
 		Texts.on(t).decimal().required().onChanged(() -> {
 			heatNet().setLength(Texts.getDouble(t));
 			editor.setDirty();
+			updateLoadCurve();
 		});
 		UI.formLabel(composite, toolkit, "m");
 	}
@@ -90,8 +98,16 @@ class HeatNetSection {
 		Texts.on(t).decimal().required().onChanged(() -> {
 			heatNet().setPowerLoss(Texts.getDouble(t));
 			editor.setDirty();
+			updateLoadCurve();
 		});
 		UI.formLabel(composite, toolkit, "W/m");
+	}
+
+	private void updateLoadCurve() {
+		if (loadCurve == null)
+			return;
+		double load = ProjectLoadCurve.getNetLoad(heatNet());
+		loadCurve.setConstant(load);
 	}
 
 }
