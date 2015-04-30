@@ -21,7 +21,7 @@ import sophena.rcp.utils.KeyEditorInput;
 public class ProducerEditor extends FormEditor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private Project project;
+	private String projectId;
 	private Producer producer;
 	private boolean dirty;
 
@@ -41,7 +41,8 @@ public class ProducerEditor extends FormEditor {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		project = dao.get(i.projectKey);
+		Project project = dao.get(i.projectKey);
+		projectId = project.getId();
 		producer = findProducer(project, i.getKey());
 		setPartName(producer.getName());
 	}
@@ -58,10 +59,6 @@ public class ProducerEditor extends FormEditor {
 
 	public Producer getProducer() {
 		return producer;
-	}
-
-	public Project getProject() {
-		return project;
 	}
 
 	public void setDirty() {
@@ -88,8 +85,12 @@ public class ProducerEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			log.info("update producer {} in project {}", producer, project);
+			log.info("update producer {} in project {}", producer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
+			Project project = dao.get(projectId);
+			Producer old  = findProducer(project, producer.getId());
+			project.getProducers().remove(old);
+			project.getProducers().add(producer);
 			project = dao.update(project);
 			producer = findProducer(project, producer.getId());
 			dirty = false;
@@ -97,7 +98,7 @@ public class ProducerEditor extends FormEditor {
 			Navigator.refresh();
 			editorDirtyStateChanged();
 		} catch (Exception e) {
-			log.error("failed to update project " + project, e);
+			log.error("failed to update project " + projectId, e);
 		}
 	}
 

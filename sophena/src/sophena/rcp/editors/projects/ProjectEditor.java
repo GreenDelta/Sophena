@@ -74,7 +74,12 @@ public class ProjectEditor extends FormEditor {
 		try {
 			log.info("update project {}", project);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			project = dao.update(project);
+			Project dbProject = dao.get(project.getId());
+			dbProject.setDescription(project.getDescription());
+			dbProject.setName(project.getName());
+			dbProject.setProjectDuration(project.getProjectDuration());
+			dbProject.setWeatherStation(project.getWeatherStation());
+			project = dao.update(dbProject);
 			dirty = false;
 			setPartName(project.getName());
 			Navigator.refresh();

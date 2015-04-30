@@ -16,6 +16,7 @@ import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Project;
+import sophena.model.WeatherStation;
 import sophena.model.descriptors.ConsumerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
@@ -26,8 +27,9 @@ import sophena.rcp.utils.KeyEditorInput;
 public class ConsumerEditor extends FormEditor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private Project project;
 	private Consumer consumer;
+	private String projectId;
+	private WeatherStation weatherStation; // only used for calculations
 	private boolean dirty;
 
 	private List<java.util.function.Consumer<double[]>> calcListeners = new ArrayList<>();
@@ -46,8 +48,10 @@ public class ConsumerEditor extends FormEditor {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		project = dao.get(i.projectKey);
+		Project project = dao.get(i.projectKey);
+		projectId = project.getId();
 		consumer = findConsumer(project, i.getKey());
+		this.weatherStation = project.getWeatherStation();
 		setPartName(consumer.getName());
 	}
 
@@ -66,13 +70,9 @@ public class ConsumerEditor extends FormEditor {
 		return consumer;
 	}
 
-	public Project getProject() {
-		return project;
-	}
-
 	public void calculate() {
 		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
-				project.getWeatherStation());
+				weatherStation);
 		for (java.util.function.Consumer<double[]> fn : calcListeners) {
 			fn.accept(loadCurve);
 		}
@@ -107,8 +107,12 @@ public class ConsumerEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			log.info("update consumer {} in project {}", consumer, project);
+			log.info("update consumer {} in project {}", consumer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
+			Project project = dao.get(projectId);
+			Consumer old = findConsumer(project, consumer.getId());
+			project.getConsumers().remove(old);
+			project.getConsumers().add(consumer);
 			project = dao.update(project);
 			consumer = findConsumer(project, consumer.getId());
 			dirty = false;
@@ -116,7 +120,7 @@ public class ConsumerEditor extends FormEditor {
 			Navigator.refresh();
 			editorDirtyStateChanged();
 		} catch (Exception e) {
-			log.error("failed to update project " + project, e);
+			log.error("failed to update project " + projectId, e);
 		}
 	}
 
