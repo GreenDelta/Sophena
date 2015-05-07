@@ -157,5 +157,11 @@
 			icon="icons/load_profile_16.png"
 			id="sophena.EnergyResultEditor"
 			name="Ergebnisse" />
+
+		<editor
+			class="sophena.rcp.editors.costs.CostEditor"
+			icon="icons/costs_16.png"
+			id="sophena.CostEditor"
+			name="Kosten" />
 	</extension>
 </plugin>

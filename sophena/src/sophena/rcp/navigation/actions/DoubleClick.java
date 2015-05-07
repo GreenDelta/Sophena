@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.editors.costs.CostEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
@@ -78,5 +79,13 @@ public class DoubleClick extends Action {
 	private void openEnergyResults() {
 		FolderElement e = (FolderElement) elem;
 		EnergyResultEditor.open(e.getProject());
+	}
+
+	@Handler(type = FolderElement.class,
+			title = "Öffne Kosten",
+			folderType = FolderType.COSTS)
+	private void openCostEditor() {
+		FolderElement e = (FolderElement) elem;
+		CostEditor.open(e.getProject());
 	}
 }

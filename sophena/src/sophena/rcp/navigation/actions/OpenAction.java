@@ -1,13 +1,12 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.editors.costs.CostEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
@@ -79,6 +78,14 @@ public class OpenAction extends NavigationAction {
 	private void openDistributionInfo() {
 		FolderElement e = (FolderElement) elem;
 		HeatNetEditor.open(e.getProject());
+	}
+
+	@Handler(type = FolderElement.class,
+			title = "Öffne Kosten",
+			folderType = FolderType.COSTS)
+	private void openCostEditor() {
+		FolderElement e = (FolderElement) elem;
+		CostEditor.open(e.getProject());
 	}
 
 }
