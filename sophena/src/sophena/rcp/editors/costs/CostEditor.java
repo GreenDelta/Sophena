@@ -35,6 +35,7 @@ public class CostEditor extends FormEditor {
 	protected void addPages() {
 		try {
 		  	addPage(new OverviewPage(this));
+			addPage(new SettingsPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}

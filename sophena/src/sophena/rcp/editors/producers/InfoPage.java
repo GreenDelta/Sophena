@@ -50,6 +50,7 @@ class InfoPage extends FormPage {
 		createFunctionCombo(tk, composite);
 		createRankText(tk, composite);
 		new FuelSection(editor).render(body, tk);
+		createCostSection(body, tk);
 	}
 
 	private void createNameText(FormToolkit tk, Composite composite) {
@@ -124,4 +125,12 @@ class InfoPage extends FormPage {
 		});
 	}
 
+	private void createCostSection(Composite body, FormToolkit tk) {
+		Composite comp = UI.formSection(body, tk, "Kosten");
+		UI.formText(comp, tk, "Investitionskosten").setText("");
+		UI.formText(comp, tk, "Nutzungsdauer").setText("");
+		UI.formText(comp, tk, "Instandsetzung").setText("");
+		UI.formText(comp, tk, "Wartung und Inspektion").setText("");
+		UI.formText(comp, tk, "Aufwand für Bedienen").setText("");
+	}
 }

@@ -57,7 +57,7 @@ class ConsumptionSection {
 	}
 
 	private TableViewer createTable(Composite composite) {
-		table = Tables.createViewer(composite, M.Fuel, M.Consumption,
+		TableViewer table = Tables.createViewer(composite, M.Fuel, M.Consumption,
 				"Genutzte Wärme");
 		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
 		table.setLabelProvider(new Label());

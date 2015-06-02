@@ -20,6 +20,7 @@ import sophena.io.datapack.DataPack;
 import sophena.io.datapack.Import;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
+import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -77,6 +78,8 @@ public class ActionBarAdvisor extends
 				FuelEditor::open));
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
 				BoilerEditor::open));
+		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
+				BaseCostEditor::open));
 		menu.add(m);
 	}
 

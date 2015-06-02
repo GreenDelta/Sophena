@@ -147,6 +147,12 @@
 			name="Heizkessel" />
 
 		<editor
+			class="sophena.rcp.editors.basedata.costs.BaseCostEditor"
+			icon="icons/costs_16.png"
+			id="sophena.BaseCostEditor"
+			name="Kosteneinstellungen" />
+
+		<editor
 			class="sophena.rcp.editors.heatnets.HeatNetEditor"
 			icon="icons/pump_16.png"
 			id="sophena.HeatNetEditor"
