@@ -51,6 +51,11 @@ public class MonthDayBox {
 		dayCombo.select(dayIdx);
 	}
 
+	public void setEnabled(boolean enabled) {
+		dayCombo.setEnabled(enabled);
+		monthCombo.setEnabled(enabled);
+	}
+
 	private void monthChanged() {
 		int monthIdx = monthCombo.getSelectionIndex();
 		int dayIdx = dayCombo.getSelectionIndex();

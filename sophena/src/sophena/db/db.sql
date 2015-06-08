@@ -94,6 +94,9 @@ CREATE TABLE tbl_projects (
     simultaneity_factor DOUBLE,
     buffer_tank_volume DOUBLE,
     power_loss DOUBLE,
+    with_interruption BOOLEAN,
+    interruption_start VARCHAR(10),
+    interruption_end VARCHAR(10),
 
 	is_variant BOOLEAN,
 	project_duration INTEGER,

@@ -24,6 +24,15 @@ public class HeatNet {
 	@Column(name = "power_loss")
 	private double powerLoss;
 
+	@Column(name = "with_interruption")
+	private boolean withInterruption;
+
+	@Column(name = "interruption_start")
+	private String interruptionStart;
+
+	@Column(name = "interruption_end")
+	private String interruptionEnd;
+
 	public double getLength() {
 		return length;
 	}
@@ -72,6 +81,30 @@ public class HeatNet {
 		this.powerLoss = powerLoss;
 	}
 
+	public boolean isWithInterruption() {
+		return withInterruption;
+	}
+
+	public void setWithInterruption(boolean withInterruption) {
+		this.withInterruption = withInterruption;
+	}
+
+	public String getInterruptionStart() {
+		return interruptionStart;
+	}
+
+	public void setInterruptionStart(String interruptionStart) {
+		this.interruptionStart = interruptionStart;
+	}
+
+	public String getInterruptionEnd() {
+		return interruptionEnd;
+	}
+
+	public void setInterruptionEnd(String interruptionEnd) {
+		this.interruptionEnd = interruptionEnd;
+	}
+
 	@Override
 	public HeatNet clone() {
 		HeatNet clone = new HeatNet();
@@ -81,6 +114,9 @@ public class HeatNet {
 		clone.setReturnTemperature(getReturnTemperature());
 		clone.setSimultaneityFactor(getSimultaneityFactor());
 		clone.setSupplyTemperature(getSupplyTemperature());
+		clone.setWithInterruption(isWithInterruption());
+		clone.setInterruptionStart(getInterruptionStart());
+		clone.setInterruptionEnd(getInterruptionEnd());
 		return clone;
 	}
 }

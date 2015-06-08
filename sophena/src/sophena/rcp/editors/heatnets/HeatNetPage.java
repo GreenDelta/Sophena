@@ -1,22 +1,18 @@
 package sophena.rcp.editors.heatnets;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
@@ -41,7 +37,7 @@ class HeatNetPage extends FormPage {
 		Composite body = UI.formBody(form, toolkit);
 		HeatNetSection heatNetSection = new HeatNetSection(editor);
 		heatNetSection.create(body, toolkit);
-		createInterruptionSection(body, toolkit);
+		new InterruptionSection(editor).create(body, toolkit);
 		LoadCurveSection loadCurve = createLoadCurve(toolkit, body);
 		heatNetSection.setLoadCurve(loadCurve);
 		createComponentSection(body, toolkit);
@@ -57,22 +53,7 @@ class HeatNetPage extends FormPage {
 		return loadCurve;
 	}
 
-	private void createInterruptionSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit,
-				"Wärmenetz - Unterbrechung");
-		UI.gridLayout(composite, 2).horizontalSpacing = 25;
-		Button check = new Button(composite, SWT.CHECK);
-		check.setText("Mit Unterbrechung");
-		UI.formLabel(composite, toolkit, "");
-		MonthDayBox startBox = new MonthDayBox(M.Start, composite, toolkit);
-		startBox.onSelect((monthDay) -> {
-			System.out.println(monthDay);
-		});
-		MonthDayBox endBox = new MonthDayBox(M.End, composite, toolkit);
-		endBox.onSelect((monthDay) -> {
-			System.out.println(monthDay);
-		});
-	}
+
 
 	private void createComponentSection(Composite body, FormToolkit toolkit) {
 		Section section = UI.section(body, toolkit, "Wärmenetz - Komponenten");
