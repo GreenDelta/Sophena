@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -69,12 +67,9 @@ public class LoadCurveSection {
 
 	public void render(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, title);
-		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
-		section.setLayoutData(gridData);
-		gridData.heightHint = 250;
-		gridData.minimumHeight = 250;
+		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
-		composite.setLayout(new FillLayout());
+		UI.gridLayout(composite, 1);
 		chart = new LoadCurveChart(composite);
 		Actions.bind(section, new SortAction(), new ExportAction());
 		if (chartData != null)

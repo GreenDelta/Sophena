@@ -3,7 +3,6 @@ package sophena.rcp.editors.results.energy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.action.Action;
@@ -54,13 +53,7 @@ class BoilerChart {
 		UI.gridData(canvas, true, true).minimumHeight = 250;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
-		AtomicBoolean first = new AtomicBoolean(true);
-		canvas.addPaintListener((e) -> {
-			if (!first.get())
-				return;
-			fillData(); // avoid chart flickering
-			first.set(false);
-		});
+		fillData();
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
