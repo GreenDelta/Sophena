@@ -2,8 +2,8 @@ package sophena.rcp.editors.heatnets;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -16,6 +16,7 @@ import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
@@ -59,11 +60,18 @@ class HeatNetPage extends FormPage {
 	private void createInterruptionSection(Composite body, FormToolkit toolkit) {
 		Composite composite = UI.formSection(body, toolkit,
 				"Wärmenetz - Unterbrechung");
-		UI.gridLayout(composite, 2);
-		UI.formLabel(composite, toolkit, M.Start);
-		DateTime start = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
-		UI.formLabel(composite, toolkit, M.End);
-		DateTime end = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
+		UI.gridLayout(composite, 2).horizontalSpacing = 25;
+		Button check = new Button(composite, SWT.CHECK);
+		check.setText("Mit Unterbrechung");
+		UI.formLabel(composite, toolkit, "");
+		MonthDayBox startBox = new MonthDayBox(M.Start, composite, toolkit);
+		startBox.onSelect((monthDay) -> {
+			System.out.println(monthDay);
+		});
+		MonthDayBox endBox = new MonthDayBox(M.End, composite, toolkit);
+		endBox.onSelect((monthDay) -> {
+			System.out.println(monthDay);
+		});
 	}
 
 	private void createComponentSection(Composite body, FormToolkit toolkit) {
