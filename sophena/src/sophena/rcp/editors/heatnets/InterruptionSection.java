@@ -55,10 +55,26 @@ class InterruptionSection {
 			heatNet().setWithInterruption(enabled);
 			startBox.setEnabled(enabled);
 			endBox.setEnabled(enabled);
+			if (enabled)
+				initInterruptionValues();
 			updateLoadCurve();
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "");
+	}
+
+	private void initInterruptionValues() {
+		HeatNet net = heatNet();
+		if(net.getInterruptionStart() == null) {
+			MonthDay start = startBox.getSelection();
+			if(start != null)
+				net.setInterruptionStart(start.toString());
+		}
+		if(net.getInterruptionEnd() == null) {
+			MonthDay end = endBox.getSelection();
+			if(end != null)
+				net.setInterruptionEnd(end.toString());
+		}
 	}
 
 	private void createStartBox(FormToolkit toolkit, Composite composite) {

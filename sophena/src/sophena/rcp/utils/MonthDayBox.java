@@ -51,6 +51,12 @@ public class MonthDayBox {
 		dayCombo.select(dayIdx);
 	}
 
+	public MonthDay getSelection() {
+		int month = monthCombo.getSelectionIndex() + 1;
+		int day = dayCombo.getSelectionIndex() + 1;
+		return MonthDay.of(month, day);
+	}
+
 	public void setEnabled(boolean enabled) {
 		dayCombo.setEnabled(enabled);
 		monthCombo.setEnabled(enabled);
@@ -69,9 +75,7 @@ public class MonthDayBox {
 	}
 
 	private void fireChange() {
-		int month = monthCombo.getSelectionIndex() + 1;
-		int day = dayCombo.getSelectionIndex() + 1;
-		MonthDay value = MonthDay.of(month, day);
+		MonthDay value = getSelection();
 		for (Consumer<MonthDay> fn : listeners)
 			fn.accept(value);
 	}
