@@ -7,6 +7,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
@@ -37,23 +38,24 @@ class HeatNetPage extends FormPage {
 		Composite body = UI.formBody(form, toolkit);
 		HeatNetSection heatNetSection = new HeatNetSection(editor);
 		heatNetSection.create(body, toolkit);
-		new InterruptionSection(editor).create(body, toolkit);
+		InterruptionSection interruptionSec = new InterruptionSection(editor);
+		interruptionSec.create(body, toolkit);
 		LoadCurveSection loadCurve = createLoadCurve(toolkit, body);
+		loadCurve.setSorted(false);
 		heatNetSection.setLoadCurve(loadCurve);
+		interruptionSec.setLoadCurve(loadCurve);
 		createComponentSection(body, toolkit);
 		form.reflow(true);
 	}
 
 	private LoadCurveSection createLoadCurve(FormToolkit toolkit, Composite body) {
 		LoadCurveSection loadCurve = new LoadCurveSection();
-		double netLoad = ProjectLoadCurve.getNetLoad(heatNet());
+		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
 		loadCurve.setTitle("Netzlast");
 		loadCurve.render(body, toolkit);
-		loadCurve.setConstant(netLoad);
+		loadCurve.setData(curve);
 		return loadCurve;
 	}
-
-
 
 	private void createComponentSection(Composite body, FormToolkit toolkit) {
 		Section section = UI.section(body, toolkit, "Wärmenetz - Komponenten");

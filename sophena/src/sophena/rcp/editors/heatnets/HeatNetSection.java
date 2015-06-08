@@ -106,8 +106,8 @@ class HeatNetSection {
 	private void updateLoadCurve() {
 		if (loadCurve == null)
 			return;
-		double load = ProjectLoadCurve.getNetLoad(heatNet());
-		loadCurve.setConstant(load);
+		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
+		loadCurve.setData(curve);
 	}
 
 }

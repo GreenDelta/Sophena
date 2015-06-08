@@ -9,8 +9,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.UI;
@@ -21,9 +23,14 @@ class InterruptionSection {
 
 	private MonthDayBox startBox;
 	private MonthDayBox endBox;
+	private LoadCurveSection loadCurve;
 
 	InterruptionSection(HeatNetEditor editor) {
 		this.editor = editor;
+	}
+
+	public void setLoadCurve(LoadCurveSection loadCurve) {
+		this.loadCurve = loadCurve;
 	}
 
 	private HeatNet heatNet() {
@@ -48,6 +55,7 @@ class InterruptionSection {
 			heatNet().setWithInterruption(enabled);
 			startBox.setEnabled(enabled);
 			endBox.setEnabled(enabled);
+			updateLoadCurve();
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "");
@@ -61,6 +69,7 @@ class InterruptionSection {
 			if (monthDay == null)
 				return;
 			heatNet().setInterruptionStart(monthDay.toString());
+			updateLoadCurve();
 			editor.setDirty();
 		});
 	}
@@ -73,6 +82,7 @@ class InterruptionSection {
 			if (monthDay == null)
 				return;
 			heatNet().setInterruptionEnd(monthDay.toString());
+			updateLoadCurve();
 			editor.setDirty();
 		});
 	}
@@ -87,6 +97,13 @@ class InterruptionSection {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to parse MonthDay " + monthDay, e);
 		}
+	}
+
+	private void updateLoadCurve() {
+		if (loadCurve == null)
+			return;
+		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
+		loadCurve.setData(curve);
 	}
 
 }
