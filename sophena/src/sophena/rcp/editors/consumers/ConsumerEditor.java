@@ -99,6 +99,7 @@ public class ConsumerEditor extends FormEditor {
 		try {
 			addPage(new InfoPage(this));
 			addPage(new LocationPage(this));
+			addPage(new LoadProfilesPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}
