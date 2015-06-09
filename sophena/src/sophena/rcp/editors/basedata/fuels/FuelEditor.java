@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -20,6 +21,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.FuelDao;
 import sophena.model.Fuel;
 import sophena.rcp.App;
@@ -82,8 +84,8 @@ public class FuelEditor extends FormEditor {
 			List<Fuel> all = dao.getAll();
 			Collections.sort(all, (f1, f2) -> Strings.compare(
 					f1.getName(), f2.getName()));
-			for(Fuel f : all) {
-				if(f.isWood())
+			for (Fuel f : all) {
+				if (f.isWood())
 					woodFuels.add(f);
 				else
 					fuels.add(f);
@@ -163,8 +165,9 @@ public class FuelEditor extends FormEditor {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null)
 				return;
-			boolean doIt = MsgBox.ask(M.Delete,
-					"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
+			boolean doIt = MsgBox
+					.ask(M.Delete,
+							"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			try {
@@ -182,7 +185,7 @@ public class FuelEditor extends FormEditor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
-					"#Dichte", "Heizwert");
+					"Dichte", "Heizwert");
 			table.setLabelProvider(new WoodLabel());
 			Tables.bindColumnWidths(table, 0.40, 0.30, 0.30);
 			table.setInput(woodFuels);
@@ -233,13 +236,13 @@ public class FuelEditor extends FormEditor {
 					return null;
 				Fuel f = (Fuel) element;
 				switch (col) {
-					case 0:
-						return f.getName();
-					case 1:
-						return Numbers.toString(f.getCalorificValue())
-								+ " kWh/" + f.getUnit();
-					default:
-						return null;
+				case 0:
+					return f.getName();
+				case 1:
+					return Numbers.toString(f.getCalorificValue())
+							+ " kWh/" + f.getUnit();
+				default:
+					return null;
 				}
 			}
 		}
@@ -258,15 +261,15 @@ public class FuelEditor extends FormEditor {
 					return null;
 				Fuel f = (Fuel) element;
 				switch (col) {
-					case 0:
-						return f.getName();
-					case 1:
-						return Numbers.toString(f.getDensity()) + " kg/fm";
-					case 2:
-						return Numbers.toString(f.getCalorificValue())
-								+ "kWh/kg atro";
-					default:
-						return null;
+				case 0:
+					return f.getName();
+				case 1:
+					return Numbers.toString(f.getDensity()) + " kg/fm";
+				case 2:
+					return Numbers.toString(f.getCalorificValue())
+							+ "kWh/kg atro";
+				default:
+					return null;
 				}
 			}
 		}
