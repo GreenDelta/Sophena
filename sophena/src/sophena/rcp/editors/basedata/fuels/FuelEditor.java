@@ -97,12 +97,12 @@ public class FuelEditor extends FormEditor {
 			ScrolledForm form = UI.formHeader(managedForm, M.Fuels);
 			FormToolkit toolkit = managedForm.getToolkit();
 			Composite body = UI.formBody(form, toolkit);
-			creatFuelSection(body, toolkit);
-			creatWoodSection(body, toolkit);
+			createFuelSection(body, toolkit);
+			createWoodSection(body, toolkit);
 			form.reflow(true);
 		}
 
-		private void creatFuelSection(Composite body, FormToolkit toolkit) {
+		private void createFuelSection(Composite body, FormToolkit toolkit) {
 			Section section = UI.section(body, toolkit, M.Fuels);
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
@@ -124,6 +124,7 @@ public class FuelEditor extends FormEditor {
 					() -> delete(table, fuels, false));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
+			Tables.onDoubleClick(table, (e) -> edit(table, fuels, false));
 		}
 
 		private void addFuel(TableViewer table) {
@@ -179,7 +180,7 @@ public class FuelEditor extends FormEditor {
 			}
 		}
 
-		private void creatWoodSection(Composite body, FormToolkit toolkit) {
+		private void createWoodSection(Composite body, FormToolkit toolkit) {
 			Section section = UI.section(body, toolkit, M.WoodFuels);
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
@@ -201,6 +202,7 @@ public class FuelEditor extends FormEditor {
 					() -> delete(table, woodFuels, true));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
+			Tables.onDoubleClick(table, (e) -> edit(table, woodFuels, true));
 		}
 
 		private void addWood(TableViewer table) {

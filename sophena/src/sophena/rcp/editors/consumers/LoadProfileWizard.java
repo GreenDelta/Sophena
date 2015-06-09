@@ -87,7 +87,7 @@ class LoadProfileWizard extends Wizard {
 			Composite chartParent = new Composite(composite, SWT.NONE);
 			UI.gridData(chartParent, true, true);
 			UI.gridLayout(chartParent, 1);
-			chart = new LoadCurveChart(chartParent);
+			chart = new LoadCurveChart(chartParent, 150);
 		}
 
 		private class DataBinding {

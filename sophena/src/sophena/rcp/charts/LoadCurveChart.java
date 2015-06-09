@@ -18,12 +18,12 @@ public class LoadCurveChart {
 	private CircularBufferDataProvider chartData;
 	private XYGraph graph;
 
-	public LoadCurveChart(Composite parent) {
+	public LoadCurveChart(Composite parent, int height) {
 		chartData = new CircularBufferDataProvider(true);
 		chartData.setBufferSize(Stats.HOURS);
 		chartData.setConcatenate_data(false);
 		Canvas canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
-		UI.gridData(canvas, true, true).minimumHeight = 250;
+		UI.gridData(canvas, true, true).minimumHeight = height;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		graph = createGraph(lws);
 	}

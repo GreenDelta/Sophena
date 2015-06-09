@@ -70,7 +70,7 @@ public class LoadCurveSection {
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);
-		chart = new LoadCurveChart(composite);
+		chart = new LoadCurveChart(composite, 250);
 		Actions.bind(section, new SortAction(), new ExportAction());
 		if (chartData != null)
 			chart.setData(chartData);

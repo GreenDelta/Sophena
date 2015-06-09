@@ -82,7 +82,7 @@ function calcStats(config, dataTable) {
 }
 
 function checkDataRow(row) {
-    var LARGE_INTERVAL_LIMIT = 6;
+    var LARGE_INTERVAL_LIMIT = 12;
     var valueCount = 0,
         errorCount = 0,
         errorBlockSize = 0,
@@ -143,15 +143,15 @@ climatedb.getStations(config.con, function(err, rows) {
         if (err) {
             throw err;
         }
-        var report = 'Station\tJahr\tWerte\tFehler\tFehlerintervalle >6h\n';
+        var report = 'Station ID\tStation Name\tJahr\tWerte\tFehler\tFehlerintervalle >12h\n';
         for (var i = 0; i < results.length; i++) {
             var result = results[i];
             for (var j = 0; j < result.stats.length; j++) {
                 var stat = result.stats[j];
-                report += result.label + '\t' + stat.year + '\t' + stat.valueCount + '\t' + stat.errorCount + '\t' + stat.largeErrorIntervalCount + '\n';
+                report += result.station + '\t' + result.label + '\t' + stat.year + '\t' + stat.valueCount + '\t' + stat.errorCount + '\t' + stat.largeErrorIntervalCount + '\n';
             }
         }
-        fs.writeFile("stats.txt", report, function(err) {
+        fs.writeFile("stats_12.txt", report, function(err) {
             if (err) {
                 throw err;
             }
