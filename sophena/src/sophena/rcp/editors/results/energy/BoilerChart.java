@@ -11,6 +11,8 @@ import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -53,7 +55,21 @@ class BoilerChart {
 		UI.gridData(canvas, true, true).minimumHeight = 250;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
+		addZoom(canvas);
 		fillData();
+	}
+
+	private void addZoom(Canvas canvas) {
+		CtrlKey ctrlKey = new CtrlKey();
+		canvas.addKeyListener(ctrlKey);
+		canvas.addMouseWheelListener(e -> {
+			if (!ctrlKey.pressed)
+				return;
+			Axis xAxis = chart.primaryXAxis;
+			double valuePos = xAxis.getPositionValue(e.x, false);
+			double factor = e.count < 0 ? -0.1 : 0.1;
+			chart.primaryXAxis.zoomInOut(valuePos, factor);
+		});
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -165,6 +181,25 @@ class BoilerChart {
 				setText("Lastkurve entfernen");
 			}
 			active = !active;
+		}
+	}
+
+	private class CtrlKey implements KeyListener {
+
+		boolean pressed;
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.keyCode == SWT.CTRL) {
+				pressed = true;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.keyCode == SWT.CTRL) {
+				pressed = false;
+			}
 		}
 	}
 }

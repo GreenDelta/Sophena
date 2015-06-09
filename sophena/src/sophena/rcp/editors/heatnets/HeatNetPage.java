@@ -41,7 +41,6 @@ class HeatNetPage extends FormPage {
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
 		interruptionSec.create(body, toolkit);
 		LoadCurveSection loadCurve = createLoadCurve(toolkit, body);
-		loadCurve.setSorted(false);
 		heatNetSection.setLoadCurve(loadCurve);
 		interruptionSec.setLoadCurve(loadCurve);
 		createComponentSection(body, toolkit);
@@ -50,6 +49,7 @@ class HeatNetPage extends FormPage {
 
 	private LoadCurveSection createLoadCurve(FormToolkit toolkit, Composite body) {
 		LoadCurveSection loadCurve = new LoadCurveSection();
+		loadCurve.setSorted(false);
 		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
 		loadCurve.setTitle("Netzlast");
 		loadCurve.render(body, toolkit);
