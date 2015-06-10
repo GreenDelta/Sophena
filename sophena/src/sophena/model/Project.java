@@ -41,6 +41,10 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_weather_station")
 	private WeatherStation weatherStation;
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
+	private CostSettings costSettings;
+
 	@Embedded
 	private HeatNet heatNet = new HeatNet();
 
@@ -88,6 +92,14 @@ public class Project extends RootEntity {
 		this.heatNet = heatNet;
 	}
 
+	public CostSettings getCostSettings() {
+		return costSettings;
+	}
+
+	public void setCostSettings(CostSettings costSettings) {
+		this.costSettings = costSettings;
+	}
+
 	@Override
 	public Project clone() {
 		Project clone = new Project();
@@ -105,6 +117,8 @@ public class Project extends RootEntity {
 			clone.getVariants().add(variant.clone());
 		if (getHeatNet() != null)
 			clone.setHeatNet(getHeatNet().clone());
+		if (getCostSettings() != null)
+			clone.setCostSettings(getCostSettings().clone());
 		// TODO: clone other elements
 		return clone;
 	}

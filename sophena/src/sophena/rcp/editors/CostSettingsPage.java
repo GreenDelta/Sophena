@@ -1,4 +1,4 @@
-package sophena.rcp.editors.basedata.costs;
+package sophena.rcp.editors;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -6,8 +6,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.model.CostSettings;
-import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.DataBinding;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

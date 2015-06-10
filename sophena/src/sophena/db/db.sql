@@ -86,6 +86,7 @@ INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c2
 CREATE TABLE tbl_cost_settings (
 
 	id CHAR(36),
+	f_project CHAR(36),
 
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,

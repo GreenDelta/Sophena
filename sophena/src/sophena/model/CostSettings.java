@@ -1,6 +1,7 @@
 package sophena.model;
 
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -169,7 +170,7 @@ public class CostSettings extends AbstractEntity {
 	}
 
 	@Override
-	protected CostSettings clone()  {
+	public CostSettings clone() {
 		CostSettings clone = new CostSettings();
 		clone.setId(UUID.randomUUID().toString());
 		clone.interestRate = interestRate;
