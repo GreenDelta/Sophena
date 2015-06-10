@@ -88,20 +88,24 @@ CREATE TABLE tbl_cost_settings (
 	id CHAR(36),
 
     is_global BOOLEAN,
+    interest_rate DOUBLE,
+    interest_rate_funding DOUBLE,
     investment_factor DOUBLE,
-    other_factor DOUBLE,
+    operation_factor DOUBLE,
     hourly_wage DOUBLE,
     bio_fuel_factor DOUBLE,
     fossil_fuel_factor DOUBLE,
+	electricity_price DOUBLE,
     electricity_factor DOUBLE,
     maintenance_factor DOUBLE,
     vat_rate DOUBLE,
     insurance_share DOUBLE,
-    tax_share DOUBLE,
-
+    other_share DOUBLE,
+    administration_share DOUBLE,
 
 	PRIMARY KEY (id)
 );
+
 
 CREATE TABLE tbl_projects (
 	id CHAR(36),

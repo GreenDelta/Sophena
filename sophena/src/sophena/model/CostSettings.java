@@ -15,11 +15,17 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "is_global")
 	private boolean global;
 
+	@Column(name = "interest_rate")
+	private double interestRate;
+
+	@Column(name = "interest_rate_funding")
+	private double interestRateFunding;
+
 	@Column(name = "investment_factor")
 	private double investmentFactor;
 
-	@Column(name = "other_factor")
-	private double otherFactor;
+	@Column(name = "operation_factor")
+	private double operationFactor;
 
 	@Column(name = "hourly_wage")
 	private double hourlyWage;
@@ -33,6 +39,9 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_factor")
 	private double electricityFactor;
 
+	@Column(name = "electricity_price")
+	private double electricityPrice;
+
 	@Column(name = "maintenance_factor")
 	private double maintenanceFactor;
 
@@ -42,8 +51,11 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "insurance_share")
 	private double insuranceShare;
 
-	@Column(name = "tax_share")
-	private double taxShare;
+	@Column(name = "other_share")
+	private double otherShare;
+
+	@Column(name = "administration_share")
+	private double administrationShare;
 
 	public boolean isGlobal() {
 		return global;
@@ -51,6 +63,22 @@ public class CostSettings extends AbstractEntity {
 
 	public void setGlobal(boolean global) {
 		this.global = global;
+	}
+
+	public double getInterestRate() {
+		return interestRate;
+	}
+
+	public void setInterestRate(double interestRate) {
+		this.interestRate = interestRate;
+	}
+
+	public double getInterestRateFunding() {
+		return interestRateFunding;
+	}
+
+	public void setInterestRateFunding(double interestRateFunding) {
+		this.interestRateFunding = interestRateFunding;
 	}
 
 	public double getInvestmentFactor() {
@@ -61,12 +89,12 @@ public class CostSettings extends AbstractEntity {
 		this.investmentFactor = investmentFactor;
 	}
 
-	public double getOtherFactor() {
-		return otherFactor;
+	public double getOperationFactor() {
+		return operationFactor;
 	}
 
-	public void setOtherFactor(double otherFactor) {
-		this.otherFactor = otherFactor;
+	public void setOperationFactor(double operationFactor) {
+		this.operationFactor = operationFactor;
 	}
 
 	public double getHourlyWage() {
@@ -91,6 +119,14 @@ public class CostSettings extends AbstractEntity {
 
 	public void setFossilFuelFactor(double fossilFuelFactor) {
 		this.fossilFuelFactor = fossilFuelFactor;
+	}
+
+	public double getElectricityPrice() {
+		return electricityPrice;
+	}
+
+	public void setElectricityPrice(double electricityPrice) {
+		this.electricityPrice = electricityPrice;
 	}
 
 	public double getElectricityFactor() {
@@ -125,28 +161,41 @@ public class CostSettings extends AbstractEntity {
 		this.insuranceShare = insuranceShare;
 	}
 
-	public double getTaxShare() {
-		return taxShare;
+	public double getOtherShare() {
+		return otherShare;
 	}
 
-	public void setTaxShare(double taxShare) {
-		this.taxShare = taxShare;
+	public void setOtherShare(double otherShare) {
+		this.otherShare = otherShare;
+	}
+
+	public double getAdministrationShare() {
+		return administrationShare;
+	}
+
+	public void setAdministrationShare(double administrationShare) {
+		this.administrationShare = administrationShare;
 	}
 
 	@Override
 	protected CostSettings clone()  {
 		CostSettings clone = new CostSettings();
 		clone.setId(UUID.randomUUID().toString());
+		clone.global = global;
+		clone.interestRate = interestRate;
+		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;
-		clone.otherFactor = otherFactor;
+		clone.operationFactor = operationFactor;
 		clone.hourlyWage = hourlyWage;
 		clone.bioFuelFactor = bioFuelFactor;
 		clone.fossilFuelFactor = fossilFuelFactor;
+		clone.electricityPrice = electricityPrice;
 		clone.electricityFactor = electricityFactor;
 		clone.maintenanceFactor = maintenanceFactor;
 		clone.vatRate = vatRate;
 		clone.insuranceShare = insuranceShare;
-		clone.taxShare = taxShare;
+		clone.otherShare = otherShare;
+		clone.administrationShare = administrationShare;
 		return clone;
 	}
 }
