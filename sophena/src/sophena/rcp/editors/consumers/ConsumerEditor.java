@@ -116,9 +116,9 @@ public class ConsumerEditor extends FormEditor {
 			project.getConsumers().add(consumer);
 			project = dao.update(project);
 			consumer = findConsumer(project, consumer.getId());
-			dirty = false;
 			setPartName(consumer.getName());
 			Navigator.refresh();
+			dirty = false;
 			editorDirtyStateChanged();
 		} catch (Exception e) {
 			log.error("failed to update project " + projectId, e);
