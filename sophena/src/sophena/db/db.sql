@@ -83,6 +83,26 @@ INSERT INTO tbl_building_states (id, name) VALUES ('b28f6c18-3c9b-4ab8-b665-724d
 INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c27b549e7e', 'Passivhaus');
 
 
+CREATE TABLE tbl_cost_settings (
+
+	id CHAR(36),
+
+    is_global BOOLEAN,
+    investment_factor DOUBLE,
+    other_factor DOUBLE,
+    hourly_wage DOUBLE,
+    bio_fuel_factor DOUBLE,
+    fossil_fuel_factor DOUBLE,
+    electricity_factor DOUBLE,
+    maintenance_factor DOUBLE,
+    vat_rate DOUBLE,
+    insurance_share DOUBLE,
+    tax_share DOUBLE,
+
+
+	PRIMARY KEY (id)
+);
+
 CREATE TABLE tbl_projects (
 	id CHAR(36),
 	name VARCHAR(255),
