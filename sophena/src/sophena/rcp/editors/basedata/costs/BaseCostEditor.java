@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.costs;
 
-import java.util.UUID;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -31,8 +30,7 @@ public class BaseCostEditor extends Editor {
 			if(costs == null) {
 				log.warn("did not found global cost settings -> create new");
 				costs = new CostSettings();
-				costs.setId(UUID.randomUUID().toString());
-				costs.setGlobal(true);
+				costs.setId(CostSettings.GLOBAL_ID);
 				costs = dao.insert(costs);
 			}
 		} catch (Exception e) {

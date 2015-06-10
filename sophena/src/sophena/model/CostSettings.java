@@ -12,8 +12,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_cost_settings")
 public class CostSettings extends AbstractEntity {
 
-	@Column(name = "is_global")
-	private boolean global;
+	public static final String GLOBAL_ID = "9ff7e5f9-c603-4f21-b687-22191b697ba1";
 
 	@Column(name = "interest_rate")
 	private double interestRate;
@@ -56,14 +55,6 @@ public class CostSettings extends AbstractEntity {
 
 	@Column(name = "administration_share")
 	private double administrationShare;
-
-	public boolean isGlobal() {
-		return global;
-	}
-
-	public void setGlobal(boolean global) {
-		this.global = global;
-	}
 
 	public double getInterestRate() {
 		return interestRate;
@@ -181,7 +172,6 @@ public class CostSettings extends AbstractEntity {
 	protected CostSettings clone()  {
 		CostSettings clone = new CostSettings();
 		clone.setId(UUID.randomUUID().toString());
-		clone.global = global;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;

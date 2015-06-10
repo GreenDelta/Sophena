@@ -87,7 +87,6 @@ CREATE TABLE tbl_cost_settings (
 
 	id CHAR(36),
 
-    is_global BOOLEAN,
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,
     investment_factor DOUBLE,
