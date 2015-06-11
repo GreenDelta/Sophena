@@ -5,25 +5,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormEditor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
-public class ProducerEditor extends FormEditor {
+public class ProducerEditor extends Editor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
 	private String projectId;
 	private Producer producer;
-	private boolean dirty;
 
 	public static void open(ProjectDescriptor project,
 			ProducerDescriptor producer) {
@@ -61,18 +57,6 @@ public class ProducerEditor extends FormEditor {
 		return producer;
 	}
 
-	public void setDirty() {
-		if (dirty)
-			return;
-		dirty = true;
-		editorDirtyStateChanged();
-	}
-
-	@Override
-	public boolean isDirty() {
-		return dirty;
-	}
-
 	@Override
 	protected void addPages() {
 		try {
@@ -93,22 +77,12 @@ public class ProducerEditor extends FormEditor {
 			project.getProducers().add(producer);
 			project = dao.update(project);
 			producer = findProducer(project, producer.getId());
-			dirty = false;
 			setPartName(producer.getName());
 			Navigator.refresh();
-			editorDirtyStateChanged();
+			setSaved();
 		} catch (Exception e) {
 			log.error("failed to update project " + projectId, e);
 		}
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
 	}
 
 	private static class EditorInput extends KeyEditorInput {

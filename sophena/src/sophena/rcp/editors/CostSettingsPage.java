@@ -6,7 +6,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.model.CostSettings;
 import sophena.rcp.utils.DataBinding;
 import sophena.rcp.utils.Texts;
@@ -39,46 +38,60 @@ public class CostSettingsPage extends FormPage {
 	private void createFields() {
 		bind.onDouble(
 				t("Kalkulatorischer Zinssatz (ohne Förderung)", ""),
-				costs::getInterestRate, costs::setInterestRate);
+				() -> costs::getInterestRate,
+				() -> costs::setInterestRate);
 		bind.onDouble(
 				t("Kalkulatorischer Zinssatz (mit Förderung)", ""),
-				costs::getInterestRateFunding, costs::setInterestRateFunding);
+				() -> costs::getInterestRateFunding,
+				() -> costs::setInterestRateFunding);
 		bind.onDouble(
 				t("Preisänderungsfaktor (Investitionen)", ""),
-				costs::getInvestmentFactor, costs::setInvestmentFactor);
+				() -> costs::getInvestmentFactor,
+				() -> costs::setInvestmentFactor);
 		bind.onDouble(
 				t("Mehrwertsteuersatz", ""),
-				costs::getVatRate, costs::setVatRate);
+				() -> costs::getVatRate,
+				() -> costs::setVatRate);
 		bind.onDouble(
 				t("Preisänderungsfaktor Biomasse-Brennstoff", ""),
-				costs::getBioFuelFactor, costs::setBioFuelFactor);
+				() -> costs::getBioFuelFactor,
+				() -> costs::setBioFuelFactor);
 		bind.onDouble(
 				t("Preisänderungsfaktor fossiler Brennstoff", ""),
-				costs::getFossilFuelFactor, costs::setFossilFuelFactor);
+				() -> costs::getFossilFuelFactor,
+				() -> costs::setFossilFuelFactor);
 		bind.onDouble(
 				t("Strompreis netto", "EUR/MWh"),
-				costs::getElectricityPrice, costs::setElectricityPrice);
+				() -> costs::getElectricityPrice,
+				() -> costs::setElectricityPrice);
 		bind.onDouble(
 				t("Preisänderungsfaktor Strom", ""),
-				costs::getElectricityFactor, costs::setElectricityFactor);
+				() -> costs::getElectricityFactor,
+				() -> costs::setElectricityFactor);
 		bind.onDouble(
 				t("Preisänderungsfaktor betriebsgebundene und sonstige Kosten", ""),
-				costs::getOperationFactor, costs::setOperationFactor);
+				() -> costs::getOperationFactor,
+				() -> costs::setOperationFactor);
 		bind.onDouble(
 				t("Preisänderungsfaktor Instandhaltungskosten", ""),
-				costs::getMaintenanceFactor, costs::setMaintenanceFactor);
+				() -> costs::getMaintenanceFactor,
+				() -> costs::setMaintenanceFactor);
 		bind.onDouble(
 				t("Stundenlohn", "EUR"),
-				costs::getHourlyWage, costs::setHourlyWage);
+				() -> costs::getHourlyWage,
+				() -> costs::setHourlyWage);
 		bind.onDouble(
 				t("Versicherung", "%"),
-				costs::getInsuranceShare, costs::setInsuranceShare);
+				() -> costs::getInsuranceShare,
+				() -> costs::setInsuranceShare);
 		bind.onDouble(
 				t("Sonstige Abgaben (Steuern, Pacht, …)", "%"),
-				costs::getOtherShare, costs::setOtherShare);
+				() -> costs::getOtherShare,
+				() -> costs::setOtherShare);
 		bind.onDouble(
 				t("Verwaltung", "%"),
-				costs::getAdministrationShare, costs::setAdministrationShare);
+				() -> costs::getAdministrationShare,
+				() -> costs::setAdministrationShare);
 	}
 
 	private Text t(String label, String unit) {

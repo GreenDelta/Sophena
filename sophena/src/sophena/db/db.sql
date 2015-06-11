@@ -209,5 +209,11 @@ CREATE TABLE tbl_producers (
 	f_project CHAR(36),
     f_boiler VARCHAR(36),
 
+    investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE,
+
     PRIMARY KEY (id)
 );

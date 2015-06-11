@@ -1,6 +1,7 @@
 package sophena.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,6 +25,9 @@ public class Producer extends Facility {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	private ProducerFunction function;
+
+	@Embedded
+	private ComponentCosts costs = new ComponentCosts();
 
 	public Boiler getBoiler() {
 		return boiler;
@@ -49,6 +53,14 @@ public class Producer extends Facility {
 		this.function = function;
 	}
 
+	public ComponentCosts getCosts() {
+		return costs;
+	}
+
+	public void setCosts(ComponentCosts costs) {
+		this.costs = costs;
+	}
+
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
@@ -58,6 +70,8 @@ public class Producer extends Facility {
 		clone.setFunction(getFunction());
 		clone.setRank(getRank());
 		clone.setDescription(getDescription());
+		if(getCosts() != null)
+			clone.setCosts(getCosts().clone());
 		return clone;
 	}
 
