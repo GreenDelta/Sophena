@@ -6,7 +6,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.ProjectDao;
 import sophena.model.CostSettings;
 import sophena.model.Project;
@@ -22,6 +21,7 @@ public class CostEditor extends Editor {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private String projectId;
+	private CostSettingsPage settingsPage;
 
 	public static void open(ProjectDescriptor project) {
 		if (project == null)
@@ -48,7 +48,8 @@ public class CostEditor extends Editor {
 			addPage(new OverviewPage(this));
 			CostSettings settings = project.getCostSettings();
 			if (settings != null) {
-				addPage(new CostSettingsPage(this, settings));
+				settingsPage = new CostSettingsPage(this, settings);
+				addPage(settingsPage);
 			}
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
@@ -57,6 +58,17 @@ public class CostEditor extends Editor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
+		try {
+			ProjectDao dao = new ProjectDao(App.getDb());
+			Project project = dao.get(projectId);
+			if(settingsPage != null) {
+				project.setCostSettings(settingsPage.getCosts());
+			}
+			dao.update(project);
+			setSaved();
+		} catch (Exception e) {
+			log.error("failed to save project cost settings");
+		}
 	}
 
 	private static class EditorInput extends KeyEditorInput {

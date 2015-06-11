@@ -24,6 +24,10 @@ public class CostSettingsPage extends FormPage {
 		this.costs = costs;
 	}
 
+	public CostSettings getCosts() {
+		return costs;
+	}
+
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		ScrolledForm form = UI.formHeader(mform, "Kosteneinstellungen");
