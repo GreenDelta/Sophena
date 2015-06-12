@@ -2,6 +2,8 @@ package sophena.rcp.editors.results.energy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -18,6 +20,7 @@ import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Rcp;
+import sophena.rcp.utils.Strings;
 
 public class EnergyResultEditor extends FormEditor {
 
@@ -27,6 +30,7 @@ public class EnergyResultEditor extends FormEditor {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
+		closeExisting(d);
 		Rcp.run("Berechne...", () -> {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(d.getId());
@@ -37,6 +41,17 @@ public class EnergyResultEditor extends FormEditor {
 			Editors.open(input, "sophena.EnergyResultEditor");
 			result.print();
 		});
+	}
+
+	private static void closeExisting(ProjectDescriptor d) {
+		for (IEditorReference ref : Editors.getReferences()) {
+			IEditorPart e = ref.getEditor(false);
+			if (!(e instanceof EnergyResultEditor))
+				continue;
+			EnergyResultEditor editor = (EnergyResultEditor) e;
+			if (Strings.nullOrEqual(d.getId(), editor.project.getId()))
+				Editors.close(ref);
+		}
 	}
 
 	@Override
