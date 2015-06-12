@@ -38,12 +38,16 @@ class HeatDemandSection {
 	}
 
 	private void createPowerText(Composite composite, FormToolkit tk) {
-		Text t = UI.formText(composite, tk, "Gesamtleistung");
+		Text t = UI.formText(composite, tk, "Heizlast");
 		Texts.set(t, consumer().getHeatingLoad());
 		UI.formLabel(composite, tk, "kW");
-		if (!consumer().isDemandBased())
+		if (!consumer().isDemandBased()) {
 			t.setEditable(false);
-		else {
+			editor.onCalculated((values) -> {
+				double q = Stats.sum(values);
+				Texts.set(t, q / consumer().getLoadHours());
+			});
+		} else {
 			Texts.on(t).required().decimal().onChanged(() -> {
 				consumer().setHeatingLoad(Numbers.read(t.getText()));
 				editor.calculate();

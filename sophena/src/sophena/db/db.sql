@@ -83,6 +83,30 @@ INSERT INTO tbl_building_states (id, name) VALUES ('b28f6c18-3c9b-4ab8-b665-724d
 INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c27b549e7e', 'Passivhaus');
 
 
+CREATE TABLE tbl_cost_settings (
+
+	id CHAR(36),
+	f_project CHAR(36),
+
+    interest_rate DOUBLE,
+    interest_rate_funding DOUBLE,
+    investment_factor DOUBLE,
+    operation_factor DOUBLE,
+    hourly_wage DOUBLE,
+    bio_fuel_factor DOUBLE,
+    fossil_fuel_factor DOUBLE,
+	electricity_price DOUBLE,
+    electricity_factor DOUBLE,
+    maintenance_factor DOUBLE,
+    vat_rate DOUBLE,
+    insurance_share DOUBLE,
+    other_share DOUBLE,
+    administration_share DOUBLE,
+
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_projects (
 	id CHAR(36),
 	name VARCHAR(255),
@@ -94,6 +118,9 @@ CREATE TABLE tbl_projects (
     simultaneity_factor DOUBLE,
     buffer_tank_volume DOUBLE,
     power_loss DOUBLE,
+    with_interruption BOOLEAN,
+    interruption_start VARCHAR(10),
+    interruption_end VARCHAR(10),
 
 	is_variant BOOLEAN,
 	project_duration INTEGER,
@@ -181,6 +208,12 @@ CREATE TABLE tbl_producers (
 
 	f_project CHAR(36),
     f_boiler VARCHAR(36),
+
+    investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE,
 
     PRIMARY KEY (id)
 );

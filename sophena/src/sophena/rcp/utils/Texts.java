@@ -172,6 +172,13 @@ public final class Texts {
 			return this;
 		}
 
+		public TextDispatch readOnly() {
+			if (text == null)
+				return this;
+			text.setEditable(false);
+			return this;
+		}
+
 		public TextDispatch init(String s) {
 			set(text, s);
 			return this;

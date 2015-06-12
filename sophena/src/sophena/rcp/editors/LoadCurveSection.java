@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -15,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.io.HoursProfile;
+import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.charts.LoadCurveChart;
 import sophena.rcp.utils.Actions;
@@ -25,15 +24,23 @@ public class LoadCurveSection {
 
 	private LoadCurveChart chart;
 	private boolean sorted = true;
+	private String title = "Jahresdauerlinie";
 	private double[] rawData;
 	private double[] chartData;
 
-	public LoadCurveSection(Composite body, FormToolkit tk) {
-		render(body, tk);
-	}
-
 	public void setSorted(boolean sorted) {
 		this.sorted = sorted;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setConstant(double d) {
+		this.sorted = false;
+		double[] data = new double[Stats.HOURS];
+		Arrays.setAll(data, (i) -> d);
+		setData(data);
 	}
 
 	public void setData(double[] data) {
@@ -41,6 +48,8 @@ public class LoadCurveSection {
 			return;
 		rawData = data;
 		chartData = sorted ? getSortedCopy(rawData) : rawData;
+		if (chart == null)
+			return;
 		chart.setData(chartData);
 	}
 
@@ -56,16 +65,15 @@ public class LoadCurveSection {
 		return copy;
 	}
 
-	private void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Jahresdauerlinie");
-		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
-		section.setLayoutData(gridData);
-		gridData.heightHint = 250;
-		gridData.minimumHeight = 250;
+	public void render(Composite body, FormToolkit tk) {
+		Section section = UI.section(body, tk, title);
+		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
-		composite.setLayout(new FillLayout());
-		chart = new LoadCurveChart(composite);
+		UI.gridLayout(composite, 1);
+		chart = new LoadCurveChart(composite, 250);
 		Actions.bind(section, new SortAction(), new ExportAction());
+		if (chartData != null)
+			chart.setData(chartData);
 	}
 
 	private class SortAction extends Action {

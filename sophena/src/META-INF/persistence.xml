@@ -12,6 +12,7 @@
         <class>sophena.model.BuildingState</class>
         <class>sophena.model.BuildingType</class>
         <class>sophena.model.Consumer</class>
+        <class>sophena.model.CostSettings</class>
         <class>sophena.model.FuelConsumption</class>
         <class>sophena.model.Fuel</class>
         <class>sophena.model.LoadProfile</class>

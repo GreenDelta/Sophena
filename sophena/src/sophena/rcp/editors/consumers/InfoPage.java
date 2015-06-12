@@ -30,12 +30,12 @@ class InfoPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		InfoSection.of(editor).create(body, tk);
-		LoadCurveSection loadCurve = new LoadCurveSection(body, tk);
-		editor.onCalculated((data) -> loadCurve.setData(data));
 		HeatDemandSection.of(editor).create(body, tk);
 		if (!consumer().isDemandBased())
 			ConsumptionSection.of(editor).create(body, tk);
-		LoadProfileSection.of(editor).create(body, tk);
+		LoadCurveSection loadCurve = new LoadCurveSection();
+		loadCurve.render(body, tk);
+		editor.onCalculated((data) -> loadCurve.setData(data));
 		form.reflow(true);
 		editor.calculate();
 	}

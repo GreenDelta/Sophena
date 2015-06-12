@@ -1,24 +1,32 @@
-package sophena.rcp.editors.projects;
+package sophena.rcp.editors.heatnets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
+import sophena.calc.ProjectLoadCurve;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class HeatNetSection {
 
-	private ProjectEditor editor;
+	private HeatNetEditor editor;
+	private LoadCurveSection loadCurve;
 
-	HeatNetSection(ProjectEditor editor) {
+	HeatNetSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
 
-	private HeatNet model() {
-		return editor.getProject().getHeatNet();
+	private HeatNet heatNet() {
+		return editor.getHeatNet();
+	}
+
+	public void setLoadCurve(LoadCurveSection loadCurve) {
+		this.loadCurve = loadCurve;
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
@@ -35,9 +43,9 @@ class HeatNetSection {
 
 	private void createSupplyText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Vorlauftemperatur");
-		Texts.set(t, model().getSupplyTemperature());
+		Texts.set(t, heatNet().getSupplyTemperature());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setSupplyTemperature(Texts.getDouble(t));
+			heatNet().setSupplyTemperature(Texts.getDouble(t));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "°C");
@@ -45,9 +53,9 @@ class HeatNetSection {
 
 	private void createReturnText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Rücklauftemperatur");
-		Texts.set(t, model().getReturnTemperature());
+		Texts.set(t, heatNet().getReturnTemperature());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setReturnTemperature(Texts.getDouble(t));
+			heatNet().setReturnTemperature(Texts.getDouble(t));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "°C");
@@ -55,9 +63,9 @@ class HeatNetSection {
 
 	private void createBufferText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Pufferspeicher");
-		Texts.set(t, model().getBufferTankVolume());
+		Texts.set(t, heatNet().getBufferTankVolume());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setBufferTankVolume(Texts.getDouble(t));
+			heatNet().setBufferTankVolume(Texts.getDouble(t));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "L");
@@ -65,9 +73,9 @@ class HeatNetSection {
 
 	private void createSimFactorText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Gleichzeitigkeitsfaktor");
-		Texts.set(t, model().getSimultaneityFactor());
+		Texts.set(t, heatNet().getSimultaneityFactor());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setSimultaneityFactor(Texts.getDouble(t));
+			heatNet().setSimultaneityFactor(Texts.getDouble(t));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "").setImage(Images.INFO_16.img());
@@ -75,23 +83,31 @@ class HeatNetSection {
 
 	private void createLengthText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Länge");
-		Texts.set(t, model().getLength());
+		Texts.set(t, heatNet().getLength());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setLength(Texts.getDouble(t));
+			heatNet().setLength(Texts.getDouble(t));
 			editor.setDirty();
+			updateLoadCurve();
 		});
 		UI.formLabel(composite, toolkit, "m");
 	}
 
 	private void createLossText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Verlustleistung");
-		Texts.set(t, model().getPowerLoss());
+		Texts.set(t, heatNet().getPowerLoss());
 		Texts.on(t).decimal().required().onChanged(() -> {
-			model().setPowerLoss(Texts.getDouble(t));
+			heatNet().setPowerLoss(Texts.getDouble(t));
 			editor.setDirty();
+			updateLoadCurve();
 		});
 		UI.formLabel(composite, toolkit, "W/m");
 	}
 
+	private void updateLoadCurve() {
+		if (loadCurve == null)
+			return;
+		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
+		loadCurve.setData(curve);
+	}
 
 }

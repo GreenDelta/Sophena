@@ -9,7 +9,7 @@ import sophena.Tests;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 
-public class DaoTest {
+public class ProjectDaoTest {
 
 	private ProjectDao dao = new ProjectDao(Tests.getDb());
 

@@ -7,7 +7,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -87,8 +86,8 @@ class LoadProfileWizard extends Wizard {
 			UI.formLabel(composite, "");
 			Composite chartParent = new Composite(composite, SWT.NONE);
 			UI.gridData(chartParent, true, true);
-			chartParent.setLayout(new FillLayout());
-			chart = new LoadCurveChart(chartParent);
+			UI.gridLayout(chartParent, 1);
+			chart = new LoadCurveChart(chartParent, 150);
 		}
 
 		private class DataBinding {

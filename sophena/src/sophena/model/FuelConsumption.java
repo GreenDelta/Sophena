@@ -1,6 +1,7 @@
 package sophena.model;
 
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -83,7 +84,8 @@ public class FuelConsumption extends AbstractEntity {
 		if (woodAmountType == null || woodAmountType == WoodAmountType.MASS)
 			mass = amount;
 		else {
-			mass = woodAmountType.getFactor() * fuel.getDensity() / (1 - wc);
+			mass = amount * woodAmountType.getFactor() * fuel.getDensity()
+					/ (1 - wc);
 		}
 		// 0.68: vaporization enthalpy of water
 		double heat = mass * ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);

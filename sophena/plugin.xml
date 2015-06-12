@@ -147,10 +147,27 @@
 			name="Heizkessel" />
 
 		<editor
+			class="sophena.rcp.editors.basedata.costs.BaseCostEditor"
+			icon="icons/costs_16.png"
+			id="sophena.BaseCostEditor"
+			name="Kosteneinstellungen" />
+
+		<editor
+			class="sophena.rcp.editors.heatnets.HeatNetEditor"
+			icon="icons/pump_16.png"
+			id="sophena.HeatNetEditor"
+			name="Wärmeverteilung" />
+
+		<editor
 			class="sophena.rcp.editors.results.energy.EnergyResultEditor"
 			icon="icons/load_profile_16.png"
 			id="sophena.EnergyResultEditor"
 			name="Ergebnisse" />
 
+		<editor
+			class="sophena.rcp.editors.costs.CostEditor"
+			icon="icons/costs_16.png"
+			id="sophena.CostEditor"
+			name="Kosten" />
 	</extension>
 </plugin>

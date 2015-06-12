@@ -35,6 +35,7 @@ public class EnergyResultEditor extends FormEditor {
 			String key = Cache.put(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.getName());
 			Editors.open(input, "sophena.EnergyResultEditor");
+			result.print();
 		});
 	}
 

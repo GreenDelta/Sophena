@@ -13,8 +13,10 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.CostSettingsDao;
 import sophena.db.daos.ProjectDao;
 import sophena.db.daos.WeatherStationDao;
+import sophena.model.CostSettings;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
@@ -54,19 +56,37 @@ public class ProjectWizard extends Wizard {
 			Project p = new Project();
 			p.setId(UUID.randomUUID().toString());
 			page.data.bindToModel(p);
-			HeatNet n = p.getHeatNet();
-			n.setSimultaneityFactor(1);
-			n.setSupplyTemperature(80);
-			n.setReturnTemperature(50);
+			addHeatNet(p);
+			addCostSettings(p);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			ProjectEditor.open(p.toDescriptor());
 			dao.insert(p);
 			Navigator.refresh();
+			ProjectEditor.open(p.toDescriptor());
 			return true;
 		} catch (Exception e) {
 			log.error("failed to create project", e);
 			return false;
 		}
+	}
+
+	private void addCostSettings(Project p) {
+		CostSettingsDao dao = new CostSettingsDao(App.getDb());
+		CostSettings global = dao.getGlobal();
+		if (global != null)
+			p.setCostSettings(global.clone());
+		else {
+			CostSettings settings = new CostSettings();
+			settings.setId(UUID.randomUUID().toString());
+			p.setCostSettings(settings);
+		}
+	}
+
+	private void addHeatNet(Project p) {
+		HeatNet n = p.getHeatNet();
+		n.setSimultaneityFactor(1);
+		n.setPowerLoss(20);
+		n.setSupplyTemperature(80);
+		n.setReturnTemperature(50);
 	}
 
 	@Override

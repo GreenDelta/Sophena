@@ -1,4 +1,4 @@
-package sophena.rcp.wizards;
+package sophena.rcp.editors.heatnets;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -9,24 +9,24 @@ import org.eclipse.swt.widgets.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.model.Project;
+import sophena.model.HeatNet;
 import sophena.rcp.utils.UI;
 
-public class NetComponentWizard extends Wizard {
+class NetComponentWizard extends Wizard {
 
 	private Page page;
-	private Project project;
+	private HeatNet heatNet;
 
-	public static void open(Project project) {
+	public static void open(HeatNet heatNet) {
 		try {
 			NetComponentWizard wiz = new NetComponentWizard();
-			wiz.setWindowTitle("#Neue Komponente");
-			wiz.project = project;
+			wiz.setWindowTitle("Neue Komponente");
+			wiz.heatNet = heatNet;
 			WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 			dialog.setPageSize(150, 400);
 			dialog.open();
 		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(ProjectWizard.class);
+			Logger log = LoggerFactory.getLogger(NetComponentWizard.class);
 			log.error("failed to create project", e);
 		}
 	}
@@ -45,7 +45,7 @@ public class NetComponentWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private Page() {
-			super("NetComponentWizardPage", "#Neue Komponente", null);
+			super("NetComponentWizardPage", "Neue Komponente", null);
 		}
 
 		@Override
@@ -61,8 +61,8 @@ public class NetComponentWizard extends Wizard {
 		private void createComboGroup(Composite root) {
 			Composite composite = UI.formComposite(root);
 			UI.gridData(composite, true, false);
-			UI.formCombo(composite, "#Komponente");
-			UI.formCombo(composite, "#Größenklasse");
+			UI.formCombo(composite, "Komponente");
+			UI.formCombo(composite, "Größenklasse");
 		}
 
 		private void createList(Composite root) {
@@ -77,8 +77,8 @@ public class NetComponentWizard extends Wizard {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridData(composite, true, false);
 			UI.gridLayout(composite, 3);
-			UI.formText(composite, "#Menge");
-			UI.formLabel(composite, "#Einheit");
+			UI.formText(composite, "Menge");
+			UI.formLabel(composite, "Einheit");
 		}
 	}
 }
