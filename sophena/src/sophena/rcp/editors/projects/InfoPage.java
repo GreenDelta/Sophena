@@ -1,5 +1,8 @@
 package sophena.rcp.editors.projects;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -7,8 +10,14 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import sophena.db.daos.WeatherStationDao;
 import sophena.model.Project;
+import sophena.model.WeatherStation;
+import sophena.model.descriptors.WeatherStationDescriptor;
+import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -40,6 +49,7 @@ class InfoPage extends FormPage {
 		createNameText(toolkit, composite);
 		createDescriptionText(toolkit, composite);
 		createDurationText(toolkit, composite);
+		createStationCombo(toolkit, composite);
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -73,5 +83,26 @@ class InfoPage extends FormPage {
 					project().setProjectDuration(Texts.getInt(t));
 					editor.setDirty();
 				});
+	}
+
+	private void createStationCombo(FormToolkit toolkit, Composite composite) {
+		EntityCombo<WeatherStationDescriptor> combo = new EntityCombo<>();
+		combo.create("Wetterstation", composite, toolkit);
+		WeatherStationDao dao = new WeatherStationDao(App.getDb());
+		List<WeatherStationDescriptor> list = dao.getDescriptors();
+		Collections.sort(list, (w1, w2)
+				-> Strings.compare(w1.getName(), w2.getName()));
+		combo.setInput(list);
+		WeatherStation s = project().getWeatherStation();
+		if (s != null)
+			combo.select(s.toDescriptor());
+		combo.onSelect((d) -> {
+			if (d == null) {
+				return;
+			}
+			WeatherStation selected = dao.get(d.getId());
+			project().setWeatherStation(selected);
+			editor.setDirty();
+		});
 	}
 }
