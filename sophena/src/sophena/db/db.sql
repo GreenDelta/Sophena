@@ -137,6 +137,7 @@ CREATE TABLE tbl_consumers (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+	is_disabled BOOLEAN,
 	demand_based BOOLEAN,
 	heating_load DOUBLE,
 	water_fraction DOUBLE,
@@ -203,6 +204,8 @@ CREATE TABLE tbl_producers (
 	id CHAR(36),
     name VARCHAR(255),
     description CLOB(64 K),
+    
+    is_disabled BOOLEAN,
     rank INTEGER,
     producer_function VARCHAR(255),
 
