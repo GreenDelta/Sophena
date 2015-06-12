@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,8 +54,8 @@ public class Producer extends Facility {
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
+		clone.setId(UUID.randomUUID().toString());
 		clone.setBoiler(getBoiler());
-		clone.setId(getId());
 		clone.setName(getName());
 		clone.setFunction(getFunction());
 		clone.setRank(getRank());
