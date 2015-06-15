@@ -43,7 +43,7 @@ public class Project extends RootEntity {
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
-	private CostSettings costSettings;
+	private CostSettings costSettings = new CostSettings();
 
 	@Embedded
 	private HeatNet heatNet = new HeatNet();
