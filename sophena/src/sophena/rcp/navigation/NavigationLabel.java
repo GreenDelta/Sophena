@@ -2,6 +2,7 @@ package sophena.rcp.navigation;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -9,10 +10,13 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 
+import sophena.rcp.utils.Colors;
+
 public class NavigationLabel extends ColumnLabelProvider implements
 		ICommonLabelProvider {
 
 	private Font boldFont;
+	private Font italicFont;
 	private FontRegistry fontReg;
 
 	@Override
@@ -51,17 +55,42 @@ public class NavigationLabel extends ColumnLabelProvider implements
 		if (display == null)
 			return;
 		Font sysFont = display.getSystemFont();
-		boldFont = fontReg.getBold(sysFont.getFontData()[0].getName());
+		String fontName = sysFont.getFontData()[0].getName();
+		boldFont = fontReg.getBold(fontName);
+		italicFont = fontReg.getItalic(fontName);
 	}
 
 	@Override
-	public Font getFont(Object element) {
-		if (element instanceof ProjectElement)
+	public Font getFont(Object obj) {
+		if (obj instanceof ProjectElement)
 			return boldFont;
-		if (element instanceof FolderElement)
+		if (obj instanceof FolderElement)
 			return boldFont;
-		else
-			return null;
+		if (obj instanceof ConsumerElement) {
+			ConsumerElement e = (ConsumerElement) obj;
+			boolean dis = e.getDescriptor().isDisabled();
+			return dis ? italicFont : null;
+		}
+		if (obj instanceof ProducerElement) {
+			ProducerElement e = (ProducerElement) obj;
+			boolean dis = e.getDescriptor().isDisabled();
+			return dis ? italicFont : null;
+		}
+		return null;
 	}
 
+	@Override
+	public Color getForeground(Object obj) {
+		if (obj instanceof ConsumerElement) {
+			ConsumerElement e = (ConsumerElement) obj;
+			boolean dis = e.getDescriptor().isDisabled();
+			return dis ? Colors.getGray() : null;
+		}
+		if (obj instanceof ProducerElement) {
+			ProducerElement e = (ProducerElement) obj;
+			boolean dis = e.getDescriptor().isDisabled();
+			return dis ? Colors.getGray() : null;
+		}
+		return null;
+	}
 }

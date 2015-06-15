@@ -2,9 +2,14 @@ package sophena.rcp.navigation.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import sophena.db.daos.ConsumerDao;
+import sophena.db.daos.ProducerDao;
+import sophena.model.Consumer;
+import sophena.model.Producer;
+import sophena.rcp.App;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProducerElement;
 
 public class DisableAction extends NavigationAction {
@@ -39,8 +44,33 @@ public class DisableAction extends NavigationAction {
 
 	@Override
 	public void run() {
-		// TODO: write disable function
-
+		if (elem instanceof ConsumerElement)
+			updateConsumer((ConsumerElement) elem);
+		else if (elem instanceof ProducerElement)
+			updateProducer((ProducerElement) elem);
 	}
 
+	private void updateConsumer(ConsumerElement e) {
+		try {
+			ConsumerDao dao = new ConsumerDao(App.getDb());
+			Consumer c = dao.get(e.getDescriptor().getId());
+			c.setDisabled(!c.isDisabled());
+			dao.update(c);
+			Navigator.refresh();
+		} catch (Exception ex) {
+			log.error("failed to disable/enable consumer", e);
+		}
+	}
+
+	private void updateProducer(ProducerElement e) {
+		try {
+			ProducerDao dao = new ProducerDao(App.getDb());
+			Producer p = dao.get(e.getDescriptor().getId());
+			p.setDisabled(!p.isDisabled());
+			dao.update(p);
+			Navigator.refresh();
+		} catch (Exception ex) {
+			log.error("failed to disable/enable producer", e);
+		}
+	}
 }
