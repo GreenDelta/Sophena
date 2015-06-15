@@ -1,6 +1,8 @@
 package sophena.calc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -30,11 +32,17 @@ public class ProjectResult {
 
 
 	private void initProducerData(Project project) {
-		int count = project.getProducers().size();
+		List<Producer> list = new ArrayList<>();
+		for(Producer p : project.getProducers()) {
+			if(p.isDisabled())
+				continue;
+			list.add(p);
+		}
+		int count = list.size();
 		producers = new Producer[count];
 		producerResults = new double[count][];
 		for (int i = 0; i < count; i++) {
-			producers[i] = project.getProducers().get(i);
+			producers[i] = list.get(i);
 			producerResults[i] = new double[Stats.HOURS];
 		}
 		Arrays.sort(producers, (p1, p2)

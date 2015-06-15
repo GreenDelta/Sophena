@@ -2,10 +2,8 @@ package sophena.calc;
 
 import java.time.MonthDay;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
@@ -18,6 +16,8 @@ public class ProjectLoadCurve {
 		if (project == null)
 			return curve;
 		for (Consumer consumer : project.getConsumers()) {
+			if (consumer.isDisabled())
+				continue;
 			double[] c = ConsumerLoadCurve.calculate(consumer,
 					project.getWeatherStation());
 			for (int i = 0; i < c.length; i++)
@@ -67,7 +67,7 @@ public class ProjectLoadCurve {
 	private static int getIndex(String monthDay, boolean beginOfDay) {
 		if (monthDay == null)
 			return -1;
-		int[] daysInMonths = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		int[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 		try {
 			MonthDay value = MonthDay.parse(monthDay);
 			int monthIdx = value.getMonthValue() - 1;
@@ -75,7 +75,7 @@ public class ProjectLoadCurve {
 			for (int m = 0; m < monthIdx; m++)
 				hours += daysInMonths[m] * 24; // hours in months before
 			hours += (value.getDayOfMonth() - 1) * 24; // + hours in current
-														// month
+			// month
 			hours = beginOfDay ? hours : hours + 24;
 			return hours < Stats.HOURS ? hours : Stats.HOURS - 1;
 		} catch (Exception e) {
