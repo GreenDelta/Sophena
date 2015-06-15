@@ -2,11 +2,13 @@ package sophena.rcp.navigation.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.ConsumerDao;
 import sophena.db.daos.ProducerDao;
 import sophena.model.Consumer;
 import sophena.model.Producer;
 import sophena.rcp.App;
+import sophena.rcp.Images;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -22,24 +24,27 @@ public class DisableAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) element;
-			updateText(e.getDescriptor().isDisabled());
+			updateUI(e.getDescriptor().isDisabled());
 			elem = e;
 			return true;
 		}
 		if (element instanceof ProducerElement) {
 			ProducerElement e = (ProducerElement) element;
-			updateText(e.getDescriptor().isDisabled());
+			updateUI(e.getDescriptor().isDisabled());
 			elem = e;
 			return true;
 		}
 		return false;
 	}
 
-	private void updateText(boolean disabled) {
-		if (disabled)
+	private void updateUI(boolean disabled) {
+		if (disabled) {
 			setText("Aktivieren");
-		else
+			setImageDescriptor(Images.ENABLED_16.des());
+		} else {
+			setImageDescriptor(Images.DISABLED_16.des());
 			setText("Deaktivieren");
+		}
 	}
 
 	@Override

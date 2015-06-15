@@ -16,6 +16,7 @@ import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.rcp.App;
+import sophena.rcp.Images;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -27,6 +28,10 @@ public class DuplicateAction extends NavigationAction {
 
 	private NavigationElement elem;
 	private Method handler;
+
+	public DuplicateAction() {
+		setImageDescriptor(Images.COPY_16.des());
+	}
 
 	@Override
 	public boolean accept(NavigationElement element) {

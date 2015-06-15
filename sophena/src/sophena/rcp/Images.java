@@ -15,11 +15,17 @@ public enum Images {
 
 	CONSUMER_16("consumer_16.png"),
 
+	COPY_16("copy_16.png"),
+
 	COSTS_16("costs_16.png"),
 
 	DELETE_16("delete_16.png"),
 
+	DISABLED_16("disabled_16.png"),
+
 	EDIT_16("edit_16.png"),
+
+	ENABLED_16("enabled_16.png"),
 
 	ERROR_16("error_16.png"),
 
