@@ -19,7 +19,7 @@ public class ProducerDao extends RootEntityDao<Producer> {
 	public List<ProducerDescriptor> getDescriptors(ProjectDescriptor pd) {
 		if (pd == null)
 			return Collections.emptyList();
-		String sql = "SELECT id, name, description FROM " + getTable()
+		String sql = "SELECT id, name, description, is_disabled FROM tbl_producers"
 				+ " WHERE f_project = '" + pd.getId() + "'";
 		List<ProducerDescriptor> list = new ArrayList<>();
 		try {
@@ -28,6 +28,7 @@ public class ProducerDao extends RootEntityDao<Producer> {
 				d.setId(r.getString(1));
 				d.setName(r.getString(2));
 				d.setDescription(r.getString(3));
+				d.setDisabled(r.getBoolean(4));
 				list.add(d);
 				return true;
 			});

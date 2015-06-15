@@ -18,6 +18,9 @@ import sophena.model.descriptors.ConsumerDescriptor;
 @Table(name = "tbl_consumers")
 public class Consumer extends Facility {
 
+	@Column(name = "is_disabled")
+	private boolean disabled;
+
 	@OneToOne
 	@JoinColumn(name = "f_building_state")
 	private BuildingState buildingState;
@@ -48,6 +51,14 @@ public class Consumer extends Facility {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
+
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 
 	public BuildingState getBuildingState() {
 		return buildingState;
@@ -117,16 +128,17 @@ public class Consumer extends Facility {
 	public Consumer clone() {
 		Consumer clone = new Consumer();
 		clone.setId(UUID.randomUUID().toString());
-		clone.setName(this.getName());
-		clone.setDescription(this.getDescription());
-		clone.setBuildingState(this.getBuildingState());
-		clone.setBuildingType(this.getBuildingType());
-		clone.setDemandBased(this.isDemandBased());
-		clone.setHeatingLimit(this.getHeatingLimit());
-		clone.setHeatingLoad(this.getHeatingLoad());
-		clone.setWaterFraction(this.getWaterFraction());
-		clone.setLoadHours(this.getLoadHours());
-		for (FuelConsumption cons : this.getFuelConsumptions())
+		clone.setName(getName());
+		clone.setDescription(getDescription());
+		clone.setDisabled(isDisabled());
+		clone.setBuildingState(getBuildingState());
+		clone.setBuildingType(getBuildingType());
+		clone.setDemandBased(isDemandBased());
+		clone.setHeatingLimit(getHeatingLimit());
+		clone.setHeatingLoad(getHeatingLoad());
+		clone.setWaterFraction(getWaterFraction());
+		clone.setLoadHours(getLoadHours());
+		for (FuelConsumption cons : getFuelConsumptions())
 			clone.getFuelConsumptions().add(cons.clone());
 		return clone;
 	}
@@ -136,6 +148,7 @@ public class Consumer extends Facility {
 		d.setId(getId());
 		d.setName(getName());
 		d.setDescription(getDescription());
+		d.setDisabled(isDisabled());
 		return d;
 	}
 }

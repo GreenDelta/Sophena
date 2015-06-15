@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -15,6 +17,9 @@ import sophena.model.descriptors.ProducerDescriptor;
 @Table(name = "tbl_producers")
 public class Producer extends Facility {
 
+	@Column(name = "is_disabled")
+	private boolean disabled;
+
 	@OneToOne
 	@JoinColumn(name = "f_boiler")
 	private Boiler boiler;
@@ -28,6 +33,14 @@ public class Producer extends Facility {
 
 	@Embedded
 	private ComponentCosts costs = new ComponentCosts();
+
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 
 	public Boiler getBoiler() {
 		return boiler;
@@ -64,13 +77,14 @@ public class Producer extends Facility {
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
-		clone.setBoiler(getBoiler());
-		clone.setId(getId());
+		clone.setId(UUID.randomUUID().toString());
 		clone.setName(getName());
+		clone.setDescription(getDescription());
+		clone.setDisabled(isDisabled());
+		clone.setBoiler(getBoiler());
 		clone.setFunction(getFunction());
 		clone.setRank(getRank());
-		clone.setDescription(getDescription());
-		if(getCosts() != null)
+		if (getCosts() != null)
 			clone.setCosts(getCosts().clone());
 		return clone;
 	}
@@ -80,6 +94,7 @@ public class Producer extends Facility {
 		d.setId(getId());
 		d.setName(getName());
 		d.setDescription(getDescription());
+		d.setDisabled(isDisabled());
 		return d;
 	}
 

@@ -7,6 +7,8 @@ import javax.persistence.Table;
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.Converter;
 
+import sophena.model.descriptors.WeatherStationDescriptor;
+
 @Entity
 @Table(name = "tbl_weather_stations")
 @Converter(name = "DoubleArrayConverter",
@@ -23,5 +25,13 @@ public class WeatherStation extends RootEntity {
 
 	public void setData(double[] data) {
 		this.data = data;
+	}
+
+	public WeatherStationDescriptor toDescriptor() {
+		WeatherStationDescriptor d = new WeatherStationDescriptor();
+		d.setDescription(getDescription());
+		d.setId(getId());
+		d.setName(getName());
+		return d;
 	}
 }
