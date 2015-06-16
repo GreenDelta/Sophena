@@ -1,9 +1,11 @@
 package sophena.rcp.editors;
 
 import java.util.function.Supplier;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import sophena.model.ComponentCosts;
 import sophena.rcp.utils.DataBinding;
 import sophena.rcp.utils.Texts;
@@ -47,7 +49,7 @@ public class ComponentCostSection {
 				() -> costs.get()::getMaintenance,
 				() -> costs.get()::setMaintenance);
 		bind.onDouble(
-				d("Aufwand für Bedienen", "%"),
+				d("Aufwand für Bedienen", "h/a"),
 				() -> costs.get()::getOperation,
 				() -> costs.get()::setOperation);
 	}

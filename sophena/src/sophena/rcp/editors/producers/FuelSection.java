@@ -2,6 +2,7 @@ package sophena.rcp.editors.producers;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -9,6 +10,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
+
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
@@ -90,10 +92,6 @@ class FuelSection {
 		combo.setInput(fuels);
 		if (spec().getWoodFuel() != null)
 			combo.select(spec().getWoodFuel());
-		else if (!fuels.isEmpty()) {
-			combo.select(fuels.get(0));
-			spec().setWoodFuel(fuels.get(0));
-		}
 		combo.onSelect((f) -> {
 			spec().setWoodFuel(f);
 			editor.setDirty();
@@ -103,6 +101,7 @@ class FuelSection {
 
 	private void createWaterRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Wassergehalt");
+		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
 				.init(spec().getWaterContent())
 				.onChanged(() -> {

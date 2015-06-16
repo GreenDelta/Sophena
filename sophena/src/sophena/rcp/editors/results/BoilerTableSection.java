@@ -3,7 +3,6 @@ package sophena.rcp.editors.results;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,8 +11,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.ProjectResult;
+import sophena.model.Boiler;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Stats;
@@ -35,11 +35,12 @@ class BoilerTableSection {
 		UI.gridData(section, true, false);
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, "Wärmelieferant", "Rang",
-				"Gelieferte Wärme", "Anteil", "Volllaststunden");
+		TableViewer table = Tables.createViewer(comp, "Wärmelieferant",
+				"Brennstoff", "Rang", "Gelieferte Wärme", "Anteil",
+				"Volllaststunden");
 		table.setLabelProvider(new Label());
 		table.setContentProvider(ArrayContentProvider.getInstance());
-		Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
+		Tables.bindColumnWidths(table, 0.2, 0.2, 0.1, 0.2, 0.1, 0.2);
 		table.setInput(getItems());
 	}
 
@@ -52,6 +53,7 @@ class BoilerTableSection {
 			Producer p = producers[i];
 			Item item = new Item();
 			item.name = p.getName();
+			item.fuel = getFuel(p);
 			if (p.getFunction() == ProducerFunction.BASE_LOAD)
 				item.rank = p.getRank() + " - Grundlast";
 			else
@@ -69,6 +71,17 @@ class BoilerTableSection {
 		return items;
 	}
 
+	private String getFuel(Producer p) {
+		Boiler b = p.getBoiler();
+		if(b != null && b.getFuel() != null)
+			return b.getFuel().getName();
+		FuelSpec fs = p.getFuelSpec();
+		if(fs != null && fs.getWoodFuel() != null)
+			return fs.getWoodFuel().getName();
+		else
+			return null;
+	}
+
 	private void calculateShares(List<Item> items) {
 		double sum = 0;
 		for (Item item : items)
@@ -82,6 +95,7 @@ class BoilerTableSection {
 	private class Item {
 		int pos;
 		String name;
+		String fuel;
 		String rank;
 		double heat;
 		double share;
@@ -105,16 +119,18 @@ class BoilerTableSection {
 				return null;
 			Item item = (Item) element;
 			switch (col) {
-			case 0:
-				return item.name;
-			case 1:
-				return item.rank;
-			case 2:
-				return Numbers.toString(item.heat) + " kWh";
-			case 3:
-				return Numbers.toString(item.share) + " %";
-			default:
-				return null;
+				case 0:
+					return item.name;
+				case 1:
+					return item.fuel;
+				case 2:
+					return item.rank;
+				case 3:
+					return Numbers.toString(item.heat) + " kWh";
+				case 4:
+					return Numbers.toString(item.share) + " %";
+				default:
+					return null;
 			}
 		}
 
