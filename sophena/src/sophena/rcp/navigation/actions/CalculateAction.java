@@ -1,8 +1,9 @@
 package sophena.rcp.navigation.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+
 import sophena.rcp.Images;
-import sophena.rcp.editors.results.energy.EnergyResultEditor;
+import sophena.rcp.editors.results.ResultEditor;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
 import sophena.rcp.navigation.NavigationElement;
@@ -16,7 +17,7 @@ public class CalculateAction extends NavigationAction {
 		if (!(element instanceof FolderElement))
 			return false;
 		FolderElement e = (FolderElement) element;
-		if (e.getType() != FolderType.ENERGY_RESULT)
+		if (e.getType() != FolderType.RESULTS)
 			return false;
 		elem = e;
 		return true;
@@ -34,6 +35,6 @@ public class CalculateAction extends NavigationAction {
 
 	@Override
 	public void run() {
-		EnergyResultEditor.open(elem.getProject());
+		ResultEditor.open(elem.getProject());
 	}
 }

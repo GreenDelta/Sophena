@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results.energy;
+package sophena.rcp.editors.results;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -13,14 +13,14 @@ class EnergyResultPage extends FormPage {
 
 	private ProjectResult result;
 
-	public EnergyResultPage(EnergyResultEditor editor) {
-		super(editor, "sophena.EnergyResultPage", "Ergebnisse");
+	public EnergyResultPage(ResultEditor editor) {
+		super(editor, "sophena.EnergyResultPage", "Energie");
 		this.result = editor.getResult();
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Ergebnisse");
+		ScrolledForm form = UI.formHeader(mform, "Ergebnisse - Energie");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		BoilerTableSection tableSection = new BoilerTableSection(result);

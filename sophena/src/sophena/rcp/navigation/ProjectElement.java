@@ -36,7 +36,7 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 		types[1] = FolderType.PRODUCTION;
 		types[2] = FolderType.DISTRIBUTION;
 		types[3] = FolderType.COSTS;
-		types[4] = FolderType.ENERGY_RESULT;
+		types[4] = FolderType.RESULTS;
 		if (!p.isVariant())
 			types[5] = FolderType.VARIANTS;
 		return types;

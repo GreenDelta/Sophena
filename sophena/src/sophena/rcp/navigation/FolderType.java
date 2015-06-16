@@ -8,9 +8,9 @@ public enum FolderType {
 
 	PRODUCTION,
 
-	ENERGY_RESULT,
-
 	COSTS,
+
+	RESULTS,
 
 	VARIANTS,
 

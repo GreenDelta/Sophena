@@ -3,7 +3,9 @@ package sophena.rcp.navigation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.db.daos.ConsumerDao;
 import sophena.db.daos.ProducerDao;
 import sophena.db.daos.ProjectDao;
@@ -97,8 +99,8 @@ public class FolderElement implements NavigationElement {
 			return M.HeatUsage;
 		case COSTS:
 			return M.Costs;
-		case ENERGY_RESULT:
-			return "Ergebnis - Energie";
+		case RESULTS:
+			return "Ergebnisse";
 		case VARIANTS:
 			return M.Variants;
 		default:
@@ -127,7 +129,7 @@ public class FolderElement implements NavigationElement {
 			return Images.PRODUCER_16.img();
 		case DISTRIBUTION:
 			return Images.PUMP_16.img();
-		case ENERGY_RESULT:
+		case RESULTS:
 			return Images.LOAD_PROFILE_16.img();
 		case VARIANTS:
 			return Images.PROJECT_16.img();

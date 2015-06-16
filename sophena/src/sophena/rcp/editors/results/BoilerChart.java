@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results.energy;
+package sophena.rcp.editors.results;
 
 import java.util.ArrayList;
 import java.util.Arrays;

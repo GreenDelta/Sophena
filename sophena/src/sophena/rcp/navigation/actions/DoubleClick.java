@@ -11,7 +11,7 @@ import sophena.rcp.editors.costs.CostEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
-import sophena.rcp.editors.results.energy.EnergyResultEditor;
+import sophena.rcp.editors.results.ResultEditor;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
@@ -75,10 +75,10 @@ public class DoubleClick extends Action {
 
 	@Handler(type = FolderElement.class,
 			title = "Open energy results",
-			folderType = FolderType.ENERGY_RESULT)
+			folderType = FolderType.RESULTS)
 	private void openEnergyResults() {
 		FolderElement e = (FolderElement) elem;
-		EnergyResultEditor.open(e.getProject());
+		ResultEditor.open(e.getProject());
 	}
 
 	@Handler(type = FolderElement.class,

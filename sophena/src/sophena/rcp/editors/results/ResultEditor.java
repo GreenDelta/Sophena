@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results.energy;
+package sophena.rcp.editors.results;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
@@ -22,7 +22,7 @@ import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Strings;
 
-public class EnergyResultEditor extends FormEditor {
+public class ResultEditor extends FormEditor {
 
 	private Project project;
 	private ProjectResult result;
@@ -38,7 +38,7 @@ public class EnergyResultEditor extends FormEditor {
 			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.getName());
-			Editors.open(input, "sophena.EnergyResultEditor");
+			Editors.open(input, "sophena.ResultEditor");
 			result.print();
 		});
 	}
@@ -46,9 +46,9 @@ public class EnergyResultEditor extends FormEditor {
 	private static void closeExisting(ProjectDescriptor d) {
 		for (IEditorReference ref : Editors.getReferences()) {
 			IEditorPart e = ref.getEditor(false);
-			if (!(e instanceof EnergyResultEditor))
+			if (!(e instanceof ResultEditor))
 				continue;
-			EnergyResultEditor editor = (EnergyResultEditor) e;
+			ResultEditor editor = (ResultEditor) e;
 			if (Strings.nullOrEqual(d.getId(), editor.project.getId()))
 				Editors.close(ref);
 		}
@@ -78,6 +78,7 @@ public class EnergyResultEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(new EnergyResultPage(this));
+			addPage(new CostResultPage(this));
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);
