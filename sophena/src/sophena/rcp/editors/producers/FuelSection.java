@@ -2,7 +2,6 @@ package sophena.rcp.editors.producers;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -10,10 +9,10 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
-
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -34,6 +33,16 @@ class FuelSection {
 
 	private Producer producer() {
 		return editor.getProducer();
+	}
+
+	private FuelSpec spec() {
+		Producer p = editor.getProducer();
+		FuelSpec spec = p.getFuelSpec();
+		if (spec != null)
+			return spec;
+		spec = new FuelSpec();
+		p.setFuelSpec(spec);
+		return spec;
 	}
 
 	public void render(Composite body, FormToolkit tk) {
@@ -76,12 +85,17 @@ class FuelSection {
 		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
 		combo.create("Brennstoff", composite, tk);
 		FuelDao dao = new FuelDao(App.getDb());
-		List<Fuel> fuels = dao.getAll().stream()
-				.filter((f) -> f.isWood())
+		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
 				.collect(Collectors.toList());
 		combo.setInput(fuels);
+		if (spec().getWoodFuel() != null)
+			combo.select(spec().getWoodFuel());
+		else if (!fuels.isEmpty()) {
+			combo.select(fuels.get(0));
+			spec().setWoodFuel(fuels.get(0));
+		}
 		combo.onSelect((f) -> {
-			// producer.setWoodFuel();
+			spec().setWoodFuel(f);
 			editor.setDirty();
 		});
 		UI.formLabel(composite, "");
@@ -89,14 +103,25 @@ class FuelSection {
 
 	private void createWaterRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Wassergehalt");
-		Texts.on(t)
-				.decimal()
-				.required();
+		Texts.on(t).decimal().required()
+				.init(spec().getWaterContent())
+				.onChanged(() -> {
+					double val = Texts.getDouble(t);
+					spec().setWaterContent(val);
+					editor.setDirty();
+				});
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Preis (netto)");
 		UI.formLabel(composite, tk, "EUR/" + getUnit());
+		Texts.on(t).decimal().required()
+				.init(spec().getPricePerUnit())
+				.onChanged(() -> {
+					double val = Texts.getDouble(t);
+					spec().setPricePerUnit(val);
+					editor.setDirty();
+				});
 	}
 
 	private String getUnit() {
@@ -114,7 +139,13 @@ class FuelSection {
 	private void createVatRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Mehrwertsteuersatz");
 		UI.formLabel(composite, tk, "%");
-		Texts.set(t, 19);
+		Texts.on(t).decimal().required()
+				.init(spec().getTaxRate())
+				.onChanged(() -> {
+					double val = Texts.getDouble(t);
+					spec().setTaxRate(val);
+					editor.setDirty();
+				});
 	}
 
 }

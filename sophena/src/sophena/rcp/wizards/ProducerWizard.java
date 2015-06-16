@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -20,12 +19,13 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
+import sophena.model.ComponentCosts;
 import sophena.model.Fuel;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
@@ -74,6 +74,8 @@ public class ProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.setId(UUID.randomUUID().toString());
 			page.data.bindToModel(producer);
+			addFuelSpec(producer);
+			addCosts(producer);
 			project.getProducers().add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
@@ -85,6 +87,25 @@ public class ProducerWizard extends Wizard {
 			log.error("failed to update project with new producer", e);
 			return false;
 		}
+	}
+
+	private void addFuelSpec(Producer producer) {
+		FuelSpec spec = new FuelSpec();
+		producer.setFuelSpec(spec);
+		spec.setTaxRate(19);
+		spec.setWaterContent(20);
+	}
+
+	private void addCosts(Producer producer) {
+		ComponentCosts costs = new ComponentCosts();
+		producer.setCosts(costs);
+		costs.setDuration(15);
+		costs.setRepair(3);
+		costs.setMaintenance(3);
+		costs.setOperation(15);
+		Boiler b = producer.getBoiler();
+		if (b != null && b.getPurchasePrice() != null)
+			costs.setInvestment(b.getPurchasePrice());
 	}
 
 	@Override

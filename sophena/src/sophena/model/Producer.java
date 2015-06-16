@@ -32,10 +32,10 @@ public class Producer extends Facility {
 	private ProducerFunction function;
 
 	@Embedded
-	private ComponentCosts costs = new ComponentCosts();
+	private ComponentCosts costs;
 
 	@Embedded
-	private FuelSpec fuelSpec = new FuelSpec();
+	private FuelSpec fuelSpec;
 
 	public boolean isDisabled() {
 		return disabled;
