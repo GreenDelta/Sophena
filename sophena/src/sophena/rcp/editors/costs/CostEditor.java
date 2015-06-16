@@ -6,6 +6,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.ProjectDao;
 import sophena.model.CostSettings;
 import sophena.model.Project;
@@ -20,7 +21,7 @@ public class CostEditor extends Editor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private String projectId;
+	private Project project;
 	private CostSettingsPage settingsPage;
 
 	public static void open(ProjectDescriptor project) {
@@ -37,14 +38,17 @@ public class CostEditor extends Editor {
 			throws PartInitException {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
-		projectId = i.projectId;
+		ProjectDao dao = new ProjectDao(App.getDb());
+		project = dao.get(i.projectId);
+	}
+
+	public Project getProject() {
+		return project;
 	}
 
 	@Override
 	protected void addPages() {
 		try {
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project project = dao.get(projectId);
 			addPage(new OverviewPage(this));
 			CostSettings settings = project.getCostSettings();
 			if (settings != null) {
@@ -60,11 +64,12 @@ public class CostEditor extends Editor {
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project project = dao.get(projectId);
-			if(settingsPage != null) {
-				project.setCostSettings(settingsPage.getCosts());
+			Project dbProject = dao.get(project.getId());
+			if (settingsPage != null) {
+				dbProject.setCostSettings(settingsPage.getCosts());
 			}
-			dao.update(project);
+			// TODO: sync cost components
+			project = dao.update(dbProject);
 			setSaved();
 		} catch (Exception e) {
 			log.error("failed to save project cost settings");
