@@ -15,7 +15,8 @@ public class CostCalculatorTest {
 	public void setUp() {
 		Project project = new Project();
 		project.setProjectDuration(20);
-		CostSettings settings = project.getCostSettings();
+		CostSettings settings = new CostSettings();
+		project.setCostSettings(settings);
 		settings.setInterestRate(1.02);
 		settings.setInterestRateFunding(1.015);
 		settings.setInvestmentFactor(1.015);

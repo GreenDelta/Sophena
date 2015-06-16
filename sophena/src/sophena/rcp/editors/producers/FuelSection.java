@@ -45,8 +45,10 @@ class FuelSection {
 			return;
 		if (b.getFuel() != null)
 			createFuelRow(tk, composite);
-		else
+		else {
 			createWoodFuelRow(tk, composite);
+			createWaterRow(tk, composite);
+		}
 		createCostRow(tk, composite);
 		createVatRow(tk, composite);
 	}
@@ -83,6 +85,13 @@ class FuelSection {
 			editor.setDirty();
 		});
 		UI.formLabel(composite, "");
+	}
+
+	private void createWaterRow(FormToolkit tk, Composite composite) {
+		Text t = UI.formText(composite, tk, "Wassergehalt");
+		Texts.on(t)
+				.decimal()
+				.required();
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {

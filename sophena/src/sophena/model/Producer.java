@@ -34,6 +34,9 @@ public class Producer extends Facility {
 	@Embedded
 	private ComponentCosts costs = new ComponentCosts();
 
+	@Embedded
+	private FuelSpec fuelSpec = new FuelSpec();
+
 	public boolean isDisabled() {
 		return disabled;
 	}
@@ -74,6 +77,14 @@ public class Producer extends Facility {
 		this.costs = costs;
 	}
 
+	public FuelSpec getFuelSpec() {
+		return fuelSpec;
+	}
+
+	public void setFuelSpec(FuelSpec fuelSpec) {
+		this.fuelSpec = fuelSpec;
+	}
+
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
@@ -86,6 +97,8 @@ public class Producer extends Facility {
 		clone.setRank(getRank());
 		if (getCosts() != null)
 			clone.setCosts(getCosts().clone());
+		if (getFuelSpec() != null)
+			clone.setFuelSpec(getFuelSpec().clone());
 		return clone;
 	}
 

@@ -124,7 +124,7 @@ CREATE TABLE tbl_projects (
 
 	is_variant BOOLEAN,
 	project_duration INTEGER,
-	f_project CHAR(36),
+	f_cost_settings CHAR(36),
 	f_weather_station CHAR(36),
 
 	PRIMARY KEY (id)
@@ -217,6 +217,11 @@ CREATE TABLE tbl_producers (
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE,
+
+    f_wood_fuel CHAR(36),
+    water_content DOUBLE,
+    price_per_unit DOUBLE,
+    tax_rate DOUBLE,
 
     PRIMARY KEY (id)
 );

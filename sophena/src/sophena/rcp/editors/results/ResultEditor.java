@@ -39,7 +39,6 @@ public class ResultEditor extends FormEditor {
 			String key = Cache.put(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.getName());
 			Editors.open(input, "sophena.ResultEditor");
-			result.print();
 		});
 	}
 
