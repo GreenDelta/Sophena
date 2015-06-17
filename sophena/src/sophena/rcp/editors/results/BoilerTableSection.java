@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.ProjectResult;
+import sophena.calc.EnergyResult;
 import sophena.model.Boiler;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
@@ -26,9 +26,9 @@ import sophena.rcp.utils.UI;
 
 class BoilerTableSection {
 
-	private ProjectResult result;
+	private EnergyResult result;
 
-	BoilerTableSection(ProjectResult result) {
+	BoilerTableSection(EnergyResult result) {
 		this.result = result;
 	}
 
@@ -48,9 +48,20 @@ class BoilerTableSection {
 
 	private List<Item> getItems() {
 		List<Item> items = new ArrayList<>();
-		Producer[] producers = result.getProducers();
+		Producer[] producers = result.producers;
 		if (producers == null)
 			return Collections.emptyList();
+		initProducerItems(producers, items);
+		Item bufferItem = new Item();
+		bufferItem.pos = producers.length;
+		bufferItem.name = "Pufferspeicher";
+		items.add(bufferItem);
+		bufferItem.heat = Stats.sum(result.suppliedBufferHeat);
+		calculateShares(items);
+		return items;
+	}
+
+	private void initProducerItems(Producer[] producers, List<Item> items) {
 		for (int i = 0; i < producers.length; i++) {
 			Producer p = producers[i];
 			Item item = new Item();
@@ -61,17 +72,10 @@ class BoilerTableSection {
 			else
 				item.rank = p.getRank() + " - Spitzenlast";
 			item.pos = i;
-			item.heat = Stats.sum(result.getProducerResults()[i]);
+			item.heat = Stats.sum(result.producerResults[i]);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
 			items.add(item);
 		}
-		Item bufferItem = new Item();
-		bufferItem.pos = producers.length;
-		bufferItem.name = "Pufferspeicher";
-		items.add(bufferItem);
-		bufferItem.heat = Stats.sum(result.getSuppliedBufferHeat());
-		calculateShares(items);
-		return items;
 	}
 
 	private String getFuel(Producer p) {

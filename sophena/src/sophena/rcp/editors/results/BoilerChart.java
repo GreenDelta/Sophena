@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.ProjectResult;
+import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.Images;
@@ -28,13 +28,13 @@ import sophena.rcp.utils.UI;
 
 class BoilerChart {
 
-	private ProjectResult result;
+	private EnergyResult result;
 	private boolean sorted = false;
 
 	private XYGraph chart;
 	private Trace loadTrace;
 
-	public BoilerChart(ProjectResult result) {
+	public BoilerChart(EnergyResult result) {
 		this.result = result;
 	}
 
@@ -95,15 +95,15 @@ class BoilerChart {
 		renderChart(result);
 	}
 
-	private void renderChart(ProjectResult pr) {
+	private void renderChart(EnergyResult pr) {
 
-		double[] supTop = Arrays.copyOf(pr.getSuppliedPower(), Stats.HOURS);
+		double[] supTop = Arrays.copyOf(pr.suppliedPower, Stats.HOURS);
 		double supMax = Stats.nextStep(Stats.max(supTop), 5);
-		double reqMax = Stats.nextStep(Stats.max(pr.getLoadCurve()), 5);
+		double reqMax = Stats.nextStep(Stats.max(pr.loadCurve), 5);
 		chart.primaryYAxis.setRange(0, Math.max(supMax, reqMax));
 
-		Producer[] producers = pr.getProducers();
-		double[][] results = pr.getProducerResults();
+		Producer[] producers = pr.producers;
+		double[][] results = pr.producerResults;
 
 		List<Trace> traces = new ArrayList<>();
 
@@ -112,7 +112,7 @@ class BoilerChart {
 		Trace bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
 		traces.add(bufferTrace);
-		substract(supTop, pr.getSuppliedBufferHeat());
+		substract(supTop, pr.suppliedBufferHeat);
 
 		for (int i = producers.length - 1; i >= 0; i--) {
 			String label = producers[i].getName();
@@ -176,7 +176,7 @@ class BoilerChart {
 				setText("Lastkurve anzeigen");
 			} else {
 				if (loadTrace == null)
-					loadTrace = makeLoadTrace(result.getLoadCurve());
+					loadTrace = makeLoadTrace(result.loadCurve);
 				chart.addTrace(loadTrace);
 				setText("Lastkurve entfernen");
 			}

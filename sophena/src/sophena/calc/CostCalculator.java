@@ -3,7 +3,7 @@ package sophena.calc;
 import sophena.model.CostSettings;
 import sophena.model.Project;
 
-public class CostCalculator {
+class CostCalculator {
 
 	private Project project;
 	private CostSettings settings;

@@ -6,16 +6,16 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import sophena.calc.ProjectResult;
+import sophena.calc.EnergyResult;
 import sophena.rcp.utils.UI;
 
 class EnergyResultPage extends FormPage {
 
-	private ProjectResult result;
+	private EnergyResult result;
 
 	public EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", "Energie");
-		this.result = editor.getResult();
+		this.result = editor.result.energyResult;
 	}
 
 	@Override

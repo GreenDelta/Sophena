@@ -7,23 +7,23 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 
-public class ProjectCalculator {
+class EnergyCalculator {
 
 	private Project project;
 
 	private double maxBufferCapacity = 0;
 
-	private ProjectCalculator(Project project) {
+	private EnergyCalculator(Project project) {
 		this.project = project;
 	}
 
-	public static ProjectResult calculate(Project project) {
-		return new ProjectCalculator(project).doIt();
+	public static EnergyResult calculate(Project project) {
+		return new EnergyCalculator(project).doIt();
 	}
 
-	private ProjectResult doIt() {
+	private EnergyResult doIt() {
 		maxBufferCapacity = calcMaxBufferCapacity();
-		ProjectResult r = new ProjectResult(project);
+		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = 0.5 * maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
 

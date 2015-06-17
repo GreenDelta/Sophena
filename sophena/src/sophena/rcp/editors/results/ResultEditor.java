@@ -10,7 +10,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.calc.ProjectCalculator;
 import sophena.calc.ProjectResult;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
@@ -24,8 +23,8 @@ import sophena.rcp.utils.Strings;
 
 public class ResultEditor extends FormEditor {
 
-	private Project project;
-	private ProjectResult result;
+	Project project;
+	ProjectResult result;
 
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
@@ -34,7 +33,7 @@ public class ResultEditor extends FormEditor {
 		Rcp.run("Berechne...", () -> {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(d.getId());
-			ProjectResult result = ProjectCalculator.calculate(p);
+			ProjectResult result = ProjectResult.calculate(p);
 			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.getName());
@@ -67,10 +66,6 @@ public class ResultEditor extends FormEditor {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);
 		}
-	}
-
-	public ProjectResult getResult() {
-		return result;
 	}
 
 	@Override

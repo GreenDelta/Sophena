@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 import sophena.model.Stats;
 
-class ProjectResultSorter {
+class EnergyResultSorter {
 
-	static ProjectResult sort(ProjectResult result) {
+	static EnergyResult sort(EnergyResult result) {
 		if (result == null)
 			return null;
-		double[] power = result.getSuppliedPower();
+		double[] power = result.suppliedPower;
 		Integer[] sortedIdx = new Integer[Stats.HOURS];
 		for (int i = 0; i < Stats.HOURS; i++) {
 			sortedIdx[i] = i;
@@ -19,8 +19,8 @@ class ProjectResultSorter {
 		return createCopy(sortedIdx, result);
 	}
 
-	private static ProjectResult createCopy(Integer[] idx, ProjectResult r) {
-		ProjectResult s = r.clone();
+	private static EnergyResult createCopy(Integer[] idx, EnergyResult r) {
+		EnergyResult s = r.clone();
 		sort(idx, r.loadCurve, s.loadCurve);
 		sort(idx, r.suppliedPower, s.suppliedPower);
 		for (int i = 0; i < r.producers.length; i++) {
