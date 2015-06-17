@@ -3,6 +3,7 @@ package sophena.rcp.editors.results;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -11,6 +12,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.calc.ProjectResult;
 import sophena.model.Boiler;
 import sophena.model.FuelSpec;
@@ -60,6 +62,7 @@ class BoilerTableSection {
 				item.rank = p.getRank() + " - Spitzenlast";
 			item.pos = i;
 			item.heat = Stats.sum(result.getProducerResults()[i]);
+			item.fullLoadHours = getFullLoadHours(p, item.heat);
 			items.add(item);
 		}
 		Item bufferItem = new Item();
@@ -73,13 +76,20 @@ class BoilerTableSection {
 
 	private String getFuel(Producer p) {
 		Boiler b = p.getBoiler();
-		if(b != null && b.getFuel() != null)
+		if (b != null && b.getFuel() != null)
 			return b.getFuel().getName();
 		FuelSpec fs = p.getFuelSpec();
-		if(fs != null && fs.getWoodFuel() != null)
+		if (fs != null && fs.getWoodFuel() != null)
 			return fs.getWoodFuel().getName();
 		else
 			return null;
+	}
+
+	private Integer getFullLoadHours(Producer p, double producedHeat) {
+		if (p == null || p.getBoiler() == null)
+			return null;
+		double maxPower = p.getBoiler().getMaxPower();
+		return (int) Math.round(producedHeat / maxPower);
 	}
 
 	private void calculateShares(List<Item> items) {
@@ -99,6 +109,7 @@ class BoilerTableSection {
 		String rank;
 		double heat;
 		double share;
+		Integer fullLoadHours;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
@@ -119,18 +130,21 @@ class BoilerTableSection {
 				return null;
 			Item item = (Item) element;
 			switch (col) {
-				case 0:
-					return item.name;
-				case 1:
-					return item.fuel;
-				case 2:
-					return item.rank;
-				case 3:
-					return Numbers.toString(item.heat) + " kWh";
-				case 4:
-					return Numbers.toString(item.share) + " %";
-				default:
-					return null;
+			case 0:
+				return item.name;
+			case 1:
+				return item.fuel;
+			case 2:
+				return item.rank;
+			case 3:
+				return Numbers.toString(item.heat) + " kWh";
+			case 4:
+				return Numbers.toString(item.share) + " %";
+			case 5:
+				return item.fullLoadHours == null ? null : Numbers
+						.toString(item.fullLoadHours) + " h";
+			default:
+				return null;
 			}
 		}
 
