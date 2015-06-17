@@ -71,7 +71,7 @@ class CostCalculator {
 		if (usageDuration <= 0)
 			return 0;
 		double ir = getInterestRate();
-		double priceChange = settings.getInvestmentFactor();
+		double priceChange = settings.investmentFactor;
 		double year = replacement * usageDuration;
 		return investmentCosts * Math.pow(priceChange, year)
 				/ Math.pow(ir, year);
@@ -79,7 +79,7 @@ class CostCalculator {
 
 	double getResidualValue(int usageDuration, double investmentCosts) {
 		double ir = getInterestRate();
-		double priceChange = settings.getInvestmentFactor();
+		double priceChange = settings.investmentFactor;
 		int replacements = getNumberOfReplacements(usageDuration);
 		return investmentCosts
 				* Math.pow(priceChange, replacements * usageDuration)
@@ -104,9 +104,9 @@ class CostCalculator {
 
 	private double getInterestRate() {
 		if (withFunding)
-			return settings.getInterestRateFunding();
+			return settings.interestRateFunding;
 		else
-			return settings.getInterestRate();
+			return settings.interestRate;
 	}
 
 }

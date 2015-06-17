@@ -6,21 +6,23 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.model.CostSettings;
-import sophena.rcp.utils.DataBinding;
+import sophena.rcp.Numbers;
 import sophena.rcp.utils.Texts;
+import sophena.rcp.utils.Texts.TextDispatch;
 import sophena.rcp.utils.UI;
 
 public class CostSettingsPage extends FormPage {
 
+	private Editor editor;
 	private CostSettings costs;
-	private DataBinding bind;
 	private Composite composite;
 	private FormToolkit toolkit;
 
 	public CostSettingsPage(Editor editor, CostSettings costs) {
 		super(editor, "CostSettingsPage", "Kosteneinstellungen");
-		this.bind = new DataBinding(editor);
+		this.editor = editor;
 		this.costs = costs;
 	}
 
@@ -40,69 +42,62 @@ public class CostSettingsPage extends FormPage {
 	}
 
 	private void createFields() {
-		bind.onDouble(
-				t("Kalkulatorischer Zinssatz (ohne Förderung)", ""),
-				() -> costs::getInterestRate,
-				() -> costs::setInterestRate);
-		bind.onDouble(
-				t("Kalkulatorischer Zinssatz (mit Förderung)", ""),
-				() -> costs::getInterestRateFunding,
-				() -> costs::setInterestRateFunding);
-		bind.onDouble(
-				t("Preisänderungsfaktor (Investitionen)", ""),
-				() -> costs::getInvestmentFactor,
-				() -> costs::setInvestmentFactor);
-		bind.onDouble(
-				t("Mehrwertsteuersatz", ""),
-				() -> costs::getVatRate,
-				() -> costs::setVatRate);
-		bind.onDouble(
-				t("Preisänderungsfaktor Biomasse-Brennstoff", ""),
-				() -> costs::getBioFuelFactor,
-				() -> costs::setBioFuelFactor);
-		bind.onDouble(
-				t("Preisänderungsfaktor fossiler Brennstoff", ""),
-				() -> costs::getFossilFuelFactor,
-				() -> costs::setFossilFuelFactor);
-		bind.onDouble(
-				t("Strompreis netto", "EUR/MWh"),
-				() -> costs::getElectricityPrice,
-				() -> costs::setElectricityPrice);
-		bind.onDouble(
-				t("Preisänderungsfaktor Strom", ""),
-				() -> costs::getElectricityFactor,
-				() -> costs::setElectricityFactor);
-		bind.onDouble(
-				t("Preisänderungsfaktor betriebsgebundene und sonstige Kosten", ""),
-				() -> costs::getOperationFactor,
-				() -> costs::setOperationFactor);
-		bind.onDouble(
-				t("Preisänderungsfaktor Instandhaltungskosten", ""),
-				() -> costs::getMaintenanceFactor,
-				() -> costs::setMaintenanceFactor);
-		bind.onDouble(
-				t("Stundenlohn", "EUR"),
-				() -> costs::getHourlyWage,
-				() -> costs::setHourlyWage);
-		bind.onDouble(
-				t("Versicherung", "%"),
-				() -> costs::getInsuranceShare,
-				() -> costs::setInsuranceShare);
-		bind.onDouble(
-				t("Sonstige Abgaben (Steuern, Pacht, …)", "%"),
-				() -> costs::getOtherShare,
-				() -> costs::setOtherShare);
-		bind.onDouble(
-				t("Verwaltung", "%"),
-				() -> costs::getAdministrationShare,
-				() -> costs::setAdministrationShare);
+
+		t("Kalkulatorischer Zinssatz (ohne Förderung)", "", costs.interestRate)
+				.onChanged((s) -> costs.interestRate = Numbers.read(s));
+
+		t("Kalkulatorischer Zinssatz (mit Förderung)", "",
+				costs.interestRateFunding)
+				.onChanged((s) -> costs.interestRateFunding = Numbers.read(s));
+
+		t("Preisänderungsfaktor (Investitionen)", "", costs.investmentFactor)
+				.onChanged((s) -> costs.investmentFactor = Numbers.read(s));
+
+		t("Mehrwertsteuersatz", "", costs.vatRate)
+				.onChanged((s) -> costs.vatRate = Numbers.read(s));
+
+		t("Preisänderungsfaktor Biomasse-Brennstoff", "", costs.bioFuelFactor)
+				.onChanged((s) -> costs.bioFuelFactor = Numbers.read(s));
+
+		t("Preisänderungsfaktor fossiler Brennstoff", "",
+				costs.fossilFuelFactor)
+				.onChanged((s) -> costs.fossilFuelFactor = Numbers.read(s));
+
+		t("Strompreis netto", "EUR/MWh", costs.electricityPrice)
+				.onChanged((s) -> costs.electricityPrice = Numbers.read(s));
+
+		t("Preisänderungsfaktor Strom", "", costs.electricityFactor)
+				.onChanged((s) -> costs.electricityFactor = Numbers.read(s));
+
+		t("Preisänderungsfaktor betriebsgebundene und sonstige Kosten",
+				"", costs.operationFactor)
+				.onChanged((s) -> costs.operationFactor = Numbers.read(s));
+
+		t("Preisänderungsfaktor Instandhaltungskosten", "",
+				costs.maintenanceFactor)
+				.onChanged((s) -> costs.maintenanceFactor = Numbers.read(s));
+
+		t("Stundenlohn", "EUR", costs.hourlyWage)
+				.onChanged((s) -> costs.hourlyWage = Numbers.read(s));
+
+		t("Versicherung", "%", costs.insuranceShare)
+				.onChanged((s) -> costs.insuranceShare = Numbers.read(s));
+
+		t("Sonstige Abgaben (Steuern, Pacht, …)", "%", costs.otherShare)
+				.onChanged((s) -> costs.otherShare = Numbers.read(s));
+
+		t("Verwaltung", "%", costs.administrationShare)
+				.onChanged((s) -> costs.administrationShare = Numbers.read(s));
 	}
 
-	private Text t(String label, String unit) {
+	private TextDispatch t(String label, String unit, double initial) {
 		Text text = UI.formText(composite, toolkit, label);
 		UI.gridData(text, false, false).widthHint = 250;
-		Texts.on(text).required().decimal();
 		UI.formLabel(composite, toolkit, unit);
-		return text;
+		return Texts.on(text)
+				.required()
+				.decimal()
+				.init(initial)
+				.onChanged((s) -> editor.setDirty());
 	}
 }

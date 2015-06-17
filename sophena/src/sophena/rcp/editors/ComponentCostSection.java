@@ -8,21 +8,21 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.ComponentCosts;
 import sophena.rcp.Numbers;
-import sophena.rcp.utils.DataBinding;
 import sophena.rcp.utils.Texts;
+import sophena.rcp.utils.Texts.TextDispatch;
 import sophena.rcp.utils.UI;
 
 public class ComponentCostSection {
 
 	private Supplier<ComponentCosts> costs;
 
-	private DataBinding bind;
+	private Editor editor;
 	private Composite composite;
 	private FormToolkit toolkit;
 
 	public ComponentCostSection(Editor editor, Supplier<ComponentCosts> costs) {
 		this.costs = costs;
-		this.bind = new DataBinding(editor);
+		this.editor = editor;
 	}
 
 	private ComponentCosts costs() {
@@ -37,36 +37,37 @@ public class ComponentCostSection {
 	}
 
 	private void createFields() {
-
-		Texts.on(t("Investitionskosten", "EUR"))
-				.decimal()
-				.init(costs().investment)
+		t("Investitionskosten", "EUR", costs().investment)
 				.onChanged((s) -> costs().investment = Numbers.read(s));
 
-		Texts.on(t("Nutzungsdauer", "Jahre"))
-				.integer()
-				.init(costs().duration)
+		t("Nutzungsdauer", "Jahre", costs().duration)
 				.onChanged((s) -> costs().duration = Numbers.readInt(s));
 
-		Texts.on(t("Instandsetzung", "%"))
-				.decimal()
-				.init(costs().repair)
+		t("Instandsetzung", "%", costs().repair)
 				.onChanged((s) -> costs().repair = Numbers.read(s));
 
-		Texts.on(t("Wartung und Inspektion", "%"))
-				.decimal()
-				.init(costs().maintenance)
+		t("Wartung und Inspektion", "%", costs().maintenance)
 				.onChanged((s) -> costs().maintenance = Numbers.read(s));
 
-		Texts.on(t("Aufwand für Bedienen", "h/a"))
-				.decimal()
-				.init(costs().operation)
+		t("Aufwand für Bedienen", "h/a", costs().operation)
 				.onChanged((s) -> costs().operation = Numbers.read(s));
 	}
 
-	private Text t(String label, String unit) {
+	private TextDispatch t(String label, String unit, double initial) {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
-		return t;
+		return Texts.on(t)
+				.init(initial)
+				.decimal()
+				.onChanged((s) -> editor.setDirty());
+	}
+
+	private TextDispatch t(String label, String unit, int initial) {
+		Text t = UI.formText(composite, toolkit, label);
+		UI.formLabel(composite, toolkit, unit);
+		return Texts.on(t)
+				.init(initial)
+				.integer()
+				.onChanged((s) -> editor.setDirty());
 	}
 }
