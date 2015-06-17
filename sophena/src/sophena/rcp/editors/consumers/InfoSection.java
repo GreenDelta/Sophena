@@ -47,8 +47,8 @@ class InfoSection {
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text nt = UI.formText(composite, toolkit, M.Name);
 		Texts.set(nt, consumer().getName());
-		Texts.on(nt).required().onChanged(() -> {
-			consumer().setName(nt.getText());
+		Texts.on(nt).required().onChanged((t) -> {
+			consumer().setName(t);
 			editor.setDirty();
 		});
 	}

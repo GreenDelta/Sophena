@@ -1,23 +1,42 @@
 package sophena.calc;
 
+import sophena.model.ComponentCosts;
 import sophena.model.CostSettings;
+import sophena.model.Producer;
 import sophena.model.Project;
 
 class CostCalculator {
 
 	private Project project;
+	private EnergyResult energyResult;
+
 	private CostSettings settings;
 	private double projectDuration;
 	private boolean withFunding;
 
-	public CostCalculator(Project project) {
+	public CostCalculator(Project project, EnergyResult energyResult) {
 		this.project = project;
+		this.energyResult = energyResult;
 		if (project == null)
 			project = new Project();
 		settings = project.getCostSettings();
 		if (settings == null)
 			settings = new CostSettings();
 		projectDuration = project.getProjectDuration();
+	}
+
+	public CostResult calculate() {
+		CostResult r = new CostResult();
+		// TODO: iterate over all cost components; not only producers
+		for (Producer p : project.getProducers()) {
+			ComponentCosts costs = p.getCosts();
+			if (costs == null)
+				continue;
+			setWithFunding(false);
+			r.netto.investments += costs.investment;
+		}
+
+		return r;
 	}
 
 	public void setWithFunding(boolean withFunding) {

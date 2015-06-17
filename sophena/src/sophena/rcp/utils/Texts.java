@@ -165,10 +165,10 @@ public final class Texts {
 			return this;
 		}
 
-		public TextDispatch onChanged(Runnable fn) {
+		public TextDispatch onChanged(Consumer<String> fn) {
 			if (text == null || fn == null)
 				return this;
-			text.addModifyListener((e) -> fn.run());
+			text.addModifyListener((e) -> fn.accept(text.getText()));
 			return this;
 		}
 

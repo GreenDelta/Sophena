@@ -7,63 +7,23 @@ import javax.persistence.Embeddable;
 public class ComponentCosts {
 
 	@Column(name = "investment")
-	private double investment;
+	public double investment;
 
 	@Column(name = "duration")
-	private int duration;
+	public int duration;
 
 	@Column(name = "repair")
-	private double repair;
+	public double repair;
 
 	@Column(name = "maintenance")
-	private double maintenance;
+	public double maintenance;
 
 	@Column(name = "operation")
-	private double operation;
-
-	public double getInvestment() {
-		return investment;
-	}
-
-	public void setInvestment(double investment) {
-		this.investment = investment;
-	}
-
-	public int getDuration() {
-		return duration;
-	}
-
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-	public double getRepair() {
-		return repair;
-	}
-
-	public void setRepair(double repair) {
-		this.repair = repair;
-	}
-
-	public double getMaintenance() {
-		return maintenance;
-	}
-
-	public void setMaintenance(double maintenance) {
-		this.maintenance = maintenance;
-	}
-
-	public double getOperation() {
-		return operation;
-	}
-
-	public void setOperation(double operation) {
-		this.operation = operation;
-	}
+	public double operation;
 
 	@Override
 	public ComponentCosts clone() {
-	   ComponentCosts clone = new ComponentCosts();
+		ComponentCosts clone = new ComponentCosts();
 		clone.duration = duration;
 		clone.investment = investment;
 		clone.maintenance = maintenance;

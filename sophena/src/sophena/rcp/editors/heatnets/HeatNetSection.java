@@ -44,7 +44,7 @@ class HeatNetSection {
 	private void createSupplyText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Vorlauftemperatur");
 		Texts.set(t, heatNet().getSupplyTemperature());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setSupplyTemperature(Texts.getDouble(t));
 			editor.setDirty();
 		});
@@ -54,7 +54,7 @@ class HeatNetSection {
 	private void createReturnText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Rücklauftemperatur");
 		Texts.set(t, heatNet().getReturnTemperature());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setReturnTemperature(Texts.getDouble(t));
 			editor.setDirty();
 		});
@@ -64,7 +64,7 @@ class HeatNetSection {
 	private void createBufferText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Pufferspeicher");
 		Texts.set(t, heatNet().getBufferTankVolume());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setBufferTankVolume(Texts.getDouble(t));
 			editor.setDirty();
 		});
@@ -74,7 +74,7 @@ class HeatNetSection {
 	private void createSimFactorText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Gleichzeitigkeitsfaktor");
 		Texts.set(t, heatNet().getSimultaneityFactor());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setSimultaneityFactor(Texts.getDouble(t));
 			editor.setDirty();
 		});
@@ -84,7 +84,7 @@ class HeatNetSection {
 	private void createLengthText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Länge");
 		Texts.set(t, heatNet().getLength());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setLength(Texts.getDouble(t));
 			editor.setDirty();
 			updateLoadCurve();
@@ -95,7 +95,7 @@ class HeatNetSection {
 	private void createLossText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Verlustleistung");
 		Texts.set(t, heatNet().getPowerLoss());
-		Texts.on(t).decimal().required().onChanged(() -> {
+		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().setPowerLoss(Texts.getDouble(t));
 			editor.setDirty();
 			updateLoadCurve();

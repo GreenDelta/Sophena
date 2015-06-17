@@ -48,8 +48,8 @@ class HeatDemandSection {
 				Texts.set(t, q / consumer().getLoadHours());
 			});
 		} else {
-			Texts.on(t).required().decimal().onChanged(() -> {
-				consumer().setHeatingLoad(Numbers.read(t.getText()));
+			Texts.on(t).required().decimal().onChanged((text) -> {
+				consumer().setHeatingLoad(Numbers.read(text));
 				editor.calculate();
 				editor.setDirty();
 			});

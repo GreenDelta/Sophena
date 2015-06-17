@@ -86,7 +86,7 @@ class FuelWizard extends Wizard {
 			Texts.on(nameText)
 					.init(fuel.getName())
 					.required()
-					.onChanged(this::validate);
+					.validate(this::validate);
 			UI.formLabel(composite, "");
 		}
 
@@ -101,9 +101,8 @@ class FuelWizard extends Wizard {
 			Texts.on(unitText)
 					.init(fuel.getUnit())
 					.required()
-					.onChanged(() -> {
-						String unit = unitText.getText();
-						unit = unit == null ? "" : unit.trim();
+					.onChanged((t) -> {
+						String unit = t == null ? "" : t.trim();
 						unitLabel.setText("kWh/" + fuel.getUnit());
 						composite.layout();
 						validate();
@@ -117,7 +116,7 @@ class FuelWizard extends Wizard {
 					.init(fuel.getCalorificValue())
 					.required()
 					.decimal()
-					.onChanged(this::validate);
+					.validate(this::validate);
 			unitLabel = UI.formLabel(composite, "");
 			if (fuel.getUnit() != null)
 				unitLabel.setText("kWh/" + fuel.getUnit());

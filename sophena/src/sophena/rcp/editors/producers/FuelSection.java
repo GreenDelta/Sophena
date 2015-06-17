@@ -104,7 +104,7 @@ class FuelSection {
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
 				.init(spec().getWaterContent())
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					spec().setWaterContent(val);
 					editor.setDirty();
@@ -116,7 +116,7 @@ class FuelSection {
 		UI.formLabel(composite, tk, "EUR/" + getUnit());
 		Texts.on(t).decimal().required()
 				.init(spec().getPricePerUnit())
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					spec().setPricePerUnit(val);
 					editor.setDirty();
@@ -140,7 +140,7 @@ class FuelSection {
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
 				.init(spec().getTaxRate())
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					spec().setTaxRate(val);
 					editor.setDirty();

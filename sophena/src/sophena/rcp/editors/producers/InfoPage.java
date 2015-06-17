@@ -58,7 +58,7 @@ class InfoPage extends FormPage {
 	private void createNameText(FormToolkit tk, Composite composite) {
 		Text nt = UI.formText(composite, tk, M.Name);
 		Texts.set(nt, producer().getName());
-		Texts.on(nt).required().onChanged(() -> {
+		Texts.on(nt).required().onChanged((s) -> {
 			producer().setName(nt.getText());
 			editor.setDirty();
 		});
@@ -121,7 +121,7 @@ class InfoPage extends FormPage {
 	private void createRankText(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Rang");
 		Texts.set(t, producer().getRank());
-		Texts.on(t).required().integer().onChanged(() -> {
+		Texts.on(t).required().integer().onChanged((s) -> {
 			producer().setRank(Texts.getInt(t));
 			editor.setDirty();
 		});

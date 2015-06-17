@@ -113,10 +113,10 @@ public class ProjectWizard extends Wizard {
 			Composite composite = UI.formComposite(parent);
 			setControl(composite);
 			nameText = UI.formText(composite, M.Name);
-			Texts.on(nameText).required().onChanged(data::validate);
+			Texts.on(nameText).required().validate(data::validate);
 			descriptionText = UI.formMultiText(composite, M.Description);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
-			Texts.on(timeText).required().integer().onChanged(data::validate);
+			Texts.on(timeText).required().integer().validate(data::validate);
 			stationCombo = new EntityCombo<>();
 			stationCombo.create("Wetterstation", composite);
 			stationCombo.onSelect((d) -> data.validate());

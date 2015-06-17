@@ -11,10 +11,10 @@ public class ProjectResult {
 	}
 
 	public static ProjectResult calculate(Project project) {
-		ProjectResult result = new ProjectResult();
-		result.energyResult = EnergyCalculator.calculate(project);
-		result.costResult = new CostResult();
-		return result;
+		ProjectResult r = new ProjectResult();
+		r.energyResult = EnergyCalculator.calculate(project);
+		r.costResult = new CostCalculator(project, r.energyResult).calculate();
+		return r;
 	}
 
 }

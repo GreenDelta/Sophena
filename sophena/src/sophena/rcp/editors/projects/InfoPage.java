@@ -57,7 +57,7 @@ class InfoPage extends FormPage {
 		Texts.on(t)
 				.init(project().getName())
 				.required()
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					project().setName(t.getText());
 					editor.setDirty();
 				});
@@ -67,7 +67,7 @@ class InfoPage extends FormPage {
 		Text t = UI.formMultiText(composite, toolkit, M.Description);
 		Texts.on(t)
 				.init(project().getDescription())
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					project().setDescription(t.getText());
 					editor.setDirty();
 				});
@@ -79,7 +79,7 @@ class InfoPage extends FormPage {
 				.init(project().getProjectDuration())
 				.required()
 				.integer()
-				.onChanged(() -> {
+				.onChanged((s) -> {
 					project().setProjectDuration(Texts.getInt(t));
 					editor.setDirty();
 				});

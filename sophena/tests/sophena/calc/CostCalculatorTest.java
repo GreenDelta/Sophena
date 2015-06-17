@@ -20,7 +20,7 @@ public class CostCalculatorTest {
 		settings.setInterestRate(1.02);
 		settings.setInterestRateFunding(1.015);
 		settings.setInvestmentFactor(1.015);
-		calc = new CostCalculator(project);
+		calc = new CostCalculator(project, new EnergyResult(project));
 	}
 
 	@Test

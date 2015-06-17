@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
@@ -99,13 +101,13 @@ public class ProducerWizard extends Wizard {
 	private void addCosts(Producer producer) {
 		ComponentCosts costs = new ComponentCosts();
 		producer.setCosts(costs);
-		costs.setDuration(15);
-		costs.setRepair(3);
-		costs.setMaintenance(3);
-		costs.setOperation(15);
+		costs.duration = 15;
+		costs.repair = 3;
+		costs.maintenance = 3;
+		costs.operation = 15;
 		Boiler b = producer.getBoiler();
 		if (b != null && b.getPurchasePrice() != null)
-			costs.setInvestment(b.getPurchasePrice());
+			costs.investment = b.getPurchasePrice();
 	}
 
 	@Override
@@ -147,13 +149,12 @@ public class ProducerWizard extends Wizard {
 			nameText = UI.formText(composite, M.Name);
 			nameEdited = false;
 			// smart identification if the name was edited by the user
-			Texts.on(nameText).required().onChanged(() -> {
+			Texts.on(nameText).required().onChanged((t) -> {
 				Boiler b = Viewers.getFirstSelected(boilerList);
 				if (b == null) {
 					nameEdited = true;
 				} else {
-					nameEdited = !Strings.nullOrEqual(
-							nameText.getText(), b.getName());
+					nameEdited = !Strings.nullOrEqual(t, b.getName());
 				}
 			});
 		}

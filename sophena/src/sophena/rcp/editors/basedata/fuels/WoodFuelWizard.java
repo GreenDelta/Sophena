@@ -73,7 +73,7 @@ class WoodFuelWizard extends Wizard {
 			Texts.on(nameText)
 					.init(fuel.getName())
 					.required()
-					.onChanged(data::validate);
+					.validate(data::validate);
 			UI.formLabel(composite, "");
 		}
 
@@ -89,7 +89,7 @@ class WoodFuelWizard extends Wizard {
 					.init(fuel.getDensity())
 					.required()
 					.decimal()
-					.onChanged(data::validate);
+					.validate(data::validate);
 			UI.formLabel(composite, "kg/FM");
 		}
 
@@ -99,7 +99,7 @@ class WoodFuelWizard extends Wizard {
 					.init(fuel.getCalorificValue())
 					.required()
 					.decimal()
-					.onChanged(data::validate);
+					.validate(data::validate);
 			UI.formLabel(composite, "kWh/kg atro");
 		}
 

@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.ComponentCosts;
+import sophena.rcp.Numbers;
 import sophena.rcp.utils.DataBinding;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -24,6 +25,10 @@ public class ComponentCostSection {
 		this.bind = new DataBinding(editor);
 	}
 
+	private ComponentCosts costs() {
+		return costs.get();
+	}
+
 	public void create(Composite body, FormToolkit tk) {
 		composite = UI.formSection(body, tk, "Kosten");
 		toolkit = tk;
@@ -32,38 +37,35 @@ public class ComponentCostSection {
 	}
 
 	private void createFields() {
-		bind.onDouble(
-				d("Investitionskosten", "EUR"),
-				() -> costs.get()::getInvestment,
-				() -> costs.get()::setInvestment);
-		bind.onInt(
-				i("Nutzungsdauer", "Jahre"),
-				() -> costs.get()::getDuration,
-				() -> costs.get()::setDuration);
-		bind.onDouble(
-				d("Instandsetzung", "%"),
-				() -> costs.get()::getRepair,
-				() -> costs.get()::setRepair);
-		bind.onDouble(
-				d("Wartung und Inspektion", "%"),
-				() -> costs.get()::getMaintenance,
-				() -> costs.get()::setMaintenance);
-		bind.onDouble(
-				d("Aufwand für Bedienen", "h/a"),
-				() -> costs.get()::getOperation,
-				() -> costs.get()::setOperation);
+
+		Texts.on(t("Investitionskosten", "EUR"))
+				.decimal()
+				.init(costs().investment)
+				.onChanged((s) -> costs().investment = Numbers.read(s));
+
+		Texts.on(t("Nutzungsdauer", "Jahre"))
+				.integer()
+				.init(costs().duration)
+				.onChanged((s) -> costs().duration = Numbers.readInt(s));
+
+		Texts.on(t("Instandsetzung", "%"))
+				.decimal()
+				.init(costs().repair)
+				.onChanged((s) -> costs().repair = Numbers.read(s));
+
+		Texts.on(t("Wartung und Inspektion", "%"))
+				.decimal()
+				.init(costs().maintenance)
+				.onChanged((s) -> costs().maintenance = Numbers.read(s));
+
+		Texts.on(t("Aufwand für Bedienen", "h/a"))
+				.decimal()
+				.init(costs().operation)
+				.onChanged((s) -> costs().operation = Numbers.read(s));
 	}
 
-	private Text d(String label, String unit) {
+	private Text t(String label, String unit) {
 		Text t = UI.formText(composite, toolkit, label);
-		Texts.on(t).decimal();
-		UI.formLabel(composite, toolkit, unit);
-		return t;
-	}
-
-	private Text i(String label, String unit) {
-		Text t = UI.formText(composite, toolkit, label);
-		Texts.on(t).integer();
 		UI.formLabel(composite, toolkit, unit);
 		return t;
 	}

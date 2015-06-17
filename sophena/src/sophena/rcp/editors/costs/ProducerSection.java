@@ -72,15 +72,15 @@ class ProducerSection {
 			case 0:
 				return p.getName();
 			case 1:
-				return Numbers.toString(c.getInvestment()) + " EUR";
+				return Numbers.toString(c.investment) + " EUR";
 			case 2:
-				return Numbers.toString(c.getDuration()) + " a";
+				return Numbers.toString(c.duration) + " a";
 			case 3:
-				return Numbers.toString(c.getRepair()) + " %";
+				return Numbers.toString(c.repair) + " %";
 			case 4:
-				return Numbers.toString(c.getMaintenance()) + " %";
+				return Numbers.toString(c.maintenance) + " %";
 			case 5:
-				return Numbers.toString(c.getOperation()) + " h/a";
+				return Numbers.toString(c.operation) + " h/a";
 			default:
 				return null;
 			}
