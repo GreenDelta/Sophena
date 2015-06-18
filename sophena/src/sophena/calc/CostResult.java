@@ -7,8 +7,12 @@ public class CostResult {
 
 	public class FieldSet {
 
-		double investments;
-
+		public double investments;
+		public double capitalCosts;
+		public double capitalCostsFunding;
+		public double operationCosts;
+		public double consumptionCosts;
+		public double otherCosts;
 	}
 
 }

@@ -36,7 +36,7 @@ public class Tables {
 			String... properties) {
 		TableViewer viewer = new TableViewer(parent, SWT.BORDER
 				| SWT.FULL_SELECTION | SWT.VIRTUAL | SWT.MULTI);
-		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setColumnProperties(properties);
 		Table table = viewer.getTable();
 		table.setLinesVisible(true);

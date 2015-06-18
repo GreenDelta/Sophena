@@ -19,11 +19,16 @@ public class CostSettingsPage extends FormPage {
 	private CostSettings costs;
 	private Composite composite;
 	private FormToolkit toolkit;
+	private boolean forProject;
 
 	public CostSettingsPage(Editor editor, CostSettings costs) {
 		super(editor, "CostSettingsPage", "Kosteneinstellungen");
 		this.editor = editor;
 		this.costs = costs;
+	}
+
+	public void setForProject(boolean forProject) {
+		this.forProject = forProject;
 	}
 
 	public CostSettings getCosts() {
@@ -52,6 +57,14 @@ public class CostSettingsPage extends FormPage {
 
 		t("Preisänderungsfaktor (Investitionen)", "", costs.investmentFactor)
 				.onChanged((s) -> costs.investmentFactor = Numbers.read(s));
+
+		if(forProject) {
+			t("Investitionsförderung", "EUR", costs.funding)
+					.onChanged((s) -> costs.funding = Numbers.read(s));
+			t("Erwartete jährliche Stromerlöse", "EUR/a",
+					costs.electricityRevenues)
+					.onChanged((s) -> costs.electricityRevenues = Numbers.read(s));
+		}
 
 		t("Mehrwertsteuersatz", "", costs.vatRate)
 				.onChanged((s) -> costs.vatRate = Numbers.read(s));

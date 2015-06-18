@@ -15,11 +15,17 @@ public class CostSettings extends AbstractEntity {
 
 	public static final String GLOBAL_ID = "9ff7e5f9-c603-4f21-b687-22191b697ba1";
 
-	@Column(name = "interest_rate")
-	public double interestRate;
+	@Column(name = "funding")
+	public double funding;
+
+	@Column(name = "electricity_revenues")
+	public double electricityRevenues;
 
 	@Column(name = "interest_rate_funding")
 	public double interestRateFunding;
+
+	@Column(name = "interest_rate")
+	public double interestRate;
 
 	@Column(name = "investment_factor")
 	public double investmentFactor;
@@ -61,6 +67,8 @@ public class CostSettings extends AbstractEntity {
 	public CostSettings clone() {
 		CostSettings clone = new CostSettings();
 		clone.setId(UUID.randomUUID().toString());
+		clone.funding = funding;
+		clone.electricityRevenues = electricityRevenues;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;

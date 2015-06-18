@@ -88,6 +88,8 @@ CREATE TABLE tbl_cost_settings (
 	id CHAR(36),
 	f_project CHAR(36),
 
+    funding DOUBLE,
+    electricity_revenues DOUBLE,
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,
     investment_factor DOUBLE,

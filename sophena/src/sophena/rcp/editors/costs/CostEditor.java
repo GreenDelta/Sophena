@@ -53,6 +53,7 @@ public class CostEditor extends Editor {
 			CostSettings settings = project.getCostSettings();
 			if (settings != null) {
 				settingsPage = new CostSettingsPage(this, settings);
+				settingsPage.setForProject(true);
 				addPage(settingsPage);
 			}
 		} catch (Exception e) {

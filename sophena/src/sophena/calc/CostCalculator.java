@@ -32,11 +32,36 @@ class CostCalculator {
 			ComponentCosts costs = p.getCosts();
 			if (costs == null)
 				continue;
-			setWithFunding(false);
 			r.netto.investments += costs.investment;
+			r.brutto.investments += settings.vatRate * costs.investment;
+			addCapitalCosts(r, costs);
 		}
-
+		addOtherCosts(r);
 		return r;
+	}
+
+	private void addCapitalCosts(CostResult r, ComponentCosts costs) {
+		setWithFunding(false);
+		double capNetto = getCapitalCosts(costs.duration, costs.investment);
+		r.netto.capitalCosts += capNetto;
+		r.brutto.capitalCosts += settings.vatRate * capNetto;
+		setWithFunding(true);
+		capNetto = getCapitalCosts(costs.duration, costs.investment);
+		r.netto.capitalCostsFunding += capNetto;
+		r.brutto.capitalCostsFunding += settings.vatRate * capNetto;
+		setWithFunding(false);
+	}
+
+	private void addOtherCosts(CostResult r) {
+		setWithFunding(false);
+		double annuityFactor = getAnnuityFactor();
+		double cashValueFactor = getCashValueFactor(settings.operationFactor);
+		double share = (settings.insuranceShare
+				+ settings.otherShare
+				+ settings.administrationShare) / 100;
+		r.netto.otherCosts = share * r.netto.investments * annuityFactor
+				* cashValueFactor;
+		r.brutto.otherCosts = r.netto.otherCosts * settings.vatRate;
 	}
 
 	public void setWithFunding(boolean withFunding) {

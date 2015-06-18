@@ -3,8 +3,6 @@ package sophena.rcp.editors.results;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -12,7 +10,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.EnergyResult;
 import sophena.model.Boiler;
 import sophena.model.FuelSpec;
@@ -41,7 +38,6 @@ class BoilerTableSection {
 				"Brennstoff", "Rang", "Gelieferte Wärme", "Anteil",
 				"Volllaststunden");
 		table.setLabelProvider(new Label());
-		table.setContentProvider(ArrayContentProvider.getInstance());
 		Tables.bindColumnWidths(table, 0.2, 0.2, 0.1, 0.2, 0.1, 0.2);
 		table.setInput(getItems());
 	}
