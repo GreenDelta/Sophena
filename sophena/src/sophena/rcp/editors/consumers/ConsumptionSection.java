@@ -57,7 +57,8 @@ class ConsumptionSection {
 	}
 
 	private TableViewer createTable(Composite composite) {
-		TableViewer table = Tables.createViewer(composite, M.Fuel, M.Consumption,
+		TableViewer table = Tables.createViewer(composite, M.Fuel,
+				M.Consumption,
 				"Genutzte Wärme");
 		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
 		table.setLabelProvider(new Label());
@@ -146,7 +147,7 @@ class ConsumptionSection {
 			if (c == null)
 				return null;
 			String heat = Numbers.toString(c.getUsedHeat()) + " kWh";
-			double eta = BoilerEfficiency.getEfficiencyRate(
+			double eta = BoilerEfficiency.getEfficiencyRateSmall(
 					c.getUtilisationRate(), consumer().getLoadHours());
 			return heat + " (\u03B7=" + Numbers.toString(eta) + "%)";
 		}

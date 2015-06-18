@@ -3,6 +3,7 @@ package sophena.rcp.editors.results;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -10,6 +11,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.calc.EnergyResult;
 import sophena.model.Boiler;
 import sophena.model.FuelSpec;
@@ -44,15 +46,11 @@ class BoilerTableSection {
 
 	private List<Item> getItems() {
 		List<Item> items = new ArrayList<>();
-		Producer[] producers = result.producers;
-		if (producers == null)
+		if (result.producers == null)
 			return Collections.emptyList();
-		initProducerItems(producers, items);
-		Item bufferItem = new Item();
-		bufferItem.pos = producers.length;
-		bufferItem.name = "Pufferspeicher";
-		items.add(bufferItem);
-		bufferItem.heat = Stats.sum(result.suppliedBufferHeat);
+		initProducerItems(result.producers, items);
+		addBufferItem(items, result.producers);
+		addDiffItem(items);
 		calculateShares(items);
 		return items;
 	}
@@ -93,13 +91,38 @@ class BoilerTableSection {
 	}
 
 	private void calculateShares(List<Item> items) {
-		double sum = 0;
-		for (Item item : items)
-			sum += item.heat;
-		if (sum == 0)
+		double load = Stats.sum(result.loadCurve);
+		if (load == 0)
 			return;
-		for (Item item : items)
-			item.share = Math.round(100 * item.heat / sum);
+		for (Item item : items) {
+			double share = Math.round(100 * item.heat / load);
+			item.share = share > 100 ? 100 : share;
+		}
+	}
+
+	private void addBufferItem(List<Item> items, Producer[] producers) {
+		Item bufferItem = new Item();
+		bufferItem.pos = producers.length;
+		bufferItem.name = "Pufferspeicher";
+		items.add(bufferItem);
+		bufferItem.heat = Stats.sum(result.suppliedBufferHeat);
+	}
+
+	private void addDiffItem(List<Item> items) {
+		double diff = 0;
+		for (int i = 0; i < Stats.HOURS; i++) {
+			double supplied = result.suppliedPower[i];
+			double load = result.loadCurve[i];
+			if (supplied < load)
+				diff += (load - supplied);
+		}
+		if (diff == 0)
+			return;
+		Item item = new Item();
+		item.pos = -1;
+		item.name = "Ungedeckte Leistung";
+		item.heat = diff;
+		items.add(item);
 	}
 
 	private class Item {
@@ -121,7 +144,7 @@ class BoilerTableSection {
 			if (!(element instanceof Item) || col != 0)
 				return null;
 			Item item = (Item) element;
-			return img.get(item.pos);
+			return item.pos < 0 ? img.getRed() : img.get(item.pos);
 		}
 
 		@Override
@@ -139,7 +162,8 @@ class BoilerTableSection {
 			case 3:
 				return Numbers.toString(item.heat) + " kWh";
 			case 4:
-				return Numbers.toString(item.share) + " %";
+				return Numbers.toString(item.share)
+						+ " %";
 			case 5:
 				return item.fullLoadHours == null ? null : Numbers
 						.toString(item.fullLoadHours) + " h";

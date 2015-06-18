@@ -3,6 +3,7 @@ package sophena.rcp.editors.consumers;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -15,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.calc.BoilerEfficiency;
 import sophena.db.daos.FuelDao;
 import sophena.model.Fuel;
@@ -159,13 +161,13 @@ class ConsumptionDataWizard extends Wizard {
 		private void onRateChanged() {
 			if (effiCheck.getSelection()) {
 				double effi = Numbers.read(effiText.getText());
-				double util = BoilerEfficiency.getUtilisationRate(effi,
+				double util = BoilerEfficiency.getUtilisationRateSmall(effi,
 						loadHours);
 				utilText.setText(Numbers.toString(util));
 				data.validate();
 			} else {
 				double util = Numbers.read(utilText.getText());
-				double effi = BoilerEfficiency.getEfficiencyRate(util,
+				double effi = BoilerEfficiency.getEfficiencyRateSmall(util,
 						loadHours);
 				effiText.setText(Numbers.toString(effi));
 				data.validate();
@@ -189,7 +191,7 @@ class ConsumptionDataWizard extends Wizard {
 				consumption.setFuel(fuel);
 				consumption.setAmount(Texts.getDouble(amountText));
 				consumption.setUtilisationRate(Texts.getDouble(utilText));
-				if(fuel.isWood()) {
+				if (fuel.isWood()) {
 					consumption.setWoodAmountType(getWoodType());
 					consumption.setWaterContent(Texts.getDouble(waterText));
 				} else {
@@ -200,8 +202,8 @@ class ConsumptionDataWizard extends Wizard {
 
 			public WoodAmountType getWoodType() {
 				String unit = unitCombo.getItem(unitCombo.getSelectionIndex());
-				for(WoodAmountType type : WoodAmountType.values()) {
-					if(Strings.nullOrEqual(unit, type.getUnit()))
+				for (WoodAmountType type : WoodAmountType.values()) {
+					if (Strings.nullOrEqual(unit, type.getUnit()))
 						return type;
 				}
 				return null;
@@ -211,10 +213,11 @@ class ConsumptionDataWizard extends Wizard {
 				initFuels();
 				Texts.set(amountText, consumption.getAmount());
 				double util = consumption.getUtilisationRate();
-				if(util == 0)
+				if (util == 0)
 					util = 75.892;
 				Texts.set(utilText, util);
-				double effi =BoilerEfficiency.getEfficiencyRate(util, loadHours);
+				double effi = BoilerEfficiency.getEfficiencyRateSmall(util,
+						loadHours);
 				Texts.set(effiText, effi);
 				validate();
 			}
@@ -222,8 +225,10 @@ class ConsumptionDataWizard extends Wizard {
 			private void initFuels() {
 				FuelDao dao = new FuelDao(App.getDb());
 				List<Fuel> fuels = dao.getAll();
-				Collections.sort(fuels,
-						(f1, f2) -> Strings.compare(f1.getName(), f2.getName()));
+				Collections
+						.sort(fuels,
+								(f1, f2) -> Strings.compare(f1.getName(),
+										f2.getName()));
 				fuelCombo.setInput(fuels);
 				if (fuels.isEmpty())
 					return;
@@ -262,8 +267,8 @@ class ConsumptionDataWizard extends Wizard {
 					return;
 				}
 				String unit = consumption.getWoodAmountType().getUnit();
-				for(int i = 0; i < units.length; i++) {
-					if(Strings.nullOrEqual(unit, units[i])) {
+				for (int i = 0; i < units.length; i++) {
+					if (Strings.nullOrEqual(unit, units[i])) {
 						unitCombo.select(i);
 						break;
 					}
@@ -274,7 +279,7 @@ class ConsumptionDataWizard extends Wizard {
 				if (fuel == null)
 					return new String[0];
 				if (!fuel.isWood())
-					return new String[]{fuel.getUnit()};
+					return new String[] { fuel.getUnit() };
 				else {
 					WoodAmountType[] woodTypes = WoodAmountType.values();
 					String[] units = new String[woodTypes.length];

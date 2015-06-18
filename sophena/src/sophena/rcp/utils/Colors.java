@@ -26,14 +26,25 @@ public class Colors {
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDown());
 	}
 
-	private static RGB[] chartColors = { new RGB(41, 111, 196),
-			new RGB(229, 48, 57), new RGB(255, 201, 35), new RGB(82, 168, 77),
-			new RGB(132, 76, 173), new RGB(127, 183, 229),
-			new RGB(255, 137, 0), new RGB(128, 0, 128), new RGB(135, 76, 63),
-			new RGB(252, 255, 100), new RGB(0, 177, 241),
-			new RGB(112, 187, 40), new RGB(18, 89, 133), new RGB(226, 0, 115),
-			new RGB(255, 255, 85), new RGB(218, 0, 24), new RGB(0, 111, 154),
-			new RGB(255, 153, 0) };
+	private static RGB[] chartColors = {
+			new RGB(41, 111, 196),
+			new RGB(255, 201, 35),
+			new RGB(82, 168, 77),
+			new RGB(132, 76, 173),
+			new RGB(127, 183, 229),
+			new RGB(255, 137, 0),
+			new RGB(128, 0, 128),
+			new RGB(135, 76, 63),
+			new RGB(252, 255, 100),
+			new RGB(0, 177, 241),
+			new RGB(112, 187, 40),
+			new RGB(18, 89, 133),
+			new RGB(226, 0, 115),
+			new RGB(255, 255, 85),
+			new RGB(218, 0, 24),
+			new RGB(0, 111, 154),
+			new RGB(255, 153, 0)
+	};
 
 	public static Color getErrorColor() {
 		RGB rgb = new RGB(255, 180, 180);
