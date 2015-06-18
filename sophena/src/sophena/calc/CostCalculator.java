@@ -83,7 +83,7 @@ class CostCalculator {
 	}
 
 	int getNumberOfReplacements(int usageDuration) {
-		if (usageDuration >= projectDuration)
+		if (usageDuration >= projectDuration || usageDuration == 0)
 			return 0;
 		double pdur = (double) projectDuration;
 		double udur = (double) usageDuration;
