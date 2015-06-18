@@ -25,22 +25,19 @@ public class ConsumerLoadCurve {
 		double[] data = new double[Stats.HOURS];
 		if (consumer == null || station == null)
 			return data;
-		if (consumer.isDemandBased()) {
-			double totalHeat = consumer.getLoadHours()
-					* consumer.getHeatingLoad();
-			calcCurve(totalHeat, data);
-		} else {
-			double totalHeat = 0;
-			for (FuelConsumption c : consumer.getFuelConsumptions())
-				totalHeat += c.getUsedHeat();
-			calcCurve(totalHeat, data);
-		}
+		if (consumer.isDemandBased())
+			calcDemandBased(data);
+		else
+			calcUsageBased(data);
 		addLoadProfiles(data);
 		return data;
 	}
 
-	private void calcCurve(double totalHeat, double[] data) {
-		double heatForWater = totalHeat * consumer.getWaterFraction() / 100;
+	private void calcUsageBased(double[] data) {
+		double usedHeat = 0;
+		for (FuelConsumption c : consumer.getFuelConsumptions())
+			usedHeat += c.getUsedHeat();
+		double heatForWater = usedHeat * consumer.getWaterFraction() / 100;
 		double pMin = heatForWater / Stats.HOURS;
 		double heatingDegrees = 0;
 		double tmax = consumer.getHeatingLimit();
@@ -48,7 +45,7 @@ public class ConsumerLoadCurve {
 			if (temperature < tmax)
 				heatingDegrees += (tmax - temperature);
 		}
-		double heatPerHeatingDegree = (totalHeat - heatForWater)
+		double heatPerHeatingDegree = (usedHeat - heatForWater)
 				/ heatingDegrees;
 		for (int i = 0; i < Stats.HOURS; i++) {
 			double temperature = station.getData()[i];
@@ -56,6 +53,26 @@ public class ConsumerLoadCurve {
 				data[i] = pMin + ((tmax - temperature) * heatPerHeatingDegree);
 			else
 				data[i] = pMin;
+		}
+	}
+
+	private void calcDemandBased(double[] data) {
+		double pMax = consumer.getHeatingLoad();
+		if (pMax == 0)
+			return;
+		double ww = consumer.getWaterFraction() / 100;
+		double pMin = ww * pMax * consumer.getLoadHours() / 8760;
+		double[] climateData = station.getData();
+		double tmin = Stats.min(climateData);
+		double tmax = consumer.getHeatingLimit();
+		for (int h = 0; h < Stats.HOURS; h++) {
+			double t = climateData[h];
+			if (t >= tmax)
+				data[h] = pMin;
+			else {
+				double p = pMin + (pMax - pMin) * (tmax - t) / (tmax - tmin);
+				data[h] = p;
+			}
 		}
 	}
 
