@@ -48,9 +48,18 @@ class CostResultPage extends FormPage {
 				new Item("Kapitalgebundene Kosten (mit Förderung)",
 						result.netto.capitalCostsFunding,
 						result.brutto.capitalCostsFunding),
+				new Item("Bedarfsgebundene Kosten",
+						result.netto.consumptionCosts,
+						result.brutto.consumptionCosts),
+				new Item("Betriebsgebundene Kosten",
+						result.netto.operationCosts,
+						result.brutto.operationCosts),
 				new Item("Sonstige Kosten",
 						result.netto.otherCosts,
-						result.brutto.otherCosts)
+						result.brutto.otherCosts),
+				new Item("Erlöse",
+						result.netto.revenues,
+						result.brutto.revenues)
 		};
 	}
 

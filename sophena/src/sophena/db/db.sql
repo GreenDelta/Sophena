@@ -125,6 +125,7 @@ CREATE TABLE tbl_projects (
     interruption_end VARCHAR(10),
 
 	is_variant BOOLEAN,
+	f_project CHAR(36),
 	project_duration INTEGER,
 	f_cost_settings CHAR(36),
 	f_weather_station CHAR(36),

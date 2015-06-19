@@ -4,3 +4,5 @@
 /libs/
 /testlibs/
 derby.log
+
+docs/de/*.js

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sophena
 Bundle-SymbolicName: sophena;singleton:=true
-Bundle-Version: 0.0.1
+Bundle-Version: 0.0.2
 Bundle-Activator: sophena.rcp.Activator
 Bundle-Vendor: GreenDelta
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

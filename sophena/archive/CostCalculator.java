@@ -12,6 +12,7 @@ class CostCalculator {
 
 	private CostSettings settings;
 	private double projectDuration;
+	private boolean withFunding;
 
 	public CostCalculator(Project project, EnergyResult energyResult) {
 		this.project = project;
@@ -34,47 +35,25 @@ class CostCalculator {
 			r.netto.investments += costs.investment;
 			r.brutto.investments += settings.vatRate * costs.investment;
 			addCapitalCosts(r, costs);
-			addOperationCosts(r, costs);
 		}
-		addCapitalCostsFunding(r);
 		addOtherCosts(r);
-		r.netto.revenues = settings.electricityRevenues;
-		r.brutto.revenues = settings.electricityRevenues * settings.vatRate;
 		return r;
 	}
 
 	private void addCapitalCosts(CostResult r, ComponentCosts costs) {
-		double capNetto = getCapitalCosts(costs.duration,
-				costs.investment);
+		setWithFunding(false);
+		double capNetto = getCapitalCosts(costs.duration, costs.investment);
 		r.netto.capitalCosts += capNetto;
 		r.brutto.capitalCosts += settings.vatRate * capNetto;
-	}
-
-	private void addOperationCosts(CostResult r, ComponentCosts costs) {
-		double af = getAnnuityFactor();
-		double opFactor = getCashValueFactor(settings.operationFactor);
-		double maFactor = getCashValueFactor(settings.maintenanceFactor);
-		double opNetto =
-				costs.operation * settings.hourlyWage * af * opFactor
-						+ costs.investment
-						* (costs.repair / 100 + costs.maintenance / 100) * af
-						* maFactor;
-		r.netto.operationCosts += opNetto;
-		r.brutto.operationCosts += settings.vatRate * opNetto;
-	}
-
-	private void addCapitalCostsFunding(CostResult r) {
-		r.netto.capitalCostsFunding = r.netto.capitalCosts
-				- settings.funding
-				* (Math.pow(settings.interestRateFunding, projectDuration)
-						* (settings.interestRateFunding - 1)
-						/ (Math.pow(settings.interestRateFunding,
-						projectDuration) - 1));
-		r.brutto.capitalCostsFunding += settings.vatRate
-				* r.netto.capitalCostsFunding;
+		setWithFunding(true);
+		capNetto = getCapitalCosts(costs.duration, costs.investment);
+		r.netto.capitalCostsFunding += capNetto;
+		r.brutto.capitalCostsFunding += settings.vatRate * capNetto;
+		setWithFunding(false);
 	}
 
 	private void addOtherCosts(CostResult r) {
+		setWithFunding(false);
 		double annuityFactor = getAnnuityFactor();
 		double cashValueFactor = getCashValueFactor(settings.operationFactor);
 		double share = (settings.insuranceShare
@@ -85,13 +64,17 @@ class CostCalculator {
 		r.brutto.otherCosts = r.netto.otherCosts * settings.vatRate;
 	}
 
+	public void setWithFunding(boolean withFunding) {
+		this.withFunding = withFunding;
+	}
+
 	double getAnnuityFactor() {
-		double ir = settings.interestRate;
+		double ir = getInterestRate();
 		return (ir - 1) / (1 - Math.pow(ir, -projectDuration));
 	}
 
 	double getCashValueFactor(double priceChangeFactor) {
-		double ir = settings.interestRate;
+		double ir = getInterestRate();
 		if (ir == priceChangeFactor)
 			return ((double) projectDuration) / ir;
 		else
@@ -112,7 +95,7 @@ class CostCalculator {
 			double investmentCosts) {
 		if (usageDuration <= 0)
 			return 0;
-		double ir = settings.interestRate;
+		double ir = getInterestRate();
 		double priceChange = settings.investmentFactor;
 		double year = replacement * usageDuration;
 		return investmentCosts * Math.pow(priceChange, year)
@@ -120,7 +103,7 @@ class CostCalculator {
 	}
 
 	double getResidualValue(int usageDuration, double investmentCosts) {
-		double ir = settings.interestRate;
+		double ir = getInterestRate();
 		double priceChange = settings.investmentFactor;
 		int replacements = getNumberOfReplacements(usageDuration);
 		return investmentCosts
@@ -142,6 +125,13 @@ class CostCalculator {
 		}
 		costs -= residualValue;
 		return costs * annuityFactor;
+	}
+
+	private double getInterestRate() {
+		if (withFunding)
+			return settings.interestRateFunding;
+		else
+			return settings.interestRate;
 	}
 
 }
