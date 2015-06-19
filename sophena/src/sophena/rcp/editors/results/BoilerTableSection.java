@@ -66,7 +66,7 @@ class BoilerTableSection {
 			else
 				item.rank = p.getRank() + " - Spitzenlast";
 			item.pos = i;
-			item.heat = Stats.sum(result.producerResults[i]);
+			item.heat = result.totalHeat(p);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
 			items.add(item);
 		}
@@ -91,7 +91,7 @@ class BoilerTableSection {
 	}
 
 	private void calculateShares(List<Item> items) {
-		double load = Stats.sum(result.loadCurve);
+		double load = result.totalLoad;
 		if (load == 0)
 			return;
 		for (Item item : items) {
@@ -105,7 +105,7 @@ class BoilerTableSection {
 		bufferItem.pos = producers.length;
 		bufferItem.name = "Pufferspeicher";
 		items.add(bufferItem);
-		bufferItem.heat = Stats.sum(result.suppliedBufferHeat);
+		bufferItem.heat = result.totalBufferedHeat;
 	}
 
 	private void addDiffItem(List<Item> items) {

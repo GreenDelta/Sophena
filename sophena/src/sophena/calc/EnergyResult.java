@@ -2,6 +2,7 @@ package sophena.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import sophena.model.Producer;
@@ -11,13 +12,20 @@ import sophena.model.Stats;
 public class EnergyResult {
 
 	public double[] loadCurve;
+	public double totalLoad;
+
 	public double[] suppliedPower;
 
 	public Producer[] producers;
 	public double[][] producerResults;
+	public double totalProducedHeat;
 
 	public double[] suppliedBufferHeat;
+	public double totalBufferedHeat;
+
 	public double[] bufferCapacity;
+
+	HashMap<String, Double> totalHeats = new HashMap<>();
 
 	private EnergyResult() {
 	}
@@ -28,6 +36,13 @@ public class EnergyResult {
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
+	}
+
+	public double totalHeat(Producer p) {
+		if (p == null || p.getId() == null)
+			return 0;
+		Double d = totalHeats.get(p.getId());
+		return d == null ? 0 : d;
 	}
 
 	private void initProducerData(Project project) {

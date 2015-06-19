@@ -70,6 +70,8 @@ class EnergyCalculator {
 			r.suppliedPower[i] = suppliedPower;
 		}
 
+		calcTotals(r);
+
 		return r;
 	}
 
@@ -93,4 +95,14 @@ class EnergyCalculator {
 		return (c * liters * deltaT) / 1000;
 	}
 
+	private void calcTotals(EnergyResult r) {
+		r.totalLoad = Stats.sum(r.loadCurve);
+		for (int i = 0; i < r.producers.length; i++) {
+			Producer p = r.producers[i];
+			double total = Stats.sum(r.producerResults[i]);
+			r.totalHeats.put(p.getId(), total);
+			r.totalProducedHeat += total;
+		}
+		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
+	}
 }
