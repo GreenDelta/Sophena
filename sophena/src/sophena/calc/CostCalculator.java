@@ -1,7 +1,10 @@
 package sophena.calc;
 
+import sophena.model.Boiler;
 import sophena.model.ComponentCosts;
 import sophena.model.CostSettings;
+import sophena.model.Fuel;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.Project;
 
@@ -34,6 +37,7 @@ class CostCalculator {
 			r.netto.investments += costs.investment;
 			r.brutto.investments += settings.vatRate * costs.investment;
 			addCapitalCosts(r, costs);
+			addConsumptionCosts(r, p);
 			addOperationCosts(r, costs);
 		}
 		addCapitalCostsFunding(r);
@@ -48,6 +52,23 @@ class CostCalculator {
 				costs.investment);
 		r.netto.capitalCosts += capNetto;
 		r.brutto.capitalCosts += settings.vatRate * capNetto;
+	}
+
+	private void addConsumptionCosts(CostResult r, Producer p) {
+		// TODO: electricity usage currently not included
+		double fuelCosts = getFuelCosts(p);
+		if (fuelCosts == 0 || p.getFuelSpec() == null)
+			return;
+		double priceChangeFactor = 0;
+		if (p.getBoiler().getFuel() != null)
+			priceChangeFactor = settings.fossilFuelFactor;
+		else
+			priceChangeFactor = settings.bioFuelFactor; // wood fuel
+		double cashValueFactor = getCashValueFactor(priceChangeFactor);
+		double costs = fuelCosts * cashValueFactor * getAnnuityFactor();
+		r.netto.consumptionCosts += costs;
+		double vat = 1 + p.getFuelSpec().getTaxRate() / 100;
+		r.brutto.consumptionCosts += vat * costs;
 	}
 
 	private void addOperationCosts(CostResult r, ComponentCosts costs) {
@@ -144,4 +165,31 @@ class CostCalculator {
 		return costs * annuityFactor;
 	}
 
+	private double getFuelCosts(Producer p) {
+		double heat = energyResult.totalHeat(p);
+		Boiler boiler = p.getBoiler();
+		FuelSpec fuelSpec = p.getFuelSpec();
+		if (heat == 0 || boiler == null || fuelSpec == null)
+			return 0;
+		int fullLoadHours = (int) (heat / boiler.getMaxPower());
+		double ur = BoilerEfficiency.getUtilisationRateBig(boiler
+				.getEfficiencyRate(), fullLoadHours);
+		double energyContent = heat / ur;
+		Fuel fuel = boiler.getFuel();
+		if (fuel != null) {
+			// no wood fuel
+			double amount = energyContent / fuel.getCalorificValue();
+			return amount * fuelSpec.getPricePerUnit();
+		}
+		// wood fuel
+		fuel = fuelSpec.getWoodFuel();
+		if (boiler.getWoodAmountType() == null || fuel == null)
+			return 0;
+		double wc = fuelSpec.getWaterContent() / 100;
+		double woodMass = energyContent
+				/ ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);
+		double woodAmount = woodMass * (1 - wc)
+				/ (boiler.getWoodAmountType().getFactor() * fuel.getDensity());
+		return woodAmount * fuelSpec.getPricePerUnit();
+	}
 }
