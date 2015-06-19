@@ -44,6 +44,7 @@ class CostCalculator {
 		addOtherCosts(r);
 		r.netto.revenues = settings.electricityRevenues;
 		r.brutto.revenues = settings.electricityRevenues * settings.vatRate;
+		calcTotals(r);
 		return r;
 	}
 
@@ -191,5 +192,33 @@ class CostCalculator {
 		double woodAmount = woodMass * (1 - wc)
 				/ (boiler.getWoodAmountType().getFactor() * fuel.getDensity());
 		return woodAmount * fuelSpec.getPricePerUnit();
+	}
+
+	private void calcTotals(CostResult r) {
+
+		r.netto.annualCosts = r.netto.capitalCosts
+				+ r.netto.consumptionCosts
+				+ r.netto.operationCosts
+				+ r.netto.otherCosts
+				- r.netto.revenues;
+		r.brutto.annualCosts = settings.vatRate * r.netto.annualCosts;
+
+		r.netto.annualCostsFunding = r.netto.capitalCostsFunding
+				+ r.netto.consumptionCosts
+				+ r.netto.operationCosts
+				+ r.netto.otherCosts
+				- r.netto.revenues;
+		r.brutto.annualCostsFunding = settings.vatRate
+				* r.netto.annualCostsFunding;
+
+		r.netto.heatGenerationCosts = r.netto.annualCosts
+				/ energyResult.totalProducedHeat;
+		r.brutto.heatGenerationCosts = settings.vatRate
+				* r.netto.heatGenerationCosts;
+
+		r.netto.heatGenerationCostsFunding = r.netto.annualCostsFunding
+				/ energyResult.totalProducedHeat;
+		r.brutto.heatGenerationCostsFunding = settings.vatRate
+				* r.netto.heatGenerationCostsFunding;
 	}
 }

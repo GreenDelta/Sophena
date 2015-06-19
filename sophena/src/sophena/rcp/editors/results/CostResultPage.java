@@ -59,7 +59,19 @@ class CostResultPage extends FormPage {
 						result.brutto.otherCosts),
 				new Item("Erlöse",
 						result.netto.revenues,
-						result.brutto.revenues)
+						result.brutto.revenues),
+				new Item("Jährliche Kosten",
+						result.netto.annualCosts,
+						result.brutto.annualCosts),
+				new Item("Jährliche Kosten - Förderung",
+						result.netto.annualCostsFunding,
+						result.brutto.annualCostsFunding),
+				new Item("Wärmegestehungskosten (ohne Förderung)",
+						result.netto.heatGenerationCosts,
+						result.brutto.heatGenerationCosts),
+				new Item("Wärmegestehungskosten (mit Förderung)",
+						result.netto.heatGenerationCostsFunding,
+						result.brutto.heatGenerationCostsFunding)
 		};
 	}
 

@@ -15,6 +15,11 @@ public class CostResult {
 		public double otherCosts;
 		public double revenues;
 
+		public double annualCosts;
+		public double annualCostsFunding;
+		public double heatGenerationCosts;
+		public double heatGenerationCostsFunding;
+
 	}
 
 }
