@@ -1,7 +1,6 @@
 var express = require('express'),
     mysql = require('mysql'),
-    climatedb = require('./climatedb.js'),
-    stats = require('./climatestats.js');
+    climatedb = require('./climatedb.js');
 
 var app = express(),
     pool = mysql.createPool({
@@ -62,6 +61,7 @@ app.get('/avgdata/:station', function(req, res) {
     });
 });
 
+/*
 app.get('/stats', function(req, res) {
 	var conf = {
         con: pool,
@@ -75,6 +75,7 @@ app.get('/stats', function(req, res) {
 		res.send(data);
 	});
 });
+*/
 
 var server = app.listen(8080, function() {
 
