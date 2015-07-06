@@ -34,6 +34,7 @@ class CostResultPage extends FormPage {
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
 		table.setInput(getItems());
+		// new CostChart(result).render(body, tk);
 		form.reflow(true);
 	}
 

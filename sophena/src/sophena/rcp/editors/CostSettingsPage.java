@@ -1,6 +1,8 @@
 package sophena.rcp.editors;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -17,7 +19,6 @@ public class CostSettingsPage extends FormPage {
 
 	private Editor editor;
 	private CostSettings costs;
-	private Composite composite;
 	private FormToolkit toolkit;
 	private boolean forProject;
 
@@ -40,73 +41,88 @@ public class CostSettingsPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Kosteneinstellungen");
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		composite = UI.formSection(body, toolkit, "Kosteneinstellungen");
-		UI.gridLayout(composite, 3);
-		if (costs != null)
-			createFields();
+		if (costs != null) {
+			generalSection(body);
+			financeSection(body);
+			createOtherSection(body);
+			createPriceChangeSection(body);
+		}
 	}
 
-	private void createFields() {
+	private void generalSection(Composite body) {
+		Composite c = UI.formSection(body, toolkit, "Allgemein");
+		UI.gridLayout(c, 3);
+		t(c, "Mehrwertsteuersatz", "%", costs.vatRate)
+				.onChanged((s) -> costs.vatRate = Numbers.read(s));
+		t(c, "Mittlerer Stundenlohn", "EUR", costs.hourlyWage)
+				.onChanged((s) -> costs.hourlyWage = Numbers.read(s));
+		t(c, "Strompreis (netto)", "EUR/kWh", costs.electricityPrice)
+				.onChanged((s) -> costs.electricityPrice = Numbers.read(s));
+		if (forProject) {
+			t(c, "Mittlere Stromerlöse", "EUR/Jahr",
+					costs.electricityRevenues)
+							.onChanged(
+									(s) -> costs.electricityRevenues = Numbers
+											.read(s));
+		}
+	}
 
-		t("Kalkulatorischer Zinssatz (ohne Förderung)", "", costs.interestRate)
+	private void financeSection(Composite body) {
+		Composite c = UI.formSection(body, toolkit, "Finanzierung");
+		UI.gridLayout(c, 3);
+		t(c, "Kapital-Mischzinssatz (ohne Förderung)", "%", costs.interestRate)
 				.onChanged((s) -> costs.interestRate = Numbers.read(s));
 
-		t("Kalkulatorischer Zinssatz (mit Förderung)", "",
+		t(c, "Kapital-Mischzinssatz (mit Förderung)", "%",
 				costs.interestRateFunding)
-				.onChanged((s) -> costs.interestRateFunding = Numbers.read(s));
-
-		t("Preisänderungsfaktor (Investitionen)", "", costs.investmentFactor)
-				.onChanged((s) -> costs.investmentFactor = Numbers.read(s));
-
-		if(forProject) {
-			t("Investitionsförderung", "EUR", costs.funding)
+						.onChanged((s) -> costs.interestRateFunding = Numbers
+								.read(s));
+		if (forProject) {
+			t(c, "Investitionsförderung", "EUR", costs.funding)
 					.onChanged((s) -> costs.funding = Numbers.read(s));
-			t("Erwartete jährliche Stromerlöse", "EUR/a",
-					costs.electricityRevenues)
-					.onChanged((s) -> costs.electricityRevenues = Numbers.read(s));
+			t(c, "Einmalige Anschlussgebühren", "EUR", 0);
 		}
+	}
 
-		t("Mehrwertsteuersatz", "", costs.vatRate)
-				.onChanged((s) -> costs.vatRate = Numbers.read(s));
-
-		t("Preisänderungsfaktor Biomasse-Brennstoff", "", costs.bioFuelFactor)
-				.onChanged((s) -> costs.bioFuelFactor = Numbers.read(s));
-
-		t("Preisänderungsfaktor fossiler Brennstoff", "",
-				costs.fossilFuelFactor)
-				.onChanged((s) -> costs.fossilFuelFactor = Numbers.read(s));
-
-		t("Strompreis netto", "EUR/MWh", costs.electricityPrice)
-				.onChanged((s) -> costs.electricityPrice = Numbers.read(s));
-
-		t("Preisänderungsfaktor Strom", "", costs.electricityFactor)
-				.onChanged((s) -> costs.electricityFactor = Numbers.read(s));
-
-		t("Preisänderungsfaktor betriebsgebundene und sonstige Kosten",
-				"", costs.operationFactor)
-				.onChanged((s) -> costs.operationFactor = Numbers.read(s));
-
-		t("Preisänderungsfaktor Instandhaltungskosten", "",
-				costs.maintenanceFactor)
-				.onChanged((s) -> costs.maintenanceFactor = Numbers.read(s));
-
-		t("Stundenlohn", "EUR", costs.hourlyWage)
-				.onChanged((s) -> costs.hourlyWage = Numbers.read(s));
-
-		t("Versicherung", "%", costs.insuranceShare)
+	private void createOtherSection(Composite body) {
+		Composite c = UI.formSection(body, toolkit, "Sonstige Kosten");
+		UI.gridLayout(c, 3);
+		t(c, "Versicherung", "%", costs.insuranceShare)
 				.onChanged((s) -> costs.insuranceShare = Numbers.read(s));
 
-		t("Sonstige Abgaben (Steuern, Pacht, …)", "%", costs.otherShare)
+		t(c, "Sonstige Abgaben (Steuern, Pacht, …)", "%", costs.otherShare)
 				.onChanged((s) -> costs.otherShare = Numbers.read(s));
 
-		t("Verwaltung", "%", costs.administrationShare)
+		t(c, "Verwaltung", "%", costs.administrationShare)
 				.onChanged((s) -> costs.administrationShare = Numbers.read(s));
 	}
 
-	private TextDispatch t(String label, String unit, double initial) {
-		Text text = UI.formText(composite, toolkit, label);
+	private void createPriceChangeSection(Composite body) {
+		Composite c = UI.formSection(body, toolkit, "Preisänderungsfaktoren");
+		UI.gridLayout(c, 3);
+		t(c, "Investitionen", "", costs.investmentFactor)
+				.onChanged((s) -> costs.investmentFactor = Numbers.read(s));
+		t(c, "Biomasse-Brennstoff", "", costs.bioFuelFactor)
+				.onChanged((s) -> costs.bioFuelFactor = Numbers.read(s));
+		t(c, "Fossiler Brennstoff", "", costs.fossilFuelFactor)
+				.onChanged((s) -> costs.fossilFuelFactor = Numbers.read(s));
+		t(c, "Strom", "", costs.electricityFactor)
+				.onChanged((s) -> costs.electricityFactor = Numbers.read(s));
+		t(c, "Betriebsgebundene und sonstige Kosten", "", costs.operationFactor)
+				.onChanged((s) -> costs.operationFactor = Numbers.read(s));
+		t(c, "Instandhaltung", "", costs.maintenanceFactor)
+				.onChanged((s) -> costs.maintenanceFactor = Numbers
+						.read(s));
+
+	}
+
+	private TextDispatch t(Composite comp, String label, String unit,
+			double initial) {
+		Label lab = UI.formLabel(comp, toolkit, label);
+		UI.gridData(lab, false, false).widthHint = 300;
+		Text text = toolkit.createText(comp, null, SWT.BORDER);
 		UI.gridData(text, false, false).widthHint = 250;
-		UI.formLabel(composite, toolkit, unit);
+		UI.formLabel(comp, toolkit, unit);
 		return Texts.on(text)
 				.required()
 				.decimal()

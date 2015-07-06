@@ -34,7 +34,6 @@ public class ResultEditor extends FormEditor {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(d.getId());
 			ProjectResult result = ProjectResult.calculate(p);
-			result.energyResult.print();
 			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.getName());
