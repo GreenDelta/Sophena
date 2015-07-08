@@ -17,8 +17,8 @@ public class CostCalculatorTest {
 		project.setProjectDuration(20);
 		CostSettings settings = new CostSettings();
 		project.setCostSettings(settings);
-		settings.interestRate = 1.02;
-		settings.interestRateFunding = 1.015;
+		settings.interestRate = 2;
+		settings.interestRateFunding = 1.5;
 		settings.investmentFactor = 1.015;
 		calc = new CostCalculator(project, new EnergyResult(project));
 	}

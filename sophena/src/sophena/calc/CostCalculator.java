@@ -15,6 +15,7 @@ class CostCalculator {
 
 	private CostSettings settings;
 	private double projectDuration;
+	private boolean withFunding;
 
 	public CostCalculator(Project project, EnergyResult energyResult) {
 		this.project = project;
@@ -27,6 +28,10 @@ class CostCalculator {
 		projectDuration = project.getProjectDuration();
 	}
 
+	public void withFunding(boolean withFunding) {
+		this.withFunding = withFunding;
+	}
+
 	public CostResult calculate() {
 		CostResult r = new CostResult();
 		// TODO: iterate over all cost components; not only producers
@@ -35,15 +40,16 @@ class CostCalculator {
 			if (costs == null)
 				continue;
 			r.netto.investments += costs.investment;
-			r.brutto.investments += settings.vatRate * costs.investment;
+			r.brutto.investments += vat() * costs.investment;
 			addCapitalCosts(r, costs);
 			addConsumptionCosts(r, p);
 			addOperationCosts(r, costs);
 		}
-		addCapitalCostsFunding(r);
+		if (withFunding)
+			setCapitalCostsFunding(r);
 		addOtherCosts(r);
 		r.netto.revenues = settings.electricityRevenues;
-		r.brutto.revenues = settings.electricityRevenues * settings.vatRate;
+		r.brutto.revenues = settings.electricityRevenues * vat();
 		calcTotals(r);
 		return r;
 	}
@@ -52,7 +58,7 @@ class CostCalculator {
 		double capNetto = getCapitalCosts(costs.duration,
 				costs.investment);
 		r.netto.capitalCosts += capNetto;
-		r.brutto.capitalCosts += settings.vatRate * capNetto;
+		r.brutto.capitalCosts += vat() * capNetto;
 	}
 
 	private void addConsumptionCosts(CostResult r, Producer p) {
@@ -76,24 +82,20 @@ class CostCalculator {
 		double af = getAnnuityFactor();
 		double opFactor = getCashValueFactor(settings.operationFactor);
 		double maFactor = getCashValueFactor(settings.maintenanceFactor);
-		double opNetto =
-				costs.operation * settings.hourlyWage * af * opFactor
-						+ costs.investment
+		double opNetto = costs.operation * settings.hourlyWage * af * opFactor
+				+ costs.investment
 						* (costs.repair / 100 + costs.maintenance / 100) * af
 						* maFactor;
 		r.netto.operationCosts += opNetto;
-		r.brutto.operationCosts += settings.vatRate * opNetto;
+		r.brutto.operationCosts += vat() * opNetto;
 	}
 
-	private void addCapitalCostsFunding(CostResult r) {
-		r.netto.capitalCostsFunding = r.netto.capitalCosts
-				- settings.funding
-				* (Math.pow(settings.interestRateFunding, projectDuration)
-						* (settings.interestRateFunding - 1)
-						/ (Math.pow(settings.interestRateFunding,
-						projectDuration) - 1));
-		r.brutto.capitalCostsFunding += settings.vatRate
-				* r.netto.capitalCostsFunding;
+	private void setCapitalCostsFunding(CostResult r) {
+		double ir = ir();
+		r.netto.capitalCosts = r.netto.capitalCosts - settings.funding
+				* (Math.pow(ir, projectDuration) * (ir - 1)
+						/ (Math.pow(ir, projectDuration) - 1));
+		r.brutto.capitalCosts += vat() * r.netto.capitalCosts;
 	}
 
 	private void addOtherCosts(CostResult r) {
@@ -104,16 +106,16 @@ class CostCalculator {
 				+ settings.administrationShare) / 100;
 		r.netto.otherCosts = share * r.netto.investments * annuityFactor
 				* cashValueFactor;
-		r.brutto.otherCosts = r.netto.otherCosts * settings.vatRate;
+		r.brutto.otherCosts = r.netto.otherCosts * vat();
 	}
 
 	double getAnnuityFactor() {
-		double ir = settings.interestRate;
+		double ir = ir();
 		return (ir - 1) / (1 - Math.pow(ir, -projectDuration));
 	}
 
 	double getCashValueFactor(double priceChangeFactor) {
-		double ir = settings.interestRate;
+		double ir = ir();
 		if (ir == priceChangeFactor)
 			return ((double) projectDuration) / ir;
 		else
@@ -134,7 +136,7 @@ class CostCalculator {
 			double investmentCosts) {
 		if (usageDuration <= 0)
 			return 0;
-		double ir = settings.interestRate;
+		double ir = ir();
 		double priceChange = settings.investmentFactor;
 		double year = replacement * usageDuration;
 		return investmentCosts * Math.pow(priceChange, year)
@@ -142,12 +144,13 @@ class CostCalculator {
 	}
 
 	double getResidualValue(int usageDuration, double investmentCosts) {
-		double ir = settings.interestRate;
+		double ir = ir();
 		double priceChange = settings.investmentFactor;
 		int replacements = getNumberOfReplacements(usageDuration);
 		return investmentCosts
 				* Math.pow(priceChange, replacements * usageDuration)
-				* (((replacements + 1) * usageDuration - projectDuration) / usageDuration)
+				* (((replacements + 1) * usageDuration - projectDuration)
+						/ usageDuration)
 				* (1 / Math.pow(ir, projectDuration));
 	}
 
@@ -195,30 +198,27 @@ class CostCalculator {
 	}
 
 	private void calcTotals(CostResult r) {
-
 		r.netto.annualCosts = r.netto.capitalCosts
 				+ r.netto.consumptionCosts
 				+ r.netto.operationCosts
 				+ r.netto.otherCosts
 				- r.netto.revenues;
-		r.brutto.annualCosts = settings.vatRate * r.netto.annualCosts;
-
-		r.netto.annualCostsFunding = r.netto.capitalCostsFunding
-				+ r.netto.consumptionCosts
-				+ r.netto.operationCosts
-				+ r.netto.otherCosts
-				- r.netto.revenues;
-		r.brutto.annualCostsFunding = settings.vatRate
-				* r.netto.annualCostsFunding;
-
+		r.brutto.annualCosts = vat() * r.netto.annualCosts;
 		r.netto.heatGenerationCosts = r.netto.annualCosts
 				/ energyResult.totalProducedHeat;
-		r.brutto.heatGenerationCosts = settings.vatRate
-				* r.netto.heatGenerationCosts;
-
-		r.netto.heatGenerationCostsFunding = r.netto.annualCostsFunding
-				/ energyResult.totalProducedHeat;
-		r.brutto.heatGenerationCostsFunding = settings.vatRate
-				* r.netto.heatGenerationCostsFunding;
+		r.brutto.heatGenerationCosts = vat() * r.netto.heatGenerationCosts;
 	}
+
+	/** Returns the interest rate that is used for the calculation. */
+	private double ir() {
+		double rawRate = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		return 1 + rawRate / 100;
+	}
+
+	/** Returns the VAT rate that is used for the calculation. */
+	private double vat() {
+		return 1 + settings.vatRate / 100;
+	}
+
 }

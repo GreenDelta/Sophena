@@ -11,17 +11,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.CostResult;
+import sophena.calc.ProjectResult;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
 class CostResultPage extends FormPage {
 
-	private CostResult result;
+	private ProjectResult result;
 
 	public CostResultPage(ResultEditor editor) {
 		super(editor, "sophena.CostResultPage", "Kosten");
-		this.result = editor.result.costResult;
+		this.result = editor.result;
 	}
 
 	@Override
@@ -29,26 +30,30 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisse - Kosten");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Composite c = UI.formSection(body, tk, "Ergebnisübersicht");
-		TableViewer table = Tables.createViewer(c, "", "netto", "brutto");
-		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
-		table.setLabelProvider(new Label());
-		table.setInput(getItems());
-		// new CostChart(result).render(body, tk);
+		fillSection(
+				UI.formSection(body, tk, "Kosten ohne Förderung"),
+				result.costResult);
+		fillSection(
+				UI.formSection(body, tk, "Kosten mit Förderung"),
+				result.costResultFunding);
 		form.reflow(true);
 	}
 
-	private Item[] getItems() {
+	private void fillSection(Composite c, CostResult result) {
+		TableViewer table = Tables.createViewer(c, "", "netto", "brutto");
+		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
+		table.setLabelProvider(new Label());
+		table.setInput(getItems(result));
+	}
+
+	private Item[] getItems(CostResult result) {
 		return new Item[] {
 				new Item("Investitionskosten",
 						result.netto.investments,
 						result.brutto.investments),
-				new Item("Kapitalgebundene Kosten (ohne Förderung)",
+				new Item("Kapitalgebundene Kosten",
 						result.netto.capitalCosts,
 						result.brutto.capitalCosts),
-				new Item("Kapitalgebundene Kosten (mit Förderung)",
-						result.netto.capitalCostsFunding,
-						result.brutto.capitalCostsFunding),
 				new Item("Bedarfsgebundene Kosten",
 						result.netto.consumptionCosts,
 						result.brutto.consumptionCosts),
@@ -64,15 +69,9 @@ class CostResultPage extends FormPage {
 				new Item("Jährliche Kosten",
 						result.netto.annualCosts,
 						result.brutto.annualCosts),
-				new Item("Jährliche Kosten - Förderung",
-						result.netto.annualCostsFunding,
-						result.brutto.annualCostsFunding),
-				new Item("Wärmegestehungskosten (ohne Förderung)",
+				new Item("Wärmegestehungskosten",
 						result.netto.heatGenerationCosts,
-						result.brutto.heatGenerationCosts),
-				new Item("Wärmegestehungskosten (mit Förderung)",
-						result.netto.heatGenerationCostsFunding,
-						result.brutto.heatGenerationCostsFunding)
+						result.brutto.heatGenerationCosts)
 		};
 	}
 
