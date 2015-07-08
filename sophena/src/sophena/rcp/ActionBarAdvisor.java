@@ -1,6 +1,7 @@
 package sophena.rcp;
 
 import java.io.File;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
@@ -16,7 +17,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
-import sophena.io.datapack.DataPack;
+
 import sophena.io.datapack.Import;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
@@ -118,15 +119,14 @@ public class ActionBarAdvisor extends
 
 	private void importFile() {
 		FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-		dialog.setFilterExtensions(new String[]{"*.sophena"});
+		dialog.setFilterExtensions(new String[] { "*.sophena" });
 		dialog.setText(M.SelectFile);
 		String path = dialog.open();
 		if (path == null)
 			return;
 		File file = new File(path);
 		try {
-			DataPack pack = DataPack.open(file);
-			Import in = new Import(pack, App.getDb());
+			Import in = new Import(file, App.getDb());
 			Rcp.run("Importiere Daten ...", in);
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");

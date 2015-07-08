@@ -193,7 +193,7 @@ function createCurve(station, grid, refYear) {
         data: []
     };
     for(var i = 0; i < 8760; i++) {
-        obj.data[i] = curve[i].value;
+        obj.data[i] = curve[i].value.toFixed(1);
     }
     dump(obj, obj.id);
 }

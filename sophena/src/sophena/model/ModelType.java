@@ -6,6 +6,8 @@ public enum ModelType {
 
 	CONSUMER(Consumer.class),
 
+	COST_SETTINGS(CostSettings.class),
+
 	FUEL(Fuel.class),
 
 	PRODUCER(Producer.class),
@@ -14,21 +16,21 @@ public enum ModelType {
 
 	WEATHER_STATION(WeatherStation.class);
 
-	private final Class<? extends RootEntity> modelClass;
+	private final Class<? extends AbstractEntity> modelClass;
 
-	ModelType(Class<? extends RootEntity> modelClass) {
+	ModelType(Class<? extends AbstractEntity> modelClass) {
 		this.modelClass = modelClass;
 	}
 
-	public Class<? extends RootEntity> getModelClass() {
+	public Class<? extends AbstractEntity> getModelClass() {
 		return modelClass;
 	}
 
 	public static ModelType forModelClass(Class<?> type) {
-		if(type == null)
+		if (type == null)
 			return null;
-		for(ModelType t : values()) {
-			if(t.modelClass.equals(type))
+		for (ModelType t : values()) {
+			if (t.modelClass.equals(type))
 				return t;
 		}
 		return null;

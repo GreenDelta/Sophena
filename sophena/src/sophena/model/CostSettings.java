@@ -15,26 +15,46 @@ public class CostSettings extends AbstractEntity {
 
 	public static final String GLOBAL_ID = "9ff7e5f9-c603-4f21-b687-22191b697ba1";
 
-	@Column(name = "funding")
-	public double funding;
+	// general costs
+
+	@Column(name = "vat_rate")
+	public double vatRate;
+
+	@Column(name = "hourly_wage")
+	public double hourlyWage;
+
+	@Column(name = "electricity_price")
+	public double electricityPrice;
 
 	@Column(name = "electricity_revenues")
 	public double electricityRevenues;
 
-	@Column(name = "interest_rate_funding")
-	public double interestRateFunding;
+	// financial aspects
 
 	@Column(name = "interest_rate")
 	public double interestRate;
 
+	@Column(name = "interest_rate_funding")
+	public double interestRateFunding;
+
+	@Column(name = "funding")
+	public double funding;
+
+	// other costs
+
+	@Column(name = "insurance_share")
+	public double insuranceShare;
+
+	@Column(name = "other_share")
+	public double otherShare;
+
+	@Column(name = "administration_share")
+	public double administrationShare;
+
+	// prices change factors
+
 	@Column(name = "investment_factor")
 	public double investmentFactor;
-
-	@Column(name = "operation_factor")
-	public double operationFactor;
-
-	@Column(name = "hourly_wage")
-	public double hourlyWage;
 
 	@Column(name = "bio_fuel_factor")
 	public double bioFuelFactor;
@@ -45,23 +65,11 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_factor")
 	public double electricityFactor;
 
-	@Column(name = "electricity_price")
-	public double electricityPrice;
+	@Column(name = "operation_factor")
+	public double operationFactor;
 
 	@Column(name = "maintenance_factor")
 	public double maintenanceFactor;
-
-	@Column(name = "vat_rate")
-	public double vatRate;
-
-	@Column(name = "insurance_share")
-	public double insuranceShare;
-
-	@Column(name = "other_share")
-	public double otherShare;
-
-	@Column(name = "administration_share")
-	public double administrationShare;
 
 	@Override
 	public CostSettings clone() {

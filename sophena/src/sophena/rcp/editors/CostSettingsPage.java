@@ -119,7 +119,7 @@ public class CostSettingsPage extends FormPage {
 	private TextDispatch t(Composite comp, String label, String unit,
 			double initial) {
 		Label lab = UI.formLabel(comp, toolkit, label);
-		UI.gridData(lab, false, false).widthHint = 300;
+		UI.gridData(lab, false, false).widthHint = 250;
 		Text text = toolkit.createText(comp, null, SWT.BORDER);
 		UI.gridData(text, false, false).widthHint = 250;
 		UI.formLabel(comp, toolkit, unit);

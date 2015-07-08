@@ -17,11 +17,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import sophena.model.ModelType;
 
 public class DataPack implements Closeable {
@@ -99,6 +102,7 @@ public class DataPack implements Closeable {
 			return null;
 		}
 	}
+
 	private JsonObject readJson(Path path) throws Exception {
 		byte[] bytes = Files.readAllBytes(path);
 		String json = new String(bytes, "utf-8");
@@ -122,23 +126,26 @@ public class DataPack implements Closeable {
 		}
 		return collector.ids;
 	}
+
 	@Override
 	public void close() throws IOException {
 		zip.close();
 	}
 
 	private String getPath(ModelType type) {
-		if(type == null)
+		if (type == null)
 			return "unknown";
 		switch (type) {
-			case BOILER:
-				return "boilers";
-			case FUEL:
-				return "fuels";
-			case WEATHER_STATION:
-				return "weather_stations";
-			default:
-				return "unknown";
+		case BOILER:
+			return "boilers";
+		case COST_SETTINGS:
+			return "cost_settings";
+		case FUEL:
+			return "fuels";
+		case WEATHER_STATION:
+			return "weather_stations";
+		default:
+			return "unknown";
 		}
 	}
 

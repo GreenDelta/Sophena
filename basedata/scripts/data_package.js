@@ -40,18 +40,19 @@ function packData(file) {
     });
 
     archive.pipe(output);
-    archive.bulk([{
-        expand: true,
-        cwd: '../data/fuels',
-        src: ['**'],
-        dest: 'fuels'
-    }]);
-    archive.bulk([{
-        expand: true,
-        cwd: '../data/boilers',
-        src: ['**'],
-        dest: 'boilers'
-    }]);
+
+    var dir = '../data/',
+        types = ['fuels', 'boilers', 'cost_settings'];
+    for(var i = 0; i < types.length; i++) {
+        var t = types[i];
+        archive.bulk([{
+            expand: true,
+            cwd: dir + t,
+            src: ['**'],
+            dest: t
+        }]);
+    }
+    
     archive.bulk([{
         expand: true,
         cwd: '../climate_data/out/json',
