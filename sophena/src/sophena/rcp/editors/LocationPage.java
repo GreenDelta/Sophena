@@ -1,28 +1,38 @@
-package sophena.rcp.editors.consumers;
+package sophena.rcp.editors;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sophena.model.Location;
 import sophena.rcp.M;
-import sophena.rcp.editors.Editor;
+import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-
-//48.88401, 12.58333
 
 public class LocationPage extends FormPage {
 
 	private Supplier<Location> loc;
 	private Editor editor;
 	private FormToolkit toolkit;
+	private Browser browser;
 
 	public LocationPage(Editor editor, Supplier<Location> location) {
 		super(editor, "sophena.LocationPage", M.Location);
@@ -36,11 +46,12 @@ public class LocationPage extends FormPage {
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createAddressSection(body);
+		createBrowserSection(body);
 		form.reflow(true);
 	}
 
 	private void createAddressSection(Composite body) {
-		Composite c = UI.formSection(body, toolkit, "Standort");
+		Composite c = UI.formSection(body, toolkit, "Standord");
 		Location init = loc.get();
 		t(c, M.Name, init.name, (s) -> loc.get().name = s);
 		t(c, M.Street, init.street, (s) -> loc.get().street = s);
@@ -76,5 +87,44 @@ public class LocationPage extends FormPage {
 					}
 					editor.setDirty();
 				});
+	}
+
+	private void createBrowserSection(Composite body) {
+		Section s = UI.section(body, toolkit, "Karte");
+		UI.gridData(s, true, true);
+		Composite c = UI.sectionClient(s, toolkit);
+		c.setLayout(new FillLayout());
+		browser = new Browser(c, SWT.NONE);
+		browser.setJavascriptEnabled(true);
+		browser.setUrl(getUrl());
+		browser.addProgressListener(new ProgressListener() {
+			@Override
+			public void completed(ProgressEvent event) {
+				browser.evaluate(
+						"init({latlng: {lat: 48.88402, lng: 12.58334}, withMarker: true})");
+			}
+
+			@Override
+			public void changed(ProgressEvent event) {
+			}
+		});
+
+	}
+
+	private String getUrl() {
+		String pageName = "LocationPage.html";
+		File dir = Rcp.getWorkspace();
+		File f = new File(dir, pageName);
+		try {
+			if (!f.exists()) {
+				InputStream is = getClass().getResourceAsStream(pageName);
+				Files.copy(is, f.toPath());
+			}
+			return f.toURI().toURL().toString();
+		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("Could not get URL to location page", e);
+			return "";
+		}
 	}
 }
