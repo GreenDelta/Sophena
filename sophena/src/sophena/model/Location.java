@@ -23,10 +23,10 @@ public class Location extends AbstractEntity {
 	public String city;
 
 	@Column(name = "latitude")
-	public double latitude;
+	public Double latitude;
 
 	@Column(name = "longitude")
-	public double longitude;
+	public Double longitude;
 
 	@Override
 	public Location clone() {

@@ -44,9 +44,12 @@ public final class Texts {
 	}
 
 	public static void set(Text text, Double d) {
-		if (text == null || d == null)
+		if (text == null)
 			return;
-		text.setText(Numbers.toString(d));
+		if (d == null)
+			text.setText("");
+		else
+			text.setText(Numbers.toString(d));
 	}
 
 	public static void set(Text text, int i) {
@@ -56,9 +59,12 @@ public final class Texts {
 	}
 
 	public static void set(Text text, Integer i) {
-		if (text == null || i == null)
+		if (text == null)
 			return;
-		text.setText(Numbers.toString(i));
+		if (i == null)
+			text.setText("");
+		else
+			text.setText(Numbers.toString(i));
 	}
 
 	public static boolean isEmpty(Text text) {
@@ -117,9 +123,9 @@ public final class Texts {
 			text.addModifyListener((e) -> {
 				if (Strings.nullOrEmpty(text.getText()))
 					text.setBackground(Colors.getErrorColor());
-					else
-						text.setBackground(Colors.forRequiredField());
-				});
+				else
+					text.setBackground(Colors.forRequiredField());
+			});
 			return this;
 		}
 
