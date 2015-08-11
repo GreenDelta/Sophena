@@ -83,6 +83,20 @@ INSERT INTO tbl_building_states (id, name) VALUES ('b28f6c18-3c9b-4ab8-b665-724d
 INSERT INTO tbl_building_states (id, name) VALUES ('bd8c640a-ced1-4a78-8078-b9c27b549e7e', 'Passivhaus');
 
 
+CREATE TABLE tbl_locations (
+
+	id CHAR(36),
+
+    name VARCHAR(255),
+    street VARCHAR(255),
+    zip_code VARCHAR(255),
+    city VARCHAR(255),
+    latitude DOUBLE,
+    longitude DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE tbl_cost_settings (
 
 	id CHAR(36),
@@ -150,6 +164,7 @@ CREATE TABLE tbl_consumers (
 	f_project CHAR(36),
 	f_building_type CHAR(36),
 	f_building_state CHAR(36),
+	f_location CHAR(36),
 
 	PRIMARY KEY (id)
 );
@@ -189,10 +204,10 @@ CREATE TABLE tbl_boilers (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
-	tbl_purchase_price DOUBLE,
-	tbl_url VARCHAR(255),
-	tbl_max_power DOUBLE,
-	tbl_min_power DOUBLE,
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	max_power DOUBLE,
+	min_power DOUBLE,
 	efficiency_rate DOUBLE,
 
 	f_fuel CHAR(36),

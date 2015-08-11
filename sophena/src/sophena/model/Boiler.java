@@ -16,16 +16,16 @@ import javax.persistence.Table;
 @Table(name = "tbl_boilers")
 public class Boiler extends RootEntity {
 
-	@Column(name = "tbl_purchase_price")
+	@Column(name = "purchase_price")
 	private Double purchasePrice;
 
-	@Column(name = "tbl_url")
+	@Column(name = "url")
 	private String url;
 
-	@Column(name = "tbl_max_power")
+	@Column(name = "max_power")
 	private double maxPower;
 
-	@Column(name = "tbl_min_power")
+	@Column(name = "min_power")
 	private double minPower;
 
 	@OneToOne

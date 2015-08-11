@@ -52,6 +52,10 @@ public class Consumer extends Facility {
 	@JoinColumn(name = "f_consumer")
 	private List<LoadProfile> loadProfiles = new ArrayList<>();
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_location")
+	public Location location;
+
 	public boolean isDisabled() {
 		return disabled;
 	}
@@ -140,6 +144,8 @@ public class Consumer extends Facility {
 		clone.setLoadHours(getLoadHours());
 		for (FuelConsumption cons : getFuelConsumptions())
 			clone.getFuelConsumptions().add(cons.clone());
+		if (location != null)
+			clone.location = location.clone();
 		return clone;
 	}
 
