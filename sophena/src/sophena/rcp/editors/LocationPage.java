@@ -8,8 +8,9 @@ import java.util.function.Supplier;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.ProgressAdapter;
 import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -21,7 +22,10 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+
 import sophena.model.Location;
+import sophena.model.Project;
 import sophena.rcp.M;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Texts;
@@ -30,14 +34,20 @@ import sophena.rcp.utils.UI;
 public class LocationPage extends FormPage {
 
 	private Supplier<Location> loc;
+	private Supplier<Project> proj;
 	private Editor editor;
 	private FormToolkit toolkit;
 	private Browser browser;
 
-	public LocationPage(Editor editor, Supplier<Location> location) {
+	private Text latText;
+	private Text lngText;
+
+	public LocationPage(Editor editor, Supplier<Location> location,
+			Supplier<Project> proj) {
 		super(editor, "sophena.LocationPage", M.Location);
 		this.editor = editor;
 		this.loc = location;
+		this.proj = proj;
 	}
 
 	@Override
@@ -57,8 +67,10 @@ public class LocationPage extends FormPage {
 		t(c, M.Street, init.street, (s) -> loc.get().street = s);
 		t(c, M.ZipCode, init.zipCode, (s) -> loc.get().zipCode = s);
 		t(c, M.City, init.city, (s) -> loc.get().city = s);
-		d(c, "Breitengrad", init.latitude, (d) -> loc.get().latitude = d);
-		d(c, "Längengrad", init.longitude, (d) -> loc.get().longitude = d);
+		latText = d(c, "Breitengrad", init.latitude,
+				(d) -> loc.get().latitude = d);
+		lngText = d(c, "Längengrad", init.longitude,
+				(d) -> loc.get().longitude = d);
 	}
 
 	private void t(Composite comp, String label, String initial,
@@ -72,7 +84,7 @@ public class LocationPage extends FormPage {
 				});
 	}
 
-	private void d(Composite comp, String label, Double initial,
+	private Text d(Composite comp, String label, Double initial,
 			Consumer<Double> fn) {
 		Text t = UI.formText(comp, toolkit, label);
 		Texts.on(t)
@@ -80,13 +92,14 @@ public class LocationPage extends FormPage {
 				.onChanged((s) -> {
 					if (Texts.isEmpty(t)) {
 						fn.accept(null);
-						// delete marker
+						updateMarker();
 					} else {
 						fn.accept(Texts.getDouble(t));
-						// update marker
+						updateMarker();
 					}
 					editor.setDirty();
 				});
+		return t;
 	}
 
 	private void createBrowserSection(Composite body) {
@@ -97,18 +110,12 @@ public class LocationPage extends FormPage {
 		browser = new Browser(c, SWT.NONE);
 		browser.setJavascriptEnabled(true);
 		browser.setUrl(getUrl());
-		browser.addProgressListener(new ProgressListener() {
+		browser.addProgressListener(new ProgressAdapter() {
 			@Override
 			public void completed(ProgressEvent event) {
-				browser.evaluate(
-						"init({latlng: {lat: 48.88402, lng: 12.58334}, withMarker: true})");
-			}
-
-			@Override
-			public void changed(ProgressEvent event) {
+				initBrowser();
 			}
 		});
-
 	}
 
 	private String getUrl() {
@@ -125,6 +132,104 @@ public class LocationPage extends FormPage {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Could not get URL to location page", e);
 			return "";
+		}
+	}
+
+	private void initBrowser() {
+		new LocationChangeFn();
+		InitData initData = new InitData();
+		Location location = loc.get();
+		if (location.latitude != null && location.longitude != null) {
+			initData.latlng.lat = location.latitude;
+			initData.latlng.lng = location.longitude;
+			initData.withMarker = true;
+		} else {
+			LatLng initLoc = findInitialLocation();
+			initData.latlng.lat = initLoc.lat;
+			initData.latlng.lng = initLoc.lng;
+			initData.withMarker = false;
+		}
+		String json = new Gson().toJson(initData);
+		try {
+			browser.evaluate("init(" + json + ")");
+		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("failed to initialize browser " + json, e);
+		}
+	}
+
+	private LatLng findInitialLocation() {
+		LatLng init = new LatLng();
+		int count = 0;
+		Project p = proj.get();
+		for (sophena.model.Consumer c : p.getConsumers()) {
+			Location l = c.location;
+			if (l == null || l.latitude == null || l.longitude == null)
+				continue;
+			init.lat += l.latitude;
+			init.lng += l.longitude;
+			count++;
+		}
+		if (count == 0) {
+			init.lat = 48.884;
+			init.lng = 12.583;
+		} else {
+			init.lat /= count;
+			init.lng /= count;
+		}
+		return init;
+	}
+
+	private void updateMarker() {
+		Location l = loc.get();
+		Rcp.runInUI("update marker", () -> {
+			try {
+				if (l == null || l.latitude == null || l.longitude == null)
+					browser.evaluate("removeMarker()");
+				else {
+					LatLng latlng = new LatLng();
+					latlng.lat = l.latitude;
+					latlng.lng = l.longitude;
+					String json = new Gson().toJson(latlng);
+					browser.evaluate("setLocation(" + json + ")");
+				}
+			} catch (Exception e) {
+				Logger log = LoggerFactory.getLogger(getClass());
+				log.error("failed to update marker", e);
+			}
+		});
+
+	}
+
+	@SuppressWarnings("unused")
+	private class InitData {
+		boolean withMarker;
+		final LatLng latlng = new LatLng();
+	}
+
+	private class LatLng {
+		double lat;
+		double lng;
+	}
+
+	private class LocationChangeFn extends BrowserFunction {
+
+		public LocationChangeFn() {
+			super(browser, "locationChanged");
+		}
+
+		@Override
+		public Object function(Object[] args) {
+			if (args == null || args.length == 0 || args[0] == null)
+				return null;
+			Rcp.runInUI("update texts", () -> {
+				String json = args[0].toString();
+				Gson gson = new Gson();
+				LatLng latlng = gson.fromJson(json, LatLng.class);
+				Texts.set(latText, latlng.lat);
+				Texts.set(lngText, latlng.lng);
+			});
+			return null;
 		}
 	}
 }
