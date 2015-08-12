@@ -129,7 +129,7 @@ public class FuelEditor extends FormEditor {
 
 		private void addFuel(TableViewer table) {
 			Fuel fuel = new Fuel();
-			fuel.setId(UUID.randomUUID().toString());
+			fuel.id = UUID.randomUUID().toString();
 			fuel.setName(M.Fuel);
 			fuel.setUnit("L");
 			fuel.setCalorificValue(10);
@@ -207,7 +207,7 @@ public class FuelEditor extends FormEditor {
 
 		private void addWood(TableViewer table) {
 			Fuel fuel = new Fuel();
-			fuel.setId(UUID.randomUUID().toString());
+			fuel.id = UUID.randomUUID().toString();
 			fuel.setName(M.WoodFuel);
 			fuel.setUnit("kg");
 			fuel.setCalorificValue(5);

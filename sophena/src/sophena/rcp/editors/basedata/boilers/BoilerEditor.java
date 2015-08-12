@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -20,6 +21,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.BoilerDao;
 import sophena.model.Boiler;
 import sophena.rcp.App;
@@ -88,7 +90,8 @@ public class BoilerEditor extends FormEditor {
 			form.reflow(true);
 		}
 
-		private void createBoilerSection(Composite parent, FormToolkit toolkit) {
+		private void createBoilerSection(Composite parent,
+				FormToolkit toolkit) {
 			Section section = UI.section(parent, toolkit, "Heizkessel");
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
@@ -114,7 +117,7 @@ public class BoilerEditor extends FormEditor {
 
 		private void addBoiler(TableViewer table) {
 			Boiler boiler = new Boiler();
-			boiler.setId(UUID.randomUUID().toString());
+			boiler.id = UUID.randomUUID().toString();
 			boiler.setName("Neuer Heizkessel");
 			boiler.setEfficiencyRate(80);
 			if (BoilerWizard.open(boiler) != Window.OK)
@@ -172,18 +175,18 @@ public class BoilerEditor extends FormEditor {
 					return null;
 				Boiler boiler = (Boiler) element;
 				switch (col) {
-					case 0:
-						return boiler.getName();
-					case 1:
-						return boiler.getUrl();
-					case 2:
-						return getPrice(boiler);
-					case 3:
-						return getPowerInfo(boiler);
-					case 4:
-						return getFuelLabel(boiler);
-					default:
-						return null;
+				case 0:
+					return boiler.getName();
+				case 1:
+					return boiler.getUrl();
+				case 2:
+					return getPrice(boiler);
+				case 3:
+					return getPowerInfo(boiler);
+				case 4:
+					return getFuelLabel(boiler);
+				default:
+					return null;
 				}
 			}
 
@@ -195,7 +198,7 @@ public class BoilerEditor extends FormEditor {
 			}
 
 			private String getPowerInfo(Boiler boiler) {
-				if(boiler == null)
+				if (boiler == null)
 					return null;
 				String min = Numbers.toString(boiler.getMinPower());
 				String max = Numbers.toString(boiler.getMaxPower());
@@ -204,7 +207,7 @@ public class BoilerEditor extends FormEditor {
 			}
 
 			private String getFuelLabel(Boiler boiler) {
-				if(boiler.getFuel() != null)
+				if (boiler.getFuel() != null)
 					return boiler.getFuel().getName();
 				else
 					return Labels.get(boiler.getWoodAmountType());

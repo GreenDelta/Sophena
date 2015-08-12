@@ -20,12 +20,12 @@ public class ConsumerDao extends RootEntityDao<Consumer> {
 		if (pd == null)
 			return Collections.emptyList();
 		String sql = "SELECT id, name, description, is_disabled FROM tbl_consumers "
-				+ " WHERE f_project = '" + pd.getId() + "'";
+				+ " WHERE f_project = '" + pd.id + "'";
 		List<ConsumerDescriptor> list = new ArrayList<>();
 		try {
 			NativeSql.on(db).query(sql, (r) -> {
 				ConsumerDescriptor d = new ConsumerDescriptor();
-				d.setId(r.getString(1));
+				d.id = r.getString(1);
 				d.setName(r.getString(2));
 				d.setDescription(r.getString(3));
 				d.setDisabled(r.getBoolean(4));

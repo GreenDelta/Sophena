@@ -27,9 +27,9 @@ public class CostEditor extends Editor {
 	public static void open(ProjectDescriptor project) {
 		if (project == null)
 			return;
-		EditorInput input = new EditorInput(project.getId() + "/net",
+		EditorInput input = new EditorInput(project.id + "/net",
 				project.getName());
-		input.projectId = project.getId();
+		input.projectId = project.id;
 		Editors.open(input, "sophena.CostEditor");
 	}
 
@@ -65,7 +65,7 @@ public class CostEditor extends Editor {
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project dbProject = dao.get(project.getId());
+			Project dbProject = dao.get(project.id);
 			if (settingsPage != null) {
 				dbProject.setCostSettings(settingsPage.getCosts());
 			}

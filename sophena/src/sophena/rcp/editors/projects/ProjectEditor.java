@@ -21,7 +21,7 @@ public class ProjectEditor extends Editor {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
-		KeyEditorInput input = new KeyEditorInput(d.getId(), d.getName());
+		KeyEditorInput input = new KeyEditorInput(d.id, d.getName());
 		Editors.open(input, "sophena.ProjectEditor");
 	}
 
@@ -58,7 +58,7 @@ public class ProjectEditor extends Editor {
 		try {
 			log.info("update project {}", project);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project dbProject = dao.get(project.getId());
+			Project dbProject = dao.get(project.id);
 			dbProject.setDescription(project.getDescription());
 			dbProject.setName(project.getName());
 			dbProject.setProjectDuration(project.getProjectDuration());

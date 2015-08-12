@@ -131,7 +131,7 @@ public class Consumer extends Facility {
 	@Override
 	public Consumer clone() {
 		Consumer clone = new Consumer();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.setName(getName());
 		clone.setDescription(getDescription());
 		clone.setDisabled(isDisabled());
@@ -151,7 +151,7 @@ public class Consumer extends Facility {
 
 	public ConsumerDescriptor toDescriptor() {
 		ConsumerDescriptor d = new ConsumerDescriptor();
-		d.setId(getId());
+		d.id = id;
 		d.setName(getName());
 		d.setDescription(getDescription());
 		d.setDisabled(isDisabled());

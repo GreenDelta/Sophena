@@ -2,6 +2,7 @@ package sophena.rcp.editors.consumers;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -64,10 +65,10 @@ class LoadProfileSection {
 
 	private void addLoadProfile(TableViewer table) {
 		LoadProfile profile = new LoadProfile();
-		profile.setId(UUID.randomUUID().toString());
+		profile.id = UUID.randomUUID().toString();
 		profile.setName("Neuer Lastgang");
 		profile.setData(new double[Stats.HOURS]);
-		if(LoadProfileWizard.open(profile) == Window.OK) {
+		if (LoadProfileWizard.open(profile) == Window.OK) {
 			List<LoadProfile> profiles = consumer().getLoadProfiles();
 			profiles.add(profile);
 			table.setInput(profiles);
@@ -78,9 +79,9 @@ class LoadProfileSection {
 
 	private void editLoadProfile(TableViewer table) {
 		LoadProfile profile = Viewers.getFirstSelected(table);
-		if(profile == null)
+		if (profile == null)
 			return;
-		if(LoadProfileWizard.open(profile) == Window.OK) {
+		if (LoadProfileWizard.open(profile) == Window.OK) {
 			List<LoadProfile> profiles = consumer().getLoadProfiles();
 			table.setInput(profiles);
 			editor.calculate();
@@ -90,7 +91,7 @@ class LoadProfileSection {
 
 	private void deleteLoadProfile(TableViewer table) {
 		LoadProfile profile = Viewers.getFirstSelected(table);
-		if(profile == null)
+		if (profile == null)
 			return;
 		List<LoadProfile> profiles = consumer().getLoadProfiles();
 		profiles.remove(profile);
@@ -113,17 +114,17 @@ class LoadProfileSection {
 				return null;
 			LoadProfile profile = (LoadProfile) element;
 			switch (col) {
-				case 0:
-					return profile.getName();
-				case 1:
-					return heatDemand(profile);
-				default:
-					return null;
+			case 0:
+				return profile.getName();
+			case 1:
+				return heatDemand(profile);
+			default:
+				return null;
 			}
 		}
 
 		private String heatDemand(LoadProfile profile) {
-			if(profile.getData() == null)
+			if (profile.getData() == null)
 				return "0 kWh";
 			double demand = Stats.sum(profile.getData());
 			return Numbers.toString(demand) + " kWh";

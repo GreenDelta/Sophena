@@ -24,15 +24,16 @@ public class BaseCostEditor extends Editor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
 		super.init(site, input);
 		try {
 			CostSettingsDao dao = new CostSettingsDao(App.getDb());
 			costs = dao.getGlobal();
-			if(costs == null) {
+			if (costs == null) {
 				log.warn("did not found global cost settings -> create new");
 				costs = new CostSettings();
-				costs.setId(CostSettings.GLOBAL_ID);
+				costs.id = CostSettings.GLOBAL_ID;
 				costs = dao.insert(costs);
 			}
 		} catch (Exception e) {

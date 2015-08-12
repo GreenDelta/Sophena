@@ -11,8 +11,7 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 
 @Entity
 @Table(name = "tbl_weather_stations")
-@Converter(name = "DoubleArrayConverter",
-		converterClass = DoubleArrayConverter.class)
+@Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
 public class WeatherStation extends RootEntity {
 
 	@Column(name = "data")
@@ -30,7 +29,7 @@ public class WeatherStation extends RootEntity {
 	public WeatherStationDescriptor toDescriptor() {
 		WeatherStationDescriptor d = new WeatherStationDescriptor();
 		d.setDescription(getDescription());
-		d.setId(getId());
+		d.id = id;
 		d.setName(getName());
 		return d;
 	}

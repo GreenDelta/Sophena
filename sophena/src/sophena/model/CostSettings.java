@@ -74,7 +74,7 @@ public class CostSettings extends AbstractEntity {
 	@Override
 	public CostSettings clone() {
 		CostSettings clone = new CostSettings();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.funding = funding;
 		clone.electricityRevenues = electricityRevenues;
 		clone.interestRate = interestRate;

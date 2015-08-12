@@ -95,7 +95,7 @@ public class FuelConsumption extends AbstractEntity {
 	@Override
 	public FuelConsumption clone() {
 		FuelConsumption clone = new FuelConsumption();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.setAmount(this.getAmount());
 		clone.setFuel(this.getFuel());
 		clone.setUtilisationRate(this.getUtilisationRate());

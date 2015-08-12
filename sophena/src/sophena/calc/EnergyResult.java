@@ -39,9 +39,9 @@ public class EnergyResult {
 	}
 
 	public double totalHeat(Producer p) {
-		if (p == null || p.getId() == null)
+		if (p == null || p.id == null)
 			return 0;
-		Double d = totalHeats.get(p.getId());
+		Double d = totalHeats.get(p.id);
 		return d == null ? 0 : d;
 	}
 
@@ -59,8 +59,8 @@ public class EnergyResult {
 			producers[i] = list.get(i);
 			producerResults[i] = new double[Stats.HOURS];
 		}
-		Arrays.sort(producers, (p1, p2)
-				-> Integer.compare(p1.getRank(), p2.getRank()));
+		Arrays.sort(producers,
+				(p1, p2) -> Integer.compare(p1.getRank(), p2.getRank()));
 	}
 
 	public EnergyResult sort() {

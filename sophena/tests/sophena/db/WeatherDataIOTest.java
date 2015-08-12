@@ -19,7 +19,7 @@ public class WeatherDataIOTest {
 	public void testWriteRead() {
 		String id = UUID.randomUUID().toString();
 		WeatherStation station = new WeatherStation();
-		station.setId(id);
+		station.id = id;
 		double[] data = new double[Stats.HOURS];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = 10 * Math.random();

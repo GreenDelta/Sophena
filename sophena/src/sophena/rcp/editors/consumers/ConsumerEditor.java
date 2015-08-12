@@ -39,8 +39,8 @@ public class ConsumerEditor extends Editor {
 	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
 		if (p == null || c == null)
 			return;
-		EditorInput input = new EditorInput(c.getId(), c.getName());
-		input.projectKey = p.getId();
+		EditorInput input = new EditorInput(c.id, c.getName());
+		input.projectKey = p.id;
 		Editors.open(input, "sophena.ConsumerEditor");
 	}
 
@@ -51,13 +51,13 @@ public class ConsumerEditor extends Editor {
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		Project project = dao.get(i.projectKey);
-		projectId = project.getId();
+		projectId = project.id;
 		consumer = findConsumer(project, i.getKey());
 		this.weatherStation = project.getWeatherStation();
 		setPartName(consumer.getName());
 		if (consumer.location == null) {
 			Location loc = new Location();
-			loc.setId(UUID.randomUUID().toString());
+			loc.id = UUID.randomUUID().toString();
 			consumer.location = loc;
 		}
 	}
@@ -66,7 +66,7 @@ public class ConsumerEditor extends Editor {
 		if (project == null)
 			return null;
 		for (Consumer c : project.getConsumers()) {
-			if (Objects.equals(consumerKey, c.getId()))
+			if (Objects.equals(consumerKey, c.id))
 				return c;
 		}
 		log.error("did not found consumer {} in {}", consumerKey, project);
@@ -108,11 +108,11 @@ public class ConsumerEditor extends Editor {
 			log.info("update consumer {} in project {}", consumer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project project = dao.get(projectId);
-			Consumer old = findConsumer(project, consumer.getId());
+			Consumer old = findConsumer(project, consumer.id);
 			project.getConsumers().remove(old);
 			project.getConsumers().add(consumer);
 			project = dao.update(project);
-			consumer = findConsumer(project, consumer.getId());
+			consumer = findConsumer(project, consumer.id);
 			setPartName(consumer.getName());
 			Navigator.refresh();
 			setSaved();

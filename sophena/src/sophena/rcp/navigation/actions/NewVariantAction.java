@@ -73,7 +73,7 @@ public class NewVariantAction extends NavigationAction {
 	private void createVariant(String val) {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(descriptor.getId());
+			Project p = dao.get(descriptor.id);
 			Project variant = p.clone();
 			variant.setName(val);
 			variant.setVariant(true);

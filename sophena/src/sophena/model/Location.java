@@ -31,7 +31,7 @@ public class Location extends AbstractEntity {
 	@Override
 	public Location clone() {
 		Location clone = new Location();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.street = street;
 		clone.zipCode = zipCode;

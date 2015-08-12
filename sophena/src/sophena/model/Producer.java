@@ -88,7 +88,7 @@ public class Producer extends Facility {
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.setName(getName());
 		clone.setDescription(getDescription());
 		clone.setDisabled(isDisabled());
@@ -104,7 +104,7 @@ public class Producer extends Facility {
 
 	public ProducerDescriptor toDescriptor() {
 		ProducerDescriptor d = new ProducerDescriptor();
-		d.setId(getId());
+		d.id = id;
 		d.setName(getName());
 		d.setDescription(getDescription());
 		d.setDisabled(isDisabled());

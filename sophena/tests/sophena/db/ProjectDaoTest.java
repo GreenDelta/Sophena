@@ -19,7 +19,7 @@ public class ProjectDaoTest {
 	@Test
 	public void testGet() {
 		Project p = makeProject();
-		Project o = dao.get(p.getId());
+		Project o = dao.get(p.id);
 		Assert.assertEquals(p, o);
 		dao.delete(o);
 	}
@@ -46,7 +46,7 @@ public class ProjectDaoTest {
 		Project p = makeProject();
 		p.setName("name 2");
 		dao.update(p);
-		Project o = dao.get(p.getId());
+		Project o = dao.get(p.id);
 		Assert.assertEquals("name 2", o.getName());
 		dao.delete(o);
 	}
@@ -55,16 +55,16 @@ public class ProjectDaoTest {
 	public void testDelete() {
 		Project p = makeProject();
 		dao.delete(p);
-		Project o = dao.get(p.getId());
+		Project o = dao.get(p.id);
 		Assert.assertNull(o);
 	}
 
 	private Project makeProject() {
 		Project p = new Project();
-		p.setId(UUID.randomUUID().toString());
+		p.id = UUID.randomUUID().toString();
 		p.setName("A project");
 		CostSettings settings = new CostSettings();
-		settings.setId(UUID.randomUUID().toString());
+		settings.id = UUID.randomUUID().toString();
 		p.setCostSettings(settings);
 		p.getVariants().add(p.clone());
 		return dao.insert(p);

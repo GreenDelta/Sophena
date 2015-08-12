@@ -43,7 +43,7 @@ public class ClimateDataImportWizard extends Wizard {
 			return false;
 		try {
 			WeatherStation station = page.station;
-			station.setId(UUID.randomUUID().toString());
+			station.id = UUID.randomUUID().toString();
 			ClimateFileReader reader = new ClimateFileReader(page.file,
 					page.settings);
 			getContainer().run(false,
@@ -53,10 +53,11 @@ public class ClimateDataImportWizard extends Wizard {
 						reader.run();
 						station.setData(reader.getResult().getData());
 						// TODO: add error handling
-					Dao<WeatherStation> dao = new Dao<>(WeatherStation.class,
-							App.getDb());
-					dao.insert(station);
-				});
+						Dao<WeatherStation> dao = new Dao<>(
+								WeatherStation.class,
+								App.getDb());
+						dao.insert(station);
+					});
 			return true;
 		} catch (Exception e) {
 			return false;

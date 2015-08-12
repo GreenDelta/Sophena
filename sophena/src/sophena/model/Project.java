@@ -103,7 +103,7 @@ public class Project extends RootEntity {
 	@Override
 	public Project clone() {
 		Project clone = new Project();
-		clone.setId(UUID.randomUUID().toString());
+		clone.id = UUID.randomUUID().toString();
 		clone.setName(getName());
 		clone.setDescription(getDescription());
 		clone.setProjectDuration(getProjectDuration());
@@ -125,7 +125,7 @@ public class Project extends RootEntity {
 
 	public ProjectDescriptor toDescriptor() {
 		ProjectDescriptor d = new ProjectDescriptor();
-		d.setId(getId());
+		d.id = id;
 		d.setName(getName());
 		d.setDescription(getDescription());
 		d.setVariant(isVariant());

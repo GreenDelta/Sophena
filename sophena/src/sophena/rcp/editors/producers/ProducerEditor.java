@@ -1,10 +1,12 @@
 package sophena.rcp.editors.producers;
 
 import java.util.Objects;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -25,9 +27,9 @@ public class ProducerEditor extends Editor {
 			ProducerDescriptor producer) {
 		if (project == null || producer == null)
 			return;
-		EditorInput input = new EditorInput(producer.getId(),
+		EditorInput input = new EditorInput(producer.id,
 				producer.getName());
-		input.projectKey = project.getId();
+		input.projectKey = project.id;
 		Editors.open(input, "sophena.ProducerEditor");
 	}
 
@@ -38,7 +40,7 @@ public class ProducerEditor extends Editor {
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		Project project = dao.get(i.projectKey);
-		projectId = project.getId();
+		projectId = project.id;
 		producer = findProducer(project, i.getKey());
 		setPartName(producer.getName());
 	}
@@ -47,7 +49,7 @@ public class ProducerEditor extends Editor {
 		if (project == null)
 			return null;
 		for (Producer p : project.getProducers()) {
-			if (Objects.equals(producerKey, p.getId()))
+			if (Objects.equals(producerKey, p.id))
 				return p;
 		}
 		return null;
@@ -72,11 +74,11 @@ public class ProducerEditor extends Editor {
 			log.info("update producer {} in project {}", producer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project project = dao.get(projectId);
-			Producer old  = findProducer(project, producer.getId());
+			Producer old = findProducer(project, producer.id);
 			project.getProducers().remove(old);
 			project.getProducers().add(producer);
 			project = dao.update(project);
-			producer = findProducer(project, producer.getId());
+			producer = findProducer(project, producer.id);
 			setPartName(producer.getName());
 			Navigator.refresh();
 			setSaved();

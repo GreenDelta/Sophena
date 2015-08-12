@@ -55,7 +55,7 @@ public class ProducerWizard extends Wizard {
 		if (d == null)
 			return;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		open(dao.get(d.getId()));
+		open(dao.get(d.id));
 	}
 
 	public static void open(Project project) {
@@ -74,7 +74,7 @@ public class ProducerWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			Producer producer = new Producer();
-			producer.setId(UUID.randomUUID().toString());
+			producer.id = UUID.randomUUID().toString();
 			page.data.bindToModel(producer);
 			addFuelSpec(producer);
 			addCosts(producer);

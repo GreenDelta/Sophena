@@ -27,9 +27,9 @@ public class HeatNetEditor extends FormEditor {
 	public static void open(ProjectDescriptor project) {
 		if (project == null)
 			return;
-		EditorInput input = new EditorInput(project.getId() + "/net",
+		EditorInput input = new EditorInput(project.id + "/net",
 				project.getName());
-		input.projectId = project.getId();
+		input.projectId = project.id;
 		Editors.open(input, "sophena.HeatNetEditor");
 	}
 
@@ -40,7 +40,7 @@ public class HeatNetEditor extends FormEditor {
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		Project p = dao.get(i.projectId);
-		projectId = p.getId();
+		projectId = p.id;
 		heatNet = p.getHeatNet();
 		setPartName(p.getName());
 	}

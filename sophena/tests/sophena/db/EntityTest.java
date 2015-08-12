@@ -50,12 +50,12 @@ public class EntityTest {
 			throws Exception {
 		T entity = clazz.newInstance();
 		Dao<T> dao = new Dao<>(clazz, Tests.getDb());
-		entity.setId(UUID.randomUUID().toString());
+		entity.id = UUID.randomUUID().toString();
 		dao.insert(entity);
-		T clone = dao.get(entity.getId());
+		T clone = dao.get(entity.id);
 		Assert.assertEquals(entity, clone);
 		dao.delete(entity);
-		clone = dao.get(entity.getId());
+		clone = dao.get(entity.id);
 		Assert.assertNull(clone);
 	}
 }

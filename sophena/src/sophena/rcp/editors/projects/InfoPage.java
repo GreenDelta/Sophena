@@ -63,7 +63,8 @@ class InfoPage extends FormPage {
 				});
 	}
 
-	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
+	private void createDescriptionText(FormToolkit toolkit,
+			Composite composite) {
 		Text t = UI.formMultiText(composite, toolkit, M.Description);
 		Texts.on(t)
 				.init(project().getDescription())
@@ -90,8 +91,8 @@ class InfoPage extends FormPage {
 		combo.create("Wetterstation", composite, toolkit);
 		WeatherStationDao dao = new WeatherStationDao(App.getDb());
 		List<WeatherStationDescriptor> list = dao.getDescriptors();
-		Collections.sort(list, (w1, w2)
-				-> Strings.compare(w1.getName(), w2.getName()));
+		Collections.sort(list,
+				(w1, w2) -> Strings.compare(w1.getName(), w2.getName()));
 		combo.setInput(list);
 		WeatherStation s = project().getWeatherStation();
 		if (s != null)
@@ -100,7 +101,7 @@ class InfoPage extends FormPage {
 			if (d == null) {
 				return;
 			}
-			WeatherStation selected = dao.get(d.getId());
+			WeatherStation selected = dao.get(d.id);
 			project().setWeatherStation(selected);
 			editor.setDirty();
 		});

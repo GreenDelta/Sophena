@@ -32,7 +32,7 @@ public class ResultEditor extends FormEditor {
 		closeExisting(d);
 		Rcp.run("Berechne...", () -> {
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(d.getId());
+			Project p = dao.get(d.id);
 			ProjectResult result = ProjectResult.calculate(p);
 			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
@@ -47,7 +47,7 @@ public class ResultEditor extends FormEditor {
 			if (!(e instanceof ResultEditor))
 				continue;
 			ResultEditor editor = (ResultEditor) e;
-			if (Strings.nullOrEqual(d.getId(), editor.project.getId()))
+			if (Strings.nullOrEqual(d.id, editor.project.id))
 				Editors.close(ref);
 		}
 	}

@@ -43,7 +43,7 @@ public class ConsumerWizard extends Wizard {
 		if (d == null)
 			return;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		open(dao.get(d.getId()));
+		open(dao.get(d.id));
 	}
 
 	public static void open(Project project) {
@@ -88,7 +88,7 @@ public class ConsumerWizard extends Wizard {
 		private Page() {
 			super("ConsumerWizardPage", M.CreateNewConsumer, null);
 			consumer = new Consumer();
-			consumer.setId(UUID.randomUUID().toString());
+			consumer.id = UUID.randomUUID().toString();
 			consumer.setName(M.NewConsumer);
 			consumer.setDemandBased(false);
 			consumer.setWaterFraction(10);
@@ -121,8 +121,8 @@ public class ConsumerWizard extends Wizard {
 			List<BuildingType> types = dao.getAll();
 			if (types.isEmpty())
 				return;
-			Collections.sort(types, (e1, e2)
-					-> Strings.compare(e1.getName(), e2.getName()));
+			Collections.sort(types,
+					(e1, e2) -> Strings.compare(e1.getName(), e2.getName()));
 			combo.setInput(types);
 			combo.select(types.get(0));
 			consumer.setBuildingType(types.get(0));
@@ -132,12 +132,13 @@ public class ConsumerWizard extends Wizard {
 		private void createStateCombo(Composite composite) {
 			EntityCombo<BuildingState> combo = new EntityCombo<>();
 			combo.create(M.BuildingState, composite);
-			Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
+			Dao<BuildingState> dao = new Dao<>(BuildingState.class,
+					App.getDb());
 			List<BuildingState> states = dao.getAll();
 			if (states.isEmpty())
 				return;
-			Collections.sort(states, (s1, s2)
-					-> Strings.compare(s1.getName(), s2.getName()));
+			Collections.sort(states,
+					(s1, s2) -> Strings.compare(s1.getName(), s2.getName()));
 			combo.setInput(states);
 			combo.select(states.get(0));
 			consumer.setBuildingState(states.get(0));
@@ -156,8 +157,8 @@ public class ConsumerWizard extends Wizard {
 			Composite inner = new Composite(composite, SWT.NONE);
 			UI.innerGrid(inner, 2);
 			Text text = UI.formText(inner, M.HeatingLoad);
-			text.addModifyListener((e) ->
-					consumer.setHeatingLoad(Numbers.read(text.getText())));
+			text.addModifyListener((e) -> consumer
+					.setHeatingLoad(Numbers.read(text.getText())));
 			inner.setVisible(false);
 			Controls.onSelect(consumption, (e) -> {
 				consumer.setDemandBased(false);

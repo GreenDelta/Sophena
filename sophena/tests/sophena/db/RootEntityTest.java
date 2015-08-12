@@ -41,13 +41,13 @@ public class RootEntityTest {
 	private <T extends RootEntity> void test(Class<T> clazz) throws Exception {
 		T entity = clazz.newInstance();
 		RootEntityDao<T> dao = new RootEntityDao<>(clazz, Tests.getDb());
-		entity.setId(UUID.randomUUID().toString());
+		entity.id = UUID.randomUUID().toString();
 		entity.setName("test");
 		dao.insert(entity);
-		T clone = dao.get(entity.getId());
+		T clone = dao.get(entity.id);
 		Assert.assertEquals(entity, clone);
 		dao.delete(entity);
-		clone = dao.get(entity.getId());
+		clone = dao.get(entity.id);
 		Assert.assertNull(clone);
 	}
 }

@@ -58,7 +58,7 @@ public class DisableAction extends NavigationAction {
 	private void updateConsumer(ConsumerElement e) {
 		try {
 			ConsumerDao dao = new ConsumerDao(App.getDb());
-			Consumer c = dao.get(e.getDescriptor().getId());
+			Consumer c = dao.get(e.getDescriptor().id);
 			c.setDisabled(!c.isDisabled());
 			dao.update(c);
 			Navigator.refresh();
@@ -70,7 +70,7 @@ public class DisableAction extends NavigationAction {
 	private void updateProducer(ProducerElement e) {
 		try {
 			ProducerDao dao = new ProducerDao(App.getDb());
-			Producer p = dao.get(e.getDescriptor().getId());
+			Producer p = dao.get(e.getDescriptor().id);
 			p.setDisabled(!p.isDisabled());
 			dao.update(p);
 			Navigator.refresh();

@@ -54,7 +54,7 @@ public class ProjectWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			Project p = new Project();
-			p.setId(UUID.randomUUID().toString());
+			p.id = UUID.randomUUID().toString();
 			page.data.bindToModel(p);
 			addHeatNet(p);
 			addCostSettings(p);
@@ -76,7 +76,7 @@ public class ProjectWizard extends Wizard {
 			p.setCostSettings(global.clone());
 		else {
 			CostSettings settings = new CostSettings();
-			settings.setId(UUID.randomUUID().toString());
+			settings.id = UUID.randomUUID().toString();
 			p.setCostSettings(settings);
 		}
 	}
@@ -139,7 +139,7 @@ public class ProjectWizard extends Wizard {
 				if (d == null)
 					return null;
 				WeatherStationDao dao = new WeatherStationDao(App.getDb());
-				return dao.get(d.getId());
+				return dao.get(d.id);
 			}
 
 			void bindToUI() {
@@ -152,8 +152,8 @@ public class ProjectWizard extends Wizard {
 			private void initWeatherStations() {
 				WeatherStationDao dao = new WeatherStationDao(App.getDb());
 				List<WeatherStationDescriptor> list = dao.getDescriptors();
-				Collections.sort(list, (w1, w2)
-						-> Strings.compare(w1.getName(), w2.getName()));
+				Collections.sort(list, (w1, w2) -> Strings.compare(w1.getName(),
+						w2.getName()));
 				stationCombo.setInput(list);
 				if (!list.isEmpty())
 					stationCombo.select(list.get(0));
@@ -166,7 +166,8 @@ public class ProjectWizard extends Wizard {
 					return error("Es muss ein Name angegeben werden.");
 				int time = Texts.getInt(timeText);
 				if (time < 1 || time > 1000)
-					return error("Die Projektlaufzeit enthält keinen gültigen Wert.");
+					return error(
+							"Die Projektlaufzeit enthält keinen gültigen Wert.");
 				WeatherStationDescriptor d = stationCombo.getSelected();
 				if (d == null)
 					return error("Es wurde keine Wetterstation ausgewählt.");

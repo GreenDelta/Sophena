@@ -69,7 +69,7 @@ class ConsumptionSection {
 
 	private void onAdd() {
 		FuelConsumption c = new FuelConsumption();
-		c.setId(UUID.randomUUID().toString());
+		c.id = UUID.randomUUID().toString();
 		int code = ConsumptionDataWizard.open(c, consumer()
 				.getLoadHours());
 		if (code == Window.OK) {

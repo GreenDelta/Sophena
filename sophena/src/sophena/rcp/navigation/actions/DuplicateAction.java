@@ -55,14 +55,13 @@ public class DuplicateAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ConsumerElement.class,
-			title = "Duplizieren")
+	@Handler(type = ConsumerElement.class, title = "Duplizieren")
 	private void copyConsumer() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ProjectDao pDao = new ProjectDao(App.getDb());
-		Project project = pDao.get(e.getProject().getId());
+		Project project = pDao.get(e.getProject().id);
 		ConsumerDao cDao = new ConsumerDao(App.getDb());
-		Consumer consumer = cDao.get(e.getDescriptor().getId());
+		Consumer consumer = cDao.get(e.getDescriptor().id);
 		if (project == null || consumer == null)
 			return;
 		String name = getCopyName(consumer.getName(), project.getConsumers());
@@ -73,14 +72,13 @@ public class DuplicateAction extends NavigationAction {
 		Navigator.refresh();
 	}
 
-	@Handler(type = ProducerElement.class,
-			title = "Duplizieren")
+	@Handler(type = ProducerElement.class, title = "Duplizieren")
 	private void copyProducer() {
 		ProducerElement e = (ProducerElement) elem;
 		ProjectDao projDao = new ProjectDao(App.getDb());
-		Project project = projDao.get(e.getProject().getId());
+		Project project = projDao.get(e.getProject().id);
 		ProducerDao prodDao = new ProducerDao(App.getDb());
-		Producer producer = prodDao.get(e.getDescriptor().getId());
+		Producer producer = prodDao.get(e.getDescriptor().id);
 		if (project == null || producer == null)
 			return;
 		String name = getCopyName(producer.getName(), project.getProducers());
@@ -91,7 +89,8 @@ public class DuplicateAction extends NavigationAction {
 		Navigator.refresh();
 	}
 
-	private String getCopyName(String raw, List<? extends RootEntity> existing) {
+	private String getCopyName(String raw,
+			List<? extends RootEntity> existing) {
 		String baseName = getBaseName(raw);
 		int maxCount = 0;
 		for (RootEntity e : existing) {

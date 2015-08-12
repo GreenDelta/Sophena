@@ -42,7 +42,8 @@ class EnergyCalculator {
 				if (maxLoad < boiler.getMinPower())
 					continue;
 
-				double power = getSuppliedPower(requiredLoad, maxLoad, producer);
+				double power = getSuppliedPower(requiredLoad, maxLoad,
+						producer);
 				if (power > requiredLoad) {
 					bufferCapacity -= (power - requiredLoad);
 				}
@@ -80,8 +81,8 @@ class EnergyCalculator {
 		Boiler boiler = producer.getBoiler();
 		double bMin = boiler.getMinPower();
 		double bMax = boiler.getMaxPower();
-		double load = producer.getFunction() == ProducerFunction.PEAK_LOAD ?
-				requiredLoad : maxLoad;
+		double load = producer.getFunction() == ProducerFunction.PEAK_LOAD
+				? requiredLoad : maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);
 	}
 
@@ -100,7 +101,7 @@ class EnergyCalculator {
 		for (int i = 0; i < r.producers.length; i++) {
 			Producer p = r.producers[i];
 			double total = Stats.sum(r.producerResults[i]);
-			r.totalHeats.put(p.getId(), total);
+			r.totalHeats.put(p.id, total);
 			r.totalProducedHeat += total;
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);

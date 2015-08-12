@@ -58,8 +58,7 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ProjectElement.class,
-			title = "Lösche Projekt")
+	@Handler(type = ProjectElement.class, title = "Lösche Projekt")
 	private void deleteProject() {
 		boolean del = MsgBox.ask("Projekt löschen?",
 				"Soll das ausgewählte Projekt wirklich gelöscht werden?");
@@ -68,9 +67,9 @@ public class DeleteAction extends NavigationAction {
 		try {
 			ProjectElement e = (ProjectElement) elem;
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(e.getDescriptor().getId());
+			Project p = dao.get(e.getDescriptor().id);
 			dao.delete(p);
-			Editors.close(p.getId());
+			Editors.close(p.id);
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
@@ -78,8 +77,7 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ConsumerElement.class,
-			title = "Lösche Wärmeabnehmer")
+	@Handler(type = ConsumerElement.class, title = "Lösche Wärmeabnehmer")
 	private void deleteConsumer() {
 		boolean del = MsgBox.ask("Abnehmer löschen?",
 				"Soll der ausgewählte Abnehmer wirklich gelöscht werden?");
@@ -88,7 +86,7 @@ public class DeleteAction extends NavigationAction {
 		try {
 			ConsumerElement e = (ConsumerElement) elem;
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(e.getProject().getId());
+			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
 			Consumer c = find(p.getConsumers(), e.getDescriptor());
@@ -96,7 +94,7 @@ public class DeleteAction extends NavigationAction {
 				return;
 			p.getConsumers().remove(c);
 			dao.update(p);
-			Editors.close(c.getId());
+			Editors.close(c.id);
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
@@ -104,8 +102,7 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ProducerElement.class,
-			title = "Lösche Wärmeerzeuger")
+	@Handler(type = ProducerElement.class, title = "Lösche Wärmeerzeuger")
 	private void deleteProducer() {
 		boolean del = MsgBox.ask("Erzeuger löschen?",
 				"Soll der ausgewählte Erzeuger wirklich gelöscht werden?");
@@ -114,7 +111,7 @@ public class DeleteAction extends NavigationAction {
 		try {
 			ProducerElement e = (ProducerElement) elem;
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(e.getProject().getId());
+			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
 			Producer prod = find(p.getProducers(), e.getDescriptor());
@@ -122,7 +119,7 @@ public class DeleteAction extends NavigationAction {
 				return;
 			p.getProducers().remove(prod);
 			dao.update(p);
-			Editors.close(prod.getId());
+			Editors.close(prod.id);
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
@@ -134,7 +131,7 @@ public class DeleteAction extends NavigationAction {
 		if (list == null || d == null)
 			return null;
 		for (T e : list) {
-			if (Objects.equals(e.getId(), d.getId()))
+			if (Objects.equals(e.id, d.id))
 				return e;
 		}
 		return null;

@@ -22,7 +22,7 @@ public class ProjectDao extends RootEntityDao<Project> {
 		try {
 			NativeSql.on(db).query(sql, (r) -> {
 				ProjectDescriptor d = new ProjectDescriptor();
-				d.setId(r.getString(1));
+				d.id = r.getString(1);
 				d.setName(r.getString(2));
 				d.setDescription(r.getString(3));
 				d.setVariant(r.getBoolean(4));
@@ -39,12 +39,12 @@ public class ProjectDao extends RootEntityDao<Project> {
 		if (pd == null)
 			return Collections.emptyList();
 		String sql = "SELECT id, name, description FROM tbl_projects WHERE "
-				+ " f_project = '" + pd.getId() + "'";
+				+ " f_project = '" + pd.id + "'";
 		List<ProjectDescriptor> list = new ArrayList<>();
 		try {
 			NativeSql.on(db).query(sql, (r) -> {
 				ProjectDescriptor d = new ProjectDescriptor();
-				d.setId(r.getString(1));
+				d.id = r.getString(1);
 				d.setName(r.getString(2));
 				d.setDescription(r.getString(3));
 				d.setVariant(true);
