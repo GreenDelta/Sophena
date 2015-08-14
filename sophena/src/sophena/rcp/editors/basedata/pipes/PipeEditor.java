@@ -3,7 +3,10 @@ package sophena.rcp.editors.basedata.pipes;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -14,6 +17,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.db.daos.RootEntityDao;
 import sophena.model.Pipe;
 import sophena.rcp.App;
+import sophena.rcp.Images;
+import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -67,10 +72,41 @@ public class PipeEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
 					"Link", "Preis", "Durchmesser", "U-Wert");
-			// table.setLabelProvider(new Label());
+			table.setLabelProvider(new Label());
 			table.setInput(pipes);
 			Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
 			// bindActions(section, table);
+		}
+
+	}
+
+	private class Label extends LabelProvider implements ITableLabelProvider {
+
+		@Override
+		public Image getColumnImage(Object e, int col) {
+			return col == 0 ? Images.PIPE_16.img() : null;
+		}
+
+		@Override
+		public String getColumnText(Object e, int col) {
+			if (!(e instanceof Pipe))
+				return null;
+			Pipe p = (Pipe) e;
+			switch (col) {
+			case 0:
+				return p.name;
+			case 1:
+				return p.url;
+			case 2:
+				return p.purchasePrice == null ? null
+						: Numbers.toString(p.purchasePrice) + " EUR/m";
+			case 3:
+				return Numbers.toString(p.diameter) + " mm";
+			case 4:
+				return Numbers.toString(p.uValue);
+			default:
+				return null;
+			}
 		}
 
 	}
