@@ -45,6 +45,8 @@ public enum Images {
 
 	OPEN_16("open_16.png"),
 
+	PIPE_16("pipe_16.png"),
+
 	PROJECT_16("project_16.png"),
 
 	PRODUCER_16("producer_16.png"),

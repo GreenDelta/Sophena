@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.climate;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -8,7 +7,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -21,6 +19,7 @@ import sophena.model.WeatherStation;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -29,7 +28,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.rcp.wizards.ClimateDataImportWizard;
 
-public class ClimateDataEditor extends FormEditor {
+public class ClimateDataEditor extends Editor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -46,19 +45,6 @@ public class ClimateDataEditor extends FormEditor {
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
 	}
 
 	private class Page extends FormPage {

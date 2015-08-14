@@ -1,14 +1,16 @@
 package sophena.rcp.editors;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.rcp.utils.IEditor;
 
 abstract public class Editor extends FormEditor implements IEditor {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());
-    private boolean dirty;
+	private boolean dirty;
 
 	@Override
 	public void setDirty() {
@@ -19,7 +21,7 @@ abstract public class Editor extends FormEditor implements IEditor {
 	}
 
 	public void setSaved() {
-		if(!dirty)
+		if (!dirty)
 			return;
 		dirty = false;
 		editorDirtyStateChanged();
@@ -28,6 +30,10 @@ abstract public class Editor extends FormEditor implements IEditor {
 	@Override
 	public boolean isDirty() {
 		return dirty;
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
 	}
 
 	@Override

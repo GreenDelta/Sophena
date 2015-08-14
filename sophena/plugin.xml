@@ -145,6 +145,12 @@
 			icon="icons/boiler_16.png"
 			id="sophena.BoilerEditor"
 			name="Heizkessel" />
+			
+		<editor
+			class="sophena.rcp.editors.basedata.pipes.PipeEditor"
+			icon="icons/pipe_16.png"
+			id="sophena.PipeEditor"
+			name="Wärmeleitungen" />
 
 		<editor
 			class="sophena.rcp.editors.basedata.costs.BaseCostEditor"
