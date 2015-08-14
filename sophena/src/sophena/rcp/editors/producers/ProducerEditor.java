@@ -28,7 +28,7 @@ public class ProducerEditor extends Editor {
 		if (project == null || producer == null)
 			return;
 		EditorInput input = new EditorInput(producer.id,
-				producer.getName());
+				producer.name);
 		input.projectKey = project.id;
 		Editors.open(input, "sophena.ProducerEditor");
 	}
@@ -42,7 +42,7 @@ public class ProducerEditor extends Editor {
 		Project project = dao.get(i.projectKey);
 		projectId = project.id;
 		producer = findProducer(project, i.getKey());
-		setPartName(producer.getName());
+		setPartName(producer.name);
 	}
 
 	private Producer findProducer(Project project, String producerKey) {
@@ -79,7 +79,7 @@ public class ProducerEditor extends Editor {
 			project.getProducers().add(producer);
 			project = dao.update(project);
 			producer = findProducer(project, producer.id);
-			setPartName(producer.getName());
+			setPartName(producer.name);
 			Navigator.refresh();
 			setSaved();
 		} catch (Exception e) {

@@ -34,7 +34,7 @@ abstract class ContentElement<T extends Descriptor> implements
 		if (descriptor == null)
 			return null;
 		else
-			return descriptor.getName();
+			return descriptor.name;
 	}
 
 	@Override
@@ -48,8 +48,8 @@ abstract class ContentElement<T extends Descriptor> implements
 		if (this.descriptor == null || otherDes == null)
 			return 0;
 		else
-			return Strings.compare(this.descriptor.getName(),
-					otherDes.getName());
+			return Strings.compare(this.descriptor.name,
+					otherDes.name);
 	}
 
 	@Override

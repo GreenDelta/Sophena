@@ -104,8 +104,8 @@ public class Project extends RootEntity {
 	public Project clone() {
 		Project clone = new Project();
 		clone.id = UUID.randomUUID().toString();
-		clone.setName(getName());
-		clone.setDescription(getDescription());
+		clone.name = name;
+		clone.description = description;
 		clone.setProjectDuration(getProjectDuration());
 		clone.setWeatherStation(getWeatherStation());
 		clone.setVariant(isVariant());
@@ -126,8 +126,8 @@ public class Project extends RootEntity {
 	public ProjectDescriptor toDescriptor() {
 		ProjectDescriptor d = new ProjectDescriptor();
 		d.id = id;
-		d.setName(getName());
-		d.setDescription(getDescription());
+		d.name = name;
+		d.description = description;
 		d.setVariant(isVariant());
 		return d;
 	}

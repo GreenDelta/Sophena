@@ -70,7 +70,7 @@ class ProducerSection {
 				return null;
 			switch (col) {
 			case 0:
-				return p.getName();
+				return p.name;
 			case 1:
 				return Numbers.toString(c.investment) + " EUR";
 			case 2:

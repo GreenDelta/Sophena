@@ -59,7 +59,7 @@ class BoilerTableSection {
 		for (int i = 0; i < producers.length; i++) {
 			Producer p = producers[i];
 			Item item = new Item();
-			item.name = p.getName();
+			item.name = p.name;
 			item.fuel = getFuel(p);
 			if (p.getFunction() == ProducerFunction.BASE_LOAD)
 				item.rank = p.getRank() + " - Grundlast";
@@ -75,10 +75,10 @@ class BoilerTableSection {
 	private String getFuel(Producer p) {
 		Boiler b = p.getBoiler();
 		if (b != null && b.getFuel() != null)
-			return b.getFuel().getName();
+			return b.getFuel().name;
 		FuelSpec fs = p.getFuelSpec();
 		if (fs != null && fs.getWoodFuel() != null)
-			return fs.getWoodFuel().getName();
+			return fs.getWoodFuel().name;
 		else
 			return null;
 	}

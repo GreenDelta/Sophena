@@ -64,9 +64,9 @@ public class DuplicateAction extends NavigationAction {
 		Consumer consumer = cDao.get(e.getDescriptor().id);
 		if (project == null || consumer == null)
 			return;
-		String name = getCopyName(consumer.getName(), project.getConsumers());
+		String name = getCopyName(consumer.name, project.getConsumers());
 		Consumer clone = consumer.clone();
-		clone.setName(name);
+		clone.name = name;
 		project.getConsumers().add(clone);
 		pDao.update(project);
 		Navigator.refresh();
@@ -81,9 +81,9 @@ public class DuplicateAction extends NavigationAction {
 		Producer producer = prodDao.get(e.getDescriptor().id);
 		if (project == null || producer == null)
 			return;
-		String name = getCopyName(producer.getName(), project.getProducers());
+		String name = getCopyName(producer.name, project.getProducers());
 		Producer clone = producer.clone();
-		clone.setName(name);
+		clone.name = name;
 		project.getProducers().add(clone);
 		projDao.update(project);
 		Navigator.refresh();
@@ -94,10 +94,10 @@ public class DuplicateAction extends NavigationAction {
 		String baseName = getBaseName(raw);
 		int maxCount = 0;
 		for (RootEntity e : existing) {
-			String b = getBaseName(e.getName());
+			String b = getBaseName(e.name);
 			if (!baseName.equalsIgnoreCase(b))
 				continue;
-			int count = getCount(e.getName());
+			int count = getCount(e.name);
 			maxCount = Math.max(maxCount, count);
 		}
 		maxCount++;

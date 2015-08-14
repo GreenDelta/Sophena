@@ -117,7 +117,7 @@ class ConsumptionSection {
 			FuelConsumption c = (FuelConsumption) element;
 			switch (col) {
 			case 0:
-				return c.getFuel() != null ? c.getFuel().getName() : null;
+				return c.getFuel() != null ? c.getFuel().name : null;
 			case 1:
 				return getAmount(c);
 			case 2:

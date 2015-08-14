@@ -28,9 +28,9 @@ public class WeatherStation extends RootEntity {
 
 	public WeatherStationDescriptor toDescriptor() {
 		WeatherStationDescriptor d = new WeatherStationDescriptor();
-		d.setDescription(getDescription());
 		d.id = id;
-		d.setName(getName());
+		d.name = name;
+		d.description = description;
 		return d;
 	}
 }

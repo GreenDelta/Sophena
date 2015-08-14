@@ -43,7 +43,7 @@ public class EntityCombo<T extends RootEntity> {
 
 	public void setInput(List<T> entities) {
 		Collections.sort(entities,
-				(e1, e2) -> Strings.compare(e1.getName(), e2.getName()));
+				(e1, e2) -> Strings.compare(e1.name, e2.name));
 		viewer.setInput(entities);
 	}
 
@@ -71,7 +71,7 @@ public class EntityCombo<T extends RootEntity> {
 			if (!(element instanceof RootEntity))
 				return super.getText(element);
 			RootEntity entity = (RootEntity) element;
-			return entity.getName();
+			return entity.name;
 		}
 	}
 

@@ -67,7 +67,7 @@ class FuelSection {
 	private void createFuelRow(FormToolkit tk, Composite composite) {
 		UI.formLabel(composite, tk, "Brennstoff");
 		Fuel f = producer().getBoiler().getFuel();
-		String text = f.getName() + " ("
+		String text = f.name + " ("
 				+ Numbers.toString(f.getCalorificValue()) + " kWh/"
 				+ f.getUnit() + ")";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);

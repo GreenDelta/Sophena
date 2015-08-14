@@ -154,7 +154,7 @@ public class ProducerWizard extends Wizard {
 				if (b == null) {
 					nameEdited = true;
 				} else {
-					nameEdited = !Strings.nullOrEqual(t, b.getName());
+					nameEdited = !Strings.nullOrEqual(t, b.name);
 				}
 			});
 		}
@@ -200,7 +200,7 @@ public class ProducerWizard extends Wizard {
 				if (!(element instanceof Boiler))
 					return null;
 				Boiler boiler = (Boiler) element;
-				String label = boiler.getName() + " ("
+				String label = boiler.name + " ("
 						+ Numbers.toString(boiler.getMinPower()) + " kW - "
 						+ Numbers.toString(boiler.getMaxPower()) + " kW)";
 				return label;
@@ -214,7 +214,7 @@ public class ProducerWizard extends Wizard {
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerList);
 				producer.setBoiler(b);
-				producer.setName(nameText.getText());
+				producer.name = nameText.getText();
 				producer.setRank(Texts.getInt(rankText));
 				int fnIdx = functionCombo.getSelectionIndex();
 				if (fnIdx == 0)
@@ -239,7 +239,7 @@ public class ProducerWizard extends Wizard {
 				if (b == null)
 					nameText.setText("");
 				else
-					Texts.set(nameText, b.getName());
+					Texts.set(nameText, b.name);
 			}
 
 			private String[] getFuelItems() {
@@ -249,7 +249,7 @@ public class ProducerWizard extends Wizard {
 				FuelDao dao = new FuelDao(App.getDb());
 				for (Fuel fuel : dao.getAll()) {
 					if (!fuel.isWood())
-						list.add(fuel.getName());
+						list.add(fuel.name);
 				}
 				Collections.sort(list);
 				return list.toArray(new String[list.size()]);
@@ -287,8 +287,8 @@ public class ProducerWizard extends Wizard {
 					if (matchSelection(b))
 						input.add(b);
 				}
-				input.sort((b1, b2) -> Strings.compare(b1.getName(),
-						b2.getName()));
+				input.sort((b1, b2) -> Strings.compare(b1.name,
+						b2.name));
 				boilerList.setInput(input);
 				setPageComplete(false);
 			}
@@ -299,7 +299,7 @@ public class ProducerWizard extends Wizard {
 				int idx = fuelCombo.getSelectionIndex();
 				String fuel = fuelCombo.getItem(idx);
 				if (b.getFuel() != null)
-					return Strings.nullOrEqual(fuel, b.getFuel().getName());
+					return Strings.nullOrEqual(fuel, b.getFuel().name);
 				if (b.getWoodAmountType() != null)
 					return Strings.nullOrEqual(fuel,
 							Labels.get(b.getWoodAmountType()));

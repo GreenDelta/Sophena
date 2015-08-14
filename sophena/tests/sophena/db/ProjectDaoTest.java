@@ -44,10 +44,10 @@ public class ProjectDaoTest {
 	@Test
 	public void testUpdate() {
 		Project p = makeProject();
-		p.setName("name 2");
+		p.name = "name 2";
 		dao.update(p);
 		Project o = dao.get(p.id);
-		Assert.assertEquals("name 2", o.getName());
+		Assert.assertEquals("name 2", o.name);
 		dao.delete(o);
 	}
 
@@ -62,7 +62,7 @@ public class ProjectDaoTest {
 	private Project makeProject() {
 		Project p = new Project();
 		p.id = UUID.randomUUID().toString();
-		p.setName("A project");
+		p.name = "A project";
 		CostSettings settings = new CostSettings();
 		settings.id = UUID.randomUUID().toString();
 		p.setCostSettings(settings);

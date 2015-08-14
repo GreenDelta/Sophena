@@ -66,7 +66,7 @@ class LoadProfileSection {
 	private void addLoadProfile(TableViewer table) {
 		LoadProfile profile = new LoadProfile();
 		profile.id = UUID.randomUUID().toString();
-		profile.setName("Neuer Lastgang");
+		profile.name = "Neuer Lastgang";
 		profile.setData(new double[Stats.HOURS]);
 		if (LoadProfileWizard.open(profile) == Window.OK) {
 			List<LoadProfile> profiles = consumer().getLoadProfiles();
@@ -115,7 +115,7 @@ class LoadProfileSection {
 			LoadProfile profile = (LoadProfile) element;
 			switch (col) {
 			case 0:
-				return profile.getName();
+				return profile.name;
 			case 1:
 				return heatDemand(profile);
 			default:

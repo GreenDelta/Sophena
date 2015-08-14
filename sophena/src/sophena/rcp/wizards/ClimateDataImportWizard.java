@@ -92,8 +92,8 @@ public class ClimateDataImportWizard extends Wizard {
 		private void createTextFields(Composite comp) {
 			Text t = UI.formText(comp, "#Name");
 			t.setText("Neue Wetterstation");
-			station.setName("Neue Wetterstation");
-			t.addModifyListener((e) -> station.setName(t.getText()));
+			station.name = "Neue Wetterstation";
+			t.addModifyListener((e) -> station.name = t.getText());
 			UI.formLabel(comp, "");
 			createStartText(comp);
 			createEndText(comp);

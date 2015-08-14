@@ -39,7 +39,7 @@ class ClimateDataChart extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(station.getName());
+		newShell.setText(station.name);
 	}
 
 	@Override

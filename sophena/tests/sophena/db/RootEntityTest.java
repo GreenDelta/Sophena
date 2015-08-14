@@ -42,7 +42,7 @@ public class RootEntityTest {
 		T entity = clazz.newInstance();
 		RootEntityDao<T> dao = new RootEntityDao<>(clazz, Tests.getDb());
 		entity.id = UUID.randomUUID().toString();
-		entity.setName("test");
+		entity.name = "test";
 		dao.insert(entity);
 		T clone = dao.get(entity.id);
 		Assert.assertEquals(entity, clone);

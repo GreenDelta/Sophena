@@ -89,8 +89,8 @@ public class Producer extends Facility {
 	public Producer clone() {
 		Producer clone = new Producer();
 		clone.id = UUID.randomUUID().toString();
-		clone.setName(getName());
-		clone.setDescription(getDescription());
+		clone.name = name;
+		clone.description = description;
 		clone.setDisabled(isDisabled());
 		clone.setBoiler(getBoiler());
 		clone.setFunction(getFunction());
@@ -105,8 +105,8 @@ public class Producer extends Facility {
 	public ProducerDescriptor toDescriptor() {
 		ProducerDescriptor d = new ProducerDescriptor();
 		d.id = id;
-		d.setName(getName());
-		d.setDescription(getDescription());
+		d.name = name;
+		d.description = description;
 		d.setDisabled(isDisabled());
 		return d;
 	}

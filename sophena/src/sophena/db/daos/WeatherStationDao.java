@@ -21,8 +21,8 @@ public class WeatherStationDao extends RootEntityDao<WeatherStation> {
 			NativeSql.on(db).query(sql, (r) -> {
 				WeatherStationDescriptor d = new WeatherStationDescriptor();
 				d.id = r.getString(1);
-				d.setName(r.getString(2));
-				d.setDescription(r.getString(3));
+				d.name = r.getString(2);
+				d.description = r.getString(3);
 				list.add(d);
 				return true;
 			});

@@ -128,8 +128,8 @@ public class ProjectWizard extends Wizard {
 			void bindToModel(Project p) {
 				if (p == null)
 					return;
-				p.setName(nameText.getText());
-				p.setDescription(descriptionText.getText());
+				p.name = nameText.getText();
+				p.description = descriptionText.getText();
 				p.setProjectDuration(Texts.getInt(timeText));
 				p.setWeatherStation(getWeatherStation());
 			}
@@ -152,8 +152,8 @@ public class ProjectWizard extends Wizard {
 			private void initWeatherStations() {
 				WeatherStationDao dao = new WeatherStationDao(App.getDb());
 				List<WeatherStationDescriptor> list = dao.getDescriptors();
-				Collections.sort(list, (w1, w2) -> Strings.compare(w1.getName(),
-						w2.getName()));
+				Collections.sort(list, (w1, w2) -> Strings.compare(w1.name,
+						w2.name));
 				stationCombo.setInput(list);
 				if (!list.isEmpty())
 					stationCombo.select(list.get(0));

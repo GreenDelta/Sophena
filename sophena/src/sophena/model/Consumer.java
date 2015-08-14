@@ -132,8 +132,8 @@ public class Consumer extends Facility {
 	public Consumer clone() {
 		Consumer clone = new Consumer();
 		clone.id = UUID.randomUUID().toString();
-		clone.setName(getName());
-		clone.setDescription(getDescription());
+		clone.name = name;
+		clone.description = description;
 		clone.setDisabled(isDisabled());
 		clone.setBuildingState(getBuildingState());
 		clone.setBuildingType(getBuildingType());
@@ -152,8 +152,8 @@ public class Consumer extends Facility {
 	public ConsumerDescriptor toDescriptor() {
 		ConsumerDescriptor d = new ConsumerDescriptor();
 		d.id = id;
-		d.setName(getName());
-		d.setDescription(getDescription());
+		d.name = name;
+		d.description = description;
 		d.setDisabled(isDisabled());
 		return d;
 	}

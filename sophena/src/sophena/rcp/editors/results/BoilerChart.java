@@ -115,7 +115,7 @@ class BoilerChart {
 		substract(supTop, pr.suppliedBufferHeat);
 
 		for (int i = producers.length - 1; i >= 0; i--) {
-			String label = producers[i].getName();
+			String label = producers[i].name;
 			Trace boilerTrace = makeSuplierTrace(label, supTop);
 			boilerTrace.setTraceColor(Colors.getForChart(i));
 			traces.add(boilerTrace);

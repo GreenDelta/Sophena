@@ -36,7 +36,7 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, editor.getProject().getName());
+		ScrolledForm form = UI.formHeader(mform, editor.getProject().name);
 		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
@@ -55,10 +55,10 @@ class InfoPage extends FormPage {
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text t = UI.formText(composite, toolkit, M.Name);
 		Texts.on(t)
-				.init(project().getName())
+				.init(project().name)
 				.required()
 				.onChanged((s) -> {
-					project().setName(t.getText());
+					project().name = t.getText();
 					editor.setDirty();
 				});
 	}
@@ -67,9 +67,9 @@ class InfoPage extends FormPage {
 			Composite composite) {
 		Text t = UI.formMultiText(composite, toolkit, M.Description);
 		Texts.on(t)
-				.init(project().getDescription())
+				.init(project().description)
 				.onChanged((s) -> {
-					project().setDescription(t.getText());
+					project().description = t.getText();
 					editor.setDirty();
 				});
 	}
@@ -92,7 +92,7 @@ class InfoPage extends FormPage {
 		WeatherStationDao dao = new WeatherStationDao(App.getDb());
 		List<WeatherStationDescriptor> list = dao.getDescriptors();
 		Collections.sort(list,
-				(w1, w2) -> Strings.compare(w1.getName(), w2.getName()));
+				(w1, w2) -> Strings.compare(w1.name, w2.name));
 		combo.setInput(list);
 		WeatherStation s = project().getWeatherStation();
 		if (s != null)

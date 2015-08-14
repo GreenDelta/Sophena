@@ -38,8 +38,8 @@ class FuelWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			fuel.setName(page.nameText.getText());
-			fuel.setDescription(page.descriptionText.getText());
+			fuel.name = page.nameText.getText();
+			fuel.description = page.descriptionText.getText();
 			fuel.setUnit(page.unitText.getText());
 			fuel.setCalorificValue(Numbers.read(page.calText.getText()));
 			fuel.setWood(false);
@@ -84,7 +84,7 @@ class FuelWizard extends Wizard {
 		private void createNameText(Composite composite) {
 			nameText = UI.formText(composite, M.Name);
 			Texts.on(nameText)
-					.init(fuel.getName())
+					.init(fuel.name)
 					.required()
 					.validate(this::validate);
 			UI.formLabel(composite, "");
@@ -92,7 +92,7 @@ class FuelWizard extends Wizard {
 
 		private void createDescriptionText(Composite composite) {
 			descriptionText = UI.formMultiText(composite, M.Description);
-			Texts.set(descriptionText, fuel.getDescription());
+			Texts.set(descriptionText, fuel.description);
 			UI.formLabel(composite, "");
 		}
 

@@ -21,7 +21,7 @@ public class ProjectEditor extends Editor {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
-		KeyEditorInput input = new KeyEditorInput(d.id, d.getName());
+		KeyEditorInput input = new KeyEditorInput(d.id, d.name);
 		Editors.open(input, "sophena.ProjectEditor");
 	}
 
@@ -36,7 +36,7 @@ public class ProjectEditor extends Editor {
 		KeyEditorInput ki = (KeyEditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		project = dao.get(ki.getKey());
-		setPartName(project.getName());
+		setPartName(project.name);
 	}
 
 	@Override
@@ -59,12 +59,12 @@ public class ProjectEditor extends Editor {
 			log.info("update project {}", project);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project dbProject = dao.get(project.id);
-			dbProject.setDescription(project.getDescription());
-			dbProject.setName(project.getName());
+			dbProject.description = project.description;
+			dbProject.name = project.name;
 			dbProject.setProjectDuration(project.getProjectDuration());
 			dbProject.setWeatherStation(project.getWeatherStation());
 			project = dao.update(dbProject);
-			setPartName(project.getName());
+			setPartName(project.name);
 			Navigator.refresh();
 			setSaved();
 		} catch (Exception e) {

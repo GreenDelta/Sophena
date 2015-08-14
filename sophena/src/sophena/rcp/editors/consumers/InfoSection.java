@@ -46,18 +46,18 @@ class InfoSection {
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text nt = UI.formText(composite, toolkit, M.Name);
-		Texts.set(nt, consumer().getName());
+		Texts.set(nt, consumer().name);
 		Texts.on(nt).required().onChanged((t) -> {
-			consumer().setName(t);
+			consumer().name = t;
 			editor.setDirty();
 		});
 	}
 
 	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
 		Text dt = UI.formMultiText(composite, toolkit, M.Description);
-		Texts.set(dt, consumer().getDescription());
+		Texts.set(dt, consumer().description);
 		dt.addModifyListener((e) -> {
-			consumer().setDescription(dt.getText());
+			consumer().description = dt.getText();
 			editor.setDirty();
 		});
 	}

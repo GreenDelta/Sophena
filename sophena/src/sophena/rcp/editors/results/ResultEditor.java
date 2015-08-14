@@ -36,7 +36,7 @@ public class ResultEditor extends FormEditor {
 			ProjectResult result = ProjectResult.calculate(p);
 			Object[] data = new Object[] { p, result };
 			String key = Cache.put(data);
-			KeyEditorInput input = new KeyEditorInput(key, p.getName());
+			KeyEditorInput input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");
 		});
 	}
@@ -61,7 +61,7 @@ public class ResultEditor extends FormEditor {
 			Object[] data = Cache.remove(kei.getKey());
 			project = (Project) data[0];
 			result = (ProjectResult) data[1];
-			setPartName(project.getName());
+			setPartName(project.name);
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);

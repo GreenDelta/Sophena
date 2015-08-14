@@ -95,8 +95,8 @@ class LoadProfileWizard extends Wizard {
 			private double[] profileData;
 
 			void bindToUI() {
-				Texts.set(nameText, profile.getName());
-				Texts.set(descriptionText, profile.getDescription());
+				Texts.set(nameText, profile.name);
+				Texts.set(descriptionText, profile.description);
 				profileData = profile.getData();
 				chart.setData(profileData);
 			}
@@ -113,8 +113,8 @@ class LoadProfileWizard extends Wizard {
 			}
 
 			void bindToModel() {
-				profile.setName(nameText.getText());
-				profile.setDescription(descriptionText.getText());
+				profile.name = nameText.getText();
+				profile.description = descriptionText.getText();
 				profile.setData(profileData);
 			}
 

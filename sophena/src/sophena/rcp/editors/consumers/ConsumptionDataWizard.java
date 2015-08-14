@@ -227,8 +227,8 @@ class ConsumptionDataWizard extends Wizard {
 				List<Fuel> fuels = dao.getAll();
 				Collections
 						.sort(fuels,
-								(f1, f2) -> Strings.compare(f1.getName(),
-										f2.getName()));
+								(f1, f2) -> Strings.compare(f1.name,
+										f2.name));
 				fuelCombo.setInput(fuels);
 				if (fuels.isEmpty())
 					return;

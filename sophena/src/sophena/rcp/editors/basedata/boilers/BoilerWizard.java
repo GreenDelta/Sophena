@@ -125,7 +125,7 @@ class BoilerWizard extends Wizard {
 		private class DataBinding {
 
 			private void bindToModel() {
-				boiler.setName(nameText.getText());
+				boiler.name = nameText.getText();
 				int idx = fuelCombo.getSelectionIndex();
 				String label = fuelCombo.getItem(idx);
 				WoodAmountType wat = Labels.getWoodAmountType(label);
@@ -149,14 +149,14 @@ class BoilerWizard extends Wizard {
 			private Fuel findFuel(String label) {
 				FuelDao dao = new FuelDao(App.getDb());
 				for (Fuel fuel : dao.getAll()) {
-					if (Strings.nullOrEqual(fuel.getName(), label))
+					if (Strings.nullOrEqual(fuel.name, label))
 						return fuel;
 				}
 				return null;
 			}
 
 			private void bindToUI() {
-				Texts.set(nameText, boiler.getName());
+				Texts.set(nameText, boiler.name);
 				String[] items = getFuelItems();
 				fuelCombo.setItems(items);
 				fuelCombo.select(getFuelIndex(items));
@@ -175,7 +175,7 @@ class BoilerWizard extends Wizard {
 				FuelDao dao = new FuelDao(App.getDb());
 				for (Fuel fuel : dao.getAll()) {
 					if (!fuel.isWood())
-						list.add(fuel.getName());
+						list.add(fuel.name);
 				}
 				Collections.sort(list);
 				return list.toArray(new String[list.size()]);
@@ -189,7 +189,7 @@ class BoilerWizard extends Wizard {
 				if (boiler.getWoodAmountType() != null)
 					label = Labels.get(boiler.getWoodAmountType());
 				else if (boiler.getFuel() != null)
-					label = boiler.getFuel().getName();
+					label = boiler.getFuel().name;
 				if (label == null)
 					return 0;
 				for (int i = 0; i < items.length; i++) {
@@ -211,7 +211,8 @@ class BoilerWizard extends Wizard {
 				double max = Texts.getDouble(maxText);
 				double min = Texts.getDouble(minText);
 				if (min > max)
-					return error("Die minimale Leistung ist größer als die maximale.");
+					return error(
+							"Die minimale Leistung ist größer als die maximale.");
 				else {
 					setPageComplete(true);
 					setErrorMessage(null);

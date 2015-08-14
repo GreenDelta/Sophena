@@ -78,7 +78,7 @@ public class BoilerEditor extends FormEditor {
 			super(BoilerEditor.this, "BoilerEditorPage", "Heizkessel");
 			boilers = dao.getAll();
 			Collections.sort(boilers,
-					(b1, b2) -> Strings.compare(b1.getName(), b2.getName()));
+					(b1, b2) -> Strings.compare(b1.name, b2.name));
 		}
 
 		@Override
@@ -118,7 +118,7 @@ public class BoilerEditor extends FormEditor {
 		private void addBoiler(TableViewer table) {
 			Boiler boiler = new Boiler();
 			boiler.id = UUID.randomUUID().toString();
-			boiler.setName("Neuer Heizkessel");
+			boiler.name = "Neuer Heizkessel";
 			boiler.setEfficiencyRate(80);
 			if (BoilerWizard.open(boiler) != Window.OK)
 				return;
@@ -176,7 +176,7 @@ public class BoilerEditor extends FormEditor {
 				Boiler boiler = (Boiler) element;
 				switch (col) {
 				case 0:
-					return boiler.getName();
+					return boiler.name;
 				case 1:
 					return boiler.getUrl();
 				case 2:
@@ -208,7 +208,7 @@ public class BoilerEditor extends FormEditor {
 
 			private String getFuelLabel(Boiler boiler) {
 				if (boiler.getFuel() != null)
-					return boiler.getFuel().getName();
+					return boiler.getFuel().name;
 				else
 					return Labels.get(boiler.getWoodAmountType());
 			}

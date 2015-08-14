@@ -28,7 +28,7 @@ public class CostEditor extends Editor {
 		if (project == null)
 			return;
 		EditorInput input = new EditorInput(project.id + "/net",
-				project.getName());
+				project.name);
 		input.projectId = project.id;
 		Editors.open(input, "sophena.CostEditor");
 	}

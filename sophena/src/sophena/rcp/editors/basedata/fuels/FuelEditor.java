@@ -83,7 +83,7 @@ public class FuelEditor extends FormEditor {
 		private void initData() {
 			List<Fuel> all = dao.getAll();
 			Collections.sort(all, (f1, f2) -> Strings.compare(
-					f1.getName(), f2.getName()));
+					f1.name, f2.name));
 			for (Fuel f : all) {
 				if (f.isWood())
 					woodFuels.add(f);
@@ -130,7 +130,7 @@ public class FuelEditor extends FormEditor {
 		private void addFuel(TableViewer table) {
 			Fuel fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
-			fuel.setName(M.Fuel);
+			fuel.name = M.Fuel;
 			fuel.setUnit("L");
 			fuel.setCalorificValue(10);
 			fuel.setWood(false);
@@ -208,7 +208,7 @@ public class FuelEditor extends FormEditor {
 		private void addWood(TableViewer table) {
 			Fuel fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
-			fuel.setName(M.WoodFuel);
+			fuel.name = M.WoodFuel;
 			fuel.setUnit("kg");
 			fuel.setCalorificValue(5);
 			fuel.setDensity(450);
@@ -239,7 +239,7 @@ public class FuelEditor extends FormEditor {
 				Fuel f = (Fuel) element;
 				switch (col) {
 				case 0:
-					return f.getName();
+					return f.name;
 				case 1:
 					return Numbers.toString(f.getCalorificValue())
 							+ " kWh/" + f.getUnit();
@@ -264,7 +264,7 @@ public class FuelEditor extends FormEditor {
 				Fuel f = (Fuel) element;
 				switch (col) {
 				case 0:
-					return f.getName();
+					return f.name;
 				case 1:
 					return Numbers.toString(f.getDensity()) + " kg/fm";
 				case 2:

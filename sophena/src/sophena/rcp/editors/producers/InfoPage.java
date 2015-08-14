@@ -41,7 +41,7 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, producer().getName());
+		ScrolledForm form = UI.formHeader(mform, producer().name);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		Composite composite = UI.formSection(body, tk, "Erzeugerinformationen");
@@ -57,18 +57,18 @@ class InfoPage extends FormPage {
 
 	private void createNameText(FormToolkit tk, Composite composite) {
 		Text nt = UI.formText(composite, tk, M.Name);
-		Texts.set(nt, producer().getName());
+		Texts.set(nt, producer().name);
 		Texts.on(nt).required().onChanged((s) -> {
-			producer().setName(nt.getText());
+			producer().name = nt.getText();
 			editor.setDirty();
 		});
 	}
 
 	private void createDescriptionText(FormToolkit tk, Composite composite) {
 		Text dt = UI.formMultiText(composite, tk, M.Description);
-		Texts.set(dt, producer().getDescription());
+		Texts.set(dt, producer().description);
 		dt.addModifyListener((e) -> {
-			producer().setDescription(dt.getText());
+			producer().description = dt.getText();
 			editor.setDirty();
 		});
 	}
@@ -80,7 +80,7 @@ class InfoPage extends FormPage {
 			UI.formLabel(composite, tk, "kein Kessel definiert");
 			return;
 		}
-		String text = b.getName() + " ("
+		String text = b.name + " ("
 				+ Numbers.toString(b.getMinPower()) + " kW - "
 				+ Numbers.toString(b.getMaxPower()) + " kW, \u03B7 = "
 				+ Numbers.toString(b.getEfficiencyRate()) + "%)";

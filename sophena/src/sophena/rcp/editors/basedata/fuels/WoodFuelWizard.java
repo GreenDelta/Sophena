@@ -71,7 +71,7 @@ class WoodFuelWizard extends Wizard {
 		private void createNameText(Composite composite) {
 			nameText = UI.formText(composite, M.Name);
 			Texts.on(nameText)
-					.init(fuel.getName())
+					.init(fuel.name)
 					.required()
 					.validate(data::validate);
 			UI.formLabel(composite, "");
@@ -79,7 +79,7 @@ class WoodFuelWizard extends Wizard {
 
 		private void createDescriptionText(Composite composite) {
 			descriptionText = UI.formMultiText(composite, M.Description);
-			Texts.set(descriptionText, fuel.getDescription());
+			Texts.set(descriptionText, fuel.description);
 			UI.formLabel(composite, "");
 		}
 
@@ -106,8 +106,8 @@ class WoodFuelWizard extends Wizard {
 		private class DataBinding {
 
 			void bindToModel() {
-				fuel.setName(nameText.getText());
-				fuel.setDescription(descriptionText.getText());
+				fuel.name = nameText.getText();
+				fuel.description = descriptionText.getText();
 				fuel.setDensity(Texts.getDouble(densityText));
 				fuel.setCalorificValue(Texts.getDouble(calText));
 			}

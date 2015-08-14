@@ -89,7 +89,7 @@ public class ConsumerWizard extends Wizard {
 			super("ConsumerWizardPage", M.CreateNewConsumer, null);
 			consumer = new Consumer();
 			consumer.id = UUID.randomUUID().toString();
-			consumer.setName(M.NewConsumer);
+			consumer.name = M.NewConsumer;
 			consumer.setDemandBased(false);
 			consumer.setWaterFraction(10);
 			consumer.setHeatingLimit(15);
@@ -102,13 +102,13 @@ public class ConsumerWizard extends Wizard {
 			setControl(composite);
 			Text nt = UI.formText(composite, M.Name);
 			nt.setBackground(Colors.forRequiredField());
-			nt.setText(consumer.getName());
+			nt.setText(consumer.name);
 			nt.addModifyListener((e) -> {
-				consumer.setName(nt.getText());
+				consumer.name = nt.getText();
 				validate();
 			});
 			Text dt = UI.formMultiText(composite, M.Description);
-			dt.addModifyListener((e) -> consumer.setDescription(dt.getText()));
+			dt.addModifyListener((e) -> consumer.description = dt.getText());
 			createTypeCombo(composite);
 			createStateCombo(composite);
 			createCalculationRadios(composite);
@@ -122,7 +122,7 @@ public class ConsumerWizard extends Wizard {
 			if (types.isEmpty())
 				return;
 			Collections.sort(types,
-					(e1, e2) -> Strings.compare(e1.getName(), e2.getName()));
+					(e1, e2) -> Strings.compare(e1.name, e2.name));
 			combo.setInput(types);
 			combo.select(types.get(0));
 			consumer.setBuildingType(types.get(0));
@@ -138,7 +138,7 @@ public class ConsumerWizard extends Wizard {
 			if (states.isEmpty())
 				return;
 			Collections.sort(states,
-					(s1, s2) -> Strings.compare(s1.getName(), s2.getName()));
+					(s1, s2) -> Strings.compare(s1.name, s2.name));
 			combo.setInput(states);
 			combo.select(states.get(0));
 			consumer.setBuildingState(states.get(0));
@@ -171,7 +171,7 @@ public class ConsumerWizard extends Wizard {
 		}
 
 		private void validate() {
-			if (Strings.nullOrEmpty(consumer.getName())) {
+			if (Strings.nullOrEmpty(consumer.name)) {
 				setErrorMessage(M.NoEmptyNameAllowed);
 				setPageComplete(false);
 			} else {

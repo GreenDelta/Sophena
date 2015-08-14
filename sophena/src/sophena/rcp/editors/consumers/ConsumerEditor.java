@@ -39,7 +39,7 @@ public class ConsumerEditor extends Editor {
 	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
 		if (p == null || c == null)
 			return;
-		EditorInput input = new EditorInput(c.id, c.getName());
+		EditorInput input = new EditorInput(c.id, c.name);
 		input.projectKey = p.id;
 		Editors.open(input, "sophena.ConsumerEditor");
 	}
@@ -54,7 +54,7 @@ public class ConsumerEditor extends Editor {
 		projectId = project.id;
 		consumer = findConsumer(project, i.getKey());
 		this.weatherStation = project.getWeatherStation();
-		setPartName(consumer.getName());
+		setPartName(consumer.name);
 		if (consumer.location == null) {
 			Location loc = new Location();
 			loc.id = UUID.randomUUID().toString();
@@ -113,7 +113,7 @@ public class ConsumerEditor extends Editor {
 			project.getConsumers().add(consumer);
 			project = dao.update(project);
 			consumer = findConsumer(project, consumer.id);
-			setPartName(consumer.getName());
+			setPartName(consumer.name);
 			Navigator.refresh();
 			setSaved();
 		} catch (Exception e) {

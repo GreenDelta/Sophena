@@ -93,7 +93,7 @@ public class EnergyResult {
 	void printHeader() {
 		String header = "Hour\tLoad\tSupplied\tDifference\tBuffer Capacity\tBuffer Contribution\t";
 		for (Producer p : producers) {
-			header += p.getName() + "\t";
+			header += p.name + "\t";
 		}
 		System.out.println(header);
 	}

@@ -15,6 +15,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.db.daos.Dao;
 import sophena.model.WeatherStation;
 import sophena.rcp.App;
@@ -33,7 +34,8 @@ public class ClimateDataEditor extends FormEditor {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("climate.data", M.ClimateData);
+		KeyEditorInput input = new KeyEditorInput("climate.data",
+				M.ClimateData);
 		Editors.open(input, "sophena.ClimateDataEditor");
 	}
 
@@ -122,7 +124,7 @@ public class ClimateDataEditor extends FormEditor {
 			if (!(element instanceof WeatherStation))
 				return null;
 			WeatherStation s = (WeatherStation) element;
-			return col == 0 ? s.getName() : null;
+			return col == 0 ? s.name : null;
 		}
 	}
 }
