@@ -16,6 +16,7 @@ import sophena.model.Boiler;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.ModelType;
+import sophena.model.Pipe;
 import sophena.model.WeatherStation;
 
 public class Import implements Runnable {
@@ -36,9 +37,10 @@ public class Import implements Runnable {
 		try {
 			pack = DataPack.open(packFile);
 			importEntities(ModelType.FUEL, Fuel.class);
-			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			importEntities(ModelType.BOILER, Boiler.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
+			importEntities(ModelType.PIPE, Pipe.class);
+			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			pack.close();
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
