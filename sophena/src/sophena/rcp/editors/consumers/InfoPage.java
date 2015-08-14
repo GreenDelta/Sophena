@@ -31,7 +31,7 @@ class InfoPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		InfoSection.of(editor).create(body, tk);
 		HeatDemandSection.of(editor).create(body, tk);
-		if (!consumer().isDemandBased())
+		if (!consumer().demandBased)
 			ConsumptionSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);

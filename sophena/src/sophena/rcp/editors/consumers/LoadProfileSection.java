@@ -48,7 +48,7 @@ class LoadProfileSection {
 		table = Tables.createViewer(composite, M.Name, "Wärmebedarf");
 		Tables.bindColumnWidths(table, 0.5, 0.5);
 		table.setLabelProvider(new LoadProfileLabel());
-		table.setInput(consumer().getLoadProfiles());
+		table.setInput(consumer().loadProfiles);
 		bindActions(section, table);
 	}
 
@@ -69,7 +69,7 @@ class LoadProfileSection {
 		profile.name = "Neuer Lastgang";
 		profile.setData(new double[Stats.HOURS]);
 		if (LoadProfileWizard.open(profile) == Window.OK) {
-			List<LoadProfile> profiles = consumer().getLoadProfiles();
+			List<LoadProfile> profiles = consumer().loadProfiles;
 			profiles.add(profile);
 			table.setInput(profiles);
 			editor.calculate();
@@ -82,7 +82,7 @@ class LoadProfileSection {
 		if (profile == null)
 			return;
 		if (LoadProfileWizard.open(profile) == Window.OK) {
-			List<LoadProfile> profiles = consumer().getLoadProfiles();
+			List<LoadProfile> profiles = consumer().loadProfiles;
 			table.setInput(profiles);
 			editor.calculate();
 			editor.setDirty();
@@ -93,7 +93,7 @@ class LoadProfileSection {
 		LoadProfile profile = Viewers.getFirstSelected(table);
 		if (profile == null)
 			return;
-		List<LoadProfile> profiles = consumer().getLoadProfiles();
+		List<LoadProfile> profiles = consumer().loadProfiles;
 		profiles.remove(profile);
 		table.setInput(profiles);
 		editor.calculate();

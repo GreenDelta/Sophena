@@ -40,7 +40,7 @@ class InfoSection {
 		createStateCombo(composite, toolkit);
 		Text loadHoursText = UI.formText(composite, toolkit, "Volllaststunden");
 		Texts.on(loadHoursText)
-				.init(consumer().getLoadHours())
+				.init(consumer().loadHours)
 				.readOnly();
 	}
 
@@ -67,9 +67,9 @@ class InfoSection {
 		combo.create(M.BuildingType, composite, toolkit);
 		Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
 		combo.setInput(dao.getAll());
-		combo.select(consumer().getBuildingType());
+		combo.select(consumer().buildingType);
 		combo.onSelect((t) -> {
-			consumer().setBuildingType(t);
+			consumer().buildingType = t;
 			editor.setDirty();
 		});
 	}
@@ -79,9 +79,9 @@ class InfoSection {
 		combo.create(M.BuildingState, composite, toolkit);
 		Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
 		combo.setInput(dao.getAll());
-		combo.select(consumer().getBuildingState());
+		combo.select(consumer().buildingState);
 		combo.onSelect((s) -> {
-			consumer().setBuildingState(s);
+			consumer().buildingState = s;
 			editor.setDirty();
 		});
 	}

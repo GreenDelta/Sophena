@@ -59,7 +59,7 @@ public class DisableAction extends NavigationAction {
 		try {
 			ConsumerDao dao = new ConsumerDao(App.getDb());
 			Consumer c = dao.get(e.getDescriptor().id);
-			c.setDisabled(!c.isDisabled());
+			c.disabled = !c.disabled;
 			dao.update(c);
 			Navigator.refresh();
 		} catch (Exception ex) {

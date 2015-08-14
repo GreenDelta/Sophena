@@ -14,7 +14,8 @@ public class ConsumerLoadCurve {
 	private ConsumerLoadCurve() {
 	}
 
-	public static double[] calculate(Consumer consumer, WeatherStation station) {
+	public static double[] calculate(Consumer consumer,
+			WeatherStation station) {
 		ConsumerLoadCurve curve = new ConsumerLoadCurve();
 		curve.consumer = consumer;
 		curve.station = station;
@@ -25,13 +26,12 @@ public class ConsumerLoadCurve {
 		double[] data = new double[Stats.HOURS];
 		if (consumer == null || station == null)
 			return data;
-		if (consumer.isDemandBased()) {
-			double totalHeat = consumer.getLoadHours()
-					* consumer.getHeatingLoad();
+		if (consumer.demandBased) {
+			double totalHeat = consumer.loadHours * consumer.heatingLoad;
 			calcCurve(totalHeat, data);
 		} else {
 			double totalHeat = 0;
-			for (FuelConsumption c : consumer.getFuelConsumptions())
+			for (FuelConsumption c : consumer.fuelConsumptions)
 				totalHeat += c.getUsedHeat();
 			calcCurve(totalHeat, data);
 		}
@@ -40,10 +40,10 @@ public class ConsumerLoadCurve {
 	}
 
 	private void calcCurve(double totalHeat, double[] data) {
-		double heatForWater = totalHeat * consumer.getWaterFraction() / 100;
+		double heatForWater = totalHeat * consumer.waterFraction / 100;
 		double pMin = heatForWater / Stats.HOURS;
 		double heatingDegrees = 0;
-		double tmax = consumer.getHeatingLimit();
+		double tmax = consumer.heatingLimit;
 		for (double temperature : station.getData()) {
 			if (temperature < tmax)
 				heatingDegrees += (tmax - temperature);
@@ -60,7 +60,7 @@ public class ConsumerLoadCurve {
 	}
 
 	private void addLoadProfiles(double[] data) {
-		for (LoadProfile profile : consumer.getLoadProfiles()) {
+		for (LoadProfile profile : consumer.loadProfiles) {
 			double[] p = profile.getData();
 			if (p == null)
 				continue;

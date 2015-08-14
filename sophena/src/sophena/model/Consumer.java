@@ -19,114 +19,42 @@ import sophena.model.descriptors.ConsumerDescriptor;
 public class Consumer extends Facility {
 
 	@Column(name = "is_disabled")
-	private boolean disabled;
+	public boolean disabled;
 
 	@OneToOne
 	@JoinColumn(name = "f_building_state")
-	private BuildingState buildingState;
+	public BuildingState buildingState;
 
 	@OneToOne
 	@JoinColumn(name = "f_building_type")
-	private BuildingType buildingType;
+	public BuildingType buildingType;
 
 	@Column(name = "demand_based")
-	private boolean demandBased;
+	public boolean demandBased;
 
 	@Column(name = "heating_load")
-	private double heatingLoad;
+	public double heatingLoad;
 
 	@Column(name = "water_fraction")
-	private double waterFraction;
+	public double waterFraction;
 
 	@Column(name = "load_hours")
-	private int loadHours;
+	public int loadHours;
 
 	@Column(name = "heating_limit")
-	private double heatingLimit;
+	public double heatingLimit;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
-	private final List<FuelConsumption> fuelConsumptions = new ArrayList<>();
+	public final List<FuelConsumption> fuelConsumptions = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
-	private List<LoadProfile> loadProfiles = new ArrayList<>();
+	public List<LoadProfile> loadProfiles = new ArrayList<>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_location")
 	public Location location;
-
-	public boolean isDisabled() {
-		return disabled;
-	}
-
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
-
-	public BuildingState getBuildingState() {
-		return buildingState;
-	}
-
-	public void setBuildingState(BuildingState buildingState) {
-		this.buildingState = buildingState;
-	}
-
-	public BuildingType getBuildingType() {
-		return buildingType;
-	}
-
-	public void setBuildingType(BuildingType buildingType) {
-		this.buildingType = buildingType;
-	}
-
-	public List<LoadProfile> getLoadProfiles() {
-		return loadProfiles;
-	}
-
-	public boolean isDemandBased() {
-		return demandBased;
-	}
-
-	public void setDemandBased(boolean demandBased) {
-		this.demandBased = demandBased;
-	}
-
-	public double getHeatingLoad() {
-		return heatingLoad;
-	}
-
-	public void setHeatingLoad(double heatingLoad) {
-		this.heatingLoad = heatingLoad;
-	}
-
-	public double getWaterFraction() {
-		return waterFraction;
-	}
-
-	public void setWaterFraction(double waterFraction) {
-		this.waterFraction = waterFraction;
-	}
-
-	public void setLoadHours(int loadHours) {
-		this.loadHours = loadHours;
-	}
-
-	public int getLoadHours() {
-		return loadHours;
-	}
-
-	public double getHeatingLimit() {
-		return heatingLimit;
-	}
-
-	public void setHeatingLimit(double heatingLimit) {
-		this.heatingLimit = heatingLimit;
-	}
-
-	public List<FuelConsumption> getFuelConsumptions() {
-		return fuelConsumptions;
-	}
 
 	@Override
 	public Consumer clone() {
@@ -134,16 +62,16 @@ public class Consumer extends Facility {
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
-		clone.setDisabled(isDisabled());
-		clone.setBuildingState(getBuildingState());
-		clone.setBuildingType(getBuildingType());
-		clone.setDemandBased(isDemandBased());
-		clone.setHeatingLimit(getHeatingLimit());
-		clone.setHeatingLoad(getHeatingLoad());
-		clone.setWaterFraction(getWaterFraction());
-		clone.setLoadHours(getLoadHours());
-		for (FuelConsumption cons : getFuelConsumptions())
-			clone.getFuelConsumptions().add(cons.clone());
+		clone.disabled = disabled;
+		clone.buildingState = buildingState;
+		clone.buildingType = buildingType;
+		clone.demandBased = demandBased;
+		clone.heatingLimit = heatingLimit;
+		clone.heatingLoad = heatingLoad;
+		clone.waterFraction = waterFraction;
+		clone.loadHours = loadHours;
+		for (FuelConsumption cons : fuelConsumptions)
+			clone.fuelConsumptions.add(cons.clone());
 		if (location != null)
 			clone.location = location.clone();
 		return clone;
@@ -154,7 +82,7 @@ public class Consumer extends Facility {
 		d.id = id;
 		d.name = name;
 		d.description = description;
-		d.setDisabled(isDisabled());
+		d.setDisabled(disabled);
 		return d;
 	}
 }

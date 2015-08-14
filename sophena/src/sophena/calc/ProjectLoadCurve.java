@@ -16,7 +16,7 @@ public class ProjectLoadCurve {
 		if (project == null)
 			return curve;
 		for (Consumer consumer : project.getConsumers()) {
-			if (consumer.isDisabled())
+			if (consumer.disabled)
 				continue;
 			double[] c = ConsumerLoadCurve.calculate(consumer,
 					project.getWeatherStation());

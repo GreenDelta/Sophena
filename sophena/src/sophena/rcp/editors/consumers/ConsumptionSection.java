@@ -62,7 +62,7 @@ class ConsumptionSection {
 				"Genutzte Wärme");
 		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
 		table.setLabelProvider(new Label());
-		table.setInput(consumer().getFuelConsumptions());
+		table.setInput(consumer().fuelConsumptions);
 		Tables.onDoubleClick(table, (e) -> onEdit());
 		return table;
 	}
@@ -70,11 +70,10 @@ class ConsumptionSection {
 	private void onAdd() {
 		FuelConsumption c = new FuelConsumption();
 		c.id = UUID.randomUUID().toString();
-		int code = ConsumptionDataWizard.open(c, consumer()
-				.getLoadHours());
+		int code = ConsumptionDataWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
-			consumer().getFuelConsumptions().add(c);
-			table.setInput(consumer().getFuelConsumptions());
+			consumer().fuelConsumptions.add(c);
+			table.setInput(consumer().fuelConsumptions);
 			editor.calculate();
 			editor.setDirty();
 		}
@@ -84,8 +83,8 @@ class ConsumptionSection {
 		List<FuelConsumption> list = Viewers.getAllSelected(table);
 		if (list == null || list.isEmpty())
 			return;
-		consumer().getFuelConsumptions().removeAll(list);
-		table.setInput(consumer().getFuelConsumptions());
+		consumer().fuelConsumptions.removeAll(list);
+		table.setInput(consumer().fuelConsumptions);
 		editor.calculate();
 		editor.setDirty();
 	}
@@ -94,10 +93,9 @@ class ConsumptionSection {
 		FuelConsumption c = Viewers.getFirstSelected(table);
 		if (c == null)
 			return;
-		int code = ConsumptionDataWizard.open(c, consumer()
-				.getLoadHours());
+		int code = ConsumptionDataWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
-			table.setInput(consumer().getFuelConsumptions());
+			table.setInput(consumer().fuelConsumptions);
 			editor.calculate();
 			editor.setDirty();
 		}
@@ -148,7 +146,7 @@ class ConsumptionSection {
 				return null;
 			String heat = Numbers.toString(c.getUsedHeat()) + " kWh";
 			double eta = BoilerEfficiency.getEfficiencyRateSmall(
-					c.getUtilisationRate(), consumer().getLoadHours());
+					c.getUtilisationRate(), consumer().loadHours);
 			return heat + " (\u03B7=" + Numbers.toString(eta) + "%)";
 		}
 	}

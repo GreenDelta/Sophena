@@ -39,17 +39,17 @@ class HeatDemandSection {
 
 	private void createPowerText(Composite composite, FormToolkit tk) {
 		Text t = UI.formText(composite, tk, "Heizlast");
-		Texts.set(t, consumer().getHeatingLoad());
+		Texts.set(t, consumer().heatingLoad);
 		UI.formLabel(composite, tk, "kW");
-		if (!consumer().isDemandBased()) {
+		if (!consumer().demandBased) {
 			t.setEditable(false);
 			editor.onCalculated((values) -> {
 				double q = Stats.sum(values);
-				Texts.set(t, q / consumer().getLoadHours());
+				Texts.set(t, q / consumer().loadHours);
 			});
 		} else {
 			Texts.on(t).required().decimal().onChanged((text) -> {
-				consumer().setHeatingLoad(Numbers.read(text));
+				consumer().heatingLoad = Numbers.read(text);
 				editor.calculate();
 				editor.setDirty();
 			});
@@ -58,10 +58,10 @@ class HeatDemandSection {
 
 	private void createWaterText(Composite composite, FormToolkit tk) {
 		Text t = UI.formText(composite, tk, "Warmwasseranteil");
-		t.setText(Numbers.toString(consumer().getWaterFraction()));
+		t.setText(Numbers.toString(consumer().waterFraction));
 		UI.formLabel(composite, tk, "%");
 		t.addModifyListener((e) -> {
-			consumer().setWaterFraction(Numbers.read(t.getText()));
+			consumer().waterFraction = Numbers.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
 		});
@@ -69,10 +69,10 @@ class HeatDemandSection {
 
 	private void createHeatLimitText(Composite composite, FormToolkit tk) {
 		Text t = UI.formText(composite, tk, "Heizgrenze");
-		t.setText(Numbers.toString(consumer().getHeatingLimit()));
+		t.setText(Numbers.toString(consumer().heatingLimit));
 		UI.formLabel(composite, tk, "°C");
 		t.addModifyListener((e) -> {
-			consumer().setHeatingLimit(Numbers.read(t.getText()));
+			consumer().heatingLimit = Numbers.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
 		});

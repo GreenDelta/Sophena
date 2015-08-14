@@ -90,10 +90,10 @@ public class ConsumerWizard extends Wizard {
 			consumer = new Consumer();
 			consumer.id = UUID.randomUUID().toString();
 			consumer.name = M.NewConsumer;
-			consumer.setDemandBased(false);
-			consumer.setWaterFraction(10);
-			consumer.setHeatingLimit(15);
-			consumer.setLoadHours(1800); // TODO: default value?
+			consumer.demandBased = false;
+			consumer.waterFraction = (double) 10;
+			consumer.heatingLimit = (double) 15;
+			consumer.loadHours = 1800; // TODO: default value?
 		}
 
 		@Override
@@ -125,8 +125,8 @@ public class ConsumerWizard extends Wizard {
 					(e1, e2) -> Strings.compare(e1.name, e2.name));
 			combo.setInput(types);
 			combo.select(types.get(0));
-			consumer.setBuildingType(types.get(0));
-			combo.onSelect(consumer::setBuildingType);
+			consumer.buildingType = types.get(0);
+			combo.onSelect((t) -> consumer.buildingType = t);
 		}
 
 		private void createStateCombo(Composite composite) {
@@ -141,8 +141,8 @@ public class ConsumerWizard extends Wizard {
 					(s1, s2) -> Strings.compare(s1.name, s2.name));
 			combo.setInput(states);
 			combo.select(states.get(0));
-			consumer.setBuildingState(states.get(0));
-			combo.onSelect(consumer::setBuildingState);
+			consumer.buildingState = states.get(0);
+			combo.onSelect((s) -> consumer.buildingState = s);
 		}
 
 		private void createCalculationRadios(Composite composite) {
@@ -156,16 +156,16 @@ public class ConsumerWizard extends Wizard {
 			UI.formLabel(composite, "");
 			Composite inner = new Composite(composite, SWT.NONE);
 			UI.innerGrid(inner, 2);
-			Text text = UI.formText(inner, M.HeatingLoad);
-			text.addModifyListener((e) -> consumer
-					.setHeatingLoad(Numbers.read(text.getText())));
+			Text text = UI.formText(inner, M.HeatingLoad + " (kW)");
+			text.addModifyListener(
+					(e) -> consumer.heatingLoad = Numbers.read(text.getText()));
 			inner.setVisible(false);
 			Controls.onSelect(consumption, (e) -> {
-				consumer.setDemandBased(false);
+				consumer.demandBased = false;
 				inner.setVisible(false);
 			});
 			Controls.onSelect(demand, (e) -> {
-				consumer.setDemandBased(true);
+				consumer.demandBased = true;
 				inner.setVisible(true);
 			});
 		}
