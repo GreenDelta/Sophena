@@ -10,6 +10,8 @@ public enum ModelType {
 
 	FUEL(Fuel.class),
 
+	PIPE(Pipe.class),
+
 	PRODUCER(Producer.class),
 
 	PROJECT(Project.class),

@@ -81,9 +81,9 @@ class InfoPage extends FormPage {
 			return;
 		}
 		String text = b.name + " ("
-				+ Numbers.toString(b.getMinPower()) + " kW - "
-				+ Numbers.toString(b.getMaxPower()) + " kW, \u03B7 = "
-				+ Numbers.toString(b.getEfficiencyRate()) + "%)";
+				+ Numbers.toString(b.minPower) + " kW - "
+				+ Numbers.toString(b.maxPower) + " kW, \u03B7 = "
+				+ Numbers.toString(b.efficiencyRate) + "%)";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
 		link.setText(text);
 		link.setImage(Images.BOILER_16.img());
@@ -91,9 +91,9 @@ class InfoPage extends FormPage {
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				if (b.getUrl() == null)
+				if (b.url == null)
 					return;
-				Desktop.browse(b.getUrl());
+				Desktop.browse(b.url);
 			}
 		});
 	}

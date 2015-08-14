@@ -130,20 +130,20 @@ class BoilerWizard extends Wizard {
 				String label = fuelCombo.getItem(idx);
 				WoodAmountType wat = Labels.getWoodAmountType(label);
 				if (wat != null) {
-					boiler.setFuel(null);
-					boiler.setWoodAmountType(wat);
+					boiler.fuel = null;
+					boiler.woodAmountType = wat;
 				} else {
-					boiler.setFuel(findFuel(label));
-					boiler.setWoodAmountType(null);
+					boiler.fuel = findFuel(label);
+					boiler.woodAmountType = null;
 				}
-				boiler.setMaxPower(Texts.getDouble(maxText));
-				boiler.setMinPower(Texts.getDouble(minText));
-				boiler.setEfficiencyRate(Texts.getDouble(efficiencyText));
-				boiler.setUrl(linkText.getText());
+				boiler.maxPower = Texts.getDouble(maxText);
+				boiler.minPower = Texts.getDouble(minText);
+				boiler.efficiencyRate = Texts.getDouble(efficiencyText);
+				boiler.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
-					boiler.setPurchasePrice(Texts.getDouble(priceText));
+					boiler.purchasePrice = Texts.getDouble(priceText);
 				else
-					boiler.setPurchasePrice(null);
+					boiler.purchasePrice = null;
 			}
 
 			private Fuel findFuel(String label) {
@@ -160,11 +160,11 @@ class BoilerWizard extends Wizard {
 				String[] items = getFuelItems();
 				fuelCombo.setItems(items);
 				fuelCombo.select(getFuelIndex(items));
-				Texts.set(maxText, boiler.getMaxPower());
-				Texts.set(minText, boiler.getMinPower());
-				Texts.set(efficiencyText, boiler.getEfficiencyRate());
-				Texts.set(linkText, boiler.getUrl());
-				Texts.set(priceText, boiler.getPurchasePrice());
+				Texts.set(maxText, boiler.maxPower);
+				Texts.set(minText, boiler.minPower);
+				Texts.set(efficiencyText, boiler.efficiencyRate);
+				Texts.set(linkText, boiler.url);
+				Texts.set(priceText, boiler.purchasePrice);
 				validate();
 			}
 
@@ -182,14 +182,14 @@ class BoilerWizard extends Wizard {
 			}
 
 			private int getFuelIndex(String[] items) {
-				if (boiler.getFuel() == null
-						&& boiler.getWoodAmountType() == null)
+				if (boiler.fuel == null
+						&& boiler.woodAmountType == null)
 					return 0;
 				String label = null;
-				if (boiler.getWoodAmountType() != null)
-					label = Labels.get(boiler.getWoodAmountType());
-				else if (boiler.getFuel() != null)
-					label = boiler.getFuel().name;
+				if (boiler.woodAmountType != null)
+					label = Labels.get(boiler.woodAmountType);
+				else if (boiler.fuel != null)
+					label = boiler.fuel.name;
 				if (label == null)
 					return 0;
 				for (int i = 0; i < items.length; i++) {

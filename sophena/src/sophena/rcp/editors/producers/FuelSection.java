@@ -54,7 +54,7 @@ class FuelSection {
 		Boiler b = producer().getBoiler();
 		if (b == null)
 			return;
-		if (b.getFuel() != null)
+		if (b.fuel != null)
 			createFuelRow(tk, composite);
 		else {
 			createWoodFuelRow(tk, composite);
@@ -66,7 +66,7 @@ class FuelSection {
 
 	private void createFuelRow(FormToolkit tk, Composite composite) {
 		UI.formLabel(composite, tk, "Brennstoff");
-		Fuel f = producer().getBoiler().getFuel();
+		Fuel f = producer().getBoiler().fuel;
 		String text = f.name + " ("
 				+ Numbers.toString(f.getCalorificValue()) + " kWh/"
 				+ f.getUnit() + ")";
@@ -127,10 +127,10 @@ class FuelSection {
 		Boiler b = producer().getBoiler();
 		if (b == null)
 			return "";
-		if (b.getFuel() != null)
-			return b.getFuel().getUnit();
-		if (b.getWoodAmountType() != null)
-			return b.getWoodAmountType().getUnit();
+		if (b.fuel != null)
+			return b.fuel.getUnit();
+		if (b.woodAmountType != null)
+			return b.woodAmountType.getUnit();
 		else
 			return "";
 	}

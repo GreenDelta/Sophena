@@ -207,6 +207,7 @@ CREATE TABLE tbl_boilers (
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),
+	
 	max_power DOUBLE,
 	min_power DOUBLE,
 	efficiency_rate DOUBLE,
@@ -215,6 +216,22 @@ CREATE TABLE tbl_boilers (
 	wood_amount_type VARCHAR(255),
 
     PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_pipes (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+
+	u_value DOUBLE,
+	diameter DOUBLE,
+
+	PRIMARY KEY (id)
 );
 
 

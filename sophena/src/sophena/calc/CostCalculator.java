@@ -67,7 +67,7 @@ class CostCalculator {
 		if (fuelCosts == 0 || p.getFuelSpec() == null)
 			return;
 		double priceChangeFactor = 0;
-		if (p.getBoiler().getFuel() != null)
+		if (p.getBoiler().fuel != null)
 			priceChangeFactor = settings.fossilFuelFactor;
 		else
 			priceChangeFactor = settings.bioFuelFactor; // wood fuel
@@ -175,11 +175,10 @@ class CostCalculator {
 		FuelSpec fuelSpec = p.getFuelSpec();
 		if (heat == 0 || boiler == null || fuelSpec == null)
 			return 0;
-		int fullLoadHours = (int) (heat / boiler.getMaxPower());
-		double ur = BoilerEfficiency.getUtilisationRateBig(boiler
-				.getEfficiencyRate(), fullLoadHours);
+		int fullLoadHours = (int) (heat / boiler.maxPower);
+		double ur = BoilerEfficiency.getUtilisationRateBig(boiler.efficiencyRate, fullLoadHours);
 		double energyContent = heat / ur;
-		Fuel fuel = boiler.getFuel();
+		Fuel fuel = boiler.fuel;
 		if (fuel != null) {
 			// no wood fuel
 			double amount = energyContent / fuel.getCalorificValue();
@@ -187,13 +186,13 @@ class CostCalculator {
 		}
 		// wood fuel
 		fuel = fuelSpec.getWoodFuel();
-		if (boiler.getWoodAmountType() == null || fuel == null)
+		if (boiler.woodAmountType == null || fuel == null)
 			return 0;
 		double wc = fuelSpec.getWaterContent() / 100;
 		double woodMass = energyContent
 				/ ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);
 		double woodAmount = woodMass * (1 - wc)
-				/ (boiler.getWoodAmountType().getFactor() * fuel.getDensity());
+				/ (boiler.woodAmountType.getFactor() * fuel.getDensity());
 		return woodAmount * fuelSpec.getPricePerUnit();
 	}
 

@@ -74,8 +74,8 @@ class BoilerTableSection {
 
 	private String getFuel(Producer p) {
 		Boiler b = p.getBoiler();
-		if (b != null && b.getFuel() != null)
-			return b.getFuel().name;
+		if (b != null && b.fuel != null)
+			return b.fuel.name;
 		FuelSpec fs = p.getFuelSpec();
 		if (fs != null && fs.getWoodFuel() != null)
 			return fs.getWoodFuel().name;
@@ -86,7 +86,7 @@ class BoilerTableSection {
 	private Integer getFullLoadHours(Producer p, double producedHeat) {
 		if (p == null || p.getBoiler() == null)
 			return null;
-		double maxPower = p.getBoiler().getMaxPower();
+		double maxPower = p.getBoiler().maxPower;
 		return (int) Math.round(producedHeat / maxPower);
 	}
 

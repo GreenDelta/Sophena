@@ -39,7 +39,7 @@ class EnergyCalculator {
 
 				Producer producer = r.producers[k];
 				Boiler boiler = producer.getBoiler();
-				if (maxLoad < boiler.getMinPower())
+				if (maxLoad < boiler.minPower)
 					continue;
 
 				double power = getSuppliedPower(requiredLoad, maxLoad,
@@ -79,8 +79,8 @@ class EnergyCalculator {
 	private double getSuppliedPower(double requiredLoad, double maxLoad,
 			Producer producer) {
 		Boiler boiler = producer.getBoiler();
-		double bMin = boiler.getMinPower();
-		double bMax = boiler.getMaxPower();
+		double bMin = boiler.minPower;
+		double bMax = boiler.maxPower;
 		double load = producer.getFunction() == ProducerFunction.PEAK_LOAD
 				? requiredLoad : maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);

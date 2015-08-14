@@ -119,7 +119,7 @@ public class BoilerEditor extends FormEditor {
 			Boiler boiler = new Boiler();
 			boiler.id = UUID.randomUUID().toString();
 			boiler.name = "Neuer Heizkessel";
-			boiler.setEfficiencyRate(80);
+			boiler.efficiencyRate = (double) 80;
 			if (BoilerWizard.open(boiler) != Window.OK)
 				return;
 			dao.insert(boiler);
@@ -178,7 +178,7 @@ public class BoilerEditor extends FormEditor {
 				case 0:
 					return boiler.name;
 				case 1:
-					return boiler.getUrl();
+					return boiler.url;
 				case 2:
 					return getPrice(boiler);
 				case 3:
@@ -191,26 +191,26 @@ public class BoilerEditor extends FormEditor {
 			}
 
 			private String getPrice(Boiler boiler) {
-				if (boiler == null || boiler.getPurchasePrice() == null)
+				if (boiler == null || boiler.purchasePrice == null)
 					return null;
 				else
-					return Numbers.toString(boiler.getPurchasePrice()) + " EUR";
+					return Numbers.toString(boiler.purchasePrice) + " EUR";
 			}
 
 			private String getPowerInfo(Boiler boiler) {
 				if (boiler == null)
 					return null;
-				String min = Numbers.toString(boiler.getMinPower());
-				String max = Numbers.toString(boiler.getMaxPower());
-				String eta = Numbers.toString(boiler.getEfficiencyRate());
+				String min = Numbers.toString(boiler.minPower);
+				String max = Numbers.toString(boiler.maxPower);
+				String eta = Numbers.toString(boiler.efficiencyRate);
 				return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
 			}
 
 			private String getFuelLabel(Boiler boiler) {
-				if (boiler.getFuel() != null)
-					return boiler.getFuel().name;
+				if (boiler.fuel != null)
+					return boiler.fuel.name;
 				else
-					return Labels.get(boiler.getWoodAmountType());
+					return Labels.get(boiler.woodAmountType);
 			}
 		}
 	}

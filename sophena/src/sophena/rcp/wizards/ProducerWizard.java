@@ -106,8 +106,8 @@ public class ProducerWizard extends Wizard {
 		costs.maintenance = 3;
 		costs.operation = 15;
 		Boiler b = producer.getBoiler();
-		if (b != null && b.getPurchasePrice() != null)
-			costs.investment = b.getPurchasePrice();
+		if (b != null && b.purchasePrice != null)
+			costs.investment = b.purchasePrice;
 	}
 
 	@Override
@@ -201,8 +201,8 @@ public class ProducerWizard extends Wizard {
 					return null;
 				Boiler boiler = (Boiler) element;
 				String label = boiler.name + " ("
-						+ Numbers.toString(boiler.getMinPower()) + " kW - "
-						+ Numbers.toString(boiler.getMaxPower()) + " kW)";
+						+ Numbers.toString(boiler.minPower) + " kW - "
+						+ Numbers.toString(boiler.maxPower) + " kW)";
 				return label;
 			}
 		}
@@ -298,11 +298,11 @@ public class ProducerWizard extends Wizard {
 					return false;
 				int idx = fuelCombo.getSelectionIndex();
 				String fuel = fuelCombo.getItem(idx);
-				if (b.getFuel() != null)
-					return Strings.nullOrEqual(fuel, b.getFuel().name);
-				if (b.getWoodAmountType() != null)
+				if (b.fuel != null)
+					return Strings.nullOrEqual(fuel, b.fuel.name);
+				if (b.woodAmountType != null)
 					return Strings.nullOrEqual(fuel,
-							Labels.get(b.getWoodAmountType()));
+							Labels.get(b.woodAmountType));
 				else
 					return false;
 			}
