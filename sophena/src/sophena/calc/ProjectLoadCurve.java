@@ -32,7 +32,7 @@ public class ProjectLoadCurve {
 	private static double getNetLoad(HeatNet net) {
 		if (net == null)
 			return 0;
-		double netLoad = (net.getPowerLoss() * net.getLength()) / 1000;
+		double netLoad = (net.powerLoss * net.length) / 1000;
 		return netLoad;
 	}
 
@@ -47,10 +47,10 @@ public class ProjectLoadCurve {
 	}
 
 	public static void applyInterruption(double[] curve, HeatNet net) {
-		if (curve == null || net == null || !net.isWithInterruption())
+		if (curve == null || net == null || !net.withInterruption)
 			return;
-		int startIndex = getIndex(net.getInterruptionStart(), true);
-		int endIndex = getIndex(net.getInterruptionEnd(), false);
+		int startIndex = getIndex(net.interruptionStart, true);
+		int endIndex = getIndex(net.interruptionEnd, false);
 		if (startIndex == -1 || endIndex == -1)
 			return;
 		if (startIndex < endIndex) {

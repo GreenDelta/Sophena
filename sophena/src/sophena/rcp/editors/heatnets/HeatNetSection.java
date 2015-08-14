@@ -43,9 +43,9 @@ class HeatNetSection {
 
 	private void createSupplyText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Vorlauftemperatur");
-		Texts.set(t, heatNet().getSupplyTemperature());
+		Texts.set(t, heatNet().supplyTemperature);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setSupplyTemperature(Texts.getDouble(t));
+			heatNet().supplyTemperature = Texts.getDouble(t);
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "°C");
@@ -53,9 +53,9 @@ class HeatNetSection {
 
 	private void createReturnText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Rücklauftemperatur");
-		Texts.set(t, heatNet().getReturnTemperature());
+		Texts.set(t, heatNet().returnTemperature);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setReturnTemperature(Texts.getDouble(t));
+			heatNet().returnTemperature = Texts.getDouble(t);
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "°C");
@@ -63,9 +63,9 @@ class HeatNetSection {
 
 	private void createBufferText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Pufferspeicher");
-		Texts.set(t, heatNet().getBufferTankVolume());
+		Texts.set(t, heatNet().bufferTankVolume);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setBufferTankVolume(Texts.getDouble(t));
+			heatNet().bufferTankVolume = Texts.getDouble(t);
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "L");
@@ -73,9 +73,9 @@ class HeatNetSection {
 
 	private void createSimFactorText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Gleichzeitigkeitsfaktor");
-		Texts.set(t, heatNet().getSimultaneityFactor());
+		Texts.set(t, heatNet().simultaneityFactor);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setSimultaneityFactor(Texts.getDouble(t));
+			heatNet().simultaneityFactor = Texts.getDouble(t);
 			editor.setDirty();
 		});
 		UI.formLabel(composite, toolkit, "").setImage(Images.INFO_16.img());
@@ -83,9 +83,9 @@ class HeatNetSection {
 
 	private void createLengthText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Länge");
-		Texts.set(t, heatNet().getLength());
+		Texts.set(t, heatNet().length);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setLength(Texts.getDouble(t));
+			heatNet().length = Texts.getDouble(t);
 			editor.setDirty();
 			updateLoadCurve();
 		});
@@ -94,9 +94,9 @@ class HeatNetSection {
 
 	private void createLossText(Composite composite, FormToolkit toolkit) {
 		Text t = UI.formText(composite, toolkit, "Verlustleistung");
-		Texts.set(t, heatNet().getPowerLoss());
+		Texts.set(t, heatNet().powerLoss);
 		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().setPowerLoss(Texts.getDouble(t));
+			heatNet().powerLoss = Texts.getDouble(t);
 			editor.setDirty();
 			updateLoadCurve();
 		});

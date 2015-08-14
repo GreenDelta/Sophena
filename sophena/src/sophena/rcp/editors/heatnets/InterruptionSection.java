@@ -49,10 +49,10 @@ class InterruptionSection {
 	private void createCheck(FormToolkit toolkit, Composite composite) {
 		Button check = new Button(composite, SWT.CHECK);
 		check.setText("Mit Unterbrechung");
-		check.setSelection(heatNet().isWithInterruption());
+		check.setSelection(heatNet().withInterruption);
 		Controls.onSelect(check, (e) -> {
 			boolean enabled = check.getSelection();
-			heatNet().setWithInterruption(enabled);
+			heatNet().withInterruption = enabled;
 			startBox.setEnabled(enabled);
 			endBox.setEnabled(enabled);
 			if (enabled)
@@ -65,26 +65,26 @@ class InterruptionSection {
 
 	private void initInterruptionValues() {
 		HeatNet net = heatNet();
-		if(net.getInterruptionStart() == null) {
+		if(net.interruptionStart == null) {
 			MonthDay start = startBox.getSelection();
 			if(start != null)
-				net.setInterruptionStart(start.toString());
+				net.interruptionStart = start.toString();
 		}
-		if(net.getInterruptionEnd() == null) {
+		if(net.interruptionEnd == null) {
 			MonthDay end = endBox.getSelection();
 			if(end != null)
-				net.setInterruptionEnd(end.toString());
+				net.interruptionEnd = end.toString();
 		}
 	}
 
 	private void createStartBox(FormToolkit toolkit, Composite composite) {
 		startBox = new MonthDayBox(M.Start, composite, toolkit);
-		startBox.setEnabled(heatNet().isWithInterruption());
-		initBoxValue(startBox, heatNet().getInterruptionStart());
+		startBox.setEnabled(heatNet().withInterruption);
+		initBoxValue(startBox, heatNet().interruptionStart);
 		startBox.onSelect((monthDay) -> {
 			if (monthDay == null)
 				return;
-			heatNet().setInterruptionStart(monthDay.toString());
+			heatNet().interruptionStart = monthDay.toString();
 			updateLoadCurve();
 			editor.setDirty();
 		});
@@ -92,12 +92,12 @@ class InterruptionSection {
 
 	private void createEndBox(FormToolkit toolkit, Composite composite) {
 		endBox = new MonthDayBox(M.End, composite, toolkit);
-		endBox.setEnabled(heatNet().isWithInterruption());
-		initBoxValue(endBox, heatNet().getInterruptionEnd());
+		endBox.setEnabled(heatNet().withInterruption);
+		initBoxValue(endBox, heatNet().interruptionEnd);
 		endBox.onSelect((monthDay) -> {
 			if (monthDay == null)
 				return;
-			heatNet().setInterruptionEnd(monthDay.toString());
+			heatNet().interruptionEnd = monthDay.toString();
 			updateLoadCurve();
 			editor.setDirty();
 		});

@@ -83,10 +83,10 @@ public class ProjectWizard extends Wizard {
 
 	private void addHeatNet(Project p) {
 		HeatNet n = p.getHeatNet();
-		n.setSimultaneityFactor(1);
-		n.setPowerLoss(20);
-		n.setSupplyTemperature(80);
-		n.setReturnTemperature(50);
+		n.simultaneityFactor = (double) 1;
+		n.powerLoss = (double) 20;
+		n.supplyTemperature = (double) 80;
+		n.returnTemperature = (double) 50;
 	}
 
 	@Override

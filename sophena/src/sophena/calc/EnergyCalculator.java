@@ -90,8 +90,8 @@ class EnergyCalculator {
 		HeatNet net = project.getHeatNet();
 		if (net == null)
 			return 0;
-		double liters = net.getBufferTankVolume();
-		double deltaT = net.getSupplyTemperature() - net.getReturnTemperature();
+		double liters = net.bufferTankVolume;
+		double deltaT = net.supplyTemperature - net.returnTemperature;
 		double c = 1.166; // Wh/(kg K)
 		return (c * liters * deltaT) / 1000;
 	}
