@@ -18,6 +18,12 @@ public class HeatNet {
 	@Column(name = "simultaneity_factor")
 	public double simultaneityFactor;
 
+	@Column(name = "max_load")
+	public double maxLoad;
+
+	@Column(name = "max_simultaneous_load")
+	public double maxSimultaneousLoad;
+
 	@Column(name = "buffer_tank_volume")
 	public double bufferTankVolume;
 
@@ -41,6 +47,8 @@ public class HeatNet {
 		clone.powerLoss = powerLoss;
 		clone.returnTemperature = returnTemperature;
 		clone.simultaneityFactor = simultaneityFactor;
+		clone.maxLoad = maxLoad;
+		clone.maxSimultaneousLoad = maxSimultaneousLoad;
 		clone.supplyTemperature = supplyTemperature;
 		clone.withInterruption = withInterruption;
 		clone.interruptionStart = interruptionStart;
