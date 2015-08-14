@@ -64,10 +64,10 @@ public class DuplicateAction extends NavigationAction {
 		Consumer consumer = cDao.get(e.getDescriptor().id);
 		if (project == null || consumer == null)
 			return;
-		String name = getCopyName(consumer.name, project.getConsumers());
+		String name = getCopyName(consumer.name, project.consumers);
 		Consumer clone = consumer.clone();
 		clone.name = name;
-		project.getConsumers().add(clone);
+		project.consumers.add(clone);
 		pDao.update(project);
 		Navigator.refresh();
 	}
@@ -81,10 +81,10 @@ public class DuplicateAction extends NavigationAction {
 		Producer producer = prodDao.get(e.getDescriptor().id);
 		if (project == null || producer == null)
 			return;
-		String name = getCopyName(producer.name, project.getProducers());
+		String name = getCopyName(producer.name, project.producers);
 		Producer clone = producer.clone();
 		clone.name = name;
-		project.getProducers().add(clone);
+		project.producers.add(clone);
 		projDao.update(project);
 		Navigator.refresh();
 	}

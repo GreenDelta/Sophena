@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.calc.ProjectLoadCurve;
+import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
@@ -34,7 +34,7 @@ class InterruptionSection {
 	}
 
 	private HeatNet heatNet() {
-		return editor.getHeatNet();
+		return editor.heatNet;
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
@@ -65,14 +65,14 @@ class InterruptionSection {
 
 	private void initInterruptionValues() {
 		HeatNet net = heatNet();
-		if(net.interruptionStart == null) {
+		if (net.interruptionStart == null) {
 			MonthDay start = startBox.getSelection();
-			if(start != null)
+			if (start != null)
 				net.interruptionStart = start.toString();
 		}
-		if(net.interruptionEnd == null) {
+		if (net.interruptionEnd == null) {
 			MonthDay end = endBox.getSelection();
-			if(end != null)
+			if (end != null)
 				net.interruptionEnd = end.toString();
 		}
 	}
@@ -118,7 +118,7 @@ class InterruptionSection {
 	private void updateLoadCurve() {
 		if (loadCurve == null)
 			return;
-		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
+		double[] curve = ProjectLoad.getNetLoadCurve(heatNet());
 		loadCurve.setData(curve);
 	}
 

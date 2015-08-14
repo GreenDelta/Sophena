@@ -61,8 +61,8 @@ public class ProjectEditor extends Editor {
 			Project dbProject = dao.get(project.id);
 			dbProject.description = project.description;
 			dbProject.name = project.name;
-			dbProject.setProjectDuration(project.getProjectDuration());
-			dbProject.setWeatherStation(project.getWeatherStation());
+			dbProject.projectDuration = project.projectDuration;
+			dbProject.weatherStation = project.weatherStation;
 			project = dao.update(dbProject);
 			setPartName(project.name);
 			Navigator.refresh();

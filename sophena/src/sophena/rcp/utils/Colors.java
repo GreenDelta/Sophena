@@ -21,6 +21,7 @@ public class Colors {
 	private static Logger log = LoggerFactory.getLogger(Colors.class);
 	private static HashMap<RGB, Color> createdColors = new HashMap<>();
 	private static Display display;
+
 	static {
 		display = PlatformUI.getWorkbench().getDisplay();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDown());
@@ -127,6 +128,10 @@ public class Colors {
 
 	public static Color forRequiredField() {
 		return getColor(255, 255, 220);
+	}
+
+	public static Color forCalculatedField() {
+		return getColor(230, 230, 233);
 	}
 
 	private static class ShutDown implements IWorkbenchListener {

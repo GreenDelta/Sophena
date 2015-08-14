@@ -78,7 +78,7 @@ public class ProducerWizard extends Wizard {
 			page.data.bindToModel(producer);
 			addFuelSpec(producer);
 			addCosts(producer);
-			project.getProducers().add(producer);
+			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
@@ -257,7 +257,7 @@ public class ProducerWizard extends Wizard {
 
 			private int getNextRank() {
 				Set<Integer> set = new HashSet<>();
-				for (Producer p : project.getProducers())
+				for (Producer p : project.producers)
 					set.add(p.getRank());
 				int next = 1;
 				while (set.contains(next))
@@ -270,7 +270,7 @@ public class ProducerWizard extends Wizard {
 				items[0] = Labels.get(ProducerFunction.BASE_LOAD);
 				items[1] = Labels.get(ProducerFunction.PEAK_LOAD);
 				int selection = 0;
-				for (Producer p : project.getProducers()) {
+				for (Producer p : project.producers) {
 					if (p.getFunction() == ProducerFunction.BASE_LOAD) {
 						selection = 1;
 						break;

@@ -31,7 +31,7 @@ class ProducerSection {
 		Composite composite = UI.sectionClient(section, tk);
 		TableViewer table = createTable(composite);
 		table.setLabelProvider(new Label());
-		table.setInput(editor.getProject().getProducers());
+		table.setInput(editor.getProject().producers);
 		Tables.onDoubleClick(table, (e) -> openSelected(table));
 		Actions.bind(table, Actions.create("Öffnen", Images.OPEN_16.des(),
 				() -> openSelected(table)));

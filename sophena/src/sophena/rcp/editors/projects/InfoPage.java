@@ -77,11 +77,11 @@ class InfoPage extends FormPage {
 	private void createDurationText(FormToolkit toolkit, Composite composite) {
 		Text t = UI.formText(composite, toolkit, M.ProjectDurationYears);
 		Texts.on(t)
-				.init(project().getProjectDuration())
+				.init(project().projectDuration)
 				.required()
 				.integer()
 				.onChanged((s) -> {
-					project().setProjectDuration(Texts.getInt(t));
+					project().projectDuration = Texts.getInt(t);
 					editor.setDirty();
 				});
 	}
@@ -94,7 +94,7 @@ class InfoPage extends FormPage {
 		Collections.sort(list,
 				(w1, w2) -> Strings.compare(w1.name, w2.name));
 		combo.setInput(list);
-		WeatherStation s = project().getWeatherStation();
+		WeatherStation s = project().weatherStation;
 		if (s != null)
 			combo.select(s.toDescriptor());
 		combo.onSelect((d) -> {
@@ -102,7 +102,7 @@ class InfoPage extends FormPage {
 				return;
 			}
 			WeatherStation selected = dao.get(d.id);
-			project().setWeatherStation(selected);
+			project().weatherStation = selected;
 			editor.setDirty();
 		});
 	}

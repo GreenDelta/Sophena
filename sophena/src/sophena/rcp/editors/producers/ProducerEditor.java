@@ -48,7 +48,7 @@ public class ProducerEditor extends Editor {
 	private Producer findProducer(Project project, String producerKey) {
 		if (project == null)
 			return null;
-		for (Producer p : project.getProducers()) {
+		for (Producer p : project.producers) {
 			if (Objects.equals(producerKey, p.id))
 				return p;
 		}
@@ -75,8 +75,8 @@ public class ProducerEditor extends Editor {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project project = dao.get(projectId);
 			Producer old = findProducer(project, producer.id);
-			project.getProducers().remove(old);
-			project.getProducers().add(producer);
+			project.producers.remove(old);
+			project.producers.add(producer);
 			project = dao.update(project);
 			producer = findProducer(project, producer.id);
 			setPartName(producer.name);

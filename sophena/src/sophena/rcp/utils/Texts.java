@@ -129,6 +129,14 @@ public final class Texts {
 			return this;
 		}
 
+		public TextDispatch calculated() {
+			if (text == null)
+				return this;
+			text.setBackground(Colors.forCalculatedField());
+			text.setEditable(false);
+			return this;
+		}
+
 		public TextDispatch decimal() {
 			if (text == null)
 				return this;

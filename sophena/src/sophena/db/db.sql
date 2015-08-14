@@ -133,7 +133,6 @@ CREATE TABLE tbl_projects (
     return_temperature DOUBLE,
     simultaneity_factor DOUBLE,
     max_load DOUBLE,
-    max_simultaneous_load DOUBLE,
     buffer_tank_volume DOUBLE,
     power_loss DOUBLE,
     with_interruption BOOLEAN,

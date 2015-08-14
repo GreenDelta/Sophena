@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,16 +12,16 @@ import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
-public class HeatNetEditor extends FormEditor {
+public class HeatNetEditor extends Editor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private String projectId;
-	private HeatNet heatNet;
-	private boolean dirty;
+	protected Project project;
+	protected HeatNet heatNet;
 
 	public static void open(ProjectDescriptor project) {
 		if (project == null)
@@ -39,26 +38,9 @@ public class HeatNetEditor extends FormEditor {
 		super.init(site, input);
 		EditorInput i = (EditorInput) input;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		Project p = dao.get(i.projectId);
-		projectId = p.id;
-		heatNet = p.getHeatNet();
-		setPartName(p.name);
-	}
-
-	public HeatNet getHeatNet() {
-		return heatNet;
-	}
-
-	public void setDirty() {
-		if (dirty)
-			return;
-		dirty = true;
-		editorDirtyStateChanged();
-	}
-
-	@Override
-	public boolean isDirty() {
-		return dirty;
+		project = dao.get(i.projectId);
+		heatNet = project.heatNet;
+		setPartName(project.name);
 	}
 
 	@Override
@@ -73,25 +55,16 @@ public class HeatNetEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			log.info("update heat net in project {}", projectId);
+			log.info("update heat net in project {}", project);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(projectId);
-			p.setHeatNet(heatNet);
-			dao.update(p);
-			dirty = false;
-			editorDirtyStateChanged();
+			Project p = dao.get(project.id);
+			p.heatNet = heatNet;
+			project = dao.update(p);
+			heatNet = project.heatNet;
+			setSaved();
 		} catch (Exception e) {
-			log.error("failed to update heat net in project " + projectId, e);
+			log.error("failed to update heat net in project " + project, e);
 		}
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
 	}
 
 	private static class EditorInput extends KeyEditorInput {

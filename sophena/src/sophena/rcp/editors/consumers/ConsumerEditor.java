@@ -53,7 +53,7 @@ public class ConsumerEditor extends Editor {
 		Project project = dao.get(i.projectKey);
 		projectId = project.id;
 		consumer = findConsumer(project, i.getKey());
-		this.weatherStation = project.getWeatherStation();
+		this.weatherStation = project.weatherStation;
 		setPartName(consumer.name);
 		if (consumer.location == null) {
 			Location loc = new Location();
@@ -65,7 +65,7 @@ public class ConsumerEditor extends Editor {
 	private Consumer findConsumer(Project project, String consumerKey) {
 		if (project == null)
 			return null;
-		for (Consumer c : project.getConsumers()) {
+		for (Consumer c : project.consumers) {
 			if (Objects.equals(consumerKey, c.id))
 				return c;
 		}
@@ -109,8 +109,8 @@ public class ConsumerEditor extends Editor {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project project = dao.get(projectId);
 			Consumer old = findConsumer(project, consumer.id);
-			project.getConsumers().remove(old);
-			project.getConsumers().add(consumer);
+			project.consumers.remove(old);
+			project.consumers.add(consumer);
 			project = dao.update(project);
 			consumer = findConsumer(project, consumer.id);
 			setPartName(consumer.name);

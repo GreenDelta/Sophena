@@ -76,9 +76,9 @@ public class NewVariantAction extends NavigationAction {
 			Project p = dao.get(descriptor.id);
 			Project variant = p.clone();
 			variant.name = val;
-			variant.setVariant(true);
-			variant.getVariants().clear();
-			p.getVariants().add(variant);
+			variant.variant = true;
+			variant.variants.clear();
+			p.variants.add(variant);
 			dao.update(p);
 			Navigator.refresh();
 		} catch (Exception e) {

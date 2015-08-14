@@ -65,8 +65,8 @@ public class ProjectDaoTest {
 		p.name = "A project";
 		CostSettings settings = new CostSettings();
 		settings.id = UUID.randomUUID().toString();
-		p.setCostSettings(settings);
-		p.getVariants().add(p.clone());
+		p.costSettings = settings;
+		p.variants.add(p.clone());
 		return dao.insert(p);
 	}
 

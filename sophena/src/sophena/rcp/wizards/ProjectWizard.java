@@ -73,16 +73,16 @@ public class ProjectWizard extends Wizard {
 		CostSettingsDao dao = new CostSettingsDao(App.getDb());
 		CostSettings global = dao.getGlobal();
 		if (global != null)
-			p.setCostSettings(global.clone());
+			p.costSettings = global.clone();
 		else {
 			CostSettings settings = new CostSettings();
 			settings.id = UUID.randomUUID().toString();
-			p.setCostSettings(settings);
+			p.costSettings = settings;
 		}
 	}
 
 	private void addHeatNet(Project p) {
-		HeatNet n = p.getHeatNet();
+		HeatNet n = p.heatNet;
 		n.simultaneityFactor = (double) 1;
 		n.powerLoss = (double) 20;
 		n.supplyTemperature = (double) 80;
@@ -130,8 +130,8 @@ public class ProjectWizard extends Wizard {
 					return;
 				p.name = nameText.getText();
 				p.description = descriptionText.getText();
-				p.setProjectDuration(Texts.getInt(timeText));
-				p.setWeatherStation(getWeatherStation());
+				p.projectDuration = Texts.getInt(timeText);
+				p.weatherStation = getWeatherStation();
 			}
 
 			private WeatherStation getWeatherStation() {

@@ -31,7 +31,7 @@ public class EnergyResult {
 	}
 
 	EnergyResult(Project project) {
-		loadCurve = ProjectLoadCurve.get(project);
+		loadCurve = ProjectLoad.getCurve(project);
 		suppliedPower = new double[Stats.HOURS];
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];
@@ -47,7 +47,7 @@ public class EnergyResult {
 
 	private void initProducerData(Project project) {
 		List<Producer> list = new ArrayList<>();
-		for (Producer p : project.getProducers()) {
+		for (Producer p : project.producers) {
 			if (p.isDisabled())
 				continue;
 			list.add(p);

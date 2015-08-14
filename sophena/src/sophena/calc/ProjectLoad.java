@@ -2,30 +2,42 @@ package sophena.calc;
 
 import java.time.MonthDay;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.Stats;
 
-public class ProjectLoadCurve {
+public class ProjectLoad {
 
-	public static double[] get(Project project) {
+	public static double getMaxLoad(Project project) {
+		if (project == null)
+			return 0;
+		double load = getNetLoad(project.heatNet);
+		for (Consumer c : project.consumers) {
+			load += c.heatingLoad;
+		}
+		return load;
+	}
+
+	public static double[] getCurve(Project project) {
 		double[] curve = new double[Stats.HOURS];
 		if (project == null)
 			return curve;
-		for (Consumer consumer : project.getConsumers()) {
+		for (Consumer consumer : project.consumers) {
 			if (consumer.disabled)
 				continue;
 			double[] c = ConsumerLoadCurve.calculate(consumer,
-					project.getWeatherStation());
+					project.weatherStation);
 			for (int i = 0; i < c.length; i++)
 				curve[i] += c[i];
 		}
-		double netLoad = getNetLoad(project.getHeatNet());
+		double netLoad = getNetLoad(project.heatNet);
 		Arrays.setAll(curve, (i) -> curve[i] + netLoad);
-		applyInterruption(curve, project.getHeatNet());
+		applyInterruption(curve, project.heatNet);
 		return curve;
 	}
 
@@ -67,7 +79,7 @@ public class ProjectLoadCurve {
 	private static int getIndex(String monthDay, boolean beginOfDay) {
 		if (monthDay == null)
 			return -1;
-		int[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		int[] daysInMonths = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 		try {
 			MonthDay value = MonthDay.parse(monthDay);
 			int monthIdx = value.getMonthValue() - 1;
@@ -79,7 +91,7 @@ public class ProjectLoadCurve {
 			hours = beginOfDay ? hours : hours + 24;
 			return hours < Stats.HOURS ? hours : Stats.HOURS - 1;
 		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(ProjectLoadCurve.class);
+			Logger log = LoggerFactory.getLogger(ProjectLoad.class);
 			log.error("failed to parse MonthDay " + monthDay, e);
 			return -1;
 		}

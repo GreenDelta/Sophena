@@ -1,10 +1,12 @@
 package sophena.rcp.editors.heatnets;
 
+import java.util.function.DoubleConsumer;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.ProjectLoadCurve;
+import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -17,97 +19,106 @@ class HeatNetSection {
 	private HeatNetEditor editor;
 	private LoadCurveSection loadCurve;
 
+	private Composite comp;
+	private FormToolkit tk;
+	private Text maxSimLoadText;
+	private Text maxLoadText;
+
 	HeatNetSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
 
 	private HeatNet heatNet() {
-		return editor.getHeatNet();
+		return editor.heatNet;
 	}
 
 	public void setLoadCurve(LoadCurveSection loadCurve) {
 		this.loadCurve = loadCurve;
 	}
 
-	void create(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit,
-				M.HeatingNetwork);
-		UI.gridLayout(composite, 3);
-		createSupplyText(composite, toolkit);
-		createReturnText(composite, toolkit);
-		createSimFactorText(composite, toolkit);
-		createBufferText(composite, toolkit);
-		createLengthText(composite, toolkit);
-		createLossText(composite, toolkit);
+	void create(Composite body, FormToolkit tk) {
+		this.tk = tk;
+		comp = UI.formSection(body, tk, M.HeatingNetwork);
+		UI.gridLayout(comp, 3);
+
+		d("Vorlauftemperatur", "°C",
+				heatNet().supplyTemperature,
+				(v) -> heatNet().supplyTemperature = v);
+
+		d("Rücklauftemperatur", "°C",
+				heatNet().returnTemperature,
+				(v) -> heatNet().returnTemperature = v);
+
+		maxLoadText = d(
+				"Maximal benötigte Leistung (ohne Gleichzeitigkeitsfaktor)",
+				"kW", heatNet().maxLoad, (v) -> {
+					heatNet().maxLoad = v;
+					updateMaxSimLoad();
+				});
+
+		createSimFactorText();
+		maxSimLoadText = createMaxSimLoadText();
+
+		d("Pufferspeicher", "L",
+				heatNet().bufferTankVolume,
+				(v) -> heatNet().bufferTankVolume = v);
+
+		d("Länge", "m", heatNet().length, (v) -> {
+			heatNet().length = v;
+			updateLoad();
+		});
+
+		d("Verlustleistung", "W/m", heatNet().powerLoss, (v) -> {
+			heatNet().powerLoss = v;
+			updateLoad();
+		});
 	}
 
-	private void createSupplyText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Vorlauftemperatur");
-		Texts.set(t, heatNet().supplyTemperature);
-		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().supplyTemperature = Texts.getDouble(t);
+	private Text d(String label, String unit, double init, DoubleConsumer fn) {
+		Text t = UI.formText(comp, tk, label);
+		Texts.on(t).init(init).decimal().required().onChanged((s) -> {
+			fn.accept(Texts.getDouble(t));
 			editor.setDirty();
 		});
-		UI.formLabel(composite, toolkit, "°C");
+		UI.formLabel(comp, tk, unit);
+		return t;
 	}
 
-	private void createReturnText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Rücklauftemperatur");
-		Texts.set(t, heatNet().returnTemperature);
-		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().returnTemperature = Texts.getDouble(t);
-			editor.setDirty();
-		});
-		UI.formLabel(composite, toolkit, "°C");
+	private Text createMaxSimLoadText() {
+		Text t = UI.formText(comp, tk,
+				"Maximal benötigte Leistung (mit Gleichzeitigkeitsfaktor)");
+		double simLoad = heatNet().maxLoad * heatNet().simultaneityFactor;
+		Texts.set(t, simLoad);
+		Texts.on(t).decimal().calculated();
+		UI.formLabel(comp, tk, "kW");
+		return t;
 	}
 
-	private void createBufferText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Pufferspeicher");
-		Texts.set(t, heatNet().bufferTankVolume);
-		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().bufferTankVolume = Texts.getDouble(t);
-			editor.setDirty();
-		});
-		UI.formLabel(composite, toolkit, "L");
-	}
-
-	private void createSimFactorText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Gleichzeitigkeitsfaktor");
+	private void createSimFactorText() {
+		Text t = UI.formText(comp, tk, "Gleichzeitigkeitsfaktor");
 		Texts.set(t, heatNet().simultaneityFactor);
 		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().simultaneityFactor = Texts.getDouble(t);
 			editor.setDirty();
+			updateMaxSimLoad();
 		});
-		UI.formLabel(composite, toolkit, "").setImage(Images.INFO_16.img());
+		UI.formLabel(comp, tk, "").setImage(Images.INFO_16.img());
 	}
 
-	private void createLengthText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Länge");
-		Texts.set(t, heatNet().length);
-		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().length = Texts.getDouble(t);
-			editor.setDirty();
-			updateLoadCurve();
-		});
-		UI.formLabel(composite, toolkit, "m");
+	private void updateLoad() {
+		if (loadCurve != null) {
+			double[] curve = ProjectLoad.getNetLoadCurve(heatNet());
+			loadCurve.setData(curve);
+		}
+		double max = ProjectLoad.getMaxLoad(editor.project);
+		if (max > heatNet().maxLoad && maxLoadText != null) {
+			Texts.set(maxLoadText, max);
+		}
 	}
 
-	private void createLossText(Composite composite, FormToolkit toolkit) {
-		Text t = UI.formText(composite, toolkit, "Verlustleistung");
-		Texts.set(t, heatNet().powerLoss);
-		Texts.on(t).decimal().required().onChanged((s) -> {
-			heatNet().powerLoss = Texts.getDouble(t);
-			editor.setDirty();
-			updateLoadCurve();
-		});
-		UI.formLabel(composite, toolkit, "W/m");
-	}
-
-	private void updateLoadCurve() {
-		if (loadCurve == null)
-			return;
-		double[] curve = ProjectLoadCurve.getNetLoadCurve(heatNet());
-		loadCurve.setData(curve);
+	private void updateMaxSimLoad() {
+		double val = heatNet().maxLoad * heatNet().simultaneityFactor;
+		Texts.set(maxSimLoadText, val);
 	}
 
 }

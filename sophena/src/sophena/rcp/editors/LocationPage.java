@@ -162,7 +162,7 @@ public class LocationPage extends FormPage {
 		LatLng init = new LatLng();
 		int count = 0;
 		Project p = proj.get();
-		for (sophena.model.Consumer c : p.getConsumers()) {
+		for (sophena.model.Consumer c : p.consumers) {
 			Location l = c.location;
 			if (l == null || l.latitude == null || l.longitude == null)
 				continue;

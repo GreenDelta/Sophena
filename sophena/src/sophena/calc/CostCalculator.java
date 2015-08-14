@@ -22,10 +22,10 @@ class CostCalculator {
 		this.energyResult = energyResult;
 		if (project == null)
 			project = new Project();
-		settings = project.getCostSettings();
+		settings = project.costSettings;
 		if (settings == null)
 			settings = new CostSettings();
-		projectDuration = project.getProjectDuration();
+		projectDuration = project.projectDuration;
 	}
 
 	public void withFunding(boolean withFunding) {
@@ -35,7 +35,7 @@ class CostCalculator {
 	public CostResult calculate() {
 		CostResult r = new CostResult();
 		// TODO: iterate over all cost components; not only producers
-		for (Producer p : project.getProducers()) {
+		for (Producer p : project.producers) {
 			ComponentCosts costs = p.getCosts();
 			if (costs == null)
 				continue;

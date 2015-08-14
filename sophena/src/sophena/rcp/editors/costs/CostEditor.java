@@ -50,7 +50,7 @@ public class CostEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new OverviewPage(this));
-			CostSettings settings = project.getCostSettings();
+			CostSettings settings = project.costSettings;
 			if (settings != null) {
 				settingsPage = new CostSettingsPage(this, settings);
 				settingsPage.setForProject(true);
@@ -67,7 +67,7 @@ public class CostEditor extends Editor {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project dbProject = dao.get(project.id);
 			if (settingsPage != null) {
-				dbProject.setCostSettings(settingsPage.getCosts());
+				dbProject.costSettings = settingsPage.getCosts();
 			}
 			// TODO: sync cost components
 			project = dao.update(dbProject);

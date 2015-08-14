@@ -89,10 +89,10 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Consumer c = find(p.getConsumers(), e.getDescriptor());
+			Consumer c = find(p.consumers, e.getDescriptor());
 			if (c == null)
 				return;
-			p.getConsumers().remove(c);
+			p.consumers.remove(c);
 			dao.update(p);
 			Editors.close(c.id);
 			Navigator.refresh();
@@ -114,10 +114,10 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Producer prod = find(p.getProducers(), e.getDescriptor());
+			Producer prod = find(p.producers, e.getDescriptor());
 			if (prod == null)
 				return;
-			p.getProducers().remove(prod);
+			p.producers.remove(prod);
 			dao.update(p);
 			Editors.close(prod.id);
 			Navigator.refresh();

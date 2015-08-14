@@ -87,7 +87,7 @@ class EnergyCalculator {
 	}
 
 	private double calcMaxBufferCapacity() {
-		HeatNet net = project.getHeatNet();
+		HeatNet net = project.heatNet;
 		if (net == null)
 			return 0;
 		double liters = net.bufferTankVolume;

@@ -62,7 +62,7 @@ public class ConsumerWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			Consumer consumer = page.consumer;
-			project.getConsumers().add(consumer);
+			project.consumers.add(consumer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
