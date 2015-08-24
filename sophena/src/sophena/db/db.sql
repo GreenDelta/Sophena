@@ -235,6 +235,21 @@ CREATE TABLE tbl_pipes (
 );
 
 
+CREATE TABLE tbl_buffers (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	
+	volume DOUBLE,	
+
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_producers (
 
 	id CHAR(36),
