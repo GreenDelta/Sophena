@@ -94,6 +94,7 @@ public class BoilerEditor extends Editor {
 					() -> deleteBoiler(table));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
+			Tables.onDoubleClick(table, (e) -> editBoiler(table));
 		}
 
 		private void addBoiler(TableViewer table) {

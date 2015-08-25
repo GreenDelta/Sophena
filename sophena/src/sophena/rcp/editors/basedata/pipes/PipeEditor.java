@@ -2,10 +2,13 @@ package sophena.rcp.editors.basedata.pipes;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -18,13 +21,17 @@ import sophena.db.daos.RootEntityDao;
 import sophena.model.Pipe;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 public class PipeEditor extends Editor {
 
@@ -75,7 +82,63 @@ public class PipeEditor extends Editor {
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
 			Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
-			// bindActions(section, table);
+			bindActions(section, table);
+		}
+
+		private void bindActions(Section section, TableViewer table) {
+			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+					() -> add(table));
+			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+					() -> edit(table));
+			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+					() -> delete(table));
+			Actions.bind(section, add, edit, del);
+			Actions.bind(table, add, edit, del);
+			Tables.onDoubleClick(table, (e) -> edit(table));
+		}
+
+		private void add(TableViewer table) {
+			Pipe p = new Pipe();
+			p.id = UUID.randomUUID().toString();
+			p.name = "Neue Wärmeleitung";
+			if (PipeWizard.open(p) != Window.OK)
+				return;
+			dao.insert(p);
+			pipes.add(p);
+			table.setInput(pipes);
+		}
+
+		private void edit(TableViewer table) {
+			Pipe p = Viewers.getFirstSelected(table);
+			if (p == null)
+				return;
+			if (PipeWizard.open(p) != Window.OK)
+				return;
+			try {
+				int idx = pipes.indexOf(p);
+				p = dao.update(p);
+				pipes.set(idx, p);
+				table.setInput(pipes);
+			} catch (Exception e) {
+				log.error("failed to update pipe");
+			}
+		}
+
+		private void delete(TableViewer table) {
+			Pipe p = Viewers.getFirstSelected(table);
+			if (p == null)
+				return;
+			boolean doIt = MsgBox.ask("Wirklich löschen?",
+					"Soll die ausgewählte Wärmeleitung wirklich gelöscht werden?");
+			if (!doIt)
+				return;
+			try {
+				dao.delete(p);
+				pipes.remove(p);
+				table.setInput(pipes);
+			} catch (Exception e) {
+				log.error("failed to delete pipe " + p, e);
+			}
 		}
 
 	}
