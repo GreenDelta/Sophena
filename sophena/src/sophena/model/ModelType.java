@@ -4,7 +4,7 @@ public enum ModelType {
 
 	BOILER(Boiler.class),
 
-	BUFFER(Buffer.class),
+	BUFFER(BufferTank.class),
 
 	CONSUMER(Consumer.class),
 

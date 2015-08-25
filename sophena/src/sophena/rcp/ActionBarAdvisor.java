@@ -20,7 +20,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.io.datapack.Import;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
-import sophena.rcp.editors.basedata.buffers.BufferEditor;
+import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
@@ -84,7 +84,7 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Wärmeleitungen", Images.PIPE_16.des(),
 				PipeEditor::open));
 		m.add(Actions.create("Pufferspeicher", Images.BUFFER_16.des(),
-				BufferEditor::open));
+				BufferTankEditor::open));
 		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
 				BaseCostEditor::open));
 		menu.add(m);

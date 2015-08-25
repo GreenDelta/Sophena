@@ -134,6 +134,7 @@ CREATE TABLE tbl_projects (
     simultaneity_factor DOUBLE,
     max_load DOUBLE,
     buffer_tank_volume DOUBLE,
+    f_buffer_tank CHAR(36),
     power_loss DOUBLE,
     with_interruption BOOLEAN,
     interruption_start VARCHAR(10),
@@ -235,7 +236,7 @@ CREATE TABLE tbl_pipes (
 );
 
 
-CREATE TABLE tbl_buffers (
+CREATE TABLE tbl_buffer_tanks (
 
 	id CHAR(36),
 	name VARCHAR(255),

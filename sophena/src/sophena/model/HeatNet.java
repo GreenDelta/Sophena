@@ -2,6 +2,8 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Embeddable
 public class HeatNet {
@@ -20,6 +22,10 @@ public class HeatNet {
 
 	@Column(name = "max_load")
 	public double maxLoad;
+
+	@OneToOne
+	@JoinColumn(name = "f_buffer_tank")
+	public BufferTank BufferTank;
 
 	@Column(name = "buffer_tank_volume")
 	public double bufferTankVolume;

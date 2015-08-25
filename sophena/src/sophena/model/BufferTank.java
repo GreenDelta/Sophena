@@ -4,8 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_buffers")
-public class Buffer extends Product {
+@Table(name = "tbl_buffer_tanks")
+public class BufferTank extends Product {
 
 	public double volume;
 

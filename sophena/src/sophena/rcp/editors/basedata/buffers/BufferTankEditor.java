@@ -18,7 +18,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
-import sophena.model.Buffer;
+import sophena.model.BufferTank;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -33,7 +33,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 
-public class BufferEditor extends Editor {
+public class BufferTankEditor extends Editor {
 
 	public static void open() {
 		KeyEditorInput input = new KeyEditorInput("data.buffers",
@@ -52,12 +52,12 @@ public class BufferEditor extends Editor {
 
 	private class Page extends FormPage {
 
-		private RootEntityDao<Buffer> dao;
-		private List<Buffer> buffers;
+		private RootEntityDao<BufferTank> dao;
+		private List<BufferTank> buffers;
 
 		Page() {
-			super(BufferEditor.this, "BufferEditorPage", "Pufferspeicher");
-			dao = new RootEntityDao<>(Buffer.class, App.getDb());
+			super(BufferTankEditor.this, "BufferEditorPage", "Pufferspeicher");
+			dao = new RootEntityDao<>(BufferTank.class, App.getDb());
 			buffers = dao.getAll();
 			Collections.sort(buffers,
 					(b1, b2) -> Strings.compare(b1.name, b2.name));
@@ -98,10 +98,10 @@ public class BufferEditor extends Editor {
 		}
 
 		private void add(TableViewer table) {
-			Buffer b = new Buffer();
+			BufferTank b = new BufferTank();
 			b.id = UUID.randomUUID().toString();
 			b.name = "Neuer Pufferspeicher";
-			if (BufferWizard.open(b) != Window.OK)
+			if (BufferTankWizard.open(b) != Window.OK)
 				return;
 			dao.insert(b);
 			buffers.add(b);
@@ -109,10 +109,10 @@ public class BufferEditor extends Editor {
 		}
 
 		private void edit(TableViewer table) {
-			Buffer b = Viewers.getFirstSelected(table);
+			BufferTank b = Viewers.getFirstSelected(table);
 			if (b == null)
 				return;
-			if (BufferWizard.open(b) != Window.OK)
+			if (BufferTankWizard.open(b) != Window.OK)
 				return;
 			try {
 				int idx = buffers.indexOf(b);
@@ -125,7 +125,7 @@ public class BufferEditor extends Editor {
 		}
 
 		private void delete(TableViewer table) {
-			Buffer b = Viewers.getFirstSelected(table);
+			BufferTank b = Viewers.getFirstSelected(table);
 			if (b == null)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
@@ -150,9 +150,9 @@ public class BufferEditor extends Editor {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Buffer))
+			if (!(obj instanceof BufferTank))
 				return null;
-			Buffer b = (Buffer) obj;
+			BufferTank b = (BufferTank) obj;
 			switch (col) {
 			case 0:
 				return b.name;

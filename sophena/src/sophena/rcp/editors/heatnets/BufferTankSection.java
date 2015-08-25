@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-import sophena.model.Buffer;
+import sophena.model.BufferTank;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
@@ -59,7 +59,7 @@ class BufferTankSection {
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				Buffer b = SearchDialog.open("Pufferspeicher", Buffer.class);
+				BufferTank b = SearchDialog.open("Pufferspeicher", BufferTank.class);
 				if (b == null)
 					return;
 				net().bufferTankVolume = b.volume;

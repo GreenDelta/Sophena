@@ -8,7 +8,7 @@ import org.junit.Test;
 import sophena.Tests;
 import sophena.db.daos.RootEntityDao;
 import sophena.model.Boiler;
-import sophena.model.Buffer;
+import sophena.model.BufferTank;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
@@ -31,7 +31,7 @@ public class RootEntityTest {
 			WeatherStation.class,
 			Boiler.class,
 			Pipe.class,
-			Buffer.class,
+			BufferTank.class,
 			Producer.class
 	};
 

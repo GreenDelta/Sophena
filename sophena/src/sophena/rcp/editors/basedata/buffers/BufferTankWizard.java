@@ -8,20 +8,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.model.Buffer;
+import sophena.model.BufferTank;
 import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-class BufferWizard extends Wizard {
+class BufferTankWizard extends Wizard {
 
 	private Page page;
-	private Buffer buffer;
+	private BufferTank buffer;
 
-	static int open(Buffer buffer) {
+	static int open(BufferTank buffer) {
 		if (buffer == null)
 			return Window.CANCEL;
-		BufferWizard w = new BufferWizard();
+		BufferTankWizard w = new BufferTankWizard();
 		w.setWindowTitle("Pufferspeicher");
 		w.buffer = buffer;
 		WizardDialog d = new WizardDialog(UI.shell(), w);

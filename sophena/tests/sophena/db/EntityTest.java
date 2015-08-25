@@ -9,7 +9,7 @@ import sophena.Tests;
 import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
-import sophena.model.Buffer;
+import sophena.model.BufferTank;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
@@ -28,7 +28,7 @@ public class EntityTest {
 	@SuppressWarnings("unchecked")
 	private Class<? extends AbstractEntity>[] classes = new Class[] {
 			Boiler.class,
-			Buffer.class,
+			BufferTank.class,
 			BuildingState.class,
 			BuildingType.class,
 			Consumer.class,

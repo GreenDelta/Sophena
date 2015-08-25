@@ -153,7 +153,7 @@
 			name="Wärmeleitungen" />
 
 		<editor
-			class="sophena.rcp.editors.basedata.buffers.BufferEditor"
+			class="sophena.rcp.editors.basedata.buffers.BufferTankEditor"
 			icon="icons/buffer_16.png"
 			id="sophena.BufferEditor"
 			name="Pufferspeicher" />
