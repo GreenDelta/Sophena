@@ -10,6 +10,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
+import sophena.model.HeatNetPipe;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
@@ -66,7 +67,8 @@ class HeatNetPage extends FormPage {
 		Tables.createViewer(composite, "Komponente", "Anzahl");
 		Action add = Actions.create("Neue Komponente", Images.ADD_16.des(),
 				() -> {
-					NetComponentWizard.open(heatNet());
+					HeatNetPipe pipe = new HeatNetPipe();
+					PipeWizard.open(pipe);
 				});
 		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
 				() -> {
