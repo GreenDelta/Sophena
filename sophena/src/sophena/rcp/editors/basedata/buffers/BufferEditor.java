@@ -2,11 +2,13 @@ package sophena.rcp.editors.basedata.buffers;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -20,13 +22,16 @@ import sophena.model.Buffer;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
+import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 public class BufferEditor extends Editor {
 
@@ -93,27 +98,74 @@ public class BufferEditor extends Editor {
 		}
 
 		private void add(TableViewer table) {
-
+			Buffer b = new Buffer();
+			b.id = UUID.randomUUID().toString();
+			b.name = "Neuer Pufferspeicher";
+			if (BufferWizard.open(b) != Window.OK)
+				return;
+			dao.insert(b);
+			buffers.add(b);
+			table.setInput(buffers);
 		}
 
 		private void edit(TableViewer table) {
-
+			Buffer b = Viewers.getFirstSelected(table);
+			if (b == null)
+				return;
+			if (BufferWizard.open(b) != Window.OK)
+				return;
+			try {
+				int idx = buffers.indexOf(b);
+				b = dao.update(b);
+				buffers.set(idx, b);
+				table.setInput(buffers);
+			} catch (Exception e) {
+				log.error("failed to update buffer");
+			}
 		}
 
 		private void delete(TableViewer table) {
-
+			Buffer b = Viewers.getFirstSelected(table);
+			if (b == null)
+				return;
+			boolean doIt = MsgBox.ask("Wirklich löschen?",
+					"Soll der ausgewählte Pufferspeicher wirklich gelöscht werden?");
+			if (!doIt)
+				return;
+			try {
+				dao.delete(b);
+				buffers.remove(b);
+				table.setInput(buffers);
+			} catch (Exception e) {
+				log.error("failed to delete buffer " + b, e);
+			}
 		}
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return null;
+			return col == 0 ? Images.BUFFER_16.img() : null;
 		}
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			return null;
+			if (!(obj instanceof Buffer))
+				return null;
+			Buffer b = (Buffer) obj;
+			switch (col) {
+			case 0:
+				return b.name;
+			case 1:
+				return b.url;
+			case 2:
+				return b.purchasePrice == null ? null
+						: Numbers.toString(b.purchasePrice) + " EUR";
+			case 3:
+				return Numbers.toString(b.volume) + " m³";
+			default:
+				return null;
+			}
 		}
 	}
 

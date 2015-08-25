@@ -74,7 +74,7 @@ class BoilerWizard extends Wizard {
 		private Text priceText;
 
 		private Page() {
-			super("FuelWizardPage", M.Fuel, null);
+			super("FuelWizardPage", "Heizkessel", null);
 		}
 
 		@Override
