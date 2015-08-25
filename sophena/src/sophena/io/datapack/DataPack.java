@@ -138,6 +138,8 @@ public class DataPack implements Closeable {
 		switch (type) {
 		case BOILER:
 			return "boilers";
+		case BUFFER:
+			return "buffers";
 		case COST_SETTINGS:
 			return "cost_settings";
 		case FUEL:

@@ -13,6 +13,7 @@ import sophena.db.Database;
 import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
+import sophena.model.Buffer;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.ModelType;
@@ -38,6 +39,7 @@ public class Import implements Runnable {
 			pack = DataPack.open(packFile);
 			importEntities(ModelType.FUEL, Fuel.class);
 			importEntities(ModelType.BOILER, Boiler.class);
+			importEntities(ModelType.BUFFER, Buffer.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.PIPE, Pipe.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);

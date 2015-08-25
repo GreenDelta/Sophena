@@ -4,6 +4,8 @@ public enum ModelType {
 
 	BOILER(Boiler.class),
 
+	BUFFER(Buffer.class),
+
 	CONSUMER(Consumer.class),
 
 	COST_SETTINGS(CostSettings.class),

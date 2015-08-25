@@ -42,7 +42,7 @@ function packData(file) {
     archive.pipe(output);
 
     var dir = '../data/',
-        types = ['fuels', 'boilers', 'pipes', 'cost_settings'];
+        types = ['fuels', 'boilers', 'buffers', 'pipes', 'cost_settings'];
     for(var i = 0; i < types.length; i++) {
         var t = types[i];
         archive.bulk([{
