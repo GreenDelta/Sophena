@@ -1,9 +1,14 @@
 package sophena.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Embeddable
@@ -45,6 +50,10 @@ public class HeatNet {
 
 	@Column(name = "interruption_end")
 	public String interruptionEnd;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
+	public final List<HeatNetPipe> pipes = new ArrayList<>();
 
 	@Override
 	public HeatNet clone() {

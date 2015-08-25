@@ -1,7 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -35,8 +34,8 @@ class BufferTankSection {
 	void create(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk, "Pufferspeicher");
 		UI.gridLayout(comp, 3);
-		createVolText(comp, tk);
 		createProductRow(comp, tk);
+		createVolText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ComponentCosts();
 		new ComponentCostSection(() -> net().bufferTankCosts).withEditor(editor)
@@ -45,9 +44,6 @@ class BufferTankSection {
 
 	private void createVolText(Composite comp, FormToolkit tk) {
 		volText = UI.formText(comp, tk, "Volumen");
-		GridData gd = UI.gridData(volText, false, false);
-		gd.horizontalAlignment = SWT.FILL;
-		gd.widthHint = 250;
 		Texts.on(volText).init(net().bufferTankVolume)
 				.decimal().required().onChanged((s) -> {
 					net().bufferTankVolume = Texts.getDouble(volText);

@@ -156,6 +156,24 @@ CREATE TABLE tbl_projects (
 );
 
 
+CREATE TABLE tbl_heat_net_pipes (
+	
+	id CHAR(36),
+	
+	f_project CHAR(36),
+	f_pipe CHAR(36),
+	length DOUBLE,
+	
+	investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE, 
+    
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_consumers (
 
 	id CHAR(36),
