@@ -61,10 +61,10 @@ class BoilerTableSection {
 			Item item = new Item();
 			item.name = p.name;
 			item.fuel = getFuel(p);
-			if (p.getFunction() == ProducerFunction.BASE_LOAD)
-				item.rank = p.getRank() + " - Grundlast";
+			if (p.function == ProducerFunction.BASE_LOAD)
+				item.rank = p.rank + " - Grundlast";
 			else
-				item.rank = p.getRank() + " - Spitzenlast";
+				item.rank = p.rank + " - Spitzenlast";
 			item.pos = i;
 			item.heat = result.totalHeat(p);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
@@ -73,10 +73,10 @@ class BoilerTableSection {
 	}
 
 	private String getFuel(Producer p) {
-		Boiler b = p.getBoiler();
+		Boiler b = p.boiler;
 		if (b != null && b.fuel != null)
 			return b.fuel.name;
-		FuelSpec fs = p.getFuelSpec();
+		FuelSpec fs = p.fuelSpec;
 		if (fs != null && fs.getWoodFuel() != null)
 			return fs.getWoodFuel().name;
 		else
@@ -84,9 +84,9 @@ class BoilerTableSection {
 	}
 
 	private Integer getFullLoadHours(Producer p, double producedHeat) {
-		if (p == null || p.getBoiler() == null)
+		if (p == null || p.boiler == null)
 			return null;
-		double maxPower = p.getBoiler().maxPower;
+		double maxPower = p.boiler.maxPower;
 		return (int) Math.round(producedHeat / maxPower);
 	}
 

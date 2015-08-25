@@ -2,6 +2,7 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -25,10 +26,13 @@ public class HeatNet {
 
 	@OneToOne
 	@JoinColumn(name = "f_buffer_tank")
-	public BufferTank BufferTank;
+	public BufferTank bufferTank;
 
 	@Column(name = "buffer_tank_volume")
 	public double bufferTankVolume;
+
+	@Embedded
+	public ComponentCosts bufferTankCosts;
 
 	@Column(name = "power_loss")
 	public double powerLoss;
@@ -46,6 +50,9 @@ public class HeatNet {
 	public HeatNet clone() {
 		HeatNet clone = new HeatNet();
 		clone.bufferTankVolume = bufferTankVolume;
+		clone.bufferTank = bufferTank;
+		if (bufferTankCosts != null)
+			clone.bufferTankCosts = bufferTankCosts.clone();
 		clone.length = length;
 		clone.powerLoss = powerLoss;
 		clone.returnTemperature = returnTemperature;

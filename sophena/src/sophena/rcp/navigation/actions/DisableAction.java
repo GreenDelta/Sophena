@@ -71,7 +71,7 @@ public class DisableAction extends NavigationAction {
 		try {
 			ProducerDao dao = new ProducerDao(App.getDb());
 			Producer p = dao.get(e.getDescriptor().id);
-			p.setDisabled(!p.isDisabled());
+			p.disabled = !p.disabled;
 			dao.update(p);
 			Navigator.refresh();
 		} catch (Exception ex) {

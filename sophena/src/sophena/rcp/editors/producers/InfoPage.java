@@ -51,8 +51,8 @@ class InfoPage extends FormPage {
 		createFunctionCombo(tk, composite);
 		createRankText(tk, composite);
 		new FuelSection(editor).render(body, tk);
-		new ComponentCostSection(editor, () -> producer().getCosts())
-				.create(body, tk);
+		new ComponentCostSection(() -> producer().costs).withEditor(editor)
+				.createSection(body, tk);
 	}
 
 	private void createNameText(FormToolkit tk, Composite composite) {
@@ -75,7 +75,7 @@ class InfoPage extends FormPage {
 
 	private void createBoilerLink(FormToolkit tk, Composite composite) {
 		UI.formLabel(composite, tk, "Heizkessel");
-		Boiler b = producer().getBoiler();
+		Boiler b = producer().boiler;
 		if (b == null) {
 			UI.formLabel(composite, tk, "kein Kessel definiert");
 			return;
@@ -103,16 +103,16 @@ class InfoPage extends FormPage {
 		String[] items = { Labels.get(ProducerFunction.BASE_LOAD),
 				Labels.get(ProducerFunction.PEAK_LOAD) };
 		c.setItems(items);
-		if (producer().getFunction() == ProducerFunction.BASE_LOAD)
+		if (producer().function == ProducerFunction.BASE_LOAD)
 			c.select(0);
 		else
 			c.select(1);
 		Controls.onSelect(c, (e) -> {
 			int i = c.getSelectionIndex();
 			if (i == 0) {
-				producer().setFunction(ProducerFunction.BASE_LOAD);
+				producer().function = ProducerFunction.BASE_LOAD;
 			} else {
-				producer().setFunction(ProducerFunction.PEAK_LOAD);
+				producer().function = ProducerFunction.PEAK_LOAD;
 			}
 			editor.setDirty();
 		});
@@ -120,9 +120,9 @@ class InfoPage extends FormPage {
 
 	private void createRankText(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Rang");
-		Texts.set(t, producer().getRank());
+		Texts.set(t, producer().rank);
 		Texts.on(t).required().integer().onChanged((s) -> {
-			producer().setRank(Texts.getInt(t));
+			producer().rank = Texts.getInt(t);
 			editor.setDirty();
 		});
 	}

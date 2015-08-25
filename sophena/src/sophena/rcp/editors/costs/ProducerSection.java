@@ -65,7 +65,7 @@ class ProducerSection {
 			if (!(obj instanceof Producer))
 				return null;
 			Producer p = (Producer) obj;
-			ComponentCosts c = p.getCosts();
+			ComponentCosts c = p.costs;
 			if (c == null)
 				return null;
 			switch (col) {

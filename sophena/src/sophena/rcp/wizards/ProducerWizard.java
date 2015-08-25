@@ -93,19 +93,19 @@ public class ProducerWizard extends Wizard {
 
 	private void addFuelSpec(Producer producer) {
 		FuelSpec spec = new FuelSpec();
-		producer.setFuelSpec(spec);
+		producer.fuelSpec = spec;
 		spec.setTaxRate(19);
 		spec.setWaterContent(20);
 	}
 
 	private void addCosts(Producer producer) {
 		ComponentCosts costs = new ComponentCosts();
-		producer.setCosts(costs);
+		producer.costs = costs;
 		costs.duration = 15;
 		costs.repair = 3;
 		costs.maintenance = 3;
 		costs.operation = 15;
-		Boiler b = producer.getBoiler();
+		Boiler b = producer.boiler;
 		if (b != null && b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
 	}
@@ -213,14 +213,14 @@ public class ProducerWizard extends Wizard {
 				if (producer == null)
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerList);
-				producer.setBoiler(b);
+				producer.boiler = b;
 				producer.name = nameText.getText();
-				producer.setRank(Texts.getInt(rankText));
+				producer.rank = Texts.getInt(rankText);
 				int fnIdx = functionCombo.getSelectionIndex();
 				if (fnIdx == 0)
-					producer.setFunction(ProducerFunction.BASE_LOAD);
+					producer.function = ProducerFunction.BASE_LOAD;
 				else
-					producer.setFunction(ProducerFunction.PEAK_LOAD);
+					producer.function = ProducerFunction.PEAK_LOAD;
 			}
 
 			private void bindToUI() {
@@ -258,7 +258,7 @@ public class ProducerWizard extends Wizard {
 			private int getNextRank() {
 				Set<Integer> set = new HashSet<>();
 				for (Producer p : project.producers)
-					set.add(p.getRank());
+					set.add(p.rank);
 				int next = 1;
 				while (set.contains(next))
 					next++;
@@ -271,7 +271,7 @@ public class ProducerWizard extends Wizard {
 				items[1] = Labels.get(ProducerFunction.PEAK_LOAD);
 				int selection = 0;
 				for (Producer p : project.producers) {
-					if (p.getFunction() == ProducerFunction.BASE_LOAD) {
+					if (p.function == ProducerFunction.BASE_LOAD) {
 						selection = 1;
 						break;
 					}

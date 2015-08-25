@@ -48,7 +48,7 @@ public class EnergyResult {
 	private void initProducerData(Project project) {
 		List<Producer> list = new ArrayList<>();
 		for (Producer p : project.producers) {
-			if (p.isDisabled())
+			if (p.disabled)
 				continue;
 			list.add(p);
 		}
@@ -60,7 +60,7 @@ public class EnergyResult {
 			producerResults[i] = new double[Stats.HOURS];
 		}
 		Arrays.sort(producers,
-				(p1, p2) -> Integer.compare(p1.getRank(), p2.getRank()));
+				(p1, p2) -> Integer.compare(p1.rank, p2.rank));
 	}
 
 	public EnergyResult sort() {

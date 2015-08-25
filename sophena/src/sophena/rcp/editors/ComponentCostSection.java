@@ -20,23 +20,33 @@ public class ComponentCostSection {
 	private Composite composite;
 	private FormToolkit toolkit;
 
-	public ComponentCostSection(Editor editor, Supplier<ComponentCosts> costs) {
+	public ComponentCostSection(Supplier<ComponentCosts> costs) {
 		this.costs = costs;
+	}
+
+	public ComponentCostSection withEditor(Editor editor) {
 		this.editor = editor;
+		return this;
 	}
 
 	private ComponentCosts costs() {
 		return costs.get();
 	}
 
-	public void create(Composite body, FormToolkit tk) {
-		composite = UI.formSection(body, tk, "Kosten");
-		toolkit = tk;
+	public void createSection(Composite body, FormToolkit tk) {
+		Composite composite = UI.formSection(body, tk, "Kosten");
 		UI.gridLayout(composite, 3);
-		createFields();
+		createFields(composite, tk);
 	}
 
-	private void createFields() {
+	public void createFields(Composite composite) {
+		createFields(composite, null);
+	}
+
+	public void createFields(Composite composite, FormToolkit tk) {
+		this.composite = composite;
+		this.toolkit = tk;
+
 		t("Investitionskosten", "EUR", costs().investment)
 				.onChanged((s) -> costs().investment = Numbers.read(s));
 
@@ -56,18 +66,18 @@ public class ComponentCostSection {
 	private TextDispatch t(String label, String unit, double initial) {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
-		return Texts.on(t)
-				.init(initial)
-				.decimal()
-				.onChanged((s) -> editor.setDirty());
+		TextDispatch disp = Texts.on(t).init(initial).decimal();
+		if (editor != null)
+			disp.onChanged((s) -> editor.setDirty());
+		return disp;
 	}
 
 	private TextDispatch t(String label, String unit, int initial) {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
-		return Texts.on(t)
-				.init(initial)
-				.integer()
-				.onChanged((s) -> editor.setDirty());
+		TextDispatch disp = Texts.on(t).init(initial).integer();
+		if (editor != null)
+			disp.onChanged((s) -> editor.setDirty());
+		return disp;
 	}
 }

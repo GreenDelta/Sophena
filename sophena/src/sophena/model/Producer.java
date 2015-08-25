@@ -18,72 +18,24 @@ import sophena.model.descriptors.ProducerDescriptor;
 public class Producer extends Facility {
 
 	@Column(name = "is_disabled")
-	private boolean disabled;
+	public boolean disabled;
 
 	@OneToOne
 	@JoinColumn(name = "f_boiler")
-	private Boiler boiler;
+	public Boiler boiler;
 
 	@Column(name = "rank")
-	private int rank;
+	public int rank;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
-	private ProducerFunction function;
+	public ProducerFunction function;
 
 	@Embedded
-	private ComponentCosts costs;
+	public ComponentCosts costs;
 
 	@Embedded
-	private FuelSpec fuelSpec;
-
-	public boolean isDisabled() {
-		return disabled;
-	}
-
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
-
-	public Boiler getBoiler() {
-		return boiler;
-	}
-
-	public void setBoiler(Boiler boiler) {
-		this.boiler = boiler;
-	}
-
-	public int getRank() {
-		return rank;
-	}
-
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
-
-	public ProducerFunction getFunction() {
-		return function;
-	}
-
-	public void setFunction(ProducerFunction function) {
-		this.function = function;
-	}
-
-	public ComponentCosts getCosts() {
-		return costs;
-	}
-
-	public void setCosts(ComponentCosts costs) {
-		this.costs = costs;
-	}
-
-	public FuelSpec getFuelSpec() {
-		return fuelSpec;
-	}
-
-	public void setFuelSpec(FuelSpec fuelSpec) {
-		this.fuelSpec = fuelSpec;
-	}
+	public FuelSpec fuelSpec;
 
 	@Override
 	public Producer clone() {
@@ -91,14 +43,14 @@ public class Producer extends Facility {
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
-		clone.setDisabled(isDisabled());
-		clone.setBoiler(getBoiler());
-		clone.setFunction(getFunction());
-		clone.setRank(getRank());
-		if (getCosts() != null)
-			clone.setCosts(getCosts().clone());
-		if (getFuelSpec() != null)
-			clone.setFuelSpec(getFuelSpec().clone());
+		clone.disabled = disabled;
+		clone.boiler = boiler;
+		clone.function = function;
+		clone.rank = rank;
+		if (costs != null)
+			clone.costs = costs.clone();
+		if (fuelSpec != null)
+			clone.fuelSpec = fuelSpec.clone();
 		return clone;
 	}
 
@@ -107,7 +59,7 @@ public class Producer extends Facility {
 		d.id = id;
 		d.name = name;
 		d.description = description;
-		d.setDisabled(isDisabled());
+		d.setDisabled(disabled);
 		return d;
 	}
 

@@ -36,7 +36,7 @@ class CostCalculator {
 		CostResult r = new CostResult();
 		// TODO: iterate over all cost components; not only producers
 		for (Producer p : project.producers) {
-			ComponentCosts costs = p.getCosts();
+			ComponentCosts costs = p.costs;
 			if (costs == null)
 				continue;
 			r.netto.investments += costs.investment;
@@ -64,17 +64,17 @@ class CostCalculator {
 	private void addConsumptionCosts(CostResult r, Producer p) {
 		// TODO: electricity usage currently not included
 		double fuelCosts = getFuelCosts(p);
-		if (fuelCosts == 0 || p.getFuelSpec() == null)
+		if (fuelCosts == 0 || p.fuelSpec == null)
 			return;
 		double priceChangeFactor = 0;
-		if (p.getBoiler().fuel != null)
+		if (p.boiler.fuel != null)
 			priceChangeFactor = settings.fossilFuelFactor;
 		else
 			priceChangeFactor = settings.bioFuelFactor; // wood fuel
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
 		double costs = fuelCosts * cashValueFactor * getAnnuityFactor();
 		r.netto.consumptionCosts += costs;
-		double vat = 1 + p.getFuelSpec().getTaxRate() / 100;
+		double vat = 1 + p.fuelSpec.getTaxRate() / 100;
 		r.brutto.consumptionCosts += vat * costs;
 	}
 
@@ -171,8 +171,8 @@ class CostCalculator {
 
 	private double getFuelCosts(Producer p) {
 		double heat = energyResult.totalHeat(p);
-		Boiler boiler = p.getBoiler();
-		FuelSpec fuelSpec = p.getFuelSpec();
+		Boiler boiler = p.boiler;
+		FuelSpec fuelSpec = p.fuelSpec;
 		if (heat == 0 || boiler == null || fuelSpec == null)
 			return 0;
 		int fullLoadHours = (int) (heat / boiler.maxPower);

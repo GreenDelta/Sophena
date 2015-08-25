@@ -39,11 +39,11 @@ class FuelSection {
 
 	private FuelSpec spec() {
 		Producer p = editor.getProducer();
-		FuelSpec spec = p.getFuelSpec();
+		FuelSpec spec = p.fuelSpec;
 		if (spec != null)
 			return spec;
 		spec = new FuelSpec();
-		p.setFuelSpec(spec);
+		p.fuelSpec = spec;
 		return spec;
 	}
 
@@ -51,7 +51,7 @@ class FuelSection {
 		Composite composite = UI.formSection(body, tk,
 				"Brennstoffspezifikation");
 		UI.gridLayout(composite, 3);
-		Boiler b = producer().getBoiler();
+		Boiler b = producer().boiler;
 		if (b == null)
 			return;
 		if (b.fuel != null)
@@ -66,7 +66,7 @@ class FuelSection {
 
 	private void createFuelRow(FormToolkit tk, Composite composite) {
 		UI.formLabel(composite, tk, "Brennstoff");
-		Fuel f = producer().getBoiler().fuel;
+		Fuel f = producer().boiler.fuel;
 		String text = f.name + " ("
 				+ Numbers.toString(f.getCalorificValue()) + " kWh/"
 				+ f.getUnit() + ")";
@@ -124,7 +124,7 @@ class FuelSection {
 	}
 
 	private String getUnit() {
-		Boiler b = producer().getBoiler();
+		Boiler b = producer().boiler;
 		if (b == null)
 			return "";
 		if (b.fuel != null)
