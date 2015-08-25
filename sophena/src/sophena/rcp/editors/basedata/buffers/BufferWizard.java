@@ -66,7 +66,7 @@ class BufferWizard extends Wizard {
 
 			volText = UI.formText(c, "Volumen");
 			Texts.on(volText).required().decimal().validate(data::validate);
-			UI.formLabel(c, "m³");
+			UI.formLabel(c, "L");
 
 			urlText = UI.formText(c, "Web-Link");
 			UI.formLabel(c, "");

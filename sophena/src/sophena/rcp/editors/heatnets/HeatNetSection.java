@@ -59,10 +59,6 @@ class HeatNetSection {
 		createSimFactorText();
 		maxSimLoadText = createMaxSimLoadText();
 
-		d("Pufferspeicher", "L",
-				heatNet().bufferTankVolume,
-				(v) -> heatNet().bufferTankVolume = v);
-
 		d("Länge", "m", heatNet().length, (v) -> {
 			heatNet().length = v;
 			updateLoad();
@@ -76,6 +72,7 @@ class HeatNetSection {
 
 	private Text d(String label, String unit, double init, DoubleConsumer fn) {
 		Text t = UI.formText(comp, tk, label);
+		UI.gridData(t, false, false).widthHint = 250;
 		Texts.on(t).init(init).decimal().required().onChanged((s) -> {
 			fn.accept(Texts.getDouble(t));
 			editor.setDirty();
@@ -87,6 +84,7 @@ class HeatNetSection {
 	private Text createMaxSimLoadText() {
 		Text t = UI.formText(comp, tk,
 				"Maximal benötigte Leistung (mit Gleichzeitigkeitsfaktor)");
+		UI.gridData(t, false, false).widthHint = 250;
 		double simLoad = heatNet().maxLoad * heatNet().simultaneityFactor;
 		Texts.set(t, simLoad);
 		Texts.on(t).decimal().calculated();
@@ -96,6 +94,7 @@ class HeatNetSection {
 
 	private void createSimFactorText() {
 		Text t = UI.formText(comp, tk, "Gleichzeitigkeitsfaktor");
+		UI.gridData(t, false, false).widthHint = 250;
 		Texts.set(t, heatNet().simultaneityFactor);
 		Texts.on(t).decimal().required().onChanged((s) -> {
 			heatNet().simultaneityFactor = Texts.getDouble(t);

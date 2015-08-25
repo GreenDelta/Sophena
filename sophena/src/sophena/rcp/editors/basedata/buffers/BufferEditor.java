@@ -162,7 +162,7 @@ public class BufferEditor extends Editor {
 				return b.purchasePrice == null ? null
 						: Numbers.toString(b.purchasePrice) + " EUR";
 			case 3:
-				return Numbers.toString(b.volume) + " m³";
+				return Numbers.toString(b.volume) + " L";
 			default:
 				return null;
 			}

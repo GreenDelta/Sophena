@@ -34,16 +34,17 @@ class HeatNetPage extends FormPage {
 	protected void createFormContent(IManagedForm mform) {
 		super.createFormContent(mform);
 		ScrolledForm form = UI.formHeader(mform, "Wärmeverteilung");
-		FormToolkit toolkit = mform.getToolkit();
-		Composite body = UI.formBody(form, toolkit);
+		FormToolkit tk = mform.getToolkit();
+		Composite body = UI.formBody(form, tk);
 		HeatNetSection heatNetSection = new HeatNetSection(editor);
-		heatNetSection.create(body, toolkit);
+		heatNetSection.create(body, tk);
+		new BufferTankSection(editor).create(body, tk);
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
-		interruptionSec.create(body, toolkit);
-		LoadCurveSection loadCurve = createLoadCurve(toolkit, body);
+		interruptionSec.create(body, tk);
+		LoadCurveSection loadCurve = createLoadCurve(tk, body);
 		heatNetSection.setLoadCurve(loadCurve);
 		interruptionSec.setLoadCurve(loadCurve);
-		createComponentSection(body, toolkit);
+		createComponentSection(body, tk);
 		form.reflow(true);
 	}
 
