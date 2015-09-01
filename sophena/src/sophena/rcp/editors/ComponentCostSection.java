@@ -20,6 +20,12 @@ public class ComponentCostSection {
 	private Composite composite;
 	private FormToolkit toolkit;
 
+	private Text investmentText;
+	private Text durationText;
+	private Text repairTest;
+	private Text maintenanceText;
+	private Text operationText;
+
 	public ComponentCostSection(Supplier<ComponentCosts> costs) {
 		this.costs = costs;
 	}
@@ -33,34 +39,36 @@ public class ComponentCostSection {
 		return costs.get();
 	}
 
-	public void createSection(Composite body, FormToolkit tk) {
+	public ComponentCostSection createSection(Composite body, FormToolkit tk) {
 		Composite composite = UI.formSection(body, tk, "Kosten");
 		UI.gridLayout(composite, 3);
-		createFields(composite, tk);
+		return createFields(composite, tk);
 	}
 
-	public void createFields(Composite composite) {
-		createFields(composite, null);
+	public ComponentCostSection createFields(Composite composite) {
+		return createFields(composite, null);
 	}
 
-	public void createFields(Composite composite, FormToolkit tk) {
+	public ComponentCostSection createFields(Composite composite,
+			FormToolkit tk) {
 		this.composite = composite;
 		this.toolkit = tk;
 
-		t("Investitionskosten", "EUR", costs().investment)
-				.onChanged((s) -> costs().investment = Numbers.read(s));
+		investmentText = t("Investitionskosten", "EUR", costs().investment)
+				.onChanged((s) -> costs().investment = Numbers.read(s)).text;
 
-		t("Nutzungsdauer", "Jahre", costs().duration)
-				.onChanged((s) -> costs().duration = Numbers.readInt(s));
+		durationText = t("Nutzungsdauer", "Jahre", costs().duration)
+				.onChanged((s) -> costs().duration = Numbers.readInt(s)).text;
 
-		t("Instandsetzung", "%", costs().repair)
-				.onChanged((s) -> costs().repair = Numbers.read(s));
+		repairTest = t("Instandsetzung", "%", costs().repair)
+				.onChanged((s) -> costs().repair = Numbers.read(s)).text;
 
-		t("Wartung und Inspektion", "%", costs().maintenance)
-				.onChanged((s) -> costs().maintenance = Numbers.read(s));
+		maintenanceText = t("Wartung und Inspektion", "%", costs().maintenance)
+				.onChanged((s) -> costs().maintenance = Numbers.read(s)).text;
 
-		t("Aufwand für Bedienen", "h/a", costs().operation)
-				.onChanged((s) -> costs().operation = Numbers.read(s));
+		operationText = t("Aufwand für Bedienen", "h/a", costs().operation)
+				.onChanged((s) -> costs().operation = Numbers.read(s)).text;
+		return this;
 	}
 
 	private TextDispatch t(String label, String unit, double initial) {
@@ -79,5 +87,13 @@ public class ComponentCostSection {
 		if (editor != null)
 			disp.onChanged((s) -> editor.setDirty());
 		return disp;
+	}
+
+	public void refresh() {
+		Texts.set(investmentText, costs().investment);
+		Texts.set(durationText, costs().duration);
+		Texts.set(repairTest, costs().repair);
+		Texts.set(maintenanceText, costs().maintenance);
+		Texts.set(operationText, costs().operation);
 	}
 }

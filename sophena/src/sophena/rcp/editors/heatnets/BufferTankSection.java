@@ -23,6 +23,8 @@ class BufferTankSection {
 	private HeatNetEditor editor;
 	private Text volText;
 
+	private ComponentCostSection costSection;
+
 	BufferTankSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
@@ -38,7 +40,8 @@ class BufferTankSection {
 		createVolText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ComponentCosts();
-		new ComponentCostSection(() -> net().bufferTankCosts).withEditor(editor)
+		costSection = new ComponentCostSection(() -> net().bufferTankCosts)
+				.withEditor(editor)
 				.createFields(comp, tk);
 	}
 
@@ -80,6 +83,9 @@ class BufferTankSection {
 		Texts.set(volText, b.volume);
 		link.setText(b.name);
 		link.pack();
+		if (b.purchasePrice != null) {
+			net().bufferTankCosts.investment = b.purchasePrice;
+			costSection.refresh();
+		}
 	}
-
 }

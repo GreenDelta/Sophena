@@ -110,7 +110,7 @@ public final class Texts {
 
 	public static class TextDispatch {
 
-		private final Text text;
+		public final Text text;
 
 		TextDispatch(Text text) {
 			this.text = text;
