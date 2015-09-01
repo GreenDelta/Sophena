@@ -35,12 +35,6 @@ db.getStations(pool, function(err, stations) {
     });
 });
 
-/*
-stationHandler({'id': '10028', 'name': 'SANKT PETER-ORDING(WEWA)'})(function() {
-    pool.end();
-});
-*/
-
 function stationHandler(station) {
     return function(cb) {
         var config = {
@@ -69,25 +63,22 @@ function handleStation(station, table) {
         data = table[year];
         var column = createGridColumn(data);
         if (!column) {
-            console.log('    > excluded');
-            if(year === 2009) {
-                console.log('    > refYear = 2009 excluded');
-            }
-            continue;
+            console.log('    > excluded year ' + year);
         } else {
             grid[year] = column;
             years++;
         }
     }
     if(years < 7) {
-        console.log('>> excluded; less than 7 years')
+        console.log('>> excluded station; less than 7 years')
         return;
     }
-    if(!grid[2009]) {
-        console.log('>> excluded; 2009 missing');
+    var refYear = grid[2009] ? 2009 : 2010;
+    if(!grid[refYear]) {
+        console.log('>> excluded; reference year 2009 or 2010 missing');
         return;
     }
-    createCurve(station, grid, 2009);
+    createCurve(station, grid, refYear);
 }
 
 function createGridColumn(data) {

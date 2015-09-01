@@ -14,7 +14,7 @@ The climate data are prepared with the following steps:
 3. The lib/climatedb.js module provides a simple API for recieving the data
    from the database. It is also used by the data server (lib/server.js) which
    provides a user interface to browse the data.
-4. The script scripts/climate2json.js creates the average climate curves and
+4. The script scripts/station2json.js creates the average climate curves and
    stores them as json files.
 5. Finally, these json files are then packaged into the base data package via
    the data packaging script (see below).  
