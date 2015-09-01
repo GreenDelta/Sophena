@@ -19,6 +19,26 @@ public class HeatNetPipeTest {
 
 	@Test
 	public void testCrud() throws Exception {
+		Project p = insertProject();
+		HeatNetPipe clone = pDao.get(p.id);
+		Assert.assertEquals(42, clone.length, 1e-16);
+		dao.delete(p);
+		clone = pDao.get(p.id);
+		Assert.assertNull(clone);
+	}
+
+	@Test
+	public void testDeletePipe() throws Exception {
+		Project p = insertProject();
+		Assert.assertEquals(42, p.heatNet.pipes.get(0).length, 1e-16);
+		p.heatNet.pipes.remove(0);
+		dao.update(p);
+		p = dao.get(p.id);
+		Assert.assertTrue(p.heatNet.pipes.isEmpty());
+		dao.delete(p);
+	}
+
+	private Project insertProject() {
 		Project p = new Project();
 		p.id = UUID.randomUUID().toString();
 		dao.insert(p);
@@ -29,11 +49,7 @@ public class HeatNetPipeTest {
 		pipe.id = p.id;
 		pipe.length = 42;
 		p = dao.update(p);
-		HeatNetPipe clone = pDao.get(p.id);
-		Assert.assertEquals(42, clone.length, 1e-16);
-		dao.delete(p);
-		clone = pDao.get(p.id);
-		Assert.assertNull(clone);
+		return p;
 	}
 
 }
