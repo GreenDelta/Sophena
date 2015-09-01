@@ -6,15 +6,19 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
+import sophena.model.ComponentCosts;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.editors.ComponentCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class PipeWizard extends Wizard {
@@ -28,6 +32,8 @@ class PipeWizard extends Wizard {
 		PipeWizard w = new PipeWizard();
 		w.setWindowTitle("Wärmeleitung");
 		w.pipe = pipe;
+		if (pipe.costs == null)
+			pipe.costs = new ComponentCosts();
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		dialog.setPageSize(150, 400);
 		return dialog.open();
@@ -35,8 +41,7 @@ class PipeWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -46,6 +51,8 @@ class PipeWizard extends Wizard {
 	}
 
 	private class Page extends WizardPage {
+
+		private ComponentCostSection costSection;
 
 		Page() {
 			super("HeatNetPipePage", "Wärmeleitung", null);
@@ -57,7 +64,18 @@ class PipeWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
+			createLengthText(comp);
+			costSection = new ComponentCostSection(() -> pipe.costs)
+					.createFields(comp);
+		}
 
+		private void createLengthText(Composite comp) {
+			Text t = UI.formText(comp, "Länge");
+			Texts.on(t).init(pipe.length).decimal().required()
+					.onChanged((s) -> {
+						pipe.length = Texts.getDouble(t);
+					});
+			UI.formLabel(comp, "m");
 		}
 
 		private void createProductRow(Composite comp) {
@@ -86,6 +104,10 @@ class PipeWizard extends Wizard {
 			pipe.pipe = p;
 			link.setText(p.name);
 			link.pack();
+			if (p.purchasePrice != null && pipe.length > 0) {
+				pipe.costs.investment = p.purchasePrice * pipe.length;
+				costSection.refresh();
+			}
 		}
 
 	}

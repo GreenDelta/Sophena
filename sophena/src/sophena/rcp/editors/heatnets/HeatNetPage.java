@@ -1,21 +1,14 @@
 package sophena.rcp.editors.heatnets;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
-import sophena.model.HeatNetPipe;
-import sophena.rcp.Images;
-import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
-import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
 class HeatNetPage extends FormPage {
@@ -39,13 +32,13 @@ class HeatNetPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		HeatNetSection heatNetSection = new HeatNetSection(editor);
 		heatNetSection.create(body, tk);
+		new PipeSection(editor).create(body, tk);
 		new BufferTankSection(editor).create(body, tk);
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
 		interruptionSec.create(body, tk);
 		LoadCurveSection loadCurve = createLoadCurve(tk, body);
 		heatNetSection.setLoadCurve(loadCurve);
 		interruptionSec.setLoadCurve(loadCurve);
-		createComponentSection(body, tk);
 		form.reflow(true);
 	}
 
@@ -60,20 +53,4 @@ class HeatNetPage extends FormPage {
 		return loadCurve;
 	}
 
-	private void createComponentSection(Composite body, FormToolkit toolkit) {
-		Section section = UI.section(body, toolkit, "Wärmenetz - Komponenten");
-		Composite composite = UI.sectionClient(section, toolkit);
-		UI.gridLayout(composite, 2);
-		Tables.createViewer(composite, "Komponente", "Anzahl");
-		Action add = Actions.create("Neue Komponente", Images.ADD_16.des(),
-				() -> {
-					HeatNetPipe pipe = new HeatNetPipe();
-					PipeWizard.open(pipe);
-				});
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
-				() -> {
-
-				});
-		Actions.bind(section, add, remove);
-	}
 }
