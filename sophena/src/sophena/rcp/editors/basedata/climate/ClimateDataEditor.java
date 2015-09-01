@@ -26,7 +26,6 @@ import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import sophena.rcp.wizards.ClimateDataImportWizard;
 
 public class ClimateDataEditor extends Editor {
 
@@ -79,7 +78,7 @@ public class ClimateDataEditor extends Editor {
 			Action input = Actions.create("#Importieren",
 					Images.IMPORT_16.des(),
 					() -> {
-						ClimateDataImportWizard.open();
+						ImportWizard.open();
 						table.setInput(dao.getAll());
 					});
 			Action open = Actions.create(

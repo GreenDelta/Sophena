@@ -1,4 +1,4 @@
-package sophena.rcp.wizards;
+package sophena.rcp.editors.basedata.climate;
 
 import java.io.File;
 import java.util.UUID;
@@ -24,12 +24,12 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-public class ClimateDataImportWizard extends Wizard {
+class ImportWizard extends Wizard {
 
 	private Page page;
 
 	public static void open() {
-		ClimateDataImportWizard wiz = new ClimateDataImportWizard();
+		ImportWizard wiz = new ImportWizard();
 		wiz.setWindowTitle(M.ClimateData);
 		wiz.setNeedsProgressMonitor(true);
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
