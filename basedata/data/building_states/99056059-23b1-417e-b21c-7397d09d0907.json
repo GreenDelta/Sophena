@@ -1,0 +1,10 @@
+{
+    "id": "99056059-23b1-417e-b21c-7397d09d0907",
+    "name": "NBL Standard 1981-1985",
+    "type": "TOWER_BLOCK",
+    "heatingLimit": 15.0,
+    "waterFraction": 27,
+    "loadHours": 2164,
+    "isDefault": false,
+    "index": 4
+}

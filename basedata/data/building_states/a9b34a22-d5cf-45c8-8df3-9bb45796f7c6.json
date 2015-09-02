@@ -1,0 +1,10 @@
+{
+    "id": "a9b34a22-d5cf-45c8-8df3-9bb45796f7c6",
+    "name": "1919-1948",
+    "type": "BLOCK_OF_FLATS",
+    "heatingLimit": 17.0,
+    "waterFraction": 12,
+    "loadHours": 1555,
+    "isDefault": false,
+    "index": 1
+}

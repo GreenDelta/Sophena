@@ -140,6 +140,8 @@ public class DataPack implements Closeable {
 			return "boilers";
 		case BUFFER:
 			return "buffers";
+		case BUILDING_STATE:
+			return "building_states";
 		case COST_SETTINGS:
 			return "cost_settings";
 		case FUEL:

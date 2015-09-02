@@ -1,9 +1,15 @@
 package sophena.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public enum BuildingType {
 
-@Entity
-@Table(name = "tbl_building_types")
-public class BuildingType extends RootEntity {
+	SINGLE_FAMILY_HOUSE,
+
+	MULTI_FAMILY_HOUSE,
+
+	BLOCK_OF_FLATS,
+
+	TERRACE_HOUSE,
+
+	TOWER_BLOCK,
+
 }

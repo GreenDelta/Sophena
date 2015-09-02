@@ -11,7 +11,6 @@ import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
-import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
@@ -30,7 +29,6 @@ public class EntityTest {
 			Boiler.class,
 			BufferTank.class,
 			BuildingState.class,
-			BuildingType.class,
 			Consumer.class,
 			CostSettings.class,
 			Fuel.class,

@@ -6,6 +6,8 @@ public enum ModelType {
 
 	BUFFER(BufferTank.class),
 
+	BUILDING_STATE(BuildingState.class),
+
 	CONSUMER(Consumer.class),
 
 	COST_SETTINGS(CostSettings.class),

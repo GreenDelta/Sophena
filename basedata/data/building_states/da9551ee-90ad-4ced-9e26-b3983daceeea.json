@@ -1,0 +1,10 @@
+{
+    "id": "da9551ee-90ad-4ced-9e26-b3983daceeea",
+    "name": "bis 1918",
+    "type": "BLOCK_OF_FLATS",
+    "heatingLimit": 17.0,
+    "waterFraction": 13,
+    "loadHours": 1591,
+    "isDefault": false,
+    "index": 0
+}

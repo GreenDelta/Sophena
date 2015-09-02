@@ -1,0 +1,10 @@
+{
+    "id": "c5bbaa52-5e21-4107-a8b3-d1e60d5a9a91",
+    "name": "Standard 1979-1994",
+    "type": "MULTI_FAMILY_HOUSE",
+    "heatingLimit": 15.0,
+    "waterFraction": 22,
+    "loadHours": 1989,
+    "isDefault": true,
+    "index": 6
+}

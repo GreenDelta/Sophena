@@ -1,6 +1,5 @@
 package sophena.rcp.utils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -42,8 +41,6 @@ public class EntityCombo<T extends RootEntity> {
 	}
 
 	public void setInput(List<T> entities) {
-		Collections.sort(entities,
-				(e1, e2) -> Strings.compare(e1.name, e2.name));
 		viewer.setInput(entities);
 	}
 

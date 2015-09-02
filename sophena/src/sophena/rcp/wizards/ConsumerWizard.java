@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.editors.consumers.ConsumerEditor;
@@ -62,6 +65,7 @@ public class ConsumerWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			Consumer consumer = page.consumer;
+			setDefaults(consumer);
 			project.consumers.add(consumer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
@@ -75,6 +79,19 @@ public class ConsumerWizard extends Wizard {
 		}
 	}
 
+	private void setDefaults(Consumer c) {
+		BuildingState bs = c.buildingState;
+		if (bs != null) {
+			c.heatingLimit = bs.heatingLimit;
+			c.waterFraction = bs.waterFraction;
+			c.loadHours = bs.loadHours;
+		} else {
+			c.heatingLimit = 15;
+			c.waterFraction = 10;
+			c.loadHours = 1800;
+		}
+	}
+
 	@Override
 	public void addPages() {
 		page = new Page();
@@ -84,6 +101,7 @@ public class ConsumerWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private Consumer consumer;
+		private EntityCombo<BuildingState> stateCombo;
 
 		private Page() {
 			super("ConsumerWizardPage", M.CreateNewConsumer, null);
@@ -91,9 +109,6 @@ public class ConsumerWizard extends Wizard {
 			consumer.id = UUID.randomUUID().toString();
 			consumer.name = M.NewConsumer;
 			consumer.demandBased = false;
-			consumer.waterFraction = (double) 10;
-			consumer.heatingLimit = (double) 15;
-			consumer.loadHours = 1800; // TODO: default value?
 		}
 
 		@Override
@@ -115,34 +130,46 @@ public class ConsumerWizard extends Wizard {
 		}
 
 		private void createTypeCombo(Composite composite) {
-			EntityCombo<BuildingType> combo = new EntityCombo<>();
-			combo.create(M.BuildingType, composite);
-			Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
-			List<BuildingType> types = dao.getAll();
-			if (types.isEmpty())
-				return;
-			Collections.sort(types,
-					(e1, e2) -> Strings.compare(e1.name, e2.name));
-			combo.setInput(types);
-			combo.select(types.get(0));
-			consumer.buildingType = types.get(0);
-			combo.onSelect((t) -> consumer.buildingType = t);
+			Combo combo = UI.formCombo(composite, M.BuildingType);
+			BuildingType[] types = BuildingType.values();
+			String[] items = new String[types.length];
+			for (int i = 0; i < types.length; i++) {
+				items[i] = Labels.get(types[i]);
+			}
+			combo.setItems(items);
+			combo.select(0);
+			Controls.onSelect(combo, (e) -> {
+				int idx = combo.getSelectionIndex();
+				initBuildingState(types[idx]);
+			});
 		}
 
 		private void createStateCombo(Composite composite) {
-			EntityCombo<BuildingState> combo = new EntityCombo<>();
-			combo.create(M.BuildingState, composite);
+			stateCombo = new EntityCombo<>();
+			stateCombo.create(M.BuildingState, composite);
+			initBuildingState(BuildingType.values()[0]);
+			stateCombo.onSelect((s) -> consumer.buildingState = s);
+		}
+
+		private void initBuildingState(BuildingType type) {
 			Dao<BuildingState> dao = new Dao<>(BuildingState.class,
 					App.getDb());
-			List<BuildingState> states = dao.getAll();
-			if (states.isEmpty())
-				return;
-			Collections.sort(states,
-					(s1, s2) -> Strings.compare(s1.name, s2.name));
-			combo.setInput(states);
-			combo.select(states.get(0));
-			consumer.buildingState = states.get(0);
-			combo.onSelect((s) -> consumer.buildingState = s);
+			List<BuildingState> all = dao.getAll();
+			List<BuildingState> states = new ArrayList<>();
+			BuildingState selected = null;
+			for (BuildingState s : all) {
+				if (s.type != type)
+					continue;
+				states.add(s);
+				if (s.isDefault)
+					selected = s;
+			}
+			if (selected == null && !states.isEmpty())
+				selected = states.get(0);
+			Collections.sort(states, (s1, s2) -> s1.index - s2.index);
+			stateCombo.setInput(states);
+			stateCombo.select(selected);
+			consumer.buildingState = selected;
 		}
 
 		private void createCalculationRadios(Composite composite) {

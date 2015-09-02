@@ -1,0 +1,10 @@
+{
+    "id": "1204d7da-0390-46aa-b171-c3fdf68bf37a",
+    "name": "Standard 1949-1957",
+    "type": "TERRACE_HOUSE",
+    "heatingLimit": 15.0,
+    "waterFraction": 16,
+    "loadHours": 1852,
+    "isDefault": false,
+    "index": 2
+}

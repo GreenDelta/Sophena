@@ -82,7 +82,7 @@ public class ProjectWizard extends Wizard {
 	}
 
 	private void addHeatNet(Project p) {
-		HeatNet n = p.heatNet;
+		HeatNet n = (p.heatNet = new HeatNet());
 		n.id = UUID.randomUUID().toString();
 		n.simultaneityFactor = (double) 1;
 		n.powerLoss = (double) 20;

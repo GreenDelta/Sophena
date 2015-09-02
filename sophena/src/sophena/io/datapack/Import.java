@@ -14,6 +14,7 @@ import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
+import sophena.model.BuildingState;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.ModelType;
@@ -40,6 +41,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.FUEL, Fuel.class);
 			importEntities(ModelType.BOILER, Boiler.class);
 			importEntities(ModelType.BUFFER, BufferTank.class);
+			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.PIPE, Pipe.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);

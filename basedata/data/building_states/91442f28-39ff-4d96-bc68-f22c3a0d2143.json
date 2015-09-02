@@ -1,0 +1,10 @@
+{
+    "id": "91442f28-39ff-4d96-bc68-f22c3a0d2143",
+    "name": "Standard 1995-2009",
+    "type": "TERRACE_HOUSE",
+    "heatingLimit": 15.0,
+    "waterFraction": 26,
+    "loadHours": 1906,
+    "isDefault": false,
+    "index": 5
+}

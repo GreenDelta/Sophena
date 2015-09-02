@@ -1,0 +1,10 @@
+{
+    "id": "3b27491c-c3c2-468b-9cec-ac69a8b2112b",
+    "name": "Standard 1919-1948",
+    "type": "MULTI_FAMILY_HOUSE",
+    "heatingLimit": 17.0,
+    "waterFraction": 8,
+    "loadHours": 1728,
+    "isDefault": false,
+    "index": 1
+}

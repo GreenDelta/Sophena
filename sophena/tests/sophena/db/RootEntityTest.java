@@ -10,7 +10,6 @@ import sophena.db.daos.RootEntityDao;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
-import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Pipe;
@@ -24,7 +23,6 @@ public class RootEntityTest {
 	@SuppressWarnings("unchecked")
 	private Class<? extends RootEntity>[] classes = new Class[] {
 			BuildingState.class,
-			BuildingType.class,
 			Consumer.class,
 			Fuel.class,
 			Project.class,

@@ -1,0 +1,10 @@
+{
+    "id": "605bf903-692e-41c2-94a7-15274df79606",
+    "name": "ENEV 2009/2014 (KFW 100/ 85)",
+    "type": "MULTI_FAMILY_HOUSE",
+    "heatingLimit": 12.0,
+    "waterFraction": 33,
+    "loadHours": 1279,
+    "isDefault": false,
+    "index": 8
+}

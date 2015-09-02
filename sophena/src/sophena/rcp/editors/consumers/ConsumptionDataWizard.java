@@ -225,10 +225,8 @@ class ConsumptionDataWizard extends Wizard {
 			private void initFuels() {
 				FuelDao dao = new FuelDao(App.getDb());
 				List<Fuel> fuels = dao.getAll();
-				Collections
-						.sort(fuels,
-								(f1, f2) -> Strings.compare(f1.name,
-										f2.name));
+				Collections.sort(fuels,
+						(f1, f2) -> Strings.compare(f1.name, f2.name));
 				fuelCombo.setInput(fuels);
 				if (fuels.isEmpty())
 					return;
@@ -296,9 +294,11 @@ class ConsumptionDataWizard extends Wizard {
 				if (!Texts.hasNumber(amountText))
 					return error("Es wurde keine gültige Menge eingetragen.");
 				if (fuel.isWood() && !Texts.hasPercentage(waterText))
-					return error("Es wurde kein gültiger Wassergehalt eingetragen.");
+					return error(
+							"Es wurde kein gültiger Wassergehalt eingetragen.");
 				if (!Texts.hasPercentage(utilText))
-					return error("Es wurde kein gültiger Wirkungsgrad oder Nutzungsgrad eingetragen");
+					return error(
+							"Es wurde kein gültiger Wirkungsgrad oder Nutzungsgrad eingetragen");
 				else {
 					setPageComplete(true);
 					setErrorMessage(null);

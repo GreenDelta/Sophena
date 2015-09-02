@@ -1,5 +1,6 @@
 package sophena.rcp.editors.producers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import sophena.rcp.Numbers;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -89,6 +91,7 @@ class FuelSection {
 		FuelDao dao = new FuelDao(App.getDb());
 		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
 				.collect(Collectors.toList());
+		Collections.sort(fuels, (f1, f2) -> Strings.compare(f1.name, f2.name));
 		combo.setInput(fuels);
 		if (spec().getWoodFuel() != null)
 			combo.select(spec().getWoodFuel());

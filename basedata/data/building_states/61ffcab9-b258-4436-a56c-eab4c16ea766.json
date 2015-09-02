@@ -1,0 +1,10 @@
+{
+    "id": "61ffcab9-b258-4436-a56c-eab4c16ea766",
+    "name": "Niedrigenergiehaus (KFW 70)",
+    "type": "TOWER_BLOCK",
+    "heatingLimit": 12.0,
+    "waterFraction": 42,
+    "loadHours": 1498,
+    "isDefault": false,
+    "index": 7
+}

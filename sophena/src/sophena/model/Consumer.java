@@ -25,10 +25,6 @@ public class Consumer extends Facility {
 	@JoinColumn(name = "f_building_state")
 	public BuildingState buildingState;
 
-	@OneToOne
-	@JoinColumn(name = "f_building_type")
-	public BuildingType buildingType;
-
 	@Column(name = "demand_based")
 	public boolean demandBased;
 
@@ -64,7 +60,6 @@ public class Consumer extends Facility {
 		clone.description = description;
 		clone.disabled = disabled;
 		clone.buildingState = buildingState;
-		clone.buildingType = buildingType;
 		clone.demandBased = demandBased;
 		clone.heatingLimit = heatingLimit;
 		clone.heatingLoad = heatingLoad;

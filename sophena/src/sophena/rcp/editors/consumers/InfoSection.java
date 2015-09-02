@@ -4,13 +4,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.db.daos.Dao;
 import sophena.model.BuildingState;
-import sophena.model.BuildingType;
 import sophena.model.Consumer;
-import sophena.rcp.App;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -36,8 +33,7 @@ class InfoSection {
 				M.ConsumerInformation);
 		createNameText(toolkit, composite);
 		createDescriptionText(toolkit, composite);
-		createTypeCombo(composite, toolkit);
-		createStateCombo(composite, toolkit);
+		createStateFields(composite, toolkit);
 		Text loadHoursText = UI.formText(composite, toolkit, "Volllaststunden");
 		Texts.on(loadHoursText)
 				.init(consumer().loadHours)
@@ -53,7 +49,8 @@ class InfoSection {
 		});
 	}
 
-	private void createDescriptionText(FormToolkit toolkit, Composite composite) {
+	private void createDescriptionText(FormToolkit toolkit,
+			Composite composite) {
 		Text dt = UI.formMultiText(composite, toolkit, M.Description);
 		Texts.set(dt, consumer().description);
 		dt.addModifyListener((e) -> {
@@ -62,28 +59,13 @@ class InfoSection {
 		});
 	}
 
-	private void createTypeCombo(Composite composite, FormToolkit toolkit) {
-		EntityCombo<BuildingType> combo = new EntityCombo<>();
-		combo.create(M.BuildingType, composite, toolkit);
-		Dao<BuildingType> dao = new Dao<>(BuildingType.class, App.getDb());
-		combo.setInput(dao.getAll());
-		combo.select(consumer().buildingType);
-		combo.onSelect((t) -> {
-			consumer().buildingType = t;
-			editor.setDirty();
-		});
+	private void createStateFields(Composite composite, FormToolkit toolkit) {
+		BuildingState state = consumer().buildingState;
+		if (state == null)
+			return;
+		Text tt = UI.formText(composite, toolkit, M.BuildingType);
+		Texts.on(tt).readOnly().init(Labels.get(state.type));
+		Text st = UI.formText(composite, toolkit, M.BuildingState);
+		Texts.on(st).readOnly().init(state.name);
 	}
-
-	private void createStateCombo(Composite composite, FormToolkit toolkit) {
-		EntityCombo<BuildingState> combo = new EntityCombo<>();
-		combo.create(M.BuildingState, composite, toolkit);
-		Dao<BuildingState> dao = new Dao<>(BuildingState.class, App.getDb());
-		combo.setInput(dao.getAll());
-		combo.select(consumer().buildingState);
-		combo.onSelect((s) -> {
-			consumer().buildingState = s;
-			editor.setDirty();
-		});
-	}
-
 }
