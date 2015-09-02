@@ -16,6 +16,7 @@
         <class>sophena.model.CostSettings</class>
         <class>sophena.model.FuelConsumption</class>
         <class>sophena.model.Fuel</class>
+        <class>sophena.model.HeatNet</class>
         <class>sophena.model.HeatNetPipe</class>
         <class>sophena.model.LoadProfile</class>
 		<class>sophena.model.Location</class>

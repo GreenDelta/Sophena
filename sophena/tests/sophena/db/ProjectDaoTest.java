@@ -9,6 +9,7 @@ import org.junit.Test;
 import sophena.Tests;
 import sophena.db.daos.ProjectDao;
 import sophena.model.CostSettings;
+import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 
@@ -66,6 +67,9 @@ public class ProjectDaoTest {
 		CostSettings settings = new CostSettings();
 		settings.id = UUID.randomUUID().toString();
 		p.costSettings = settings;
+		HeatNet net = new HeatNet();
+		net.id = UUID.randomUUID().toString();
+		p.heatNet = net;
 		p.variants.add(p.clone());
 		return dao.insert(p);
 	}

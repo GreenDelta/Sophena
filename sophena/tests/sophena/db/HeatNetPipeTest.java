@@ -44,6 +44,8 @@ public class HeatNetPipeTest {
 		dao.insert(p);
 		p = dao.get(p.id);
 		p.heatNet = new HeatNet();
+		p.heatNet.id = UUID.randomUUID().toString();
+		p.id = UUID.randomUUID().toString();
 		HeatNetPipe pipe = new HeatNetPipe();
 		p.heatNet.pipes.add(pipe);
 		pipe.id = p.id;

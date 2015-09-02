@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -45,8 +44,9 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_cost_settings")
 	public CostSettings costSettings;
 
-	@Embedded
-	public HeatNet heatNet = new HeatNet();
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_heat_net")
+	public HeatNet heatNet;
 
 	@Override
 	public Project clone() {

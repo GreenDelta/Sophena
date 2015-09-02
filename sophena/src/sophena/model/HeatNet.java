@@ -2,17 +2,20 @@ package sophena.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-@Embeddable
-public class HeatNet {
+@Entity
+@Table(name = "tbl_heat_nets")
+public class HeatNet extends AbstractEntity {
 
 	@Column(name = "net_length")
 	public double length;
@@ -58,6 +61,7 @@ public class HeatNet {
 	@Override
 	public HeatNet clone() {
 		HeatNet clone = new HeatNet();
+		clone.id = UUID.randomUUID().toString();
 		clone.bufferTankVolume = bufferTankVolume;
 		clone.bufferTank = bufferTank;
 		if (bufferTankCosts != null)
