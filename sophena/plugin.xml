@@ -145,6 +145,12 @@
 			icon="icons/boiler_16.png"
 			id="sophena.BoilerEditor"
 			name="Heizkessel" />
+		
+		<editor
+			class="sophena.rcp.editors.basedata.BuildingStateEditor"
+			icon="icons/building_type_16.png"
+			id="sophena.BuildingStateEditor"
+			name="Gebäudetypen" />
 			
 		<editor
 			class="sophena.rcp.editors.basedata.pipes.PipeEditor"

@@ -19,6 +19,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.io.datapack.Import;
+import sophena.rcp.editors.basedata.BuildingStateEditor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
@@ -77,6 +78,8 @@ public class ActionBarAdvisor extends
 		MenuManager m = new MenuManager(M.BaseData);
 		m.add(Actions.create(M.ClimateData, Images.CLIMATE_16.des(),
 				ClimateDataEditor::open));
+		m.add(Actions.create("Gebäudetypen", Images.BUILDING_TYPE_16.des(),
+				BuildingStateEditor::open));
 		m.add(Actions.create(M.Fuels, Images.FUEL_16.des(),
 				FuelEditor::open));
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),

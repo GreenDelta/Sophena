@@ -11,6 +11,8 @@ public enum Images {
 
 	BUFFER_16("buffer_16.png"),
 
+	BUILDING_TYPE_16("building_type_16.png"),
+
 	CHART_WIZ("chart_wiz.png"),
 
 	CLIMATE_16("climate_16.png"),
