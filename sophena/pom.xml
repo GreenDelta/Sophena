@@ -78,6 +78,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -98,6 +99,18 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/libs</outputDirectory>
+							<includeScope>compile</includeScope>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-test-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/testlibs</outputDirectory>
+							<includeArtifactIds>junit,hamcrest-core</includeArtifactIds>
 						</configuration>
 					</execution>
 				</executions>
@@ -111,6 +124,13 @@
 					<filesets>
 						<fileset>
 							<directory>${basedir}/libs</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/testlibs</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
