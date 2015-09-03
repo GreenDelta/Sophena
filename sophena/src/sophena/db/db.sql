@@ -59,6 +59,22 @@ CREATE TABLE tbl_building_states (
 );
 
 
+CREATE TABLE tbl_product_groups (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	product_type VARCHAR(50),
+	duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE, 
+
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_locations (
 
 	id CHAR(36),
