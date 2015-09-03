@@ -20,6 +20,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.io.datapack.Import;
 import sophena.rcp.editors.basedata.BuildingStateEditor;
+import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
@@ -82,6 +83,8 @@ public class ActionBarAdvisor extends
 				BuildingStateEditor::open));
 		m.add(Actions.create(M.Fuels, Images.FUEL_16.des(),
 				FuelEditor::open));
+		m.add(Actions.create("Produktgruppen", Images.PRODUCT_16.des(),
+				ProductGroupEditor::open));
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
 				BoilerEditor::open));
 		m.add(Actions.create("Wärmeleitungen", Images.PIPE_16.des(),
