@@ -37,7 +37,7 @@ class BoilerWizard extends Wizard {
 		if (boiler == null)
 			return Window.CANCEL;
 		BoilerWizard wiz = new BoilerWizard();
-		wiz.setWindowTitle("Heizkessel");
+		wiz.setWindowTitle(boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel");
 		wiz.boiler = boiler;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 400);
@@ -70,11 +70,14 @@ class BoilerWizard extends Wizard {
 		private Text maxText;
 		private Text minText;
 		private Text efficiencyText;
+		private Text maxElText;
+		private Text minElText;
+		private Text efficiencyElText;
 		private Text linkText;
 		private Text priceText;
 
 		private Page() {
-			super("FuelWizardPage", "Heizkessel", null);
+			super("FuelWizardPage", boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel", null);
 		}
 
 		@Override
@@ -85,6 +88,10 @@ class BoilerWizard extends Wizard {
 			createNameTextAndFuelCombo(composite);
 			createEfficiencyText(composite);
 			createMinMaxTexts(composite);
+			if (boiler.isCoGenPlant) {
+				createEfficiencyElText(composite);
+				createMinMaxElTexts(composite);
+			}
 			createLinkAndPriceText(composite);
 			data.bindToUI();
 		}
@@ -99,18 +106,32 @@ class BoilerWizard extends Wizard {
 		}
 
 		private void createMinMaxTexts(Composite composite) {
-			minText = UI.formText(composite, "Minimale Leistung");
+			minText = UI.formText(composite, "Minimale Leistung th.");
 			Texts.on(minText).decimal().required().validate(data::validate);
 			UI.formLabel(composite, "kW");
-			maxText = UI.formText(composite, "Maximale Leistung");
+			maxText = UI.formText(composite, "Maximale Leistung th.");
 			Texts.on(maxText).decimal().required().validate(data::validate);
 			UI.formLabel(composite, "kW");
 		}
 
+		private void createMinMaxElTexts(Composite composite) {
+			minElText = UI.formText(composite, "Minimale Leistung el.");
+			Texts.on(minElText).decimal().required().validate(data::validate);
+			UI.formLabel(composite, "kW");
+			maxElText = UI.formText(composite, "Maximale Leistung el.");
+			Texts.on(maxElText).decimal().required().validate(data::validate);
+			UI.formLabel(composite, "kW");
+		}
+
 		private void createEfficiencyText(Composite composite) {
-			efficiencyText = UI.formText(composite, M.EfficiencyRate);
-			Texts.on(efficiencyText).decimal().required()
-					.validate(data::validate);
+			efficiencyText = UI.formText(composite, M.EfficiencyRate + " el.");
+			Texts.on(efficiencyText).decimal().required().validate(data::validate);
+			UI.formLabel(composite, "%");
+		}
+
+		private void createEfficiencyElText(Composite composite) {
+			efficiencyElText = UI.formText(composite, M.EfficiencyRate + " el.");
+			Texts.on(efficiencyElText).decimal().required().validate(data::validate);
 			UI.formLabel(composite, "%");
 		}
 
@@ -139,6 +160,9 @@ class BoilerWizard extends Wizard {
 				boiler.maxPower = Texts.getDouble(maxText);
 				boiler.minPower = Texts.getDouble(minText);
 				boiler.efficiencyRate = Texts.getDouble(efficiencyText);
+				boiler.maxPowerElectric = Texts.getDouble(maxElText);
+				boiler.minPowerElectric = Texts.getDouble(minElText);
+				boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText);
 				boiler.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
 					boiler.purchasePrice = Texts.getDouble(priceText);
@@ -163,6 +187,9 @@ class BoilerWizard extends Wizard {
 				Texts.set(maxText, boiler.maxPower);
 				Texts.set(minText, boiler.minPower);
 				Texts.set(efficiencyText, boiler.efficiencyRate);
+				Texts.set(maxElText, boiler.maxPowerElectric);
+				Texts.set(minElText, boiler.minPowerElectric);
+				Texts.set(efficiencyElText, boiler.efficiencyRateElectric);
 				Texts.set(linkText, boiler.url);
 				Texts.set(priceText, boiler.purchasePrice);
 				validate();
@@ -182,8 +209,7 @@ class BoilerWizard extends Wizard {
 			}
 
 			private int getFuelIndex(String[] items) {
-				if (boiler.fuel == null
-						&& boiler.woodAmountType == null)
+				if (boiler.fuel == null && boiler.woodAmountType == null)
 					return 0;
 				String label = null;
 				if (boiler.woodAmountType != null)
@@ -208,11 +234,20 @@ class BoilerWizard extends Wizard {
 					return error("Es wurde keine minimale Leistung angegeben");
 				if (!Texts.hasPercentage(efficiencyText))
 					return error("Es wurde kein Wirkungsgrad angegeben");
+				if (!Texts.hasNumber(maxElText))
+					return error("Es wurde keine maximale elektrische Leistung angegeben.");
+				if (!Texts.hasNumber(minElText))
+					return error("Es wurde keine minimale elektrische Leistung angegeben");
+				if (!Texts.hasPercentage(efficiencyElText))
+					return error("Es wurde kein elektrischer Wirkungsgrad angegeben");
 				double max = Texts.getDouble(maxText);
 				double min = Texts.getDouble(minText);
+				double maxEl = Texts.getDouble(maxElText);
+				double minEl = Texts.getDouble(minElText);
 				if (min > max)
-					return error(
-							"Die minimale Leistung ist größer als die maximale.");
+					return error("Die minimale Leistung ist größer als die maximale.");
+				if (minEl > maxEl)
+					return error("Die minimale elektrische Leistung ist größer als die maximale.");
 				else {
 					setPageComplete(true);
 					setErrorMessage(null);

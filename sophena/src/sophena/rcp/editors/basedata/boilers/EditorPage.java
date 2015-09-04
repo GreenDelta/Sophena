@@ -43,54 +43,46 @@ class EditorPage extends FormPage {
 	private boolean isForCoGen;
 
 	public EditorPage(Editor editor, boolean isForCoGen) {
-		super(editor, "BoilerEditorPage",
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
+		super(editor, "BoilerEditorPage", isForCoGen ? "KWK-Anlage" : "Heizkessel");
 		this.isForCoGen = isForCoGen;
 		boilers = dao.getAll();
-		Collections.sort(boilers,
-				(b1, b2) -> Strings.compare(b1.name, b2.name));
+		Collections.sort(boilers, (b1, b2) -> Strings.compare(b1.name, b2.name));
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		ScrolledForm form = UI.formHeader(managedForm,
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
+		ScrolledForm form = UI.formHeader(managedForm, isForCoGen ? "KWK-Anlage" : "Heizkessel");
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createBoilerSection(body, toolkit);
 		form.reflow(true);
 	}
 
-	private void createBoilerSection(Composite parent,
-			FormToolkit toolkit) {
-		Section section = UI.section(parent, toolkit,
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
+	private void createBoilerSection(Composite parent, FormToolkit toolkit) {
+		Section section = UI.section(parent, toolkit, isForCoGen ? "KWK-Anlage" : "Heizkessel");
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new BoilerLabel());
 		table.setInput(boilers);
-		Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
+		double x = 1 / (isForCoGen ? 6.0 : 5.0);
+		Tables.bindColumnWidths(table, x, x, x, x, x, (isForCoGen ? x : 0));
 		bindBoilerActions(section, table);
 	}
 
 	private String[] getColumns() {
 		if (isForCoGen)
-			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff",
-					"Leistungsbereich th.", "Leistungsbereich el." };
+			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff", "Leistungsbereich th.",
+					"Leistungsbereich el." };
 		else
-			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff",
-					"Leistungsbereich" };
+			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff", "Leistungsbereich" };
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
-		Action add = Actions.create(M.Add, Images.ADD_16.des(),
-				() -> addBoiler(table));
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
-				() -> editBoiler(table));
-		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
-				() -> deleteBoiler(table));
+		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> addBoiler(table));
+		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> editBoiler(table));
+		Action del = Actions.create(M.Delete, Images.DELETE_16.des(), () -> deleteBoiler(table));
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
 		Tables.onDoubleClick(table, (e) -> editBoiler(table));
@@ -129,9 +121,7 @@ class EditorPage extends FormPage {
 		Boiler boiler = Viewers.getFirstSelected(table);
 		if (boiler == null)
 			return;
-		boolean doIt = MsgBox
-				.ask(M.Delete,
-						"Soll das ausgewählte Produkt wirklich gelöscht werden?");
+		boolean doIt = MsgBox.ask(M.Delete, "Soll das ausgewählte Produkt wirklich gelöscht werden?");
 		if (!doIt)
 			return;
 		try {
@@ -143,8 +133,7 @@ class EditorPage extends FormPage {
 		}
 	}
 
-	private class BoilerLabel extends LabelProvider
-			implements ITableLabelProvider {
+	private class BoilerLabel extends LabelProvider implements ITableLabelProvider {
 
 		@Override
 		public Image getColumnImage(Object element, int col) {
