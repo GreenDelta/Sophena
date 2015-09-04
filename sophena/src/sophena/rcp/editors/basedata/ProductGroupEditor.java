@@ -15,7 +15,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
-import sophena.model.BuildingState;
 import sophena.model.ProductGroup;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -83,22 +82,19 @@ public class ProductGroupEditor extends Editor {
 			table.setInput(groups);
 			double x = 1 / 6f;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
-
 		}
 
 		private class ProductGroupLabel extends LabelProvider implements ITableLabelProvider {
 
 			@Override
 			public Image getColumnImage(Object obj, int col) {
-
-				if (!(obj instanceof BuildingState))
+				if (!(obj instanceof ProductGroup))
 					return null;
 				ProductGroup p = (ProductGroup) obj;
 				if (col == 0)
-					return p.index == 0 ? Images.PRODUCT_16.img() : null;
+					return p.index == 1 ? Images.PRODUCT_16.img() : null;
 				else
 					return null;
-
 			}
 
 			@Override
@@ -109,55 +105,23 @@ public class ProductGroupEditor extends Editor {
 
 				switch (col) {
 				case 0:
-					return p.index == 0 ? Labels.get(p.type) : null;
+					return p.index == 1 ? Labels.get(p.type) : null;
 				case 1:
 					return p.name;
 				case 2:
-					return getDuration(p);
+					return Numbers.toString(p.duration) + "Jahre";
+
 				case 3:
-					return getRepair(p);
+					return Numbers.toString(p.repair) + " %";
 				case 4:
-					return getMaintenance(p);
+					return Numbers.toString(p.maintenance) + " %";
+
 				case 5:
-					return getOperation(p);
+					return Numbers.toString(p.operation) + "Stunden/Jahr";
+
 				default:
 					return null;
 				}
-			}
-
-			private String getTypeLabel(ProductGroup p) {
-				if (p.type == null)
-					return null;
-				else
-					return Labels.get(p.type);
-			}
-
-			private String getDuration(ProductGroup p) {
-				if (p == null)
-					return null;
-				else
-					return Numbers.toString(p.duration) + " Jahre";
-			}
-
-			private String getRepair(ProductGroup p) {
-				if (p == null)
-					return null;
-				return Numbers.toString(p.repair) + " %";
-			}
-
-			private String getMaintenance(ProductGroup p) {
-				if (p == null)
-					return null;
-				else
-					return Numbers.toString(p.maintenance) + " %";
-
-			}
-
-			private String getOperation(ProductGroup p) {
-				if (p == null)
-					return null;
-				else
-					return Numbers.toString(p.operation) + "Stunden/Jahr";
 			}
 
 		}
