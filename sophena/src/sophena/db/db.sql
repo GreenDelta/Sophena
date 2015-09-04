@@ -239,6 +239,11 @@ CREATE TABLE tbl_boilers (
 	max_power DOUBLE,
 	min_power DOUBLE,
 	efficiency_rate DOUBLE,
+	
+	is_co_gen_plant BOOLEAN,
+	max_power_electric DOUBLE,
+	min_power_electric DOUBLE,
+	efficiency_rate_electric DOUBLE,
 
 	f_fuel CHAR(36),
 	wood_amount_type VARCHAR(255),

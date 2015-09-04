@@ -32,4 +32,16 @@ public class Boiler extends Product {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "wood_amount_type")
 	public WoodAmountType woodAmountType;
+
+	@Column(name = "is_co_gen_plant")
+	public boolean isCoGenPlant;
+
+	@Column(name = "max_power_electric")
+	public double maxPowerElectric;
+
+	@Column(name = "min_power_electric")
+	public double minPowerElectric;
+
+	@Column(name = "efficiency_rate_electric")
+	public double efficiencyRateElectric;
 }
