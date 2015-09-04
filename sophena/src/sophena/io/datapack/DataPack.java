@@ -148,6 +148,8 @@ public class DataPack implements Closeable {
 			return "fuels";
 		case PIPE:
 			return "pipes";
+		case PRODUCT_GROUP:
+			return "product_groups";
 		case WEATHER_STATION:
 			return "weather_stations";
 		default:

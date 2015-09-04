@@ -19,6 +19,7 @@ import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
+import sophena.model.ProductGroup;
 import sophena.model.WeatherStation;
 
 public class Import implements Runnable {
@@ -44,6 +45,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.PIPE, Pipe.class);
+			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			pack.close();
 		} catch (Exception e) {

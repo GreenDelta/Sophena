@@ -18,6 +18,8 @@ public enum ModelType {
 
 	PRODUCER(Producer.class),
 
+	PRODUCT_GROUP(Product.class),
+
 	PROJECT(Project.class),
 
 	WEATHER_STATION(WeatherStation.class);

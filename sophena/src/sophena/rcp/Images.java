@@ -65,6 +65,8 @@ public enum Images {
 
 	REQUIRED_LOAD_16("required_load_16.png"),
 
+	RUN_16("run_16.png"),
+
 	SORTING_16("sorting_16.png"),
 
 	WARNING_16("warning_16.png");
