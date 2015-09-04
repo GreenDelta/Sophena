@@ -16,6 +16,9 @@ public class ProductGroup extends RootEntity {
 	@Column(name = "product_type")
 	public ProductType type;
 
+	@Column(name = "idx")
+	public int index;
+
 	/** Default usage duration of this product group given in years. */
 	@Column(name = "duration")
 	public int duration;
