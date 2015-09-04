@@ -29,7 +29,8 @@ import sophena.rcp.utils.UI;
 public class ProductGroupEditor extends Editor {
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.product.groups", "Produktgruppen");
+		KeyEditorInput input = new KeyEditorInput("data.product.groups",
+				"Produktgruppen");
 		Editors.open(input, "sophena.ProductGroupEditor");
 	}
 
@@ -48,7 +49,8 @@ public class ProductGroupEditor extends Editor {
 		private List<ProductGroup> groups;
 
 		Page() {
-			super(ProductGroupEditor.this, "ProductGroupPage", "Produktgruppen");
+			super(ProductGroupEditor.this, "ProductGroupPage",
+					"Produktgruppen");
 			dao = new RootEntityDao<>(ProductGroup.class, App.getDb());
 			groups = dao.getAll();
 			Collections.sort(groups, (s1, s2) -> {
@@ -66,25 +68,27 @@ public class ProductGroupEditor extends Editor {
 			FormToolkit toolkit = managedForm.getToolkit();
 			Composite body = UI.formBody(form, toolkit);
 			createProductSection(body, toolkit);
-			// TODO: create page content
 			form.reflow(true);
 
 		}
 
-		private void createProductSection(Composite parent, FormToolkit toolkit) {
+		private void createProductSection(Composite parent,
+				FormToolkit toolkit) {
 			Section section = UI.section(parent, toolkit, "Produktgruppen");
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktbereich", "Produktgruppe", "Nutzungsdauer",
-					"Instandsetzung", "Wartung und Inspektion", "Aufwand für Bedienung");
+			TableViewer table = Tables.createViewer(comp, "Produktbereich",
+					"Produktgruppe", "Nutzungsdauer", "Instandsetzung",
+					"Wartung und Inspektion", "Aufwand für Bedienung");
 			table.setLabelProvider(new ProductGroupLabel());
 			table.setInput(groups);
 			double x = 1 / 6f;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 		}
 
-		private class ProductGroupLabel extends LabelProvider implements ITableLabelProvider {
+		private class ProductGroupLabel extends LabelProvider
+				implements ITableLabelProvider {
 
 			@Override
 			public Image getColumnImage(Object obj, int col) {
@@ -102,7 +106,6 @@ public class ProductGroupEditor extends Editor {
 				if (!(obj instanceof ProductGroup))
 					return null;
 				ProductGroup p = (ProductGroup) obj;
-
 				switch (col) {
 				case 0:
 					return p.index == 1 ? Labels.get(p.type) : null;
@@ -110,20 +113,16 @@ public class ProductGroupEditor extends Editor {
 					return p.name;
 				case 2:
 					return Numbers.toString(p.duration) + " Jahre";
-
 				case 3:
 					return Numbers.toString(p.repair) + " %";
 				case 4:
 					return Numbers.toString(p.maintenance) + " %";
-
 				case 5:
 					return Numbers.toString(p.operation) + " Stunden/Jahr";
-
 				default:
 					return null;
 				}
 			}
-
 		}
 	}
 
