@@ -27,6 +27,7 @@ import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.pipes.PipeEditor;
+import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Rcp;
@@ -96,10 +97,11 @@ public class ActionBarAdvisor extends
 		menu.add(m);
 	}
 
-	private void fillHelpMenu(IMenuManager menuBar) {
-		MenuManager helpMenu = new MenuManager(M.Help);
-		helpMenu.add(aboutAction);
-		menuBar.add(helpMenu);
+	private void fillHelpMenu(IMenuManager menu) {
+		MenuManager m = new MenuManager(M.Help);
+		m.add(aboutAction);
+		m.add(Actions.create("SQL", SqlEditor::open));
+		menu.add(m);
 	}
 
 	private void fillFileMenu(IMenuManager menuBar) {

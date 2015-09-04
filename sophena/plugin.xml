@@ -193,5 +193,11 @@
 			icon="icons/costs_16.png"
 			id="sophena.CostEditor"
 			name="Kosten" />
+			
+		<editor
+			class="sophena.rcp.editors.sql.SqlEditor"
+			icon="icons/run_16.png"
+			id="SqlEditor"
+			name="SQL" />
 	</extension>
 </plugin>
