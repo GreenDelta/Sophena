@@ -21,6 +21,8 @@ public enum Images {
 
 	CLIMATE_16("climate_16.png"),
 
+	CO_GEN_16("co_gen_16.png"),
+
 	CONSUMER_16("consumer_16.png"),
 
 	COPY_16("copy_16.png"),

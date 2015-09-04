@@ -4,17 +4,18 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
-public class BoilerEditor extends Editor {
+public class CoGenPlantEditor extends Editor {
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.boilers", "Heizkessel");
-		Editors.open(input, "sophena.BoilerEditor");
+		KeyEditorInput input = new KeyEditorInput("data.cogen_plants",
+				"KWK-Anlagen");
+		Editors.open(input, "sophena.CoGenPlantEditor");
 	}
 
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new EditorPage(this, false));
+			addPage(new EditorPage(this, true));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}

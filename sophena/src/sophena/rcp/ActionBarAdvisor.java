@@ -22,6 +22,7 @@ import sophena.io.datapack.Import;
 import sophena.rcp.editors.basedata.BuildingStateEditor;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
+import sophena.rcp.editors.basedata.boilers.CoGenPlantEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.costs.BaseCostEditor;
@@ -88,6 +89,8 @@ public class ActionBarAdvisor extends
 				ProductGroupEditor::open));
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
 				BoilerEditor::open));
+		m.add(Actions.create("KWK-Anlagen", Images.CO_GEN_16.des(),
+				CoGenPlantEditor::open));
 		m.add(Actions.create("Wärmeleitungen", Images.PIPE_16.des(),
 				PipeEditor::open));
 		m.add(Actions.create("Pufferspeicher", Images.BUFFER_16.des(),
