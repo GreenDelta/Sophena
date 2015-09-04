@@ -1,5 +1,6 @@
 package sophena.rcp.editors.basedata;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -14,6 +15,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
+import sophena.model.BuildingState;
 import sophena.model.ProductGroup;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -50,6 +52,13 @@ public class ProductGroupEditor extends Editor {
 			super(ProductGroupEditor.this, "ProductGroupPage", "Produktgruppen");
 			dao = new RootEntityDao<>(ProductGroup.class, App.getDb());
 			groups = dao.getAll();
+			Collections.sort(groups, (s1, s2) -> {
+				if (s2.type == null || s1.type == null)
+					return 0;
+				if (s1.type != s2.type)
+					return s1.type.ordinal() - s2.type.ordinal();
+				return s1.index - s2.index;
+			});
 		}
 
 		@Override
@@ -68,30 +77,39 @@ public class ProductGroupEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "typen", "duration", "repair", "maintenance", "operation");
+			TableViewer table = Tables.createViewer(comp, "Produktbereich", "Produktgruppe", "Nutzungsdauer",
+					"Instandsetzung", "Wartung und Inspektion", "Aufwand für Bedienung");
 			table.setLabelProvider(new ProductGroupLabel());
 			table.setInput(groups);
-			double x = 1 / 5f;
-			Tables.bindColumnWidths(table, x, x, x, x, x);
+			double x = 1 / 6f;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 
 		}
 
 		private class ProductGroupLabel extends LabelProvider implements ITableLabelProvider {
 
 			@Override
-			public Image getColumnImage(Object element, int col) {
-				return col == 0 ? Images.PRODUCT_16.img() : null;
+			public Image getColumnImage(Object obj, int col) {
+
+				if (!(obj instanceof BuildingState))
+					return null;
+				ProductGroup p = (ProductGroup) obj;
+				if (col == 0)
+					return p.index == 0 ? Images.PRODUCT_16.img() : null;
+				else
+					return null;
+
 			}
 
 			@Override
-			public String getColumnText(Object element, int col) {
-				if (!(element instanceof ProductGroup))
+			public String getColumnText(Object obj, int col) {
+				if (!(obj instanceof ProductGroup))
 					return null;
-				ProductGroup p = (ProductGroup) element;
+				ProductGroup p = (ProductGroup) obj;
+
 				switch (col) {
 				case 0:
-					return getTypeLabel(p);// p.index == 0 ? getTypeLabel(p) :
-											// null;
+					return p.index == 0 ? Labels.get(p.type) : null;
 				case 1:
 					return p.name;
 				case 2:
@@ -118,20 +136,20 @@ public class ProductGroupEditor extends Editor {
 				if (p == null)
 					return null;
 				else
-					return Numbers.toString(p.duration) + "years";
+					return Numbers.toString(p.duration) + " Jahre";
 			}
 
 			private String getRepair(ProductGroup p) {
 				if (p == null)
 					return null;
-				return Numbers.toString(p.repair) + "%";
+				return Numbers.toString(p.repair) + " %";
 			}
 
 			private String getMaintenance(ProductGroup p) {
 				if (p == null)
 					return null;
 				else
-					return Numbers.toString(p.maintenance) + "%";
+					return Numbers.toString(p.maintenance) + " %";
 
 			}
 
@@ -139,7 +157,7 @@ public class ProductGroupEditor extends Editor {
 				if (p == null)
 					return null;
 				else
-					return Numbers.toString(p.operation) + "h/y";
+					return Numbers.toString(p.operation) + "Stunden/Jahr";
 			}
 
 		}
