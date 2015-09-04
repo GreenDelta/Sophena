@@ -14,6 +14,7 @@ import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Pipe;
 import sophena.model.Producer;
+import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.WeatherStation;
@@ -29,6 +30,7 @@ public class RootEntityTest {
 			WeatherStation.class,
 			Boiler.class,
 			Pipe.class,
+			ProductGroup.class,
 			BufferTank.class,
 			Producer.class
 	};

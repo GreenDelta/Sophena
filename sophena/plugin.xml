@@ -139,6 +139,12 @@
             icon="icons/fuel_16.png"
             id="sophena.FuelEditor"
             name="Brennstoffe" />
+            
+        <editor
+            class="sophena.rcp.editors.basedata.ProductGroupEditor"
+            icon="icons/product_16.png"
+            id="sophena.ProductGroupEditor"
+            name="Produktgruppen" />
 
 		<editor
 			class="sophena.rcp.editors.basedata.boilers.BoilerEditor"
