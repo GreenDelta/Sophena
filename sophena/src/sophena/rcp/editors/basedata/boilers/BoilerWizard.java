@@ -124,7 +124,7 @@ class BoilerWizard extends Wizard {
 		}
 
 		private void createEfficiencyText(Composite composite) {
-			efficiencyText = UI.formText(composite, M.EfficiencyRate + " el.");
+			efficiencyText = UI.formText(composite, M.EfficiencyRate + " th.");
 			Texts.on(efficiencyText).decimal().required().validate(data::validate);
 			UI.formLabel(composite, "%");
 		}
