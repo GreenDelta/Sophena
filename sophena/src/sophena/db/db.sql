@@ -65,6 +65,7 @@ CREATE TABLE tbl_product_groups (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+	idx INTEGER,
 	product_type VARCHAR(50),
 	duration INTEGER,
     repair DOUBLE,

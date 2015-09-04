@@ -27,8 +27,10 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
 public class BuildingStateEditor extends Editor {
+
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.building.states", "Gebäudetypen");
+		KeyEditorInput input = new KeyEditorInput("data.building.states",
+				"Gebäudetypen");
 		Editors.open(input, "sophena.BuildingStateEditor");
 	}
 
@@ -42,23 +44,23 @@ public class BuildingStateEditor extends Editor {
 	}
 
 	private class Page extends FormPage {
+
 		private RootEntityDao<BuildingState> dao;
 		private List<BuildingState> states;
 
 		public Page() {
 
-			super(BuildingStateEditor.this, "BuildingStatePage", "Gebäudetypen");
+			super(BuildingStateEditor.this, "BuildingStatePage",
+					"Gebäudetypen");
 			dao = new RootEntityDao<>(BuildingState.class, App.getDb());
 			states = dao.getAll();
 			Collections.sort(states, (s1, s2) -> {
 				if (s2.type == null || s1.type == null)
 					return 0;
-
 				if (s1.type != s2.type)
 					return s1.type.ordinal() - s2.type.ordinal();
 				return s1.index - s2.index;
 			});
-
 		}
 
 		@Override
@@ -66,7 +68,6 @@ public class BuildingStateEditor extends Editor {
 			ScrolledForm form = UI.formHeader(managedForm, "Gebäudetypen");
 			FormToolkit toolkit = managedForm.getToolkit();
 			Composite body = UI.formBody(form, toolkit);
-			// TODO: create page content
 			createStateSection(body, toolkit);
 			form.reflow(true);
 
@@ -77,87 +78,52 @@ public class BuildingStateEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Gebäudetypen", "Bauweise", "HeatingLimit", "WaterFraction",
-					"Loadhours", "default");
+			TableViewer table = Tables.createViewer(comp, "Gebäudetyp",
+					"Gebäudezustand", "Heizgrenztemperatur", "Warmwasseranteil",
+					"Volllaststunden", "Voreinstellung");
 			table.setLabelProvider(new BuildingStateLabel());
 			table.setInput(states);
-			double x = 1 / 6f;
+			double x = 1 / 6d;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 
 		}
 
-		private class BuildingStateLabel extends LabelProvider implements ITableLabelProvider {
+		private class BuildingStateLabel extends LabelProvider
+				implements ITableLabelProvider {
 
 			@Override
-			public Image getColumnImage(Object element, int col) {
-				BuildingState s = (BuildingState) element;
-				return col == 0 && s.index == 0 ? Images.BUILDING_TYPE_16.img() : null;
+			public Image getColumnImage(Object obj, int col) {
+				if (!(obj instanceof BuildingState))
+					return null;
+				BuildingState s = (BuildingState) obj;
+				if (col == 0)
+					return s.index == 0 ? Images.BUILDING_TYPE_16.img() : null;
+				if (col == 5)
+					return s.isDefault ? Images.CHECKBOX_CHECKED_16.img()
+							: Images.CHECKBOX_UNCHECKED_16.img();
+				else
+					return null;
 			}
 
 			@Override
-			public String getColumnText(Object element, int col) {
-				if (!(element instanceof BuildingState))
+			public String getColumnText(Object obj, int col) {
+				if (!(obj instanceof BuildingState))
 					return null;
-				BuildingState s = (BuildingState) element;
+				BuildingState s = (BuildingState) obj;
 				switch (col) {
 				case 0:
-					return s.index == 0 ? getTypeLabel(s) : null;
+					return s.index == 0 ? Labels.get(s.type) : null;
 				case 1:
 					return s.name;
 				case 2:
-					return getHeatingLimit(s);
+					return Numbers.toString(s.heatingLimit) + " °C";
 				case 3:
-					return getWaterFraction(s);
+					return Numbers.toString(s.waterFraction) + " %";
 				case 4:
-					return getLoadHours(s);
-				case 5:
-					return getIsdefault(s);
+					return Numbers.toString(s.loadHours) + " h";
 				default:
 					return null;
 				}
-			}
-
-			private String getIndex(BuildingState buildingState) {
-				if (buildingState == null)
-					return null;
-				else
-					return Numbers.toString(buildingState.index);
-			}
-
-			private String getIsdefault(BuildingState buildingState) {
-				if (buildingState == null)
-					return null;
-				return buildingState.isDefault ? "true" : "false";
-			}
-
-			private String getTypeLabel(BuildingState buildingState) {
-				if (buildingState.type == null)
-					return null;
-				else
-					return Labels.get(buildingState.type);
-			}
-
-			private String getHeatingLimit(BuildingState buildingState) {
-				if (buildingState == null)
-					return null;
-				else
-					return Numbers.toString(buildingState.heatingLimit) + "°c";
-
-			}
-
-			private String getWaterFraction(BuildingState buildingState) {
-				if (buildingState == null)
-					return null;
-				else
-					return Numbers.toString(buildingState.waterFraction) + "%";
-			}
-
-			private String getLoadHours(BuildingState buildingState) {
-				if (buildingState == null)
-					return null;
-				else
-					return Numbers.toString(buildingState.loadHours) + "h";
-
 			}
 		}
 	}

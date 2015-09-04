@@ -15,6 +15,10 @@ public enum Images {
 
 	CHART_WIZ("chart_wiz.png"),
 
+	CHECKBOX_CHECKED_16("checkbox_checked.png"),
+
+	CHECKBOX_UNCHECKED_16("checkbox_uncheck_16.png"),
+
 	CLIMATE_16("climate_16.png"),
 
 	CONSUMER_16("consumer_16.png"),
