@@ -109,7 +109,7 @@ public class ProductGroupEditor extends Editor {
 				case 1:
 					return p.name;
 				case 2:
-					return Numbers.toString(p.duration) + "Jahre";
+					return Numbers.toString(p.duration) + " Jahre";
 
 				case 3:
 					return Numbers.toString(p.repair) + " %";
@@ -117,7 +117,7 @@ public class ProductGroupEditor extends Editor {
 					return Numbers.toString(p.maintenance) + " %";
 
 				case 5:
-					return Numbers.toString(p.operation) + "Stunden/Jahr";
+					return Numbers.toString(p.operation) + " Stunden/Jahr";
 
 				default:
 					return null;
