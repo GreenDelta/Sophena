@@ -7,7 +7,9 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.Dao;
+import sophena.db.daos.ProductDao;
 import sophena.model.Boiler;
+import sophena.model.Product;
 import sophena.model.ProductType;
 
 public class ProductTest {
@@ -22,6 +24,23 @@ public class ProductTest {
 		b = dao.get(b.id);
 		Assert.assertTrue(b.type == ProductType.BIOMASS_BOILER);
 		dao.delete(b);
+	}
+
+	@Test
+	public void testGetProductForType() throws Exception {
+		ProductDao dao = new ProductDao(Tests.getDb());
+		Product p1 = createProduct(ProductType.BIOMASS_BOILER, dao);
+		Assert.assertTrue(dao.getAll().contains(p1));
+		Assert.assertTrue(dao.getAll(ProductType.BIOMASS_BOILER).contains(p1));
+		Assert.assertFalse(dao.getAll(ProductType.BUFFER_TANK).contains(p1));
+		dao.delete(p1);
+	}
+
+	private Product createProduct(ProductType type, ProductDao dao) {
+		Product p = new Product();
+		p.id = UUID.randomUUID().toString();
+		p.type = type;
+		return dao.insert(p);
 	}
 
 }
