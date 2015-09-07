@@ -1,12 +1,10 @@
 package sophena.rcp.editors.results;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +13,14 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Strings;
 
-public class ResultEditor extends FormEditor {
+public class ResultEditor extends Editor {
 
 	Project project;
 	ProjectResult result;
@@ -53,7 +52,8 @@ public class ResultEditor extends FormEditor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
 		super.init(site, input);
 		try {
 			KeyEditorInput kei = (KeyEditorInput) input;
@@ -78,18 +78,4 @@ public class ResultEditor extends FormEditor {
 			log.error("failed to init energy result editor", e);
 		}
 	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
 }
