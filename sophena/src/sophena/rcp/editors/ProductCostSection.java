@@ -6,15 +6,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
 import sophena.rcp.utils.UI;
 
-public class ComponentCostSection {
+public class ProductCostSection {
 
-	private Supplier<ComponentCosts> costs;
+	private Supplier<ProductCosts> costs;
 
 	private Editor editor;
 	private Composite composite;
@@ -26,30 +26,30 @@ public class ComponentCostSection {
 	private Text maintenanceText;
 	private Text operationText;
 
-	public ComponentCostSection(Supplier<ComponentCosts> costs) {
+	public ProductCostSection(Supplier<ProductCosts> costs) {
 		this.costs = costs;
 	}
 
-	public ComponentCostSection withEditor(Editor editor) {
+	public ProductCostSection withEditor(Editor editor) {
 		this.editor = editor;
 		return this;
 	}
 
-	private ComponentCosts costs() {
+	private ProductCosts costs() {
 		return costs.get();
 	}
 
-	public ComponentCostSection createSection(Composite body, FormToolkit tk) {
+	public ProductCostSection createSection(Composite body, FormToolkit tk) {
 		Composite composite = UI.formSection(body, tk, "Kosten");
 		UI.gridLayout(composite, 3);
 		return createFields(composite, tk);
 	}
 
-	public ComponentCostSection createFields(Composite composite) {
+	public ProductCostSection createFields(Composite composite) {
 		return createFields(composite, null);
 	}
 
-	public ComponentCostSection createFields(Composite composite,
+	public ProductCostSection createFields(Composite composite,
 			FormToolkit tk) {
 		this.composite = composite;
 		this.toolkit = tk;

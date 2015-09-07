@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.rcp.Images;
@@ -138,7 +138,7 @@ class PipeSection {
 			}
 		}
 
-		private String getCostLabel(ComponentCosts costs, int col) {
+		private String getCostLabel(ProductCosts costs, int col) {
 			if (costs == null)
 				return null;
 			switch (col) {

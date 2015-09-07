@@ -32,7 +32,7 @@ public class Producer extends Facility {
 	public ProducerFunction function;
 
 	@Embedded
-	public ComponentCosts costs;
+	public ProductCosts costs;
 
 	@Embedded
 	public FuelSpec fuelSpec;

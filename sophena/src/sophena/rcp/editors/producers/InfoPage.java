@@ -19,7 +19,7 @@ import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
-import sophena.rcp.editors.ComponentCostSection;
+import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
@@ -51,7 +51,7 @@ class InfoPage extends FormPage {
 		createFunctionCombo(tk, composite);
 		createRankText(tk, composite);
 		new FuelSection(editor).render(body, tk);
-		new ComponentCostSection(() -> producer().costs).withEditor(editor)
+		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);
 	}
 

@@ -9,11 +9,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.BufferTank;
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.editors.ComponentCostSection;
+import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -23,7 +23,7 @@ class BufferTankSection {
 	private HeatNetEditor editor;
 	private Text volText;
 
-	private ComponentCostSection costSection;
+	private ProductCostSection costSection;
 
 	BufferTankSection(HeatNetEditor editor) {
 		this.editor = editor;
@@ -39,8 +39,8 @@ class BufferTankSection {
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
 		if (net().bufferTankCosts == null)
-			net().bufferTankCosts = new ComponentCosts();
-		costSection = new ComponentCostSection(() -> net().bufferTankCosts)
+			net().bufferTankCosts = new ProductCosts();
+		costSection = new ProductCostSection(() -> net().bufferTankCosts)
 				.withEditor(editor)
 				.createFields(comp, tk);
 	}

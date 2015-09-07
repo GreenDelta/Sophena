@@ -1,7 +1,7 @@
 package sophena.calc;
 
 import sophena.model.Boiler;
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
@@ -36,7 +36,7 @@ class CostCalculator {
 		CostResult r = new CostResult();
 		// TODO: iterate over all cost components; not only producers
 		for (Producer p : project.producers) {
-			ComponentCosts costs = p.costs;
+			ProductCosts costs = p.costs;
 			if (costs == null)
 				continue;
 			r.netto.investments += costs.investment;
@@ -54,7 +54,7 @@ class CostCalculator {
 		return r;
 	}
 
-	private void addCapitalCosts(CostResult r, ComponentCosts costs) {
+	private void addCapitalCosts(CostResult r, ProductCosts costs) {
 		double capNetto = getCapitalCosts(costs.duration,
 				costs.investment);
 		r.netto.capitalCosts += capNetto;
@@ -78,7 +78,7 @@ class CostCalculator {
 		r.brutto.consumptionCosts += vat * costs;
 	}
 
-	private void addOperationCosts(CostResult r, ComponentCosts costs) {
+	private void addOperationCosts(CostResult r, ProductCosts costs) {
 		double af = getAnnuityFactor();
 		double opFactor = getCashValueFactor(settings.operationFactor);
 		double maFactor = getCashValueFactor(settings.maintenanceFactor);
