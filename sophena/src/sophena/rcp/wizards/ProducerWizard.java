@@ -25,7 +25,7 @@ import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
@@ -99,7 +99,7 @@ public class ProducerWizard extends Wizard {
 	}
 
 	private void addCosts(Producer producer) {
-		ComponentCosts costs = new ComponentCosts();
+		ProductCosts costs = new ProductCosts();
 		producer.costs = costs;
 		costs.duration = 15;
 		costs.repair = 3;

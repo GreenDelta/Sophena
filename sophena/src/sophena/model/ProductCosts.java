@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ComponentCosts {
+public class ProductCosts {
 
 	/** The purchase price of the product in EUR. */
 	@Column(name = "investment")
@@ -27,8 +27,8 @@ public class ComponentCosts {
 	public double operation;
 
 	@Override
-	public ComponentCosts clone() {
-		ComponentCosts clone = new ComponentCosts();
+	public ProductCosts clone() {
+		ProductCosts clone = new ProductCosts();
 		clone.investment = investment;
 		clone.duration = duration;
 		clone.repair = repair;

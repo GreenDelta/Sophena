@@ -21,7 +21,7 @@ public class HeatNetPipe extends AbstractEntity {
 	public Pipe pipe;
 
 	@Embedded
-	public ComponentCosts costs;
+	public ProductCosts costs;
 
 	@Column(name = "length")
 	public double length;

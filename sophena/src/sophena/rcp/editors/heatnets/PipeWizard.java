@@ -11,12 +11,12 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.editors.ComponentCostSection;
+import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -33,7 +33,7 @@ class PipeWizard extends Wizard {
 		w.setWindowTitle("Wärmeleitung");
 		w.pipe = pipe;
 		if (pipe.costs == null)
-			pipe.costs = new ComponentCosts();
+			pipe.costs = new ProductCosts();
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		dialog.setPageSize(150, 400);
 		return dialog.open();
@@ -52,7 +52,7 @@ class PipeWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private ComponentCostSection costSection;
+		private ProductCostSection costSection;
 
 		Page() {
 			super("HeatNetPipePage", "Wärmeleitung", null);
@@ -65,7 +65,7 @@ class PipeWizard extends Wizard {
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
 			createLengthText(comp);
-			costSection = new ComponentCostSection(() -> pipe.costs)
+			costSection = new ProductCostSection(() -> pipe.costs)
 					.createFields(comp);
 		}
 

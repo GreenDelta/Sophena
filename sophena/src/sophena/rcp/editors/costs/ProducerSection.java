@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.model.ComponentCosts;
+import sophena.model.ProductCosts;
 import sophena.model.Producer;
 import sophena.rcp.Images;
 import sophena.rcp.Numbers;
@@ -65,7 +65,7 @@ class ProducerSection {
 			if (!(obj instanceof Producer))
 				return null;
 			Producer p = (Producer) obj;
-			ComponentCosts c = p.costs;
+			ProductCosts c = p.costs;
 			if (c == null)
 				return null;
 			switch (col) {

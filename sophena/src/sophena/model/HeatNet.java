@@ -40,7 +40,7 @@ public class HeatNet extends AbstractEntity {
 	public double bufferTankVolume;
 
 	@Embedded
-	public ComponentCosts bufferTankCosts;
+	public ProductCosts bufferTankCosts;
 
 	@Column(name = "power_loss")
 	public double powerLoss;
