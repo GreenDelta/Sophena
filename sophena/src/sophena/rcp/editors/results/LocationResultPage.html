@@ -25,27 +25,16 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
         <script type="text/javascript">
 
-            var map,
-                marker;
-
-            // Initializes the map with the given data
-            // data example: {latlng: {lat: 51.505, lng: -0.09}, withMarker: true}
-            function init(data) {
-                if(!data || !data.latlng) {
+            // Create the result map with the given data
+            function setData(data) {
+                if (!data || !data.center) {
                     return;
                 }
-                createMap(data.latlng);
-                if (data.withMarker) {
-                    createMarker(data.latlng);
-                }
-            }
-
-            function createMap(latlng) {
 
                 // initialize the map; see http://leafletjs.com/reference.html#map-usage
-                map = L.map('map', {
-                    center: latlng,
-                    zoom: 15
+                var map = L.map('map', {
+                    center: data.center,
+                    zoom: 14
                 });
 
                 // add the tile layer, http://leafletjs.com/reference.html#tilelayer
@@ -56,57 +45,18 @@
                     attribution: '<a href="http://www.openstreetmap.org">OpenStreetMap</a>'
                 }).addTo(map);
 
-                // handle click function
-                map.on('click', function(e) {
-                    if(!marker) {
-                        createMarker(e.latlng);
-                    } else {
-                        marker.setLatLng(e.latlng);
-                    }
-                    fireLocationChange(e.latlng);
-                });
-
-                return map;
-            }
-
-            function createMarker(latlng) {
-                marker = L.marker(latlng, {
-                    draggable: true,
-                    title: '',
-                    riseOnHover: true
-                }).addTo(map);
-
-                marker.on('dragend', function(e) {
-                    fireLocationChange(marker.getLatLng());
-                });
-            }
-
-            function setLocation(latLng) {
-                if (!map) {
+                if (!data.markers) {
                     return;
                 }
-                map.panTo(latLng);
-                if (marker) {
-                    marker.setLatLng(latLng);
+                for (var i = 0; i < data.markers.length; i++) {
+                    var m = data.markers[i];
+                    L.marker(m.latlng, {
+                        title: m.title, 
+                        riseOnHover: true
+                    }).addTo(map);  
                 }
             }
-
-            function removeMarker() {
-                if(!marker) {
-                    return;
-                }
-                map.removeLayer(marker);
-                marker = null;
-            }
-
-            function fireLocationChange(latLng) {
-                if (typeof(locationChanged) !== 'function') {
-                    console.log('locationChanged is not bound', latLng);
-                } else {
-                    var data = '{"lat": ' + latLng.lat + ', "lng":' + latLng.lng + '}';
-                    locationChanged(data);
-                }
-            }
+                        
         </script>
     </body>
 </html>
