@@ -14,6 +14,7 @@ import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.Pipe;
 import sophena.model.Producer;
+import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.RootEntity;
@@ -32,7 +33,8 @@ public class RootEntityTest {
 			Pipe.class,
 			ProductGroup.class,
 			BufferTank.class,
-			Producer.class
+			Producer.class,
+			Product.class
 	};
 
 	@Test

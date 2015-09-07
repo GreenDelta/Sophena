@@ -227,6 +227,21 @@ CREATE TABLE tbl_load_profiles (
 );
 
 
+CREATE TABLE tbl_products (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
+	
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_boilers (
 
 	id CHAR(36),
@@ -235,6 +250,8 @@ CREATE TABLE tbl_boilers (
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
 	
 	max_power DOUBLE,
 	min_power DOUBLE,
@@ -260,6 +277,8 @@ CREATE TABLE tbl_pipes (
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
 
 	u_value DOUBLE,
 	diameter DOUBLE,
@@ -276,6 +295,8 @@ CREATE TABLE tbl_buffer_tanks (
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
 	
 	volume DOUBLE,	
 
