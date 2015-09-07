@@ -28,6 +28,14 @@ import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.pipes.PipeEditor;
+import sophena.rcp.editors.basedata.products.BoilerAccessoriesEditor;
+import sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor;
+import sophena.rcp.editors.basedata.products.BuildingProductEditor;
+import sophena.rcp.editors.basedata.products.FlueGasCleaningEditor;
+import sophena.rcp.editors.basedata.products.HeatRecoveryEditor;
+import sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor;
+import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
+import sophena.rcp.editors.basedata.products.PlanningEditor;
 import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -95,6 +103,17 @@ public class ActionBarAdvisor extends
 				PipeEditor::open));
 		m.add(Actions.create("Pufferspeicher", Images.BUFFER_16.des(),
 				BufferTankEditor::open));
+		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
+		m.add(Actions.create("Wärmerückgewinnung", HeatRecoveryEditor::open));
+		m.add(Actions.create("Rauchgasreinigung", FlueGasCleaningEditor::open));
+		m.add(Actions.create("Heizhaus-Technik",
+				BoilerHouseTechnologyEditor::open));
+		m.add(Actions.create("Gebäude", BuildingProductEditor::open));
+		m.add(Actions.create("Wärmenetz-Technik",
+				HeatingNetTechnologyEditor::open));
+		m.add(Actions.create("Wärmenetz-Bau",
+				HeatingNetConstructionEditor::open));
+		m.add(Actions.create("Planung", PlanningEditor::open));
 		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
 				BaseCostEditor::open));
 		menu.add(m);
