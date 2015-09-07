@@ -48,6 +48,10 @@ public class Project extends RootEntity {
 	@JoinColumn(name = "f_heat_net")
 	public HeatNet heatNet;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_project")
+	public final List<ProductEntry> productEntries = new ArrayList<>();
+
 	@Override
 	public Project clone() {
 		Project clone = new Project();
