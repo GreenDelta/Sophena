@@ -65,7 +65,7 @@ class EditorPage extends FormPage {
 		TableViewer table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new ProductLabel());
 		table.setInput(products);
-		double x = 1 / 4d;
+		double x = 1 / 3d;
 		Tables.bindColumnWidths(table, x, x, x, x);
 		bindProductActions(section, table);
 	}
@@ -146,13 +146,12 @@ class EditorPage extends FormPage {
 				return null;
 			Product product = (Product) element;
 			switch (col) {
+
 			case 0:
-				return Labels.get(product.type);
-			case 1:
 				return product.name;
-			case 2:
+			case 1:
 				return product.url;
-			case 3:
+			case 2:
 				return Numbers.toString(product.purchasePrice) + " EUR";
 
 			default:
