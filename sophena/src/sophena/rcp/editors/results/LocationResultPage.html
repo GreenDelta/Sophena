@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Sophena Marker-Map</title>
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+        <style media="screen">
+            html {
+                height: 100%;
+            }
+            body {
+                height: 100%;
+                margin:0;
+                padding:0;
+            }
+            #map {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+        <script type="text/javascript">
+
+            var map,
+                marker;
+
+            // Initializes the map with the given data
+            // data example: {latlng: {lat: 51.505, lng: -0.09}, withMarker: true}
+            function init(data) {
+                if(!data || !data.latlng) {
+                    return;
+                }
+                createMap(data.latlng);
+                if (data.withMarker) {
+                    createMarker(data.latlng);
+                }
+            }
+
+            function createMap(latlng) {
+
+                // initialize the map; see http://leafletjs.com/reference.html#map-usage
+                map = L.map('map', {
+                    center: latlng,
+                    zoom: 15
+                });
+
+                // add the tile layer, http://leafletjs.com/reference.html#tilelayer
+                // see also http://wiki.openstreetmap.org/wiki/Tile_servers
+                var tileUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
+                L.tileLayer(tileUrl, {
+                    subdomains: ['a', 'b'], // value for s
+                    attribution: '<a href="http://www.openstreetmap.org">OpenStreetMap</a>'
+                }).addTo(map);
+
+                // handle click function
+                map.on('click', function(e) {
+                    if(!marker) {
+                        createMarker(e.latlng);
+                    } else {
+                        marker.setLatLng(e.latlng);
+                    }
+                    fireLocationChange(e.latlng);
+                });
+
+                return map;
+            }
+
+            function createMarker(latlng) {
+                marker = L.marker(latlng, {
+                    draggable: true,
+                    title: '',
+                    riseOnHover: true
+                }).addTo(map);
+
+                marker.on('dragend', function(e) {
+                    fireLocationChange(marker.getLatLng());
+                });
+            }
+
+            function setLocation(latLng) {
+                if (!map) {
+                    return;
+                }
+                map.panTo(latLng);
+                if (marker) {
+                    marker.setLatLng(latLng);
+                }
+            }
+
+            function removeMarker() {
+                if(!marker) {
+                    return;
+                }
+                map.removeLayer(marker);
+                marker = null;
+            }
+
+            function fireLocationChange(latLng) {
+                if (typeof(locationChanged) !== 'function') {
+                    console.log('locationChanged is not bound', latLng);
+                } else {
+                    var data = '{"lat": ' + latLng.lat + ', "lng":' + latLng.lng + '}';
+                    locationChanged(data);
+                }
+            }
+        </script>
+    </body>
+</html>
