@@ -205,5 +205,45 @@
 			icon="icons/run_16.png"
 			id="SqlEditor"
 			name="SQL" />
+			
+		<editor
+			class="sophena.rcp.editors.basedata.products.BoilerAccessoriesEditor"
+			id="sophena.products.BoilerAccessoriesEditor"
+			name="Kesselzubehör" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
+			id="sophena.products.HeatRecoveryEditor"
+			name="Wärmerückgewinnung" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.FlueGasCleaningEditor"
+			id="sophena.products.FlueGasCleaningEditor"
+			name="Rauchgasreinigung" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor"
+			id="sophena.products.BoilerHouseTechnologyEditor"
+			name="Heizhaus-Technik" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.BuildingProductEditor"
+			id="sophena.products.BuildingProductEditor"
+			name="Gebäude" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor"
+			id="sophena.products.HeatingNetTechnologyEditor"
+			name="Wärmenetz-Technik" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor"
+			id="sophena.products.HeatingNetConstructionEditor"
+			name="Wärmenetz-Bau" />
+
+		<editor
+			class="sophena.rcp.editors.basedata.products.PlanningEditor"
+			id="sophena.products.PlanningEditor"
+			name="Planung" />
 	</extension>
 </plugin>

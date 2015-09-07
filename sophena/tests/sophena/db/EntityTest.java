@@ -19,6 +19,7 @@ import sophena.model.LoadProfile;
 import sophena.model.Location;
 import sophena.model.Pipe;
 import sophena.model.Producer;
+import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
@@ -38,6 +39,7 @@ public class EntityTest {
 			Location.class,
 			Pipe.class,
 			Producer.class,
+			Product.class,
 			ProductGroup.class,
 			Project.class,
 			WeatherStation.class,
