@@ -53,8 +53,7 @@ public class ResultEditor extends FormEditor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
 		try {
 			KeyEditorInput kei = (KeyEditorInput) input;
@@ -73,6 +72,7 @@ public class ResultEditor extends FormEditor {
 		try {
 			addPage(new EnergyResultPage(this));
 			addPage(new CostResultPage(this));
+			addPage(new LocationResultPage(this));
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);
