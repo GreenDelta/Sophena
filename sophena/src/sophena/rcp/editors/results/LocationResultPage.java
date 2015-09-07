@@ -16,7 +16,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,6 @@ import com.google.gson.Gson;
 
 import sophena.model.Consumer;
 import sophena.model.Location;
-import sophena.rcp.M;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.UI;
 
@@ -35,25 +33,22 @@ public class LocationResultPage extends FormPage {
 	private Browser browser;
 
 	public LocationResultPage(ResultEditor editor) {
-		super(editor, "sophena.LocationResultPage.html", "Standort");
+		super(editor, "sophena.LocationResultPage.html", "Standorte");
 		this.editor = editor;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, M.Location);
+		ScrolledForm form = UI.formHeader(mform, "Standorte");
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		createBrowserSection(body);
+		createBrowser(body);
 		form.reflow(true);
 	}
 
-	private void createBrowserSection(Composite body) {
-		Section s = UI.section(body, toolkit, "Karte");
-		UI.gridData(s, true, true);
-		Composite c = UI.sectionClient(s, toolkit);
-		c.setLayout(new FillLayout());
-		browser = new Browser(c, SWT.NONE);
+	private void createBrowser(Composite body) {
+		body.setLayout(new FillLayout());
+		browser = new Browser(body, SWT.NONE);
 		browser.setJavascriptEnabled(true);
 		browser.setUrl(getUrl());
 		browser.addProgressListener(new ProgressAdapter() {
