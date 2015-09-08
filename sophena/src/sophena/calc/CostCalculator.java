@@ -74,7 +74,7 @@ class CostCalculator {
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
 		double costs = fuelCosts * cashValueFactor * getAnnuityFactor();
 		r.netto.consumptionCosts += costs;
-		double vat = 1 + p.fuelSpec.getTaxRate() / 100;
+		double vat = 1 + p.fuelSpec.taxRate / 100;
 		r.brutto.consumptionCosts += vat * costs;
 	}
 
@@ -181,19 +181,19 @@ class CostCalculator {
 		Fuel fuel = boiler.fuel;
 		if (fuel != null) {
 			// no wood fuel
-			double amount = energyContent / fuel.getCalorificValue();
-			return amount * fuelSpec.getPricePerUnit();
+			double amount = energyContent / fuel.calorificValue;
+			return amount * fuelSpec.pricePerUnit;
 		}
 		// wood fuel
-		fuel = fuelSpec.getWoodFuel();
+		fuel = fuelSpec.woodFuel;
 		if (boiler.woodAmountType == null || fuel == null)
 			return 0;
-		double wc = fuelSpec.getWaterContent() / 100;
+		double wc = fuelSpec.waterContent / 100;
 		double woodMass = energyContent
-				/ ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);
+				/ ((1 - wc) * fuel.calorificValue - wc * 0.68);
 		double woodAmount = woodMass * (1 - wc)
-				/ (boiler.woodAmountType.getFactor() * fuel.getDensity());
-		return woodAmount * fuelSpec.getPricePerUnit();
+				/ (boiler.woodAmountType.getFactor() * fuel.density);
+		return woodAmount * fuelSpec.pricePerUnit;
 	}
 
 	private void calcTotals(CostResult r) {

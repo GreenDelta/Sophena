@@ -24,10 +24,10 @@ public class WeatherDataIOTest {
 		for (int i = 0; i < data.length; i++) {
 			data[i] = 10 * Math.random();
 		}
-		station.setData(data);
+		station.data = data;
 		dao.insert(station);
 		WeatherStation copy = dao.get(id);
-		Assert.assertArrayEquals(station.getData(), copy.getData(), 1e-10);
+		Assert.assertArrayEquals(station.data, copy.data, 1e-10);
 		dao.delete(station);
 	}
 

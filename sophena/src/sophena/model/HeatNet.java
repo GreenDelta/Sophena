@@ -75,6 +75,8 @@ public class HeatNet extends AbstractEntity {
 		clone.withInterruption = withInterruption;
 		clone.interruptionStart = interruptionStart;
 		clone.interruptionEnd = interruptionEnd;
+		for (HeatNetPipe p : pipes)
+			clone.pipes.add(p.clone());
 		return clone;
 	}
 }

@@ -77,8 +77,8 @@ class BoilerTableSection {
 		if (b != null && b.fuel != null)
 			return b.fuel.name;
 		FuelSpec fs = p.fuelSpec;
-		if (fs != null && fs.getWoodFuel() != null)
-			return fs.getWoodFuel().name;
+		if (fs != null && fs.woodFuel != null)
+			return fs.woodFuel.name;
 		else
 			return null;
 	}

@@ -71,25 +71,26 @@ class EditorPage extends FormPage {
 	}
 
 	private String[] getColumns() {
-
 		return new String[] { "Bezeichnung", "Link", "Preis" };
-
 	}
 
 	private void bindProductActions(Section section, TableViewer table) {
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> addProduct(table));
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> editProduct(table));
-		Action del = Actions.create(M.Delete, Images.DELETE_16.des(), () -> deleteProduct(table));
+		Action add = Actions.create(M.Add, Images.ADD_16.des(),
+				() -> addProduct(table));
+		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+				() -> editProduct(table));
+		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+				() -> deleteProduct(table));
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
 		Tables.onDoubleClick(table, (e) -> editProduct(table));
 	}
 
 	private void addProduct(TableViewer table) {
-
 		Product product = new Product();
 		product.id = UUID.randomUUID().toString();
 		product.name = Labels.get(type);
+		product.type = type;
 		product.url = "";
 		product.purchasePrice = (double) 0;
 		if (ProductWizard.open(product) != Window.OK)
@@ -119,7 +120,8 @@ class EditorPage extends FormPage {
 		Product product = Viewers.getFirstSelected(table);
 		if (product == null)
 			return;
-		boolean doIt = MsgBox.ask(M.Delete, "Soll das ausgewählte Produkt wirklich gelöscht werden?");
+		boolean doIt = MsgBox.ask(M.Delete,
+				"Soll das ausgewählte Produkt wirklich gelöscht werden?");
 		if (!doIt)
 			return;
 		try {
@@ -131,7 +133,8 @@ class EditorPage extends FormPage {
 		}
 	}
 
-	private class ProductLabel extends LabelProvider implements ITableLabelProvider {
+	private class ProductLabel extends LabelProvider
+			implements ITableLabelProvider {
 
 		@Override
 		public Image getColumnImage(Object element, int col) {

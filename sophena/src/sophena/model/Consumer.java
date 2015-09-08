@@ -16,7 +16,7 @@ import sophena.model.descriptors.ConsumerDescriptor;
 
 @Entity
 @Table(name = "tbl_consumers")
-public class Consumer extends Facility {
+public class Consumer extends RootEntity {
 
 	@Column(name = "is_disabled")
 	public boolean disabled;

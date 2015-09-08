@@ -97,7 +97,7 @@ class LoadProfileWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, profile.name);
 				Texts.set(descriptionText, profile.description);
-				profileData = profile.getData();
+				profileData = profile.data;
 				chart.setData(profileData);
 			}
 
@@ -115,7 +115,7 @@ class LoadProfileWizard extends Wizard {
 			void bindToModel() {
 				profile.name = nameText.getText();
 				profile.description = descriptionText.getText();
-				profile.setData(profileData);
+				profile.data = profileData;
 			}
 
 			boolean validate() {

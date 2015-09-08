@@ -56,7 +56,7 @@ class ClimateDataChart extends Dialog {
 		CircularBufferDataProvider provider = new CircularBufferDataProvider(
 				true);
 		provider.setBufferSize(Stats.HOURS);
-		provider.setCurrentYDataArray(station.getData());
+		provider.setCurrentYDataArray(station.data);
 		provider.setConcatenate_data(false);
 		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
 				provider);
@@ -68,8 +68,8 @@ class ClimateDataChart extends Dialog {
 	}
 
 	private void formatY(XYGraph g) {
-		double max = Stats.max(station.getData());
-		double min = Stats.min(station.getData());
+		double max = Stats.max(station.data);
+		double min = Stats.min(station.data);
 		Axis y = g.getYAxisList().get(0);
 		y.setTitle("°C");
 		y.setRange(min - 2, max + 2);

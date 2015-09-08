@@ -15,7 +15,7 @@ import sophena.model.descriptors.ProducerDescriptor;
 
 @Entity
 @Table(name = "tbl_producers")
-public class Producer extends Facility {
+public class Producer extends RootEntity {
 
 	@Column(name = "is_disabled")
 	public boolean disabled;

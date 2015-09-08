@@ -70,8 +70,8 @@ class FuelSection {
 		UI.formLabel(composite, tk, "Brennstoff");
 		Fuel f = producer().boiler.fuel;
 		String text = f.name + " ("
-				+ Numbers.toString(f.getCalorificValue()) + " kWh/"
-				+ f.getUnit() + ")";
+				+ Numbers.toString(f.calorificValue) + " kWh/"
+				+ f.unit + ")";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
 		link.setText(text);
 		link.setImage(Images.FUEL_16.img());
@@ -89,14 +89,14 @@ class FuelSection {
 		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
 		combo.create("Brennstoff", composite, tk);
 		FuelDao dao = new FuelDao(App.getDb());
-		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
+		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.wood)
 				.collect(Collectors.toList());
 		Collections.sort(fuels, (f1, f2) -> Strings.compare(f1.name, f2.name));
 		combo.setInput(fuels);
-		if (spec().getWoodFuel() != null)
-			combo.select(spec().getWoodFuel());
+		if (spec().woodFuel != null)
+			combo.select(spec().woodFuel);
 		combo.onSelect((f) -> {
-			spec().setWoodFuel(f);
+			spec().woodFuel = f;
 			editor.setDirty();
 		});
 		UI.formLabel(composite, "");
@@ -106,10 +106,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Wassergehalt");
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
-				.init(spec().getWaterContent())
+				.init(spec().waterContent)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().setWaterContent(val);
+					spec().waterContent = val;
 					editor.setDirty();
 				});
 	}
@@ -118,10 +118,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Preis (netto)");
 		UI.formLabel(composite, tk, "EUR/" + getUnit());
 		Texts.on(t).decimal().required()
-				.init(spec().getPricePerUnit())
+				.init(spec().pricePerUnit)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().setPricePerUnit(val);
+					spec().pricePerUnit = val;
 					editor.setDirty();
 				});
 	}
@@ -131,7 +131,7 @@ class FuelSection {
 		if (b == null)
 			return "";
 		if (b.fuel != null)
-			return b.fuel.getUnit();
+			return b.fuel.unit;
 		if (b.woodAmountType != null)
 			return b.woodAmountType.getUnit();
 		else
@@ -142,10 +142,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Mehrwertsteuersatz");
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
-				.init(spec().getTaxRate())
+				.init(spec().taxRate)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().setTaxRate(val);
+					spec().taxRate = val;
 					editor.setDirty();
 				});
 	}

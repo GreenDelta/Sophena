@@ -15,57 +15,24 @@ public class FuelSpec {
 
 	@OneToOne
 	@JoinColumn(name = "f_wood_fuel")
-	private Fuel woodFuel;
+	public Fuel woodFuel;
 
 	@Column(name = "water_content")
-	private double waterContent;
+	public double waterContent;
 
 	@Column(name = "price_per_unit")
-	private double pricePerUnit;
+	public double pricePerUnit;
 
 	@Column(name = "tax_rate")
-	private double taxRate;
-
-	public Fuel getWoodFuel() {
-		return woodFuel;
-	}
-
-	public void setWoodFuel(Fuel woodFuel) {
-		this.woodFuel = woodFuel;
-	}
-
-	public double getWaterContent() {
-		return waterContent;
-	}
-
-	public void setWaterContent(double waterContent) {
-		this.waterContent = waterContent;
-	}
-
-	public double getPricePerUnit() {
-		return pricePerUnit;
-	}
-
-	public void setPricePerUnit(double pricePerUnit) {
-		this.pricePerUnit = pricePerUnit;
-	}
-
-	public double getTaxRate() {
-		return taxRate;
-	}
-
-	public void setTaxRate(double taxRate) {
-		this.taxRate = taxRate;
-	}
+	public double taxRate;
 
 	@Override
 	public FuelSpec clone() {
 		FuelSpec clone = new FuelSpec();
-		clone.setPricePerUnit(getPricePerUnit());
-		clone.setTaxRate(getTaxRate());
-		clone.setWaterContent(getWaterContent());
-		clone.setWoodFuel(getWoodFuel());
+		clone.pricePerUnit = pricePerUnit;
+		clone.taxRate = taxRate;
+		clone.waterContent = waterContent;
+		clone.woodFuel = woodFuel;
 		return clone;
 	}
-
 }

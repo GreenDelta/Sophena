@@ -16,79 +16,39 @@ public class FuelConsumption extends AbstractEntity {
 
 	@OneToOne
 	@JoinColumn(name = "f_fuel")
-	private Fuel fuel;
+	public Fuel fuel;
 
 	@Column(name = "amount")
-	private double amount;
+	public double amount;
 
 	@Column(name = "utilisation_rate")
-	private double utilisationRate;
+	public double utilisationRate;
 
-	// only valid for wood fuels
+	/** only valid for wood fuels */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "wood_amount_type")
-	private WoodAmountType woodAmountType;
+	public WoodAmountType woodAmountType;
 
-	// only valid for wood fuels
+	/** only valid for wood fuels */
 	@Column(name = "water_content")
-	private double waterContent;
-
-	public Fuel getFuel() {
-		return fuel;
-	}
-
-	public void setFuel(Fuel fuel) {
-		this.fuel = fuel;
-	}
-
-	public double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
-	public double getUtilisationRate() {
-		return utilisationRate;
-	}
-
-	public void setUtilisationRate(double utilisationRate) {
-		this.utilisationRate = utilisationRate;
-	}
-
-	public WoodAmountType getWoodAmountType() {
-		return woodAmountType;
-	}
-
-	public void setWoodAmountType(WoodAmountType woodAmountType) {
-		this.woodAmountType = woodAmountType;
-	}
-
-	public double getWaterContent() {
-		return waterContent;
-	}
-
-	public void setWaterContent(double waterContent) {
-		this.waterContent = waterContent;
-	}
+	public double waterContent;
 
 	public double getUsedHeat() {
 		if (fuel == null)
 			return 0;
 		double ur = utilisationRate / 100;
-		if (!fuel.isWood())
-			return ur * fuel.getCalorificValue() * amount;
+		if (!fuel.wood)
+			return ur * fuel.calorificValue * amount;
 		double mass;
 		double wc = waterContent / 100;
 		if (woodAmountType == null || woodAmountType == WoodAmountType.MASS)
 			mass = amount;
 		else {
-			mass = amount * woodAmountType.getFactor() * fuel.getDensity()
+			mass = amount * woodAmountType.getFactor() * fuel.density
 					/ (1 - wc);
 		}
 		// 0.68: vaporization enthalpy of water
-		double heat = mass * ((1 - wc) * fuel.getCalorificValue() - wc * 0.68);
+		double heat = mass * ((1 - wc) * fuel.calorificValue - wc * 0.68);
 		return ur * heat;
 	}
 
@@ -96,11 +56,11 @@ public class FuelConsumption extends AbstractEntity {
 	public FuelConsumption clone() {
 		FuelConsumption clone = new FuelConsumption();
 		clone.id = UUID.randomUUID().toString();
-		clone.setAmount(this.getAmount());
-		clone.setFuel(this.getFuel());
-		clone.setUtilisationRate(this.getUtilisationRate());
-		clone.setWaterContent(this.getWaterContent());
-		clone.setWoodAmountType(this.getWoodAmountType());
+		clone.amount = this.amount;
+		clone.fuel = this.fuel;
+		clone.utilisationRate = this.utilisationRate;
+		clone.waterContent = this.waterContent;
+		clone.woodAmountType = this.woodAmountType;
 		return clone;
 	}
 }
