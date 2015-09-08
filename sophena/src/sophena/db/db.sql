@@ -132,6 +132,21 @@ CREATE TABLE tbl_projects (
 	PRIMARY KEY (id)
 );
 
+CREATE TABLE tbl_productEntry (
+
+	id CHAR(36),
+
+	f_product VARCHAR(255),
+	
+	investment DOUBLE,
+	duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE,
+
+	PRIMARY KEY (id)
+);
+
 
 CREATE TABLE tbl_heat_nets (
 
