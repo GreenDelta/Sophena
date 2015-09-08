@@ -1,10 +1,12 @@
 {
 	"id": "bd158abf-11ca-44c4-a815-28a6683f17bd",
 	"name": "Hackschnitzel-Kessel groß",
+	"type": "BIOMASS_BOILER",
 	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
 	"purchasePrice": 100000,
 	"maxPower": 1000,
 	"minPower": 300,
-	"woodAmountType": "CHIPS",
-	"efficiencyRate": 0.9
+	"efficiencyRate": 0.9,
+	"isCoGenPlant": false,
+	"woodAmountType": "CHIPS"
 }

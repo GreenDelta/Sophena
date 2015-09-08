@@ -1,11 +1,13 @@
 {
 	"id": "626058e0-b981-4c43-be94-1eda00d071e5",
 	"name": "Ölkessel",
+	"type": "FOSSIL_FUEL_BOILER",
 	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
 	"purchasePrice": 100000,
 	"maxPower": 2000,
 	"minPower": 1000,
 	"efficiencyRate": 0.95,
+	"isCoGenPlant": false,
 	"fuel": {
 		"id": "7c206ce9-caf4-4390-8958-6d42822ac282",
 		"name": "Heizöl"

@@ -1,10 +1,12 @@
 {
 	"id": "7dfeacc5-a353-486b-9135-5371b3d30f55",
 	"name": "Hackschnitzel-Kessel mittel",
+	"type": "BIOMASS_BOILER",
 	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
 	"purchasePrice": 50000,
 	"maxPower": 500,
 	"minPower": 200,
-	"woodAmountType": "CHIPS",
-	"efficiencyRate": 0.9
+	"efficiencyRate": 0.9,
+	"isCoGenPlant": false,
+	"woodAmountType": "CHIPS"
 }
