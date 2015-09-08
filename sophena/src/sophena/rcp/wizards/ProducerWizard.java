@@ -94,8 +94,8 @@ public class ProducerWizard extends Wizard {
 	private void addFuelSpec(Producer producer) {
 		FuelSpec spec = new FuelSpec();
 		producer.fuelSpec = spec;
-		spec.setTaxRate(19);
-		spec.setWaterContent(20);
+		spec.taxRate = (double) 19;
+		spec.waterContent = (double) 20;
 	}
 
 	private void addCosts(Producer producer) {
@@ -248,7 +248,7 @@ public class ProducerWizard extends Wizard {
 				list.add(Labels.get(WoodAmountType.LOGS));
 				FuelDao dao = new FuelDao(App.getDb());
 				for (Fuel fuel : dao.getAll()) {
-					if (!fuel.isWood())
+					if (!fuel.wood)
 						list.add(fuel.name);
 				}
 				Collections.sort(list);

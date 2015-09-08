@@ -115,7 +115,7 @@ class ConsumptionSection {
 			FuelConsumption c = (FuelConsumption) element;
 			switch (col) {
 			case 0:
-				return c.getFuel() != null ? c.getFuel().name : null;
+				return c.fuel != null ? c.fuel.name : null;
 			case 1:
 				return getAmount(c);
 			case 2:
@@ -126,18 +126,18 @@ class ConsumptionSection {
 		}
 
 		private String getAmount(FuelConsumption c) {
-			if (c == null || c.getFuel() == null)
+			if (c == null || c.fuel == null)
 				return null;
-			String amount = Numbers.toString(c.getAmount());
-			Fuel fuel = c.getFuel();
-			if (!fuel.isWood())
-				return amount + " " + fuel.getUnit();
+			String amount = Numbers.toString(c.amount);
+			Fuel fuel = c.fuel;
+			if (!fuel.wood)
+				return amount + " " + fuel.unit;
 			String unit;
-			if (c.getWoodAmountType() == null)
+			if (c.woodAmountType == null)
 				unit = "?";
 			else
-				unit = c.getWoodAmountType().getUnit();
-			String wc = Numbers.toString(c.getWaterContent());
+				unit = c.woodAmountType.getUnit();
+			String wc = Numbers.toString(c.waterContent);
 			return amount + " " + unit + " (Wgh.: " + wc + "%)";
 		}
 
@@ -146,7 +146,7 @@ class ConsumptionSection {
 				return null;
 			String heat = Numbers.toString(c.getUsedHeat()) + " kWh";
 			double eta = BoilerEfficiency.getEfficiencyRateSmall(
-					c.getUtilisationRate(), consumer().loadHours);
+					c.utilisationRate, consumer().loadHours);
 			return heat + " (\u03B7=" + Numbers.toString(eta) + "%)";
 		}
 	}

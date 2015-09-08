@@ -9,19 +9,10 @@ import org.eclipse.persistence.annotations.Converter;
 
 @Entity
 @Table(name = "tbl_load_profiles")
-@Converter(name = "DoubleArrayConverter",
-		converterClass = DoubleArrayConverter.class)
+@Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
 public class LoadProfile extends RootEntity {
 
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
-	private double[] data;
-
-	public double[] getData() {
-		return data;
-	}
-
-	public void setData(double[] data) {
-		this.data = data;
-	}
+	public double[] data;
 }

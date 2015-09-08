@@ -71,7 +71,7 @@ public class FuelEditor extends Editor {
 			Collections.sort(all, (f1, f2) -> Strings.compare(
 					f1.name, f2.name));
 			for (Fuel f : all) {
-				if (f.isWood())
+				if (f.wood)
 					woodFuels.add(f);
 				else
 					fuels.add(f);
@@ -117,9 +117,9 @@ public class FuelEditor extends Editor {
 			Fuel fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.Fuel;
-			fuel.setUnit("L");
-			fuel.setCalorificValue(10);
-			fuel.setWood(false);
+			fuel.unit = "L";
+			fuel.calorificValue = (double) 10;
+			fuel.wood = false;
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -195,10 +195,10 @@ public class FuelEditor extends Editor {
 			Fuel fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.WoodFuel;
-			fuel.setUnit("kg");
-			fuel.setCalorificValue(5);
-			fuel.setDensity(450);
-			fuel.setWood(true);
+			fuel.unit = "kg";
+			fuel.calorificValue = (double) 5;
+			fuel.density = (double) 450;
+			fuel.wood = true;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -227,8 +227,8 @@ public class FuelEditor extends Editor {
 				case 0:
 					return f.name;
 				case 1:
-					return Numbers.toString(f.getCalorificValue())
-							+ " kWh/" + f.getUnit();
+					return Numbers.toString(f.calorificValue)
+							+ " kWh/" + f.unit;
 				default:
 					return null;
 				}
@@ -252,9 +252,9 @@ public class FuelEditor extends Editor {
 				case 0:
 					return f.name;
 				case 1:
-					return Numbers.toString(f.getDensity()) + " kg/fm";
+					return Numbers.toString(f.density) + " kg/fm";
 				case 2:
-					return Numbers.toString(f.getCalorificValue())
+					return Numbers.toString(f.calorificValue)
 							+ "kWh/kg atro";
 				default:
 					return null;

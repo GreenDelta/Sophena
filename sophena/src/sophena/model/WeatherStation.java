@@ -16,15 +16,7 @@ public class WeatherStation extends RootEntity {
 
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
-	private double[] data;
-
-	public double[] getData() {
-		return data;
-	}
-
-	public void setData(double[] data) {
-		this.data = data;
-	}
+	public double[] data;
 
 	public WeatherStationDescriptor toDescriptor() {
 		WeatherStationDescriptor d = new WeatherStationDescriptor();

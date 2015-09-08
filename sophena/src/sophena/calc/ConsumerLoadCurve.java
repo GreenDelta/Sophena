@@ -44,14 +44,14 @@ public class ConsumerLoadCurve {
 		double pMin = heatForWater / Stats.HOURS;
 		double heatingDegrees = 0;
 		double tmax = consumer.heatingLimit;
-		for (double temperature : station.getData()) {
+		for (double temperature : station.data) {
 			if (temperature < tmax)
 				heatingDegrees += (tmax - temperature);
 		}
 		double heatPerHeatingDegree = (totalHeat - heatForWater)
 				/ heatingDegrees;
 		for (int i = 0; i < Stats.HOURS; i++) {
-			double temperature = station.getData()[i];
+			double temperature = station.data[i];
 			if (temperature < tmax)
 				data[i] = pMin + ((tmax - temperature) * heatPerHeatingDegree);
 			else
@@ -61,7 +61,7 @@ public class ConsumerLoadCurve {
 
 	private void addLoadProfiles(double[] data) {
 		for (LoadProfile profile : consumer.loadProfiles) {
-			double[] p = profile.getData();
+			double[] p = profile.data;
 			if (p == null)
 				continue;
 			for (int i = 0; i < Stats.HOURS; i++) {

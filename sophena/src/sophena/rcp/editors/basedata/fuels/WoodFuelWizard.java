@@ -31,8 +31,8 @@ class WoodFuelWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		fuel.setWood(true);
-		fuel.setUnit("kg");
+		fuel.wood = true;
+		fuel.unit = "kg";
 		page.data.bindToModel();
 		return true;
 	}
@@ -86,7 +86,7 @@ class WoodFuelWizard extends Wizard {
 		private void createDensityText(Composite composite) {
 			densityText = UI.formText(composite, "Dichte");
 			Texts.on(densityText)
-					.init(fuel.getDensity())
+					.init(fuel.density)
 					.required()
 					.decimal()
 					.validate(data::validate);
@@ -96,7 +96,7 @@ class WoodFuelWizard extends Wizard {
 		private void createCalText(Composite composite) {
 			calText = UI.formText(composite, M.CalorificValue);
 			Texts.on(calText)
-					.init(fuel.getCalorificValue())
+					.init(fuel.calorificValue)
 					.required()
 					.decimal()
 					.validate(data::validate);
@@ -108,8 +108,8 @@ class WoodFuelWizard extends Wizard {
 			void bindToModel() {
 				fuel.name = nameText.getText();
 				fuel.description = descriptionText.getText();
-				fuel.setDensity(Texts.getDouble(densityText));
-				fuel.setCalorificValue(Texts.getDouble(calText));
+				fuel.density = Texts.getDouble(densityText);
+				fuel.calorificValue = Texts.getDouble(calText);
 			}
 
 			private boolean validate() {
