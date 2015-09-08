@@ -1,5 +1,7 @@
 package sophena.rcp;
 
+import org.eclipse.swt.graphics.Image;
+
 import sophena.model.BuildingType;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductType;
@@ -116,6 +118,72 @@ public final class Labels {
 			return "Wärmenetz-Bau";
 		case PLANNING:
 			return "Planung";
+		default:
+			return null;
+		}
+	}
+
+	public static String getPlural(ProductType t) {
+		if (t == null)
+			return null;
+		switch (t) {
+		case BIOMASS_BOILER:
+			return "Biomassekessel";
+		case FOSSIL_FUEL_BOILER:
+			return "Fossile Kessel";
+		case COGENERATION_PLANT:
+			return "KWK-Anlagen";
+		case BOILER_ACCESSORIES:
+			return "Kesselzubehör";
+		case BUFFER_TANK:
+			return "Pufferspeicher";
+		case HEAT_RECOVERY:
+			return "Wärmerückgewinnung";
+		case FLUE_GAS_CLEANING:
+			return "Rauchgasreinigung";
+		case BOILER_HOUSE_TECHNOLOGY:
+			return "Heizhaus-Technik";
+		case BUILDING:
+			return "Gebäude";
+		case HEATING_NET_TECHNOLOGY:
+			return "Wärmenetz-Technik";
+		case HEATING_NET_CONSTRUCTION:
+			return "Wärmenetz-Bau";
+		case PLANNING:
+			return "Planung";
+		default:
+			return null;
+		}
+	}
+
+	public static Image getImage(ProductType t) {
+		if (t == null)
+			return null;
+		switch (t) {
+		case BIOMASS_BOILER:
+			return Images.PRODUCER_16.img();
+		case FOSSIL_FUEL_BOILER:
+			return Images.PRODUCER_16.img();
+		case COGENERATION_PLANT:
+			return Images.CO_GEN_16.img();
+		case BOILER_ACCESSORIES:
+			return null;
+		case BUFFER_TANK:
+			return Images.BUFFER_16.img();
+		case HEAT_RECOVERY:
+			return null;
+		case FLUE_GAS_CLEANING:
+			return null;
+		case BOILER_HOUSE_TECHNOLOGY:
+			return null;
+		case BUILDING:
+			return Images.BUILDING_TYPE_16.img();
+		case HEATING_NET_TECHNOLOGY:
+			return null;
+		case HEATING_NET_CONSTRUCTION:
+			return null;
+		case PLANNING:
+			return null;
 		default:
 			return null;
 		}
