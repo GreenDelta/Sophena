@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
+import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
@@ -77,7 +78,8 @@ class BoilerWizard extends Wizard {
 		private Text priceText;
 
 		private Page() {
-			super("FuelWizardPage", boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel", null);
+			super("FuelWizardPage",
+					boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel", null);
 		}
 
 		@Override
@@ -125,13 +127,16 @@ class BoilerWizard extends Wizard {
 
 		private void createEfficiencyText(Composite composite) {
 			efficiencyText = UI.formText(composite, M.EfficiencyRate + " th.");
-			Texts.on(efficiencyText).decimal().required().validate(data::validate);
+			Texts.on(efficiencyText).decimal().required()
+					.validate(data::validate);
 			UI.formLabel(composite, "%");
 		}
 
 		private void createEfficiencyElText(Composite composite) {
-			efficiencyElText = UI.formText(composite, M.EfficiencyRate + " el.");
-			Texts.on(efficiencyElText).decimal().required().validate(data::validate);
+			efficiencyElText = UI.formText(composite,
+					M.EfficiencyRate + " el.");
+			Texts.on(efficiencyElText).decimal().required()
+					.validate(data::validate);
 			UI.formLabel(composite, "%");
 		}
 
@@ -157,17 +162,28 @@ class BoilerWizard extends Wizard {
 					boiler.fuel = findFuel(label);
 					boiler.woodAmountType = null;
 				}
+				setType(wat);
 				boiler.maxPower = Texts.getDouble(maxText);
 				boiler.minPower = Texts.getDouble(minText);
 				boiler.efficiencyRate = Texts.getDouble(efficiencyText);
 				boiler.maxPowerElectric = Texts.getDouble(maxElText);
 				boiler.minPowerElectric = Texts.getDouble(minElText);
-				boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText);
+				boiler.efficiencyRateElectric = Texts
+						.getDouble(efficiencyElText);
 				boiler.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
 					boiler.purchasePrice = Texts.getDouble(priceText);
 				else
 					boiler.purchasePrice = null;
+			}
+
+			private void setType(WoodAmountType wat) {
+				if (boiler.isCoGenPlant)
+					boiler.type = ProductType.COGENERATION_PLANT;
+				else if (wat != null)
+					boiler.type = ProductType.BIOMASS_BOILER;
+				else
+					boiler.type = ProductType.FOSSIL_FUEL_BOILER;
 			}
 
 			private Fuel findFuel(String label) {
@@ -235,19 +251,24 @@ class BoilerWizard extends Wizard {
 				if (!Texts.hasPercentage(efficiencyText))
 					return error("Es wurde kein Wirkungsgrad angegeben");
 				if (!Texts.hasNumber(maxElText))
-					return error("Es wurde keine maximale elektrische Leistung angegeben.");
+					return error(
+							"Es wurde keine maximale elektrische Leistung angegeben.");
 				if (!Texts.hasNumber(minElText))
-					return error("Es wurde keine minimale elektrische Leistung angegeben");
+					return error(
+							"Es wurde keine minimale elektrische Leistung angegeben");
 				if (!Texts.hasPercentage(efficiencyElText))
-					return error("Es wurde kein elektrischer Wirkungsgrad angegeben");
+					return error(
+							"Es wurde kein elektrischer Wirkungsgrad angegeben");
 				double max = Texts.getDouble(maxText);
 				double min = Texts.getDouble(minText);
 				double maxEl = Texts.getDouble(maxElText);
 				double minEl = Texts.getDouble(minElText);
 				if (min > max)
-					return error("Die minimale Leistung ist größer als die maximale.");
+					return error(
+							"Die minimale Leistung ist größer als die maximale.");
 				if (minEl > maxEl)
-					return error("Die minimale elektrische Leistung ist größer als die maximale.");
+					return error(
+							"Die minimale elektrische Leistung ist größer als die maximale.");
 				else {
 					setPageComplete(true);
 					setErrorMessage(null);
