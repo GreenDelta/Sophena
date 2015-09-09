@@ -45,6 +45,7 @@ class ElectricityResultPage extends FormPage {
 		table.setLabelProvider(new Label());
 		Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
 		table.setInput(getItems());
+		new ElectricityChart(result).render(body, tk);
 		form.reflow(true);
 	}
 
@@ -70,9 +71,9 @@ class ElectricityResultPage extends FormPage {
 		return list;
 	}
 
-	private Integer getFullLoadHours(Producer p, double producedHeat) {
+	private int getFullLoadHours(Producer p, double producedHeat) {
 		if (p == null || p.boiler == null)
-			return null;
+			return 0;
 		double maxPower = p.boiler.maxPower;
 		return (int) Math.round(producedHeat / maxPower);
 	}
