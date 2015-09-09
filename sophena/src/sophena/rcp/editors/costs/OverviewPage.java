@@ -4,27 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.Boiler;
 import sophena.model.HeatNet;
 import sophena.model.Producer;
 import sophena.model.ProductType;
-import sophena.rcp.Images;
-import sophena.rcp.M;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.boilers.CoGenPlantEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Strings;
-import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
 class OverviewPage extends FormPage {
@@ -44,16 +37,21 @@ class OverviewPage extends FormPage {
 		boilerSection(ProductType.BIOMASS_BOILER, body, tk);
 		boilerSection(ProductType.FOSSIL_FUEL_BOILER, body, tk);
 		boilerSection(ProductType.COGENERATION_PLANT, body, tk);
-		createSection("Kesselzubehör", body, tk);
+		entries(ProductType.BOILER_ACCESSORIES, body, tk);
 		bufferSection(body, tk);
-		createSection("Wärmerückgewinnung", body, tk);
-		createSection("Rauchgasreinigung", body, tk);
-		createSection("Heizhaus-Technik", body, tk);
-		createSection("Gebäude", body, tk);
-		createSection("Wärmenetz-Technik", body, tk);
-		createSection("Wärmenetz-Bau", body, tk);
-		createSection("Planung", body, tk);
+		entries(ProductType.HEAT_RECOVERY, body, tk);
+		entries(ProductType.FLUE_GAS_CLEANING, body, tk);
+		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
+		entries(ProductType.BUILDING, body, tk);
+		entries(ProductType.HEATING_NET_TECHNOLOGY, body, tk);
+		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
+		entries(ProductType.PLANNING, body, tk);
 		form.reflow(true);
+	}
+
+	private void entries(ProductType t, Composite body, FormToolkit tk) {
+		EntrySection s = new EntrySection(editor, t);
+		s.create(body, tk);
 	}
 
 	private void bufferSection(Composite body, FormToolkit tk) {
@@ -97,30 +95,6 @@ class OverviewPage extends FormPage {
 		Collections.sort(list,
 				(p1, p2) -> Strings.compare(p1.boiler.name, p2.boiler.name));
 		return list;
-	}
-
-	private void createSection(String label, Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, label);
-		Composite composite = UI.sectionClient(section, tk);
-		TableViewer table = createTable(composite);
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
-		});
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
-				() -> {
-				});
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
-				() -> {
-				});
-		Actions.bind(section, add, edit, remove);
-		Actions.bind(table, add, edit, remove);
-	}
-
-	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Komponente",
-				"Investitionskosten", "Nutzungsdauer", "Instandsetzung",
-				"Wartung und Inspektion", "Aufwand für Bedienen");
-		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
-		return table;
 	}
 
 }
