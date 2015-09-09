@@ -1,9 +1,11 @@
+'use strict';
+
 var fs = require('fs'),
     archiver = require('archiver');
 
 var file = '../data_package.sophena';
 
-fs.stat(file, function(err, stat) {
+fs.stat(file, (err, stat) => {
     if (err == null) {
         deleteAndPack(file);
     } else if (err.code == 'ENOENT') {
@@ -17,9 +19,9 @@ fs.stat(file, function(err, stat) {
 
 function deleteAndPack(file) {
     console.log('File exists; delete old version');
-    fs.unlink(file, function(err) {
+    fs.unlink(file, (err) => {
         if (err) {
-            console.log('failed to delete ' + file);
+            console.log(`failed to delete ${file}`);
             throw err;
         }
         packData(file);
@@ -30,22 +32,19 @@ function packData(file) {
     var output = fs.createWriteStream(file);
     var archive = archiver('zip');
 
-    output.on('close', function() {
-        console.log(archive.pointer() + ' total bytes');
-        console.log('package written: ' + file);
+    output.on('close', () => {
+        console.log(`${archive.pointer() } total bytes`);
+        console.log(`package written: ${file}`);
     });
 
-    archive.on('error', function(err) {
-        throw err;
-    });
+    archive.on('error', (err) => { throw err; });
 
     archive.pipe(output);
 
     var dir = '../data/',
-        types = ['boilers', 'buffers', 'building_states', 
+        types = ['boilers', 'buffers', 'building_states',
             'cost_settings', 'fuels', 'pipes', 'product_groups'];
-    for(var i = 0; i < types.length; i++) {
-        var t = types[i];
+    for (let t of types) {
         archive.bulk([{
             expand: true,
             cwd: dir + t,
@@ -53,7 +52,7 @@ function packData(file) {
             dest: t
         }]);
     }
-    
+
     archive.bulk([{
         expand: true,
         cwd: '../climate_data/out/json',
