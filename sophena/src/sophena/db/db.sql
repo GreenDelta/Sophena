@@ -132,11 +132,13 @@ CREATE TABLE tbl_projects (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE tbl_productEntry (
+
+CREATE TABLE tbl_product_entries (
 
 	id CHAR(36),
 
-	f_product VARCHAR(255),
+	f_project CHAR(36),
+	f_product CHAR(36),
 	
 	investment DOUBLE,
 	duration INTEGER,
