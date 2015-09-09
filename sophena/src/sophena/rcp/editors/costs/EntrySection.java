@@ -1,10 +1,10 @@
 package sophena.rcp.editors.costs;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -14,47 +14,54 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.ProductCosts;
+import sophena.model.ProductEntry;
 import sophena.model.ProductType;
+import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
+import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
-import sophena.rcp.utils.Viewers;
 
-/** Cost section where the cost entries are only displayed but not edited. */
-class DisplaySection<T> {
+class EntrySection {
 
+	private CostEditor editor;
 	private ProductType type;
 
-	Supplier<List<T>> content;
-	Function<T, String> label;
-	Function<T, ProductCosts> costs;
-	Consumer<T> onOpen;
+	private List<ProductEntry> entries = new ArrayList<>();
 
-	DisplaySection(ProductType type) {
+	EntrySection(CostEditor editor, ProductType type) {
+		this.editor = editor;
 		this.type = type;
+		for (ProductEntry e : editor.getProject().productEntries) {
+			if (e.product != null && e.product.type == type)
+				entries.add(e);
+		}
+		Collections.sort(entries,
+				(e1, e2) -> Strings.compare(e1.product.name, e2.product.name));
+	}
+
+	private Project project() {
+		return editor.getProject();
 	}
 
 	void create(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, Labels.getPlural(type));
 		Composite composite = UI.sectionClient(section, tk);
 		TableViewer table = createTable(composite);
-		table.setLabelProvider(new Label());
-		if (content != null)
-			table.setInput(content.get());
-		if (onOpen != null) {
-			Tables.onDoubleClick(table, (e) -> doOpen(table));
-			Actions.bind(table, Actions.create("Öffnen", Images.OPEN_16.des(),
-					() -> doOpen(table)));
-		}
-	}
-
-	private void doOpen(TableViewer table) {
-		T elem = Viewers.getFirstSelected(table);
-		if (elem != null)
-			onOpen.accept(elem);
+		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
+		});
+		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
+				() -> {
+				});
+		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+				() -> {
+				});
+		Actions.bind(section, add, edit, remove);
+		Actions.bind(table, add, edit, remove);
 	}
 
 	private TableViewer createTable(Composite comp) {
@@ -62,6 +69,8 @@ class DisplaySection<T> {
 				"Investitionskosten", "Nutzungsdauer", "Instandsetzung",
 				"Wartung und Inspektion", "Aufwand für Bedienen");
 		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
+		table.setLabelProvider(new Label());
+		table.setInput(entries);
 		return table;
 	}
 
@@ -73,17 +82,16 @@ class DisplaySection<T> {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public String getColumnText(Object obj, int col) {
-			if (costs == null || label == null)
-				return "no label def!";
-			T t = (T) obj;
-			ProductCosts c = costs.apply(t);
+			if (!(obj instanceof ProductEntry))
+				return null;
+			ProductEntry e = (ProductEntry) obj;
+			ProductCosts c = e.costs;
 			if (c == null)
 				return null;
 			switch (col) {
 			case 0:
-				return label.apply(t);
+				return e.product != null ? e.product.name : null;
 			case 1:
 				return Numbers.toString(c.investment) + " EUR";
 			case 2:
@@ -99,4 +107,5 @@ class DisplaySection<T> {
 			}
 		}
 	}
+
 }

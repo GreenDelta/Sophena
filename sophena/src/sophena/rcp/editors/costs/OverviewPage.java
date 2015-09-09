@@ -57,7 +57,7 @@ class OverviewPage extends FormPage {
 	}
 
 	private void bufferSection(Composite body, FormToolkit tk) {
-		DisplaySection<HeatNet> s = new DisplaySection<>(editor,
+		DisplaySection<HeatNet> s = new DisplaySection<>(
 				ProductType.BUFFER_TANK);
 		HeatNet net = editor.getProject().heatNet;
 		s.content = () -> {
@@ -74,7 +74,7 @@ class OverviewPage extends FormPage {
 
 	private void boilerSection(ProductType type, Composite body,
 			FormToolkit tk) {
-		DisplaySection<Producer> s = new DisplaySection<>(editor, type);
+		DisplaySection<Producer> s = new DisplaySection<>(type);
 		s.content = () -> getProducers(type);
 		s.costs = (p) -> p.costs;
 		s.label = (p) -> p.boiler == null ? null : p.boiler.name;
