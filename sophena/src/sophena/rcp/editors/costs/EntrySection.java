@@ -3,16 +3,20 @@ package sophena.rcp.editors.costs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.db.daos.RootEntityDao;
+import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
@@ -30,12 +34,16 @@ class EntrySection {
 
 	private CostEditor editor;
 	private ProductType type;
+	private Product product;
+
+	private RootEntityDao<Product> dao;
 
 	private List<ProductEntry> entries = new ArrayList<>();
 
 	EntrySection(CostEditor editor, ProductType type) {
 		this.editor = editor;
 		this.type = type;
+
 		for (ProductEntry e : editor.getProject().productEntries) {
 			if (e.product != null && e.product.type == type)
 				entries.add(e);
@@ -52,16 +60,25 @@ class EntrySection {
 		Section section = UI.section(body, tk, Labels.getPlural(type));
 		Composite composite = UI.sectionClient(section, tk);
 		TableViewer table = createTable(composite);
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), () -> {
+		Action add = Actions.create(M.Add, Images.ADD_16.des(),
+				() -> addProduct(table));
+		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
 		});
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
-				() -> {
-				});
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
-				() -> {
-				});
+		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> {
+		});
 		Actions.bind(section, add, edit, remove);
 		Actions.bind(table, add, edit, remove);
+	}
+
+	private void addProduct(TableViewer table) {
+		ProductEntry en = new ProductEntry();
+		en.id = UUID.randomUUID().toString();
+		en.costs = new ProductCosts();
+		if (CostWizard.open(en, type) != Window.OK)
+			return;
+		entries.add(en);
+		table.setInput(entries);
+		// TODO: set editor dirty etc.
 	}
 
 	private TableViewer createTable(Composite comp) {
