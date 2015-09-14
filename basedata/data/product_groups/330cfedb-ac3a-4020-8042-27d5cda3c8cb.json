@@ -1,0 +1,10 @@
+{
+  "id": "330cfedb-ac3a-4020-8042-27d5cda3c8cb",
+  "index": 1,
+  "type": "HEATING_NET_TECHNOLOGY",
+  "name": "Leitungsrohre Kunststoff",
+  "duration": 30,
+  "repair": 0.5,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

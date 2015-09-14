@@ -1,0 +1,10 @@
+{
+  "id": "1e4be48f-6137-4e2c-85a0-6ff271389c6d",
+  "index": 1,
+  "type": "GEOTHERMAL_PROBE",
+  "name": "Erdsonden",
+  "duration": 50,
+  "repair": 2.0,
+  "maintenance": 1.0,
+  "operation": 0.0
+}

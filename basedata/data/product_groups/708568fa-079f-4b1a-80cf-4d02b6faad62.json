@@ -1,0 +1,10 @@
+{
+  "id": "708568fa-079f-4b1a-80cf-4d02b6faad62",
+  "index": 6,
+  "type": "BOILER_ACCESSORIES",
+  "name": "Penumatische Beschickung",
+  "duration": 15,
+  "repair": 2.0,
+  "maintenance": 2.0,
+  "operation": 2.0
+}

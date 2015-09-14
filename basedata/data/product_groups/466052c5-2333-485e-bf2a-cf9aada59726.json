@@ -1,0 +1,10 @@
+{
+  "id": "466052c5-2333-485e-bf2a-cf9aada59726",
+  "index": 2,
+  "type": "HEAT_PUMP",
+  "name": "Sole/Wasser, Wasser/Wasser (Elektro)",
+  "duration": 20,
+  "repair": 1.0,
+  "maintenance": 1.5,
+  "operation": 5.0
+}

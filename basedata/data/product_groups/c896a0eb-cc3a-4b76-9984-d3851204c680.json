@@ -1,0 +1,10 @@
+{
+  "id": "c896a0eb-cc3a-4b76-9984-d3851204c680",
+  "index": 1,
+  "type": "HEAT_PUMP",
+  "name": "Luft/ Wasser",
+  "duration": 18,
+  "repair": 1.0,
+  "maintenance": 1.5,
+  "operation": 5.0
+}

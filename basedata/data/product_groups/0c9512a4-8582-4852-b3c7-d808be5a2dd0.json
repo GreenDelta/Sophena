@@ -1,0 +1,10 @@
+{
+  "id": "0c9512a4-8582-4852-b3c7-d808be5a2dd0",
+  "index": 8,
+  "type": "BUILDING",
+  "name": "Kamin",
+  "duration": 50,
+  "repair": 1.0,
+  "maintenance": 2.0,
+  "operation": 0.0
+}

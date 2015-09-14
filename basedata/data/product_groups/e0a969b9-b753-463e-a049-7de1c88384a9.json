@@ -1,0 +1,10 @@
+{
+  "id": "e0a969b9-b753-463e-a049-7de1c88384a9",
+  "index": 5,
+  "type": "BOILER_ACCESSORIES",
+  "name": "Mechanische Beschickung, Rückbrandsicherung",
+  "duration": 25,
+  "repair": 1.5,
+  "maintenance": 2.0,
+  "operation": 2.0
+}

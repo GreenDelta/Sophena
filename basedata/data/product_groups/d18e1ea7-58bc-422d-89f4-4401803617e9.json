@@ -1,0 +1,10 @@
+{
+  "id": "d18e1ea7-58bc-422d-89f4-4401803617e9",
+  "index": 2,
+  "type": "HEAT_RECOVERY",
+  "name": "Economiser",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

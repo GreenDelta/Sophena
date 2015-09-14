@@ -1,0 +1,10 @@
+{
+  "id": "e69fe6aa-15dc-4e14-a6db-074e84a1a5fd",
+  "index": 3,
+  "type": "BOILER_ACCESSORIES",
+  "name": "Öltank",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

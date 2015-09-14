@@ -1,0 +1,10 @@
+{
+  "id": "1a6361f7-bde5-4c2c-9a1a-d8e6057e72b5",
+  "index": 3,
+  "type": "SOLAR_CELL",
+  "name": "Vakuum-Röhrenkollektor",
+  "duration": 18,
+  "repair": 0.5,
+  "maintenance": 1.0,
+  "operation": 5.0
+}

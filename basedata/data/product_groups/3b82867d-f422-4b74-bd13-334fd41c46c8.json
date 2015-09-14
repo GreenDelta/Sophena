@@ -1,0 +1,10 @@
+{
+  "id": "3b82867d-f422-4b74-bd13-334fd41c46c8",
+  "index": 1,
+  "type": "SOLAR_CELL",
+  "name": "Absorber",
+  "duration": 18,
+  "repair": 0.5,
+  "maintenance": 1.0,
+  "operation": 5.0
+}

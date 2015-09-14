@@ -1,0 +1,10 @@
+{
+  "id": "90d2a9b1-dd36-4b0d-9104-db1e7d7aafd1",
+  "index": 6,
+  "type": "HEATING_NET_CONSTRUCTION",
+  "name": "Grabungskosten",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

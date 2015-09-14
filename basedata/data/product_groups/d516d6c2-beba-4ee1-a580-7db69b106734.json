@@ -1,0 +1,10 @@
+{
+  "id": "d516d6c2-beba-4ee1-a580-7db69b106734",
+  "index": 6,
+  "type": "BOILER_HOUSE_TECHNOLOGY",
+  "name": "Wärmeübertrager Heizwasser/Dampf",
+  "duration": 15,
+  "repair": 2.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

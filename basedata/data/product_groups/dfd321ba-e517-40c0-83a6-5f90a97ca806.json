@@ -1,0 +1,10 @@
+{
+  "id": "dfd321ba-e517-40c0-83a6-5f90a97ca806",
+  "index": 7,
+  "type": "BOILER_ACCESSORIES",
+  "name": "Entaschung, Ascheaustragung und Aschebehälter",
+  "duration": 20,
+  "repair": 2.0,
+  "maintenance": 2.0,
+  "operation": 2.0
+}

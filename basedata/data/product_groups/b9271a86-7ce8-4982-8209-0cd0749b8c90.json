@@ -1,0 +1,10 @@
+{
+  "id": "b9271a86-7ce8-4982-8209-0cd0749b8c90",
+  "index": 5,
+  "type": "HEATING_NET_CONSTRUCTION",
+  "name": "Leitungsverlegung",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

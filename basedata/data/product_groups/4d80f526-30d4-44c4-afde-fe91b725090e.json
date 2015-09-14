@@ -1,0 +1,10 @@
+{
+  "id": "4d80f526-30d4-44c4-afde-fe91b725090e",
+  "index": 2,
+  "type": "BIOMASS_BOILER",
+  "name": "Pelletkessel",
+  "duration": 15,
+  "repair": 3.0,
+  "maintenance": 3.0,
+  "operation": 15.0
+}

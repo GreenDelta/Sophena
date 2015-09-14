@@ -1,0 +1,10 @@
+{
+  "id": "76ae8791-e258-4258-a69a-69105ad6107f",
+  "index": 2,
+  "type": "FOSSIL_FUEL_BOILER",
+  "name": "Ölkessel mit Brenner",
+  "duration": 20,
+  "repair": 2.0,
+  "maintenance": 2.0,
+  "operation": 10.0
+}

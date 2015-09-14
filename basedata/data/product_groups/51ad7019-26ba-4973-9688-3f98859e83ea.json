@@ -1,0 +1,10 @@
+{
+  "id": "51ad7019-26ba-4973-9688-3f98859e83ea",
+  "index": 2,
+  "type": "HEATING_NET_TECHNOLOGY",
+  "name": "Leitungsrohre Stahl",
+  "duration": 40,
+  "repair": 1.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

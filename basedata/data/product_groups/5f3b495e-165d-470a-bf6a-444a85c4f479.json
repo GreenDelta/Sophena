@@ -1,0 +1,10 @@
+{
+  "id": "5f3b495e-165d-470a-bf6a-444a85c4f479",
+  "index": 3,
+  "type": "BOILER_HOUSE_TECHNOLOGY",
+  "name": "Meß- und Regeltechnik",
+  "duration": 15,
+  "repair": 1.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

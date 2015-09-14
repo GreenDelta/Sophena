@@ -1,0 +1,10 @@
+{
+  "id": "4ecc9dbc-68d9-4cba-92ad-8a9366da0787",
+  "index": 1,
+  "type": "PLANNING",
+  "name": "Vorplanung",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}
