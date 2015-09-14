@@ -1,0 +1,10 @@
+{
+  "id": "5b5f9326-c536-407e-a25c-767ef9ba513a",
+  "index": 1,
+  "type": "BOILER_HOUSE_TECHNOLOGY",
+  "name": "Elektroinstallation",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

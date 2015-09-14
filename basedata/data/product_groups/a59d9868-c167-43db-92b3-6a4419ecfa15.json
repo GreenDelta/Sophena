@@ -1,0 +1,10 @@
+{
+  "id": "a59d9868-c167-43db-92b3-6a4419ecfa15",
+  "index": 4,
+  "type": "BUILDING",
+  "name": "Heizhaus, Öl-Gaslager",
+  "duration": 50,
+  "repair": 1.0,
+  "maintenance": 1.0,
+  "operation": 0.0
+}

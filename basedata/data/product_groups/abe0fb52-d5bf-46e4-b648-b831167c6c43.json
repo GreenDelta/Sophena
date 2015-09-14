@@ -1,0 +1,10 @@
+{
+  "id": "abe0fb52-d5bf-46e4-b648-b831167c6c43",
+  "index": 3,
+  "type": "HEATING_NET_TECHNOLOGY",
+  "name": "Netz-Pumpen/ Umwälzpumpe",
+  "duration": 10,
+  "repair": 2.0,
+  "maintenance": 1.0,
+  "operation": 0.0
+}

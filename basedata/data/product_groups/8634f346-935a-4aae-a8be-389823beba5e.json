@@ -1,0 +1,10 @@
+{
+  "id": "8634f346-935a-4aae-a8be-389823beba5e",
+  "index": 4,
+  "type": "BOILER_HOUSE_TECHNOLOGY",
+  "name": "Wärmeübertrager Heizwasser/Trinkwasser",
+  "duration": 15,
+  "repair": 2.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

@@ -1,0 +1,10 @@
+{
+  "id": "5ccf30a4-edca-4472-b192-ca5675239d7f",
+  "index": 1,
+  "type": "FLUE_GAS_CLEANING",
+  "name": "Elektrofilter",
+  "duration": 20,
+  "repair": 3.0,
+  "maintenance": 6.0,
+  "operation": 0.0
+}
