@@ -11,9 +11,9 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-import sophena.model.ProductCosts;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
+import sophena.model.ProductCosts;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
@@ -26,7 +26,7 @@ class PipeWizard extends Wizard {
 	private Page page;
 	private HeatNetPipe pipe;
 
-	public static int open(HeatNetPipe pipe) {
+	static int open(HeatNetPipe pipe) {
 		if (pipe == null)
 			return Window.CANCEL;
 		PipeWizard w = new PipeWizard();
@@ -41,6 +41,8 @@ class PipeWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		if (pipe.pipe == null)
+			return false;
 		return true;
 	}
 
@@ -53,6 +55,7 @@ class PipeWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private ProductCostSection costSection;
+		private Text priceText;
 
 		Page() {
 			super("HeatNetPipePage", "Wärmeleitung", null);
@@ -65,17 +68,10 @@ class PipeWizard extends Wizard {
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
 			createLengthText(comp);
+			createPriceText(comp);
 			costSection = new ProductCostSection(() -> pipe.costs)
 					.createFields(comp);
-		}
-
-		private void createLengthText(Composite comp) {
-			Text t = UI.formText(comp, "Länge");
-			Texts.on(t).init(pipe.length).decimal().required()
-					.onChanged((s) -> {
-						pipe.length = Texts.getDouble(t);
-					});
-			UI.formLabel(comp, "m");
+			Texts.on(costSection.investmentText).calculated();
 		}
 
 		private void createProductRow(Composite comp) {
@@ -97,17 +93,42 @@ class PipeWizard extends Wizard {
 
 		}
 
-		protected void selectPipe(ImageHyperlink link) {
+		private void selectPipe(ImageHyperlink link) {
 			Pipe p = SearchDialog.open("Wärmeleitung", Pipe.class);
 			if (p == null)
 				return;
 			pipe.pipe = p;
 			link.setText(p.name);
 			link.pack();
-			if (p.purchasePrice != null && pipe.length > 0) {
-				pipe.costs.investment = p.purchasePrice * pipe.length;
-				costSection.refresh();
-			}
+			double price = p.purchasePrice == null ? 0 : p.purchasePrice;
+			pipe.pricePerMeter = price;
+			Texts.set(priceText, price);
+			updateCosts();
+		}
+
+		private void createLengthText(Composite comp) {
+			Text t = UI.formText(comp, "Länge");
+			Texts.on(t).init(pipe.length).decimal().required()
+					.onChanged((s) -> {
+						pipe.length = Texts.getDouble(t);
+						updateCosts();
+					});
+			UI.formLabel(comp, "m");
+		}
+
+		private void createPriceText(Composite comp) {
+			priceText = UI.formText(comp, "Preis");
+			Texts.on(priceText).init(pipe.pricePerMeter).decimal().required()
+					.onChanged(s -> {
+						pipe.pricePerMeter = Texts.getDouble(priceText);
+						updateCosts();
+					});
+			UI.formLabel(comp, "EUR/m");
+		}
+
+		private void updateCosts() {
+			pipe.costs.investment = pipe.length * pipe.pricePerMeter;
+			costSection.refresh();
 		}
 
 	}

@@ -26,6 +26,9 @@ public class HeatNetPipe extends AbstractEntity {
 	@Column(name = "length")
 	public double length;
 
+	@Column(name = "price_per_meter")
+	public double pricePerMeter;
+
 	@Override
 	public HeatNetPipe clone() {
 		HeatNetPipe clone = new HeatNetPipe();
@@ -34,6 +37,7 @@ public class HeatNetPipe extends AbstractEntity {
 		if (costs != null)
 			clone.costs = costs.clone();
 		clone.length = length;
+		clone.pricePerMeter = pricePerMeter;
 		return clone;
 	}
 

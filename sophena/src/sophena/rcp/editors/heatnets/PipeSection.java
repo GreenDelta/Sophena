@@ -155,6 +155,7 @@ class PipeSection {
 		pipe.costs = clone.costs;
 		pipe.length = clone.length;
 		pipe.pipe = clone.pipe;
+		pipe.pricePerMeter = clone.pricePerMeter;
 		table.setInput(net().pipes);
 		editor.setDirty();
 	}

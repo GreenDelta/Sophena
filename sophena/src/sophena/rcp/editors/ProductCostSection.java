@@ -20,11 +20,11 @@ public class ProductCostSection {
 	private Composite composite;
 	private FormToolkit toolkit;
 
-	private Text investmentText;
-	private Text durationText;
-	private Text repairTest;
-	private Text maintenanceText;
-	private Text operationText;
+	public Text investmentText;
+	public Text durationText;
+	public Text repairTest;
+	public Text maintenanceText;
+	public Text operationText;
 
 	public ProductCostSection(Supplier<ProductCosts> costs) {
 		this.costs = costs;
