@@ -13,6 +13,8 @@ public enum Images {
 
 	BUILDING_TYPE_16("building_type_16.png"),
 
+	CALCULATE_16("calculate_16.png"),
+
 	CHART_WIZ("chart_wiz.png"),
 
 	CHECKBOX_CHECKED_16("checkbox_checked.png"),

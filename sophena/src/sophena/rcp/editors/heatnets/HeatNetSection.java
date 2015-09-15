@@ -6,18 +6,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class HeatNetSection {
 
 	private HeatNetEditor editor;
-	private LoadCurveSection loadCurve;
 
 	private Composite comp;
 	private FormToolkit tk;
@@ -30,10 +27,6 @@ class HeatNetSection {
 
 	private HeatNet heatNet() {
 		return editor.heatNet;
-	}
-
-	public void setLoadCurve(LoadCurveSection loadCurve) {
-		this.loadCurve = loadCurve;
 	}
 
 	void create(Composite body, FormToolkit tk) {
@@ -58,16 +51,6 @@ class HeatNetSection {
 
 		createSimFactorText();
 		maxSimLoadText = createMaxSimLoadText();
-
-		d("Länge", "m", heatNet().length, (v) -> {
-			heatNet().length = v;
-			updateLoad();
-		});
-
-		d("Verlustleistung", "W/m", heatNet().powerLoss, (v) -> {
-			heatNet().powerLoss = v;
-			updateLoad();
-		});
 	}
 
 	private Text d(String label, String unit, double init, DoubleConsumer fn) {
@@ -99,17 +82,6 @@ class HeatNetSection {
 			updateMaxSimLoad();
 		});
 		UI.formLabel(comp, tk, "").setImage(Images.INFO_16.img());
-	}
-
-	private void updateLoad() {
-		if (loadCurve != null) {
-			double[] curve = ProjectLoad.getNetLoadCurve(heatNet());
-			loadCurve.setData(curve);
-		}
-		double max = ProjectLoad.getMaxLoad(editor.project);
-		if (max > heatNet().maxLoad && maxLoadText != null) {
-			Texts.set(maxLoadText, max);
-		}
 	}
 
 	private void updateMaxSimLoad() {

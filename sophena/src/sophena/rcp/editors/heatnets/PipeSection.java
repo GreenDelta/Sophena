@@ -9,41 +9,107 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.model.ProductCosts;
+import sophena.calc.HeatNets;
+import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
+import sophena.model.ProductCosts;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 
 class PipeSection {
 
 	private HeatNetEditor editor;
+	private LoadCurveSection loadCurve;
+
 	private TableViewer table;
+	private Text lengthText;
+	private Text powerText;
+
+	private boolean disableTextBinding = false;
 
 	PipeSection(HeatNetEditor editor) {
 		this.editor = editor;
+	}
+
+	public void setLoadCurve(LoadCurveSection loadCurve) {
+		this.loadCurve = loadCurve;
 	}
 
 	private HeatNet net() {
 		return editor.heatNet;
 	}
 
-	void create(Composite body, FormToolkit tk) {
+	PipeSection create(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, "Wärmeleitungen");
 		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 2);
-		table = Tables.createViewer(composite, "Komponente", "Länge",
+		UI.gridLayout(composite, 1).verticalSpacing = 0;
+		createFields(composite, tk);
+		createTable(section, composite, tk);
+		return this;
+	}
+
+	private void createFields(Composite parent, FormToolkit tk) {
+		Composite comp = tk.createComposite(parent);
+		UI.gridData(comp, true, false);
+		UI.gridLayout(comp, 3);
+		lengthText = UI.formText(comp, tk, "Länge");
+		Texts.on(lengthText).init(net().length).decimal().required()
+				.onChanged(s -> textsChanged());
+		UI.formLabel(comp, tk, "m");
+		powerText = UI.formText(comp, tk, "Verlustleistung");
+		Texts.on(powerText).init(net().powerLoss).decimal().required()
+				.onChanged(s -> textsChanged());
+		UI.formLabel(comp, tk, "W/m");
+		UI.formLabel(comp, "");
+		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
+		button.setImage(Images.CALCULATE_16.img());
+		Controls.onSelect(button, e -> {
+			HeatNet net = net();
+			net.length = HeatNets.calculateLength(net);
+			net.powerLoss = HeatNets.calculatePowerLoss(net);
+			disableTextBinding = true;
+			Texts.set(lengthText, net.length);
+			Texts.set(powerText, net.powerLoss);
+			disableTextBinding = false;
+		});
+	}
+
+	private void textsChanged() {
+		if (!disableTextBinding) {
+			net().length = Texts.getDouble(lengthText);
+			net().powerLoss = Texts.getDouble(powerText);
+		}
+		editor.setDirty();
+		if (loadCurve != null) {
+			double[] curve = ProjectLoad.getNetLoadCurve(net());
+			loadCurve.setData(curve);
+		}
+	}
+
+	private void createTable(Section section, Composite parent,
+			FormToolkit tk) {
+		Composite comp = tk.createComposite(parent);
+		UI.gridData(comp, true, false);
+		UI.gridLayout(comp, 1).marginTop = 0;
+		table = Tables.createViewer(comp, "Komponente", "Länge",
 				"Wärmeverlust", "Investitionskosten", "Nutzungsdauer",
 				"Instandsetzung", "Wartung und Inspektion",
 				"Aufwand für Bedienen");
@@ -132,7 +198,8 @@ class PipeSection {
 			case 1:
 				return Numbers.toString(pipe.length) + " m";
 			case 2:
-				return null; // TODO: calculate heat loss
+				return Numbers.toString(HeatNets.getPowerLoss(pipe, net()))
+						+ " W/m";
 			default:
 				return getCostLabel(pipe.costs, col);
 			}

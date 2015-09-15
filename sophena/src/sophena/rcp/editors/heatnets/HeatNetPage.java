@@ -32,12 +32,12 @@ class HeatNetPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		HeatNetSection heatNetSection = new HeatNetSection(editor);
 		heatNetSection.create(body, tk);
-		new PipeSection(editor).create(body, tk);
+		PipeSection pipeSection = new PipeSection(editor).create(body, tk);
 		new BufferTankSection(editor).create(body, tk);
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
 		interruptionSec.create(body, tk);
 		LoadCurveSection loadCurve = createLoadCurve(tk, body);
-		heatNetSection.setLoadCurve(loadCurve);
+		pipeSection.setLoadCurve(loadCurve);
 		interruptionSec.setLoadCurve(loadCurve);
 		form.reflow(true);
 	}
