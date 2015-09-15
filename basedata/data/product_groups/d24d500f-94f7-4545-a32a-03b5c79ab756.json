@@ -1,0 +1,10 @@
+{
+  "id": "d24d500f-94f7-4545-a32a-03b5c79ab756",
+  "index": 5,
+  "type": "BUILDING",
+  "name": "Bühnen und Treppen im Kesselhaus",
+  "duration": 40,
+  "repair": 1.0,
+  "maintenance": 1.0,
+  "operation": 0.0
+}

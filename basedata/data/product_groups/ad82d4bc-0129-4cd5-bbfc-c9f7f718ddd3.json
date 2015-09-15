@@ -1,0 +1,10 @@
+{
+  "id": "ad82d4bc-0129-4cd5-bbfc-c9f7f718ddd3",
+  "index": 0,
+  "type": "BOILER_HOUSE_TECHNOLOGY",
+  "name": "Hydraulik",
+  "duration": 0,
+  "repair": 0.0,
+  "maintenance": 0.0,
+  "operation": 0.0
+}

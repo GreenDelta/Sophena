@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.calc.ProjectResult;
 import sophena.db.daos.ProjectDao;
+import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
@@ -71,6 +72,8 @@ public class ResultEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new EnergyResultPage(this));
+			if (isWithCoGen())
+				addPage(new ElectricityResultPage(this));
 			addPage(new CostResultPage(this));
 			addPage(new LocationResultPage(this));
 		} catch (Exception e) {
@@ -78,4 +81,15 @@ public class ResultEditor extends Editor {
 			log.error("failed to init energy result editor", e);
 		}
 	}
+
+	private boolean isWithCoGen() {
+		if (result == null || result.energyResult == null)
+			return false;
+		for (Producer p : result.energyResult.producers) {
+			if (p.boiler != null && p.boiler.isCoGenPlant)
+				return true;
+		}
+		return false;
+	}
+
 }

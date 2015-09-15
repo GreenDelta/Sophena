@@ -1,0 +1,10 @@
+{
+  "id": "72857213-2c78-47ed-838f-086480572a12",
+  "index": 0,
+  "type": "BUFFER_TANK",
+  "name": "Pufferspeicher",
+  "duration": 15,
+  "repair": 2.0,
+  "maintenance": 1.0,
+  "operation": 0.0
+}

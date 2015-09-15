@@ -43,11 +43,10 @@ class BoilerChart {
 	}
 
 	public void render(Composite body, FormToolkit tk) {
-		String title = sorted ? "Geordnete Jahresdauerlinie" :
-				"Ungeordnete Jahresdauerlinie";
+		String title = sorted ? "Geordnete Jahresdauerlinie"
+				: "Ungeordnete Jahresdauerlinie";
 		Section section = UI.section(body, tk, title);
-		if (!sorted)
-			Actions.bind(section, new LoadTraceSwitch());
+		Actions.bind(section, new LoadTraceSwitch());
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);

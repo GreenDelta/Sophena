@@ -96,7 +96,7 @@ public class ProductGroupEditor extends Editor {
 					return null;
 				ProductGroup p = (ProductGroup) obj;
 				if (col == 0)
-					return p.index == 1 ? Images.PRODUCT_16.img() : null;
+					return p.index == 0 ? Images.PRODUCT_16.img() : null;
 				else
 					return null;
 			}
@@ -108,7 +108,7 @@ public class ProductGroupEditor extends Editor {
 				ProductGroup p = (ProductGroup) obj;
 				switch (col) {
 				case 0:
-					return p.index == 1 ? Labels.get(p.type) : null;
+					return p.index == 0 ? Labels.get(p.type) : null;
 				case 1:
 					return p.name;
 				case 2:

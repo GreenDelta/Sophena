@@ -1,0 +1,10 @@
+{
+  "id": "d0313ee3-9474-49c4-bd0f-69ecda76dd21",
+  "index": 6,
+  "type": "BUILDING",
+  "name": "Pellet-/ Hackschnitzellager mit Fördereinrichtung",
+  "duration": 20,
+  "repair": 3.0,
+  "maintenance": 2.0,
+  "operation": 10.0
+}
