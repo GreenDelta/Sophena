@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.pipes;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -59,8 +58,7 @@ public class PipeEditor extends Editor {
 			super(PipeEditor.this, "PipeEditorPage", "Wärmeleitungen");
 			dao = new RootEntityDao<>(Pipe.class, App.getDb());
 			pipes = dao.getAll();
-			Collections.sort(pipes,
-					(p1, p2) -> Strings.compare(p1.name, p2.name));
+			Sorters.byName(pipes);
 		}
 
 		@Override

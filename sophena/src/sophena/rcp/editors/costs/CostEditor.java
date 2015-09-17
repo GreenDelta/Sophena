@@ -1,5 +1,8 @@
 package sophena.rcp.editors.costs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -9,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.CostSettings;
+import sophena.model.ProductEntry;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
@@ -69,7 +73,12 @@ public class CostEditor extends Editor {
 			if (settingsPage != null) {
 				dbProject.costSettings = settingsPage.getCosts();
 			}
-			// TODO: sync cost components
+			// sync. with JPA managed entity; we could have the same instance
+			// or two different instances here
+			List<ProductEntry> entries = new ArrayList<>();
+			entries.addAll(project.productEntries);
+			dbProject.productEntries.clear();
+			dbProject.productEntries.addAll(entries);
 			project = dao.update(dbProject);
 			setSaved();
 		} catch (Exception e) {

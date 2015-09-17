@@ -27,6 +27,12 @@ class OverviewPage extends FormPage {
 	public OverviewPage(CostEditor editor) {
 		super(editor, "sophena.CostOverviewPage", "Investitionskosten");
 		this.editor = editor;
+		Collections.sort(editor.getProject().productEntries, (e1, e2) -> {
+			if (e1.product == null || e2.product == null)
+				return 0;
+			else
+				return Strings.compare(e1.product.name, e2.product.name);
+		});
 	}
 
 	@Override

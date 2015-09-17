@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.boilers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -47,8 +46,7 @@ class EditorPage extends FormPage {
 				isForCoGen ? "KWK-Anlage" : "Heizkessel");
 		this.isForCoGen = isForCoGen;
 		boilers = isForCoGen ? dao.getCoGenPlants() : dao.getBoilers();
-		Collections.sort(boilers,
-				(b1, b2) -> Strings.compare(b1.name, b2.name));
+		Sorters.byName(boilers);
 	}
 
 	@Override

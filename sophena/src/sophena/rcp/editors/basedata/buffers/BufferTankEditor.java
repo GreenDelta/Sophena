@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.buffers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -59,8 +58,7 @@ public class BufferTankEditor extends Editor {
 			super(BufferTankEditor.this, "BufferEditorPage", "Pufferspeicher");
 			dao = new RootEntityDao<>(BufferTank.class, App.getDb());
 			buffers = dao.getAll();
-			Collections.sort(buffers,
-					(b1, b2) -> Strings.compare(b1.name, b2.name));
+			Sorters.byName(buffers);
 		}
 
 		@Override

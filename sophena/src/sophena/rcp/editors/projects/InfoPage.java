@@ -1,6 +1,5 @@
 package sophena.rcp.editors.projects;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
@@ -17,7 +16,7 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -91,7 +90,7 @@ class InfoPage extends FormPage {
 		combo.create("Wetterstation", composite, toolkit);
 		WeatherStationDao dao = new WeatherStationDao(App.getDb());
 		List<WeatherStationDescriptor> list = dao.getDescriptors();
-		Collections.sort(list, (w1, w2) -> Strings.compare(w1.name, w2.name));
+		Sorters.byName(list);
 		combo.setInput(list);
 		WeatherStation s = project().weatherStation;
 		if (s != null)

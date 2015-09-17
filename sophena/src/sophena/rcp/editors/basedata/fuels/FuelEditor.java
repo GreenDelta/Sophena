@@ -1,7 +1,6 @@
 package sophena.rcp.editors.basedata.fuels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -68,8 +67,7 @@ public class FuelEditor extends Editor {
 
 		private void initData() {
 			List<Fuel> all = dao.getAll();
-			Collections.sort(all, (f1, f2) -> Strings.compare(
-					f1.name, f2.name));
+			Sorters.byName(all);
 			for (Fuel f : all) {
 				if (f.wood)
 					woodFuels.add(f);

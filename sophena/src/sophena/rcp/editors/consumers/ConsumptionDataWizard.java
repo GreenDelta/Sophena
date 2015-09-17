@@ -1,6 +1,5 @@
 package sophena.rcp.editors.consumers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,6 +27,7 @@ import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -225,8 +225,7 @@ class ConsumptionDataWizard extends Wizard {
 			private void initFuels() {
 				FuelDao dao = new FuelDao(App.getDb());
 				List<Fuel> fuels = dao.getAll();
-				Collections.sort(fuels,
-						(f1, f2) -> Strings.compare(f1.name, f2.name));
+				Sorters.byName(fuels);
 				fuelCombo.setInput(fuels);
 				if (fuels.isEmpty())
 					return;

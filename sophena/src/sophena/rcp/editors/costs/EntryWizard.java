@@ -14,7 +14,6 @@ import sophena.db.daos.ProductDao;
 import sophena.model.Product;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
-import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
@@ -23,26 +22,18 @@ import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-class CostWizard extends Wizard {
+class EntryWizard extends Wizard {
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
-	private CostEditor editor;
 	private ProductType type;
-	private Product product;
-	private ProductEntry productEntry;
+	private ProductEntry entry;
 
-	private Project project() {
-		return editor.getProject();
-	}
-
-	public static int open(ProductEntry productEntry, ProductType type) {
-		// ProductEntry en = new ProductEntry();
-		if (productEntry == null)
+	public static int open(ProductEntry entry, ProductType type) {
+		if (entry == null)
 			return Window.CANCEL;
-		CostWizard w = new CostWizard();
+		EntryWizard w = new EntryWizard();
 		w.setWindowTitle(Labels.get(type));
-		w.productEntry = productEntry;
+		w.entry = entry;
 		w.type = type;
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		dialog.setPageSize(150, 400);
@@ -51,19 +42,24 @@ class CostWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		// try {
-		// page.data.bindToModel();
-		// return true;
-		// } catch (Exception e) {
-		// log.error("failed to set product data " + product, e);
-		return false;
+		if (entry.product == null) {
+			noProduct(true);
+			return false;
+		}
+		return true;
 	}
-	// }
 
 	@Override
 	public void addPages() {
 		page = new Page();
 		addPage(page);
+	}
+
+	private void noProduct(boolean b) {
+		if (b)
+			page.setErrorMessage("Es wurde kein Produkt ausgewählt");
+		else
+			page.setErrorMessage(null);
 	}
 
 	private class Page extends WizardPage {
@@ -80,20 +76,17 @@ class CostWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
-
-			costSection = new ProductCostSection(() -> productEntry.costs)
+			costSection = new ProductCostSection(() -> entry.costs)
 					.createFields(comp);
 		}
 
 		private void createProductRow(Composite comp) {
 			UI.formLabel(comp, "Produkt");
 			ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
-
-			if (product != null)
-				link.setText(product.name);
+			if (entry.product != null)
+				link.setText(entry.product.name);
 			else
 				link.setText("(kein Produkt ausgewählt)");
-
 			link.setImage(Images.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
 			link.addHyperlinkListener(new HyperlinkAdapter() {
@@ -103,21 +96,23 @@ class CostWizard extends Wizard {
 				}
 			});
 			UI.formLabel(comp, "");
-
 		}
 
-		protected void selectProduct(ImageHyperlink link) {
+		private void selectProduct(ImageHyperlink link) {
 			ProductDao dao = new ProductDao(App.getDb());
-			Product p = SearchDialog.open((Labels.get(type) + " auswählen"),
-					dao.getAll(type));
-			if (p == null)
+			Product p = SearchDialog.open((Labels.get(type)), dao.getAll(type));
+			if (p == null) {
+				noProduct(true);
 				return;
-			product = p;
-			link.setText(product.name);
+			}
+			noProduct(false);
+			entry.product = p;
+			if (p.purchasePrice != null) {
+				entry.costs.investment = p.purchasePrice;
+				costSection.refresh();
+			}
+			link.setText(p.name);
 			link.pack();
-
 		}
-
 	}
-
 }

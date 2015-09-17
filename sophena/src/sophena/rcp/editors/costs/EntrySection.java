@@ -1,7 +1,6 @@
 package sophena.rcp.editors.costs;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,8 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.db.daos.RootEntityDao;
-import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
@@ -29,27 +26,19 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 class EntrySection {
 
 	private CostEditor editor;
 	private ProductType type;
-	private Product product;
 
-	private RootEntityDao<Product> dao;
-
+	private TableViewer table;
 	private List<ProductEntry> entries = new ArrayList<>();
 
 	EntrySection(CostEditor editor, ProductType type) {
 		this.editor = editor;
 		this.type = type;
-
-		for (ProductEntry e : editor.getProject().productEntries) {
-			if (e.product != null && e.product.type == type)
-				entries.add(e);
-		}
-		Collections.sort(entries,
-				(e1, e2) -> Strings.compare(e1.product.name, e2.product.name));
 	}
 
 	private Project project() {
@@ -59,26 +48,15 @@ class EntrySection {
 	void create(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, Labels.getPlural(type));
 		Composite composite = UI.sectionClient(section, tk);
-		TableViewer table = createTable(composite);
-		Action add = Actions.create(M.Add, Images.ADD_16.des(),
-				() -> addProduct(table));
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(), () -> {
-		});
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), () -> {
-		});
-		Actions.bind(section, add, edit, remove);
-		Actions.bind(table, add, edit, remove);
-	}
-
-	private void addProduct(TableViewer table) {
-		ProductEntry en = new ProductEntry();
-		en.id = UUID.randomUUID().toString();
-		en.costs = new ProductCosts();
-		if (CostWizard.open(en, type) != Window.OK)
-			return;
-		entries.add(en);
-		table.setInput(entries);
-		// TODO: set editor dirty etc.
+		table = createTable(composite);
+		fillEntries();
+		Action add = Actions.create(M.Add, Images.ADD_16.des(), this::add);
+		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), this::edit);
+		Action del = Actions.create(M.Remove, Images.DELETE_16.des(),
+				this::delete);
+		Actions.bind(section, add, edit, del);
+		Actions.bind(table, add, edit, del);
+		Tables.onDoubleClick(table, e -> edit());
 	}
 
 	private TableViewer createTable(Composite comp) {
@@ -87,8 +65,64 @@ class EntrySection {
 				"Wartung und Inspektion", "Aufwand für Bedienen");
 		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
 		table.setLabelProvider(new Label());
-		table.setInput(entries);
 		return table;
+	}
+
+	private void add() {
+		ProductEntry entry = new ProductEntry();
+		entry.id = UUID.randomUUID().toString();
+		entry.costs = new ProductCosts();
+		if (EntryWizard.open(entry, type) != Window.OK)
+			return;
+		project().productEntries.add(entry);
+		fillEntries();
+		editor.setDirty();
+	}
+
+	private void edit() {
+		ProductEntry entry = Viewers.getFirstSelected(table);
+		if (entry == null)
+			return;
+		ProductEntry clone = entry.clone();
+		if (EntryWizard.open(clone, type) != Window.OK)
+			return;
+		ProductEntry managed = getJpaManaged(entry.id);
+		if (managed == null)
+			return;
+		managed.costs = clone.costs;
+		managed.product = clone.product;
+		fillEntries();
+		editor.setDirty();
+	}
+
+	private void delete() {
+		ProductEntry entry = Viewers.getFirstSelected(table);
+		if (entry == null)
+			return;
+		ProductEntry managed = getJpaManaged(entry.id);
+		if (managed == null)
+			return;
+		project().productEntries.remove(managed);
+		fillEntries();
+		editor.setDirty();
+	}
+
+	private void fillEntries() {
+		entries.clear();
+		for (ProductEntry e : project().productEntries) {
+			if (e.product != null && e.product.type == type)
+				entries.add(e);
+		}
+		if (table != null)
+			table.setInput(entries);
+	}
+
+	private ProductEntry getJpaManaged(String id) {
+		for (ProductEntry e : project().productEntries) {
+			if (Strings.nullOrEqual(id, e.id))
+				return e;
+		}
+		return null;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {

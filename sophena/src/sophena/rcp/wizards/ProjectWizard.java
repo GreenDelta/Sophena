@@ -1,6 +1,5 @@
 package sophena.rcp.wizards;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -153,8 +152,7 @@ public class ProjectWizard extends Wizard {
 			private void initWeatherStations() {
 				WeatherStationDao dao = new WeatherStationDao(App.getDb());
 				List<WeatherStationDescriptor> list = dao.getDescriptors();
-				Collections.sort(list, (w1, w2) -> Strings.compare(w1.name,
-						w2.name));
+				Sorters.byName(list);
 				stationCombo.setInput(list);
 				if (!list.isEmpty())
 					stationCombo.select(list.get(0));
