@@ -39,13 +39,14 @@ public class Import implements Runnable {
 	public void run() {
 		try {
 			pack = DataPack.open(packFile);
+			// order is important for reference resolving
+			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.FUEL, Fuel.class);
 			importEntities(ModelType.BOILER, Boiler.class);
 			importEntities(ModelType.BUFFER, BufferTank.class);
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.PIPE, Pipe.class);
-			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			pack.close();
 		} catch (Exception e) {
@@ -78,7 +79,7 @@ public class Import implements Runnable {
 	private Gson getGson(Class<?> rootType) {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
-				Fuel.class
+				Fuel.class, ProductGroup.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))

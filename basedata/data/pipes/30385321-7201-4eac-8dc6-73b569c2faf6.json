@@ -1,7 +1,12 @@
 {
-    "id": "30385321-7201-4eac-8dc6-73b569c2faf6",
-    "name": "UNO 32/91",
-    "purchasePrice": 60.0,
-    "diameter": 32.0,
-    "uValue": 0.121
+	"id": "30385321-7201-4eac-8dc6-73b569c2faf6",
+	"name": "UNO 32/91",
+	"purchasePrice": 60,
+	"diameter": 32,
+	"uValue": 0.121,
+	"type": "HEATING_NET_TECHNOLOGY",
+	"group": {
+		"id": "0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0",
+		"name": "Leitungsrohre Kunststoff"
+	}
 }

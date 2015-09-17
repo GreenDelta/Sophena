@@ -18,6 +18,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
 import sophena.model.Pipe;
+import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -76,10 +77,10 @@ public class PipeEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
-					"Link", "Preis", "Durchmesser", "U-Wert");
+					"Produktgruppe", "Link", "Preis", "Durchmesser", "U-Wert");
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
-			Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
+			Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1);
 			bindActions(section, table);
 		}
 
@@ -97,6 +98,7 @@ public class PipeEditor extends Editor {
 
 		private void add(TableViewer table) {
 			Pipe p = new Pipe();
+			p.type = ProductType.HEATING_NET_TECHNOLOGY;
 			p.id = UUID.randomUUID().toString();
 			p.name = "Neue Wärmeleitung";
 			if (PipeWizard.open(p) != Window.OK)
@@ -157,13 +159,15 @@ public class PipeEditor extends Editor {
 			case 0:
 				return p.name;
 			case 1:
-				return p.url;
+				return p.group != null ? p.group.name : null;
 			case 2:
+				return p.url;
+			case 3:
 				return p.purchasePrice == null ? null
 						: Numbers.toString(p.purchasePrice) + " EUR/m";
-			case 3:
-				return Numbers.toString(p.diameter) + " mm";
 			case 4:
+				return Numbers.toString(p.diameter) + " mm";
+			case 5:
 				return Numbers.toString(p.uValue);
 			default:
 				return null;

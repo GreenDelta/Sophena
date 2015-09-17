@@ -1,7 +1,12 @@
 {
-    "id": "31fa6633-84a2-4db4-a8ad-9797b7a01931",
-    "name": "DUO 25+25/111",
-    "purchasePrice": 82.5,
-    "diameter": 25.0,
-    "uValue": 0.139
+	"id": "31fa6633-84a2-4db4-a8ad-9797b7a01931",
+	"name": "DUO 25+25/111",
+	"purchasePrice": 82.5,
+	"diameter": 25,
+	"uValue": 0.139,
+	"type": "HEATING_NET_TECHNOLOGY",
+	"group": {
+		"id": "0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0",
+		"name": "Leitungsrohre Kunststoff"
+	}
 }

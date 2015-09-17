@@ -1,7 +1,12 @@
 {
-    "id": "3c02e09e-3f8c-4dd0-8509-bc0732fcc393",
-    "name": "UNO 50/111",
-    "purchasePrice": 70.0,
-    "diameter": 50.0,
-    "uValue": 0.155
+	"id": "3c02e09e-3f8c-4dd0-8509-bc0732fcc393",
+	"name": "UNO 50/111",
+	"purchasePrice": 70,
+	"diameter": 50,
+	"uValue": 0.155,
+	"type": "HEATING_NET_TECHNOLOGY",
+	"group": {
+		"id": "0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0",
+		"name": "Leitungsrohre Kunststoff"
+	}
 }

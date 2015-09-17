@@ -1,7 +1,12 @@
 {
-    "id": "2e344301-88da-4e5a-8f2d-1a86de14d2be",
-    "name": "UNO 90/182",
-    "purchasePrice": 85.0,
-    "diameter": 90.0,
-    "uValue": 0.175
+	"id": "2e344301-88da-4e5a-8f2d-1a86de14d2be",
+	"name": "UNO 90/182",
+	"purchasePrice": 85,
+	"diameter": 90,
+	"uValue": 0.175,
+	"type": "HEATING_NET_TECHNOLOGY",
+	"group": {
+		"id": "0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0",
+		"name": "Leitungsrohre Kunststoff"
+	}
 }
