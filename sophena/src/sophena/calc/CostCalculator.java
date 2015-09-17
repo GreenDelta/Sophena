@@ -141,6 +141,8 @@ class CostCalculator {
 	}
 
 	double getResidualValue(int usageDuration, double investmentCosts) {
+		if (usageDuration < 1)
+			return 0;
 		double ir = ir();
 		double priceChange = settings.investmentFactor;
 		int replacements = getNumberOfReplacements(usageDuration);
