@@ -12,6 +12,8 @@ public enum ProductType {
 
 	BUFFER_TANK,
 
+	PIPE,
+
 	HEAT_RECOVERY,
 
 	FLUE_GAS_CLEANING,

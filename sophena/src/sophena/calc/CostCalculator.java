@@ -1,11 +1,11 @@
 package sophena.calc;
 
 import sophena.model.Boiler;
-import sophena.model.ProductCosts;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
 
 class CostCalculator {
@@ -34,17 +34,14 @@ class CostCalculator {
 
 	public CostResult calculate() {
 		CostResult r = new CostResult();
-		// TODO: iterate over all cost components; not only producers
-		for (Producer p : project.producers) {
-			ProductCosts costs = p.costs;
-			if (costs == null)
-				continue;
+		Costs.each(project, costs -> {
 			r.netto.investments += costs.investment;
 			r.brutto.investments += vat() * costs.investment;
 			addCapitalCosts(r, costs);
-			addConsumptionCosts(r, p);
 			addOperationCosts(r, costs);
-		}
+		});
+		for (Producer p : project.producers)
+			addConsumptionCosts(r, p);
 		if (withFunding)
 			setCapitalCostsFunding(r);
 		addOtherCosts(r);
@@ -176,7 +173,8 @@ class CostCalculator {
 		if (heat == 0 || boiler == null || fuelSpec == null)
 			return 0;
 		int fullLoadHours = (int) (heat / boiler.maxPower);
-		double ur = BoilerEfficiency.getUtilisationRateBig(boiler.efficiencyRate, fullLoadHours);
+		double ur = BoilerEfficiency
+				.getUtilisationRateBig(boiler.efficiencyRate, fullLoadHours);
 		double energyContent = heat / ur;
 		Fuel fuel = boiler.fuel;
 		if (fuel != null) {

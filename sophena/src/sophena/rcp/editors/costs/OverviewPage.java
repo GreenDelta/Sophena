@@ -12,11 +12,12 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.Boiler;
 import sophena.model.HeatNet;
+import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.boilers.CoGenPlantEditor;
-import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
+import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
@@ -45,6 +46,7 @@ class OverviewPage extends FormPage {
 		boilerSection(ProductType.COGENERATION_PLANT, body, tk);
 		entries(ProductType.BOILER_ACCESSORIES, body, tk);
 		bufferSection(body, tk);
+		pipeSection(body, tk);
 		entries(ProductType.HEAT_RECOVERY, body, tk);
 		entries(ProductType.FLUE_GAS_CLEANING, body, tk);
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
@@ -70,9 +72,24 @@ class OverviewPage extends FormPage {
 			else
 				return Collections.singletonList(net);
 		};
-		s.costs = (n) -> n.bufferTankCosts;
-		s.label = (n) -> n.bufferTank.name;
-		s.onOpen = (n) -> BufferTankEditor.open();
+		s.costs = n -> n.bufferTankCosts;
+		s.label = n -> n.bufferTank.name;
+		s.onOpen = n -> HeatNetEditor.open(editor.getProject().toDescriptor());
+		s.create(body, tk);
+	}
+
+	private void pipeSection(Composite body, FormToolkit tk) {
+		DisplaySection<HeatNetPipe> s = new DisplaySection<>(ProductType.PIPE);
+		HeatNet net = editor.getProject().heatNet;
+		s.content = () -> {
+			if (net == null)
+				return Collections.emptyList();
+			else
+				return net.pipes;
+		};
+		s.costs = p -> p.costs;
+		s.label = p -> p.pipe != null ? p.pipe.name : null;
+		s.onOpen = p -> HeatNetEditor.open(editor.getProject().toDescriptor());
 		s.create(body, tk);
 	}
 
@@ -80,9 +97,9 @@ class OverviewPage extends FormPage {
 			FormToolkit tk) {
 		DisplaySection<Producer> s = new DisplaySection<>(type);
 		s.content = () -> getProducers(type);
-		s.costs = (p) -> p.costs;
-		s.label = (p) -> p.boiler == null ? null : p.boiler.name;
-		s.onOpen = (p) -> {
+		s.costs = p -> p.costs;
+		s.label = p -> p.boiler == null ? null : p.boiler.name;
+		s.onOpen = p -> {
 			if (type == ProductType.COGENERATION_PLANT)
 				CoGenPlantEditor.open();
 			else

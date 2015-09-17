@@ -104,6 +104,8 @@ public final class Labels {
 			return "Kesselzubehör";
 		case BUFFER_TANK:
 			return "Pufferspeicher";
+		case PIPE:
+			return "Wärmeleitung";
 		case HEAT_RECOVERY:
 			return "Wärmerückgewinnung";
 		case FLUE_GAS_CLEANING:
@@ -137,6 +139,8 @@ public final class Labels {
 			return "Kesselzubehör";
 		case BUFFER_TANK:
 			return "Pufferspeicher";
+		case PIPE:
+			return "Wärmeleitungen";
 		case HEAT_RECOVERY:
 			return "Wärmerückgewinnung";
 		case FLUE_GAS_CLEANING:
