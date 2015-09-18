@@ -11,6 +11,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.ProductDao;
+import sophena.model.Costs;
 import sophena.model.Product;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
@@ -107,10 +108,10 @@ class EntryWizard extends Wizard {
 			}
 			noProduct(false);
 			entry.product = p;
-			if (p.purchasePrice != null) {
+			if (p.purchasePrice != null)
 				entry.costs.investment = p.purchasePrice;
-				costSection.refresh();
-			}
+			Costs.copy(p.group, entry.costs);
+			costSection.refresh();
 			link.setText(p.name);
 			link.pack();
 		}

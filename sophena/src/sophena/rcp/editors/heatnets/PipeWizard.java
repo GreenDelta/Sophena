@@ -11,6 +11,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
+import sophena.model.Costs;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
 import sophena.model.ProductCosts;
@@ -103,6 +104,7 @@ class PipeWizard extends Wizard {
 			double price = p.purchasePrice == null ? 0 : p.purchasePrice;
 			pipe.pricePerMeter = price;
 			Texts.set(priceText, price);
+			Costs.copy(p.group, pipe.costs);
 			updateCosts();
 		}
 

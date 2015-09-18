@@ -2,6 +2,7 @@ package sophena.calc;
 
 import sophena.model.Boiler;
 import sophena.model.CostSettings;
+import sophena.model.Costs;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;

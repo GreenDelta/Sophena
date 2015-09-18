@@ -25,11 +25,12 @@ import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.ProductCosts;
+import sophena.model.Costs;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -101,13 +102,12 @@ public class ProducerWizard extends Wizard {
 	private void addCosts(Producer producer) {
 		ProductCosts costs = new ProductCosts();
 		producer.costs = costs;
-		costs.duration = 15;
-		costs.repair = 3;
-		costs.maintenance = 3;
-		costs.operation = 15;
 		Boiler b = producer.boiler;
-		if (b != null && b.purchasePrice != null)
+		if (b == null)
+			return;
+		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
+		Costs.copy(b.group, costs);
 	}
 
 	@Override

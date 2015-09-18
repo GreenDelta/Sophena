@@ -9,8 +9,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.BufferTank;
-import sophena.model.ProductCosts;
+import sophena.model.Costs;
 import sophena.model.HeatNet;
+import sophena.model.ProductCosts;
 import sophena.rcp.Images;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
@@ -83,9 +84,10 @@ class BufferTankSection {
 		Texts.set(volText, b.volume);
 		link.setText(b.name);
 		link.pack();
-		if (b.purchasePrice != null) {
-			net().bufferTankCosts.investment = b.purchasePrice;
-			costSection.refresh();
-		}
+		ProductCosts costs = net().bufferTankCosts;
+		Costs.copy(b.group, costs);
+		if (b.purchasePrice != null)
+			costs.investment = b.purchasePrice;
+		costSection.refresh();
 	}
 }
