@@ -1,5 +1,7 @@
 package sophena.rcp.editors.basedata.pipes;
 
+import java.util.List;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -8,10 +10,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.db.daos.ProductGroupDao;
 import sophena.model.Pipe;
 import sophena.model.ProductGroup;
+import sophena.model.ProductType;
+import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -68,9 +74,7 @@ class PipeWizard extends Wizard {
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
 
-			groupCombo = new EntityCombo<>();
-			groupCombo.create("Produktgruppe", c);
-			UI.formLabel(c, "");
+			createGroupCombo(c);
 
 			diamText = UI.formText(c, "Durchmesser");
 			Texts.on(diamText).required().decimal().validate(data::validate);
@@ -89,10 +93,22 @@ class PipeWizard extends Wizard {
 			data.bindToUI();
 		}
 
+		private void createGroupCombo(Composite c) {
+			groupCombo = new EntityCombo<>();
+			groupCombo.create("Produktgruppe", c);
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> list = dao
+					.getAll(ProductType.HEATING_NET_TECHNOLOGY);
+			Sorters.byName(list);
+			groupCombo.setInput(list);
+			UI.formLabel(c, "");
+		}
+
 		private class DataBinding {
 
 			void bindToUI() {
 				Texts.set(nameText, pipe.name);
+				groupCombo.select(pipe.group);
 				Texts.set(diamText, pipe.diameter);
 				Texts.set(uText, pipe.uValue);
 				Texts.set(urlText, pipe.url);
@@ -101,6 +117,7 @@ class PipeWizard extends Wizard {
 
 			void bindToModel() {
 				pipe.name = nameText.getText();
+				pipe.group = groupCombo.getSelected();
 				pipe.diameter = Texts.getDouble(diamText);
 				pipe.uValue = Texts.getDouble(uText);
 				pipe.url = urlText.getText();

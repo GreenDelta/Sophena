@@ -1,5 +1,7 @@
 package sophena.rcp.editors.basedata.products;
 
+import java.util.List;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -10,8 +12,13 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.ProductGroupDao;
 import sophena.model.Product;
+import sophena.model.ProductGroup;
+import sophena.rcp.App;
 import sophena.rcp.Labels;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -54,6 +61,7 @@ class ProductWizard extends Wizard {
 		private DataBinding data = new DataBinding();
 
 		private Text nameText;
+		private EntityCombo<ProductGroup> groupCombo;
 		private Text linkText;
 		private Text priceText;
 
@@ -66,31 +74,37 @@ class ProductWizard extends Wizard {
 			Composite composite = new Composite(parent, SWT.NONE);
 			setControl(composite);
 			UI.gridLayout(composite, 3);
-			createNameText(composite);
-			createLinkAndPriceText(composite);
+			createNameAndGroup(composite);
+			createLinkAndPrice(composite);
 			data.bindToUI();
 		}
 
-		private void createNameText(Composite composite) {
-			nameText = UI.formText(composite, "Bezeichnung");
+		private void createNameAndGroup(Composite c) {
+			nameText = UI.formText(c, "Bezeichnung");
 			Texts.on(nameText).required().validate(data::validate);
-			UI.formLabel(composite, "");
-
+			UI.formLabel(c, "");
+			groupCombo = new EntityCombo<>();
+			groupCombo.create("Produktgruppe", c);
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> list = dao.getAll(product.type);
+			Sorters.byName(list);
+			groupCombo.setInput(list);
+			UI.formLabel(c, "");
 		}
 
-		private void createLinkAndPriceText(Composite composite) {
-			linkText = UI.formText(composite, "Web-Link");
-			UI.formLabel(composite, "");
-			priceText = UI.formText(composite, "Preis");
+		private void createLinkAndPrice(Composite c) {
+			linkText = UI.formText(c, "Web-Link");
+			UI.formLabel(c, "");
+			priceText = UI.formText(c, "Preis");
 			Texts.on(priceText).decimal();
-			UI.formLabel(composite, "EUR");
+			UI.formLabel(c, "EUR");
 		}
 
 		private class DataBinding {
 
 			private void bindToModel() {
-
 				product.name = nameText.getText();
+				product.group = groupCombo.getSelected();
 				product.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
 					product.purchasePrice = Texts.getDouble(priceText);
@@ -100,6 +114,7 @@ class ProductWizard extends Wizard {
 
 			private void bindToUI() {
 				Texts.set(nameText, product.name);
+				groupCombo.select(product.group);
 				Texts.set(linkText, product.url);
 				Texts.set(priceText, product.purchasePrice);
 				validate();

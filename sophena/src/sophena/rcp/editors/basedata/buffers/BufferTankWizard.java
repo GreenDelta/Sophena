@@ -1,5 +1,7 @@
 package sophena.rcp.editors.basedata.buffers;
 
+import java.util.List;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -8,8 +10,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.db.daos.ProductGroupDao;
 import sophena.model.BufferTank;
+import sophena.model.ProductGroup;
+import sophena.model.ProductType;
+import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -46,6 +54,7 @@ class BufferTankWizard extends Wizard {
 		DataBinding data = new DataBinding();
 
 		Text nameText;
+		EntityCombo<ProductGroup> groupCombo;
 		Text volText;
 		Text urlText;
 		Text priceText;
@@ -64,6 +73,8 @@ class BufferTankWizard extends Wizard {
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
 
+			createGroupCombo(c);
+
 			volText = UI.formText(c, "Volumen");
 			Texts.on(volText).required().decimal().validate(data::validate);
 			UI.formLabel(c, "L");
@@ -77,10 +88,21 @@ class BufferTankWizard extends Wizard {
 			data.bindToUI();
 		}
 
+		private void createGroupCombo(Composite c) {
+			groupCombo = new EntityCombo<>();
+			groupCombo.create("Produktgruppe", c);
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> list = dao.getAll(ProductType.BUFFER_TANK);
+			Sorters.byName(list);
+			groupCombo.setInput(list);
+			UI.formLabel(c, "");
+		}
+
 		private class DataBinding {
 
 			void bindToUI() {
 				Texts.set(nameText, buffer.name);
+				groupCombo.select(buffer.group);
 				Texts.set(volText, buffer.volume);
 				Texts.set(urlText, buffer.url);
 				Texts.set(priceText, buffer.purchasePrice);
@@ -88,6 +110,7 @@ class BufferTankWizard extends Wizard {
 
 			void bindToModel() {
 				buffer.name = nameText.getText();
+				buffer.group = groupCombo.getSelected();
 				buffer.volume = Texts.getDouble(volText);
 				buffer.url = urlText.getText();
 				if (Texts.hasNumber(priceText))

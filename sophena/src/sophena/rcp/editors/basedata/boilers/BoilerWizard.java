@@ -2,6 +2,7 @@ package sophena.rcp.editors.basedata.boilers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.jface.window.Window;
@@ -16,14 +17,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.FuelDao;
+import sophena.db.daos.ProductGroupDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
+import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -41,7 +46,7 @@ class BoilerWizard extends Wizard {
 		wiz.setWindowTitle(boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel");
 		wiz.boiler = boiler;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
+		dialog.setPageSize(150, 500);
 		return dialog.open();
 	}
 
@@ -67,6 +72,7 @@ class BoilerWizard extends Wizard {
 		private DataBinding data = new DataBinding();
 
 		private Text nameText;
+		private EntityCombo<ProductGroup> groupCombo;
 		private Combo fuelCombo;
 		private Text maxText;
 		private Text minText;
@@ -84,74 +90,96 @@ class BoilerWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
-			setControl(composite);
-			UI.gridLayout(composite, 3);
-			createNameTextAndFuelCombo(composite);
-			createEfficiencyText(composite);
-			createMinMaxTexts(composite);
+			Composite c = new Composite(parent, SWT.NONE);
+			setControl(c);
+			UI.gridLayout(c, 3);
+			createNameTextAndFuelCombo(c);
+			createEfficiencyText(c);
+			createMinMaxTexts(c);
 			if (boiler.isCoGenPlant) {
-				createEfficiencyElText(composite);
-				createMinMaxElTexts(composite);
+				createEfficiencyElText(c);
+				createMinMaxElTexts(c);
 			}
-			createLinkAndPriceText(composite);
+			createLinkAndPriceText(c);
 			data.bindToUI();
 		}
 
-		private void createNameTextAndFuelCombo(Composite composite) {
-			nameText = UI.formText(composite, M.Name);
+		private void createNameTextAndFuelCombo(Composite c) {
+			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
-			UI.formLabel(composite, "");
-			fuelCombo = UI.formCombo(composite, M.Fuel);
-			UI.formLabel(composite, "");
+			UI.formLabel(c, "");
+			groupCombo = new EntityCombo<>();
+			groupCombo.create("Produktgruppe", c);
+			List<ProductGroup> list = getGroups();
+			groupCombo.setInput(list);
+			UI.formLabel(c, "");
+			fuelCombo = UI.formCombo(c, M.Fuel);
+			UI.formLabel(c, "");
 			Controls.onSelect(fuelCombo, (e) -> data.validate());
 		}
 
-		private void createMinMaxTexts(Composite composite) {
-			minText = UI.formText(composite, "Minimale Leistung th.");
+		private List<ProductGroup> getGroups() {
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> all = dao.getAll();
+			List<ProductGroup> filtered = new ArrayList<>();
+			EnumSet<ProductType> filter = boiler.isCoGenPlant
+					? EnumSet.of(ProductType.COGENERATION_PLANT)
+					: EnumSet.of(ProductType.BIOMASS_BOILER,
+							ProductType.FOSSIL_FUEL_BOILER);
+			for (ProductGroup g : all) {
+				if (g.type != null && filter.contains(g.type))
+					filtered.add(g);
+			}
+			Sorters.byName(filtered);
+			return filtered;
+		}
+
+		private void createMinMaxTexts(Composite c) {
+			minText = UI.formText(c, "Minimale Leistung th.");
 			Texts.on(minText).decimal().required().validate(data::validate);
-			UI.formLabel(composite, "kW");
-			maxText = UI.formText(composite, "Maximale Leistung th.");
+			UI.formLabel(c, "kW");
+			maxText = UI.formText(c, "Maximale Leistung th.");
 			Texts.on(maxText).decimal().required().validate(data::validate);
-			UI.formLabel(composite, "kW");
+			UI.formLabel(c, "kW");
 		}
 
-		private void createMinMaxElTexts(Composite composite) {
-			minElText = UI.formText(composite, "Minimale Leistung el.");
+		private void createMinMaxElTexts(Composite c) {
+			minElText = UI.formText(c, "Minimale Leistung el.");
 			Texts.on(minElText).decimal().required().validate(data::validate);
-			UI.formLabel(composite, "kW");
-			maxElText = UI.formText(composite, "Maximale Leistung el.");
+			UI.formLabel(c, "kW");
+			maxElText = UI.formText(c, "Maximale Leistung el.");
 			Texts.on(maxElText).decimal().required().validate(data::validate);
-			UI.formLabel(composite, "kW");
+			UI.formLabel(c, "kW");
 		}
 
-		private void createEfficiencyText(Composite composite) {
-			efficiencyText = UI.formText(composite, M.EfficiencyRate + " th.");
+		private void createEfficiencyText(Composite c) {
+			efficiencyText = UI.formText(c, M.EfficiencyRate + " th.");
 			Texts.on(efficiencyText).decimal().required()
 					.validate(data::validate);
-			UI.formLabel(composite, "%");
+			UI.formLabel(c, "%");
 		}
 
-		private void createEfficiencyElText(Composite composite) {
-			efficiencyElText = UI.formText(composite,
+		private void createEfficiencyElText(Composite c) {
+			efficiencyElText = UI.formText(c,
 					M.EfficiencyRate + " el.");
 			Texts.on(efficiencyElText).decimal().required()
 					.validate(data::validate);
-			UI.formLabel(composite, "%");
+			UI.formLabel(c, "%");
 		}
 
-		private void createLinkAndPriceText(Composite composite) {
-			linkText = UI.formText(composite, "Web-Link");
-			UI.formLabel(composite, "");
-			priceText = UI.formText(composite, "Preis");
+		private void createLinkAndPriceText(Composite c) {
+			linkText = UI.formText(c, "Web-Link");
+			UI.formLabel(c, "");
+			priceText = UI.formText(c, "Preis");
 			Texts.on(priceText).decimal();
-			UI.formLabel(composite, "EUR");
+			UI.formLabel(c, "EUR");
 		}
 
 		private class DataBinding {
 
 			private void bindToModel() {
 				boiler.name = nameText.getText();
+				boiler.group = groupCombo.getSelected();
 				int idx = fuelCombo.getSelectionIndex();
 				String label = fuelCombo.getItem(idx);
 				WoodAmountType wat = Labels.getWoodAmountType(label);
@@ -197,6 +225,7 @@ class BoilerWizard extends Wizard {
 
 			private void bindToUI() {
 				Texts.set(nameText, boiler.name);
+				groupCombo.select(boiler.group);
 				String[] items = getFuelItems();
 				fuelCombo.setItems(items);
 				fuelCombo.select(getFuelIndex(items));
@@ -250,30 +279,33 @@ class BoilerWizard extends Wizard {
 					return error("Es wurde keine minimale Leistung angegeben");
 				if (!Texts.hasPercentage(efficiencyText))
 					return error("Es wurde kein Wirkungsgrad angegeben");
-				if (!Texts.hasNumber(maxElText))
-					return error(
-							"Es wurde keine maximale elektrische Leistung angegeben.");
-				if (!Texts.hasNumber(minElText))
-					return error(
-							"Es wurde keine minimale elektrische Leistung angegeben");
-				if (!Texts.hasPercentage(efficiencyElText))
-					return error(
-							"Es wurde kein elektrischer Wirkungsgrad angegeben");
 				double max = Texts.getDouble(maxText);
 				double min = Texts.getDouble(minText);
-				double maxEl = Texts.getDouble(maxElText);
-				double minEl = Texts.getDouble(minElText);
 				if (min > max)
-					return error(
-							"Die minimale Leistung ist größer als die maximale.");
-				if (minEl > maxEl)
-					return error(
-							"Die minimale elektrische Leistung ist größer als die maximale.");
+					return error("Die minimale Leistung ist größer als die maximale.");
+				if (!validCoGen())
+					return false;
 				else {
 					setPageComplete(true);
 					setErrorMessage(null);
 					return true;
 				}
+			}
+
+			private boolean validCoGen() {
+				if (!boiler.isCoGenPlant)
+					return true;
+				if (!Texts.hasPercentage(efficiencyElText))
+					return error("Es wurde kein elektrischer Wirkungsgrad angegeben");
+				if (!Texts.hasNumber(maxElText))
+					return error("Es wurde keine maximale elektrische Leistung angegeben.");
+				if (!Texts.hasNumber(minElText))
+					return error("Es wurde keine minimale elektrische Leistung angegeben");
+				double maxEl = Texts.getDouble(maxElText);
+				double minEl = Texts.getDouble(minElText);
+				if (minEl > maxEl)
+					return error("Die minimale elektrische Leistung ist größer als die maximale.");
+				return true;
 			}
 
 			private boolean error(String message) {
