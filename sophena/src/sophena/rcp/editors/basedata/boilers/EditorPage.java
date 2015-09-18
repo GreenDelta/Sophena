@@ -68,18 +68,19 @@ class EditorPage extends FormPage {
 		TableViewer table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new BoilerLabel());
 		table.setInput(boilers);
-		double x = 1 / (isForCoGen ? 6.0 : 5.0);
+		double x = 1 / (isForCoGen ? 7.0 : 6.0);
 		Tables.bindColumnWidths(table, x, x, x, x, x, (isForCoGen ? x : 0));
 		bindBoilerActions(section, table);
 	}
 
 	private String[] getColumns() {
 		if (isForCoGen)
-			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff",
-					"Leistungsbereich th.", "Leistungsbereich el." };
+			return new String[] { "Bezeichnung", "Produktgruppe", "Link",
+					"Preis", "Brennstoff", "Leistungsbereich th.",
+					"Leistungsbereich el." };
 		else
-			return new String[] { "Bezeichnung", "Link", "Preis", "Brennstoff",
-					"Leistungsbereich" };
+			return new String[] { "Bezeichnung", "Produktgruppe", "Link",
+					"Preis", "Brennstoff", "Leistungsbereich" };
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
@@ -159,14 +160,16 @@ class EditorPage extends FormPage {
 			case 0:
 				return boiler.name;
 			case 1:
-				return boiler.url;
+				return boiler.group != null ? boiler.group.name : null;
 			case 2:
-				return getPrice(boiler);
+				return boiler.url;
 			case 3:
-				return getFuelLabel(boiler);
+				return getPrice(boiler);
 			case 4:
-				return getPowerInfo(boiler);
+				return getFuelLabel(boiler);
 			case 5:
+				return getPowerInfo(boiler);
+			case 6:
 				return getElectricPowerInfo(boiler);
 			default:
 				return null;

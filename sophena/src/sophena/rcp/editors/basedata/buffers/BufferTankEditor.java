@@ -76,10 +76,11 @@ public class BufferTankEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
-					"Link", "Preis", "Volumen");
+					"Produktgruppe", "Link", "Preis", "Volumen");
 			table.setLabelProvider(new Label());
 			table.setInput(buffers);
-			Tables.bindColumnWidths(table, 0.3, 0.3, 0.2, 0.2);
+			double x = 1.0 / 5.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
@@ -155,11 +156,13 @@ public class BufferTankEditor extends Editor {
 			case 0:
 				return b.name;
 			case 1:
-				return b.url;
+				return b.group != null ? b.group.name : null;
 			case 2:
+				return b.url;
+			case 3:
 				return b.purchasePrice == null ? null
 						: Numbers.toString(b.purchasePrice) + " EUR";
-			case 3:
+			case 4:
 				return Numbers.toString(b.volume) + " L";
 			default:
 				return null;

@@ -9,7 +9,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Pipe;
+import sophena.model.ProductGroup;
 import sophena.rcp.M;
+import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -46,6 +48,7 @@ class PipeWizard extends Wizard {
 		DataBinding data = new DataBinding();
 
 		Text nameText;
+		EntityCombo<ProductGroup> groupCombo;
 		Text diamText;
 		Text uText;
 		Text urlText;
@@ -63,6 +66,10 @@ class PipeWizard extends Wizard {
 
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
+			UI.formLabel(c, "");
+
+			groupCombo = new EntityCombo<>();
+			groupCombo.create("Produktgruppe", c);
 			UI.formLabel(c, "");
 
 			diamText = UI.formText(c, "Durchmesser");

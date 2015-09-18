@@ -11,5 +11,9 @@
 	"fuel": {
 		"id": "7c206ce9-caf4-4390-8958-6d42822ac282",
 		"name": "Heizöl"
+	},
+	"group": {
+		"id": "0e524f7f-23dd-4228-a5b3-e00a78bd0b38",
+		"name": "Ölkessel mit Brenner"
 	}
 }

@@ -2,5 +2,9 @@
     "id": "a2cab249-9c7e-45ca-9a07-38afa2df95ca",
     "name": "Puffer gro\u00df",
     "purchasePrice": 12000.0,
-    "volume": 25000.0
+    "volume": 25000.0,
+    "group": {
+		"id": "72857213-2c78-47ed-838f-086480572a12",
+		"name": "Pufferspeicher"
+	}
 }

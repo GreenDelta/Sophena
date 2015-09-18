@@ -8,5 +8,9 @@
 	"minPower": 200,
 	"efficiencyRate": 0.9,
 	"isCoGenPlant": false,
-	"woodAmountType": "CHIPS"
+	"woodAmountType": "CHIPS",
+	"group": {
+		"id": "adf85ffc-2fd6-4324-9074-d82ddbb275a7",
+		"name": "Hackschnitzelkessel"
+	}
 }
