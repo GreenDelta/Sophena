@@ -41,7 +41,7 @@ class TablePage extends FormPage {
 		ScrolledForm form = UI.formHeader(managedForm, M.ClimateData);
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		Section section = UI.section(body, toolkit, M.ClimateData);
+		Section section = UI.section(body, toolkit, "Wetterstationen");
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
@@ -63,6 +63,7 @@ class TablePage extends FormPage {
 				() -> openClimateCurve(table));
 		Actions.bind(section, open);
 		Actions.bind(table, open);
+		Tables.onDoubleClick(table, e -> openClimateCurve(table));
 	}
 
 	private void openClimateCurve(TableViewer table) {

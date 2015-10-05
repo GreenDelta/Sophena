@@ -22,6 +22,7 @@ public class ClimateDataEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new TablePage(this));
+			addPage(new MapPage(this));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}
