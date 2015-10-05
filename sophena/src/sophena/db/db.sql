@@ -140,6 +140,9 @@ CREATE TABLE tbl_product_entries (
 	f_project CHAR(36),
 	f_product CHAR(36),
 	
+	price_per_piece DOUBLE,
+	number_of_items DOUBLE,
+	
 	investment DOUBLE,
 	duration INTEGER,
     repair DOUBLE,

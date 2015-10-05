@@ -6,6 +6,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
@@ -21,6 +22,7 @@ import sophena.rcp.Labels;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class EntryWizard extends Wizard {
@@ -66,6 +68,7 @@ class EntryWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private ProductCostSection costSection;
+		private Text priceText;
 
 		Page() {
 			super("OverviewPage", Labels.get(type), null);
@@ -77,8 +80,11 @@ class EntryWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
+			createCountText(comp);
+			createPriceText(comp);
 			costSection = new ProductCostSection(() -> entry.costs)
 					.createFields(comp);
+			Texts.on(costSection.investmentText).calculated();
 		}
 
 		private void createProductRow(Composite comp) {
@@ -108,12 +114,37 @@ class EntryWizard extends Wizard {
 			}
 			noProduct(false);
 			entry.product = p;
-			if (p.purchasePrice != null)
-				entry.costs.investment = p.purchasePrice;
-			Costs.copy(p.group, entry.costs);
-			costSection.refresh();
 			link.setText(p.name);
 			link.pack();
+			double price = p.purchasePrice == null ? 0 : p.purchasePrice;
+			entry.pricePerPiece = price;
+			Texts.set(priceText, price);
+			Costs.copy(p.group, entry.costs);
+			updateCosts();
+		}
+
+		private void createCountText(Composite comp) {
+			Text t = UI.formText(comp, "Anzahl");
+			Texts.on(t).init(entry.count).decimal().required().onChanged(s -> {
+				entry.count = Texts.getDouble(t);
+				updateCosts();
+			});
+			UI.formLabel(comp, "Stück");
+		}
+
+		private void createPriceText(Composite comp) {
+			priceText = UI.formText(comp, "Preis pro Stück");
+			Texts.on(priceText).init(entry.pricePerPiece).decimal().required()
+					.onChanged(s -> {
+						entry.pricePerPiece = Texts.getDouble(priceText);
+						updateCosts();
+					});
+			UI.formLabel(comp, "EUR/Stück");
+		}
+
+		private void updateCosts() {
+			entry.costs.investment = entry.count * entry.pricePerPiece;
+			costSection.refresh();
 		}
 	}
 }

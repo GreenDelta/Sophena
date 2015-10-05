@@ -2,6 +2,7 @@ package sophena.model;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,6 +20,12 @@ public class ProductEntry extends AbstractEntity {
 	@Embedded
 	public ProductCosts costs;
 
+	@Column(name = "price_per_piece")
+	public double pricePerPiece;
+
+	@Column(name = "number_of_items")
+	public double count;
+
 	@Override
 	public ProductEntry clone() {
 		ProductEntry clone = new ProductEntry();
@@ -26,6 +33,8 @@ public class ProductEntry extends AbstractEntity {
 		clone.product = product;
 		if (costs != null)
 			clone.costs = costs.clone();
+		clone.pricePerPiece = pricePerPiece;
+		clone.count = count;
 		return clone;
 	}
 

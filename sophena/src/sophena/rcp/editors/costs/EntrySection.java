@@ -61,9 +61,10 @@ class EntrySection {
 
 	private TableViewer createTable(Composite comp) {
 		TableViewer table = Tables.createViewer(comp, Labels.get(type),
-				"Investitionskosten", "Nutzungsdauer", "Instandsetzung",
+				"Anzahl", "Investitionskosten", "Nutzungsdauer", "Instandsetzung",
 				"Wartung und Inspektion", "Aufwand für Bedienen");
-		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
+		double w = 1d / 7d;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		table.setLabelProvider(new Label());
 		return table;
 	}
@@ -144,14 +145,16 @@ class EntrySection {
 			case 0:
 				return e.product != null ? e.product.name : null;
 			case 1:
-				return Numbers.toString(c.investment) + " EUR";
+				return Numbers.toString(e.count) + " Stück";
 			case 2:
-				return Numbers.toString(c.duration) + " a";
+				return Numbers.toString(c.investment) + " EUR";
 			case 3:
-				return Numbers.toString(c.repair) + " %";
+				return Numbers.toString(c.duration) + " a";
 			case 4:
-				return Numbers.toString(c.maintenance) + " %";
+				return Numbers.toString(c.repair) + " %";
 			case 5:
+				return Numbers.toString(c.maintenance) + " %";
+			case 6:
 				return Numbers.toString(c.operation) + " h/a";
 			default:
 				return null;

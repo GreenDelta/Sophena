@@ -111,7 +111,7 @@ class PipeWizard extends Wizard {
 		private void createLengthText(Composite comp) {
 			Text t = UI.formText(comp, "Länge");
 			Texts.on(t).init(pipe.length).decimal().required()
-					.onChanged((s) -> {
+					.onChanged(s -> {
 						pipe.length = Texts.getDouble(t);
 						updateCosts();
 					});
