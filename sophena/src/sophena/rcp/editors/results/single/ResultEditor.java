@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results;
+package sophena.rcp.editors.results.single;
 
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;

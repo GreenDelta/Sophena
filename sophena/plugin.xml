@@ -189,7 +189,7 @@
 			name="Wärmeverteilung" />
 
 		<editor
-			class="sophena.rcp.editors.results.ResultEditor"
+			class="sophena.rcp.editors.results.single.ResultEditor"
 			icon="icons/load_profile_16.png"
 			id="sophena.ResultEditor"
 			name="Ergebnisse" />

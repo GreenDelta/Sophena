@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results;
+package sophena.rcp.editors.results.single;
 
 import java.io.File;
 import java.io.InputStream;

@@ -11,7 +11,7 @@ import sophena.rcp.editors.costs.CostEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
-import sophena.rcp.editors.results.ResultEditor;
+import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;

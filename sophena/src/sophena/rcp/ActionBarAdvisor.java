@@ -1,6 +1,7 @@
 package sophena.rcp;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -36,6 +37,7 @@ import sophena.rcp.editors.basedata.products.HeatRecoveryEditor;
 import sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor;
 import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
 import sophena.rcp.editors.basedata.products.PlanningEditor;
+import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -82,6 +84,10 @@ public class ActionBarAdvisor extends
 		Action newAction = Actions.create(M.NewProject,
 				Images.NEW_PROJECT_16.des(), ProjectWizard::open);
 		projectMenu.add(newAction);
+		Action compare = Actions.create("Projecte vergleichen",
+				Images.BAR_CHART_16.des(),
+				() -> ComparisonDialog.open(Optional.empty()));
+		projectMenu.add(compare);
 		menu.add(projectMenu);
 	}
 

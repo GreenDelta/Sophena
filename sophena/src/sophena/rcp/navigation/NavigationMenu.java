@@ -8,6 +8,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 
 import sophena.rcp.navigation.actions.AddAction;
 import sophena.rcp.navigation.actions.CalculateAction;
+import sophena.rcp.navigation.actions.CompareAction;
 import sophena.rcp.navigation.actions.DeleteAction;
 import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
@@ -22,6 +23,7 @@ public class NavigationMenu extends CommonActionProvider {
 	private NavigationAction[][] actionGroups = {
 			{
 					new OpenAction(),
+					new CompareAction(),
 					new AddAction(),
 					new DuplicateAction(),
 					new DisableAction(),

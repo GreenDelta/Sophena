@@ -3,7 +3,7 @@ package sophena.rcp.navigation.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.rcp.Images;
-import sophena.rcp.editors.results.ResultEditor;
+import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
 import sophena.rcp.navigation.NavigationElement;

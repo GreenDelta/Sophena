@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results;
+package sophena.rcp.editors.results.single;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

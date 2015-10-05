@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results;
+package sophena.rcp.editors.results.single;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;

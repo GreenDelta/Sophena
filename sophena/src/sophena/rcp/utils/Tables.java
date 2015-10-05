@@ -1,6 +1,7 @@
 package sophena.rcp.utils;
 
 import java.util.function.Consumer;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -120,6 +121,17 @@ public class Tables {
 				}
 			});
 		}
+	}
+
+	public static void onClick(TableViewer viewer, Consumer<MouseEvent> fn) {
+		if (viewer == null || viewer.getTable() == null || fn == null)
+			return;
+		viewer.getTable().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				fn.accept(e);
+			}
+		});
 	}
 
 	/** Add an event handler for double clicks on the given table viewer. */

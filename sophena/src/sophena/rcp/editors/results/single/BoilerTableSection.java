@@ -1,4 +1,4 @@
-package sophena.rcp.editors.results;
+package sophena.rcp.editors.results.single;
 
 import java.util.ArrayList;
 import java.util.Collections;
