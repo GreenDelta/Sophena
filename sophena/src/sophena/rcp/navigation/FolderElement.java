@@ -8,7 +8,6 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.db.daos.ConsumerDao;
 import sophena.db.daos.ProducerDao;
-import sophena.db.daos.ProjectDao;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -56,8 +55,7 @@ public class FolderElement implements NavigationElement {
 		case PRODUCTION:
 			syncProducers();
 			break;
-		case VARIANTS:
-			syncVariants();
+		default:
 			break;
 		}
 	}
@@ -74,13 +72,6 @@ public class FolderElement implements NavigationElement {
 		ChildSync.sync(childs,
 				dao.getDescriptors(getProject()),
 				(d) -> new ProducerElement(this, d));
-	}
-
-	private void syncVariants() {
-		ProjectDao dao = new ProjectDao(App.getDb());
-		ChildSync.sync(childs,
-				dao.getVariantDescriptors(getProject()),
-				(d) -> new ProjectElement(this, d));
 	}
 
 	@Override
@@ -101,8 +92,6 @@ public class FolderElement implements NavigationElement {
 			return M.Costs;
 		case RESULTS:
 			return "Ergebnisse";
-		case VARIANTS:
-			return M.Variants;
 		default:
 			return M.Unknown;
 		}
@@ -131,8 +120,6 @@ public class FolderElement implements NavigationElement {
 			return Images.PUMP_16.img();
 		case RESULTS:
 			return Images.LOAD_PROFILE_16.img();
-		case VARIANTS:
-			return Images.PROJECT_16.img();
 		default:
 			return null;
 		}

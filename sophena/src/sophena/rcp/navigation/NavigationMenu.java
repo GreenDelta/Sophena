@@ -13,22 +13,23 @@ import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
 import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
-import sophena.rcp.navigation.actions.NewVariantAction;
 import sophena.rcp.navigation.actions.OpenAction;
+import sophena.rcp.navigation.actions.SaveAsAction;
 import sophena.rcp.utils.Viewers;
 
 public class NavigationMenu extends CommonActionProvider {
 
-	private NavigationAction[][] actionGroups = { {
-			new OpenAction(),
-			new AddAction(),
-			new DuplicateAction(),
-			new DisableAction(),
-			new DeleteAction()
-	}, {
-			new NewVariantAction(),
-			new CalculateAction()
-	}
+	private NavigationAction[][] actionGroups = {
+			{
+					new OpenAction(),
+					new AddAction(),
+					new DuplicateAction(),
+					new DisableAction(),
+					new SaveAsAction(),
+					new DeleteAction()
+			}, {
+					new CalculateAction()
+			}
 	};
 
 	@Override

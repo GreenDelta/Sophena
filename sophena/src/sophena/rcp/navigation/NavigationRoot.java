@@ -2,8 +2,9 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.db.daos.ProjectDao;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
@@ -26,9 +27,7 @@ public class NavigationRoot implements NavigationElement {
 		if (childs == null)
 			return;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		List<ProjectDescriptor> dbContent = dao.getDescriptors().stream()
-				.filter((d) -> !d.isVariant())
-				.collect(Collectors.toList());
+		List<ProjectDescriptor> dbContent = dao.getDescriptors();
 		ChildSync.sync(childs, dbContent,
 				(d) -> new ProjectElement(this, d));
 	}

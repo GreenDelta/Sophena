@@ -122,8 +122,6 @@ CREATE TABLE tbl_projects (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
-	is_variant BOOLEAN,
-	f_project CHAR(36),
 	project_duration INTEGER,
 	f_cost_settings CHAR(36),
 	f_weather_station CHAR(36),

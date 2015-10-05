@@ -2,7 +2,9 @@ package sophena.rcp.navigation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
+
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Images;
 
@@ -30,15 +32,12 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 		ProjectDescriptor p = getDescriptor();
 		if (p == null)
 			return new FolderType[0];
-		int count = p.isVariant() ? 5 : 6;
-		FolderType[] types = new FolderType[count];
+		FolderType[] types = new FolderType[5];
 		types[0] = FolderType.CONSUMPTION;
 		types[1] = FolderType.PRODUCTION;
 		types[2] = FolderType.DISTRIBUTION;
 		types[3] = FolderType.COSTS;
 		types[4] = FolderType.RESULTS;
-		if (!p.isVariant())
-			types[5] = FolderType.VARIANTS;
 		return types;
 	}
 

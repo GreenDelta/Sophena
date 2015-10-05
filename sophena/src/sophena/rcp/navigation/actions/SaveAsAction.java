@@ -10,76 +10,50 @@ import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProjectElement;
 import sophena.rcp.utils.UI;
 
-public class NewVariantAction extends NavigationAction {
+public class SaveAsAction extends NavigationAction {
 
 	private ProjectDescriptor descriptor;
 
-	public NewVariantAction() {
-		setText("Neue Variante");
+	public SaveAsAction() {
+		setText("Speichern unter...");
 		setImageDescriptor(Images.NEW_PROJECT_16.des());
 	}
 
 	@Override
 	public boolean accept(NavigationElement element) {
-		if (element instanceof ProjectElement)
-			return acceptProjectElement((ProjectElement) element);
-		if (element instanceof FolderElement)
-			return acceptStructureElement((FolderElement) element);
-		else
+		if (!(element instanceof ProjectElement))
 			return false;
-	}
-
-	private boolean acceptStructureElement(FolderElement element) {
-		FolderElement e = element;
-		if (e.getType() != FolderType.VARIANTS)
-			return false;
-		ProjectDescriptor p = e.getProject();
-		if (p == null || p.isVariant())
-			return false;
-		this.descriptor = p;
-		return true;
-	}
-
-	private boolean acceptProjectElement(ProjectElement element) {
-		ProjectElement e = element;
-		ProjectDescriptor p = e.getDescriptor();
-		if (p == null || p.isVariant())
-			return false;
-		this.descriptor = p;
-		return true;
+		ProjectElement e = (ProjectElement) element;
+		descriptor = e.getDescriptor();
+		return descriptor != null;
 	}
 
 	@Override
 	public void run() {
 		if (descriptor == null)
 			return;
-		InputDialog dialog = new InputDialog(UI.shell(), "Neue Variante",
-				"Name der Variante", "Neue Variante", this::checkName);
+		InputDialog dialog = new InputDialog(UI.shell(), "Speichern unter...",
+				"Name des Projekts", descriptor.name + " - Kopie", this::checkName);
 		if (dialog.open() == Window.OK) {
 			String val = dialog.getValue();
 			if (val == null)
 				return;
-			createVariant(val);
+			copyProject(val);
 		}
 	}
 
-	private void createVariant(String val) {
+	private void copyProject(String val) {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(descriptor.id);
-			Project variant = p.clone();
-			variant.name = val;
-			variant.variant = true;
-			variant.variants.clear();
-			p.variants.add(variant);
-			dao.update(p);
+			Project copy = p.clone();
+			copy.name = val;
+			dao.insert(copy);
 			Navigator.refresh();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());

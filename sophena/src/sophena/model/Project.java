@@ -21,9 +21,6 @@ public class Project extends RootEntity {
 	@Column(name = "project_duration")
 	public int projectDuration;
 
-	@Column(name = "is_variant")
-	public boolean variant;
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
 	public final List<Producer> producers = new ArrayList<>();
@@ -31,10 +28,6 @@ public class Project extends RootEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
 	public final List<Consumer> consumers = new ArrayList<>();
-
-	@JoinColumn(name = "f_project")
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	public final List<Project> variants = new ArrayList<>();
 
 	@OneToOne
 	@JoinColumn(name = "f_weather_station")
@@ -60,13 +53,10 @@ public class Project extends RootEntity {
 		clone.description = description;
 		clone.projectDuration = projectDuration;
 		clone.weatherStation = weatherStation;
-		clone.variant = variant;
 		for (Consumer consumer : consumers)
 			clone.consumers.add(consumer.clone());
 		for (Producer producer : producers)
 			clone.producers.add(producer.clone());
-		for (Project variant : variants)
-			clone.variants.add(variant.clone());
 		if (heatNet != null)
 			clone.heatNet = heatNet.clone();
 		if (costSettings != null)
@@ -79,7 +69,6 @@ public class Project extends RootEntity {
 		d.id = id;
 		d.name = name;
 		d.description = description;
-		d.setVariant(variant);
 		return d;
 	}
 }
