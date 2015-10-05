@@ -24,13 +24,13 @@ public class DisableAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) element;
-			updateUI(e.getDescriptor().isDisabled());
+			updateUI(e.getDescriptor().disabled);
 			elem = e;
 			return true;
 		}
 		if (element instanceof ProducerElement) {
 			ProducerElement e = (ProducerElement) element;
-			updateUI(e.getDescriptor().isDisabled());
+			updateUI(e.getDescriptor().disabled);
 			elem = e;
 			return true;
 		}

@@ -9,6 +9,9 @@ CREATE TABLE tbl_weather_stations (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+	longitude DOUBLE,
+	latitude DOUBLE,
+	altitude DOUBLE,
 	data BLOB (80 K),
 
 	PRIMARY KEY (id)

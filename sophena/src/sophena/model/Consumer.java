@@ -77,7 +77,7 @@ public class Consumer extends RootEntity {
 		d.id = id;
 		d.name = name;
 		d.description = description;
-		d.setDisabled(disabled);
+		d.disabled = disabled;
 		return d;
 	}
 }

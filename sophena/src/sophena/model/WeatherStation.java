@@ -14,6 +14,15 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 @Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
 public class WeatherStation extends RootEntity {
 
+	@Column(name = "longitude")
+	public double longitude;
+
+	@Column(name = "latitude")
+	public double latitude;
+
+	@Column(name = "altitude")
+	public double altitude;
+
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
 	public double[] data;
@@ -23,6 +32,9 @@ public class WeatherStation extends RootEntity {
 		d.id = id;
 		d.name = name;
 		d.description = description;
+		d.longitude = longitude;
+		d.latitude = latitude;
+		d.altitude = altitude;
 		return d;
 	}
 }

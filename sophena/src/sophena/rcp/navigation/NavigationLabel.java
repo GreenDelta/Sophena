@@ -68,12 +68,12 @@ public class NavigationLabel extends ColumnLabelProvider implements
 			return boldFont;
 		if (obj instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) obj;
-			boolean dis = e.getDescriptor().isDisabled();
+			boolean dis = e.getDescriptor().disabled;
 			return dis ? italicFont : null;
 		}
 		if (obj instanceof ProducerElement) {
 			ProducerElement e = (ProducerElement) obj;
-			boolean dis = e.getDescriptor().isDisabled();
+			boolean dis = e.getDescriptor().disabled;
 			return dis ? italicFont : null;
 		}
 		return null;
@@ -83,12 +83,12 @@ public class NavigationLabel extends ColumnLabelProvider implements
 	public Color getForeground(Object obj) {
 		if (obj instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) obj;
-			boolean dis = e.getDescriptor().isDisabled();
+			boolean dis = e.getDescriptor().disabled;
 			return dis ? Colors.getGray() : null;
 		}
 		if (obj instanceof ProducerElement) {
 			ProducerElement e = (ProducerElement) obj;
-			boolean dis = e.getDescriptor().isDisabled();
+			boolean dis = e.getDescriptor().disabled;
 			return dis ? Colors.getGray() : null;
 		}
 		return null;
