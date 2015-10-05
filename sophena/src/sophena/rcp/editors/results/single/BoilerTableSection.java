@@ -37,10 +37,11 @@ class BoilerTableSection {
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, "Wärmelieferant",
-				"Brennstoff", "Rang", "Gelieferte Wärme", "Anteil",
-				"Volllaststunden");
+				"Nennleistung", "Brennstoff", "Rang", "Gelieferte Wärme",
+				"Anteil", "Volllaststunden");
 		table.setLabelProvider(new Label());
-		Tables.bindColumnWidths(table, 0.2, 0.2, 0.1, 0.2, 0.1, 0.2);
+		double w = 1d / 7d;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		table.setInput(getItems());
 	}
 
@@ -61,6 +62,8 @@ class BoilerTableSection {
 			Item item = new Item();
 			item.name = p.name;
 			item.fuel = getFuel(p);
+			double power = p.boiler != null ? p.boiler.maxPower : 0;
+			item.power = Numbers.toString(power) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
 			else
@@ -128,6 +131,7 @@ class BoilerTableSection {
 	private class Item {
 		int pos;
 		String name;
+		String power;
 		String fuel;
 		String rank;
 		double heat;
@@ -156,15 +160,16 @@ class BoilerTableSection {
 			case 0:
 				return item.name;
 			case 1:
-				return item.fuel;
+				return item.power;
 			case 2:
-				return item.rank;
+				return item.fuel;
 			case 3:
-				return Numbers.toString(item.heat) + " kWh";
+				return item.rank;
 			case 4:
-				return Numbers.toString(item.share)
-						+ " %";
+				return Numbers.toString((int) item.heat) + " kWh";
 			case 5:
+				return Numbers.toString(item.share) + " %";
+			case 6:
 				return item.fullLoadHours == null ? null : Numbers
 						.toString(item.fullLoadHours) + " h";
 			default:
