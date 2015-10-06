@@ -32,7 +32,7 @@ import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-class ConsumptionDataWizard extends Wizard {
+class ConsumptionWizard extends Wizard {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
@@ -42,7 +42,7 @@ class ConsumptionDataWizard extends Wizard {
 	public static int open(FuelConsumption consumption, int loadHours) {
 		if (consumption == null)
 			return Window.CANCEL;
-		ConsumptionDataWizard wiz = new ConsumptionDataWizard();
+		ConsumptionWizard wiz = new ConsumptionWizard();
 		wiz.setWindowTitle(M.CollectConsumptionData);
 		wiz.consumption = consumption;
 		wiz.loadHours = loadHours;
@@ -214,10 +214,9 @@ class ConsumptionDataWizard extends Wizard {
 				Texts.set(amountText, consumption.amount);
 				double util = consumption.utilisationRate;
 				if (util == 0)
-					util = 75.892;
+					util = BoilerEfficiency.getUtilisationRateSmall(90, loadHours);
 				Texts.set(utilText, util);
-				double effi = BoilerEfficiency.getEfficiencyRateSmall(util,
-						loadHours);
+				double effi = BoilerEfficiency.getEfficiencyRateSmall(util, loadHours);
 				Texts.set(effiText, effi);
 				validate();
 			}

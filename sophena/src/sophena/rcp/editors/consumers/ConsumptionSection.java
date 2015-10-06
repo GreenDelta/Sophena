@@ -70,7 +70,7 @@ class ConsumptionSection {
 	private void onAdd() {
 		FuelConsumption c = new FuelConsumption();
 		c.id = UUID.randomUUID().toString();
-		int code = ConsumptionDataWizard.open(c, consumer().loadHours);
+		int code = ConsumptionWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
 			consumer().fuelConsumptions.add(c);
 			table.setInput(consumer().fuelConsumptions);
@@ -93,7 +93,7 @@ class ConsumptionSection {
 		FuelConsumption c = Viewers.getFirstSelected(table);
 		if (c == null)
 			return;
-		int code = ConsumptionDataWizard.open(c, consumer().loadHours);
+		int code = ConsumptionWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
 			table.setInput(consumer().fuelConsumptions);
 			editor.calculate();
