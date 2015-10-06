@@ -3,8 +3,10 @@ package sophena.rcp.editors.results.single;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -44,44 +46,59 @@ class CostResultPage extends FormPage {
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
 		table.setInput(getItems(result));
+		Table t = table.getTable();
+		t.getColumn(1).setAlignment(SWT.RIGHT);
+		t.getColumn(2).setAlignment(SWT.RIGHT);
 	}
 
 	private Item[] getItems(CostResult result) {
+		CostResult.FieldSet netto = result.netto;
+		CostResult.FieldSet brutto = result.brutto;
 		return new Item[] {
 				new Item("Investitionskosten",
-						result.netto.investments,
-						result.brutto.investments),
+						netto.investments,
+						brutto.investments),
 				new Item("Kapitalgebundene Kosten",
-						result.netto.capitalCosts,
-						result.brutto.capitalCosts),
+						netto.capitalCosts,
+						brutto.capitalCosts),
 				new Item("Bedarfsgebundene Kosten",
-						result.netto.consumptionCosts,
-						result.brutto.consumptionCosts),
+						netto.consumptionCosts,
+						brutto.consumptionCosts),
 				new Item("Betriebsgebundene Kosten",
-						result.netto.operationCosts,
-						result.brutto.operationCosts),
+						netto.operationCosts,
+						brutto.operationCosts),
 				new Item("Sonstige Kosten",
-						result.netto.otherCosts,
-						result.brutto.otherCosts),
+						netto.otherCosts,
+						brutto.otherCosts),
 				new Item("Erlöse",
-						result.netto.revenues,
-						result.brutto.revenues),
+						netto.revenues,
+						brutto.revenues),
 				new Item("Jährliche Kosten",
-						result.netto.annualCosts,
-						result.brutto.annualCosts),
+						netto.annualCosts,
+						brutto.annualCosts),
 				new Item("Wärmegestehungskosten",
-						result.netto.heatGenerationCosts,
-						result.brutto.heatGenerationCosts)
+						eur(netto.heatGenerationCosts * 1000) + "/MWh",
+						eur(brutto.heatGenerationCosts * 1000) + "/MWh")
 		};
+	}
+
+	private String eur(double value) {
+		return Numbers.toString((int) Math.round(value)) + " EUR";
 	}
 
 	private class Item {
 
 		final String label;
-		final double netto;
-		final double brutto;
+		final String netto;
+		final String brutto;
 
 		Item(String label, double netto, double brutto) {
+			this.label = label;
+			this.netto = eur(netto);
+			this.brutto = eur(brutto);
+		}
+
+		Item(String label, String netto, String brutto) {
 			this.label = label;
 			this.netto = netto;
 			this.brutto = brutto;
@@ -105,9 +122,9 @@ class CostResultPage extends FormPage {
 			case 0:
 				return item.label;
 			case 1:
-				return Numbers.toString(item.netto) + " EUR";
+				return item.netto;
 			case 2:
-				return Numbers.toString(item.brutto) + " EUR";
+				return item.brutto;
 			default:
 				return null;
 			}

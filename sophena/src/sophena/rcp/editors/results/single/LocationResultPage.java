@@ -96,7 +96,7 @@ public class LocationResultPage extends FormPage {
 		double lngSum = 0;
 		for (Consumer c : editor.project.consumers) {
 			Location loc = c.location;
-			if (loc == null)
+			if (loc == null || loc.latitude == null || loc.longitude == null)
 				continue;
 			points++;
 			latSum += loc.latitude;
