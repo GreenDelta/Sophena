@@ -43,6 +43,8 @@ public enum Images {
 
 	ERROR_16("error_16.png"),
 
+	EXCEL_16("excel_16.png"),
+
 	FILE_16("file_16.png"),
 
 	FUEL_16("fuel_16.png"),

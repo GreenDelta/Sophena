@@ -192,7 +192,8 @@
 			class="sophena.rcp.editors.results.single.ResultEditor"
 			icon="icons/load_profile_16.png"
 			id="sophena.ResultEditor"
-			name="Ergebnisse" />
+			name="Ergebnisse" 
+			contributorClass="sophena.rcp.editors.results.single.ResultToolBar"/>
 
 		<editor
 			class="sophena.rcp.editors.costs.CostEditor"
