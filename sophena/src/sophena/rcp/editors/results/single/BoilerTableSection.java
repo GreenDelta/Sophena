@@ -26,9 +26,11 @@ import sophena.rcp.utils.UI;
 class BoilerTableSection {
 
 	private EnergyResult result;
+	private double maxLoad;
 
-	BoilerTableSection(EnergyResult result) {
+	BoilerTableSection(EnergyResult result, double maxLoad) {
 		this.result = result;
+		this.maxLoad = maxLoad;
 	}
 
 	public void render(Composite body, FormToolkit tk) {
@@ -50,8 +52,9 @@ class BoilerTableSection {
 		if (result.producers == null)
 			return Collections.emptyList();
 		initProducerItems(result.producers, items);
+		double powerDiff = calculatePowerDiff(result.producers);
+		addDiffItem(items, powerDiff);
 		addBufferItem(items, result.producers);
-		addDiffItem(items);
 		calculateShares(items);
 		return items;
 	}
@@ -111,7 +114,16 @@ class BoilerTableSection {
 		bufferItem.heat = result.totalBufferedHeat;
 	}
 
-	private void addDiffItem(List<Item> items) {
+	private double calculatePowerDiff(Producer[] producers) {
+		double power = 0;
+		for (Producer p : producers) {
+			if (p.boiler != null)
+				power += p.boiler.maxPower;
+		}
+		return power - maxLoad;
+	}
+
+	private void addDiffItem(List<Item> items, double powerDiff) {
 		double diff = 0;
 		for (int i = 0; i < Stats.HOURS; i++) {
 			double supplied = result.suppliedPower[i];
@@ -119,11 +131,12 @@ class BoilerTableSection {
 			if (supplied < load)
 				diff += (load - supplied);
 		}
-		if (diff == 0)
+		if (diff == 0 && powerDiff >= 0)
 			return;
 		Item item = new Item();
 		item.pos = -1;
 		item.name = "Ungedeckte Leistung";
+		item.power = powerDiff < 0 ? Numbers.toString(powerDiff) + " kW" : null;
 		item.heat = diff;
 		items.add(item);
 	}

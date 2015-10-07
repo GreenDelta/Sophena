@@ -18,7 +18,7 @@ class EnergyResultPage extends FormPage {
 	public EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", "Energie");
 		this.result = editor.result.energyResult;
-		this.maxLoad = ProjectLoad.getMaxLoad(editor.project);
+		this.maxLoad = ProjectLoad.getSimultanousMax(editor.project);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ class EnergyResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisse - Energie");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		BoilerTableSection tableSection = new BoilerTableSection(result);
+		BoilerTableSection tableSection = new BoilerTableSection(result, maxLoad);
 		tableSection.render(body, tk);
 		BoilerChart unsortedChart = new BoilerChart(result, maxLoad);
 		unsortedChart.setSorted(false);

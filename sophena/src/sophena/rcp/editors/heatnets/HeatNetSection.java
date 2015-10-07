@@ -43,7 +43,7 @@ class HeatNetSection {
 				(v) -> heatNet().returnTemperature = v);
 
 		d("Maximal benötigte Leistung (ohne Gleichzeitigkeitsfaktor)", "kW",
-				ProjectLoad.getMaxLoad(editor.project),
+				ProjectLoad.getMax(editor.project),
 				(v) -> {
 					heatNet().maxLoad = v;
 					updateMaxSimLoad();
@@ -66,8 +66,7 @@ class HeatNetSection {
 	private Text createMaxSimLoadText() {
 		Text t = UI.formText(comp, tk,
 				"Maximal benötigte Leistung (mit Gleichzeitigkeitsfaktor)");
-		double maxLoad = ProjectLoad.getMaxLoad(editor.project);
-		double simLoad = maxLoad * heatNet().simultaneityFactor;
+		double simLoad = ProjectLoad.getSimultanousMax(editor.project);
 		Texts.set(t, simLoad);
 		Texts.on(t).decimal().calculated();
 		UI.formLabel(comp, tk, "kW");
@@ -86,8 +85,7 @@ class HeatNetSection {
 	}
 
 	private void updateMaxSimLoad() {
-		double maxLoad = ProjectLoad.getMaxLoad(editor.project);
-		double val = maxLoad * heatNet().simultaneityFactor;
+		double val = ProjectLoad.getSimultanousMax(editor.project);
 		Texts.set(maxSimLoadText, val);
 	}
 
