@@ -30,19 +30,21 @@ class BoilerChart {
 
 	private EnergyResult result;
 	private boolean sorted = false;
+	private double maxLoad;
 
 	private XYGraph chart;
 	private Trace loadTrace;
 
-	public BoilerChart(EnergyResult result) {
+	BoilerChart(EnergyResult result, double maxLoad) {
 		this.result = result;
+		this.maxLoad = maxLoad;
 	}
 
-	public void setSorted(boolean sorted) {
+	void setSorted(boolean sorted) {
 		this.sorted = sorted;
 	}
 
-	public void render(Composite body, FormToolkit tk) {
+	void render(Composite body, FormToolkit tk) {
 		String title = sorted ? "Geordnete Jahresdauerlinie"
 				: "Ungeordnete Jahresdauerlinie";
 		Section section = UI.section(body, tk, title);
@@ -82,7 +84,7 @@ class BoilerChart {
 		Axis y = g.primaryYAxis;
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
-		y.setRange(0, 50);
+		y.setRange(0, maxLoad);
 		return g;
 	}
 
@@ -97,10 +99,6 @@ class BoilerChart {
 	private void renderChart(EnergyResult pr) {
 
 		double[] supTop = Arrays.copyOf(pr.suppliedPower, Stats.HOURS);
-		double supMax = Stats.nextStep(Stats.max(supTop), 5);
-		double reqMax = Stats.nextStep(Stats.max(pr.loadCurve), 5);
-		chart.primaryYAxis.setRange(0, Math.max(supMax, reqMax));
-
 		Producer[] producers = pr.producers;
 		double[][] results = pr.producerResults;
 

@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -19,7 +20,6 @@ class HeatNetSection {
 	private Composite comp;
 	private FormToolkit tk;
 	private Text maxSimLoadText;
-	private Text maxLoadText;
 
 	HeatNetSection(HeatNetEditor editor) {
 		this.editor = editor;
@@ -42,9 +42,9 @@ class HeatNetSection {
 				heatNet().returnTemperature,
 				(v) -> heatNet().returnTemperature = v);
 
-		maxLoadText = d(
-				"Maximal benötigte Leistung (ohne Gleichzeitigkeitsfaktor)",
-				"kW", heatNet().maxLoad, (v) -> {
+		d("Maximal benötigte Leistung (ohne Gleichzeitigkeitsfaktor)", "kW",
+				ProjectLoad.getMaxLoad(editor.project),
+				(v) -> {
 					heatNet().maxLoad = v;
 					updateMaxSimLoad();
 				});
@@ -66,7 +66,8 @@ class HeatNetSection {
 	private Text createMaxSimLoadText() {
 		Text t = UI.formText(comp, tk,
 				"Maximal benötigte Leistung (mit Gleichzeitigkeitsfaktor)");
-		double simLoad = heatNet().maxLoad * heatNet().simultaneityFactor;
+		double maxLoad = ProjectLoad.getMaxLoad(editor.project);
+		double simLoad = maxLoad * heatNet().simultaneityFactor;
 		Texts.set(t, simLoad);
 		Texts.on(t).decimal().calculated();
 		UI.formLabel(comp, tk, "kW");
@@ -85,7 +86,8 @@ class HeatNetSection {
 	}
 
 	private void updateMaxSimLoad() {
-		double val = heatNet().maxLoad * heatNet().simultaneityFactor;
+		double maxLoad = ProjectLoad.getMaxLoad(editor.project);
+		double val = maxLoad * heatNet().simultaneityFactor;
 		Texts.set(maxSimLoadText, val);
 	}
 

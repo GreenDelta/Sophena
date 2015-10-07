@@ -44,8 +44,9 @@ class HeatDemandSection {
 		if (!consumer().demandBased) {
 			t.setEditable(false);
 			editor.onCalculated((values) -> {
-				double q = Stats.sum(values);
-				Texts.set(t, q / consumer().loadHours);
+				double heatingLoad = Stats.sum(values) / consumer().loadHours;
+				consumer().heatingLoad = heatingLoad;
+				Texts.set(t, heatingLoad);
 			});
 		} else {
 			Texts.on(t).required().decimal().onChanged((text) -> {

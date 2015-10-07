@@ -7,15 +7,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.EnergyResult;
+import sophena.calc.ProjectLoad;
 import sophena.rcp.utils.UI;
 
 class EnergyResultPage extends FormPage {
 
 	private EnergyResult result;
+	private double maxLoad;
 
 	public EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", "Energie");
 		this.result = editor.result.energyResult;
+		this.maxLoad = ProjectLoad.getMaxLoad(editor.project);
 	}
 
 	@Override
@@ -25,10 +28,10 @@ class EnergyResultPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		BoilerTableSection tableSection = new BoilerTableSection(result);
 		tableSection.render(body, tk);
-		BoilerChart unsortedChart = new BoilerChart(result);
+		BoilerChart unsortedChart = new BoilerChart(result, maxLoad);
 		unsortedChart.setSorted(false);
 		unsortedChart.render(body, tk);
-		BoilerChart sortedChart = new BoilerChart(result);
+		BoilerChart sortedChart = new BoilerChart(result, maxLoad);
 		sortedChart.setSorted(true);
 		sortedChart.render(body, tk);
 		form.reflow(true);

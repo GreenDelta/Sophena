@@ -30,7 +30,7 @@ public class HeatNet extends AbstractEntity {
 	public double simultaneityFactor;
 
 	@Column(name = "max_load")
-	public double maxLoad;
+	public Double maxLoad;
 
 	@OneToOne
 	@JoinColumn(name = "f_buffer_tank")

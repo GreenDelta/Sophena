@@ -13,14 +13,24 @@ import sophena.model.Stats;
 
 public class ProjectLoad {
 
+	private ProjectLoad() {
+	}
+
+	/**
+	 * The maximum load of the project can be entered by the user. If no value
+	 * is entered the value is calculated from the heat net and consumer data.
+	 */
 	public static double getMaxLoad(Project project) {
 		if (project == null)
 			return 0;
-		double load = getNetLoad(project.heatNet);
+		HeatNet net = project.heatNet;
+		if (net != null && net.maxLoad != null)
+			return net.maxLoad;
+		double load = getNetLoad(net);
 		for (Consumer c : project.consumers) {
 			load += c.heatingLoad;
 		}
-		return load;
+		return Math.ceil(load);
 	}
 
 	public static double[] getCurve(Project project) {
