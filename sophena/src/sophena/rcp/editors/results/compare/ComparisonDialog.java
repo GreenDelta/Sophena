@@ -116,6 +116,12 @@ public class ComparisonDialog extends FormDialog {
 		Rcp.run("Vergleiche Projekte",
 				() -> ref.set(Comparison.calculate(list)),
 				() -> ComparisonView.open(ref.get()));
+		close();
+	}
+
+	@Override
+	protected void cancelPressed() {
+		close();
 	}
 
 	@Override

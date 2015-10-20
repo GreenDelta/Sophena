@@ -3,14 +3,13 @@ package sophena.rcp.editors.results.compare;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sophena.calc.Comparison;
 import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.Log;
 
 public class ComparisonView extends Editor {
 
@@ -32,8 +31,7 @@ public class ComparisonView extends Editor {
 			KeyEditorInput kei = (KeyEditorInput) input;
 			comparison = App.pop(kei.getKey());
 		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to init comparison result editor", e);
+			Log.error(this, "failed to init comparison result editor", e);
 		}
 	}
 
@@ -42,7 +40,7 @@ public class ComparisonView extends Editor {
 		try {
 			addPage(new ChartPage(this));
 		} catch (Exception e) {
-
+			Log.error(this, "failed to add pages", e);
 		}
 	}
 
