@@ -15,7 +15,6 @@ import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
-import sophena.rcp.utils.Cache;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Rcp;
@@ -35,7 +34,7 @@ public class ResultEditor extends Editor {
 			Project p = dao.get(d.id);
 			ProjectResult result = ProjectResult.calculate(p);
 			Object[] data = new Object[] { p, result };
-			String key = Cache.put(data);
+			String key = App.stash(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");
 		});
@@ -58,7 +57,7 @@ public class ResultEditor extends Editor {
 		super.init(site, input);
 		try {
 			KeyEditorInput kei = (KeyEditorInput) input;
-			Object[] data = Cache.remove(kei.getKey());
+			Object[] data = App.pop(kei.getKey());
 			project = (Project) data[0];
 			result = (ProjectResult) data[1];
 			setPartName(project.name);

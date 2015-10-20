@@ -196,6 +196,12 @@
 			contributorClass="sophena.rcp.editors.results.single.ResultToolBar"/>
 
 		<editor
+        	id="sophena.ComparisonView"
+        	icon="icons/bar_chart_16.png"
+        	class="sophena.rcp.editors.results.compare.ComparisonView"
+        	name="Ergebnisvergleich" />
+
+		<editor
 			class="sophena.rcp.editors.costs.CostEditor"
 			icon="icons/costs_16.png"
 			id="sophena.CostEditor"

@@ -1,6 +1,8 @@
 package sophena.rcp.editors.results.compare;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,13 +21,18 @@ import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.Comparison;
 import sophena.db.daos.ProjectDao;
+import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.utils.Rcp;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Ref;
 
 /**
  * A dialog to set up a project comparison.
@@ -34,6 +41,7 @@ public class ComparisonDialog extends FormDialog {
 
 	private TableViewer table;
 	private Map<String, Boolean> selected = new HashMap<>();
+	private List<ProjectDescriptor> descriptors;
 
 	public static void open(Optional<ProjectDescriptor> initial) {
 		ComparisonDialog dialog = new ComparisonDialog();
@@ -70,7 +78,9 @@ public class ComparisonDialog extends FormDialog {
 		UI.gridData(table.getTable(), true, true);
 		Tables.onClick(table, this::itemClicked);
 		ProjectDao dao = new ProjectDao(App.getDb());
-		table.setInput(dao.getDescriptors());
+		descriptors = dao.getDescriptors();
+		Sorters.byName(descriptors);
+		table.setInput(descriptors);
 	}
 
 	private void itemClicked(MouseEvent e) {
@@ -89,6 +99,23 @@ public class ComparisonDialog extends FormDialog {
 				count++;
 		}
 		getButton(IDialogConstants.OK_ID).setEnabled(count > 1);
+	}
+
+	@Override
+	protected void okPressed() {
+		List<Project> list = new ArrayList<>();
+		ProjectDao dao = new ProjectDao(App.getDb());
+		for (ProjectDescriptor d : descriptors) {
+			Boolean s = selected.get(d.id);
+			if (!Boolean.TRUE.equals(s))
+				continue;
+			Project p = dao.get(d.id);
+			list.add(p);
+		}
+		Ref<Comparison> ref = new Ref<>();
+		Rcp.run("Vergleiche Projekte",
+				() -> ref.set(Comparison.calculate(list)),
+				() -> ComparisonView.open(ref.get()));
 	}
 
 	@Override

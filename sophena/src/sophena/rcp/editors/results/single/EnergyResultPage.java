@@ -15,7 +15,7 @@ class EnergyResultPage extends FormPage {
 	private EnergyResult result;
 	private double maxLoad;
 
-	public EnergyResultPage(ResultEditor editor) {
+	EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", "Energie");
 		this.result = editor.result.energyResult;
 		this.maxLoad = ProjectLoad.getSimultanousMax(editor.project);
