@@ -45,6 +45,8 @@ public enum Images {
 
 	EXCEL_16("excel_16.png"),
 
+	EXPORT_16("export_16.png"),
+
 	FILE_16("file_16.png"),
 
 	FUEL_16("fuel_16.png"),

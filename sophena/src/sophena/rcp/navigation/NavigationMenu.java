@@ -12,6 +12,7 @@ import sophena.rcp.navigation.actions.CompareAction;
 import sophena.rcp.navigation.actions.DeleteAction;
 import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
+import sophena.rcp.navigation.actions.ExportAction;
 import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
 import sophena.rcp.navigation.actions.OpenAction;
@@ -28,7 +29,8 @@ public class NavigationMenu extends CommonActionProvider {
 					new DuplicateAction(),
 					new DisableAction(),
 					new SaveAsAction(),
-					new DeleteAction()
+					new DeleteAction(),
+					new ExportAction()
 			}, {
 					new CalculateAction()
 			}
