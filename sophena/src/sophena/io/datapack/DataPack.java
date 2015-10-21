@@ -46,12 +46,10 @@ public class DataPack implements Closeable {
 		zip = FileSystems.newFileSystem(uri, options);
 	}
 
-	public void put(ModelType type, JsonObject object) {
-		String id = getId(object);
-		if (type == null || id == null)
+	public void put(ModelType type, String id, String json) {
+		if (type == null || id == null || json == null)
 			return;
 		try {
-			String json = new Gson().toJson(object);
 			byte[] bytes = json.getBytes("utf-8");
 			String dirName = getPath(type);
 			Path dir = zip.getPath(dirName);
@@ -62,16 +60,6 @@ public class DataPack implements Closeable {
 		} catch (Exception e) {
 			log.error("failed to add " + type + "/" + id, e);
 		}
-	}
-
-	private String getId(JsonObject obj) {
-		if (obj == null)
-			return null;
-		JsonElement elem = obj.get("id");
-		if (elem == null || !elem.isJsonPrimitive())
-			return null;
-		else
-			return elem.getAsString();
 	}
 
 	public boolean contains(ModelType type, String id) {
@@ -142,14 +130,24 @@ public class DataPack implements Closeable {
 			return "buffers";
 		case BUILDING_STATE:
 			return "building_states";
+		case CONSUMER:
+			return "consumers";
 		case COST_SETTINGS:
 			return "cost_settings";
 		case FUEL:
 			return "fuels";
+		case LOAD_PROFILE:
+			return "load_profiles";
 		case PIPE:
 			return "pipes";
+		case PRODUCER:
+			return "producers";
+		case PRODUCT:
+			return "products";
 		case PRODUCT_GROUP:
 			return "product_groups";
+		case PROJECT:
+			return "projects";
 		case WEATHER_STATION:
 			return "weather_stations";
 		default:

@@ -14,6 +14,7 @@ public class ModelTypeTest {
 	@Test
 	public void testRootEntityClasses() throws Exception {
 		for (Class<?> type : Tests.getSubTypes(RootEntity.class, "sophena.model")) {
+			System.out.println(type.getSimpleName() + ".class,");
 			Assert.assertNotNull("no model type for " + type,
 					ModelType.forModelClass(type));
 		}
