@@ -47,6 +47,7 @@ public class CostSettingsPage extends FormPage {
 			createOtherSection(body);
 			createPriceChangeSection(body);
 		}
+		form.reflow(true);
 	}
 
 	private void generalSection(Composite body) {

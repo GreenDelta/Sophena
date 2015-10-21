@@ -14,11 +14,15 @@ public enum ModelType {
 
 	FUEL(Fuel.class),
 
+	LOAD_PROFILE(LoadProfile.class),
+
 	PIPE(Pipe.class),
 
 	PRODUCER(Producer.class),
 
-	PRODUCT_GROUP(Product.class),
+	PRODUCT_GROUP(ProductGroup.class),
+
+	PRODUCT(Product.class),
 
 	PROJECT(Project.class),
 
