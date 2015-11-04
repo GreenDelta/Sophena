@@ -34,10 +34,6 @@ class InfoSection {
 		createNameText(toolkit, composite);
 		createDescriptionText(toolkit, composite);
 		createStateFields(composite, toolkit);
-		Text loadHoursText = UI.formText(composite, toolkit, "Volllaststunden");
-		Texts.on(loadHoursText)
-				.init(consumer().loadHours)
-				.readOnly();
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {

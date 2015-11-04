@@ -44,8 +44,7 @@ public class FuelConsumption extends AbstractEntity {
 		if (woodAmountType == null || woodAmountType == WoodAmountType.MASS)
 			mass = amount;
 		else {
-			mass = amount * woodAmountType.getFactor() * fuel.density
-					/ (1 - wc);
+			mass = amount * woodAmountType.getFactor() * fuel.density / (1 - wc);
 		}
 		// 0.68: vaporization enthalpy of water
 		double heat = mass * ((1 - wc) * fuel.calorificValue - wc * 0.68);
