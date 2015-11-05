@@ -28,7 +28,7 @@ public class Costs {
 	}
 
 	/**
-	 * Returns all product costs from the given project.
+	 * Iterates over all product costs from the given project.
 	 */
 	public static void each(Project project, Consumer<ProductCosts> fn) {
 		if (project == null || fn == null)

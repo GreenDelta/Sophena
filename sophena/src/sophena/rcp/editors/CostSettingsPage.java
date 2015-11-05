@@ -59,8 +59,8 @@ public class CostSettingsPage extends FormPage {
 				.onChanged(s -> costs.hourlyWage = Numbers.read(s));
 		t(c, "Strompreis (netto)", "EUR/kWh", costs.electricityPrice)
 				.onChanged(s -> costs.electricityPrice = Numbers.read(s));
-		t(c, "Eigenstrombedarf", "%", costs.electricityConsumption)
-				.onChanged(s -> costs.electricityConsumption = Numbers.read(s));
+		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
+				.onChanged(s -> costs.electricityDemandShare = Numbers.read(s));
 		if (forProject) {
 			t(c, "Mittlere Stromerlöse", "EUR/Jahr",
 					costs.electricityRevenues)

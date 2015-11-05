@@ -29,8 +29,8 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_revenues")
 	public double electricityRevenues;
 
-	@Column(name = "electricity_consumption")
-	public double electricityConsumption;
+	@Column(name = "electricity_demand_share")
+	public double electricityDemandShare;
 
 	// financial aspects
 
@@ -80,7 +80,7 @@ public class CostSettings extends AbstractEntity {
 		clone.id = UUID.randomUUID().toString();
 		clone.funding = funding;
 		clone.electricityRevenues = electricityRevenues;
-		clone.electricityConsumption = electricityConsumption;
+		clone.electricityDemandShare = electricityDemandShare;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;

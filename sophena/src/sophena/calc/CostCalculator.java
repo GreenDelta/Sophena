@@ -1,10 +1,9 @@
 package sophena.calc;
 
-import sophena.model.Boiler;
+import sophena.calc.costs.ElectricityCosts;
+import sophena.calc.costs.FuelCosts;
 import sophena.model.CostSettings;
 import sophena.model.Costs;
-import sophena.model.Fuel;
-import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
@@ -42,7 +41,7 @@ class CostCalculator {
 			addOperationCosts(r, costs);
 		});
 		for (Producer p : project.producers)
-			addConsumptionCosts(r, p);
+			addDemandCosts(r, p);
 		if (withFunding)
 			setCapitalCostsFunding(r);
 		addOtherCosts(r);
@@ -59,21 +58,16 @@ class CostCalculator {
 		r.brutto.capitalCosts += vat() * capNetto;
 	}
 
-	private void addConsumptionCosts(CostResult r, Producer p) {
-		// TODO: electricity usage currently not included
-		double fuelCosts = getFuelCosts(p);
-		if (fuelCosts == 0 || p.fuelSpec == null)
-			return;
-		double priceChangeFactor = 0;
-		if (p.boiler.fuel != null)
-			priceChangeFactor = settings.fossilFuelFactor;
-		else
-			priceChangeFactor = settings.bioFuelFactor; // wood fuel
+	private void addDemandCosts(CostResult r, Producer p) {
+		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
-		double costs = fuelCosts * cashValueFactor * getAnnuityFactor();
-		r.netto.consumptionCosts += costs;
-		double vat = 1 + p.fuelSpec.taxRate / 100;
-		r.brutto.consumptionCosts += vat * costs;
+		double producedHeat = energyResult.totalHeat(p);
+		double netCosts = FuelCosts.net(p, producedHeat)
+				+ ElectricityCosts.net(producedHeat, settings);
+		r.netto.consumptionCosts += netCosts * cashValueFactor * getAnnuityFactor();
+		double grossCosts = FuelCosts.gross(p, producedHeat)
+				+ ElectricityCosts.gross(producedHeat, settings);
+		r.brutto.consumptionCosts += grossCosts * cashValueFactor * getAnnuityFactor();
 	}
 
 	private void addOperationCosts(CostResult r, ProductCosts costs) {
@@ -167,34 +161,6 @@ class CostCalculator {
 		}
 		costs -= residualValue;
 		return costs * annuityFactor;
-	}
-
-	private double getFuelCosts(Producer p) {
-		double heat = energyResult.totalHeat(p);
-		Boiler boiler = p.boiler;
-		FuelSpec fuelSpec = p.fuelSpec;
-		if (heat == 0 || boiler == null || fuelSpec == null)
-			return 0;
-		int fullLoadHours = (int) (heat / boiler.maxPower);
-		double ur = BoilerEfficiency
-				.getUtilisationRateBig(boiler.efficiencyRate, fullLoadHours);
-		double energyContent = heat / ur;
-		Fuel fuel = boiler.fuel;
-		if (fuel != null) {
-			// no wood fuel
-			double amount = energyContent / fuel.calorificValue;
-			return amount * fuelSpec.pricePerUnit;
-		}
-		// wood fuel
-		fuel = fuelSpec.woodFuel;
-		if (boiler.woodAmountType == null || fuel == null)
-			return 0;
-		double wc = fuelSpec.waterContent / 100;
-		double woodMass = energyContent
-				/ ((1 - wc) * fuel.calorificValue - wc * 0.68);
-		double woodAmount = woodMass * (1 - wc)
-				/ (boiler.woodAmountType.getFactor() * fuel.density);
-		return woodAmount * fuelSpec.pricePerUnit;
 	}
 
 	private void calcTotals(CostResult r) {
