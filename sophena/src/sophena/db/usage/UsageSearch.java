@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.Database;
 import sophena.db.NativeSql;
 import sophena.model.Boiler;
+import sophena.model.BufferTank;
 import sophena.model.ModelType;
 
 /**
@@ -33,6 +34,18 @@ public class UsageSearch {
 		List<SearchResult> list = new ArrayList<>();
 		query(sql, r -> list.add(
 				new SearchResult(str(r, 1), str(r, 2), ModelType.PRODUCER)));
+		return list;
+	}
+
+	public List<SearchResult> of(BufferTank tank) {
+		if (tank == null || tank.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_projects p inner join "
+				+ "tbl_heat_nets h on p.f_heat_net = h.id where "
+				+ "h.f_buffer_tank = '" + tank.id + "'";
+		List<SearchResult> list = new ArrayList<>();
+		query(sql, r -> list.add(
+				new SearchResult(str(r, 1), str(r, 2), ModelType.PROJECT)));
 		return list;
 	}
 
