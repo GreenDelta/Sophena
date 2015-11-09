@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.usage.SearchResult;
+import sophena.db.usage.UsageSearch;
 import sophena.model.Boiler;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -26,6 +28,7 @@ import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
@@ -132,6 +135,11 @@ class EditorPage extends FormPage {
 				"Soll das ausgewählte Produkt wirklich gelöscht werden?");
 		if (!doIt)
 			return;
+		List<SearchResult> usage = new UsageSearch(App.getDb()).of(boiler);
+		if (!usage.isEmpty()) {
+			UsageError.show(usage);
+			return;
+		}
 		try {
 			dao.delete(boiler);
 			boilers.remove(boiler);
