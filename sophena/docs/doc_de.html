@@ -80,6 +80,15 @@
 	Für kleine Kessel (= Kessel der bisherigen Verbräuche) wird für $sl$ ein Wert von 0.014 und
 	für große Kessel (= Kessel des Wärmenetzes) ein Wert von 0.0055 angesetzt.
 
+	<pre><code class="java">
+		double ur = UtilisationRate
+				.forSmallBoiler()
+				.efficiencyRate(0.9)
+				.usageDuration_h(8760)
+				.fullLoadHours_h(2000)
+				.get();
+	</code></pre>
+
 
 	<h3>Holzmasse</h3>
 

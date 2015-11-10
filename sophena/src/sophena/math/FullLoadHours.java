@@ -2,15 +2,15 @@ package sophena.math;
 
 public class FullLoadHours {
 
-	private double generatedHeat = 0; // kWh
-	private double boilerPower = 0; // kW
+	private final double boilerPower;
+	private double generatedHeat = 0;
 
-	private FullLoadHours() {
+	private FullLoadHours(double boilerPower) {
+		this.boilerPower = boilerPower;
 	}
 
 	public static FullLoadHours boilerPower_kW(double boilerPower) {
-		FullLoadHours flh = new FullLoadHours();
-		flh.boilerPower = boilerPower;
+		FullLoadHours flh = new FullLoadHours(boilerPower);
 		return flh;
 	}
 

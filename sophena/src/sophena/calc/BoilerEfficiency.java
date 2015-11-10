@@ -12,18 +12,6 @@ public final class BoilerEfficiency {
 	}
 
 	/**
-	 * Returns the estimated utilization rate for small boilers with the given
-	 * efficiency rate and full load hours.
-	 */
-	public static double getUtilisationRateSmall(double efficiencyRate,
-			int fullLoadHours) {
-		if (fullLoadHours < 1)
-			return 0;
-		double se = getStandbyEfficiency(fullLoadHours, 0.014);
-		return efficiencyRate * se;
-	}
-
-	/**
 	 * Returns the estimated efficiency rate for small boilers with the given
 	 * utilization rate and full load hours.
 	 */
@@ -33,18 +21,6 @@ public final class BoilerEfficiency {
 			return 0;
 		double se = getStandbyEfficiency(fullLoadHours, 0.014);
 		return utilisationRate / se;
-	}
-
-	/**
-	 * Returns the estimated utilization rate for big boilers with the given
-	 * efficiency rate and full load hours.
-	 */
-	public static double getUtilisationRateBig(double efficiencyRate,
-			int fullLoadHours) {
-		if (fullLoadHours < 1)
-			return 0;
-		double se = getStandbyEfficiency(fullLoadHours, 0.0055);
-		return efficiencyRate * se;
 	}
 
 	/**
