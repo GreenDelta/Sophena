@@ -90,6 +90,23 @@
 	</code></pre>
 
 
+	<h3><a name="Wirkungsgrad">Wirkungsgrad</a></h3>
+	Der Wirkungsgrad $er$ ist eine Herstellerangabe. Bei manchen Nutzerangaben muss er aber aus dem 
+	<a href="#Nutzungsgrad">Nutzungsgrad</a> $ur$ berechnet werden:
+	
+		$$ er = \frac{ur}{sr}$$ 
+
+		$$ er = ur * [(\frac{t_u}{t_{full}}-1)*sl + 1] $$
+
+	<pre><code class="java">
+		double er = EfficiencyRate
+				.forSmallBoiler()
+				.utilisationRate(0.85)
+				.usageDuration_h(8760)
+				.fullLoadHours_h(2000)
+				.get();
+	</code></pre>
+
 	<h3>Holzmasse</h3>
 
 

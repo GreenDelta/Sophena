@@ -13,13 +13,11 @@ public class UtilisationRate {
 	}
 
 	public static UtilisationRate forBigBoiler() {
-		UtilisationRate ur = new UtilisationRate(0.0055);
-		return ur;
+		return new UtilisationRate(0.0055);
 	}
 
 	public static UtilisationRate forSmallBoiler() {
-		UtilisationRate ur = new UtilisationRate(0.014);
-		return ur;
+		return new UtilisationRate(0.014);
 	}
 
 	public UtilisationRate usageDuration_h(double usageDuration) {

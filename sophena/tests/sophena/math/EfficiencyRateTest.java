@@ -3,39 +3,39 @@ package sophena.math;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UtilisationRateTest {
+public class EfficiencyRateTest {
 
 	@Test
 	public void testForBigBoiler() {
-		double ur = UtilisationRate
+		double er = EfficiencyRate
 				.forBigBoiler()
-				.efficiencyRate(0.9)
+				.utilisationRate(0.8835743527817865)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
 				.get();
-		Assert.assertEquals(0.8835743527817865, ur, 1e-10);
+		Assert.assertEquals(0.9, er, 1e-10);
 	}
 
 	@Test
 	public void testFactor100() {
-		double ur = UtilisationRate
+		double er = EfficiencyRate
 				.forBigBoiler()
-				.efficiencyRate(90)
+				.utilisationRate(88.35743527817865)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
 				.get();
-		Assert.assertEquals(88.35743527817865, ur, 1e-10);
+		Assert.assertEquals(90, er, 1e-10);
 	}
 
 	@Test
 	public void testForSmallBoiler() {
-		double ur = UtilisationRate
+		double er = EfficiencyRate
 				.forSmallBoiler()
-				.efficiencyRate(0.9)
+				.utilisationRate(0.8593362105182752)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
 				.get();
-		Assert.assertEquals(0.8593362105182752, ur, 1e-10);
+		Assert.assertEquals(0.9, er, 1e-10);
 	}
 
 }
