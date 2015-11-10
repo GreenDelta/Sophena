@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sophena - Dokumentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- syntax highlighting -->
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad()</script>	
+
+	<!-- display of mathematical formulas -->
+	<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+	<style>
+		html {
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+		}
+		
+		body {
+			padding: 25px
+		}
+		
+		a {
+			text-decoration: none;
+		}
+		
+	</style>	
+</head>
+<body>
+	
+	<h3><a name="Heizwert">Heizwert</a></h3>
+	Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für Erdgas). Der Heizwert $cv$ [kWh/u]
+	entspricht der Menge Wärme $Q_{gen,u}$ [kWh], die pro Referenzeinheit des Brennstoffs erzeugt werden können:
+	
+		$$ cv = \frac{Q_{gen,u}}{u} $$
+	
+	Für Holzbrennstoffe wird der Heizwert pro Kilogramm absolut trockener Masse (kg atro) angegeben [kWh/kg atro].
+	
+	
+	<h3><a name="Volllaststunden">Volllaststunden</a></h3>
+	Die Volllaststunden $t_{full}$ [h] eines Kessels ergeben sich aus der erzeugten Wärme $Q_{gen}$ [kWh] und
+	der thermischen Nennleistung $P_{max,th}$ [kW] (= maximale Leistung) des Kessels:
+	
+		$$ t_{full} = \frac{Q_{gen}}{P_{max,th}} $$
+	
+	Die Volllaststunden entsprechen somit der Zeit, die der Kessel bei maximaler Leistung betrieben werden 
+	müsste, um die gegebene Wärme zu erzeugen.
+	
+	
+	<h3><a name="Nutzungsgrad">Nutzungsgrad</a></h3>
+	Der Nutzungsgrad $ur$ ist allgemein das Verhältnis aus nutzbar gemachter Energie zu zugeführter Energie
+	und wird aus dem Wirkungsgrad $er$ und dem Bereitschaftswirkungsgrad $sr$ berechnet:
+	
+		$$ ur = er * sr $$
+		
+	Der Wirkungsgrad des Kessels ist eine Herstellerangabe. Der Bereitschaftswirkungsgrad $sr$ wird
+	wie folgt berechnet:
+	
+		$$ sr = \frac{1}{(\frac{t_u}{t_{full}}-1)*sl + 1} $$
+	
+	Dabei sind $t_u$ [h] die Nutzungsdauer (gewöhnlich 8760 Stunden) des Kessels, $t_{full}$ [h] die 
+	<a href="#Volllaststunden">Volllaststunden</a> und $sl$ der spezifische Bereitschaftsverlust.
+	Für kleine Kessel (= Kessel der bisherigen Verbräuche) wird für $sl$ ein Wert von 0.014 und
+	für große Kessel (= Kessel des Wärmenetzes) ein Wert von 0.0055 angesetzt.
+	
+	
+	<h3>Berechnung der benötigten Brennstoffmenge</h3>
+	Das Ergebnis der Simulationsrechnung ist die Wärmemenge $Q_{gen}$ [kWh], die von einem Kessel erzeugt
+	werden muss. Teilt man diese durch den <a href="#Nutzungsgrad">Nutzungsgrad</a> $ur$ des Kessels, erhält
+	man die Brennstoffenergie, die dafür zugeführt werden muss. Über den <a href="#Heizwert">Heizwert</a> $cv$
+	erhält man dann die benötigte Brennstoffmenge $m$:
+	
+		$$ m = \frac{Q_{gen}}{ur*cv} $$
+	
+	
+	<h3>Stromerzeugung in KWK-Anlagen</h3>
+	Die erzeugte Menge an Strom ${E_{gen}}$ [kWh] wird aus den <a href="#Volllaststunden">Volllaststunden</a> 
+	$t_{full}$ [h] und der elektrischen Nennleistung $P_{max,el}$ [kW] berechnet:
+	
+		$$ {E_{gen}} = t_{full} * P_{max,el} $$
+	
+	
+	
+	<pre><code class="java">Boiler.isCoGenPlant = true;</code></pre>
+</body>
+</html>
+	
