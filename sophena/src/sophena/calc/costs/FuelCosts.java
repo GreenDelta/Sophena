@@ -1,13 +1,11 @@
 package sophena.calc.costs;
 
-import sophena.math.energetic.FullLoadHours;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Boiler;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
-import sophena.model.Stats;
 
 /**
  * Functions for calculating costs related to fuel consumption.
@@ -25,23 +23,13 @@ public class FuelCosts {
 		return net * vat;
 	}
 
-	public static double net(Producer p, double producedHeat) {
-		Boiler boiler = p.boiler;
-		FuelSpec fuelSpec = p.fuelSpec;
+	public static double net(Producer producer, double producedHeat) {
+		Boiler boiler = producer.boiler;
+		FuelSpec fuelSpec = producer.fuelSpec;
 		if (producedHeat == 0 || boiler == null || fuelSpec == null)
 			return 0;
 
-		double fullLoadHours = FullLoadHours
-				.boilerPower_kW(boiler.maxPower)
-				.generatedHeat_kWh(producedHeat)
-				.get_h();
-
-		double ur = UtilisationRate
-				.ofBigBoiler()
-				.efficiencyRate(boiler.efficiencyRate)
-				.fullLoadHours_h(fullLoadHours)
-				.usageDuration_h(Stats.HOURS)
-				.get();
+		double ur = UtilisationRate.get(producer, producedHeat);
 
 		double energyContent = producedHeat / ur;
 		Fuel fuel = boiler.fuel;

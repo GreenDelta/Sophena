@@ -1,5 +1,7 @@
 package sophena.math.energetic;
 
+import sophena.model.Producer;
+
 public class FullLoadHours {
 
 	private final double boilerPower;
@@ -23,6 +25,15 @@ public class FullLoadHours {
 		if (boilerPower <= 0)
 			return 0;
 		return generatedHeat / boilerPower;
+	}
+
+	public static double get(Producer producer, double generatedHeat) {
+		if (producer == null || producer.boiler == null)
+			return 0;
+		return FullLoadHours
+				.boilerPower_kW(producer.boiler.maxPower)
+				.generatedHeat_kWh(generatedHeat)
+				.get_h();
 	}
 
 }

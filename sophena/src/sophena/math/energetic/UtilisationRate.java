@@ -1,5 +1,8 @@
 package sophena.math.energetic;
 
+import sophena.model.Producer;
+import sophena.model.Stats;
+
 /**
  * Calculates the utilisation rate of a boiler.
  */
@@ -43,6 +46,18 @@ public class UtilisationRate {
 			return 0;
 		double standbyRate = 1 / ((usageDuration / fullLoadHours - 1) * standByLoss + 1);
 		return standbyRate * efficiencyRate;
+	}
+
+	public static double get(Producer producer, double generatedHeat) {
+		if (producer == null || producer.boiler == null)
+			return 0;
+		double fullLoadHours = FullLoadHours.get(producer, generatedHeat);
+		return UtilisationRate
+				.ofBigBoiler()
+				.efficiencyRate(producer.boiler.efficiencyRate)
+				.fullLoadHours_h(fullLoadHours)
+				.usageDuration_h(Stats.HOURS)
+				.get();
 	}
 
 }

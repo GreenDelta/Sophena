@@ -139,11 +139,17 @@
 	Die Volllaststunden entsprechen somit der Zeit, die der Kessel bei maximaler Leistung betrieben werden
 	müsste, um die gegebene Wärme zu erzeugen.
 
+	<p>Basis API:</p>
 	<pre><code class="java">
 		double fullLoadHours = FullLoadHours
 				.boilerPower_kW(50)
 				.generatedHeat_kWh(500)
 				.get_h();
+	</code></pre>
+	
+	<p>Convenience API:</p>
+	<pre><code class="java">
+		double fullLoadHours = FullLoadHours.get(p, producedHeat);
 	</code></pre>
 
 
@@ -163,6 +169,7 @@
 	Für kleine Kessel (= Kessel der bisherigen Verbräuche) wird für $sl$ ein Wert von 0.014 und
 	für große Kessel (= Kessel des Wärmenetzes) ein Wert von 0.0055 angesetzt.
 
+	<p>Basis API:</p>
 	<pre><code class="java">
 		double ur = UtilisationRate
 				.ofSmallBoiler()
@@ -170,6 +177,11 @@
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
 				.get();
+	</code></pre>
+
+	<p>Convenience API:</p>
+	<pre><code class="java">
+	
 	</code></pre>
 
 
