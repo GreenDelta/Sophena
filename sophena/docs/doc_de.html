@@ -66,6 +66,24 @@
 	</code></pre>
 
 
+	<h3><a name="BrennstoffenergieHolz">Brennstoffenergie von Holz</a></h3>
+	Bei der Berechnung der Brennstoffeinergie von Holz geht der Wassergehalt des Holzes mit ein:
+	
+		$$ Q = wm *[(1 - wc)*cv - wc * vap] $$
+
+	Dabei ist $wm$ [kg] die <a href="#Holzmasse">Holzmasse</a>, $wc$ der Wassergehalt, $cv$ [kWh/kg atro]
+	<a href="#Heizwert">Heizwert</a> für absolut trockenes Holz und $vap$ die Verdampfungsenergie von 
+	Wasser = 0,68 kWh / kg.
+	
+	<pre><code class="java">
+		double q = WoodFuelEnergy
+				.ofWoodMass_kg(10)
+				.waterContent(0.2)
+				.calorificValue_kWh_per_kg(5)
+				.get_kWh();
+	</code></pre>
+
+
 	<h3><a name="Holzmasse">Holzmasse</a></h3>
 	Holzmengen können für Scheitholz in Ster und für Holzhackschnitzel in Schüttraummeter angegeben werden. Die
 	Holzmasse $wm$ [kg] kann für eine Holzmenge $wa$ [m3] wie folgt berechnet werden:
