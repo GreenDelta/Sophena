@@ -38,6 +38,8 @@
 </head>
 <body>
 
+	<h2>Funktionen der Energetischen Berechnung</h2>
+
 	<h3><a name="Heizwert">Heizwert</a></h3>
 	Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für Erdgas). Der Heizwert $cv$ [kWh/u]
 	entspricht der Menge Wärme $Q_{gen,u}$ [kWh], die pro Referenzeinheit des Brennstoffs erzeugt werden können:
@@ -45,6 +47,33 @@
 		$$ cv = \frac{Q_{gen,u}}{u} $$
 
 	Für Holzbrennstoffe wird der Heizwert pro Kilogramm absolut trockener Masse (kg atro) angegeben [kWh/kg atro].
+
+
+	<h3><a name="Brennstoffenergie">Brennstoffenergie</a></h3>
+	Die Wärme $Q$ [kWh], die durch die Verbrennung einer Menge $a$ eines Brennstoffs erzeugt werden kann, wird wie folgt 
+	berechnet:
+	
+		$$ Q = a * cv $$
+	
+	Die Brennstoffmenge $a$ wird in der Referenzeinheit des Brennstoffs angegeben. $cv$ ist der <a href="#Heizwert">Heizwert</a>
+	des Brennstoffs in kWh pre Referenzeinheit.
+	
+	<pre><code class="java">
+		double q = FuelEnergy
+				.ofAmount_unit(10)
+				.calorificValue_kWh_per_unit(10)
+				.get_kWh();
+	</code></pre>
+
+
+	<h3><a name="Holzmasse">Holzmasse</a></h3>
+	Holzmengen können für Scheitholz in Ster und für Holzhackschnitzel in Schüttraummeter angegeben werden. Die
+	Holzmasse $wm$ [kg] kann für eine Holzmenge $wa$ [m3] wie folgt berechnet werden:
+	
+		$$ wm = \frac{wa * f * \rho_w}{1 - wc} $$
+		
+	Dabei ist $f$ der Umrechnungsfaktor von Ster (f = 0.7) bzw. Schüttraummeter (f = 0.4) zu Festmeter. $\rho_w$ ist
+	die Dichte des Holzes [kg/Festmeter] und $wc$ des Wassergehalt des Holzes.
 
 
 	<h3><a name="Volllaststunden">Volllaststunden</a></h3>
@@ -82,7 +111,7 @@
 
 	<pre><code class="java">
 		double ur = UtilisationRate
-				.forSmallBoiler()
+				.ofSmallBoiler()
 				.efficiencyRate(0.9)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
@@ -100,17 +129,14 @@
 
 	<pre><code class="java">
 		double er = EfficiencyRate
-				.forSmallBoiler()
+				.ofSmallBoiler()
 				.utilisationRate(0.85)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
 				.get();
 	</code></pre>
 
-	<h3>Holzmasse</h3>
-
-
-
+	
 	<h3>Benötigten Brennstoffmenge</h3>
 	Das Ergebnis der Simulationsrechnung ist die Wärmemenge $Q_{gen}$ [kWh], die von einem Kessel erzeugt
 	werden muss. Teilt man diese durch den <a href="#Nutzungsgrad">Nutzungsgrad</a> $ur$ des Kessels, erhält

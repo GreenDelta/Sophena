@@ -1,4 +1,4 @@
-package sophena.math;
+package sophena.math.energetic;
 
 public class FullLoadHours {
 

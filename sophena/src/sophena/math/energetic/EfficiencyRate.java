@@ -1,4 +1,4 @@
-package sophena.math;
+package sophena.math.energetic;
 
 public class EfficiencyRate {
 
@@ -12,11 +12,11 @@ public class EfficiencyRate {
 		this.standByLoss = standByLoss;
 	}
 
-	public static EfficiencyRate forBigBoiler() {
+	public static EfficiencyRate ofBigBoiler() {
 		return new EfficiencyRate(0.0055);
 	}
 
-	public static EfficiencyRate forSmallBoiler() {
+	public static EfficiencyRate ofSmallBoiler() {
 		return new EfficiencyRate(0.014);
 	}
 

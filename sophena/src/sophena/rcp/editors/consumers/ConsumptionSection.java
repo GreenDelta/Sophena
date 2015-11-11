@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.math.EfficiencyRate;
+import sophena.math.energetic.EfficiencyRate;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
@@ -146,7 +146,7 @@ class ConsumptionSection {
 				return null;
 			String heat = Numbers.toString(c.getUsedHeat()) + " kWh";
 			double eta = EfficiencyRate
-					.forSmallBoiler()
+					.ofSmallBoiler()
 					.utilisationRate(c.utilisationRate)
 					.fullLoadHours_h(consumer().loadHours)
 					.get();

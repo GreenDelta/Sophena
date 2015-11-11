@@ -1,7 +1,7 @@
 package sophena.calc.costs;
 
-import sophena.math.FullLoadHours;
-import sophena.math.UtilisationRate;
+import sophena.math.energetic.FullLoadHours;
+import sophena.math.energetic.UtilisationRate;
 import sophena.model.Boiler;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
@@ -37,7 +37,7 @@ public class FuelCosts {
 				.get_h();
 
 		double ur = UtilisationRate
-				.forBigBoiler()
+				.ofBigBoiler()
 				.efficiencyRate(boiler.efficiencyRate)
 				.fullLoadHours_h(fullLoadHours)
 				.usageDuration_h(Stats.HOURS)

@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.FuelDao;
-import sophena.math.EfficiencyRate;
-import sophena.math.UtilisationRate;
+import sophena.math.energetic.EfficiencyRate;
+import sophena.math.energetic.UtilisationRate;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.WoodAmountType;
@@ -163,7 +163,7 @@ class ConsumptionWizard extends Wizard {
 			if (effiCheck.getSelection()) {
 				double effi = Numbers.read(effiText.getText());
 				double ur = UtilisationRate
-						.forSmallBoiler()
+						.ofSmallBoiler()
 						.efficiencyRate(effi)
 						.fullLoadHours_h(loadHours)
 						.get();
@@ -172,7 +172,7 @@ class ConsumptionWizard extends Wizard {
 			} else {
 				double ur = Numbers.read(utilText.getText());
 				double er = EfficiencyRate
-						.forSmallBoiler()
+						.ofSmallBoiler()
 						.utilisationRate(ur)
 						.fullLoadHours_h(loadHours)
 						.get();
@@ -222,13 +222,13 @@ class ConsumptionWizard extends Wizard {
 				double ur = consumption.utilisationRate;
 				if (ur == 0) {
 					ur = UtilisationRate
-							.forSmallBoiler()
-							.efficiencyRate(0.9)
+							.ofSmallBoiler()
+							.efficiencyRate(90)
 							.get();
 				}
 				Texts.set(utilText, ur);
 				double er = EfficiencyRate
-						.forSmallBoiler()
+						.ofSmallBoiler()
 						.utilisationRate(ur)
 						.fullLoadHours_h(loadHours)
 						.get();

@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import sophena.math.energetic.FuelEnergy;
+
 @Entity
 @Table(name = "tbl_fuel_consumptions")
 public class FuelConsumption extends AbstractEntity {
@@ -37,8 +39,12 @@ public class FuelConsumption extends AbstractEntity {
 		if (fuel == null)
 			return 0;
 		double ur = utilisationRate / 100;
-		if (!fuel.wood)
-			return ur * fuel.calorificValue * amount;
+		if (!fuel.wood) {
+			return ur * FuelEnergy
+					.ofAmount_unit(amount)
+					.calorificValue_kWh_per_unit(fuel.calorificValue)
+					.get_kWh();
+		}
 		double mass;
 		double wc = waterContent / 100;
 		if (woodAmountType == null || woodAmountType == WoodAmountType.MASS)

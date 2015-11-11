@@ -1,5 +1,8 @@
-package sophena.math;
+package sophena.math.energetic;
 
+/**
+ * Calculates the utilisation rate of a boiler.
+ */
 public class UtilisationRate {
 
 	private final double standByLoss;
@@ -12,11 +15,11 @@ public class UtilisationRate {
 		this.standByLoss = standByLoss;
 	}
 
-	public static UtilisationRate forBigBoiler() {
+	public static UtilisationRate ofBigBoiler() {
 		return new UtilisationRate(0.0055);
 	}
 
-	public static UtilisationRate forSmallBoiler() {
+	public static UtilisationRate ofSmallBoiler() {
 		return new UtilisationRate(0.014);
 	}
 

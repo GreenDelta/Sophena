@@ -1,7 +1,9 @@
-package sophena.math;
+package sophena.math.energetic;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import sophena.math.energetic.FullLoadHours;
 
 public class FullLoadHoursTest {
 

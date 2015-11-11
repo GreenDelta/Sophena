@@ -1,14 +1,16 @@
-package sophena.math;
+package sophena.math.energetic;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import sophena.math.energetic.EfficiencyRate;
 
 public class EfficiencyRateTest {
 
 	@Test
 	public void testForBigBoiler() {
 		double er = EfficiencyRate
-				.forBigBoiler()
+				.ofBigBoiler()
 				.utilisationRate(0.8835743527817865)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
@@ -19,7 +21,7 @@ public class EfficiencyRateTest {
 	@Test
 	public void testFactor100() {
 		double er = EfficiencyRate
-				.forBigBoiler()
+				.ofBigBoiler()
 				.utilisationRate(88.35743527817865)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
@@ -30,7 +32,7 @@ public class EfficiencyRateTest {
 	@Test
 	public void testForSmallBoiler() {
 		double er = EfficiencyRate
-				.forSmallBoiler()
+				.ofSmallBoiler()
 				.utilisationRate(0.8593362105182752)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)

@@ -1,14 +1,16 @@
-package sophena.math;
+package sophena.math.energetic;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import sophena.math.energetic.UtilisationRate;
 
 public class UtilisationRateTest {
 
 	@Test
 	public void testForBigBoiler() {
 		double ur = UtilisationRate
-				.forBigBoiler()
+				.ofBigBoiler()
 				.efficiencyRate(0.9)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
@@ -19,7 +21,7 @@ public class UtilisationRateTest {
 	@Test
 	public void testFactor100() {
 		double ur = UtilisationRate
-				.forBigBoiler()
+				.ofBigBoiler()
 				.efficiencyRate(90)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
@@ -30,7 +32,7 @@ public class UtilisationRateTest {
 	@Test
 	public void testForSmallBoiler() {
 		double ur = UtilisationRate
-				.forSmallBoiler()
+				.ofSmallBoiler()
 				.efficiencyRate(0.9)
 				.usageDuration_h(8760)
 				.fullLoadHours_h(2000)
