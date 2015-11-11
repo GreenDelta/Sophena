@@ -38,7 +38,7 @@
 </head>
 <body>
 
-	<h2>Funktionen der Energetischen Berechnung</h2>
+	<h2>Funktionen der energetischen Berechnung</h2>
 
 	<h3><a name="Heizwert">Heizwert</a></h3>
 	Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für Erdgas). Der Heizwert $cv$ [kWh/u]
@@ -92,6 +92,42 @@
 		
 	Dabei ist $f$ der Umrechnungsfaktor von Ster (f = 0.7) bzw. Schüttraummeter (f = 0.4) zu Festmeter. $\rho_w$ ist
 	die Dichte des Holzes [kg/Festmeter] und $wc$ des Wassergehalt des Holzes.
+	
+	<pre><code class="java">
+		double wm = WoodMass
+				.ofWoodChips_m3(5)
+				.woodDensity_kg_per_m3(379)
+				.waterContent(0.2)
+				.get_kg();
+	</code></pre>
+
+	Daneben kann die Holzmasse auch aus der <a href="#BrennstoffenergieHolz">Brennstoffenergie des Holzes</a> 
+	zurückgerechnet werden:
+	
+		$$ wm = \frac{Q}{[(1 - wc)*cv - wc * vap]} $$
+
+	<pre><code class="java">	
+		double wm = WoodMass
+				.ofEnergy_kWh(1200)
+				.waterContent(0.2)
+				.calorificValue_kWh_per_kg(5)
+				.get_kg();
+	</code></pre>
+
+
+	<h3><a name="Holzmenge">Holzmenge</a></h3>
+	Aus der <a href="#Holzmasse">Holzmasse</a> kann die Menge an Scheitholz oder Holzhackschnitzel zurückgerechnet
+	werden:
+	
+		$$ wa = \frac{wm * (1 - wc)}{f * \rho_w} $$
+
+	<pre><code class="java">
+		double wa = WoodAmount
+				.ofMass_kg(50)
+				.waterContent(0.2)
+				.woodDensity_kg_per_m3(379)
+				.getAmountInLogs_stere();
+	</code></pre>
 
 
 	<h3><a name="Volllaststunden">Volllaststunden</a></h3>
