@@ -33,11 +33,9 @@ public class BufferCapacity {
 	public static double get(HeatNet net) {
 		if (net == null)
 			return 0;
-		double maxTemp = net.bufferTank == null ? net.supplyTemperature
-				: net.bufferTank.maxChargingTemperature;
 		return BufferCapacity
 				.ofVolume_L(net.bufferTankVolume)
-				.maxChargingTemperatur_degC(maxTemp)
+				.maxChargingTemperatur_degC(net.maxBufferLoadTemperature)
 				.returnTemperature_degC(net.returnTemperature)
 				.get_kWh();
 	}

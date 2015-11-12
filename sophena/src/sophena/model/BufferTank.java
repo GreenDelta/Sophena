@@ -11,7 +11,4 @@ public class BufferTank extends Product {
 	@Column(name = "volume")
 	public double volume;
 
-	@Column(name = "max_charging_temperature")
-	public double maxChargingTemperature;
-
 }

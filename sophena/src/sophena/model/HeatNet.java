@@ -39,6 +39,9 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "buffer_tank_volume")
 	public double bufferTankVolume;
 
+	@Column(name = "max_buffer_load_temperature")
+	public double maxBufferLoadTemperature;
+
 	@Embedded
 	public ProductCosts bufferTankCosts;
 
@@ -63,6 +66,7 @@ public class HeatNet extends AbstractEntity {
 		HeatNet clone = new HeatNet();
 		clone.id = UUID.randomUUID().toString();
 		clone.bufferTankVolume = bufferTankVolume;
+		clone.maxBufferLoadTemperature = maxBufferLoadTemperature;
 		clone.bufferTank = bufferTank;
 		if (bufferTankCosts != null)
 			clone.bufferTankCosts = bufferTankCosts.clone();

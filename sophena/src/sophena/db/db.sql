@@ -171,6 +171,8 @@ CREATE TABLE tbl_heat_nets (
     interruption_end VARCHAR(10),
     
     buffer_tank_volume DOUBLE,
+    max_buffer_load_temperature DOUBLE,
+    
     f_buffer_tank CHAR(36),
     investment DOUBLE,
     duration INTEGER,
@@ -322,7 +324,6 @@ CREATE TABLE tbl_buffer_tanks (
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
 	
-	max_charging_temperature DOUBLE,
 	volume DOUBLE,	
 
 	PRIMARY KEY (id)
