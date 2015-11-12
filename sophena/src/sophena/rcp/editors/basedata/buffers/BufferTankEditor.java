@@ -79,11 +79,12 @@ public class BufferTankEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
-					"Produktgruppe", "Link", "Preis", "Volumen");
+					"Produktgruppe", "Link", "Preis", "Volumen",
+					"Max. Ladetemperatur");
 			table.setLabelProvider(new Label());
 			table.setInput(buffers);
-			double x = 1.0 / 5.0;
-			Tables.bindColumnWidths(table, x, x, x, x, x);
+			double x = 1.0 / 6.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
@@ -172,6 +173,8 @@ public class BufferTankEditor extends Editor {
 						: Numbers.toString(b.purchasePrice) + " EUR";
 			case 4:
 				return Numbers.toString(b.volume) + " L";
+			case 5:
+				return Numbers.toString(b.maxChargingTemperature) + " °C";
 			default:
 				return null;
 			}

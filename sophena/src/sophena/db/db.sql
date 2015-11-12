@@ -322,6 +322,7 @@ CREATE TABLE tbl_buffer_tanks (
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
 	
+	max_charging_temperature DOUBLE,
 	volume DOUBLE,	
 
 	PRIMARY KEY (id)

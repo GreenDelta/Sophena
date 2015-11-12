@@ -55,6 +55,7 @@ class BufferTankWizard extends Wizard {
 
 		Text nameText;
 		EntityCombo<ProductGroup> groupCombo;
+		Text tempText;
 		Text volText;
 		Text urlText;
 		Text priceText;
@@ -78,6 +79,10 @@ class BufferTankWizard extends Wizard {
 			volText = UI.formText(c, "Volumen");
 			Texts.on(volText).required().decimal().validate(data::validate);
 			UI.formLabel(c, "L");
+
+			tempText = UI.formText(c, "Max. Ladetemperatur");
+			Texts.on(tempText).required().decimal().validate(data::validate);
+			UI.formLabel(c, "°C");
 
 			urlText = UI.formText(c, "Web-Link");
 			UI.formLabel(c, "");
@@ -104,6 +109,7 @@ class BufferTankWizard extends Wizard {
 				Texts.set(nameText, buffer.name);
 				groupCombo.select(buffer.group);
 				Texts.set(volText, buffer.volume);
+				Texts.set(tempText, buffer.maxChargingTemperature);
 				Texts.set(urlText, buffer.url);
 				Texts.set(priceText, buffer.purchasePrice);
 			}
@@ -112,6 +118,7 @@ class BufferTankWizard extends Wizard {
 				buffer.name = nameText.getText();
 				buffer.group = groupCombo.getSelected();
 				buffer.volume = Texts.getDouble(volText);
+				buffer.maxChargingTemperature = Texts.getDouble(tempText);
 				buffer.url = urlText.getText();
 				if (Texts.hasNumber(priceText))
 					buffer.purchasePrice = Texts.getDouble(priceText);
