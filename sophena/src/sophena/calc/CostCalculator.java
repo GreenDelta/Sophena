@@ -2,6 +2,7 @@ package sophena.calc;
 
 import sophena.calc.costs.ElectricityCosts;
 import sophena.calc.costs.FuelCosts;
+import sophena.math.costs.AnnuitiyFactor;
 import sophena.model.CostSettings;
 import sophena.model.Costs;
 import sophena.model.Producer;
@@ -102,8 +103,10 @@ class CostCalculator {
 	}
 
 	double getAnnuityFactor() {
-		double ir = ir();
-		return (ir - 1) / (1 - Math.pow(ir, -projectDuration));
+		if (withFunding)
+			return AnnuitiyFactor.getForFunding(project);
+		else
+			return AnnuitiyFactor.get(project);
 	}
 
 	double getCashValueFactor(double priceChangeFactor) {
