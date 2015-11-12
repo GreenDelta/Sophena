@@ -1,7 +1,7 @@
 package sophena.calc;
 
+import sophena.math.energetic.BufferCapacity;
 import sophena.model.Boiler;
-import sophena.model.HeatNet;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
@@ -22,7 +22,7 @@ class EnergyCalculator {
 	}
 
 	private EnergyResult doIt() {
-		maxBufferCapacity = calcMaxBufferCapacity();
+		maxBufferCapacity = BufferCapacity.get(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = 0.5 * maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
@@ -84,16 +84,6 @@ class EnergyCalculator {
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 				? requiredLoad : maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);
-	}
-
-	private double calcMaxBufferCapacity() {
-		HeatNet net = project.heatNet;
-		if (net == null)
-			return 0;
-		double liters = net.bufferTankVolume;
-		double deltaT = net.supplyTemperature - net.returnTemperature;
-		double c = 1.166; // Wh/(kg K)
-		return (c * liters * deltaT) / 1000;
 	}
 
 	private void calcTotals(EnergyResult r) {

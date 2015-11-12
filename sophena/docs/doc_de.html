@@ -202,11 +202,40 @@
 				.get();
 	</code></pre>
 
+
+	<h3>Kapazität des Pufferspeichers</h3>
+	In der Simulationsrechnung wird die Kapazität des Pufferspeichers $Q_{cap,buff}$ [kWh] wie folgt
+	berechnet:
+	
+		$$ Q_{cap,buff} = c * m * \Delta T $$
+
+	Dabei ist $c$ die spezifische Wärmekapazität von Wasser (1,166 Wh/kg K), $m$ die Masse des Wassers 
+	und $\Delta T$ der Temperaturunterschied zwischen der maximalen Pufferladetemperatur und der 
+	Rücklauftemperatur.
+
+	<p>Basis API:</p>
+	<pre><code class="java">
+		double q = BufferCapacity
+				.ofVolume_L(10000)
+				.maxChargingTemperatur_degC(80)
+				.returnTemperature_degC(60)
+				.get_kWh();
+	</code></pre>
+
+	<p>Convenience API:</p>
+	<pre><code class="java">
+		double q = BufferCapacity.get(project.heatNet);
+	</code></pre>
+	
 	
 	<h3>Benötigten Brennstoffmenge</h3>
 	Das Ergebnis der Simulationsrechnung ist die Wärmemenge $Q_{gen}$ [kWh], die von einem Kessel erzeugt
 	werden muss. Teilt man diese durch den <a href="#Nutzungsgrad">Nutzungsgrad</a> $ur$ des Kessels, erhält
-	man die Brennstoffenergie, die dafür zugeführt werden muss. Über den <a href="#Heizwert">Heizwert</a> $cv$
+	man die Brennstoffenergie $E$ [kWh], die dafür zugeführt werden muss: 
+	
+		$$ E = \frac{Q_{gen}}{ur} $$
+	
+	Über den <a href="#Heizwert">Heizwert</a> $cv$
 	erhält man dann die benötigte Brennstoffmenge $m$:
 
 		$$ m = \frac{Q_{gen}}{ur*cv} $$

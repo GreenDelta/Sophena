@@ -1,5 +1,6 @@
 package sophena.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -7,6 +8,10 @@ import javax.persistence.Table;
 @Table(name = "tbl_buffer_tanks")
 public class BufferTank extends Product {
 
+	@Column(name = "volume")
 	public double volume;
+
+	@Column(name = "max_charging_temperature")
+	public double maxChargingTemperature;
 
 }
