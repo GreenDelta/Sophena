@@ -30,7 +30,7 @@ public class CO2Emissions {
 	}
 
 	public static double getKg(Producer producer, double generatedHeat) {
-		double demand = FuelEnergyDemand.get(producer, generatedHeat);
+		double demand = FuelEnergyDemand.getKWh(producer, generatedHeat);
 		double factor = getEmissionFactor(producer);
 		return demand * factor / 1000;
 	}

@@ -6,7 +6,7 @@ public class FuelAmountDemand {
 
 	public static double get(Producer producer, double generatedHeat) {
 		double cv = CalorificValue.get(producer);
-		double energyDemand = FuelEnergyDemand.get(producer, generatedHeat);
+		double energyDemand = FuelEnergyDemand.getKWh(producer, generatedHeat);
 		return cv == 0 ? 0 : energyDemand / cv;
 	}
 
