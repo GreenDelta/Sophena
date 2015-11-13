@@ -15,6 +15,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
+import sophena.math.energetic.FullLoadHours;
+import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.rcp.Numbers;
@@ -65,17 +67,10 @@ class ElectricityResultPage extends FormPage {
 				item.rank = p.rank + " - Spitzenlast";
 			item.maxPower = p.boiler.maxPowerElectric;
 			double heat = result.totalHeat(p);
-			item.fullLoadHours = getFullLoadHours(p, heat);
-			item.value = item.fullLoadHours * item.maxPower;
+			item.fullLoadHours = FullLoadHours.get(p, heat);
+			item.value = GeneratedElectricity.get(p, heat);
 		}
 		return list;
-	}
-
-	private int getFullLoadHours(Producer p, double producedHeat) {
-		if (p == null || p.boiler == null)
-			return 0;
-		double maxPower = p.boiler.maxPower;
-		return (int) Math.round(producedHeat / maxPower);
 	}
 
 	private class Item {
