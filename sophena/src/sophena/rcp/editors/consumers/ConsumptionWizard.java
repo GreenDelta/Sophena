@@ -224,6 +224,7 @@ class ConsumptionWizard extends Wizard {
 					ur = UtilisationRate
 							.ofSmallBoiler()
 							.efficiencyRate(90)
+							.fullLoadHours_h(loadHours)
 							.get();
 				}
 				Texts.set(utilText, ur);

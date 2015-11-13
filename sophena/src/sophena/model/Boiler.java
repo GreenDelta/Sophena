@@ -22,6 +22,10 @@ public class Boiler extends Product {
 	@Column(name = "min_power")
 	public double minPower;
 
+	/**
+	 * If the boiler is a wood fuel boiler this field is <code>null</code> and
+	 * the woodAmountType is set.
+	 */
 	@OneToOne
 	@JoinColumn(name = "f_fuel")
 	public Fuel fuel;
@@ -29,6 +33,10 @@ public class Boiler extends Product {
 	@Column(name = "efficiency_rate")
 	public double efficiencyRate;
 
+	/**
+	 * If the boiler is a wood fuel boiler this field must be set; otherwise it
+	 * is <code>null</code>.
+	 */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "wood_amount_type")
 	public WoodAmountType woodAmountType;

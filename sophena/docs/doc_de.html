@@ -40,6 +40,11 @@
 
 	<h2>Funktionen der energetischen Berechnung</h2>
 
+	<h3>TODO</h3>
+	<ul>
+		<li>FuelEnergyDemand: benötigte Brennstoffenergie, je nach Erzeugertyp
+	</ul>
+
 	<h3><a name="Heizwert">Heizwert</a></h3>
 	Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für Erdgas). Der Heizwert $cv$ [kWh/u]
 	entspricht der Menge Wärme $Q_{gen,u}$ [kWh], die pro Referenzeinheit des Brennstoffs erzeugt werden können:
@@ -281,8 +286,8 @@
 	Der Barwertfaktor $cvf$ wird wie folgt berechnet:
 	
 	$$ cvf = \left\{\begin{matrix}
-              & \frac{n}{i+1} & \text{if} & i+1 = pcf\\ 
-              & 
+              & \frac{n}{i+1} & \text{if} & i+1 = pcf \\ 
+              & \
              \end{matrix}\right.
     $$
 	

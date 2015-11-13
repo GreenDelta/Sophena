@@ -1,6 +1,6 @@
 package sophena.math.energetic;
 
-public class WoodFuelEnergy {
+class WoodFuelEnergy {
 
 	private final double woodMass;
 	private double waterContent;
