@@ -1,0 +1,8 @@
+{
+	"id": "8b1776e5-d6f9-499f-a567-2cce41cef756",
+	"name": "Flüssiggas",
+	"unit": "m3",
+	"calorificValue": 1.5,
+	"wood": false,
+	"co2Emissions": 303.2
+}

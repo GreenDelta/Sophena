@@ -29,4 +29,10 @@ public class Fuel extends RootEntity {
 	/** indicates whether the fuel is a wood fuel */
 	@Column(name = "is_wood")
 	public boolean wood;
+
+	/**
+	 * Gramme CO2 emissions per kWh fuel energy.
+	 */
+	@Column(name = "co2_emissions")
+	public double co2Emissions;
 }

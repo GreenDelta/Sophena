@@ -1,0 +1,8 @@
+{
+	"id": "d0233ba5-e913-48d8-a61a-5af90c03bda2",
+	"name": "Pellets",
+	"unit": "kg",
+	"calorificValue": 5,
+	"wood": false,
+	"co2Emissions": 19.7
+}
