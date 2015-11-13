@@ -51,6 +51,7 @@ class WoodFuelWizard extends Wizard {
 		private Text descriptionText;
 		private Text densityText;
 		private Text calText;
+		private Text co2Text;
 
 		private Page() {
 			super("FuelWizardPage", M.WoodFuel, null);
@@ -64,6 +65,7 @@ class WoodFuelWizard extends Wizard {
 			createNameText(composite);
 			createDensityText(composite);
 			createCalText(composite);
+			createCO2Text(composite);
 			createDescriptionText(composite);
 			data.validate();
 		}
@@ -103,6 +105,16 @@ class WoodFuelWizard extends Wizard {
 			UI.formLabel(composite, "kWh/kg atro");
 		}
 
+		private void createCO2Text(Composite composite) {
+			co2Text = UI.formText(composite, "CO2 Emissionen");
+			Texts.on(co2Text)
+					.init(fuel.co2Emissions)
+					.required()
+					.decimal()
+					.validate(data::validate);
+			UI.formLabel(composite, "g CO2 äq./kWh");
+		}
+
 		private class DataBinding {
 
 			void bindToModel() {
@@ -110,6 +122,7 @@ class WoodFuelWizard extends Wizard {
 				fuel.description = descriptionText.getText();
 				fuel.density = Texts.getDouble(densityText);
 				fuel.calorificValue = Texts.getDouble(calText);
+				fuel.co2Emissions = Texts.getDouble(co2Text);
 			}
 
 			private boolean validate() {

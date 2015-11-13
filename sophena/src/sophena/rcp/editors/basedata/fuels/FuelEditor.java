@@ -92,10 +92,11 @@ public class FuelEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.Fuel,
-					M.CalorificValue);
+					M.CalorificValue, "CO2 Emissionen");
 			table.setLabelProvider(new FuelLabel());
 			table.setInput(fuels);
-			Tables.bindColumnWidths(table, 0.5, 0.5);
+			double w = 1d / 3d;
+			Tables.bindColumnWidths(table, w, w, w);
 			bindFuelActions(section, table);
 		}
 
@@ -150,9 +151,8 @@ public class FuelEditor extends Editor {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null)
 				return;
-			boolean doIt = MsgBox
-					.ask(M.Delete,
-							"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
+			boolean doIt = MsgBox.ask(M.Delete,
+					"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			try {
@@ -170,9 +170,10 @@ public class FuelEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
-					"Dichte", "Heizwert");
+					"Dichte", "Heizwert", "CO2 Emissionen");
 			table.setLabelProvider(new WoodLabel());
-			Tables.bindColumnWidths(table, 0.40, 0.30, 0.30);
+			double w = 1d / 4d;
+			Tables.bindColumnWidths(table, w, w, w, w);
 			table.setInput(woodFuels);
 			bindWoodActions(section, table);
 		}
@@ -227,6 +228,8 @@ public class FuelEditor extends Editor {
 				case 1:
 					return Numbers.toString(f.calorificValue)
 							+ " kWh/" + f.unit;
+				case 2:
+					return Numbers.toString(f.co2Emissions) + " g CO2 äq./kWh";
 				default:
 					return null;
 				}
@@ -253,7 +256,9 @@ public class FuelEditor extends Editor {
 					return Numbers.toString(f.density) + " kg/fm";
 				case 2:
 					return Numbers.toString(f.calorificValue)
-							+ "kWh/kg atro";
+							+ " kWh/kg atro";
+				case 3:
+					return Numbers.toString(f.co2Emissions) + " g CO2 äq./kWh";
 				default:
 					return null;
 				}
