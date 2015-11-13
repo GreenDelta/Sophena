@@ -8,6 +8,8 @@ public class FuelEnergyDemand {
 	public static double get(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return generatedHeat;
+		if (generatedHeat == 0)
+			return 0;
 		Boiler boiler = producer.boiler;
 		if (!boiler.isCoGenPlant) {
 			double ur = UtilisationRate.get(producer, generatedHeat);

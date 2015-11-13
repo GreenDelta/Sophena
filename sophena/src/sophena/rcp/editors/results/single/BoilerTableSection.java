@@ -13,11 +13,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
-import sophena.model.Boiler;
-import sophena.model.FuelSpec;
+import sophena.math.energetic.FuelAmountDemand;
+import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Stats;
+import sophena.rcp.Labels;
 import sophena.rcp.Numbers;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
@@ -39,11 +40,11 @@ class BoilerTableSection {
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, "Wärmelieferant",
-				"Nennleistung", "Brennstoff", "Rang", "Gelieferte Wärme",
-				"Anteil", "Volllaststunden");
+				"Nennleistung", "Brennstoffverbrauch", "Rang", "Gelieferte Wärme",
+				"Anteil", "Volllaststunden", "Nutzungsgrad");
 		table.setLabelProvider(new Label());
-		double w = 1d / 7d;
-		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
+		double w = 1d / 8d;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w);
 		table.setInput(getItems());
 	}
 
@@ -64,7 +65,6 @@ class BoilerTableSection {
 			Producer p = producers[i];
 			Item item = new Item();
 			item.name = p.name;
-			item.fuel = getFuel(p);
 			double power = p.boiler != null ? p.boiler.maxPower : 0;
 			item.power = Numbers.toString(power) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
@@ -73,20 +73,13 @@ class BoilerTableSection {
 				item.rank = p.rank + " - Spitzenlast";
 			item.pos = i;
 			item.heat = result.totalHeat(p);
+			item.fuelUse = Labels.getFuel(p) + ": "
+					+ (int) FuelAmountDemand.get(p, item.heat)
+					+ " " + Labels.getFuelUnit(p);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
+			item.utilisationRate = UtilisationRate.get(p, item.heat);
 			items.add(item);
 		}
-	}
-
-	private String getFuel(Producer p) {
-		Boiler b = p.boiler;
-		if (b != null && b.fuel != null)
-			return b.fuel.name;
-		FuelSpec fs = p.fuelSpec;
-		if (fs != null && fs.woodFuel != null)
-			return fs.woodFuel.name;
-		else
-			return null;
 	}
 
 	private Integer getFullLoadHours(Producer p, double producedHeat) {
@@ -145,11 +138,12 @@ class BoilerTableSection {
 		int pos;
 		String name;
 		String power;
-		String fuel;
+		String fuelUse;
 		String rank;
 		double heat;
 		double share;
 		Integer fullLoadHours;
+		Double utilisationRate;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
@@ -175,7 +169,7 @@ class BoilerTableSection {
 			case 1:
 				return item.power;
 			case 2:
-				return item.fuel;
+				return item.fuelUse;
 			case 3:
 				return item.rank;
 			case 4:
@@ -185,6 +179,9 @@ class BoilerTableSection {
 			case 6:
 				return item.fullLoadHours == null ? null : Numbers
 						.toString(item.fullLoadHours) + " h";
+			case 7:
+				return item.utilisationRate == null ? null
+						: Integer.toString((int) (item.utilisationRate * 100)) + " %";
 			default:
 				return null;
 			}

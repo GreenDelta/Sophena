@@ -2,7 +2,9 @@ package sophena.rcp;
 
 import org.eclipse.swt.graphics.Image;
 
+import sophena.model.Boiler;
 import sophena.model.BuildingType;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductType;
@@ -202,13 +204,26 @@ public final class Labels {
 
 	public static String getFuelUnit(Producer producer) {
 		if (producer == null || producer.boiler == null)
-			return "";
+			return null;
 		if (producer.boiler.fuel != null) {
 			// no wood fuel
 			return producer.boiler.fuel.unit;
 		}
 		WoodAmountType type = producer.boiler.woodAmountType;
-		return type == null ? "" : type.getUnit();
+		return type == null ? null : type.getUnit();
+	}
+
+	public static String getFuel(Producer producer) {
+		if (producer == null)
+			return null;
+		Boiler b = producer.boiler;
+		if (b != null && b.fuel != null)
+			return b.fuel.name;
+		FuelSpec fs = producer.fuelSpec;
+		if (fs != null && fs.woodFuel != null)
+			return fs.woodFuel.name;
+		else
+			return null;
 	}
 
 }
