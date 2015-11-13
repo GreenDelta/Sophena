@@ -17,18 +17,21 @@ import org.eclipse.swt.widgets.Table;
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelEnergyDemand;
 import sophena.math.energetic.HeatLoss;
+import sophena.model.Project;
 import sophena.rcp.utils.Tables;
 
 public class HeatLossTable {
 
 	private EnergyResult result;
+	private Project project;
 
-	private HeatLossTable(EnergyResult result) {
-		this.result = result;
+	private HeatLossTable(ResultEditor editor) {
+		this.result = editor.result.energyResult;
+		this.project = editor.project;
 	}
 
-	public static void create(EnergyResult result, Composite comp) {
-		new HeatLossTable(result).render(comp);
+	public static void create(ResultEditor editor, Composite comp) {
+		new HeatLossTable(editor).render(comp);
 	}
 
 	private void render(Composite comp) {
@@ -59,6 +62,27 @@ public class HeatLossTable {
 		heatItem.label = "Energie nach Heizhaus";
 		heatItem.absolute = s(result.totalProducedHeat);
 		items.add(heatItem);
+
+		Item netItem = new Item();
+		netItem.label = "Verteilungsverluste";
+		netItem.absolute = s(HeatLoss.getAbsoluteNetLossKWh(project));
+		netItem.relative = s(100 * HeatLoss.getRelativeNetLoss(project, result));
+		items.add(netItem);
+
+		double afterNet = result.totalProducedHeat
+				- HeatLoss.getAbsoluteNetLossKWh(project);
+		Item consumerItem = new Item();
+		consumerItem.label = "Energie nach Wärmenetz";
+		consumerItem.absolute = s(afterNet);
+		items.add(consumerItem);
+
+		items.add(new Item());
+		Item totalItem = new Item();
+		totalItem.total = true;
+		totalItem.label = "Gesamtverluste";
+		totalItem.absolute = s(HeatLoss.getAbsoluteTotalLossKWh(project, result));
+		totalItem.relative = s(100 * HeatLoss.getRelativeTotalLoss(project, result));
+		items.add(totalItem);
 
 		return items;
 	}
