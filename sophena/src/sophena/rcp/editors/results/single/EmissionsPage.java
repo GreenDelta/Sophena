@@ -8,9 +8,11 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -27,22 +29,23 @@ class EmissionsPage extends FormPage {
 	private EnergyResult result;
 
 	EmissionsPage(ResultEditor editor) {
-		super(editor, "sophena.EmissionsPage", "Emissionen & Verluste");
+		super(editor, "sophena.EmissionsPage", "Emissionen und Verluste");
 		this.result = editor.result.energyResult;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Emissionen & Verluste");
+		ScrolledForm form = UI.formHeader(mform, "Emissionen und Verluste");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Composite comp = UI.formSection(body, tk, "CO2 Emissionen");
+		Composite comp = UI.formSection(body, tk, "Treibhausgasemissionen");
 		TableViewer table = Tables.createViewer(comp, "Wärmeerzeuger",
-				"Emissionen");
-		Tables.bindColumnWidths(table, 0.5, 0.5);
+				"Emissionen [kg CO2 äq.]");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		form.reflow(true);
+		Table t = table.getTable();
+		t.getColumn(1).setAlignment(SWT.RIGHT);
+		Tables.autoSizeColumns(t);
 	}
 
 	private List<Item> createItems() {
@@ -79,7 +82,7 @@ class EmissionsPage extends FormPage {
 		boolean total = false;
 
 		void co2(double value) {
-			emissions = Integer.toString((int) value) + " kg CO2 äq.";
+			emissions = Integer.toString((int) value);
 		}
 	}
 

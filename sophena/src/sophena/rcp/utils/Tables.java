@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -169,5 +170,25 @@ public class Tables {
 				handler.accept(event);
 			}
 		});
+	}
+
+	public static void autoSizeColumns(Table table) {
+		if (table == null)
+			return;
+		ControlListener cl = new ControlAdapter() {
+			private boolean painted = false;
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				if (painted) {
+					table.removeControlListener(this);
+					return;
+				}
+				for (int i = 0; i < table.getColumnCount(); i++)
+					table.getColumn(i).pack();
+				painted = true;
+			}
+		};
+		table.addControlListener(cl);
 	}
 }
