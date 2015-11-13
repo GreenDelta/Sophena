@@ -3,5 +3,6 @@
 	"name": "Erdgas",
 	"unit": "m3",
 	"calorificValue": 10,
-	"wood": false
+	"wood": false,
+	"co2Emissions": 239.2
 }

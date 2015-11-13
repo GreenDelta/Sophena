@@ -4,5 +4,6 @@
 	"unit": "kg",
 	"calorificValue": 5.2,
 	"wood": true,
-	"density": 379 
+	"density": 379,
+	"co2Emissions": 12.3 
 }

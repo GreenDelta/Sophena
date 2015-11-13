@@ -4,5 +4,6 @@
 	"description": "Heizöl extra leicht nach DIN 51603",
 	"unit": "L",
 	"calorificValue": 10,
-	"wood": false
+	"wood": false,
+	"co2Emissions": 307.2
 }
