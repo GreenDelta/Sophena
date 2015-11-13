@@ -35,6 +35,10 @@ public class FuelConsumption extends AbstractEntity {
 	@Column(name = "water_content")
 	public double waterContent;
 
+	/**
+	 * Returns the amount of heat that was really used based on the consumption
+	 * data.
+	 */
 	public double getUsedHeat() {
 		if (fuel == null)
 			return 0;

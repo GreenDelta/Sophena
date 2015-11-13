@@ -12,12 +12,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.FuelDao;
+import sophena.math.energetic.CalorificValue;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.rcp.App;
 import sophena.rcp.Images;
+import sophena.rcp.Labels;
 import sophena.rcp.Numbers;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
@@ -29,6 +31,7 @@ import sophena.rcp.utils.UI;
 class FuelSection {
 
 	private ProducerEditor editor;
+	private Text calorificValueText;
 
 	public FuelSection(ProducerEditor editor) {
 		this.editor = editor;
@@ -61,6 +64,7 @@ class FuelSection {
 			createWoodFuelRow(tk, composite);
 			createWaterRow(tk, composite);
 		}
+		createCalorificValueRow(tk, composite);
 		createCostRow(tk, composite);
 		createVatRow(tk, composite);
 	}
@@ -96,6 +100,7 @@ class FuelSection {
 			combo.select(spec().woodFuel);
 		combo.onSelect((f) -> {
 			spec().woodFuel = f;
+			Texts.set(calorificValueText, CalorificValue.get(producer()));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, "");
@@ -109,13 +114,21 @@ class FuelSection {
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					spec().waterContent = val;
+					Texts.set(calorificValueText, CalorificValue.get(producer()));
 					editor.setDirty();
 				});
 	}
 
+	private void createCalorificValueRow(FormToolkit tk, Composite composite) {
+		calorificValueText = UI.formText(composite, tk, "Heizwert");
+		UI.formLabel(composite, tk, "kWh/" + Labels.getFuelUnit(producer()));
+		Texts.on(calorificValueText).decimal().calculated()
+				.init(CalorificValue.get(producer()));
+	}
+
 	private void createCostRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Preis (netto)");
-		UI.formLabel(composite, tk, "EUR/" + getUnit());
+		UI.formLabel(composite, tk, "EUR/" + Labels.getFuelUnit(producer()));
 		Texts.on(t).decimal().required()
 				.init(spec().pricePerUnit)
 				.onChanged((s) -> {
@@ -123,18 +136,6 @@ class FuelSection {
 					spec().pricePerUnit = val;
 					editor.setDirty();
 				});
-	}
-
-	private String getUnit() {
-		Boiler b = producer().boiler;
-		if (b == null)
-			return "";
-		if (b.fuel != null)
-			return b.fuel.unit;
-		if (b.woodAmountType != null)
-			return b.woodAmountType.getUnit();
-		else
-			return "";
 	}
 
 	private void createVatRow(FormToolkit tk, Composite composite) {
