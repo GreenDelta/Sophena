@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelEnergyDemand;
+import sophena.math.energetic.HeatLoss;
 import sophena.rcp.utils.Tables;
 
 public class HeatLossTable {
@@ -47,11 +48,23 @@ public class HeatLossTable {
 		fuelEnergyItem.label = "Brennstoffenergie";
 		fuelEnergyItem.absolute = s(FuelEnergyDemand.getTotalKWh(result));
 		items.add(fuelEnergyItem);
+
+		Item conversionItem = new Item();
+		conversionItem.label = "Konversionsverluste";
+		conversionItem.absolute = s(HeatLoss.getAbsoluteConversionLossKWh(result));
+		conversionItem.relative = s(100 * HeatLoss.getRelativeConversionLoss(result));
+		items.add(conversionItem);
+
+		Item heatItem = new Item();
+		heatItem.label = "Energie nach Heizhaus";
+		heatItem.absolute = s(result.totalProducedHeat);
+		items.add(heatItem);
+
 		return items;
 	}
 
 	private String s(double d) {
-		return Integer.toString((int) d);
+		return Long.toString((int) Math.round(d));
 	}
 
 	private class Item {
