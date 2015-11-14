@@ -96,9 +96,9 @@ class HeatCostsChart {
 	}
 
 	private double value(CostResult result) {
-		if (result == null || result.brutto == null)
+		if (result == null || result.grossTotal == null)
 			return 0;
-		double val = result.brutto.heatGenerationCosts;
+		double val = result.grossTotal.heatGenerationCosts;
 		return val * 1000;
 	}
 

@@ -25,7 +25,6 @@ import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.Costs;
 import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
@@ -107,7 +106,7 @@ public class ProducerWizard extends Wizard {
 			return;
 		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
-		Costs.copy(b.group, costs);
+		ProductCosts.copy(b.group, costs);
 	}
 
 	@Override

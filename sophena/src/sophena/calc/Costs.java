@@ -1,30 +1,17 @@
-package sophena.model;
+package sophena.calc;
 
 import java.util.function.Consumer;
 
-public class Costs {
+import sophena.model.HeatNet;
+import sophena.model.HeatNetPipe;
+import sophena.model.Producer;
+import sophena.model.ProductCosts;
+import sophena.model.ProductEntry;
+import sophena.model.Project;
+
+class Costs {
 
 	private Costs() {
-	}
-
-	/**
-	 * Copies the default values of the given product group to the given product
-	 * costs.
-	 */
-	public static void copy(ProductGroup fromGroup, ProductCosts toCosts) {
-		if (toCosts == null)
-			return;
-		if (fromGroup == null) {
-			toCosts.duration = 0;
-			toCosts.maintenance = 0;
-			toCosts.operation = 0;
-			toCosts.repair = 0;
-		} else {
-			toCosts.duration = fromGroup.duration;
-			toCosts.maintenance = fromGroup.maintenance;
-			toCosts.operation = fromGroup.operation;
-			toCosts.repair = fromGroup.repair;
-		}
 	}
 
 	/**

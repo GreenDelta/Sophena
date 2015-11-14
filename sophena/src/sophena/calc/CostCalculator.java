@@ -4,7 +4,6 @@ import sophena.calc.costs.ElectricityCosts;
 import sophena.calc.costs.FuelCosts;
 import sophena.math.costs.AnnuitiyFactor;
 import sophena.model.CostSettings;
-import sophena.model.Costs;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
@@ -36,8 +35,8 @@ class CostCalculator {
 	public CostResult calculate() {
 		CostResult r = new CostResult();
 		Costs.each(project, costs -> {
-			r.netto.investments += costs.investment;
-			r.brutto.investments += vat() * costs.investment;
+			r.netTotal.investments += costs.investment;
+			r.grossTotal.investments += vat() * costs.investment;
 			addCapitalCosts(r, costs);
 			addOperationCosts(r, costs);
 		});
@@ -46,8 +45,8 @@ class CostCalculator {
 		if (withFunding)
 			setCapitalCostsFunding(r);
 		addOtherCosts(r);
-		r.netto.revenues = settings.electricityRevenues;
-		r.brutto.revenues = settings.electricityRevenues * vat();
+		r.netTotal.revenues = settings.electricityRevenues;
+		r.grossTotal.revenues = settings.electricityRevenues * vat();
 		calcTotals(r);
 		return r;
 	}
@@ -55,8 +54,8 @@ class CostCalculator {
 	private void addCapitalCosts(CostResult r, ProductCosts costs) {
 		double capNetto = getCapitalCosts(costs.duration,
 				costs.investment);
-		r.netto.capitalCosts += capNetto;
-		r.brutto.capitalCosts += vat() * capNetto;
+		r.netTotal.capitalCosts += capNetto;
+		r.grossTotal.capitalCosts += vat() * capNetto;
 	}
 
 	private void addDemandCosts(CostResult r, Producer p) {
@@ -65,10 +64,10 @@ class CostCalculator {
 		double producedHeat = energyResult.totalHeat(p);
 		double netCosts = FuelCosts.net(p, producedHeat)
 				+ ElectricityCosts.net(producedHeat, settings);
-		r.netto.consumptionCosts += netCosts * cashValueFactor * getAnnuityFactor();
+		r.netTotal.consumptionCosts += netCosts * cashValueFactor * getAnnuityFactor();
 		double grossCosts = FuelCosts.gross(p, producedHeat)
 				+ ElectricityCosts.gross(producedHeat, settings);
-		r.brutto.consumptionCosts += grossCosts * cashValueFactor * getAnnuityFactor();
+		r.grossTotal.consumptionCosts += grossCosts * cashValueFactor * getAnnuityFactor();
 	}
 
 	private void addOperationCosts(CostResult r, ProductCosts costs) {
@@ -79,16 +78,16 @@ class CostCalculator {
 				+ costs.investment
 						* (costs.repair / 100 + costs.maintenance / 100) * af
 						* maFactor;
-		r.netto.operationCosts += opNetto;
-		r.brutto.operationCosts += vat() * opNetto;
+		r.netTotal.operationCosts += opNetto;
+		r.grossTotal.operationCosts += vat() * opNetto;
 	}
 
 	private void setCapitalCostsFunding(CostResult r) {
 		double ir = ir();
-		r.netto.capitalCosts = r.netto.capitalCosts - settings.funding
+		r.netTotal.capitalCosts = r.netTotal.capitalCosts - settings.funding
 				* (Math.pow(ir, projectDuration) * (ir - 1)
 						/ (Math.pow(ir, projectDuration) - 1));
-		r.brutto.capitalCosts += vat() * r.netto.capitalCosts;
+		r.grossTotal.capitalCosts += vat() * r.netTotal.capitalCosts;
 	}
 
 	private void addOtherCosts(CostResult r) {
@@ -97,9 +96,9 @@ class CostCalculator {
 		double share = (settings.insuranceShare
 				+ settings.otherShare
 				+ settings.administrationShare) / 100;
-		r.netto.otherCosts = share * r.netto.investments * annuityFactor
+		r.netTotal.otherCosts = share * r.netTotal.investments * annuityFactor
 				* cashValueFactor;
-		r.brutto.otherCosts = r.netto.otherCosts * vat();
+		r.grossTotal.otherCosts = r.netTotal.otherCosts * vat();
 	}
 
 	double getAnnuityFactor() {
@@ -167,15 +166,15 @@ class CostCalculator {
 	}
 
 	private void calcTotals(CostResult r) {
-		r.netto.annualCosts = r.netto.capitalCosts
-				+ r.netto.consumptionCosts
-				+ r.netto.operationCosts
-				+ r.netto.otherCosts
-				- r.netto.revenues;
-		r.brutto.annualCosts = vat() * r.netto.annualCosts;
-		r.netto.heatGenerationCosts = r.netto.annualCosts
+		r.netTotal.annualCosts = r.netTotal.capitalCosts
+				+ r.netTotal.consumptionCosts
+				+ r.netTotal.operationCosts
+				+ r.netTotal.otherCosts
+				- r.netTotal.revenues;
+		r.grossTotal.annualCosts = vat() * r.netTotal.annualCosts;
+		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts
 				/ energyResult.totalProducedHeat;
-		r.brutto.heatGenerationCosts = vat() * r.netto.heatGenerationCosts;
+		r.grossTotal.heatGenerationCosts = vat() * r.netTotal.heatGenerationCosts;
 	}
 
 	/** Returns the interest rate that is used for the calculation. */

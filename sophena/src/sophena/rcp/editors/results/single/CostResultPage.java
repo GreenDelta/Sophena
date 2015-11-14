@@ -52,8 +52,8 @@ class CostResultPage extends FormPage {
 	}
 
 	private Item[] getItems(CostResult result) {
-		CostResult.FieldSet netto = result.netto;
-		CostResult.FieldSet brutto = result.brutto;
+		CostResult.FieldSet netto = result.netTotal;
+		CostResult.FieldSet brutto = result.grossTotal;
 		return new Item[] {
 				new Item("Investitionskosten",
 						netto.investments,

@@ -12,8 +12,8 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.ProductDao;
-import sophena.model.Costs;
 import sophena.model.Product;
+import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
 import sophena.rcp.App;
@@ -119,7 +119,7 @@ class EntryWizard extends Wizard {
 			double price = p.purchasePrice == null ? 0 : p.purchasePrice;
 			entry.pricePerPiece = price;
 			Texts.set(priceText, price);
-			Costs.copy(p.group, entry.costs);
+			ProductCosts.copy(p.group, entry.costs);
 			updateCosts();
 		}
 

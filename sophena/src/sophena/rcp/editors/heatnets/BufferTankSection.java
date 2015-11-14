@@ -9,7 +9,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.BufferTank;
-import sophena.model.Costs;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.rcp.Images;
@@ -96,7 +95,7 @@ class BufferTankSection {
 		link.setText(b.name);
 		link.pack();
 		ProductCosts costs = net().bufferTankCosts;
-		Costs.copy(b.group, costs);
+		ProductCosts.copy(b.group, costs);
 		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
 		costSection.refresh();
