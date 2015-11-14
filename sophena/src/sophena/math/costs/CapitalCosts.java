@@ -8,7 +8,7 @@ public class CapitalCosts {
 	private CapitalCosts() {
 	}
 
-	public double get(CostResultItem item, Project project, double interestRate) {
+	public static double get(CostResultItem item, Project project, double interestRate) {
 		if (item == null || item.costs == null || project == null)
 			return 0;
 		double annuityFactor = AnnuitiyFactor.get(project, interestRate);
