@@ -110,45 +110,6 @@ class CostCalculator {
 					/ (ir - priceChangeFactor);
 	}
 
-	double getCashValueOfReplacement(int replacement, int usageDuration,
-			double investmentCosts) {
-		if (usageDuration <= 0)
-			return 0;
-		double ir = ir();
-		double priceChange = settings.investmentFactor;
-		double year = replacement * usageDuration;
-		return investmentCosts * Math.pow(priceChange, year)
-				/ Math.pow(ir, year);
-	}
-
-	double getResidualValue(int usageDuration, double investmentCosts) {
-		if (usageDuration < 1)
-			return 0;
-		double ir = ir();
-		double priceChange = settings.investmentFactor;
-		int replacements = getNumberOfReplacements(usageDuration);
-		return investmentCosts
-				* Math.pow(priceChange, replacements * usageDuration)
-				* (((replacements + 1) * usageDuration - projectDuration)
-						/ usageDuration)
-				* (1 / Math.pow(ir, projectDuration));
-	}
-
-	double getCapitalCosts(int usageDuration, double investmentCosts) {
-		double annuityFactor = getAnnuityFactor();
-		double residualValue = getResidualValue(usageDuration, investmentCosts);
-		if (projectDuration <= usageDuration)
-			return (investmentCosts - residualValue) * annuityFactor;
-		int replacements = getNumberOfReplacements(usageDuration);
-		double costs = investmentCosts;
-		for (int i = 1; i <= replacements; i++) {
-			costs += getCashValueOfReplacement(i, usageDuration,
-					investmentCosts);
-		}
-		costs -= residualValue;
-		return costs * annuityFactor;
-	}
-
 	private void calcTotals(CostResult r) {
 		r.netTotal.annualCosts = r.netTotal.capitalCosts
 				+ r.netTotal.consumptionCosts

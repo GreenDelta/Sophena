@@ -31,20 +31,6 @@ public class CostCalculatorTest {
 	}
 
 	@Test
-	public void testGetCashValueOfReplacement() {
-		Assert.assertEquals(9289.408414,
-				calc.getCashValueOfReplacement(1, 15, 10000), 1E-5);
-		Assert.assertEquals(8629.310869,
-				calc.getCashValueOfReplacement(2, 15, 10000), 1E-5);
-		Assert.assertEquals(8016.119299,
-				calc.getCashValueOfReplacement(3, 15, 10000), 1E-5);
-		Assert.assertEquals(7446.500607,
-				calc.getCashValueOfReplacement(4, 15, 10000), 1E-5);
-		Assert.assertEquals(6917.358539,
-				calc.getCashValueOfReplacement(5, 15, 10000), 1E-5);
-	}
-
-	@Test
 	public void testGetResidualValue() {
 		Assert.assertEquals(5609.13560393888,
 				calc.getResidualValue(15, 10000), 1E-10);
