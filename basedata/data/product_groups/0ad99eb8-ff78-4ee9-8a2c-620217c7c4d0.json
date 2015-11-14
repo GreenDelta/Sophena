@@ -4,7 +4,7 @@
   "type": "HEATING_NET_TECHNOLOGY",
   "name": "Leitungsrohre Kunststoff",
   "duration": 30,
-  "repair": 0.5,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "repair": 1,
+  "maintenance": 0,
+  "operation": 0
 }
