@@ -1,10 +1,14 @@
 package sophena.calc;
 
-import sophena.calc.costs.ElectricityCosts;
-import sophena.calc.costs.FuelCosts;
+import sophena.math.costs.AnnuitiyFactor;
+import sophena.math.costs.CapitalCosts;
+import sophena.math.costs.ElectricityCosts;
+import sophena.math.costs.FuelCosts;
 import sophena.model.CostSettings;
+import sophena.model.HeatNet;
+import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
-import sophena.model.ProductCosts;
+import sophena.model.ProductEntry;
 import sophena.model.Project;
 
 class CostCalculator {
@@ -33,15 +37,16 @@ class CostCalculator {
 
 	public CostResult calculate() {
 		CostResult r = new CostResult();
-
-		Costs.each(project, costs -> {
-			r.netTotal.investments += costs.investment;
-			r.grossTotal.investments += vat() * costs.investment;
-			addCapitalCosts(r, costs);
-			addOperationCosts(r, costs);
-		});
-		for (Producer p : project.producers)
-			addDemandCosts(r, p);
+		for (Producer producer : project.producers) {
+			CostResultItem item = CostResultItem.create(producer);
+			handleItem(r, item);
+			addDemandCosts(r, item, producer);
+		}
+		for (ProductEntry entry : project.productEntries) {
+			CostResultItem item = CostResultItem.create(entry);
+			handleItem(r, item);
+		}
+		handleNetItems(r);
 		if (withFunding)
 			setCapitalCostsFunding(r);
 		addOtherCosts(r);
@@ -51,35 +56,66 @@ class CostCalculator {
 		return r;
 	}
 
-	private void addCapitalCosts(CostResult r, ProductCosts costs) {
-		double capNetto = getCapitalCosts(costs.duration,
-				costs.investment);
-		r.netTotal.capitalCosts += capNetto;
-		r.grossTotal.capitalCosts += vat() * capNetto;
+	private void handleNetItems(CostResult r) {
+		HeatNet net = project.heatNet;
+		if (net == null)
+			return;
+		CostResultItem item = CostResultItem.createForBuffer(net);
+		handleItem(r, item);
+		for (HeatNetPipe pipe : net.pipes) {
+			CostResultItem pipeItem = CostResultItem.create(pipe);
+			handleItem(r, pipeItem);
+		}
 	}
 
-	private void addDemandCosts(CostResult r, Producer p) {
+	private void handleItem(CostResult r, CostResultItem item) {
+		r.items.add(item);
+		r.netTotal.investments += item.costs.investment;
+		r.grossTotal.investments += vat() * item.costs.investment;
+		addCapitalCosts(r, item);
+		addOperationCosts(r, item);
+	}
+
+	private void addCapitalCosts(CostResult r, CostResultItem item) {
+		double interestRate = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		item.netCapitalCosts = CapitalCosts.get(item, project, interestRate);
+		item.grossCapitalCosts = vat() * item.netCapitalCosts;
+		r.netTotal.capitalCosts += item.netCapitalCosts;
+		r.grossTotal.capitalCosts += item.grossCapitalCosts;
+	}
+
+	private void addOperationCosts(CostResult r, CostResultItem item) {
+		double interestRate = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		double af = AnnuitiyFactor.get(project, interestRate);
+		double opFactor = getCashValueFactor(settings.operationFactor);
+		double maFactor = getCashValueFactor(settings.maintenanceFactor);
+		double opNetto = item.costs.operation * settings.hourlyWage * af * opFactor
+				+ item.costs.investment
+						* (item.costs.repair / 100 + item.costs.maintenance / 100)
+						* af * maFactor;
+		item.netOperationCosts = opNetto;
+		item.grossOperationCosts = vat() * opNetto;
+		r.netTotal.operationCosts += opNetto;
+		r.grossTotal.operationCosts += vat() * opNetto;
+	}
+
+	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
+		double interestRate = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		double af = AnnuitiyFactor.get(project, interestRate);
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
 		double producedHeat = energyResult.totalHeat(p);
 		double netCosts = FuelCosts.net(p, producedHeat)
 				+ ElectricityCosts.net(producedHeat, settings);
-		r.netTotal.consumptionCosts += netCosts * cashValueFactor * getAnnuityFactor();
 		double grossCosts = FuelCosts.gross(p, producedHeat)
 				+ ElectricityCosts.gross(producedHeat, settings);
-		r.grossTotal.consumptionCosts += grossCosts * cashValueFactor * getAnnuityFactor();
-	}
-
-	private void addOperationCosts(CostResult r, ProductCosts costs) {
-		double af = getAnnuityFactor();
-		double opFactor = getCashValueFactor(settings.operationFactor);
-		double maFactor = getCashValueFactor(settings.maintenanceFactor);
-		double opNetto = costs.operation * settings.hourlyWage * af * opFactor
-				+ costs.investment
-						* (costs.repair / 100 + costs.maintenance / 100) * af
-						* maFactor;
-		r.netTotal.operationCosts += opNetto;
-		r.grossTotal.operationCosts += vat() * opNetto;
+		item.netConsumtionCosts = netCosts * cashValueFactor * af;
+		item.grossConsumptionCosts = grossCosts * cashValueFactor * af;
+		r.netTotal.consumptionCosts += item.netConsumtionCosts;
+		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
 	}
 
 	private void setCapitalCostsFunding(CostResult r) {
@@ -91,7 +127,9 @@ class CostCalculator {
 	}
 
 	private void addOtherCosts(CostResult r) {
-		double annuityFactor = getAnnuityFactor();
+		double interestRate = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		double annuityFactor = AnnuitiyFactor.get(project, interestRate);
 		double cashValueFactor = getCashValueFactor(settings.operationFactor);
 		double share = (settings.insuranceShare
 				+ settings.otherShare

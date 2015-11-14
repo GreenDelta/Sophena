@@ -1,4 +1,4 @@
-package sophena.calc.costs;
+package sophena.math.costs;
 
 import sophena.model.CostSettings;
 
