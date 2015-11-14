@@ -20,7 +20,7 @@ import sophena.math.energetic.HeatLoss;
 import sophena.model.Project;
 import sophena.rcp.utils.Tables;
 
-public class HeatLossTable {
+class HeatLossTable {
 
 	private EnergyResult result;
 	private Project project;
@@ -30,7 +30,7 @@ public class HeatLossTable {
 		this.project = editor.project;
 	}
 
-	public static void create(ResultEditor editor, Composite comp) {
+	static void create(ResultEditor editor, Composite comp) {
 		new HeatLossTable(editor).render(comp);
 	}
 
