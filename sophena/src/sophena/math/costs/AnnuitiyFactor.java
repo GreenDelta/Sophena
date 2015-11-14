@@ -21,27 +21,17 @@ public class AnnuitiyFactor {
 	}
 
 	public double get() {
-		return interestRate / (1 - Math.pow(1 + interestRate, -duration));
+		double i = interestRate / 100;
+		double n = duration;
+		return i / (1 - Math.pow(1 + i, -n));
 	}
 
-	public static double get(Project project) {
-		if (project == null || project.costSettings == null)
+	public static double get(Project project, double interestRate) {
+		if (project == null)
 			return 0;
-		double ir = project.costSettings.interestRate / 100;
-		return AnnuitiyFactor
-				.ofInterestRate(ir)
-				.withDuration_years(project.projectDuration)
-				.get();
-	}
-
-	public static double getForFunding(Project project) {
-		if (project == null || project.costSettings == null)
-			return 0;
-		double ir = project.costSettings.interestRateFunding / 100;
-		return AnnuitiyFactor
-				.ofInterestRate(ir)
-				.withDuration_years(project.projectDuration)
-				.get();
+		double n = project.projectDuration;
+		double i = interestRate / 100;
+		return i / (1 - Math.pow(1 + i, -n));
 	}
 
 }

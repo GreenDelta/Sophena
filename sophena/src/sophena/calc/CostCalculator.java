@@ -2,7 +2,6 @@ package sophena.calc;
 
 import sophena.calc.costs.ElectricityCosts;
 import sophena.calc.costs.FuelCosts;
-import sophena.math.costs.AnnuitiyFactor;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
@@ -34,6 +33,7 @@ class CostCalculator {
 
 	public CostResult calculate() {
 		CostResult r = new CostResult();
+
 		Costs.each(project, costs -> {
 			r.netTotal.investments += costs.investment;
 			r.grossTotal.investments += vat() * costs.investment;
@@ -101,13 +101,6 @@ class CostCalculator {
 		r.grossTotal.otherCosts = r.netTotal.otherCosts * vat();
 	}
 
-	double getAnnuityFactor() {
-		if (withFunding)
-			return AnnuitiyFactor.getForFunding(project);
-		else
-			return AnnuitiyFactor.get(project);
-	}
-
 	double getCashValueFactor(double priceChangeFactor) {
 		double ir = ir();
 		if (ir == priceChangeFactor)
@@ -115,15 +108,6 @@ class CostCalculator {
 		else
 			return (1 - Math.pow(priceChangeFactor / ir, projectDuration))
 					/ (ir - priceChangeFactor);
-	}
-
-	int getNumberOfReplacements(int usageDuration) {
-		if (usageDuration >= projectDuration || usageDuration == 0)
-			return 0;
-		double pdur = (double) projectDuration;
-		double udur = (double) usageDuration;
-		double res = Math.ceil(pdur / udur) - 1.0;
-		return (int) res;
 	}
 
 	double getCashValueOfReplacement(int replacement, int usageDuration,

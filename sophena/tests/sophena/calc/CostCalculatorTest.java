@@ -24,29 +24,10 @@ public class CostCalculatorTest {
 	}
 
 	@Test
-	public void testGetAnnuityFactor() {
-		double f = calc.getAnnuityFactor();
-		Assert.assertEquals(0.0611567181252903, f, 1e-10);
-	}
-
-	@Test
 	public void testGetPresentValueFactorOperation() {
 		double priceChangeFactor = 1.02;
 		double f = calc.getCashValueFactor(priceChangeFactor);
 		Assert.assertEquals(19.6078431372549, f, 1e-10);
-	}
-
-	@Test
-	public void testGetNumberOfReplacements() {
-		Assert.assertEquals(0, calc.getNumberOfReplacements(30));
-		Assert.assertEquals(0, calc.getNumberOfReplacements(20));
-		Assert.assertEquals(1, calc.getNumberOfReplacements(19));
-		Assert.assertEquals(1, calc.getNumberOfReplacements(11));
-		Assert.assertEquals(1, calc.getNumberOfReplacements(10));
-		Assert.assertEquals(2, calc.getNumberOfReplacements(9));
-		Assert.assertEquals(3, calc.getNumberOfReplacements(5));
-		Assert.assertEquals(4, calc.getNumberOfReplacements(4));
-		Assert.assertEquals(19, calc.getNumberOfReplacements(1));
 	}
 
 	@Test

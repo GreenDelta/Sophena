@@ -1,6 +1,11 @@
 package sophena.calc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CostResult {
+
+	public final List<CostResultItem> items = new ArrayList<>();
 
 	public final FieldSet netTotal = new FieldSet();
 	public final FieldSet grossTotal = new FieldSet();
