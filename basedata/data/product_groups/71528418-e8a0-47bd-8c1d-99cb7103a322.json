@@ -3,8 +3,8 @@
   "index": 1,
   "type": "BOILER_ACCESSORIES",
   "name": "Pelletsilo",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 50,
+  "repair": 1,
+  "maintenance": 1,
+  "operation": 5
 }

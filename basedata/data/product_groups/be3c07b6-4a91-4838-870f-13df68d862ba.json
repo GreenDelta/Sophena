@@ -3,8 +3,8 @@
   "index": 2,
   "type": "FLUE_GAS_CLEANING",
   "name": "Gewebefilter",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 20,
+  "repair": 3,
+  "maintenance": 6,
+  "operation": 10
 }

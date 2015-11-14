@@ -4,7 +4,7 @@
   "type": "BUILDING",
   "name": "Erschließung, Außenanlagen, Freilager, Zufahrten, Wege, Zäune",
   "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "repair": 1,
+  "maintenance": 1,
+  "operation": 10
 }

@@ -3,8 +3,8 @@
   "index": 1,
   "type": "HEAT_RECOVERY",
   "name": "Economiser",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 10,
+  "repair": 2,
+  "maintenance": 1,
+  "operation": 5
 }

@@ -3,8 +3,8 @@
   "index": 0,
   "type": "FLUE_GAS_CLEANING",
   "name": "Zyklon",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 15,
+  "repair": 0,
+  "maintenance": 0,
+  "operation": 0
 }

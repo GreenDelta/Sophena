@@ -3,8 +3,8 @@
   "index": 8,
   "type": "BUILDING",
   "name": "Rauchgasrohre",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 15,
+  "repair": 1,
+  "maintenance": 1,
+  "operation": 0
 }

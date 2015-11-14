@@ -3,8 +3,8 @@
   "index": 5,
   "type": "COGENERATION_PLANT",
   "name": "ORC",
-  "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "duration": 15,
+  "repair": 6,
+  "maintenance": 2,
+  "operation": 150
 }

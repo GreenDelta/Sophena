@@ -4,7 +4,7 @@
   "type": "BUILDING",
   "name": "Grundstück für Heizhaus und Zufahrt",
   "duration": 0,
-  "repair": 0.0,
-  "maintenance": 0.0,
-  "operation": 0.0
+  "repair": 1,
+  "maintenance": 1,
+  "operation": 10
 }
