@@ -26,6 +26,8 @@ class ChartPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		heatCostsSection(tk, body);
+		annualCostsSection(tk, body);
+		annualRevenuesSection(tk, body);
 		investmentSection(tk, body);
 		form.reflow(true);
 	}
@@ -55,6 +57,66 @@ class ChartPage extends FormPage {
 			@Override
 			public String columnLabel() {
 				return "Wärmegestehungskosten [EUR/MWh]";
+			}
+		});
+	}
+
+	private void annualCostsSection(FormToolkit tk, Composite body) {
+		Section section = UI.section(body, tk, "Jährliche Kosten (netto)");
+		UI.gridData(section, true, false);
+		Composite comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1).verticalSpacing = 0;
+		BarChart.create(comparison, comp, new BarChart.Data() {
+			@Override
+			public double value(CostResult result) {
+				return getAnnualCosts(result);
+			}
+
+			@Override
+			public String unit() {
+				return "EUR";
+			}
+		});
+		ChartTable.create(comparison, comp, new ChartTable.Data() {
+
+			@Override
+			public double value(CostResult result) {
+				return getAnnualCosts(result);
+			}
+
+			@Override
+			public String columnLabel() {
+				return "Jährliche Kosten [EUR]";
+			}
+		});
+	}
+
+	private void annualRevenuesSection(FormToolkit tk, Composite body) {
+		Section section = UI.section(body, tk, "Jährliche Erlöse (netto)");
+		UI.gridData(section, true, false);
+		Composite comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1).verticalSpacing = 0;
+		BarChart.create(comparison, comp, new BarChart.Data() {
+			@Override
+			public double value(CostResult result) {
+				return getAnnualRevenues(result);
+			}
+
+			@Override
+			public String unit() {
+				return "EUR";
+			}
+		});
+		ChartTable.create(comparison, comp, new ChartTable.Data() {
+
+			@Override
+			public double value(CostResult result) {
+				return getAnnualRevenues(result);
+			}
+
+			@Override
+			public String columnLabel() {
+				return "Jährliche Erlöse [EUR]";
 			}
 		});
 	}
@@ -100,6 +162,18 @@ class ChartPage extends FormPage {
 		if (result == null || result.netTotal == null)
 			return 0;
 		return result.netTotal.investments;
+	}
+
+	private double getAnnualCosts(CostResult result) {
+		if (result == null || result.netTotal == null)
+			return 0;
+		return result.netTotal.annualCosts;
+	}
+
+	private double getAnnualRevenues(CostResult result) {
+		if (result == null || result.netTotal == null)
+			return 0;
+		return result.netTotal.revenues;
 	}
 
 }
