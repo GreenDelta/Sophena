@@ -12,23 +12,30 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.Comparison;
+import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 
-class HeatCostsTable {
+class ChartTable {
 
 	private Comparison comparison;
+	private Data data;
 
-	HeatCostsTable(Comparison comparison) {
+	private ChartTable(Comparison comparison, Data data) {
 		this.comparison = comparison;
+		this.data = data;
 	}
 
-	void create(Composite comp) {
+	static void create(Comparison comparison, Composite comp, Data data) {
+		new ChartTable(comparison, data).render(comp);
+	}
+
+	private void render(Composite comp) {
 		TableViewer table = Tables.createViewer(comp, "Projekt",
-				"Wärmegestehungskosten [EUR/MWh]");
+				data.columnLabel());
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Table t = table.getTable();
@@ -41,8 +48,10 @@ class HeatCostsTable {
 		for (int i = 0; i < comparison.projects.length; i++) {
 			Project project = comparison.projects[i];
 			ProjectResult result = comparison.results[i];
-			items.add(Item.create(i, project, result));
-			items.add(Item.createFunding(i, project, result));
+			items.add(Item.create(i, project,
+					data.value(result.costResult)));
+			items.add(Item.createFunding(i, project,
+					data.value(result.costResultFunding)));
 		}
 		return items;
 	}
@@ -50,25 +59,23 @@ class HeatCostsTable {
 	private static class Item {
 		int i;
 		String project;
-		String costs;
+		String value;
 		boolean fundingTrace = false;
 
-		static Item create(int i, Project project, ProjectResult result) {
+		static Item create(int i, Project project, double value) {
 			Item item = new Item();
 			item.i = i;
 			item.project = project.name + " - ohne Förderung";
-			double costs = 1000 * result.costResult.grossTotal.heatGenerationCosts;
-			item.costs = Long.toString(Math.round(costs));
+			item.value = Long.toString(Math.round(value));
 			return item;
 		}
 
-		static Item createFunding(int i, Project project, ProjectResult result) {
+		static Item createFunding(int i, Project project, double value) {
 			Item item = new Item();
 			item.fundingTrace = true;
 			item.i = i;
 			item.project = project.name + " - mit Förderung";
-			double costs = 1000 * result.costResultFunding.grossTotal.heatGenerationCosts;
-			item.costs = Long.toString(Math.round(costs));
+			item.value = Long.toString(Math.round(value));
 			return item;
 		}
 	}
@@ -97,7 +104,7 @@ class HeatCostsTable {
 			case 0:
 				return item.project;
 			case 1:
-				return item.costs;
+				return item.value;
 			default:
 				return null;
 			}
@@ -108,6 +115,14 @@ class HeatCostsTable {
 			img.dispose();
 			super.dispose();
 		}
+
+	}
+
+	interface Data {
+
+		String columnLabel();
+
+		double value(CostResult result);
 
 	}
 

@@ -26,41 +26,19 @@ class ChartPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		heatCostsSection(tk, body);
-
-		Section section = UI.section(body, tk, "Investitionskosten");
-		UI.gridData(section, true, false);
-		Composite comp = UI.sectionClient(section, tk);
-		UI.gridLayout(comp, 1);
-		BarChart.create(comparison, comp, new BarChart.Data() {
-
-			@Override
-			public double value(CostResult result) {
-				if (result == null || result.netTotal == null)
-					return 0;
-				return result.netTotal.investments;
-			}
-
-			@Override
-			public String unit() {
-				return "EUR";
-			}
-		});
-
+		investmentSection(tk, body);
 		form.reflow(true);
 	}
 
 	private void heatCostsSection(FormToolkit tk, Composite body) {
-		Section section = UI.section(body, tk, "Wärmegestehungskosten");
+		Section section = UI.section(body, tk, "Wärmegestehungskosten (netto)");
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 1);
+		UI.gridLayout(composite, 1).verticalSpacing = 0;
 		BarChart.create(comparison, composite, new BarChart.Data() {
 			@Override
 			public double value(CostResult result) {
-				if (result == null || result.netTotal == null)
-					return 0;
-				double val = result.netTotal.heatGenerationCosts;
-				return val * 1000;
+				return getHeatCosts(result);
 			}
 
 			@Override
@@ -68,7 +46,60 @@ class ChartPage extends FormPage {
 				return "EUR/MWh";
 			}
 		});
-		new HeatCostsTable(comparison).create(composite);
+		ChartTable.create(comparison, composite, new ChartTable.Data() {
+			@Override
+			public double value(CostResult result) {
+				return getHeatCosts(result);
+			}
+
+			@Override
+			public String columnLabel() {
+				return "Wärmegestehungskosten [EUR/MWh]";
+			}
+		});
+	}
+
+	private void investmentSection(FormToolkit tk, Composite body) {
+		Section section = UI.section(body, tk, "Investitionskosten (netto)");
+		UI.gridData(section, true, false);
+		Composite comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1).verticalSpacing = 0;
+		BarChart.create(comparison, comp, new BarChart.Data() {
+			@Override
+			public double value(CostResult result) {
+				return getInvestments(result);
+			}
+
+			@Override
+			public String unit() {
+				return "EUR";
+			}
+		});
+		ChartTable.create(comparison, comp, new ChartTable.Data() {
+
+			@Override
+			public double value(CostResult result) {
+				return getInvestments(result);
+			}
+
+			@Override
+			public String columnLabel() {
+				return "Investitionskosten [EUR]";
+			}
+		});
+	}
+
+	private double getHeatCosts(CostResult result) {
+		if (result == null || result.netTotal == null)
+			return 0;
+		double val = result.netTotal.heatGenerationCosts;
+		return val * 1000;
+	}
+
+	private double getInvestments(CostResult result) {
+		if (result == null || result.netTotal == null)
+			return 0;
+		return result.netTotal.investments;
 	}
 
 }
