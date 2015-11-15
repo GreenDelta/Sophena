@@ -15,9 +15,10 @@ import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductType;
-import sophena.rcp.editors.basedata.boilers.BoilerEditor;
-import sophena.rcp.editors.basedata.boilers.CoGenPlantEditor;
+import sophena.model.descriptors.ProducerDescriptor;
+import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
+import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 
@@ -101,10 +102,9 @@ class OverviewPage extends FormPage {
 		s.costs = p -> p.costs;
 		s.label = p -> p.boiler == null ? null : p.boiler.name;
 		s.onOpen = p -> {
-			if (type == ProductType.COGENERATION_PLANT)
-				CoGenPlantEditor.open();
-			else
-				BoilerEditor.open();
+			ProjectDescriptor project = editor.getProject().toDescriptor();
+			ProducerDescriptor producer = p.toDescriptor();
+			ProducerEditor.open(project, producer);
 		};
 		s.create(body, tk);
 	}

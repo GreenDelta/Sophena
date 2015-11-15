@@ -9,8 +9,6 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
@@ -28,17 +26,14 @@ class HeatCostsChart {
 		this.comparison = comparison;
 	}
 
-	void create(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Wärmegestehungskosten in EUR/MWh");
-		UI.gridData(section, true, false);
-		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 1);
+	void create(Composite composite) {
 		Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-		UI.gridData(canvas, true, true).minimumHeight = 250;
+		UI.gridData(canvas, true, true).minimumHeight = 300;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		graph = new XYGraph();
 		lws.setContents(graph);
 		graph.setShowTitle(false);
+		graph.setShowLegend(false);
 		configureAxis();
 		for (int i = 0; i < comparison.projects.length; i++) {
 			addNormalTrace(i);
@@ -50,7 +45,11 @@ class HeatCostsChart {
 		Axis x = graph.primaryXAxis;
 		Axis y = graph.primaryYAxis;
 		x.setRange(0, comparison.projects.length * 30);
-		x.setVisible(false);
+		x.setMajorGridStep(999);
+		x.setMinorTicksVisible(false);
+		x.getScaleTickLabels().setVisible(false);
+		x.setTitleFont(x.getFont());
+		x.setTitle("");
 		double max = 0;
 		for (int i = 0; i < comparison.projects.length; i++) {
 			ProjectResult pr = comparison.results[i];
@@ -91,7 +90,7 @@ class HeatCostsChart {
 		Trace trace = new Trace(label, graph.primaryXAxis,
 				graph.primaryYAxis, data);
 		trace.setTraceType(TraceType.BAR);
-		trace.setLineWidth(20);
+		trace.setLineWidth(40);
 		return trace;
 	}
 

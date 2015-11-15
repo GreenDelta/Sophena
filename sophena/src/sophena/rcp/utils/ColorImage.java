@@ -21,12 +21,16 @@ public class ColorImage {
 	}
 
 	public Image get(int i) {
-		String key = Integer.toString(i);
+		return get(i, 255);
+	}
+
+	public Image get(int i, int alpha) {
+		String key = Integer.toString(i) + "/" + Integer.toString(alpha);
 		Image img = reg.get(key);
 		if (img != null)
 			return img;
 		Color color = Colors.getForChart(i);
-		img = makeImage(color);
+		img = makeImage(color, alpha);
 		reg.put(key, img);
 		return img;
 	}
@@ -36,16 +40,17 @@ public class ColorImage {
 		if (img != null)
 			return img;
 		Color color = Colors.getSystemColor(SWT.COLOR_RED);
-		img = makeImage(color);
+		img = makeImage(color, 255);
 		reg.put("red", img);
 		return img;
 	}
 
-	private Image makeImage(Color color) {
+	private Image makeImage(Color color, int alpha) {
 		Image img;
 		img = new Image(display, 15, 15);
 		GC gc = new GC(img);
 		gc.setBackground(color);
+		gc.setAlpha(alpha);
 		gc.fillRectangle(2, 5, 11, 5);
 		gc.dispose();
 		return img;
