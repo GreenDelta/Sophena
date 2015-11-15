@@ -17,16 +17,22 @@ import sophena.model.Stats;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-class HeatCostsChart {
+class BarChart {
 
 	private Comparison comparison;
+	private Data data;
 	private XYGraph graph;
 
-	HeatCostsChart(Comparison comparison) {
+	private BarChart(Comparison comparison, Data data) {
 		this.comparison = comparison;
+		this.data = data;
 	}
 
-	void create(Composite composite) {
+	static void create(Comparison comparison, Composite comp, Data data) {
+		new BarChart(comparison, data).render(comp);
+	}
+
+	private void render(Composite composite) {
 		Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
 		UI.gridData(canvas, true, true).minimumHeight = 300;
 		LightweightSystem lws = new LightweightSystem(canvas);
@@ -53,18 +59,20 @@ class HeatCostsChart {
 		double max = 0;
 		for (int i = 0; i < comparison.projects.length; i++) {
 			ProjectResult pr = comparison.results[i];
-			max = Math.max(max, value(pr.costResult));
-			max = Math.max(max, value(pr.costResultFunding));
+			max = Math.max(max, data.value(pr.costResult));
+			max = Math.max(max, data.value(pr.costResultFunding));
 		}
-		y.setRange(0, Stats.nextStep(max, 10));
+		int step = (int) Math.pow(10, Math.floor(Math.log10(max)));
+		y.setRange(0, Stats.nextStep(max, step));
 		y.setTitleFont(y.getFont());
-		y.setTitle("EUR/MWh");
+		y.setTitle(data.unit());
+		y.setFormatPattern("#,###,###");
 		y.setShowMajorGrid(true);
 	}
 
 	private void addNormalTrace(int i) {
 		double x = i * 30 + 10;
-		double y = value(comparison.results[i].costResult);
+		double y = data.value(comparison.results[i].costResult);
 		String label = comparison.projects[i].name;
 		Trace trace = createTrace(label, x, y);
 		trace.setAreaAlpha(255);
@@ -74,7 +82,7 @@ class HeatCostsChart {
 
 	private void addFundingTrace(int i) {
 		double x = i * 30 + 20;
-		double y = value(comparison.results[i].costResultFunding);
+		double y = data.value(comparison.results[i].costResultFunding);
 		String label = comparison.projects[i].name + " - mit Förderung";
 		Trace trace = createTrace(label, x, y);
 		trace.setAreaAlpha(100);
@@ -94,11 +102,12 @@ class HeatCostsChart {
 		return trace;
 	}
 
-	private double value(CostResult result) {
-		if (result == null || result.grossTotal == null)
-			return 0;
-		double val = result.grossTotal.heatGenerationCosts;
-		return val * 1000;
+	interface Data {
+
+		String unit();
+
+		double value(CostResult result);
+
 	}
 
 }

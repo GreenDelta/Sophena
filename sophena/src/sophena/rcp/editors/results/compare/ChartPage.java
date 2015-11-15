@@ -8,6 +8,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.Comparison;
+import sophena.calc.CostResult;
 import sophena.rcp.utils.UI;
 
 class ChartPage extends FormPage {
@@ -30,7 +31,22 @@ class ChartPage extends FormPage {
 		UI.gridData(section, true, false);
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
+		BarChart.create(comparison, comp, new BarChart.Data() {
 
+			@Override
+			public double value(CostResult result) {
+				if (result == null || result.netTotal == null)
+					return 0;
+				return result.netTotal.investments;
+			}
+
+			@Override
+			public String unit() {
+				return "EUR";
+			}
+		});
+
+		form.reflow(true);
 	}
 
 	private void heatCostsSection(FormToolkit tk, Composite body) {
@@ -38,7 +54,20 @@ class ChartPage extends FormPage {
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);
-		new HeatCostsChart(comparison).create(composite);
+		BarChart.create(comparison, composite, new BarChart.Data() {
+			@Override
+			public double value(CostResult result) {
+				if (result == null || result.netTotal == null)
+					return 0;
+				double val = result.netTotal.heatGenerationCosts;
+				return val * 1000;
+			}
+
+			@Override
+			public String unit() {
+				return "EUR/MWh";
+			}
+		});
 		new HeatCostsTable(comparison).create(composite);
 	}
 
