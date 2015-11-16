@@ -1,0 +1,21 @@
+{
+	"id": "ef16aeb0-7434-0427-178f-2d902ffcc767",
+	"name": "Erdgas BHKW klein",
+	"isCoGenPlant": true,
+	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
+	"purchasePrice": 44000,
+	"maxPower": 22,
+	"minPower": 11,
+	"efficiencyRate": 0.78,
+	"maxPowerElectric": 7.5,
+	"minPowerElectric": 3.75,
+	"efficiencyRateElectric": 0.26,
+	"fuel": {
+		"id": "60c329a3-cee9-460d-9c21-ae39701b6e07",
+		"name": "Erdgas"
+	},
+	"group": {
+		"id": "5c1cbb57-2ef9-43fe-b1b5-8e6ac9d74caa",
+		"name": "Erdgas-BHKW"
+	}
+}

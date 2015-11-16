@@ -39,6 +39,7 @@ import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
 import sophena.rcp.editors.basedata.products.PlanningEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Rcp;
@@ -170,6 +171,7 @@ public class ActionBarAdvisor extends
 		try {
 			Import in = new Import(file, App.getDb());
 			Rcp.run("Importiere Daten ...", in);
+			Navigator.refresh();
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");
 		}
