@@ -20,13 +20,10 @@ import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
-import sophena.model.Consumer;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
-import sophena.model.LoadProfile;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
-import sophena.model.Producer;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
@@ -52,20 +49,21 @@ public class Import implements Runnable {
 			pack = DataPack.open(packFile);
 			// order is important for reference resolving
 			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
+			importEntities(ModelType.PIPE, Pipe.class);
+			importEntities(ModelType.PRODUCT, Product.class);
 			importEntities(ModelType.FUEL, Fuel.class);
-			importEntities(ModelType.BOILER, Boiler.class);
 			importEntities(ModelType.BUFFER, BufferTank.class);
+			importEntities(ModelType.BOILER, Boiler.class);
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
-			importEntities(ModelType.PIPE, Pipe.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
+			importEntities(ModelType.PROJECT, Project.class);
 			pack.close();
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
 		}
 	}
 
-	// for non-cyclic entities
 	private <T extends AbstractEntity> void importEntities(ModelType type,
 			Class<T> clazz) {
 		try {
@@ -91,9 +89,8 @@ public class Import implements Runnable {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
-				Consumer.class, Fuel.class, LoadProfile.class, Pipe.class,
-				Producer.class, Product.class, ProductGroup.class,
-				Project.class, WeatherStation.class,
+				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
+				WeatherStation.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))

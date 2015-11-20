@@ -13,15 +13,11 @@ import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
-import sophena.model.Consumer;
 import sophena.model.Fuel;
-import sophena.model.LoadProfile;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
-import sophena.model.Producer;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
-import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.WeatherStation;
 
@@ -47,9 +43,8 @@ public class Export {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
-				Consumer.class, Fuel.class, LoadProfile.class, Pipe.class,
-				Producer.class, Product.class, ProductGroup.class,
-				Project.class, WeatherStation.class,
+				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
+				WeatherStation.class,
 		};
 		Serializer ed = new Serializer();
 		for (Class<?> refType : refTypes) {

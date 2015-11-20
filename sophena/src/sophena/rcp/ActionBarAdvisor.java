@@ -170,8 +170,7 @@ public class ActionBarAdvisor extends
 		File file = new File(path);
 		try {
 			Import in = new Import(file, App.getDb());
-			Rcp.run("Importiere Daten ...", in);
-			Navigator.refresh();
+			Rcp.run("Importiere Daten ...", in, () -> Navigator.refresh());
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");
 		}
