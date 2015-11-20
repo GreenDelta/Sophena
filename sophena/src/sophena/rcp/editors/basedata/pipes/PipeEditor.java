@@ -22,7 +22,6 @@ import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -32,6 +31,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 public class PipeEditor extends Editor {
 
@@ -164,11 +164,11 @@ public class PipeEditor extends Editor {
 				return p.url;
 			case 3:
 				return p.purchasePrice == null ? null
-						: Numbers.toString(p.purchasePrice) + " EUR/m";
+						: Num.str(p.purchasePrice) + " EUR/m";
 			case 4:
-				return Numbers.toString(p.diameter) + " mm";
+				return Num.str(p.diameter) + " mm";
 			case 5:
-				return Numbers.toString(p.uValue);
+				return Num.str(p.uValue);
 			default:
 				return null;
 			}

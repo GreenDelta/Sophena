@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.rcp.Numbers;
+import sophena.utils.Num;
 
 public final class Texts {
 
@@ -40,7 +40,7 @@ public final class Texts {
 	public static void set(Text text, double d) {
 		if (text == null)
 			return;
-		text.setText(Numbers.toString(d));
+		text.setText(Num.str(d));
 	}
 
 	public static void set(Text text, Double d) {
@@ -49,13 +49,13 @@ public final class Texts {
 		if (d == null)
 			text.setText("");
 		else
-			text.setText(Numbers.toString(d));
+			text.setText(Num.str(d));
 	}
 
 	public static void set(Text text, int i) {
 		if (text == null)
 			return;
-		text.setText(Numbers.toString(i));
+		text.setText(Num.intStr(i));
 	}
 
 	public static void set(Text text, Integer i) {
@@ -64,7 +64,7 @@ public final class Texts {
 		if (i == null)
 			text.setText("");
 		else
-			text.setText(Numbers.toString(i));
+			text.setText(Num.intStr(i));
 	}
 
 	public static boolean isEmpty(Text text) {
@@ -76,7 +76,7 @@ public final class Texts {
 	public static boolean hasNumber(Text text) {
 		if (text == null)
 			return false;
-		Number n = Numbers.readNumber(text.getText());
+		Number n = Num.readNumber(text.getText());
 		return n != null;
 	}
 
@@ -84,20 +84,20 @@ public final class Texts {
 		if (text == null)
 			return 0;
 		else
-			return Numbers.read(text.getText());
+			return Num.read(text.getText());
 	}
 
 	public static int getInt(Text text) {
 		if (text == null)
 			return 0;
 		else
-			return Numbers.readInt(text.getText());
+			return Num.readInt(text.getText());
 	}
 
 	public static boolean hasPercentage(Text text) {
 		if (text == null)
 			return false;
-		Number n = Numbers.readNumber(text.getText());
+		Number n = Num.readNumber(text.getText());
 		if (n == null)
 			return false;
 		double d = n.doubleValue();

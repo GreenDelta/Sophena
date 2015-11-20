@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.Fuel;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class FuelWizard extends Wizard {
 
@@ -140,7 +140,7 @@ class FuelWizard extends Wizard {
 				return error("Es muss ein Name angegeben werden.");
 			if (Strings.nullOrEmpty(unitText.getText()))
 				return error("Es muss eine Einheit angegeben werden.");
-			if (!Numbers.isNumeric(calText.getText()))
+			if (!Num.isNumeric(calText.getText()))
 				return error("Es muss ein Heizwert angegeben werden.");
 			setPageComplete(true);
 			setErrorMessage(null);

@@ -25,13 +25,13 @@ import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class EditorPage extends FormPage {
 
@@ -153,7 +153,7 @@ class EditorPage extends FormPage {
 			case 2:
 				return product.url;
 			case 3:
-				return Numbers.toString(product.purchasePrice) + " EUR";
+				return Num.str(product.purchasePrice) + " EUR";
 			default:
 				return null;
 			}

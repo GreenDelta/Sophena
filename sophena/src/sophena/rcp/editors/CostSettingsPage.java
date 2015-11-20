@@ -10,9 +10,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.CostSettings;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
+import sophena.utils.Num;
 import sophena.rcp.utils.UI;
 
 public class CostSettingsPage extends FormPage {
@@ -54,18 +54,18 @@ public class CostSettingsPage extends FormPage {
 		Composite c = UI.formSection(body, toolkit, "Allgemein");
 		UI.gridLayout(c, 3);
 		t(c, "Mehrwertsteuersatz", "%", costs.vatRate)
-				.onChanged(s -> costs.vatRate = Numbers.read(s));
+				.onChanged(s -> costs.vatRate = Num.read(s));
 		t(c, "Mittlerer Stundenlohn", "EUR", costs.hourlyWage)
-				.onChanged(s -> costs.hourlyWage = Numbers.read(s));
+				.onChanged(s -> costs.hourlyWage = Num.read(s));
 		t(c, "Strompreis (netto)", "EUR/kWh", costs.electricityPrice)
-				.onChanged(s -> costs.electricityPrice = Numbers.read(s));
+				.onChanged(s -> costs.electricityPrice = Num.read(s));
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
-				.onChanged(s -> costs.electricityDemandShare = Numbers.read(s));
+				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
 		if (forProject) {
 			t(c, "Mittlere Stromerlöse", "EUR/Jahr",
 					costs.electricityRevenues)
 							.onChanged(
-									s -> costs.electricityRevenues = Numbers.read(s));
+									s -> costs.electricityRevenues = Num.read(s));
 		}
 	}
 
@@ -73,15 +73,15 @@ public class CostSettingsPage extends FormPage {
 		Composite c = UI.formSection(body, toolkit, "Finanzierung");
 		UI.gridLayout(c, 3);
 		t(c, "Kapital-Mischzinssatz (ohne Förderung)", "%", costs.interestRate)
-				.onChanged(s -> costs.interestRate = Numbers.read(s));
+				.onChanged(s -> costs.interestRate = Num.read(s));
 
 		t(c, "Kapital-Mischzinssatz (mit Förderung)", "%",
 				costs.interestRateFunding)
-						.onChanged(s -> costs.interestRateFunding = Numbers
+						.onChanged(s -> costs.interestRateFunding = Num
 								.read(s));
 		if (forProject) {
 			t(c, "Investitionsförderung", "EUR", costs.funding)
-					.onChanged(s -> costs.funding = Numbers.read(s));
+					.onChanged(s -> costs.funding = Num.read(s));
 			t(c, "Einmalige Anschlussgebühren", "EUR", 0);
 		}
 	}
@@ -90,30 +90,30 @@ public class CostSettingsPage extends FormPage {
 		Composite c = UI.formSection(body, toolkit, "Sonstige Kosten");
 		UI.gridLayout(c, 3);
 		t(c, "Versicherung", "%", costs.insuranceShare)
-				.onChanged(s -> costs.insuranceShare = Numbers.read(s));
+				.onChanged(s -> costs.insuranceShare = Num.read(s));
 
 		t(c, "Sonstige Abgaben (Steuern, Pacht, …)", "%", costs.otherShare)
-				.onChanged(s -> costs.otherShare = Numbers.read(s));
+				.onChanged(s -> costs.otherShare = Num.read(s));
 
 		t(c, "Verwaltung", "%", costs.administrationShare)
-				.onChanged(s -> costs.administrationShare = Numbers.read(s));
+				.onChanged(s -> costs.administrationShare = Num.read(s));
 	}
 
 	private void createPriceChangeSection(Composite body) {
 		Composite c = UI.formSection(body, toolkit, "Preisänderungsfaktoren");
 		UI.gridLayout(c, 3);
 		t(c, "Investitionen", "", costs.investmentFactor)
-				.onChanged(s -> costs.investmentFactor = Numbers.read(s));
+				.onChanged(s -> costs.investmentFactor = Num.read(s));
 		t(c, "Biomasse-Brennstoff", "", costs.bioFuelFactor)
-				.onChanged(s -> costs.bioFuelFactor = Numbers.read(s));
+				.onChanged(s -> costs.bioFuelFactor = Num.read(s));
 		t(c, "Fossiler Brennstoff", "", costs.fossilFuelFactor)
-				.onChanged(s -> costs.fossilFuelFactor = Numbers.read(s));
+				.onChanged(s -> costs.fossilFuelFactor = Num.read(s));
 		t(c, "Strom", "", costs.electricityFactor)
-				.onChanged(s -> costs.electricityFactor = Numbers.read(s));
+				.onChanged(s -> costs.electricityFactor = Num.read(s));
 		t(c, "Betriebsgebundene und sonstige Kosten", "", costs.operationFactor)
-				.onChanged(s -> costs.operationFactor = Numbers.read(s));
+				.onChanged(s -> costs.operationFactor = Num.read(s));
 		t(c, "Instandhaltung", "", costs.maintenanceFactor)
-				.onChanged(s -> costs.maintenanceFactor = Numbers
+				.onChanged(s -> costs.maintenanceFactor = Num
 						.read(s));
 
 	}

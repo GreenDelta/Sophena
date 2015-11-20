@@ -6,7 +6,8 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import org.eclipse.swt.widgets.Text;
-import sophena.rcp.Numbers;
+
+import sophena.utils.Num;
 
 public class DataBinding {
 
@@ -24,7 +25,7 @@ public class DataBinding {
 			Supplier<DoubleConsumer> setter) {
 		if (text == null || getter == null || setter == null)
 			return;
-		text.setText(Numbers.toString(getter.get().getAsDouble()));
+		text.setText(Num.str(getter.get().getAsDouble()));
 		text.addModifyListener((e) -> {
 			double val = Texts.getDouble(text);
 			setter.get().accept(val);
@@ -38,7 +39,7 @@ public class DataBinding {
 			Supplier<IntConsumer> setter) {
 		if (text == null || getter == null || setter == null)
 			return;
-		text.setText(Numbers.toString(getter.get().getAsInt()));
+		text.setText(Num.intStr(getter.get().getAsInt()));
 		text.addModifyListener((e) -> {
 			int val = Texts.getInt(text);
 			setter.get().accept(val);

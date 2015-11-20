@@ -36,7 +36,6 @@ import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
@@ -44,6 +43,7 @@ import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 public class ProducerWizard extends Wizard {
 
@@ -200,8 +200,8 @@ public class ProducerWizard extends Wizard {
 					return null;
 				Boiler boiler = (Boiler) element;
 				String label = boiler.name + " ("
-						+ Numbers.toString(boiler.minPower) + " kW - "
-						+ Numbers.toString(boiler.maxPower) + " kW)";
+						+ Num.str(boiler.minPower) + " kW - "
+						+ Num.str(boiler.maxPower) + " kW)";
 				return label;
 			}
 		}

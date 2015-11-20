@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.ProductCosts;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
+import sophena.utils.Num;
 import sophena.rcp.utils.UI;
 
 public class ProductCostSection {
@@ -55,19 +55,19 @@ public class ProductCostSection {
 		this.toolkit = tk;
 
 		investmentText = t("Investitionskosten", "EUR", costs().investment)
-				.onChanged((s) -> costs().investment = Numbers.read(s)).text;
+				.onChanged((s) -> costs().investment = Num.read(s)).text;
 
 		durationText = t("Nutzungsdauer", "Jahre", costs().duration)
-				.onChanged((s) -> costs().duration = Numbers.readInt(s)).text;
+				.onChanged((s) -> costs().duration = Num.readInt(s)).text;
 
 		repairTest = t("Instandsetzung", "%", costs().repair)
-				.onChanged((s) -> costs().repair = Numbers.read(s)).text;
+				.onChanged((s) -> costs().repair = Num.read(s)).text;
 
 		maintenanceText = t("Wartung und Inspektion", "%", costs().maintenance)
-				.onChanged((s) -> costs().maintenance = Numbers.read(s)).text;
+				.onChanged((s) -> costs().maintenance = Num.read(s)).text;
 
 		operationText = t("Aufwand für Bedienen", "h/a", costs().operation)
-				.onChanged((s) -> costs().operation = Numbers.read(s)).text;
+				.onChanged((s) -> costs().operation = Num.read(s)).text;
 		return this;
 	}
 

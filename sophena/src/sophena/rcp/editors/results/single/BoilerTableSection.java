@@ -7,8 +7,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -19,10 +21,10 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Stats;
 import sophena.rcp.Labels;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class BoilerTableSection {
 
@@ -45,6 +47,10 @@ class BoilerTableSection {
 		table.setLabelProvider(new Label());
 		double w = 1d / 8d;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w);
+		Table t = table.getTable();
+		int[] cols = { 1, 4, 5, 6, 7 };
+		for (int col : cols)
+			t.getColumn(col).setAlignment(SWT.RIGHT);
 		table.setInput(getItems());
 	}
 
@@ -66,7 +72,7 @@ class BoilerTableSection {
 			Item item = new Item();
 			item.name = p.name;
 			double power = p.boiler != null ? p.boiler.maxPower : 0;
-			item.power = Numbers.toString(power) + " kW";
+			item.power = Num.str(power) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
 			else
@@ -129,7 +135,7 @@ class BoilerTableSection {
 		Item item = new Item();
 		item.pos = -1;
 		item.name = "Ungedeckte Leistung";
-		item.power = powerDiff < 0 ? Numbers.toString(powerDiff) + " kW" : null;
+		item.power = powerDiff < 0 ? Num.intStr(powerDiff) + " kW" : null;
 		item.heat = diff;
 		items.add(item);
 	}
@@ -173,12 +179,12 @@ class BoilerTableSection {
 			case 3:
 				return item.rank;
 			case 4:
-				return Numbers.toString((int) item.heat) + " kWh";
+				return Num.intStr(item.heat) + " kWh";
 			case 5:
-				return Numbers.toString(item.share) + " %";
+				return Num.str(item.share) + " %";
 			case 6:
-				return item.fullLoadHours == null ? null : Numbers
-						.toString(item.fullLoadHours) + " h";
+				return item.fullLoadHours == null ? null : Num
+						.intStr(item.fullLoadHours) + " h";
 			case 7:
 				return item.utilisationRate == null ? null
 						: Integer.toString((int) (item.utilisationRate * 100)) + " %";

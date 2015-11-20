@@ -23,7 +23,6 @@ import sophena.model.BufferTank;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
@@ -34,6 +33,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 public class BufferTankEditor extends Editor {
 
@@ -169,9 +169,9 @@ public class BufferTankEditor extends Editor {
 				return b.url;
 			case 3:
 				return b.purchasePrice == null ? null
-						: Numbers.toString(b.purchasePrice) + " EUR";
+						: Num.str(b.purchasePrice) + " EUR";
 			case 4:
-				return Numbers.toString(b.volume) + " L";
+				return Num.str(b.volume) + " L";
 			default:
 				return null;
 			}

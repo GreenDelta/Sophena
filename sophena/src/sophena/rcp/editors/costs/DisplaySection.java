@@ -17,11 +17,11 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 /** Cost section where the cost entries are only displayed but not edited. */
 class DisplaySection<T> {
@@ -85,15 +85,15 @@ class DisplaySection<T> {
 			case 0:
 				return label.apply(t);
 			case 1:
-				return Numbers.toString(c.investment) + " EUR";
+				return Num.str(c.investment) + " EUR";
 			case 2:
-				return Numbers.toString(c.duration) + " a";
+				return Num.intStr(c.duration) + " a";
 			case 3:
-				return Numbers.toString(c.repair) + " %";
+				return Num.str(c.repair) + " %";
 			case 4:
-				return Numbers.toString(c.maintenance) + " %";
+				return Num.str(c.maintenance) + " %";
 			case 5:
-				return Numbers.toString(c.operation) + " h/a";
+				return Num.str(c.operation) + " h/a";
 			default:
 				return null;
 			}

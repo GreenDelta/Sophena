@@ -19,12 +19,12 @@ import sophena.model.BuildingState;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class BuildingStateEditor extends Editor {
 
@@ -116,11 +116,11 @@ public class BuildingStateEditor extends Editor {
 				case 1:
 					return s.name;
 				case 2:
-					return Numbers.toString(s.heatingLimit) + " °C";
+					return Num.str(s.heatingLimit) + " °C";
 				case 3:
-					return Numbers.toString(s.waterFraction) + " %";
+					return Num.str(s.waterFraction) + " %";
 				case 4:
-					return Numbers.toString(s.loadHours) + " h";
+					return Num.intStr(s.loadHours) + " h";
 				default:
 					return null;
 				}

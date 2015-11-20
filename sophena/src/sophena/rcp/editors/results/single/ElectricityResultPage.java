@@ -19,10 +19,10 @@ import sophena.math.energetic.FullLoadHours;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class ElectricityResultPage extends FormPage {
 
@@ -105,11 +105,11 @@ class ElectricityResultPage extends FormPage {
 			case 1:
 				return item.rank;
 			case 2:
-				return Numbers.toString(item.maxPower) + " kW";
+				return Num.str(item.maxPower) + " kW";
 			case 3:
-				return Numbers.toString(item.fullLoadHours) + " h";
+				return Num.str(item.fullLoadHours) + " h";
 			case 4:
-				return Numbers.toString(item.value) + " kWh";
+				return Num.str(item.value) + " kWh";
 			default:
 				return null;
 			}

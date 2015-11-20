@@ -8,9 +8,9 @@ import sophena.model.BuildingState;
 import sophena.model.Consumer;
 import sophena.model.Stats;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class HeatDemandSection {
 
@@ -65,7 +65,7 @@ class HeatDemandSection {
 			});
 		} else {
 			Texts.on(t).required().decimal().onChanged(text -> {
-				consumer().heatingLoad = Numbers.read(text);
+				consumer().heatingLoad = Num.read(text);
 				editor.calculate();
 				editor.setDirty();
 			});
@@ -77,7 +77,7 @@ class HeatDemandSection {
 		Texts.set(t, consumer().waterFraction);
 		UI.formLabel(composite, tk, "%");
 		t.addModifyListener(e -> {
-			consumer().waterFraction = Numbers.read(t.getText());
+			consumer().waterFraction = Num.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
 		});
@@ -89,7 +89,7 @@ class HeatDemandSection {
 		Texts.set(t, consumer().heatingLimit);
 		UI.formLabel(composite, tk, "°C");
 		t.addModifyListener(e -> {
-			consumer().heatingLimit = Numbers.read(t.getText());
+			consumer().heatingLimit = Num.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
 		});
@@ -100,7 +100,7 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, "Volllaststunden");
 		UI.formLabel(composite, tk, "h");
 		Texts.on(t).integer().init(consumer().loadHours).onChanged(s -> {
-			consumer().loadHours = Numbers.readInt(s);
+			consumer().loadHours = Num.readInt(s);
 			editor.calculate();
 			editor.setDirty();
 		});
@@ -113,7 +113,7 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "kWh");
 		editor.onCalculated(values -> {
 			double sum = Stats.sum(values);
-			t.setText(Numbers.toString(sum));
+			t.setText(Num.str(sum));
 		});
 	}
 

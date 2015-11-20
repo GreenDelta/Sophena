@@ -24,7 +24,6 @@ import sophena.model.Fuel;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -34,6 +33,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 public class FuelEditor extends Editor {
 
@@ -226,10 +226,10 @@ public class FuelEditor extends Editor {
 				case 0:
 					return f.name;
 				case 1:
-					return Numbers.toString(f.calorificValue)
+					return Num.str(f.calorificValue)
 							+ " kWh/" + f.unit;
 				case 2:
-					return Numbers.toString(f.co2Emissions) + " g CO2 äq./kWh";
+					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
 				default:
 					return null;
 				}
@@ -253,12 +253,12 @@ public class FuelEditor extends Editor {
 				case 0:
 					return f.name;
 				case 1:
-					return Numbers.toString(f.density) + " kg/fm";
+					return Num.str(f.density) + " kg/fm";
 				case 2:
-					return Numbers.toString(f.calorificValue)
+					return Num.str(f.calorificValue)
 							+ " kWh/kg atro";
 				case 3:
-					return Numbers.toString(f.co2Emissions) + " g CO2 äq./kWh";
+					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
 				default:
 					return null;
 				}

@@ -18,13 +18,13 @@ import sophena.model.ProducerFunction;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class InfoPage extends FormPage {
 
@@ -81,9 +81,9 @@ class InfoPage extends FormPage {
 			return;
 		}
 		String text = b.name + " ("
-				+ Numbers.toString(b.minPower) + " kW - "
-				+ Numbers.toString(b.maxPower) + " kW, \u03B7 = "
-				+ Numbers.toString(b.efficiencyRate) + "%)";
+				+ Num.str(b.minPower) + " kW - "
+				+ Num.str(b.maxPower) + " kW, \u03B7 = "
+				+ Num.str(b.efficiencyRate) + "%)";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
 		link.setText(text);
 		link.setImage(Images.BOILER_16.img());

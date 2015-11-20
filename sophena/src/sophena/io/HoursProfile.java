@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.model.Stats;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Strings;
+import sophena.utils.Num;
 
 /**
  * Reads data from an hours profile. A hours profile file should have the
@@ -52,7 +52,7 @@ public final class HoursProfile {
 
 		private void writeRows(double[] profile, List<String> rows) {
 			rows.add("index;value");
-			char s = Numbers.getFormat().getDecimalFormatSymbols()
+			char s = Num.getFormat().getDecimalFormatSymbols()
 					.getDecimalSeparator();
 			StringBuilder row = new StringBuilder();
 			for (int i = 0; i < profile.length; i++) {

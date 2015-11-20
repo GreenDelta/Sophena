@@ -26,7 +26,6 @@ import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
@@ -35,6 +34,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class EditorPage extends FormPage {
 
@@ -188,24 +188,24 @@ class EditorPage extends FormPage {
 			if (boiler == null || boiler.purchasePrice == null)
 				return null;
 			else
-				return Numbers.toString(boiler.purchasePrice) + " EUR";
+				return Num.str(boiler.purchasePrice) + " EUR";
 		}
 
 		private String getPowerInfo(Boiler boiler) {
 			if (boiler == null)
 				return null;
-			String min = Numbers.toString(boiler.minPower);
-			String max = Numbers.toString(boiler.maxPower);
-			String eta = Numbers.toString(boiler.efficiencyRate);
+			String min = Num.str(boiler.minPower);
+			String max = Num.str(boiler.maxPower);
+			String eta = Num.str(boiler.efficiencyRate);
 			return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
 		}
 
 		private String getElectricPowerInfo(Boiler boiler) {
 			if (boiler == null)
 				return null;
-			String min = Numbers.toString(boiler.minPowerElectric);
-			String max = Numbers.toString(boiler.maxPowerElectric);
-			String eta = Numbers.toString(boiler.efficiencyRateElectric);
+			String min = Num.str(boiler.minPowerElectric);
+			String max = Num.str(boiler.maxPowerElectric);
+			String eta = Num.str(boiler.efficiencyRateElectric);
 			return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
 		}
 

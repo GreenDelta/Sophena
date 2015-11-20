@@ -19,12 +19,12 @@ import sophena.model.ProductGroup;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class ProductGroupEditor extends Editor {
 
@@ -112,13 +112,13 @@ public class ProductGroupEditor extends Editor {
 				case 1:
 					return p.name;
 				case 2:
-					return Numbers.toString(p.duration) + " Jahre";
+					return Num.intStr(p.duration) + " Jahre";
 				case 3:
-					return Numbers.toString(p.repair) + " %";
+					return Num.str(p.repair) + " %";
 				case 4:
-					return Numbers.toString(p.maintenance) + " %";
+					return Num.str(p.maintenance) + " %";
 				case 5:
-					return Numbers.toString(p.operation) + " Stunden/Jahr";
+					return Num.str(p.operation) + " Stunden/Jahr";
 				default:
 					return null;
 				}

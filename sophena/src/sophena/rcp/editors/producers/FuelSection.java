@@ -20,13 +20,13 @@ import sophena.model.Producer;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class FuelSection {
 
@@ -73,7 +73,7 @@ class FuelSection {
 		UI.formLabel(composite, tk, "Brennstoff");
 		Fuel f = producer().boiler.fuel;
 		String text = f.name + " ("
-				+ Numbers.toString(f.calorificValue) + " kWh/"
+				+ Num.str(f.calorificValue) + " kWh/"
 				+ f.unit + ")";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
 		link.setText(text);

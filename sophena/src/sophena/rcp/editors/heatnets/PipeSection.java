@@ -24,7 +24,6 @@ import sophena.model.HeatNetPipe;
 import sophena.model.ProductCosts;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Controls;
@@ -33,6 +32,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class PipeSection {
 
@@ -197,9 +197,9 @@ class PipeSection {
 			case 0:
 				return pipe.pipe != null ? pipe.pipe.name : null;
 			case 1:
-				return Numbers.toString(pipe.length) + " m";
+				return Num.str(pipe.length) + " m";
 			case 2:
-				return Numbers.toString(HeatNets.getPowerLoss(pipe, net()))
+				return Num.str(HeatNets.getPowerLoss(pipe, net()))
 						+ " W/m";
 			default:
 				return getCostLabel(pipe.costs, col);
@@ -211,15 +211,15 @@ class PipeSection {
 				return null;
 			switch (col) {
 			case 3:
-				return Numbers.toString(costs.investment) + " EUR";
+				return Num.str(costs.investment) + " EUR";
 			case 4:
 				return costs.duration + " Jahr(e)";
 			case 5:
-				return Numbers.toString(costs.repair) + " %";
+				return Num.str(costs.repair) + " %";
 			case 6:
-				return Numbers.toString(costs.maintenance) + " %";
+				return Num.str(costs.maintenance) + " %";
 			case 7:
-				return Numbers.toString(costs.operation) + " Stunden/Jahr";
+				return Num.str(costs.operation) + " Stunden/Jahr";
 			default:
 				return null;
 			}

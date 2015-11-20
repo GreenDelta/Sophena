@@ -21,12 +21,12 @@ import sophena.model.Project;
 import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class EntrySection {
 
@@ -145,17 +145,17 @@ class EntrySection {
 			case 0:
 				return e.product != null ? e.product.name : null;
 			case 1:
-				return Numbers.toString(e.count) + " Stück";
+				return Num.str(e.count) + " Stück";
 			case 2:
-				return Numbers.toString(c.investment) + " EUR";
+				return Num.str(c.investment) + " EUR";
 			case 3:
-				return Numbers.toString(c.duration) + " a";
+				return Num.intStr(c.duration) + " a";
 			case 4:
-				return Numbers.toString(c.repair) + " %";
+				return Num.str(c.repair) + " %";
 			case 5:
-				return Numbers.toString(c.maintenance) + " %";
+				return Num.str(c.maintenance) + " %";
 			case 6:
-				return Numbers.toString(c.operation) + " h/a";
+				return Num.str(c.operation) + " h/a";
 			default:
 				return null;
 			}

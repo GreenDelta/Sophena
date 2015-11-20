@@ -25,7 +25,6 @@ import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Colors;
@@ -33,6 +32,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class ConsumerWizard extends Wizard {
 
@@ -171,7 +171,7 @@ public class ConsumerWizard extends Wizard {
 			UI.innerGrid(inner, 2);
 			Text text = UI.formText(inner, M.HeatingLoad + " (kW)");
 			text.addModifyListener(
-					(e) -> consumer.heatingLoad = Numbers.read(text.getText()));
+					(e) -> consumer.heatingLoad = Num.read(text.getText()));
 			inner.setVisible(false);
 			Controls.onSelect(consumption, (e) -> {
 				consumer.demandBased = false;

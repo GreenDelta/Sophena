@@ -19,11 +19,11 @@ import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class ConsumptionSection {
 
@@ -128,7 +128,7 @@ class ConsumptionSection {
 		private String getAmount(FuelConsumption c) {
 			if (c == null || c.fuel == null)
 				return null;
-			String amount = Numbers.toString(c.amount);
+			String amount = Num.str(c.amount);
 			Fuel fuel = c.fuel;
 			if (!fuel.wood)
 				return amount + " " + fuel.unit;
@@ -137,20 +137,20 @@ class ConsumptionSection {
 				unit = "?";
 			else
 				unit = c.woodAmountType.getUnit();
-			String wc = Numbers.toString(c.waterContent);
+			String wc = Num.str(c.waterContent);
 			return amount + " " + unit + " (Wgh.: " + wc + "%)";
 		}
 
 		private String getUsedHeat(FuelConsumption c) {
 			if (c == null)
 				return null;
-			String heat = Numbers.toString(c.getUsedHeat()) + " kWh";
+			String heat = Num.str(c.getUsedHeat()) + " kWh";
 			double eta = EfficiencyRate
 					.ofSmallBoiler()
 					.utilisationRate(c.utilisationRate)
 					.fullLoadHours_h(consumer().loadHours)
 					.get();
-			return heat + " (\u03B7=" + Numbers.toString(eta) + "%)";
+			return heat + " (\u03B7=" + Num.str(eta) + "%)";
 		}
 	}
 }

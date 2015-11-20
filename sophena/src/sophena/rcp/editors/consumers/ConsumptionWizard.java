@@ -25,13 +25,13 @@ import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class ConsumptionWizard extends Wizard {
 
@@ -161,22 +161,22 @@ class ConsumptionWizard extends Wizard {
 
 		private void onRateChanged() {
 			if (effiCheck.getSelection()) {
-				double effi = Numbers.read(effiText.getText());
+				double effi = Num.read(effiText.getText());
 				double ur = UtilisationRate
 						.ofSmallBoiler()
 						.efficiencyRate(effi)
 						.fullLoadHours_h(loadHours)
 						.get();
-				utilText.setText(Numbers.toString(ur));
+				utilText.setText(Num.str(ur));
 				data.validate();
 			} else {
-				double ur = Numbers.read(utilText.getText());
+				double ur = Num.read(utilText.getText());
 				double er = EfficiencyRate
 						.ofSmallBoiler()
 						.utilisationRate(ur)
 						.fullLoadHours_h(loadHours)
 						.get();
-				effiText.setText(Numbers.toString(er));
+				effiText.setText(Num.str(er));
 				data.validate();
 			}
 		}
@@ -268,7 +268,7 @@ class ConsumptionWizard extends Wizard {
 				double wc = 20;
 				if (consumption.waterContent > 0)
 					wc = consumption.waterContent;
-				waterText.setText(Numbers.toString(wc));
+				waterText.setText(Num.str(wc));
 			}
 
 			private void initUnit(Fuel fuel) {

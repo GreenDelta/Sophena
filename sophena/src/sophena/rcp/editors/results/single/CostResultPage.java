@@ -14,9 +14,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class CostResultPage extends FormPage {
 
@@ -87,7 +87,7 @@ class CostResultPage extends FormPage {
 	}
 
 	private String eur(double value) {
-		return Numbers.toString((int) Math.round(value)) + " EUR";
+		return Num.intStr(Math.round(value)) + " EUR";
 	}
 
 	private class Item {

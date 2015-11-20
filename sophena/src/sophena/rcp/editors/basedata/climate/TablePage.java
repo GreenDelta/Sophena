@@ -20,12 +20,12 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class TablePage extends FormPage {
 
@@ -91,11 +91,11 @@ class TablePage extends FormPage {
 			case 0:
 				return d.name;
 			case 1:
-				return Numbers.toString(d.longitude);
+				return Num.str(d.longitude);
 			case 2:
-				return Numbers.toString(d.latitude);
+				return Num.str(d.latitude);
 			case 3:
-				return Numbers.toString(d.altitude) + " m";
+				return Num.str(d.altitude) + " m";
 			default:
 				return null;
 			}

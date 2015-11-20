@@ -18,11 +18,11 @@ import sophena.model.LoadProfile;
 import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.Numbers;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Num;
 
 class LoadProfileSection {
 
@@ -127,7 +127,7 @@ class LoadProfileSection {
 			if (profile.data == null)
 				return "0 kWh";
 			double demand = Stats.sum(profile.data);
-			return Numbers.toString(demand) + " kWh";
+			return Num.str(demand) + " kWh";
 		}
 	}
 }
