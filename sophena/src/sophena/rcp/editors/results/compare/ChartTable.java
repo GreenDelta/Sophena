@@ -6,10 +6,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
@@ -38,9 +36,8 @@ class ChartTable {
 				data.columnLabel());
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Table t = table.getTable();
-		t.getColumn(1).setAlignment(SWT.RIGHT);
-		Tables.autoSizeColumns(t);
+		Tables.rightAlignColumns(table, 1);
+		Tables.autoSizeColumns(table);
 	}
 
 	private List<Item> createItems() {

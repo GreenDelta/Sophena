@@ -8,16 +8,15 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.CO2Emissions;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
+import sophena.utils.Num;
 
 public class EmissionTable {
 
@@ -36,9 +35,8 @@ public class EmissionTable {
 				"Emissionen [kg CO2 äq.]");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Table t = table.getTable();
-		t.getColumn(1).setAlignment(SWT.RIGHT);
-		Tables.autoSizeColumns(t);
+		Tables.rightAlignColumns(table, 1);
+		Tables.autoSizeColumns(table);
 	}
 
 	private List<Item> createItems() {
@@ -75,7 +73,7 @@ public class EmissionTable {
 		boolean total = false;
 
 		void co2(double value) {
-			emissions = Integer.toString((int) value);
+			emissions = Num.intStr(value);
 		}
 	}
 

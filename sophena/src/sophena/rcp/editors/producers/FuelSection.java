@@ -100,7 +100,7 @@ class FuelSection {
 			combo.select(spec().woodFuel);
 		combo.onSelect((f) -> {
 			spec().woodFuel = f;
-			Texts.set(calorificValueText, CalorificValue.get(producer()));
+			Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
 			editor.setDirty();
 		});
 		UI.formLabel(composite, "");
@@ -114,7 +114,7 @@ class FuelSection {
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					spec().waterContent = val;
-					Texts.set(calorificValueText, CalorificValue.get(producer()));
+					Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
 					editor.setDirty();
 				});
 	}
@@ -123,7 +123,7 @@ class FuelSection {
 		calorificValueText = UI.formText(composite, tk, "Heizwert");
 		UI.formLabel(composite, tk, "kWh/" + Labels.getFuelUnit(producer()));
 		Texts.on(calorificValueText).decimal().calculated()
-				.init(CalorificValue.get(producer()));
+				.init(Num.intStr(CalorificValue.get(producer())));
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {

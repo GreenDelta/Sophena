@@ -6,10 +6,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
@@ -35,11 +33,7 @@ class CostDetailsTable {
 				"Bedarfsgebundene Kosten", "Betriebsgebundene Kosten");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Table t = table.getTable();
-		t.getColumn(2).setAlignment(SWT.RIGHT);
-		t.getColumn(3).setAlignment(SWT.RIGHT);
-		t.getColumn(4).setAlignment(SWT.RIGHT);
-		t.getColumn(5).setAlignment(SWT.RIGHT);
+		Tables.rightAlignColumns(table, 2, 3, 4, 5);
 		double w = 1d / 6d - 0.001;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w);
 	}

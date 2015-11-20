@@ -172,6 +172,11 @@ public class Tables {
 		});
 	}
 
+	public static void autoSizeColumns(TableViewer table) {
+		if (table != null)
+			autoSizeColumns(table.getTable());
+	}
+
 	public static void autoSizeColumns(Table table) {
 		if (table == null)
 			return;
@@ -190,5 +195,21 @@ public class Tables {
 			}
 		};
 		table.addControlListener(cl);
+	}
+
+	public static void rightAlignColumns(TableViewer viewer, int... cols) {
+		if (viewer != null)
+			rightAlignColumns(viewer.getTable(), cols);
+	}
+
+	public static void rightAlignColumns(Table table, int... cols) {
+		if (table == null)
+			return;
+		int totalCols = table.getColumnCount();
+		for (int col : cols) {
+			if (col >= totalCols)
+				continue;
+			table.getColumn(col).setAlignment(SWT.RIGHT);
+		}
 	}
 }

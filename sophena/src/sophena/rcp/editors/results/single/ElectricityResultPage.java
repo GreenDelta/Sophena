@@ -46,6 +46,7 @@ class ElectricityResultPage extends FormPage {
 				"el. Nennleistung", "Volllaststunden", "Erzeugter Strom");
 		table.setLabelProvider(new Label());
 		Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.2);
+		Tables.rightAlignColumns(table, 2, 3, 4);
 		table.setInput(getItems());
 		new ElectricityChart(result).render(body, tk);
 		form.reflow(true);
@@ -105,11 +106,11 @@ class ElectricityResultPage extends FormPage {
 			case 1:
 				return item.rank;
 			case 2:
-				return Num.str(item.maxPower) + " kW";
+				return Num.intStr(item.maxPower) + " kW";
 			case 3:
-				return Num.str(item.fullLoadHours) + " h";
+				return Num.intStr(item.fullLoadHours) + " h";
 			case 4:
-				return Num.str(item.value) + " kWh";
+				return Num.intStr(item.value) + " kWh";
 			default:
 				return null;
 			}

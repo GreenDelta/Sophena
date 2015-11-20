@@ -3,10 +3,8 @@ package sophena.rcp.editors.results.single;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -50,9 +48,7 @@ class CostResultPage extends FormPage {
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
 		table.setInput(getItems(result));
-		Table t = table.getTable();
-		t.getColumn(1).setAlignment(SWT.RIGHT);
-		t.getColumn(2).setAlignment(SWT.RIGHT);
+		Tables.rightAlignColumns(table, 1, 2);
 	}
 
 	private Item[] getItems(CostResult result) {

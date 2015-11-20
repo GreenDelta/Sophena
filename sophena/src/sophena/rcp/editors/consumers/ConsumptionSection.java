@@ -144,7 +144,7 @@ class ConsumptionSection {
 		private String getUsedHeat(FuelConsumption c) {
 			if (c == null)
 				return null;
-			String heat = Num.str(c.getUsedHeat()) + " kWh";
+			String heat = Num.intStr(c.getUsedHeat()) + " kWh";
 			double eta = EfficiencyRate
 					.ofSmallBoiler()
 					.utilisationRate(c.utilisationRate)

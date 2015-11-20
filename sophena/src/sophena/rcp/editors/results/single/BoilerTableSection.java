@@ -7,10 +7,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -47,10 +45,7 @@ class BoilerTableSection {
 		table.setLabelProvider(new Label());
 		double w = 1d / 8d;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w);
-		Table t = table.getTable();
-		int[] cols = { 1, 4, 5, 6, 7 };
-		for (int col : cols)
-			t.getColumn(col).setAlignment(SWT.RIGHT);
+		Tables.rightAlignColumns(table, 4, 5, 6, 7);
 		table.setInput(getItems());
 	}
 
@@ -187,7 +182,7 @@ class BoilerTableSection {
 						.intStr(item.fullLoadHours) + " h";
 			case 7:
 				return item.utilisationRate == null ? null
-						: Integer.toString((int) (item.utilisationRate * 100)) + " %";
+						: Num.intStr(item.utilisationRate * 100) + " %";
 			default:
 				return null;
 			}

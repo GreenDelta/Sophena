@@ -54,14 +54,14 @@ class HeatDemandSection {
 
 	private void createHeatingLoadText(Composite composite, FormToolkit tk) {
 		Text t = UI.formText(composite, tk, "Heizlast");
-		Texts.set(t, consumer().heatingLoad);
+		Texts.set(t, Num.intStr(consumer().heatingLoad));
 		UI.formLabel(composite, tk, "kW");
 		if (!consumer().demandBased) {
 			Texts.on(t).calculated();
 			editor.onCalculated(values -> {
 				double heatingLoad = Stats.sum(values) / consumer().loadHours;
 				consumer().heatingLoad = heatingLoad;
-				Texts.set(t, heatingLoad);
+				Texts.set(t, Num.intStr(heatingLoad));
 			});
 		} else {
 			Texts.on(t).required().decimal().onChanged(text -> {
@@ -113,7 +113,7 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "kWh");
 		editor.onCalculated(values -> {
 			double sum = Stats.sum(values);
-			t.setText(Num.str(sum));
+			t.setText(Num.intStr(sum));
 		});
 	}
 

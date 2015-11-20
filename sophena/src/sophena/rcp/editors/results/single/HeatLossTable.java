@@ -8,11 +8,9 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelEnergyDemand;
@@ -39,10 +37,8 @@ class HeatLossTable {
 				"Absolut [kWh]", "Prozentual [%]");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Table t = table.getTable();
-		t.getColumn(1).setAlignment(SWT.RIGHT);
-		t.getColumn(2).setAlignment(SWT.RIGHT);
-		Tables.autoSizeColumns(t);
+		Tables.rightAlignColumns(table, 1, 2);
+		Tables.autoSizeColumns(table);
 	}
 
 	private List<Item> createItems() {
