@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.model.BuildingState;
 import sophena.model.Consumer;
 import sophena.model.Stats;
 import sophena.rcp.M;
@@ -14,6 +15,10 @@ import sophena.rcp.utils.UI;
 class HeatDemandSection {
 
 	private ConsumerEditor editor;
+
+	private Text heatingLimitText;
+	private Text waterFractionText;
+	private Text loadHoursText;
 
 	private HeatDemandSection() {
 	}
@@ -28,7 +33,15 @@ class HeatDemandSection {
 		return editor.getConsumer();
 	}
 
-	void create(Composite body, FormToolkit tk) {
+	void updateBuildingState(BuildingState state) {
+		if (state == null)
+			return;
+		Texts.set(heatingLimitText, state.heatingLimit);
+		Texts.set(waterFractionText, state.waterFraction);
+		Texts.set(loadHoursText, state.loadHours);
+	}
+
+	HeatDemandSection create(Composite body, FormToolkit tk) {
 		Composite composite = UI.formSection(body, tk, M.HeatDemand);
 		UI.gridLayout(composite, 6);
 		createHeatingLoadText(composite, tk);
@@ -36,6 +49,7 @@ class HeatDemandSection {
 		createHeatLimitText(composite, tk);
 		createLoadHoursText(composite, tk);
 		createHeatDemandText(composite, tk);
+		return this;
 	}
 
 	private void createHeatingLoadText(Composite composite, FormToolkit tk) {
@@ -67,6 +81,7 @@ class HeatDemandSection {
 			editor.calculate();
 			editor.setDirty();
 		});
+		waterFractionText = t;
 	}
 
 	private void createHeatLimitText(Composite composite, FormToolkit tk) {
@@ -78,6 +93,7 @@ class HeatDemandSection {
 			editor.calculate();
 			editor.setDirty();
 		});
+		heatingLimitText = t;
 	}
 
 	private void createLoadHoursText(Composite composite, FormToolkit tk) {
@@ -88,6 +104,7 @@ class HeatDemandSection {
 			editor.calculate();
 			editor.setDirty();
 		});
+		loadHoursText = t;
 	}
 
 	private void createHeatDemandText(Composite composite, FormToolkit tk) {

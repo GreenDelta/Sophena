@@ -29,13 +29,14 @@ class InfoPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, consumer().name);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		InfoSection.of(editor).create(body, tk);
-		HeatDemandSection.of(editor).create(body, tk);
+		InfoSection infoSection = InfoSection.of(editor).create(body, tk);
+		infoSection.setDemandSection(
+				HeatDemandSection.of(editor).create(body, tk));
 		if (!consumer().demandBased)
 			ConsumptionSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);
-		editor.onCalculated((data) -> loadCurve.setData(data));
+		editor.onCalculated(data -> loadCurve.setData(data));
 		form.reflow(true);
 		editor.calculate();
 	}

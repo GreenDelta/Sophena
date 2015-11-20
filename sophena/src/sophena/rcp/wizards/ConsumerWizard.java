@@ -1,7 +1,5 @@
 package sophena.rcp.wizards;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.db.daos.Dao;
+import sophena.db.daos.BuildingStateDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
@@ -152,21 +150,9 @@ public class ConsumerWizard extends Wizard {
 		}
 
 		private void initBuildingState(BuildingType type) {
-			Dao<BuildingState> dao = new Dao<>(BuildingState.class,
-					App.getDb());
-			List<BuildingState> all = dao.getAll();
-			List<BuildingState> states = new ArrayList<>();
-			BuildingState selected = null;
-			for (BuildingState s : all) {
-				if (s.type != type)
-					continue;
-				states.add(s);
-				if (s.isDefault)
-					selected = s;
-			}
-			if (selected == null && !states.isEmpty())
-				selected = states.get(0);
-			Collections.sort(states, (s1, s2) -> s1.index - s2.index);
+			BuildingStateDao dao = new BuildingStateDao(App.getDb());
+			List<BuildingState> states = dao.getAllWith(type);
+			BuildingState selected = BuildingStateDao.getDefault(states);
 			stateCombo.setInput(states);
 			stateCombo.select(selected);
 			consumer.buildingState = selected;
