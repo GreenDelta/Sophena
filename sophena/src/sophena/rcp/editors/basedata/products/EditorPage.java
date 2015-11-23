@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProductDao;
+import sophena.db.usage.SearchResult;
+import sophena.db.usage.UsageSearch;
 import sophena.model.Product;
 import sophena.model.ProductType;
 import sophena.rcp.App;
@@ -26,6 +28,7 @@ import sophena.rcp.Images;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
@@ -121,6 +124,11 @@ class EditorPage extends FormPage {
 				"Soll das ausgewählte Produkt wirklich gelöscht werden?");
 		if (!doIt)
 			return;
+		List<SearchResult> usage = new UsageSearch(App.getDb()).of(product);
+		if (!usage.isEmpty()) {
+			UsageError.show(usage);
+			return;
+		}
 		try {
 			dao.delete(product);
 			products.remove(product);

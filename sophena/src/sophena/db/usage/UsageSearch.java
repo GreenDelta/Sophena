@@ -1,10 +1,8 @@
 package sophena.db.usage;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +12,7 @@ import sophena.db.NativeSql;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.ModelType;
+import sophena.model.Product;
 
 /**
  * Searches for the usage of entities in other entities.
@@ -31,10 +30,7 @@ public class UsageSearch {
 			return Collections.emptyList();
 		String sql = "select p.id, p.name from tbl_producers p "
 				+ "where f_boiler = '" + boiler.id + "'";
-		List<SearchResult> list = new ArrayList<>();
-		query(sql, r -> list.add(
-				new SearchResult(str(r, 1), str(r, 2), ModelType.PRODUCER)));
-		return list;
+		return query(sql, ModelType.PRODUCER);
 	}
 
 	public List<SearchResult> of(BufferTank tank) {
@@ -43,31 +39,34 @@ public class UsageSearch {
 		String sql = "select p.id, p.name from tbl_projects p inner join "
 				+ "tbl_heat_nets h on p.f_heat_net = h.id where "
 				+ "h.f_buffer_tank = '" + tank.id + "'";
-		List<SearchResult> list = new ArrayList<>();
-		query(sql, r -> list.add(
-				new SearchResult(str(r, 1), str(r, 2), ModelType.PROJECT)));
-		return list;
+		return query(sql, ModelType.PROJECT);
 	}
 
-	private String str(ResultSet r, int i) {
-		try {
-			return r.getString(i);
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to result set field from " + r, e);
-			return "";
-		}
+	public List<SearchResult> of(Product product) {
+		if (product == null || product.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_product_entries e inner join "
+				+ "tbl_projects p on e.f_project = p.id where e.f_product = '"
+				+ product.id + "'";
+		return query(sql, ModelType.PROJECT);
 	}
 
-	private void query(String sql, Consumer<ResultSet> fn) {
+	private List<SearchResult> query(String sql, ModelType type) {
 		try {
-			NativeSql.on(database).query(sql, result -> {
-				fn.accept(result);
+			List<SearchResult> results = new ArrayList<>();
+			NativeSql.on(database).query(sql, record -> {
+				SearchResult r = new SearchResult(
+						record.getString(1),
+						record.getString(2),
+						type);
+				results.add(r);
 				return true;
 			});
+			return results;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to execute query: " + sql, e);
+			return Collections.emptyList();
 		}
 	}
 }
