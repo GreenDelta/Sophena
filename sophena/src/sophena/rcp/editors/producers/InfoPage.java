@@ -44,19 +44,19 @@ class InfoPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, producer().name);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Composite composite = UI.formSection(body, tk, "Erzeugerinformationen");
-		createNameText(tk, composite);
-		createDescriptionText(tk, composite);
-		createBoilerLink(tk, composite);
-		createFunctionCombo(tk, composite);
-		createRankText(tk, composite);
+		Composite comp = UI.formSection(body, tk, "Erzeugerinformationen");
+		nameText(tk, comp);
+		descriptionText(tk, comp);
+		boilerLink(tk, comp);
+		functionCombo(tk, comp);
+		rankText(tk, comp);
 		new FuelSection(editor).render(body, tk);
 		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);
 	}
 
-	private void createNameText(FormToolkit tk, Composite composite) {
-		Text nt = UI.formText(composite, tk, M.Name);
+	private void nameText(FormToolkit tk, Composite comp) {
+		Text nt = UI.formText(comp, tk, M.Name);
 		Texts.set(nt, producer().name);
 		Texts.on(nt).required().onChanged((s) -> {
 			producer().name = nt.getText();
@@ -64,8 +64,8 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private void createDescriptionText(FormToolkit tk, Composite composite) {
-		Text dt = UI.formMultiText(composite, tk, M.Description);
+	private void descriptionText(FormToolkit tk, Composite comp) {
+		Text dt = UI.formMultiText(comp, tk, M.Description);
 		Texts.set(dt, producer().description);
 		dt.addModifyListener((e) -> {
 			producer().description = dt.getText();
@@ -73,18 +73,18 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private void createBoilerLink(FormToolkit tk, Composite composite) {
-		UI.formLabel(composite, tk, "Heizkessel");
+	private void boilerLink(FormToolkit tk, Composite comp) {
+		UI.formLabel(comp, tk, "Heizkessel");
 		Boiler b = producer().boiler;
 		if (b == null) {
-			UI.formLabel(composite, tk, "kein Kessel definiert");
+			UI.formLabel(comp, tk, "kein Kessel definiert");
 			return;
 		}
 		String text = b.name + " ("
 				+ Num.str(b.minPower) + " kW - "
 				+ Num.str(b.maxPower) + " kW, \u03B7 = "
 				+ Num.str(b.efficiencyRate) + "%)";
-		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
+		ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
 		link.setText(text);
 		link.setImage(Images.BOILER_16.img());
 		link.setForeground(Colors.getLinkBlue());
@@ -98,8 +98,8 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private void createFunctionCombo(FormToolkit tk, Composite composite) {
-		Combo c = UI.formCombo(composite, tk, "Funktion");
+	private void functionCombo(FormToolkit tk, Composite comp) {
+		Combo c = UI.formCombo(comp, tk, "Funktion");
 		String[] items = { Labels.get(ProducerFunction.BASE_LOAD),
 				Labels.get(ProducerFunction.PEAK_LOAD) };
 		c.setItems(items);
@@ -118,8 +118,8 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private void createRankText(FormToolkit tk, Composite composite) {
-		Text t = UI.formText(composite, tk, "Rang");
+	private void rankText(FormToolkit tk, Composite comp) {
+		Text t = UI.formText(comp, tk, "Rang");
 		Texts.set(t, producer().rank);
 		Texts.on(t).required().integer().onChanged((s) -> {
 			producer().rank = Texts.getInt(t);

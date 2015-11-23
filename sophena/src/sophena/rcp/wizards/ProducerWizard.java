@@ -135,17 +135,17 @@ public class ProducerWizard extends Wizard {
 			Composite root = new Composite(parent, SWT.NONE);
 			setControl(root);
 			UI.gridLayout(root, 1, 5, 5);
-			createNameField(root);
-			createCombos(root);
-			createList(root);
-			createFunctionFields(root);
+			Composite comp = UI.formComposite(root);
+			UI.gridData(comp, true, false);
+			nameField(comp);
+			fuelCombo(comp);
+			boilerList(root);
+			functionFields(root);
 			data.bindToUI();
 		}
 
-		private void createNameField(Composite root) {
-			Composite composite = UI.formComposite(root);
-			UI.gridData(composite, true, false);
-			nameText = UI.formText(composite, M.Name);
+		private void nameField(Composite comp) {
+			nameText = UI.formText(comp, M.Name);
 			nameEdited = false;
 			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged((t) -> {
@@ -158,18 +158,15 @@ public class ProducerWizard extends Wizard {
 			});
 		}
 
-		private void createCombos(Composite root) {
-			Composite composite = UI.formComposite(root);
-			UI.gridData(composite, true, false);
-			fuelCombo = UI.formCombo(composite, "Brennstoff");
+		private void fuelCombo(Composite comp) {
+			fuelCombo = UI.formCombo(comp, "Brennstoff");
 			Controls.onSelect(fuelCombo, (e) -> {
 				data.updateBoilers();
 				data.suggestName();
 			});
-			UI.formCombo(composite, "Anlagengröße");
 		}
 
-		private void createList(Composite root) {
+		private void boilerList(Composite root) {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridData(composite, true, true);
 			UI.gridLayout(composite, 1);
@@ -184,7 +181,7 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(list, true, true);
 		}
 
-		private void createFunctionFields(Composite root) {
+		private void functionFields(Composite root) {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridLayout(composite, 4);
 			UI.gridData(composite, true, false);
