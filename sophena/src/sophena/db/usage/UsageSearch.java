@@ -11,6 +11,7 @@ import sophena.db.Database;
 import sophena.db.NativeSql;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
+import sophena.model.Fuel;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
@@ -60,6 +61,26 @@ public class UsageSearch {
 				+ "inner join tbl_projects p on p.f_heat_net = hn.id "
 				+ " where hp.f_pipe = '" + pipe.id + "'";
 		return query(sql, ModelType.PROJECT);
+	}
+
+	public List<SearchResult> of(Fuel fuel) {
+		if (fuel == null || fuel.id == null)
+			return Collections.emptyList();
+		String boilerSql = "select b.id, b.name from tbl_boilers b where "
+				+ "b.f_fuel = '" + fuel.id + "'";
+		List<SearchResult> boilerList = query(boilerSql, ModelType.BOILER);
+		String consumerSql = "select c.id, c.name from tbl_consumers c inner "
+				+ " join tbl_fuel_consumptions fc on fc.f_consumer = c.id where "
+				+ " fc.f_fuel = '" + fuel.id + "'";
+		List<SearchResult> consumerList = query(consumerSql, ModelType.CONSUMER);
+		String producerSql = "select p.id, p.name from tbl_producers p where "
+				+ "p.f_wood_fuel = '" + fuel.id + "'";
+		List<SearchResult> producerList = query(producerSql, ModelType.PRODUCER);
+		List<SearchResult> all = new ArrayList<>();
+		all.addAll(boilerList);
+		all.addAll(consumerList);
+		all.addAll(producerList);
+		return all;
 	}
 
 	private List<SearchResult> query(String sql, ModelType type) {
