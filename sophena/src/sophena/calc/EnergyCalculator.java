@@ -38,12 +38,17 @@ class EnergyCalculator {
 					break;
 
 				Producer producer = r.producers[k];
+				if (producer.function == ProducerFunction.PEAK_LOAD
+						&& (bufferPotential >= requiredLoad)) {
+					// prefer buffer heat instead of heat from peak load boilers
+					break;
+				}
+
 				Boiler boiler = producer.boiler;
 				if (maxLoad < boiler.minPower)
 					continue;
 
-				double power = getSuppliedPower(requiredLoad, maxLoad,
-						producer);
+				double power = getSuppliedPower(requiredLoad, maxLoad, producer);
 				if (power > requiredLoad) {
 					bufferCapacity -= (power - requiredLoad);
 				}
