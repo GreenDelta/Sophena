@@ -38,6 +38,8 @@ class CostCalculator {
 	public CostResult calculate() {
 		CostResult r = new CostResult();
 		for (Producer producer : project.producers) {
+			if (producer.disabled)
+				continue;
 			CostResultItem item = CostResultItem.create(producer);
 			handleItem(r, item);
 			addDemandCosts(r, item, producer);

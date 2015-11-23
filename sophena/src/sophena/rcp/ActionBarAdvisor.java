@@ -86,7 +86,7 @@ public class ActionBarAdvisor extends
 		Action newAction = Actions.create(M.NewProject,
 				Images.NEW_PROJECT_16.des(), ProjectWizard::open);
 		projectMenu.add(newAction);
-		Action compare = Actions.create("Projecte vergleichen",
+		Action compare = Actions.create("Projekte vergleichen",
 				Images.BAR_CHART_16.des(),
 				() -> ComparisonDialog.open(Optional.empty()));
 		projectMenu.add(compare);
