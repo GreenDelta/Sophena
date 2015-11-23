@@ -12,6 +12,7 @@ import sophena.db.NativeSql;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.ModelType;
+import sophena.model.Pipe;
 import sophena.model.Product;
 
 /**
@@ -48,6 +49,16 @@ public class UsageSearch {
 		String sql = "select p.id, p.name from tbl_product_entries e inner join "
 				+ "tbl_projects p on e.f_project = p.id where e.f_product = '"
 				+ product.id + "'";
+		return query(sql, ModelType.PROJECT);
+	}
+
+	public List<SearchResult> of(Pipe pipe) {
+		if (pipe == null || pipe.id == null)
+			return Collections.emptyList();
+		String sql = "select distinct p.id, p.name from tbl_heat_net_pipes hp "
+				+ "inner join tbl_heat_nets hn on hp.f_project = hn.id "
+				+ "inner join tbl_projects p on p.f_heat_net = hn.id "
+				+ " where hp.f_pipe = '" + pipe.id + "'";
 		return query(sql, ModelType.PROJECT);
 	}
 

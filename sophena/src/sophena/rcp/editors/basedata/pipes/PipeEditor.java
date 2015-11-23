@@ -17,12 +17,15 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
+import sophena.db.usage.SearchResult;
+import sophena.db.usage.UsageSearch;
 import sophena.model.Pipe;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -132,6 +135,11 @@ public class PipeEditor extends Editor {
 					"Soll die ausgewählte Wärmeleitung wirklich gelöscht werden?");
 			if (!doIt)
 				return;
+			List<SearchResult> usage = new UsageSearch(App.getDb()).of(p);
+			if (!usage.isEmpty()) {
+				UsageError.show(usage);
+				return;
+			}
 			try {
 				dao.delete(p);
 				pipes.remove(p);
