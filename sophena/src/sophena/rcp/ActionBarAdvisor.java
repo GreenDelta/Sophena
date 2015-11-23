@@ -77,6 +77,7 @@ public class ActionBarAdvisor extends
 		fillFileMenu(menu);
 		fillProjectMenu(menu);
 		fillBaseDataMenu(menu);
+		fillProductMenu(menu);
 		fillHelpMenu(menu);
 	}
 
@@ -102,6 +103,14 @@ public class ActionBarAdvisor extends
 				FuelEditor::open));
 		m.add(Actions.create("Produktgruppen", Images.PRODUCT_16.des(),
 				ProductGroupEditor::open));
+		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
+				BaseCostEditor::open));
+		menu.add(m);
+	}
+
+	private void fillProductMenu(IMenuManager menu) {
+		MenuManager m = new MenuManager("Produkte");
+		menu.add(m);
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
 				BoilerEditor::open));
 		m.add(Actions.create("KWK-Anlagen", Images.CO_GEN_16.des(),
@@ -121,9 +130,6 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Wärmenetz-Bau",
 				HeatingNetConstructionEditor::open));
 		m.add(Actions.create("Planung", PlanningEditor::open));
-		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
-				BaseCostEditor::open));
-		menu.add(m);
 	}
 
 	private void fillHelpMenu(IMenuManager menu) {
