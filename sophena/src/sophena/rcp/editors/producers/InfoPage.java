@@ -1,27 +1,28 @@
 package sophena.rcp.editors.producers;
 
-import org.eclipse.swt.SWT;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import sophena.db.daos.BoilerDao;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.rcp.Images;
+import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.ProductCostSection;
-import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.Desktop;
+import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -47,7 +48,7 @@ class InfoPage extends FormPage {
 		Composite comp = UI.formSection(body, tk, "Erzeugerinformationen");
 		nameText(tk, comp);
 		descriptionText(tk, comp);
-		boilerLink(tk, comp);
+		boilerCombo(tk, comp);
 		functionCombo(tk, comp);
 		rankText(tk, comp);
 		new FuelSection(editor).render(body, tk);
@@ -73,29 +74,37 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private void boilerLink(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, tk, "Heizkessel");
-		Boiler b = producer().boiler;
-		if (b == null) {
-			UI.formLabel(comp, tk, "kein Kessel definiert");
-			return;
-		}
-		String text = b.name + " ("
+	private void boilerCombo(FormToolkit tk, Composite comp) {
+		EntityCombo<Boiler> combo = new EntityCombo<>();
+		combo.create("Heizkessel", comp, tk);
+		combo.setLabelProvider(b -> b.name + " ("
 				+ Num.str(b.minPower) + " kW - "
 				+ Num.str(b.maxPower) + " kW, \u03B7 = "
-				+ Num.str(b.efficiencyRate) + "%)";
-		ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
-		link.setText(text);
-		link.setImage(Images.BOILER_16.img());
-		link.setForeground(Colors.getLinkBlue());
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				if (b.url == null)
-					return;
-				Desktop.browse(b.url);
-			}
+				+ Num.str(b.efficiencyRate) + "%)");
+		Boiler b = producer().boiler;
+		if (b == null)
+			return;
+		combo.setInput(getPossibleBoilers(b));
+		combo.select(b);
+		combo.onSelect(boiler -> {
+			producer().boiler = boiler;
+			editor.setDirty();
 		});
+	}
+
+	private List<Boiler> getPossibleBoilers(Boiler selection) {
+		if (selection == null)
+			return Collections.emptyList();
+		BoilerDao dao = new BoilerDao(App.getDb());
+		List<Boiler> all = dao.getAll();
+		List<Boiler> filtered = new ArrayList<>();
+		for (Boiler b : all) {
+			if (Objects.equals(selection.fuel, b.fuel)
+					&& Objects.equals(selection.woodAmountType, b.woodAmountType)) {
+				filtered.add(b);
+			}
+		}
+		return filtered;
 	}
 
 	private void functionCombo(FormToolkit tk, Composite comp) {
