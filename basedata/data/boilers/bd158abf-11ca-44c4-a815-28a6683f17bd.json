@@ -6,7 +6,7 @@
 	"purchasePrice": 100000,
 	"maxPower": 1000,
 	"minPower": 300,
-	"efficiencyRate": 0.9,
+	"efficiencyRate": 90,
 	"isCoGenPlant": false,
 	"woodAmountType": "CHIPS",
 	"group": {

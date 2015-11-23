@@ -196,8 +196,7 @@ class BoilerWizard extends Wizard {
 				boiler.efficiencyRate = Texts.getDouble(efficiencyText);
 				boiler.maxPowerElectric = Texts.getDouble(maxElText);
 				boiler.minPowerElectric = Texts.getDouble(minElText);
-				boiler.efficiencyRateElectric = Texts
-						.getDouble(efficiencyElText);
+				boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText);
 				boiler.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
 					boiler.purchasePrice = Texts.getDouble(priceText);

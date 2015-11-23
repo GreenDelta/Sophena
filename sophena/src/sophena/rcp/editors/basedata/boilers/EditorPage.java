@@ -103,7 +103,7 @@ class EditorPage extends FormPage {
 		boiler.isCoGenPlant = isForCoGen;
 		boiler.id = UUID.randomUUID().toString();
 		boiler.name = isForCoGen ? "Neue KWK-Anlage" : "Neuer Heizkessel";
-		boiler.efficiencyRate = (double) 80;
+		boiler.efficiencyRate = 80;
 		if (BoilerWizard.open(boiler) != Window.OK)
 			return;
 		dao.insert(boiler);

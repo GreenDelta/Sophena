@@ -6,7 +6,7 @@
 	"purchasePrice": 100000,
 	"maxPower": 2000,
 	"minPower": 1000,
-	"efficiencyRate": 0.95,
+	"efficiencyRate": 95,
 	"isCoGenPlant": false,
 	"fuel": {
 		"id": "7c206ce9-caf4-4390-8958-6d42822ac282",

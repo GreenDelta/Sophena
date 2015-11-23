@@ -39,13 +39,13 @@ class BoilerTableSection {
 		UI.gridData(section, true, false);
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, "Wärmelieferant",
-				"Nennleistung", "Brennstoffverbrauch", "Rang", "Gelieferte Wärme",
+		TableViewer table = Tables.createViewer(comp, "Wärmelieferant", "Rang",
+				"Brennstoffverbrauch", "Nennleistung", "Gelieferte Wärme",
 				"Anteil", "Volllaststunden", "Nutzungsgrad");
 		table.setLabelProvider(new Label());
 		double w = 1d / 8d;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 4, 5, 6, 7);
+		Tables.rightAlignColumns(table, 3, 4, 5, 6, 7);
 		table.setInput(getItems());
 	}
 
@@ -168,11 +168,11 @@ class BoilerTableSection {
 			case 0:
 				return item.name;
 			case 1:
-				return item.power;
+				return item.rank;
 			case 2:
 				return item.fuelUse;
 			case 3:
-				return item.rank;
+				return item.power;
 			case 4:
 				return Num.intStr(item.heat) + " kWh";
 			case 5:

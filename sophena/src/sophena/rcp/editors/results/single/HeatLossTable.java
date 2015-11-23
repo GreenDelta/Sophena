@@ -17,6 +17,7 @@ import sophena.math.energetic.FuelEnergyDemand;
 import sophena.math.energetic.HeatLoss;
 import sophena.model.Project;
 import sophena.rcp.utils.Tables;
+import sophena.utils.Num;
 
 class HeatLossTable {
 
@@ -84,7 +85,7 @@ class HeatLossTable {
 	}
 
 	private String s(double d) {
-		return Long.toString((int) Math.round(d));
+		return Num.intStr(d);
 	}
 
 	private class Item {

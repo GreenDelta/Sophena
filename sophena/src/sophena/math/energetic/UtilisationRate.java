@@ -54,7 +54,7 @@ public class UtilisationRate {
 		double fullLoadHours = FullLoadHours.get(producer, generatedHeat);
 		return UtilisationRate
 				.ofBigBoiler()
-				.efficiencyRate(producer.boiler.efficiencyRate)
+				.efficiencyRate(producer.boiler.efficiencyRate / 100)
 				.fullLoadHours_h(fullLoadHours)
 				.usageDuration_h(Stats.HOURS)
 				.get();
