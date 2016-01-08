@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 
 import sophena.model.Consumer;
 import sophena.model.Location;
+import sophena.rcp.M;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.UI;
 
@@ -33,13 +34,13 @@ public class LocationResultPage extends FormPage {
 	private Browser browser;
 
 	public LocationResultPage(ResultEditor editor) {
-		super(editor, "sophena.LocationResultPage.html", "Standorte");
+		super(editor, "sophena.LocationResultPage.html", M.Locations);
 		this.editor = editor;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Standorte");
+		ScrolledForm form = UI.formHeader(mform, M.Locations);
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createBrowser(body);

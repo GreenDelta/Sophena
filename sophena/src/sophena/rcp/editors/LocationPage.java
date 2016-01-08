@@ -61,7 +61,7 @@ public class LocationPage extends FormPage {
 	}
 
 	private void createAddressSection(Composite body) {
-		Composite c = UI.formSection(body, toolkit, "Standord");
+		Composite c = UI.formSection(body, toolkit, M.Location);
 		Location init = loc.get();
 		t(c, M.Name, init.name, (s) -> loc.get().name = s);
 		t(c, M.Street, init.street, (s) -> loc.get().street = s);

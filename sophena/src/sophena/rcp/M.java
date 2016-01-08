@@ -41,6 +41,8 @@ public class M extends NLS {
 	public static String Help;
 	public static String LoadProfile;
 	public static String LoadProfiles;
+	public static String Location;
+	public static String Locations;
 	public static String Name;
 	public static String NewConsumer;
 	public static String NewProducer;
@@ -64,7 +66,6 @@ public class M extends NLS {
 	public static String Open;
 	public static String Delete;
 	public static String Variants;
-	public static String Location;
 	public static String HeatDemand;
 	public static String Fuels;
 	public static String WoodFuels;
