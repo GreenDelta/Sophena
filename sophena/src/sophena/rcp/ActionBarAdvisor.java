@@ -109,7 +109,7 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillProductMenu(IMenuManager menu) {
-		MenuManager m = new MenuManager("Produkte");
+		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
 		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
 				BoilerEditor::open));

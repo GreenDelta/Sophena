@@ -109,8 +109,8 @@ class HeatDemandSection {
 
 	private void createHeatDemandText(Composite composite, FormToolkit tk) {
 		Text t = UI.formText(composite, tk, M.HeatDemand);
-		t.setEditable(false);
 		UI.formLabel(composite, tk, "kWh");
+		Texts.on(t).calculated();
 		editor.onCalculated(values -> {
 			double sum = Stats.sum(values);
 			t.setText(Num.intStr(sum));

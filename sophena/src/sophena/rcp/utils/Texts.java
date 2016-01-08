@@ -163,10 +163,13 @@ public final class Texts {
 				if (e.text == null)
 					return;
 				for (char c : e.text.toCharArray()) {
-					if (!Character.isDigit(c)) {
-						e.doit = false;
-						return;
-					}
+					if (Character.isDigit(c))
+						continue;
+					// thousands separators
+					if (c == '.' || c == ',' || c == '-' || c == '+')
+						continue;
+					e.doit = false;
+					return;
 				}
 			});
 			return this;
