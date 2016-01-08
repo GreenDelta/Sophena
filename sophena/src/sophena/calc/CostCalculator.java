@@ -125,7 +125,7 @@ class CostCalculator {
 		r.netTotal.capitalCosts = r.netTotal.capitalCosts - settings.funding
 				* (Math.pow(ir, projectDuration) * (ir - 1)
 						/ (Math.pow(ir, projectDuration) - 1));
-		r.grossTotal.capitalCosts += vat() * r.netTotal.capitalCosts;
+		r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
 	}
 
 	private void addOtherCosts(CostResult r) {
