@@ -66,4 +66,17 @@ public final class Stats {
 		return (int) Math.ceil(value + l);
 	}
 
+	/**
+	 * A null- and overflow-safe method for getting the ith element of the given
+	 * array.
+	 */
+	public static double get(double[] array, int i) {
+		if (array == null)
+			return 0;
+		if (i < 0 || i >= array.length)
+			return 0;
+		else
+			return array[i];
+	}
+
 }
