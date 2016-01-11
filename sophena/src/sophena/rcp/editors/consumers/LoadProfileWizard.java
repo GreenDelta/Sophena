@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.io.HoursProfile;
+import sophena.io.LoadProfileReader;
 import sophena.model.LoadProfile;
 import sophena.rcp.Images;
 import sophena.rcp.M;
@@ -92,13 +92,12 @@ class LoadProfileWizard extends Wizard {
 
 		private class DataBinding {
 
-			private double[] profileData;
+			LoadProfile fileProfile;
 
 			void bindToUI() {
 				Texts.set(nameText, profile.name);
 				Texts.set(descriptionText, profile.description);
-				profileData = profile.data;
-				chart.setData(profileData);
+				chart.setData(profile.calculateTotal());
 			}
 
 			void readFile() {
@@ -106,16 +105,20 @@ class LoadProfileWizard extends Wizard {
 				dialog.setFilterExtensions(new String[] { "*.csv", "*.txt" });
 				dialog.setText(M.SelectFile);
 				String path = dialog.open();
-				if (path != null) {
-					profileData = HoursProfile.read(new File(path));
-					chart.setData(profileData);
-				}
+				if (path == null)
+					return;
+				LoadProfileReader reader = new LoadProfileReader();
+				fileProfile = reader.read(new File(path));
+				chart.setData(fileProfile.calculateTotal());
 			}
 
 			void bindToModel() {
 				profile.name = nameText.getText();
 				profile.description = descriptionText.getText();
-				profile.data = profileData;
+				if (fileProfile != null) {
+					profile.dynamicData = fileProfile.dynamicData;
+					profile.staticData = fileProfile.staticData;
+				}
 			}
 
 			boolean validate() {

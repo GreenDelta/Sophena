@@ -67,7 +67,8 @@ class LoadProfileSection {
 		LoadProfile profile = new LoadProfile();
 		profile.id = UUID.randomUUID().toString();
 		profile.name = "Neuer Lastgang";
-		profile.data = new double[Stats.HOURS];
+		profile.dynamicData = new double[Stats.HOURS];
+		profile.staticData = new double[Stats.HOURS];
 		if (LoadProfileWizard.open(profile) == Window.OK) {
 			List<LoadProfile> profiles = consumer().loadProfiles;
 			profiles.add(profile);
@@ -124,9 +125,8 @@ class LoadProfileSection {
 		}
 
 		private String heatDemand(LoadProfile profile) {
-			if (profile.data == null)
-				return "0 kWh";
-			double demand = Stats.sum(profile.data);
+			double[] totals = profile.calculateTotal();
+			double demand = Stats.sum(totals);
 			return Num.str(demand) + " kWh";
 		}
 	}

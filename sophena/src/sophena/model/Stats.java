@@ -79,4 +79,10 @@ public final class Stats {
 			return array[i];
 	}
 
+	/** Adds the values of the first array to the values of the second array */
+	public static void add(double[] from, double[] to) {
+		for (int i = 0; i < from.length && i < to.length; i++)
+			to[i] += from[i];
+	}
+
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
+import sophena.model.LoadProfile;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
@@ -78,8 +79,9 @@ public class ConsumerEditor extends Editor {
 	}
 
 	public void calculate() {
-		double[] loadCurve = ConsumerLoadCurve.calculate(consumer,
+		LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
 				weatherStation);
+		double[] loadCurve = profile.calculateTotal();
 		for (java.util.function.Consumer<double[]> fn : calcListeners) {
 			fn.accept(loadCurve);
 		}

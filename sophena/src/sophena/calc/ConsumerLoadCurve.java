@@ -14,7 +14,7 @@ public class ConsumerLoadCurve {
 	private ConsumerLoadCurve() {
 	}
 
-	public static double[] calculate(Consumer consumer,
+	public static LoadProfile calculate(Consumer consumer,
 			WeatherStation station) {
 		ConsumerLoadCurve curve = new ConsumerLoadCurve();
 		curve.consumer = consumer;
@@ -22,24 +22,26 @@ public class ConsumerLoadCurve {
 		return curve.calc();
 	}
 
-	private double[] calc() {
-		double[] data = new double[Stats.HOURS];
+	private LoadProfile calc() {
+		LoadProfile profile = new LoadProfile();
+		profile.dynamicData = new double[Stats.HOURS];
+		profile.staticData = new double[Stats.HOURS];
 		if (consumer == null || station == null)
-			return data;
+			return profile;
 		if (consumer.demandBased) {
 			double totalHeat = consumer.loadHours * consumer.heatingLoad;
-			calcCurve(totalHeat, data);
+			calcCurve(totalHeat, profile);
 		} else {
 			double totalHeat = 0;
 			for (FuelConsumption c : consumer.fuelConsumptions)
 				totalHeat += c.getUsedHeat();
-			calcCurve(totalHeat, data);
+			calcCurve(totalHeat, profile);
 		}
-		addLoadProfiles(data);
-		return data;
+		addLoadProfiles(profile);
+		return profile;
 	}
 
-	private void calcCurve(double totalHeat, double[] data) {
+	private void calcCurve(double totalHeat, LoadProfile profile) {
 		double heatForWater = totalHeat * consumer.waterFraction / 100;
 		double pMin = heatForWater / Stats.HOURS;
 		double heatingDegrees = 0;
@@ -48,25 +50,20 @@ public class ConsumerLoadCurve {
 			if (temperature < tmax)
 				heatingDegrees += (tmax - temperature);
 		}
-		double heatPerHeatingDegree = (totalHeat - heatForWater)
-				/ heatingDegrees;
+		double qd = (totalHeat - heatForWater) / heatingDegrees;
 		for (int i = 0; i < Stats.HOURS; i++) {
+			profile.staticData[i] = pMin;
 			double temperature = station.data[i];
 			if (temperature < tmax)
-				data[i] = pMin + ((tmax - temperature) * heatPerHeatingDegree);
-			else
-				data[i] = pMin;
+				profile.dynamicData[i] = ((tmax - temperature) * qd);
 		}
 	}
 
-	private void addLoadProfiles(double[] data) {
-		for (LoadProfile profile : consumer.loadProfiles) {
-			double[] p = profile.data;
-			if (p == null)
-				continue;
-			for (int i = 0; i < Stats.HOURS; i++) {
-				data[i] += p[i];
-			}
+	private void addLoadProfiles(LoadProfile profile) {
+		for (LoadProfile p : consumer.loadProfiles) {
+			Stats.add(p.dynamicData, profile.dynamicData);
+			Stats.add(p.staticData, profile.staticData);
 		}
 	}
+
 }

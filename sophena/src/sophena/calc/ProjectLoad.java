@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
+import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -42,21 +43,25 @@ public class ProjectLoad {
 	}
 
 	public static double[] getCurve(Project project) {
-		double[] curve = new double[Stats.HOURS];
+		double[] dynamicData = new double[Stats.HOURS];
+		double[] staticData = new double[Stats.HOURS];
 		if (project == null)
-			return curve;
+			return dynamicData;
 		for (Consumer consumer : project.consumers) {
 			if (consumer.disabled)
 				continue;
-			double[] c = ConsumerLoadCurve.calculate(consumer,
+			LoadProfile p = ConsumerLoadCurve.calculate(consumer,
 					project.weatherStation);
-			for (int i = 0; i < c.length; i++)
-				curve[i] += c[i];
+			Stats.add(p.dynamicData, dynamicData);
+			Stats.add(p.staticData, staticData);
 		}
+		// TODO: smoothing for simultanity
+		double[] data = staticData;
+		Stats.add(dynamicData, data);
 		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(curve, (i) -> curve[i] + netLoad);
-		applyInterruption(curve, project.heatNet);
-		return curve;
+		Arrays.setAll(data, i -> data[i] + netLoad);
+		applyInterruption(data, project.heatNet);
+		return data;
 	}
 
 	private static double getNetLoad(HeatNet net) {
