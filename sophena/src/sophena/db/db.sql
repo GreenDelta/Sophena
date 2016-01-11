@@ -247,7 +247,8 @@ CREATE TABLE tbl_load_profiles (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
-    data BLOB (80 K),
+    dynamic_data BLOB (80 K),
+    static_data BLOB (80 K),
     f_consumer CHAR(36),
 
     PRIMARY KEY (id)

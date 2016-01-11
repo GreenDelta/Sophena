@@ -1,6 +1,18 @@
 package sophena.math;
 
+import sophena.model.Project;
+
 public class Smoothing {
+
+	/**
+	 * Returns the number of items that should be included in the moving average
+	 * calculation based on the projects' simultaneity factor.
+	 */
+	public static int getCount(Project project) {
+		if (project == null || project.heatNet == null)
+			return 0;
+		return (int) Math.round((1 - project.heatNet.simultaneityFactor) * 100);
+	}
 
 	/**
 	 * Smoothes the given curve (from a load profile) by calculating the moving

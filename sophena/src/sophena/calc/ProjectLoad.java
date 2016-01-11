@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.math.Smoothing;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.LoadProfile;
@@ -55,9 +56,8 @@ public class ProjectLoad {
 			Stats.add(p.dynamicData, dynamicData);
 			Stats.add(p.staticData, staticData);
 		}
-		// TODO: smoothing for simultanity
-		double[] data = staticData;
-		Stats.add(dynamicData, data);
+		double[] data = Smoothing.means(dynamicData, Smoothing.getCount(project));
+		Stats.add(staticData, data);
 		double netLoad = getNetLoad(project.heatNet);
 		Arrays.setAll(data, i -> data[i] + netLoad);
 		applyInterruption(data, project.heatNet);
