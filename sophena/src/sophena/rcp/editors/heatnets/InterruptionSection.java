@@ -9,7 +9,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
@@ -118,8 +117,7 @@ class InterruptionSection {
 	private void updateLoadCurve() {
 		if (loadCurve == null)
 			return;
-		double[] curve = ProjectLoad.getNetLoadCurve(heatNet());
-		loadCurve.setData(curve);
+		loadCurve.setData(NetLoadProfile.get(heatNet()));
 	}
 
 }

@@ -18,6 +18,7 @@ import sophena.model.Consumer;
 import sophena.model.LoadProfile;
 import sophena.model.Location;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.ConsumerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -35,7 +36,7 @@ public class ConsumerEditor extends Editor {
 	private String projectId;
 	private WeatherStation weatherStation;
 
-	private List<java.util.function.Consumer<double[]>> calcListeners = new ArrayList<>();
+	private List<LoadProfileListener> profileListeners = new ArrayList<>();
 
 	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
 		if (p == null || c == null)
@@ -81,14 +82,15 @@ public class ConsumerEditor extends Editor {
 	public void calculate() {
 		LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
 				weatherStation);
-		double[] loadCurve = profile.calculateTotal();
-		for (java.util.function.Consumer<double[]> fn : calcListeners) {
-			fn.accept(loadCurve);
+		double[] totals = profile.calculateTotal();
+		double total = Stats.sum(totals);
+		for (LoadProfileListener fn : profileListeners) {
+			fn.update(profile, totals, total);
 		}
 	}
 
-	public void onCalculated(java.util.function.Consumer<double[]> fn) {
-		calcListeners.add(fn);
+	public void onCalculated(LoadProfileListener fn) {
+		profileListeners.add(fn);
 	}
 
 	@Override

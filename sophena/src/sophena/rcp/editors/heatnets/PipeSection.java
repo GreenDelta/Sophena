@@ -18,7 +18,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.HeatNets;
-import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.ProductCosts;
@@ -99,8 +98,7 @@ class PipeSection {
 		}
 		editor.setDirty();
 		if (loadCurve != null) {
-			double[] curve = ProjectLoad.getNetLoadCurve(net());
-			loadCurve.setData(curve);
+			loadCurve.setData(NetLoadProfile.get(net()));
 		}
 	}
 

@@ -16,7 +16,7 @@ import sophena.io.LoadProfileReader;
 import sophena.model.LoadProfile;
 import sophena.rcp.Images;
 import sophena.rcp.M;
-import sophena.rcp.charts.LoadCurveChart;
+import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -55,7 +55,7 @@ class LoadProfileWizard extends Wizard {
 
 		private Text nameText;
 		private Text descriptionText;
-		private LoadCurveChart chart;
+		private LoadProfileChart chart;
 
 		private Page() {
 			super("LoadProfileWizardPage", M.LoadProfile, null);
@@ -87,7 +87,7 @@ class LoadProfileWizard extends Wizard {
 			Composite chartParent = new Composite(composite, SWT.NONE);
 			UI.gridData(chartParent, true, true);
 			UI.gridLayout(chartParent, 1);
-			chart = new LoadCurveChart(chartParent, 150);
+			chart = new LoadProfileChart(chartParent, 150);
 		}
 
 		private class DataBinding {
@@ -97,7 +97,7 @@ class LoadProfileWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, profile.name);
 				Texts.set(descriptionText, profile.description);
-				chart.setData(profile.calculateTotal());
+				chart.setData(profile);
 			}
 
 			void readFile() {
@@ -109,7 +109,7 @@ class LoadProfileWizard extends Wizard {
 					return;
 				LoadProfileReader reader = new LoadProfileReader();
 				fileProfile = reader.read(new File(path));
-				chart.setData(fileProfile.calculateTotal());
+				chart.setData(fileProfile);
 			}
 
 			void bindToModel() {

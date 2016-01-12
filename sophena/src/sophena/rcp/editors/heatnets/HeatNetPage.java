@@ -6,7 +6,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.UI;
@@ -46,10 +45,9 @@ class HeatNetPage extends FormPage {
 			Composite body) {
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.setSorted(false);
-		double[] curve = ProjectLoad.getNetLoadCurve(heatNet());
 		loadCurve.setTitle("Netzlast");
 		loadCurve.render(body, toolkit);
-		loadCurve.setData(curve);
+		loadCurve.setData(NetLoadProfile.get(heatNet()));
 		return loadCurve;
 	}
 

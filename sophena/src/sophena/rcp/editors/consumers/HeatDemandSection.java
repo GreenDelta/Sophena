@@ -6,7 +6,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.BuildingState;
 import sophena.model.Consumer;
-import sophena.model.Stats;
 import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -58,8 +57,8 @@ class HeatDemandSection {
 		UI.formLabel(composite, tk, "kW");
 		if (!consumer().demandBased) {
 			Texts.on(t).calculated();
-			editor.onCalculated(values -> {
-				double heatingLoad = Stats.sum(values) / consumer().loadHours;
+			editor.onCalculated((profile, totals, total) -> {
+				double heatingLoad = total / consumer().loadHours;
 				consumer().heatingLoad = heatingLoad;
 				Texts.set(t, Num.intStr(heatingLoad));
 			});
@@ -111,9 +110,8 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, M.HeatDemand);
 		UI.formLabel(composite, tk, "kWh");
 		Texts.on(t).calculated();
-		editor.onCalculated(values -> {
-			double sum = Stats.sum(values);
-			t.setText(Num.intStr(sum));
+		editor.onCalculated((profile, totals, total) -> {
+			t.setText(Num.intStr(total));
 		});
 	}
 

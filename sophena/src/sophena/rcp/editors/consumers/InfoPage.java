@@ -36,7 +36,7 @@ class InfoPage extends FormPage {
 			ConsumptionSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);
-		editor.onCalculated(data -> loadCurve.setData(data));
+		editor.onCalculated((profile, totals, total) -> loadCurve.setData(profile));
 		form.reflow(true);
 		editor.calculate();
 	}
