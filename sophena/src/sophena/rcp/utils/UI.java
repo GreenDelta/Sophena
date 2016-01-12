@@ -1,5 +1,6 @@
 package sophena.rcp.utils;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -42,17 +43,9 @@ public class UI {
 		return shell;
 	}
 
-	/**
-	 * Creates a bold font using the font data of the given control. The
-	 * returned font must be disposed by the respective caller.
-	 */
-	public static Font boldFont(Control control) {
-		if (control == null)
-			return null;
-		FontData fd = control.getFont().getFontData()[0];
-		fd.setStyle(SWT.BOLD);
-		Font font = new Font(control.getDisplay(), fd);
-		return font;
+	public static Font boldFont() {
+		return JFaceResources.getFontRegistry().getBold(
+				JFaceResources.DEFAULT_FONT);
 	}
 
 	/**

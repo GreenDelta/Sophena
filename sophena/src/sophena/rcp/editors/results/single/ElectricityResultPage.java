@@ -28,7 +28,7 @@ class ElectricityResultPage extends FormPage {
 
 	private EnergyResult result;
 
-	public ElectricityResultPage(ResultEditor editor) {
+	ElectricityResultPage(ResultEditor editor) {
 		super(editor, "sophena.ElectricityResultPage", "Stromerzeugung");
 		this.result = editor.result.energyResult;
 	}
