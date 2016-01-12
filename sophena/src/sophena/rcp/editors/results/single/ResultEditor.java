@@ -73,9 +73,9 @@ public class ResultEditor extends Editor {
 			addPage(new EnergyResultPage(this));
 			if (isWithCoGen())
 				addPage(new ElectricityResultPage(this));
-			addPage(new ConsumerResultPage(this));
 			addPage(new CostResultPage(this));
 			addPage(new EmissionsPage(this));
+			addPage(new ConsumerResultPage(this));
 			addPage(new LocationResultPage(this));
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());

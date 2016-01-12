@@ -27,7 +27,8 @@ public class ExcelExport implements Runnable {
 			return;
 		try {
 			Workbook wb = new XSSFWorkbook();
-			SimulationSheet.write(wb, result.energyResult);
+			new ConsumerSheet(wb, result).write();
+			new SimulationSheet(wb, result.energyResult).write();
 			try (FileOutputStream fos = new FileOutputStream(file);
 					BufferedOutputStream buffer = new BufferedOutputStream(fos)) {
 				wb.write(buffer);

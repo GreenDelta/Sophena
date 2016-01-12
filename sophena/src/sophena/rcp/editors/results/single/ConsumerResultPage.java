@@ -62,7 +62,7 @@ class ConsumerResultPage extends FormPage {
 		}
 		Collections.sort(items, (i1, i2) -> Strings.compare(i1.label, i2.label));
 		Item netItem = new Item();
-		netItem.label = "Wärmeverlust Netz";
+		netItem.label = "Netzverluste";
 		netItem.value = result.heatNetLoss;
 		items.add(netItem);
 		Item totalItem = new Item();

@@ -12,18 +12,14 @@ class SimulationSheet {
 	private Workbook wb;
 	private EnergyResult result;
 
-	static void write(Workbook wb, EnergyResult result) {
-		if (wb == null || result == null)
-			return;
-		new SimulationSheet(wb, result).write();
-	}
-
 	SimulationSheet(Workbook wb, EnergyResult result) {
 		this.wb = wb;
 		this.result = result;
 	}
 
-	private void write() {
+	void write() {
+		if (result == null)
+			return;
 		Sheet sheet = wb.createSheet("Simulationsergebnisse");
 		header(sheet);
 		for (int row = 1; row <= 8760; row++) {
