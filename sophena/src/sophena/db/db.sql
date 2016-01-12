@@ -216,6 +216,7 @@ CREATE TABLE tbl_consumers (
 	water_fraction DOUBLE,
 	load_hours INTEGER,
 	heating_limit DOUBLE,
+	floor_space DOUBLE,
 
 	f_project CHAR(36),
 	f_building_type CHAR(36),

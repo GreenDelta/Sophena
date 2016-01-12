@@ -279,4 +279,8 @@ public class UI {
 		return labelWidget;
 	}
 
+	public static Label filler(Composite parent, FormToolkit tk) {
+		return formLabel(parent, tk, "");
+	}
+
 }

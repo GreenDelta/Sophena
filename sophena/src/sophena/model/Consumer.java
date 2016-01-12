@@ -40,6 +40,9 @@ public class Consumer extends RootEntity {
 	@Column(name = "heating_limit")
 	public double heatingLimit;
 
+	@Column(name = "floor_space")
+	public double floorSpace;
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
 	public final List<FuelConsumption> fuelConsumptions = new ArrayList<>();

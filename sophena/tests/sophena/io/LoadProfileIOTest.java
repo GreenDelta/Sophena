@@ -40,8 +40,8 @@ public class LoadProfileIOTest {
 		LoadProfileReader reader = new LoadProfileReader();
 		LoadProfile copy = reader.read(testFile);
 		for (int i = 0; i < Stats.HOURS; i++) {
-			Assert.assertEquals(profile.dynamicData[i], copy.dynamicData[i], 1e-10);
-			Assert.assertEquals(profile.staticData[i], copy.staticData[i], 1e-10);
+			Assert.assertEquals(profile.dynamicData[i], copy.dynamicData[i], 1e-2);
+			Assert.assertEquals(profile.staticData[i], copy.staticData[i], 1e-2);
 		}
 	}
 

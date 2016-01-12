@@ -18,6 +18,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class InfoSection {
 
@@ -44,10 +45,12 @@ class InfoSection {
 
 	InfoSection create(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk, M.ConsumerInformation);
+		UI.gridLayout(comp, 3);
 		nameText(tk, comp);
 		descriptionText(tk, comp);
 		buildingTypeCombo(comp, tk);
 		buildingStateCombo(comp, tk);
+		floorSpaceText(comp, tk);
 		return this;
 	}
 
@@ -58,6 +61,7 @@ class InfoSection {
 			consumer().name = t;
 			editor.setDirty();
 		});
+		UI.filler(comp, tk);
 	}
 
 	private void descriptionText(FormToolkit tk, Composite comp) {
@@ -67,6 +71,7 @@ class InfoSection {
 			consumer().description = dt.getText();
 			editor.setDirty();
 		});
+		UI.filler(comp, tk);
 	}
 
 	private void buildingTypeCombo(Composite comp, FormToolkit tk) {
@@ -86,6 +91,7 @@ class InfoSection {
 			BuildingType type = types[combo.getSelectionIndex()];
 			updateSateCombo(type);
 		});
+		UI.filler(comp, tk);
 	}
 
 	private void updateSateCombo(BuildingType type) {
@@ -119,6 +125,18 @@ class InfoSection {
 				demandSection.updateBuildingState(s);
 			}
 		});
+		UI.filler(comp, tk);
+	}
+
+	private void floorSpaceText(Composite comp, FormToolkit tk) {
+		Text t = UI.formText(comp, tk, "Wohnfläche");
+		if (consumer().floorSpace != 0)
+			Texts.set(t, consumer().floorSpace);
+		Texts.on(t).decimal().onChanged(text -> {
+			consumer().floorSpace = Num.read(text);
+			editor.setDirty();
+		});
+		UI.formLabel(comp, tk, "m2");
 	}
 
 }
