@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -34,6 +36,25 @@ public class LoadProfile extends RootEntity {
 			total[i] = Stats.get(dynamicData, i) + Stats.get(staticData, i);
 		}
 		return total;
+	}
+
+	@Override
+	public LoadProfile clone() {
+		LoadProfile clone = new LoadProfile();
+		clone.id = UUID.randomUUID().toString();
+		clone.name = name;
+		clone.description = description;
+		clone.dynamicData = new double[Stats.HOURS];
+		if (dynamicData != null) {
+			System.arraycopy(dynamicData, 0, clone.dynamicData, 0,
+					dynamicData.length);
+		}
+		clone.staticData = new double[Stats.HOURS];
+		if (staticData != null) {
+			System.arraycopy(staticData, 0, clone.staticData, 0,
+					staticData.length);
+		}
+		return clone;
 	}
 
 }
