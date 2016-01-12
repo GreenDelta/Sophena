@@ -53,6 +53,7 @@ public class M extends NLS {
 	public static String ProjectDurationYears;
 	public static String ProjectInformation;
 	public static String Remove;
+	public static String SaveAsFile;
 	public static String SelectFile;
 	public static String ShowViews;
 	public static String Start;

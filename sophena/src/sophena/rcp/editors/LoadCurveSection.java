@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import sophena.io.HoursProfile;
 import sophena.model.Stats;
 import sophena.rcp.Images;
+import sophena.rcp.M;
 import sophena.rcp.charts.LoadCurveChart;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Rcp;
@@ -99,8 +100,8 @@ public class LoadCurveSection {
 	private class ExportAction extends Action {
 
 		public ExportAction() {
-			setText("Als Datei speichern");
-			setImageDescriptor(Images.FILE_16.des());
+			setText(M.SaveAsFile);
+			setImageDescriptor(Images.EXPORT_FILE_16.des());
 		}
 
 		@Override

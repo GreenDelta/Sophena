@@ -1,5 +1,6 @@
 package sophena.rcp.editors.consumers;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,12 +14,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.io.LoadProfileWriter;
 import sophena.model.Consumer;
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -59,8 +62,11 @@ class LoadProfileSection {
 				() -> editLoadProfile(table));
 		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
 				() -> deleteLoadProfile(table));
-		Actions.bind(section, add, edit, del);
-		Actions.bind(table, add, edit, del);
+		Action export = Actions.create(M.SaveAsFile, Images.EXPORT_FILE_16.des(),
+				() -> exportProfile(table));
+		Actions.bind(section, add, edit, del, export);
+		Actions.bind(table, add, edit, del, export);
+		Tables.onDoubleClick(table, e -> editLoadProfile(table));
 	}
 
 	private void addLoadProfile(TableViewer table) {
@@ -99,6 +105,19 @@ class LoadProfileSection {
 		table.setInput(profiles);
 		editor.calculate();
 		editor.setDirty();
+	}
+
+	private void exportProfile(TableViewer table) {
+		LoadProfile profile = Viewers.getFirstSelected(table);
+		if (profile == null)
+			return;
+		String name = profile.name == null ? "profile" : profile.name;
+		name = name.replaceAll("[^a-zA-Z0-9]+", "_");
+		File file = FileChooser.saveFile(name + ".csv", "*.csv");
+		if (file == null)
+			return;
+		LoadProfileWriter writer = new LoadProfileWriter();
+		writer.write(profile, file);
 	}
 
 	private class LoadProfileLabel extends LabelProvider

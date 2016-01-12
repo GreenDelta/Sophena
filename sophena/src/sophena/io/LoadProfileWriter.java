@@ -54,7 +54,7 @@ public class LoadProfileWriter {
 
 	private String str(double[] array, int i) {
 		double val = Stats.get(array, i);
-		String s = Double.toString(val);
+		String s = String.format("%.2f", val);
 		if (decimalSeparator != '.')
 			s = s.replace('.', decimalSeparator);
 		return s;
