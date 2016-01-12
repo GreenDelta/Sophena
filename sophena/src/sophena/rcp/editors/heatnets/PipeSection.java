@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -59,16 +60,18 @@ class PipeSection {
 	PipeSection create(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, "Wärmeleitungen");
 		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 1).verticalSpacing = 0;
-		createFields(composite, tk);
+		UI.gridLayout(composite, 1).verticalSpacing = 10;
 		createTable(section, composite, tk);
+		createFields(composite, tk);
 		return this;
 	}
 
 	private void createFields(Composite parent, FormToolkit tk) {
 		Composite comp = tk.createComposite(parent);
 		UI.gridData(comp, true, false);
-		UI.gridLayout(comp, 3);
+		GridLayout layout = UI.gridLayout(comp, 3);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
 		lengthText = UI.formText(comp, tk, "Länge");
 		Texts.on(lengthText).init(net().length).decimal().required()
 				.onChanged(s -> textsChanged());
@@ -102,11 +105,12 @@ class PipeSection {
 		}
 	}
 
-	private void createTable(Section section, Composite parent,
-			FormToolkit tk) {
+	private void createTable(Section section, Composite parent, FormToolkit tk) {
 		Composite comp = tk.createComposite(parent);
 		UI.gridData(comp, true, false);
-		UI.gridLayout(comp, 1).marginTop = 0;
+		GridLayout layout = UI.gridLayout(comp, 1);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
 		table = Tables.createViewer(comp, "Komponente", "Länge",
 				"Wärmeverlust", "Investitionskosten", "Nutzungsdauer",
 				"Instandsetzung", "Wartung und Inspektion",
