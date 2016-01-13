@@ -25,6 +25,12 @@ import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
+/**
+ * Wizard for product entries in the cost page. If the product of the respective
+ * product entry has a project ID it means that the product is project-private.
+ * In this case also the product attributes (name etc.) can be edited via this
+ * wizard.
+ */
 class EntryWizard extends Wizard {
 
 	private Page page;
@@ -79,15 +85,19 @@ class EntryWizard extends Wizard {
 			Composite comp = new Composite(parent, SWT.NONE);
 			setControl(comp);
 			UI.gridLayout(comp, 3);
-			createProductRow(comp);
-			createCountText(comp);
+			if (entry.product == null || entry.product.projectId == null)
+				createGlobalProductLink(comp);
+			else {
+				privateNameText(comp);
+			}
 			createPriceText(comp);
+			createCountText(comp);
 			costSection = new ProductCostSection(() -> entry.costs)
 					.createFields(comp);
 			Texts.on(costSection.investmentText).calculated();
 		}
 
-		private void createProductRow(Composite comp) {
+		private void createGlobalProductLink(Composite comp) {
 			UI.formLabel(comp, "Produkt");
 			ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
 			if (entry.product != null)
@@ -99,15 +109,15 @@ class EntryWizard extends Wizard {
 			link.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override
 				public void linkActivated(HyperlinkEvent e) {
-					selectProduct(link);
+					searchGlobalProduct(link);
 				}
 			});
 			UI.formLabel(comp, "");
 		}
 
-		private void selectProduct(ImageHyperlink link) {
+		private void searchGlobalProduct(ImageHyperlink link) {
 			ProductDao dao = new ProductDao(App.getDb());
-			Product p = SearchDialog.open((Labels.get(type)), dao.getAll(type));
+			Product p = SearchDialog.open((Labels.get(type)), dao.getAllGlobal(type));
 			if (p == null) {
 				noProduct(true);
 				return;
@@ -121,6 +131,18 @@ class EntryWizard extends Wizard {
 			Texts.set(priceText, price);
 			ProductCosts.copy(p.group, entry.costs);
 			updateCosts();
+		}
+
+		private void privateNameText(Composite comp) {
+			Text t = UI.formText(comp, "Name");
+			if (entry.product != null)
+				Texts.set(t, entry.product.name);
+			Texts.on(t).required().onChanged(s -> {
+				if (entry.product != null) {
+					entry.product.name = s;
+				}
+			});
+			UI.filler(comp);
 		}
 
 		private void createCountText(Composite comp) {

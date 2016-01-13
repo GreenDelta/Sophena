@@ -283,4 +283,8 @@ public class UI {
 		return formLabel(parent, tk, "");
 	}
 
+	public static Label filler(Composite parent) {
+		return formLabel(parent, "");
+	}
+
 }

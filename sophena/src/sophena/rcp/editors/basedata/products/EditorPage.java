@@ -48,7 +48,7 @@ class EditorPage extends FormPage {
 		super(editor, "ProductEditorPage", Labels.get(type));
 		this.type = type;
 		dao = new ProductDao(App.getDb());
-		products = dao.getAll(type);
+		products = dao.getAllGlobal(type);
 	}
 
 	@Override

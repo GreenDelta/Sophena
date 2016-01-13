@@ -31,8 +31,8 @@ public class ProductTest {
 		ProductDao dao = new ProductDao(Tests.getDb());
 		Product p1 = createProduct(ProductType.BIOMASS_BOILER, dao);
 		Assert.assertTrue(dao.getAll().contains(p1));
-		Assert.assertTrue(dao.getAll(ProductType.BIOMASS_BOILER).contains(p1));
-		Assert.assertFalse(dao.getAll(ProductType.BUFFER_TANK).contains(p1));
+		Assert.assertTrue(dao.getAllGlobal(ProductType.BIOMASS_BOILER).contains(p1));
+		Assert.assertFalse(dao.getAllGlobal(ProductType.BUFFER_TANK).contains(p1));
 		dao.delete(p1);
 	}
 

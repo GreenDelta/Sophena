@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.CostSettings;
+import sophena.model.Product;
 import sophena.model.ProductEntry;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -75,10 +76,12 @@ public class CostEditor extends Editor {
 			}
 			// sync. with JPA managed entity; we could have the same instance
 			// or two different instances here
-			List<ProductEntry> entries = new ArrayList<>();
-			entries.addAll(project.productEntries);
+			List<ProductEntry> entries = new ArrayList<>(project.productEntries);
+			List<Product> ownProducts = new ArrayList<>(project.ownProducts);
 			dbProject.productEntries.clear();
 			dbProject.productEntries.addAll(entries);
+			dbProject.ownProducts.clear();
+			dbProject.ownProducts.addAll(ownProducts);
 			project = dao.update(dbProject);
 			setSaved();
 		} catch (Exception e) {

@@ -47,7 +47,7 @@ public class Project extends RootEntity {
 
 	@JoinColumn(name = "f_project")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	public final List<Project> ownProjects = new ArrayList<>();
+	public final List<Product> ownProducts = new ArrayList<>();
 
 	@Override
 	public Project clone() {

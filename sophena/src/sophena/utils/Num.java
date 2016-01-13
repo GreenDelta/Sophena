@@ -56,12 +56,30 @@ public class Num {
 		return readNumber(text) != null;
 	}
 
+	public static String str(Double val) {
+		if (val == null)
+			return "";
+		return str(val.doubleValue());
+	}
+
 	public static String str(double val) {
 		return getFormat().format(val);
 	}
 
+	public static String intStr(Double val) {
+		if (val == null)
+			return "";
+		return intStr(val.doubleValue());
+	}
+
 	public static String intStr(double val) {
 		return getIntFormat().format(val);
+	}
+
+	public static String intStr(Integer val) {
+		if (val == null)
+			return "";
+		return intStr(val.intValue());
 	}
 
 	public static String intStr(int val) {

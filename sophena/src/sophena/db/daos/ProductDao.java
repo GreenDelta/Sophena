@@ -16,12 +16,13 @@ public class ProductDao extends RootEntityDao<Product> {
 		super(Product.class, db);
 	}
 
-	public List<Product> getAll(ProductType type) {
+	public List<Product> getAllGlobal(ProductType type) {
 		if (type == null)
 			return Collections.emptyList();
 		EntityManager em = createManager();
 		try {
-			String jpql = "SELECT p FROM Product p where p.type = :type";
+			String jpql = "SELECT p FROM Product p where p.projectId is null "
+					+ "and p.type = :type";
 			TypedQuery<Product> query = em.createQuery(jpql, Product.class);
 			query.setParameter("type", type);
 			return query.getResultList();

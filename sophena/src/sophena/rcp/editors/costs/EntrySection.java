@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
@@ -50,12 +51,15 @@ class EntrySection {
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		fillEntries();
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), this::add);
+		Action addGlobal = Actions.create("Product aus Produktdatenbank hinzufügen",
+				Images.SEARCH_16.des(), this::addGlobal);
+		Action addPrivate = Actions.create("Neues Produkt erstellen",
+				Images.ADD_16.des(), this::addPrivate);
 		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), this::edit);
 		Action del = Actions.create(M.Remove, Images.DELETE_16.des(),
 				this::delete);
-		Actions.bind(section, add, edit, del);
-		Actions.bind(table, add, edit, del);
+		Actions.bind(section, addGlobal, addPrivate, edit, del);
+		Actions.bind(table, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
 
@@ -69,13 +73,32 @@ class EntrySection {
 		return table;
 	}
 
-	private void add() {
+	/** Add a product from the product database. */
+	private void addGlobal() {
 		ProductEntry entry = new ProductEntry();
 		entry.id = UUID.randomUUID().toString();
 		entry.costs = new ProductCosts();
 		if (EntryWizard.open(entry, type) != Window.OK)
 			return;
 		project().productEntries.add(entry);
+		fillEntries();
+		editor.setDirty();
+	}
+
+	/** Add a project-private product. */
+	private void addPrivate() {
+		ProductEntry entry = new ProductEntry();
+		entry.id = UUID.randomUUID().toString();
+		entry.costs = new ProductCosts();
+		Product product = new Product();
+		product.id = UUID.randomUUID().toString();
+		product.projectId = project().id;
+		product.type = type;
+		entry.product = product;
+		if (EntryWizard.open(entry, type) != Window.OK)
+			return;
+		project().productEntries.add(entry);
+		project().ownProducts.add(entry.product);
 		fillEntries();
 		editor.setDirty();
 	}
@@ -91,6 +114,9 @@ class EntrySection {
 		if (managed == null)
 			return;
 		managed.costs = clone.costs;
+		managed.count = clone.count;
+		managed.pricePerPiece = clone.pricePerPiece;
+		// TODO: private and globale products
 		managed.product = clone.product;
 		fillEntries();
 		editor.setDirty();
@@ -104,6 +130,8 @@ class EntrySection {
 		if (managed == null)
 			return;
 		project().productEntries.remove(managed);
+		if (managed.product != null && managed.product.projectId != null)
+			project().ownProducts.remove(managed.product);
 		fillEntries();
 		editor.setDirty();
 	}

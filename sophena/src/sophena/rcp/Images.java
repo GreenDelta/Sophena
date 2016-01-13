@@ -79,6 +79,8 @@ public enum Images {
 
 	RUN_16("run_16.png"),
 
+	SEARCH_16("search_16.png"),
+
 	SORTING_16("sorting_16.png"),
 
 	WARNING_16("warning_16.png");
