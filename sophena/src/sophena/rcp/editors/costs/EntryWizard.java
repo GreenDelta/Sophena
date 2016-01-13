@@ -1,5 +1,7 @@
 package sophena.rcp.editors.costs;
 
+import java.util.List;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -12,9 +14,11 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.ProductDao;
+import sophena.db.daos.ProductGroupDao;
 import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
+import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Images;
@@ -22,6 +26,8 @@ import sophena.rcp.Labels;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -89,6 +95,7 @@ class EntryWizard extends Wizard {
 				createGlobalProductLink(comp);
 			else {
 				privateNameText(comp);
+				privateGroupCombo(comp);
 			}
 			createPriceText(comp);
 			createCountText(comp);
@@ -134,13 +141,29 @@ class EntryWizard extends Wizard {
 		}
 
 		private void privateNameText(Composite comp) {
-			Text t = UI.formText(comp, "Name");
+			Text t = UI.formText(comp, "Bezeichnung");
 			if (entry.product != null)
 				Texts.set(t, entry.product.name);
 			Texts.on(t).required().onChanged(s -> {
 				if (entry.product != null) {
 					entry.product.name = s;
 				}
+			});
+			UI.filler(comp);
+		}
+
+		private void privateGroupCombo(Composite comp) {
+			EntityCombo<ProductGroup> combo = new EntityCombo<>();
+			combo.create("Produktgruppe", comp);
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> list = dao.getAll(type);
+			Sorters.byName(list);
+			combo.setInput(list);
+			if (entry.product != null && entry.product.group != null)
+				combo.select(entry.product.group);
+			combo.onSelect(group -> {
+				if (entry.product != null)
+					entry.product.group = group;
 			});
 			UI.filler(comp);
 		}
