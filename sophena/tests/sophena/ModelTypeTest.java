@@ -1,5 +1,7 @@
 package sophena;
 
+import java.lang.reflect.Modifier;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +16,8 @@ public class ModelTypeTest {
 	@Test
 	public void testRootEntityClasses() throws Exception {
 		for (Class<?> type : Tests.getSubTypes(RootEntity.class, "sophena.model")) {
+			if (Modifier.isAbstract(type.getModifiers()))
+				continue;
 			System.out.println(type.getSimpleName() + ".class,");
 			Assert.assertNotNull("no model type for " + type,
 					ModelType.forModelClass(type));

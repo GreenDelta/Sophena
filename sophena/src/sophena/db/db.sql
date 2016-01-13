@@ -265,7 +265,9 @@ CREATE TABLE tbl_products (
 	purchase_price DOUBLE,
 	url VARCHAR(255),
 	product_type VARCHAR(50),
+	
 	f_product_group CHAR(36),
+	f_project CHAR(36),
 	
 	PRIMARY KEY (id)
 );

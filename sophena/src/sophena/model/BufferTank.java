@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_buffer_tanks")
-public class BufferTank extends Product {
+public class BufferTank extends AbstractProduct {
 
 	@Column(name = "volume")
 	public double volume;

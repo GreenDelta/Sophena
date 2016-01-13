@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tbl_boilers")
-public class Boiler extends Product {
+public class Boiler extends AbstractProduct {
 
 	@Column(name = "max_power")
 	public double maxPower;

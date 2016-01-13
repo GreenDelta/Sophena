@@ -21,29 +21,33 @@ public class Project extends RootEntity {
 	@Column(name = "project_duration")
 	public int projectDuration;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<Producer> producers = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<Consumer> consumers = new ArrayList<>();
 
 	@OneToOne
 	@JoinColumn(name = "f_weather_station")
 	public WeatherStation weatherStation;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_cost_settings")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	public CostSettings costSettings;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_heat_net")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	public HeatNet heatNet;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_project")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<ProductEntry> productEntries = new ArrayList<>();
+
+	@JoinColumn(name = "f_project")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	public final List<Project> ownProjects = new ArrayList<>();
 
 	@Override
 	public Project clone() {
@@ -61,6 +65,7 @@ public class Project extends RootEntity {
 			clone.heatNet = heatNet.clone();
 		if (costSettings != null)
 			clone.costSettings = costSettings.clone();
+		// TODO: clone product entries
 		return clone;
 	}
 
