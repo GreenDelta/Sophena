@@ -15,6 +15,7 @@ import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 
 public class HeatNetEditor extends Editor {
 
@@ -54,6 +55,8 @@ public class HeatNetEditor extends Editor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
+		if (!valid())
+			return;
 		try {
 			log.info("update heat net in project {}", project);
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -65,6 +68,27 @@ public class HeatNetEditor extends Editor {
 		} catch (Exception e) {
 			log.error("failed to update heat net in project " + project, e);
 		}
+	}
+
+	private boolean valid() {
+		if (heatNet.returnTemperature >= heatNet.supplyTemperature) {
+			MsgBox.error("Plausibilitätsfehler",
+					"Die Rücklauftemperatur ist größer oder gleich der "
+							+ "Vorlauftemperatur.");
+			return false;
+		}
+		if (heatNet.returnTemperature >= heatNet.maxBufferLoadTemperature) {
+			MsgBox.error("Plausibilitätsfehler",
+					"Die Rücklauftemperatur ist größer oder gleich der maximalen "
+							+ "Ladetemperatur des Pufferspeichers.");
+			return false;
+		}
+		if (heatNet.simultaneityFactor < 0 || heatNet.simultaneityFactor > 1) {
+			MsgBox.error("Plausibilitätsfehler",
+					"Der Gleichzeitigkeitsfaktor muss ziwschen 0 und 1 liegen.");
+			return false;
+		}
+		return true;
 	}
 
 	private static class EditorInput extends KeyEditorInput {
