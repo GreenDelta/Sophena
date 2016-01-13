@@ -21,6 +21,28 @@ public class ProductEntryTest {
 
 	@Test
 	public void testDeletePrivateProduct() {
+		Project project = withPrivateProduct();
+		Product product = project.ownProducts.get(0);
+		checkFind(product, true);
+		projDao.delete(project);
+		checkFind(product, false);
+	}
+
+	@Test
+	public void testClonePrivateProduct() {
+		Project project = withPrivateProduct();
+		Project clone = project.clone();
+		Product clonedProduct = clone.ownProducts.get(0);
+		checkFind(clonedProduct, false);
+		projDao.insert(clone);
+		checkFind(clonedProduct, true);
+		projDao.delete(project);
+		checkFind(clonedProduct, true);
+		projDao.delete(clone);
+		checkFind(clonedProduct, false);
+	}
+
+	private Project withPrivateProduct() {
 		Project project = mk(Project.class);
 		Product product = mk(Product.class);
 		product.projectId = project.id;
@@ -29,9 +51,7 @@ public class ProductEntryTest {
 		entry.product = product;
 		project.productEntries.add(entry);
 		projDao.insert(project);
-		checkFind(product, true);
-		projDao.delete(project);
-		checkFind(product, false);
+		return project;
 	}
 
 	@Test

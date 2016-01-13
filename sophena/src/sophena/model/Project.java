@@ -1,7 +1,9 @@
 package sophena.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -65,8 +67,25 @@ public class Project extends RootEntity {
 			clone.heatNet = heatNet.clone();
 		if (costSettings != null)
 			clone.costSettings = costSettings.clone();
-		// TODO: clone product entries
+		cloneProductEntries(clone);
 		return clone;
+	}
+
+	private void cloneProductEntries(Project clone) {
+		Map<String, Product> productMap = new HashMap<>();
+		for (Product ownProduct : ownProducts) {
+			Product cp = ownProduct.clone();
+			cp.projectId = clone.id;
+			clone.ownProducts.add(cp);
+			productMap.put(ownProduct.id, cp);
+		}
+		for (ProductEntry entry : productEntries) {
+			ProductEntry ce = entry.clone();
+			clone.productEntries.add(ce);
+			if (ce.product == null || ce.product.projectId == null)
+				continue;
+			ce.product = productMap.get(ce.product.id);
+		}
 	}
 
 	public ProjectDescriptor toDescriptor() {
