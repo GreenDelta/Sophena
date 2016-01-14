@@ -3,19 +3,26 @@ package sophena.calc;
 import java.util.Arrays;
 
 import sophena.model.Stats;
+import sophena.utils.Num;
 
 class EnergyResultSorter {
 
 	static EnergyResult sort(EnergyResult result) {
 		if (result == null)
 			return null;
-		double[] power = result.suppliedPower;
 		Integer[] sortedIdx = new Integer[Stats.HOURS];
 		for (int i = 0; i < Stats.HOURS; i++) {
 			sortedIdx[i] = i;
 		}
-		Arrays.sort(sortedIdx, (i1, i2)
-				-> -Double.compare(power[i1], power[i2]));
+		double[] power = result.suppliedPower;
+		double[] load = result.loadCurve;
+		Arrays.sort(sortedIdx, (i1, i2) -> {
+			double p1 = power[i1];
+			double p2 = power[i2];
+			if (Num.equal(p1, p2))
+				return -Double.compare(load[i1], load[i2]);
+			return -Double.compare(p1, p2);
+		});
 		return createCopy(sortedIdx, result);
 	}
 
