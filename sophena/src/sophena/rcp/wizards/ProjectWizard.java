@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Defaults;
 import sophena.db.daos.CostSettingsDao;
 import sophena.db.daos.ProjectDao;
 import sophena.db.daos.WeatherStationDao;
@@ -84,6 +85,7 @@ public class ProjectWizard extends Wizard {
 		HeatNet n = (p.heatNet = new HeatNet());
 		n.id = UUID.randomUUID().toString();
 		n.simultaneityFactor = 1;
+		n.smoothingFactor = Defaults.SMOOTHING_FACTOR;
 		n.powerLoss = 20;
 		n.maxBufferLoadTemperature = 95;
 		n.supplyTemperature = 80;

@@ -1,5 +1,6 @@
 package sophena.rcp.editors.basedata.climate;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -15,12 +16,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.WeatherStationDao;
+import sophena.io.HoursProfile;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -57,12 +60,12 @@ class TablePage extends FormPage {
 	}
 
 	private void bindActions(Section section, TableViewer table) {
-		Action open = Actions.create(
-				"Temperaturverlauf",
-				Images.OPEN_16.des(),
-				() -> openClimateCurve(table));
-		Actions.bind(section, open);
-		Actions.bind(table, open);
+		Action open = Actions.create("Temperaturverlauf anzeigen",
+				Images.OPEN_16.des(), () -> openClimateCurve(table));
+		Action export = Actions.create("Temperaturverlauf exportieren",
+				Images.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
+		Actions.bind(section, open, export);
+		Actions.bind(table, open, export);
 		Tables.onDoubleClick(table, e -> openClimateCurve(table));
 	}
 
@@ -73,6 +76,18 @@ class TablePage extends FormPage {
 		WeatherStation station = dao.get(d.id);
 		ClimateDataChart chart = new ClimateDataChart(UI.shell(), station);
 		chart.open();
+	}
+
+	private void exportClimateCurve(TableViewer table) {
+		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
+		if (d == null)
+			return;
+		WeatherStation station = dao.get(d.id);
+		String name = station.name != null ? station.name : "station";
+		File file = FileChooser.saveFile(name + ".csv", "*.csv");
+		if (file == null)
+			return;
+		HoursProfile.write(station.data, file);
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {

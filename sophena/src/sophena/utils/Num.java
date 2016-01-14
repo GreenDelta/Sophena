@@ -86,4 +86,12 @@ public class Num {
 		return getIntFormat().format(val);
 	}
 
+	public static boolean equal(double d1, double d2) {
+		return equal(d1, d2, 1e-5);
+	}
+
+	public static boolean equal(double d1, double d2, double epsilon) {
+		return Math.abs(d1 - d2) < epsilon;
+	}
+
 }

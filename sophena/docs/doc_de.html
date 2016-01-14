@@ -256,7 +256,7 @@
     Und damit ist die benötigte Leistung zur Stunde $i$ für den Abnehmer:
 
         $$ P_i = P_{min} + P_{dyn,i} $$
-        
+
 
 	<h3>Kapazität des Pufferspeichers</h3>
 	In der Simulationsrechnung wird die Kapazität des Pufferspeichers $Q_{cap,buff}$ [kWh] wie folgt
@@ -281,6 +281,19 @@
 	<pre><code class="java">
 		double q = BufferCapacity.get(project.heatNet);
 	</code></pre>
+
+
+    <h3>Glättung von Lastprofilen</h3>
+    Die Angaben eines Gleichzeitigkeitsfaktors $sf < 1$ führt dazu, dass sich das
+    Lastprofil des Projekts glättet. Das bedeutet, dass sich Lastspitzen verteilen.
+    Die Glättung wird auf den temperaturabhängigen (dynamischen) Teil der
+    Jahresdauerlinie angewendet und über gleitende Mittelwerte berechnet. Die
+    Anzahl von benachbarten Stunden $k$, die dabei gemittelt werden, ergibt sich mit
+    def folgenden Formel:
+
+        $$ k = round((1 - sf) * rf) $$
+
+    Dabei ist $rf$ der Glättungsfactor, der einen überschreibbaren Defaultwert hat.
 
 
 	<h3>Benötigten Brennstoffmenge</h3>

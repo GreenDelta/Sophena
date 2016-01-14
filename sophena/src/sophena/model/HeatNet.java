@@ -29,6 +29,9 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "simultaneity_factor")
 	public double simultaneityFactor;
 
+	@Column(name = "smoothing_factor")
+	public double smoothingFactor;
+
 	@Column(name = "max_load")
 	public Double maxLoad;
 

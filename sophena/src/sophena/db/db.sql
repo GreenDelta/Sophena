@@ -165,6 +165,7 @@ CREATE TABLE tbl_heat_nets (
     supply_temperature DOUBLE,
     return_temperature DOUBLE,
     simultaneity_factor DOUBLE,
+    smoothing_factor DOUBLE,
     max_load DOUBLE,
     power_loss DOUBLE,
     with_interruption BOOLEAN,

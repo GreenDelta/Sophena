@@ -1,5 +1,6 @@
 package sophena.math;
 
+import sophena.model.HeatNet;
 import sophena.model.Project;
 
 public class Smoothing {
@@ -11,7 +12,8 @@ public class Smoothing {
 	public static int getCount(Project project) {
 		if (project == null || project.heatNet == null)
 			return 0;
-		return (int) Math.round((1 - project.heatNet.simultaneityFactor) * 100);
+		HeatNet net = project.heatNet;
+		return (int) Math.round((1 - net.simultaneityFactor) * net.smoothingFactor);
 	}
 
 	/**

@@ -134,6 +134,10 @@ public class Colors {
 		return getColor(230, 230, 233);
 	}
 
+	public static Color forDefaultField() {
+		return getColor(220, 231, 251);
+	}
+
 	private static class ShutDown implements IWorkbenchListener {
 		@Override
 		public boolean preShutdown(IWorkbench workbench, boolean forced) {
