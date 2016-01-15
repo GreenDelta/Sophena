@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_building_states")
-public class BuildingState extends RootEntity {
+public class BuildingState extends BaseDataEntity {
 
 	@Column(name = "idx")
 	public int index;

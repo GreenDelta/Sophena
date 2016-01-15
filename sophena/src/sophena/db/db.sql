@@ -5,9 +5,12 @@ INSERT INTO sophena_version (version) VALUES (1);
 
 
 CREATE TABLE tbl_weather_stations (
+
 	id CHAR(36),
 	name VARCHAR(255),
 	description CLOB(64 K),
+
+	is_protected BOOLEAN,
 
 	longitude DOUBLE,
 	latitude DOUBLE,
@@ -18,23 +21,13 @@ CREATE TABLE tbl_weather_stations (
 );
 
 
-CREATE TABLE tbl_units (
-	id CHAR(36),
-	name VARCHAR(255),
-	description CLOB(64 K),
-
-	quantity VARCHAR(255),
-	is_reference_unit BOOLEAN,
-	conversion_factor DOUBLE,
-
-	PRIMARY KEY (id)
-);
-
-
 CREATE TABLE tbl_fuels (
+
 	id CHAR(36),
 	name VARCHAR(255),
 	description CLOB(64 K),
+
+	is_protected BOOLEAN,
 
 	unit VARCHAR(255),
 	calorific_value DOUBLE,
@@ -52,6 +45,8 @@ CREATE TABLE tbl_building_states (
 	name VARCHAR(255),
 	description CLOB(64 K),
 	
+	is_protected BOOLEAN,
+	
 	idx INTEGER,
 	is_default BOOLEAN,
 	building_type VARCHAR(50),
@@ -68,6 +63,8 @@ CREATE TABLE tbl_product_groups (
 	id CHAR(36),
 	name VARCHAR(255),
 	description CLOB(64 K),
+
+	is_protected BOOLEAN,
 
 	idx INTEGER,
 	product_type VARCHAR(50),
@@ -263,6 +260,8 @@ CREATE TABLE tbl_products (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+	is_protected BOOLEAN,
+
 	purchase_price DOUBLE,
 	url VARCHAR(255),
 	product_type VARCHAR(50),
@@ -279,6 +278,8 @@ CREATE TABLE tbl_boilers (
 	id CHAR(36),
 	name VARCHAR(255),
 	description CLOB(64 K),
+
+	is_protected BOOLEAN,
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),
@@ -307,6 +308,8 @@ CREATE TABLE tbl_pipes (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
+	is_protected BOOLEAN,
+
 	purchase_price DOUBLE,
 	url VARCHAR(255),
 	product_type VARCHAR(50),
@@ -324,6 +327,8 @@ CREATE TABLE tbl_buffer_tanks (
 	id CHAR(36),
 	name VARCHAR(255),
 	description CLOB(64 K),
+
+	is_protected BOOLEAN,
 
 	purchase_price DOUBLE,
 	url VARCHAR(255),

@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_fuels")
-public class Fuel extends RootEntity {
+public class Fuel extends BaseDataEntity {
 
 	/**
 	 * the standard unit of the fuel (e.g. L, m3, kg); for wood types this

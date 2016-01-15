@@ -8,7 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
 @MappedSuperclass
-public abstract class AbstractProduct extends RootEntity {
+public abstract class AbstractProduct extends BaseDataEntity {
 
 	@Column(name = "purchase_price")
 	public Double purchasePrice;

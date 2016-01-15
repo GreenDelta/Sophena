@@ -12,7 +12,7 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 @Entity
 @Table(name = "tbl_weather_stations")
 @Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
-public class WeatherStation extends RootEntity {
+public class WeatherStation extends BaseDataEntity {
 
 	@Column(name = "longitude")
 	public double longitude;

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_product_groups")
-public class ProductGroup extends RootEntity {
+public class ProductGroup extends BaseDataEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "product_type")
