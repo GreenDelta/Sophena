@@ -27,8 +27,7 @@ public class HeatNetEditor extends Editor {
 	public static void open(ProjectDescriptor project) {
 		if (project == null)
 			return;
-		EditorInput input = new EditorInput(project.id + "/net",
-				project.name);
+		EditorInput input = new EditorInput(project.id + "/net", project.name);
 		input.projectId = project.id;
 		Editors.open(input, "sophena.HeatNetEditor");
 	}

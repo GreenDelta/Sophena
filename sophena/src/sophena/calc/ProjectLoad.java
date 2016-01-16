@@ -18,14 +18,6 @@ public class ProjectLoad {
 	private ProjectLoad() {
 	}
 
-	public static double getSimultanousMax(Project project) {
-		if (project == null || project.heatNet == null)
-			return 0;
-		double max = getMax(project);
-		double sim = project.heatNet.simultaneityFactor * max;
-		return Math.ceil(sim);
-	}
-
 	/**
 	 * The maximum load of the project can be entered by the user. If no value
 	 * is entered the value is calculated from the heat net and consumer data.
@@ -64,7 +56,7 @@ public class ProjectLoad {
 		return data;
 	}
 
-	private static double getNetLoad(HeatNet net) {
+	public static double getNetLoad(HeatNet net) {
 		if (net == null)
 			return 0;
 		double netLoad = (net.powerLoss * net.length) / 1000;
