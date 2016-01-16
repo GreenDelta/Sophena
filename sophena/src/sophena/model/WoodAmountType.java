@@ -6,7 +6,7 @@ public enum WoodAmountType {
 
 	CHIPS("Srm", 0.4),
 
-	LOGS("Ster", 0.7);
+	LOGS("Ster (Rm)", 0.7);
 
 	// typical unit for the wood type
 	private final String unit;
