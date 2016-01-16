@@ -54,6 +54,7 @@ class FuelWizard extends Wizard {
 	@Override
 	public void addPages() {
 		page = new Page();
+		page.setPageComplete(!fuel.isProtected);
 		addPage(page);
 	}
 
@@ -142,7 +143,7 @@ class FuelWizard extends Wizard {
 				return error("Es muss eine Einheit angegeben werden.");
 			if (!Num.isNumeric(calText.getText()))
 				return error("Es muss ein Heizwert angegeben werden.");
-			setPageComplete(true);
+			setPageComplete(!fuel.isProtected);
 			setErrorMessage(null);
 			return true;
 		}

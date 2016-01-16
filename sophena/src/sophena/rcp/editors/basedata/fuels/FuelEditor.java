@@ -5,11 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -27,6 +24,7 @@ import sophena.rcp.App;
 import sophena.rcp.Images;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.BaseTableLable;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -70,7 +68,7 @@ public class FuelEditor extends Editor {
 
 		private void initData() {
 			List<Fuel> all = dao.getAll();
-			Sorters.byName(all);
+			Sorters.sortBaseData(all);
 			for (Fuel f : all) {
 				if (f.wood)
 					woodFuels.add(f);
@@ -152,7 +150,7 @@ public class FuelEditor extends Editor {
 
 		private void delete(TableViewer table, List<Fuel> list, boolean wood) {
 			Fuel f = Viewers.getFirstSelected(table);
-			if (f == null)
+			if (f == null || f.isProtected)
 				return;
 			boolean doIt = MsgBox.ask(M.Delete,
 					"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
@@ -217,13 +215,7 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private class FuelLabel extends LabelProvider implements
-				ITableLabelProvider {
-
-			@Override
-			public Image getColumnImage(Object element, int col) {
-				return col == 0 ? Images.FUEL_16.img() : null;
-			}
+		private class FuelLabel extends BaseTableLable {
 
 			@Override
 			public String getColumnText(Object element, int col) {
@@ -244,13 +236,7 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private class WoodLabel extends LabelProvider implements
-				ITableLabelProvider {
-
-			@Override
-			public Image getColumnImage(Object element, int col) {
-				return col == 0 ? Images.FUEL_16.img() : null;
-			}
+		private class WoodLabel extends BaseTableLable {
 
 			@Override
 			public String getColumnText(Object element, int col) {

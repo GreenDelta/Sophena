@@ -40,6 +40,7 @@ class WoodFuelWizard extends Wizard {
 	@Override
 	public void addPages() {
 		page = new Page();
+		page.setPageComplete(!fuel.isProtected);
 		addPage(page);
 	}
 
@@ -132,7 +133,7 @@ class WoodFuelWizard extends Wizard {
 					return error("Die Dichte muss numerisch sein");
 				if (!Texts.hasNumber(calText))
 					return error("Der Heizwert muss numerisch sein");
-				setPageComplete(true);
+				setPageComplete(!fuel.isProtected);
 				setErrorMessage(null);
 				return true;
 			}
