@@ -1,6 +1,7 @@
 {
 	"id": "8b1776e5-d6f9-499f-a567-2cce41cef756",
 	"name": "Flüssiggas",
+	"isProtected": true,
 	"unit": "m3",
 	"calorificValue": 27.996,
 	"wood": false,

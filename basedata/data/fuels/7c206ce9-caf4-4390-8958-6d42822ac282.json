@@ -2,6 +2,7 @@
 	"id": "7c206ce9-caf4-4390-8958-6d42822ac282",
 	"name": "Heizöl",
 	"description": "Heizöl extra leicht nach DIN 51603",
+	"isProtected": true,
 	"unit": "L",
 	"calorificValue": 10,
 	"wood": false,

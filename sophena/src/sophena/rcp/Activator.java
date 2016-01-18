@@ -59,6 +59,12 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
+		try {
+			if (App.getDb() != null)
+				App.getDb().close();
+		} catch (Exception e) {
+			log.error("Failed to close database", e);
+		}
 		Activator.context = null;
 	}
 
