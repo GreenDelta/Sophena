@@ -147,8 +147,9 @@ class HeatNetSection {
 	}
 
 	private double calculateMaxSimLoad() {
-		double max = calculateMaxLoad();
-		double sim = heatNet().simultaneityFactor * max;
+		HeatNet net = heatNet();
+		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
+		double sim = net.simultaneityFactor * max;
 		return Math.ceil(sim);
 	}
 
