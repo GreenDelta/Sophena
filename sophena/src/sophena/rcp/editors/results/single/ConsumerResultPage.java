@@ -18,7 +18,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.ConsumerResult;
+import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
+import sophena.model.Project;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -27,55 +29,69 @@ import sophena.utils.Num;
 class ConsumerResultPage extends FormPage {
 
 	private ProjectResult result;
+	private Project project;
 
 	ConsumerResultPage(ResultEditor editor) {
 		super(editor, "sophena.ConsumerResultPage", "Abnehmer");
 		this.result = editor.result;
+		this.project = editor.project;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Wärmebedarf: Abnehmer");
+		ScrolledForm form = UI.formHeader(mform, "Abnehmer");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Section section = UI.section(body, tk, "Abnehmer");
+		Section section = UI.section(body, tk, "Übersicht Abnehmer");
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, tk);
-		TableViewer table = Tables.createViewer(comp, "Name", "Wärmebedarf");
+		TableViewer table = Tables.createViewer(comp, "Name", "Heizlast",
+				"Wärmebedarf");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Tables.rightAlignColumns(table, 1);
+		Tables.rightAlignColumns(table, 1, 2);
 		Tables.autoSizeColumns(table);
 	}
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<Item>();
-		double total = 0;
+		double totalDemand = 0;
+		double totalLoad = 0;
 		for (ConsumerResult cr : result.consumerResults) {
 			if (cr.consumer == null)
 				continue;
 			Item item = new Item();
 			item.label = cr.consumer.name;
-			item.value = cr.heatDemand;
+			item.heatingLoad = cr.consumer.heatingLoad;
+			item.heatDemand = cr.heatDemand;
 			items.add(item);
-			total += cr.heatDemand;
+			totalDemand += cr.heatDemand;
+			totalLoad += item.heatingLoad;
 		}
 		Collections.sort(items, (i1, i2) -> Strings.compare(i1.label, i2.label));
-		Item netItem = new Item();
-		netItem.label = "Netzverluste";
-		netItem.value = result.heatNetLoss;
-		items.add(netItem);
+		Item netItem = addNetItem(items);
 		Item totalItem = new Item();
 		totalItem.isTotal = true;
-		totalItem.label = "Gesamter Wärmebedarf";
-		totalItem.value = total + result.heatNetLoss;
+		totalItem.label = "Summe";
+		totalItem.heatDemand = totalDemand + result.heatNetLoss;
+		totalItem.heatingLoad = totalLoad + netItem.heatingLoad;
 		items.add(totalItem);
 		return items;
 	}
 
+	private Item addNetItem(List<Item> items) {
+		Item netItem = new Item();
+		netItem.label = "Netzverluste";
+		netItem.heatDemand = result.heatNetLoss;
+		netItem.heatingLoad = ProjectLoad.getNetLoad(project.heatNet);
+		items.add(netItem);
+		return netItem;
+	}
+
 	private class Item {
 		String label;
-		double value;
+		double heatDemand;
+		double heatingLoad;
 		boolean isTotal;
 	}
 
@@ -106,7 +122,9 @@ class ConsumerResultPage extends FormPage {
 			case 0:
 				return item.label;
 			case 1:
-				return Num.intStr(item.value) + " kWh";
+				return Num.intStr(item.heatingLoad) + " kW";
+			case 2:
+				return Num.intStr(item.heatDemand) + " kWh";
 			default:
 				return null;
 			}

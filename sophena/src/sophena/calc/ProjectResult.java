@@ -37,6 +37,8 @@ public class ProjectResult {
 
 	private static void consumers(Project proj, ProjectResult r) {
 		for (Consumer consumer : proj.consumers) {
+			if (consumer.disabled)
+				continue;
 			LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
 					proj.weatherStation);
 			double[] curve = profile.calculateTotal();
