@@ -162,8 +162,11 @@ class HeatNetSection {
 			// in other editors
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(editor.project.id);
-			for (Consumer consumer : p.consumers)
-				load += consumer.heatingLoad;
+			for (Consumer c : p.consumers) {
+				if (c.disabled)
+					continue;
+				load += c.heatingLoad;
+			}
 			return Math.ceil(load);
 		} catch (Exception e) {
 			return 0;

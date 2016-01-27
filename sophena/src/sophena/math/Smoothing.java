@@ -13,7 +13,9 @@ public class Smoothing {
 		if (project == null || project.heatNet == null)
 			return 0;
 		HeatNet net = project.heatNet;
-		return (int) Math.round((1 - net.simultaneityFactor) * net.smoothingFactor);
+		double sm = net.smoothingFactor;
+		double si = net.simultaneityFactor;
+		return (int) Math.round(20 * sm * (1 - si) * Math.pow(2, (10 * (1 - si))));
 	}
 
 	/**

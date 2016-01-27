@@ -30,6 +30,8 @@ public class ProjectLoad {
 			return net.maxLoad;
 		double load = getNetLoad(net);
 		for (Consumer c : project.consumers) {
+			if (c.disabled)
+				continue;
 			load += c.heatingLoad;
 		}
 		return Math.ceil(load);
