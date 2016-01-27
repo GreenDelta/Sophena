@@ -60,7 +60,7 @@ public class ResultEditor extends Editor {
 			Object[] data = App.pop(kei.getKey());
 			project = (Project) data[0];
 			result = (ProjectResult) data[1];
-			setPartName(project.name);
+			setPartName(project.name + " - Ergebnisse");
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);

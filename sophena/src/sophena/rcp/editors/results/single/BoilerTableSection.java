@@ -19,6 +19,7 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Stats;
 import sophena.rcp.Labels;
+import sophena.rcp.M;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -35,12 +36,12 @@ class BoilerTableSection {
 	}
 
 	public void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Wärmelieferanten");
+		Section section = UI.section(body, tk, M.HeatProducers);
 		UI.gridData(section, true, false);
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, "Wärmelieferant", "Rang",
-				"Brennstoffverbrauch", "Nennleistung", "Gelieferte Wärme",
+		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
+				"Brennstoffverbrauch", "Nennleistung", M.GeneratedHeat,
 				"Anteil", "Volllaststunden", "Nutzungsgrad");
 		table.setLabelProvider(new Label());
 		double w = 1d / 8d;

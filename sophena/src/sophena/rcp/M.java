@@ -33,6 +33,7 @@ public class M extends NLS {
 	public static String End;
 	public static String File;
 	public static String Fuel;
+	public static String Heat;
 	public static String HeatDistribution;
 	public static String HeatingLoad;
 	public static String HeatingNetwork;
@@ -73,6 +74,12 @@ public class M extends NLS {
 	public static String WoodFuel;
 	public static String Unit;
 	public static String CalorificValue;
+
+	public static String HeatProducer;
+	public static String HeatProducers;
+	public static String GeneratedHeat;
+	public static String Electricity;
+	public static String ElectricityProducers;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

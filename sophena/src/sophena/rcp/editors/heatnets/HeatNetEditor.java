@@ -84,7 +84,7 @@ public class HeatNetEditor extends Editor {
 		}
 		if (heatNet.simultaneityFactor < 0 || heatNet.simultaneityFactor > 1) {
 			MsgBox.error("Plausibilitätsfehler",
-					"Der Gleichzeitigkeitsfaktor muss ziwschen 0 und 1 liegen.");
+					"Der Gleichzeitigkeitsfaktor muss zwischen 0 und 1 liegen.");
 			return false;
 		}
 		return true;
