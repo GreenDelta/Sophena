@@ -74,7 +74,7 @@ public class ResultEditor extends Editor {
 			if (isWithCoGen())
 				addPage(new ElectricityResultPage(this));
 			addPage(new CostResultPage(this));
-			addPage(new EmissionsPage(this));
+			addPage(new FurtherResultsPage(this));
 			addPage(new ConsumerResultPage(this));
 			addPage(new LocationResultPage(this));
 		} catch (Exception e) {

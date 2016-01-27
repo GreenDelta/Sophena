@@ -80,6 +80,7 @@ public class M extends NLS {
 	public static String GeneratedHeat;
 	public static String Electricity;
 	public static String ElectricityProducers;
+	public static String FurtherResults;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

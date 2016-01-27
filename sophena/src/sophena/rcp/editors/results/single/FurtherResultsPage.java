@@ -6,20 +6,21 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
-class EmissionsPage extends FormPage {
+class FurtherResultsPage extends FormPage {
 
 	private ResultEditor editor;
 
-	EmissionsPage(ResultEditor editor) {
-		super(editor, "sophena.EmissionsPage", "Emissionen und Verluste");
+	FurtherResultsPage(ResultEditor editor) {
+		super(editor, "sophena.EmissionsPage", M.FurtherResults);
 		this.editor = editor;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Emissionen und Verluste");
+		ScrolledForm form = UI.formHeader(mform, M.FurtherResults);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		Composite c1 = UI.formSection(body, tk, "Treibhausgasemissionen");

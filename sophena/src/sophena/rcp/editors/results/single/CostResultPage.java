@@ -12,6 +12,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
+import sophena.model.Project;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -19,27 +20,34 @@ import sophena.utils.Num;
 class CostResultPage extends FormPage {
 
 	private ProjectResult result;
+	private Project project;
 
 	public CostResultPage(ResultEditor editor) {
-		super(editor, "sophena.CostResultPage", "Kosten");
+		super(editor, "sophena.CostResultPage", "Wirtschaftlichkeit");
 		this.result = editor.result;
+		this.project = editor.project;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Ergebnisse - Kosten");
+		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
+		boolean withFunding = project.costSettings != null && project.costSettings.funding > 0;
+		if (withFunding) {
+			fillSection(
+					UI.formSection(body, tk, "Wirtschaftlichkeit - mit Förderung"),
+					result.costResultFunding);
+		}
 		fillSection(
-				UI.formSection(body, tk, "Kosten ohne Förderung"),
+				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
 				result.costResult);
-		fillSection(
-				UI.formSection(body, tk, "Kosten mit Förderung"),
-				result.costResultFunding);
+		if (withFunding) {
+			CostDetailsTable.create(result.costResultFunding,
+					UI.formSection(body, tk, "Kosten - mit Förderung"));
+		}
 		CostDetailsTable.create(result.costResult,
-				UI.formSection(body, tk, "Kostendetails - ohne Förderung"));
-		CostDetailsTable.create(result.costResultFunding,
-				UI.formSection(body, tk, "Kostendetails - mit Förderung"));
+				UI.formSection(body, tk, "Kosten - ohne Förderung"));
 		form.reflow(true);
 	}
 
@@ -55,35 +63,31 @@ class CostResultPage extends FormPage {
 		CostResult.FieldSet netto = result.netTotal;
 		CostResult.FieldSet brutto = result.grossTotal;
 		return new Item[] {
-				new Item("Investitionskosten",
+				new Item("Investitionskosten", "EUR",
 						netto.investments,
 						brutto.investments),
-				new Item("Kapitalgebundene Kosten",
+				new Item("Kapitalgebundene Kosten", "EUR/a",
 						netto.capitalCosts,
 						brutto.capitalCosts),
-				new Item("Bedarfsgebundene Kosten",
+				new Item("Bedarfsgebundene Kosten", "EUR/a",
 						netto.consumptionCosts,
 						brutto.consumptionCosts),
-				new Item("Betriebsgebundene Kosten",
+				new Item("Betriebsgebundene Kosten", "EUR/a",
 						netto.operationCosts,
 						brutto.operationCosts),
-				new Item("Sonstige Kosten",
+				new Item("Sonstige Kosten", "EUR/a",
 						netto.otherCosts,
 						brutto.otherCosts),
-				new Item("Erlöse",
+				new Item("Erlöse", "EUR/a",
 						netto.revenues,
 						brutto.revenues),
-				new Item("Jährliche Kosten",
+				new Item("Kosten - Erlöse", "EUR/a",
 						netto.annualCosts,
 						brutto.annualCosts),
-				new Item("Wärmegestehungskosten",
-						eur(netto.heatGenerationCosts * 1000) + "/MWh",
-						eur(brutto.heatGenerationCosts * 1000) + "/MWh")
+				new Item("Wärmegestehungskosten", "EUR/MWh",
+						netto.heatGenerationCosts * 1000,
+						brutto.heatGenerationCosts * 1000)
 		};
-	}
-
-	private String eur(double value) {
-		return Num.intStr(Math.round(value)) + " EUR";
 	}
 
 	private class Item {
@@ -92,16 +96,10 @@ class CostResultPage extends FormPage {
 		final String netto;
 		final String brutto;
 
-		Item(String label, double netto, double brutto) {
+		Item(String label, String unit, double netto, double brutto) {
 			this.label = label;
-			this.netto = eur(netto);
-			this.brutto = eur(brutto);
-		}
-
-		Item(String label, String netto, String brutto) {
-			this.label = label;
-			this.netto = netto;
-			this.brutto = brutto;
+			this.netto = Num.intStr(Math.round(netto)) + " " + unit;
+			this.brutto = Num.intStr(Math.round(brutto)) + " " + unit;
 		}
 
 	}
