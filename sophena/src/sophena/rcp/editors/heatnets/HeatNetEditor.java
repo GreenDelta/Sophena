@@ -40,7 +40,7 @@ public class HeatNetEditor extends Editor {
 		ProjectDao dao = new ProjectDao(App.getDb());
 		project = dao.get(i.projectId);
 		heatNet = project.heatNet;
-		setPartName(project.name);
+		setPartName(project.name + " - Wärmenetz");
 	}
 
 	@Override

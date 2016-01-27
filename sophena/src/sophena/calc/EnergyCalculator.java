@@ -24,7 +24,7 @@ class EnergyCalculator {
 	private EnergyResult doIt() {
 		maxBufferCapacity = BufferCapacity.get(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
-		r.bufferCapacity[0] = 0.5 * maxBufferCapacity;
+		r.bufferCapacity[0] = maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
 
 			double requiredLoad = r.loadCurve[i];
