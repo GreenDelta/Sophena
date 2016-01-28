@@ -6,6 +6,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import sophena.math.energetic.CO2Emissions;
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
@@ -24,7 +25,8 @@ class FurtherResultsPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		Composite c1 = UI.formSection(body, tk, "Treibhausgasemissionen");
-		EmissionTable.create(editor.result.energyResult, c1);
+		CO2Emissions emissions = CO2Emissions.calculate(editor.result);
+		EmissionTable.create(emissions, c1);
 		Composite c2 = UI.formSection(body, tk, "Verluste");
 		HeatLossTable.create(editor, c2);
 	}

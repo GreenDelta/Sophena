@@ -2,8 +2,8 @@ package sophena.rcp.editors.results.single;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,27 +12,26 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.calc.EnergyResult;
 import sophena.math.energetic.CO2Emissions;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
 public class EmissionTable {
 
-	private EnergyResult result;
+	private CO2Emissions result;
 
-	private EmissionTable(EnergyResult result) {
+	private EmissionTable(CO2Emissions result) {
 		this.result = result;
 	}
 
-	public static void create(EnergyResult result, Composite comp) {
+	public static void create(CO2Emissions result, Composite comp) {
 		new EmissionTable(result).render(comp);
 	}
 
 	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Wärmeerzeuger",
-				"Emissionen [kg CO2 äq.]");
+		TableViewer table = Tables.createViewer(comp, "", "Emissionen");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1);
@@ -41,29 +40,26 @@ public class EmissionTable {
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
-		for (Producer p : result.producers) {
-			Item item = new Item();
-			item.label = p.name;
-			item.co2(CO2Emissions.getKg(p, result.totalHeat(p)));
-			items.add(item);
+		Map<Producer, Double> m = result.producerEmissions;
+		for (Producer p : m.keySet()) {
+			Double val = m.get(p);
+			items.add(new Item(p.name, val == null ? 0 : val));
 		}
 		addCreditsItem(items);
-		Item totalItem = new Item();
-		totalItem.label = "Emissionen Wärmenetz";
-		totalItem.co2(CO2Emissions.getTotalWithCreditsKg(result));
+		Item totalItem = new Item("Wärmenetz", result.total);
 		totalItem.total = true;
 		items.add(new Item());
 		items.add(totalItem);
+		items.add(new Item());
+		items.add(new Item("Variante Erdgas", result.variantNaturalGas));
+		items.add(new Item("Variante Heizöl", result.variantOil));
 		return items;
 	}
 
 	private void addCreditsItem(List<Item> items) {
-		double credits = CO2Emissions.getElectricityCreditsKg(result);
+		double credits = result.electricityCredits;
 		if (credits > 0) {
-			Item creditItem = new Item();
-			creditItem.label = "Gutschrift Stromerzeugung";
-			creditItem.co2(-credits);
-			items.add(creditItem);
+			items.add(new Item("Gutschrift Stromerzeugung", -credits));
 		}
 	}
 
@@ -72,8 +68,16 @@ public class EmissionTable {
 		String emissions;
 		boolean total = false;
 
+		Item() {
+		}
+
+		Item(String label, double value) {
+			this.label = label;
+			co2(value);
+		}
+
 		void co2(double value) {
-			emissions = Num.intStr(value);
+			emissions = Num.intStr(value) + " kg CO2 eq.";
 		}
 	}
 
@@ -86,8 +90,7 @@ public class EmissionTable {
 				return null;
 			Item item = (Item) obj;
 			if (item.total)
-				return JFaceResources.getFontRegistry().getBold(
-						JFaceResources.DEFAULT_FONT);
+				return UI.boldFont();
 			return null;
 		}
 
