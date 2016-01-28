@@ -1,5 +1,7 @@
 package sophena.rcp.editors.results.single;
 
+import java.util.function.Function;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -24,11 +26,11 @@ class FurtherResultsPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, M.FurtherResults);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Composite c1 = UI.formSection(body, tk, "Treibhausgasemissionen");
+		Function<String, Composite> s = title -> UI.formSection(body, tk, title);
 		CO2Emissions emissions = CO2Emissions.calculate(editor.result);
-		EmissionTable.create(emissions, c1);
-		Composite c2 = UI.formSection(body, tk, "Verluste");
-		HeatLossTable.create(editor, c2);
+		EmissionTable.create(emissions, s.apply("Treibhausgasemissionen"));
+		EmissionChart.create(emissions, s.apply("Vergleich Treibhausgasemissionen"));
+		HeatLossTable.create(editor, s.apply("Verluste"));
 	}
 
 }

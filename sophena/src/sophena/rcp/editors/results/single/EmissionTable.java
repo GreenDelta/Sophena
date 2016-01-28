@@ -18,7 +18,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
-public class EmissionTable {
+class EmissionTable {
 
 	private CO2Emissions result;
 
