@@ -28,14 +28,15 @@ class EmissionChart {
 	private void render(Composite comp) {
 		Browser browser = new Browser(comp, SWT.NONE);
 		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
-		data.minimumHeight = 275;
+		data.minimumHeight = 250;
 		data.minimumWidth = 650;
 		browser.setLayoutData(data);
 		Chart chart = new Chart(browser);
 		BarConfig config = new BarConfig();
 		config.width = 600;
-		config.height = 225;
+		config.height = 220;
 		config.barValueSpacing = 50;
+		config.scaleBeginAtZero = true;
 		chart.bar(makeData(), config);
 	}
 
@@ -50,8 +51,10 @@ class EmissionChart {
 		ds.strokeColor = "rgba(151,187,205,0.8)";
 		ds.highlightFill = "rgba(151,187,205,0.75)";
 		ds.highlightStroke = "rgba(151,187,205,1)";
-		ds.data.addAll(Arrays.asList(result.total, result.variantNaturalGas,
-				result.variantOil));
+		ds.data.addAll(Arrays.asList(
+				(double) Math.round(result.total),
+				(double) Math.round(result.variantNaturalGas),
+				(double) Math.round(result.variantOil)));
 		return data;
 	}
 

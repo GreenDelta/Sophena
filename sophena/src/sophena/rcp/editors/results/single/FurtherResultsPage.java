@@ -31,6 +31,7 @@ class FurtherResultsPage extends FormPage {
 		EmissionTable.create(emissions, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(emissions, s.apply("Vergleich Treibhausgasemissionen"));
 		HeatLossTable.create(editor, s.apply("Verluste"));
+		form.reflow(true);
 	}
 
 }
