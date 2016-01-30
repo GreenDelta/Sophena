@@ -41,7 +41,7 @@ public class EfficiencyResult {
 				if (p.boiler == null || !p.boiler.isCoGenPlant)
 					ur = UtilisationRate.get(p, genHeat);
 				else
-					ur = p.boiler.efficiencyRate + p.boiler.efficiencyRateElectric;
+					ur = (p.boiler.efficiencyRate + p.boiler.efficiencyRateElectric) / 100;
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
 				res.producedElectrictiy += GeneratedElectricity.get(p, genHeat);
@@ -49,6 +49,7 @@ public class EfficiencyResult {
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.heatNetLoss;
 			res.usedHeat = res.producedHeat - res.distributionLoss;
+			res.totalLoss = res.conversionLoss + res.distributionLoss;
 			return res;
 		}
 	}
