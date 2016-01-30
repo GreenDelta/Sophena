@@ -173,6 +173,7 @@ de
       <plugin id="org.eclipse.ui.win32.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.nl_de" fragment="true"/>
+      <plugin id="org.swtchart"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>

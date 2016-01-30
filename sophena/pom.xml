@@ -99,12 +99,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.greendelta</groupId>
-			<artifactId>chart.swt</artifactId>
-			<version>1.0</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

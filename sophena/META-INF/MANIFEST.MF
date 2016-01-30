@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef,
  org.eclipse.ui.navigator,
  org.eclipse.nebula.visualization.xygraph,
- org.eclipse.mylyn.commons.ui
+ org.eclipse.mylyn.commons.ui,
+ org.swtchart;bundle-version="0.9.0"
 Bundle-ClassPath: .,
  libs/commons-io-2.4.jar,
  libs/gson-2.3.1.jar,
@@ -42,5 +43,4 @@ Bundle-ClassPath: .,
  libs/poi-3.13.jar,
  libs/poi-ooxml-3.13.jar,
  libs/poi-ooxml-schemas-3.13.jar,
- libs/xmlbeans-2.6.0.jar,
- libs/chart.swt-1.0.jar
+ libs/xmlbeans-2.6.0.jar

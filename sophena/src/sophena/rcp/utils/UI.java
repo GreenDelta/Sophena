@@ -53,6 +53,10 @@ public class UI {
 				JFaceResources.DEFAULT_FONT);
 	}
 
+	public static Font defautlFont() {
+		return JFaceResources.getFontRegistry().defaultFont();
+	}
+
 	/**
 	 * Creates an italic font using the font data of the given control. The
 	 * returned font must be disposed by the respective caller.
