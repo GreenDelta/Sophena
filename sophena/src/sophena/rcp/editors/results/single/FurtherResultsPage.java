@@ -33,6 +33,7 @@ class FurtherResultsPage extends FormPage {
 		EmissionChart.create(emissions, s.apply("Vergleich Treibhausgasemissionen"));
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
 		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
+		EfficiencyChart.create(efficiency, s.apply("Verwendung Brennstoffenergie"));
 		form.reflow(true);
 	}
 
