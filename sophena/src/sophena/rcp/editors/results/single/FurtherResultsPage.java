@@ -9,6 +9,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.math.energetic.CO2Emissions;
+import sophena.math.energetic.EfficiencyResult;
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
@@ -30,7 +31,8 @@ class FurtherResultsPage extends FormPage {
 		CO2Emissions emissions = CO2Emissions.calculate(editor.result);
 		EmissionTable.create(emissions, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(emissions, s.apply("Vergleich Treibhausgasemissionen"));
-		HeatLossTable.create(editor, s.apply("Verluste"));
+		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
+		EfficiencyTable.create(efficiency, s.apply("Verluste"));
 		form.reflow(true);
 	}
 

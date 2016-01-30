@@ -13,7 +13,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
-import sophena.math.energetic.FuelAmountDemand;
+import sophena.math.energetic.FuelDemand;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -76,7 +76,7 @@ class BoilerTableSection {
 			item.pos = i;
 			item.heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
-					+ (int) FuelAmountDemand.get(p, item.heat)
+					+ (int) FuelDemand.getAmount(p, item.heat)
 					+ " " + Labels.getFuelUnit(p);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
 			item.utilisationRate = UtilisationRate.get(p, item.heat);

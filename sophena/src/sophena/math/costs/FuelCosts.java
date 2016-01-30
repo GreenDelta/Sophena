@@ -1,6 +1,6 @@
 package sophena.math.costs;
 
-import sophena.math.energetic.FuelAmountDemand;
+import sophena.math.energetic.FuelDemand;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
 
@@ -23,7 +23,7 @@ public class FuelCosts {
 	public static double net(Producer producer, double producedHeat) {
 		if (producedHeat == 0 || producer == null || producer.fuelSpec == null)
 			return 0;
-		double amount = FuelAmountDemand.get(producer, producedHeat);
+		double amount = FuelDemand.getAmount(producer, producedHeat);
 		return amount * producer.fuelSpec.pricePerUnit;
 	}
 

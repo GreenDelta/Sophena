@@ -1,25 +1,17 @@
 package sophena.math.energetic;
 
-import sophena.calc.EnergyResult;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 
-public class FuelEnergyDemand {
+public class FuelDemand {
 
-	private FuelEnergyDemand() {
+	private FuelDemand() {
 	}
 
-	public static double getTotalKWh(EnergyResult result) {
-		if (result == null)
-			return 0;
-		double total = 0;
-		for (Producer p : result.producers) {
-			double genHeat = result.totalHeat(p);
-			total += getKWh(p, genHeat);
-		}
-		return total;
-	}
-
+	/**
+	 * Get the amount of fuel energy in [kWh] that is required to produce the
+	 * given amount of heat by the given producer.
+	 */
 	public static double getKWh(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return generatedHeat;
@@ -35,5 +27,15 @@ public class FuelEnergyDemand {
 			double p = boiler.maxPowerElectric / er;
 			return p * fullLoadHours;
 		}
+	}
+
+	/**
+	 * Get the amount of fuel in the respective fuel unit to produce the given
+	 * heat by the given producer.
+	 */
+	public static double getAmount(Producer producer, double generatedHeat) {
+		double cv = CalorificValue.get(producer);
+		double energyDemand = getKWh(producer, generatedHeat);
+		return cv == 0 ? 0 : energyDemand / cv;
 	}
 }
