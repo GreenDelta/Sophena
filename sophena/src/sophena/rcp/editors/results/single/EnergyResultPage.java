@@ -8,8 +8,11 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectLoad;
+import sophena.model.LoadProfile;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.UI;
 
 class EnergyResultPage extends FormPage {
@@ -39,6 +42,18 @@ class EnergyResultPage extends FormPage {
 		BoilerChart sortedChart = new BoilerChart(result, maxLoad);
 		sortedChart.setSorted(true);
 		sortedChart.render(body, tk);
+		createLoadCurve(tk, body);
 		form.reflow(true);
+	}
+
+	private void createLoadCurve(FormToolkit tk, Composite body) {
+		LoadCurveSection section = new LoadCurveSection();
+		section.setTitle("Geordnete Jahresdauerlinie (Netzlast)");
+		section.setSorted(true);
+		LoadProfile profile = new LoadProfile();
+		profile.dynamicData = Stats.copy(result.loadCurve);
+		profile.staticData = new double[Stats.HOURS];
+		section.setData(profile);
+		section.render(body, tk);
 	}
 }

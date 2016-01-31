@@ -85,4 +85,12 @@ public final class Stats {
 			to[i] += from[i];
 	}
 
+	public static double[] copy(double[] source) {
+		if (source == null)
+			return null;
+		double[] copy = new double[source.length];
+		System.arraycopy(source, 0, copy, 0, source.length);
+		return copy;
+	}
+
 }
