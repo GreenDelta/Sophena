@@ -3,7 +3,7 @@
     "vatRate": 19,
     "hourlyWage": 25,
     "electricityPrice": 0.3,
-    "electricityConsumption": 1.5,
+    "electricityDemandShare": 1.5,
     "electricityRevenues": 0,
 
     "interestRate": 2,
