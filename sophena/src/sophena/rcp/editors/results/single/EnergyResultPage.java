@@ -8,6 +8,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectLoad;
+import sophena.model.Project;
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 
@@ -19,7 +20,10 @@ class EnergyResultPage extends FormPage {
 	EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", M.Heat);
 		this.result = editor.result.energyResult;
-		this.maxLoad = ProjectLoad.getMax(editor.project);
+		Project p = editor.project;
+		maxLoad = ProjectLoad.getMax(p);
+		if (p.heatNet != null)
+			maxLoad = Math.ceil(maxLoad * p.heatNet.simultaneityFactor);
 	}
 
 	@Override
