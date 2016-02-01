@@ -44,7 +44,7 @@ public class EfficiencyResult {
 					ur = (p.boiler.efficiencyRate + p.boiler.efficiencyRateElectric) / 100;
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
-				res.producedElectrictiy += GeneratedElectricity.get(p, genHeat);
+				res.producedElectrictiy += GeneratedElectricity.getkWh(p, genHeat);
 			}
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.heatNetLoss;

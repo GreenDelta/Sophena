@@ -26,6 +26,7 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_price")
 	public double electricityPrice;
 
+	/** Average reveneus from generated electricity in EUR/kWh */
 	@Column(name = "electricity_revenues")
 	public double electricityRevenues;
 

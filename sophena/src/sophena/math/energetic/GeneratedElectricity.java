@@ -6,7 +6,7 @@ import sophena.model.Producer;
 
 public class GeneratedElectricity {
 
-	public static double get(Producer producer, double generatedHeat) {
+	public static double getkWh(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return 0;
 		Boiler boiler = producer.boiler;
@@ -16,13 +16,13 @@ public class GeneratedElectricity {
 		return fullLoadHours * boiler.maxPowerElectric;
 	}
 
-	public static double getTotal(EnergyResult result) {
+	public static double getTotalkWh(EnergyResult result) {
 		if (result == null)
 			return 0;
 		double total = 0;
 		for (Producer p : result.producers) {
 			double genHeat = result.totalHeat(p);
-			total += get(p, genHeat);
+			total += getkWh(p, genHeat);
 		}
 		return total;
 	}

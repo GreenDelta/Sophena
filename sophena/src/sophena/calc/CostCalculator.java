@@ -4,6 +4,7 @@ import sophena.math.costs.AnnuitiyFactor;
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
+import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
@@ -52,8 +53,9 @@ class CostCalculator {
 		if (withFunding)
 			setCapitalCostsFunding(r);
 		addOtherCosts(r);
-		r.netTotal.revenues = settings.electricityRevenues;
-		r.grossTotal.revenues = settings.electricityRevenues * vat();
+		r.netTotal.revenues = settings.electricityRevenues
+				* GeneratedElectricity.getTotalkWh(energyResult);
+		r.grossTotal.revenues = r.netTotal.revenues * vat();
 		calcTotals(r);
 		return r;
 	}

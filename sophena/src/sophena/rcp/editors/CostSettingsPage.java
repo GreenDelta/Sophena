@@ -12,8 +12,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import sophena.model.CostSettings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
-import sophena.utils.Num;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class CostSettingsPage extends FormPage {
 
@@ -62,10 +62,8 @@ public class CostSettingsPage extends FormPage {
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
 				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
 		if (forProject) {
-			t(c, "Mittlere Stromerlöse", "EUR/Jahr",
-					costs.electricityRevenues)
-							.onChanged(
-									s -> costs.electricityRevenues = Num.read(s));
+			t(c, "Mittlere Stromerlöse", "EUR/kWh", costs.electricityRevenues)
+					.onChanged(s -> costs.electricityRevenues = Num.read(s));
 		}
 	}
 
