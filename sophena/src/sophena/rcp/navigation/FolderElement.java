@@ -89,7 +89,7 @@ public class FolderElement implements NavigationElement {
 		case CONSUMPTION:
 			return M.HeatUsage;
 		case COSTS:
-			return M.Costs;
+			return "Investitionen";
 		case RESULTS:
 			return "Ergebnisse";
 		default:

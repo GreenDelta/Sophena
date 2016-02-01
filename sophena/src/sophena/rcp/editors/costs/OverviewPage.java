@@ -27,7 +27,7 @@ class OverviewPage extends FormPage {
 	private CostEditor editor;
 
 	public OverviewPage(CostEditor editor) {
-		super(editor, "sophena.CostOverviewPage", "Investitionskosten");
+		super(editor, "sophena.CostOverviewPage", "Investitionen");
 		this.editor = editor;
 		Collections.sort(editor.getProject().productEntries, (e1, e2) -> {
 			if (e1.product == null || e2.product == null)
@@ -39,7 +39,7 @@ class OverviewPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Investitionskosten");
+		ScrolledForm form = UI.formHeader(mform, "Investitionen");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		boilerSection(ProductType.BIOMASS_BOILER, body, tk);

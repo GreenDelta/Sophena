@@ -6,9 +6,11 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 import sophena.db.daos.ProjectDao;
+import sophena.model.CostSettings;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.editors.CostSettingsPage;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
@@ -17,6 +19,7 @@ import sophena.rcp.utils.KeyEditorInput;
 public class ProjectEditor extends Editor {
 
 	private Project project;
+	private CostSettingsPage settingsPage;
 
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
@@ -43,11 +46,12 @@ public class ProjectEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new InfoPage(this));
-			// ProjectDescriptor descriptor = new ProjectDescriptor();
-			// descriptor.setName("Test");
-			// GraphEditorInput input = new GraphEditorInput(descriptor);
-			// int graphIdx = addPage(new GraphEditor(), input);
-			// setPageText(graphIdx, "#Projektgraph");
+			CostSettings settings = project.costSettings;
+			if (settings != null) {
+				settingsPage = new CostSettingsPage(this, settings);
+				settingsPage.setForProject(true);
+				addPage(settingsPage);
+			}
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}
@@ -63,6 +67,9 @@ public class ProjectEditor extends Editor {
 			dbProject.name = project.name;
 			dbProject.projectDuration = project.projectDuration;
 			dbProject.weatherStation = project.weatherStation;
+			if (settingsPage != null) {
+				dbProject.costSettings = settingsPage.getCosts();
+			}
 			project = dao.update(dbProject);
 			setPartName(project.name);
 			Navigator.refresh();
