@@ -42,11 +42,7 @@ class CostDetailsTable {
 		List<Item> items = new ArrayList<>();
 		for (CostResultItem r : result.items) {
 			Item item = new Item();
-			if (r.group != null) {
-				item.category = Labels.get(r.group.type);
-			}
-			if (item.category == null)
-				item.category = "Andere";
+			item.category = Labels.get(r.productType);
 			item.product = r.label;
 			item.investment = s(r.costs.investment, "EUR");
 			item.capitalCosts = s(r.netCapitalCosts, "EUR/a");
@@ -65,12 +61,12 @@ class CostDetailsTable {
 				return c;
 			return Strings.compare(a.product, b.product);
 		});
-		for (int i = 1; i < items.size(); i++) {
-			Item before = items.get(i - 1);
-			Item after = items.get(i);
-			if (Strings.nullOrEqual(before.category, after.category))
-				after.displayCategory = false;
-		}
+		// for (int i = 1; i < items.size(); i++) {
+		// Item before = items.get(i - 1);
+		// Item after = items.get(i);
+		// if (Strings.nullOrEqual(before.category, after.category))
+		// after.displayCategory = false;
+		// }
 	}
 
 	private String s(double value, String unit) {

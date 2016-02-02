@@ -1,6 +1,7 @@
 {
 	"id": "ef16aeb0-7434-0427-178f-2d902ffcc767",
 	"name": "Erdgas BHKW klein",
+	"type": "COGENERATION_PLANT",
 	"isCoGenPlant": true,
 	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
 	"purchasePrice": 44000,

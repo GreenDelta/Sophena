@@ -1,6 +1,7 @@
 {
     "id": "929d75e6-60de-45bf-b5eb-ffb88024e3fb",
     "name": "Puffer mittel",
+    "type": "BUFFER_TANK",
     "purchasePrice": 7000.0,
     "volume": 10000.0,
     "group": {

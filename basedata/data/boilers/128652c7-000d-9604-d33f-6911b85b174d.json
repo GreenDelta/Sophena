@@ -1,6 +1,7 @@
 {
 	"id": "128652c7-000d-9604-d33f-6911b85b174d",
 	"name": "Erdgas BHKW groß",
+	"type": "COGENERATION_PLANT",
 	"isCoGenPlant": true,
 	"url": "www.carmen-ev.de/biogene-festbrennstoffe",
 	"purchasePrice": 350000,

@@ -5,12 +5,12 @@ import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
-import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 
 public class CostResultItem {
 
-	public ProductGroup group;
 	public String label;
+	public ProductType productType;
 	public ProductCosts costs;
 
 	public double netCapitalCosts;
@@ -27,7 +27,7 @@ public class CostResultItem {
 		if (entry == null)
 			return item;
 		if (entry.product != null) {
-			item.group = entry.product.group;
+			item.productType = entry.product.type;
 			item.label = entry.product.name;
 		}
 		if (entry.costs != null)
@@ -43,7 +43,7 @@ public class CostResultItem {
 			return item;
 		item.label = producer.name;
 		if (producer.boiler != null) {
-			item.group = producer.boiler.group;
+			item.productType = producer.boiler.type;
 			item.label = producer.boiler.name;
 		}
 		if (producer.costs != null)
@@ -57,11 +57,12 @@ public class CostResultItem {
 		CostResultItem item = new CostResultItem();
 		if (net == null)
 			return item;
-		if (net.bufferTank == null)
+		if (net.bufferTank == null) {
 			item.label = "Pufferspeicher";
-		else {
+			item.productType = ProductType.BUFFER_TANK;
+		} else {
 			item.label = net.bufferTank.name;
-			item.group = net.bufferTank.group;
+			item.productType = net.bufferTank.type;
 		}
 		if (net.bufferTankCosts != null)
 			item.costs = net.bufferTankCosts.clone();
@@ -74,11 +75,12 @@ public class CostResultItem {
 		CostResultItem item = new CostResultItem();
 		if (pipe == null)
 			return item;
-		if (pipe.pipe == null)
+		if (pipe.pipe == null) {
 			item.label = "Wärmeleitung";
-		else {
+			item.productType = ProductType.HEATING_NET_TECHNOLOGY;
+		} else {
 			item.label = pipe.pipe.name;
-			item.group = pipe.pipe.group;
+			item.productType = pipe.pipe.type;
 		}
 		if (pipe.costs != null)
 			item.costs = pipe.costs.clone();
