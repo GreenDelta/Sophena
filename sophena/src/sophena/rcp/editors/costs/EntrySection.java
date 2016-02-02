@@ -74,6 +74,7 @@ class EntrySection {
 		ProductEntry entry = new ProductEntry();
 		entry.id = UUID.randomUUID().toString();
 		entry.costs = new ProductCosts();
+		entry.count = 1;
 		if (EntryWizard.open(entry, type) != Window.OK)
 			return;
 		project().productEntries.add(entry);
@@ -86,6 +87,7 @@ class EntrySection {
 		ProductEntry entry = new ProductEntry();
 		entry.id = UUID.randomUUID().toString();
 		entry.costs = new ProductCosts();
+		entry.count = 1;
 		Product product = new Product();
 		product.id = UUID.randomUUID().toString();
 		product.projectId = project().id;
