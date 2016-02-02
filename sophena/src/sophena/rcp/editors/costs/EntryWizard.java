@@ -162,8 +162,12 @@ class EntryWizard extends Wizard {
 			if (entry.product != null && entry.product.group != null)
 				combo.select(entry.product.group);
 			combo.onSelect(group -> {
-				if (entry.product != null)
-					entry.product.group = group;
+				if (entry.product == null) {
+					return;
+				}
+				entry.product.group = group;
+				ProductCosts.copy(group, entry.costs);
+				costSection.refresh();
 			});
 			UI.filler(comp);
 		}
