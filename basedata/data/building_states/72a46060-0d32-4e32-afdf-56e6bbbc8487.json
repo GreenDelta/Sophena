@@ -1,0 +1,10 @@
+{
+    "index": 0,
+    "isDefault": true,
+    "heatingLimit": 17,
+    "type": "HOSPITAL",
+    "waterFraction": 19.0,
+    "id": "72a46060-0d32-4e32-afdf-56e6bbbc8487",
+    "loadHours": 2500,
+    "name": ""
+}

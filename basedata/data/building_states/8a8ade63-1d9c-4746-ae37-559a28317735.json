@@ -1,0 +1,10 @@
+{
+    "index": 0,
+    "isDefault": true,
+    "heatingLimit": 15,
+    "type": "KINDERGARDEN",
+    "waterFraction": 3.4,
+    "id": "8a8ade63-1d9c-4746-ae37-559a28317735",
+    "loadHours": 1500,
+    "name": ""
+}

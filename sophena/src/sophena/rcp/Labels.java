@@ -78,6 +78,20 @@ public final class Labels {
 			return "Reihenhaus";
 		case TOWER_BLOCK:
 			return "Hochhaus";
+		case SCHOOL:
+			return "Schule";
+		case KINDERGARDEN:
+			return "Kindergarten";
+		case OFFICE_BUILDING:
+			return "Büro/Rathaus";
+		case HOSPITAL:
+			return "Krankenhaus";
+		case NURSING_HOME:
+			return "Alten/-Pflegeheim";
+		case RESTAURANT:
+			return "Gaststätte";
+		case HOTEL:
+			return "Hotel";
 		default:
 			return null;
 		}

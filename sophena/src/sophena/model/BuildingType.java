@@ -12,4 +12,18 @@ public enum BuildingType {
 
 	TOWER_BLOCK,
 
+	SCHOOL,
+
+	KINDERGARDEN,
+
+	OFFICE_BUILDING,
+
+	HOSPITAL,
+
+	NURSING_HOME,
+
+	RESTAURANT,
+
+	HOTEL
+
 }

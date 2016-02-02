@@ -1,0 +1,10 @@
+{
+    "index": 0,
+    "isDefault": true,
+    "heatingLimit": 17,
+    "type": "NURSING_HOME",
+    "waterFraction": 10.0,
+    "id": "da6b4497-d63f-490b-ae27-7ef15ae40fc7",
+    "loadHours": 2500,
+    "name": ""
+}

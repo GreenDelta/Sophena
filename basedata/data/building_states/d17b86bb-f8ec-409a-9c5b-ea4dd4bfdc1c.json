@@ -1,0 +1,10 @@
+{
+    "index": 0,
+    "isDefault": true,
+    "heatingLimit": 17,
+    "type": "HOTEL",
+    "waterFraction": 11.0,
+    "id": "d17b86bb-f8ec-409a-9c5b-ea4dd4bfdc1c",
+    "loadHours": 2100,
+    "name": ""
+}
