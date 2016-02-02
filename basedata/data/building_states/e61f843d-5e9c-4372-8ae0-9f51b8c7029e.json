@@ -1,0 +1,10 @@
+{
+    "index": 0,
+    "isDefault": true,
+    "heatingLimit": 17,
+    "type": "RESTAURANT",
+    "waterFraction": 7.0,
+    "id": "e61f843d-5e9c-4372-8ae0-9f51b8c7029e",
+    "loadHours": 2000,
+    "name": ""
+}
