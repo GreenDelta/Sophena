@@ -45,7 +45,7 @@ class EfficiencyTable {
 		if (result.producedElectrictiy > 0)
 			items.add(new Item("Erzeugter Strom", result.producedElectrictiy));
 		items.add(new Item("Verteilungsverluste", result.distributionLoss,
-				result.distributionLoss / result.fuelEnergy));
+				result.distributionLoss / result.producedHeat));
 		items.add(new Item("Genutzte Wärme", result.usedHeat));
 		items.add(new Item());
 		Item total = new Item("Gesamtverluste", result.totalLoss,
@@ -66,7 +66,7 @@ class EfficiencyTable {
 
 		Item(String label, double absolute) {
 			this.label = label;
-			this.absolute = Num.intStr(absolute) + " [kWh]";
+			this.absolute = Num.intStr(absolute) + " kWh";
 		}
 
 		Item(String label, double absolute, double relative) {

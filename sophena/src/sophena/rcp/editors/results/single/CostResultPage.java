@@ -38,14 +38,12 @@ class CostResultPage extends FormPage {
 			fillSection(
 					UI.formSection(body, tk, "Wirtschaftlichkeit - mit Förderung"),
 					result.costResultFunding);
+			CostDetailsTable.create(result.costResultFunding,
+					UI.formSection(body, tk, "Kosten - mit Förderung"));
 		}
 		fillSection(
 				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
 				result.costResult);
-		if (withFunding) {
-			CostDetailsTable.create(result.costResultFunding,
-					UI.formSection(body, tk, "Kosten - mit Förderung"));
-		}
 		CostDetailsTable.create(result.costResult,
 				UI.formSection(body, tk, "Kosten - ohne Förderung"));
 		form.reflow(true);

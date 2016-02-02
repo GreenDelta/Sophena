@@ -9,8 +9,10 @@ import org.swtchart.IBarSeries;
 import org.swtchart.IBarSeries.BarWidthStyle;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
+import org.swtchart.Range;
 
 import sophena.math.energetic.CO2Emissions;
+import sophena.model.Stats;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -37,7 +39,6 @@ class EmissionChart {
 		addSeries(set, "Emissionen Wärmenetz", result.total, 0);
 		addSeries(set, "Emissionen Erdgas", result.variantNaturalGas, 1);
 		addSeries(set, "Emissionen Heizöl", result.variantOil, 2);
-		chart.getAxisSet().adjustRange();
 		formatX(chart);
 		formatY(chart);
 	}
@@ -68,5 +69,13 @@ class EmissionChart {
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText("kg CO2 eq.");
 		y.getTitle().setFont(UI.defautlFont());
+		y.setRange(getYRange());
+	}
+
+	private Range getYRange() {
+		double[] vals = { result.total, result.variantNaturalGas, result.variantOil };
+		double min = Math.min(Math.min(vals[0], vals[1]), vals[2]);
+		double max = Math.max(Math.max(vals[0], vals[1]), vals[2]);
+		return new Range(min, Stats.nextStep(max, 50));
 	}
 }
