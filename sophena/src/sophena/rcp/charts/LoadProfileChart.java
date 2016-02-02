@@ -60,10 +60,13 @@ public class LoadProfileChart {
 		Axis x = g.primaryXAxis;
 		x.setRange(0, Stats.HOURS);
 		x.setTitle("");
+		x.setMajorGridStep(500);
+		x.setMinorTicksVisible(false);
 		Axis y = g.primaryYAxis;
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
+		y.setMinorTicksVisible(false);
 		return g;
 	}
 

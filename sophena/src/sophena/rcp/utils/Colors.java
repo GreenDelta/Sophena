@@ -135,7 +135,7 @@ public class Colors {
 	}
 
 	public static Color forDefaultField() {
-		return getColor(220, 231, 251);
+		return getColor(225, 213, 232);
 	}
 
 	private static class ShutDown implements IWorkbenchListener {

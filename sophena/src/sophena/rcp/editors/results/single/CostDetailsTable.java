@@ -28,7 +28,7 @@ class CostDetailsTable {
 	}
 
 	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Kategorie", "Komponente",
+		TableViewer table = Tables.createViewer(comp, "Produktbereich", "Produkt",
 				"Investitionskosten", "Kapitalgebundene Kosten",
 				"Bedarfsgebundene Kosten", "Betriebsgebundene Kosten");
 		table.setLabelProvider(new Label());

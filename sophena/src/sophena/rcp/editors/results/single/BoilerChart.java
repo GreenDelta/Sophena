@@ -80,11 +80,14 @@ class BoilerChart {
 		g.setShowLegend(false);
 		Axis x = g.primaryXAxis;
 		x.setRange(0, Stats.HOURS);
+		x.setMajorGridStep(500);
+		x.setMinorTicksVisible(false);
 		x.setTitle("");
 		Axis y = g.primaryYAxis;
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, maxLoad);
+		y.setMinorTicksVisible(false);
 		return g;
 	}
 
