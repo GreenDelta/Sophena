@@ -2,4 +2,4 @@
 /climate_data/
 /node_modules/
 
-data_package.sophena
+data_package_*.sophena
