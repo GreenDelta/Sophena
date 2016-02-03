@@ -5,5 +5,5 @@
 	"unit": "m3",
 	"calorificValue": 10,
 	"wood": false,
-	"co2Emissions": 239.2
+	"co2Emissions": 239.0
 }
