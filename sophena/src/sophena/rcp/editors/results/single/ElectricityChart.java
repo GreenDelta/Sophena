@@ -50,12 +50,15 @@ class ElectricityChart {
 		g.setShowLegend(false);
 		Axis x = g.primaryXAxis;
 		x.setRange(0, Stats.HOURS);
+		x.setMajorGridStep(500);
+		x.setMinorTicksVisible(false);
 		x.setTitleFont(x.getFont());
 		x.setTitle("Jahresstunden [h]");
 		Axis y = g.primaryYAxis;
 		y.setTitle("Leistung [kW]");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
+		y.setMinorTicksVisible(false);
 		return g;
 	}
 

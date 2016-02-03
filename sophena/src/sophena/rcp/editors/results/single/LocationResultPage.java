@@ -80,7 +80,6 @@ public class LocationResultPage extends FormPage {
 	private void initBrowser() {
 		String json = createModel();
 		try {
-			System.out.println(json);
 			browser.evaluate("setData(" + json + ")");
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
