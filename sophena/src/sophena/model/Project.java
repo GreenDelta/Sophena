@@ -48,7 +48,8 @@ public class Project extends RootEntity {
 	public final List<ProductEntry> productEntries = new ArrayList<>();
 
 	@JoinColumn(name = "f_project")
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE,
+			CascadeType.REFRESH, CascadeType.REMOVE }, orphanRemoval = true)
 	public final List<Product> ownProducts = new ArrayList<>();
 
 	@Override
