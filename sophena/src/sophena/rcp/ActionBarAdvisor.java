@@ -35,7 +35,6 @@ import sophena.rcp.editors.basedata.products.BuildingProductEditor;
 import sophena.rcp.editors.basedata.products.FlueGasCleaningEditor;
 import sophena.rcp.editors.basedata.products.HeatRecoveryEditor;
 import sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor;
-import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
 import sophena.rcp.editors.basedata.products.PlanningEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
@@ -125,8 +124,6 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Heizhaus-Technik",
 				BoilerHouseTechnologyEditor::open));
 		m.add(Actions.create("Gebäude", BuildingProductEditor::open));
-		m.add(Actions.create("Wärmenetz-Technik",
-				HeatingNetTechnologyEditor::open));
 		m.add(Actions.create("Wärmenetz-Bau",
 				HeatingNetConstructionEditor::open));
 		m.add(Actions.create("Planung", PlanningEditor::open));
