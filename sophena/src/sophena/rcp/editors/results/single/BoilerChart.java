@@ -22,6 +22,7 @@ import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.Images;
+import sophena.rcp.charts.LoadImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
@@ -48,7 +49,8 @@ class BoilerChart {
 		String title = sorted ? "Geordnete Jahresdauerlinie"
 				: "Ungeordnete Jahresdauerlinie";
 		Section section = UI.section(body, tk, title);
-		Actions.bind(section, new LoadTraceSwitch());
+		Actions.bind(section, new LoadTraceSwitch(),
+				new LoadImageExport(() -> chart));
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);

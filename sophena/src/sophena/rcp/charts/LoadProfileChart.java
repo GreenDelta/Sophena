@@ -18,7 +18,7 @@ public class LoadProfileChart {
 
 	private CircularBufferDataProvider sumData;
 	private CircularBufferDataProvider staticData;
-	private XYGraph graph;
+	public final XYGraph graph;
 
 	public LoadProfileChart(Composite parent, int height) {
 		sumData = initDataBuffer();

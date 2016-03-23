@@ -17,6 +17,8 @@ public enum Images {
 
 	CALCULATE_16("calculate_16.png"),
 
+	CAMERA_16("camera_16.png"),
+
 	CHART_WIZ("chart_wiz.png"),
 
 	CHECKBOX_CHECKED_16("checkbox_checked.png"),
