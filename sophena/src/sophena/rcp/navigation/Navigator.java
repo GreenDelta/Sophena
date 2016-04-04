@@ -35,7 +35,7 @@ public class Navigator extends CommonNavigator {
 	@Override
 	protected void initListeners(TreeViewer viewer) {
 		super.initListeners(viewer);
-		viewer.addDoubleClickListener((event) -> {
+		viewer.addDoubleClickListener(e -> {
 			NavigationElement nav = Viewers.getFirstSelected(viewer);
 			DoubleClick.handleOn(nav);
 		});

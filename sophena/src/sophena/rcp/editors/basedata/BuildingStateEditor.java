@@ -49,9 +49,7 @@ public class BuildingStateEditor extends Editor {
 		private List<BuildingState> states;
 
 		public Page() {
-
-			super(BuildingStateEditor.this, "BuildingStatePage",
-					"Gebäudetypen");
+			super(BuildingStateEditor.this, "BuildingStatePage", "Gebäudetypen");
 			dao = new RootEntityDao<>(BuildingState.class, App.getDb());
 			states = dao.getAll();
 			Collections.sort(states, (s1, s2) -> {

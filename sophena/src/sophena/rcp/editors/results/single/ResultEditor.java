@@ -5,6 +5,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ public class ResultEditor extends Editor {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
+		PlatformUI.getWorkbench().saveAllEditors(true);
 		closeExisting(d);
 		Rcp.run("Berechne...", () -> {
 			ProjectDao dao = new ProjectDao(App.getDb());
