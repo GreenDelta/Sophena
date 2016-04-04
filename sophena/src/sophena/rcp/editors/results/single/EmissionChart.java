@@ -75,6 +75,9 @@ class EmissionChart {
 	private Range getYRange() {
 		double[] vals = { result.total, result.variantNaturalGas, result.variantOil };
 		double min = Math.min(Math.min(vals[0], vals[1]), vals[2]);
+		if (min > 0) {
+			min = 0;
+		}
 		double max = Math.max(Math.max(vals[0], vals[1]), vals[2]);
 		return new Range(min, Stats.nextStep(max, 50));
 	}
