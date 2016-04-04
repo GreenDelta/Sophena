@@ -66,6 +66,32 @@ public class Num {
 		return getFormat().format(val);
 	}
 
+	/**
+	 * @see #str(double, int)
+	 */
+	public static String str(Double val, int decimalPlaces) {
+		if (val == null)
+			return "";
+		return str(val.doubleValue(), decimalPlaces);
+	}
+
+	/**
+	 * Formats the given number with the given count of decimal places. Use this
+	 * function only if you need a specific number of decimal places and the
+	 * default function str(val) for all other cases.
+	 */
+	public static String str(double val, int decimalPlaces) {
+		if (decimalPlaces <= 0)
+			return intStr(val);
+		StringBuilder pattern = new StringBuilder("#.###.###.###.###,");
+		for (int i = 0; i < decimalPlaces; i++) {
+			pattern.append('#');
+		}
+		DecimalFormat f = (DecimalFormat) DecimalFormat.getInstance(Locale.GERMAN);
+		f.applyLocalizedPattern(pattern.toString());
+		return f.format(val);
+	}
+
 	public static String intStr(Double val) {
 		if (val == null)
 			return "";

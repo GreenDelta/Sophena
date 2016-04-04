@@ -62,7 +62,7 @@ public class CostSettingsPage extends FormPage {
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
 				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
 		if (forProject) {
-			t(c, "Mittlere Stromerlöse", "EUR/kWh", costs.electricityRevenues)
+			t(c, "Mittlere Stromerlöse", "EUR/kWh", Num.str(costs.electricityRevenues, 4))
 					.onChanged(s -> costs.electricityRevenues = Num.read(s));
 		}
 	}
@@ -89,10 +89,8 @@ public class CostSettingsPage extends FormPage {
 		UI.gridLayout(c, 3);
 		t(c, "Versicherung", "%", costs.insuranceShare)
 				.onChanged(s -> costs.insuranceShare = Num.read(s));
-
 		t(c, "Sonstige Abgaben (Steuern, Pacht, …)", "%", costs.otherShare)
 				.onChanged(s -> costs.otherShare = Num.read(s));
-
 		t(c, "Verwaltung", "%", costs.administrationShare)
 				.onChanged(s -> costs.administrationShare = Num.read(s));
 	}
@@ -111,13 +109,15 @@ public class CostSettingsPage extends FormPage {
 		t(c, "Betriebsgebundene und sonstige Kosten", "", costs.operationFactor)
 				.onChanged(s -> costs.operationFactor = Num.read(s));
 		t(c, "Instandhaltung", "", costs.maintenanceFactor)
-				.onChanged(s -> costs.maintenanceFactor = Num
-						.read(s));
+				.onChanged(s -> costs.maintenanceFactor = Num.read(s));
 
 	}
 
-	private TextDispatch t(Composite comp, String label, String unit,
-			double initial) {
+	private TextDispatch t(Composite comp, String label, String unit, double initial) {
+		return t(comp, label, unit, Num.str(initial));
+	}
+
+	private TextDispatch t(Composite comp, String label, String unit, String initial) {
 		Label lab = UI.formLabel(comp, toolkit, label);
 		UI.gridData(lab, false, false).widthHint = 250;
 		Text text = toolkit.createText(comp, null, SWT.BORDER);
