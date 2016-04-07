@@ -9,7 +9,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProjectElement;
@@ -21,7 +21,7 @@ public class SaveAsAction extends NavigationAction {
 
 	public SaveAsAction() {
 		setText("Speichern unter...");
-		setImageDescriptor(Images.NEW_PROJECT_16.des());
+		setImageDescriptor(Icon.NEW_PROJECT_16.des());
 	}
 
 	@Override

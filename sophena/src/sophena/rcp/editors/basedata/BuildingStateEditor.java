@@ -3,8 +3,6 @@ package sophena.rcp.editors.basedata;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -17,7 +15,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.db.daos.RootEntityDao;
 import sophena.model.BuildingState;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
@@ -86,8 +84,7 @@ public class BuildingStateEditor extends Editor {
 
 		}
 
-		private class BuildingStateLabel extends LabelProvider
-				implements ITableLabelProvider {
+		private class BuildingStateLabel extends BaseTableLable {
 
 			@Override
 			public Image getColumnImage(Object obj, int col) {
@@ -95,10 +92,12 @@ public class BuildingStateEditor extends Editor {
 					return null;
 				BuildingState s = (BuildingState) obj;
 				if (col == 0)
-					return s.index == 0 ? Images.BUILDING_TYPE_16.img() : null;
+					return s.index == 0 ? Icon.BUILDING_TYPE_16.img() : null;
+				if (col == 1)
+					return s.isProtected ? Icon.LOCK_16.img() : Icon.EDIT_16.img();
 				if (col == 5)
-					return s.isDefault ? Images.CHECKBOX_CHECKED_16.img()
-							: Images.CHECKBOX_UNCHECKED_16.img();
+					return s.isDefault ? Icon.CHECKBOX_CHECKED_16.img()
+							: Icon.CHECKBOX_UNCHECKED_16.img();
 				else
 					return null;
 			}

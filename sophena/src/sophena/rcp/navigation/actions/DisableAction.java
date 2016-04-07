@@ -8,7 +8,7 @@ import sophena.db.daos.ProducerDao;
 import sophena.model.Consumer;
 import sophena.model.Producer;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -40,9 +40,9 @@ public class DisableAction extends NavigationAction {
 	private void updateUI(boolean disabled) {
 		if (disabled) {
 			setText("Aktivieren");
-			setImageDescriptor(Images.ENABLED_16.des());
+			setImageDescriptor(Icon.ENABLED_16.des());
 		} else {
-			setImageDescriptor(Images.DISABLED_16.des());
+			setImageDescriptor(Icon.DISABLED_16.des());
 			setText("Deaktivieren");
 		}
 	}

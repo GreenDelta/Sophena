@@ -18,7 +18,7 @@ import sophena.io.ClimateFileReader;
 import sophena.io.ClimateFileSettings;
 import sophena.model.WeatherStation;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
@@ -126,7 +126,7 @@ class ImportWizard extends Wizard {
 			Text text = UI.formText(comp, "#Datei");
 			text.setEditable(false);
 			Button button = new Button(comp, SWT.NONE);
-			button.setImage(Images.FILE_16.img());
+			button.setImage(Icon.FILE_16.img());
 			button.setText("#Auswählen");
 			Controls.onSelect(button, (e) -> {
 				FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);

@@ -17,7 +17,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.db.daos.RootEntityDao;
 import sophena.model.ProductGroup;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
@@ -96,7 +96,7 @@ public class ProductGroupEditor extends Editor {
 					return null;
 				ProductGroup p = (ProductGroup) obj;
 				if (col == 0)
-					return p.index == 0 ? Images.PRODUCT_16.img() : null;
+					return p.index == 0 ? Icon.PRODUCT_16.img() : null;
 				else
 					return null;
 			}

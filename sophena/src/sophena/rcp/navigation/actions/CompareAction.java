@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
@@ -24,7 +24,7 @@ public class CompareAction extends NavigationAction {
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return Images.BAR_CHART_16.des();
+		return Icon.BAR_CHART_16.des();
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
 import sophena.io.excel.ExcelExport;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.FileChooser;
@@ -19,7 +19,7 @@ public class ResultToolBar extends EditorActionBarContributor {
 	@Override
 	public void contributeToToolBar(IToolBarManager toolbar) {
 		Action export = Actions.create("Nach Excel exportieren",
-				Images.EXCEL_16.des(), this::excelExport);
+				Icon.EXCEL_16.des(), this::excelExport);
 		toolbar.add(export);
 	}
 

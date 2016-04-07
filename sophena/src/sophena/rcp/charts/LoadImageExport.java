@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Popup;
 import sophena.rcp.utils.Rcp;
@@ -24,7 +24,7 @@ public class LoadImageExport extends Action {
 	public LoadImageExport(Supplier<XYGraph> chart) {
 		this.chart = chart;
 		setText("Als Bild speichern");
-		setImageDescriptor(Images.CAMERA_16.des());
+		setImageDescriptor(Icon.CAMERA_16.des());
 	}
 
 	@Override

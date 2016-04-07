@@ -23,7 +23,7 @@ import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
@@ -186,7 +186,7 @@ class ConsumptionWizard extends Wizard {
 			UI.innerGrid(inner, 2);
 			Button check = new Button(inner, SWT.RADIO);
 			check.setText(label);
-			UI.formLabel(inner, "").setImage(Images.INFO_16.img());
+			UI.formLabel(inner, "").setImage(Icon.INFO_16.img());
 			UI.formLabel(composite, "");
 			return check;
 		}

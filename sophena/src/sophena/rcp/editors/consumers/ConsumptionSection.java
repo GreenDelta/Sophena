@@ -17,7 +17,7 @@ import sophena.math.energetic.EfficiencyRate;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
@@ -47,10 +47,10 @@ class ConsumptionSection {
 		Section section = UI.section(body, toolkit, M.ConsumptionData);
 		Composite composite = UI.sectionClient(section, toolkit);
 		table = createTable(composite);
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), this::onAdd);
-		Action remove = Actions.create(M.Remove, Images.DELETE_16.des(),
+		Action add = Actions.create(M.Add, Icon.ADD_16.des(), this::onAdd);
+		Action remove = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::onRemove);
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				this::onEdit);
 		Actions.bind(section, add, edit, remove);
 		Actions.bind(table, add, edit, remove);
@@ -105,7 +105,7 @@ class ConsumptionSection {
 
 		@Override
 		public Image getColumnImage(Object element, int col) {
-			return col == 0 ? Images.FUEL_16.img() : null;
+			return col == 0 ? Icon.FUEL_16.img() : null;
 		}
 
 		@Override

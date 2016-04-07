@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.ConsumerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 
 public class ConsumerElement extends ContentElement<ConsumerDescriptor> {
 
@@ -30,7 +30,7 @@ public class ConsumerElement extends ContentElement<ConsumerDescriptor> {
 
 	@Override
 	public Image getImage() {
-		return Images.CONSUMER_16.img();
+		return Icon.CONSUMER_16.img();
 	}
 
 	@Override

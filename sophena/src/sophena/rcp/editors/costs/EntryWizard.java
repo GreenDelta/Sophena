@@ -21,7 +21,7 @@ import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
@@ -111,7 +111,7 @@ class EntryWizard extends Wizard {
 				link.setText(entry.product.name);
 			else
 				link.setText("(kein Produkt ausgewählt)");
-			link.setImage(Images.PIPE_16.img());
+			link.setImage(Icon.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
 			link.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override

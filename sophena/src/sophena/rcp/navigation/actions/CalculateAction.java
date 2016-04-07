@@ -2,7 +2,7 @@ package sophena.rcp.navigation.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
@@ -30,7 +30,7 @@ public class CalculateAction extends NavigationAction {
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return Images.LOAD_PROFILE_16.des();
+		return Icon.LOAD_PROFILE_16.des();
 	}
 
 	@Override

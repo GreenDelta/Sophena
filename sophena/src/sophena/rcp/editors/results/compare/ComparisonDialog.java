@@ -26,7 +26,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
@@ -156,8 +156,8 @@ public class ComparisonDialog extends FormDialog {
 			ProjectDescriptor d = (ProjectDescriptor) obj;
 			Boolean entry = selected.get(d.id);
 			return entry != null && entry.booleanValue()
-					? Images.CHECKBOX_CHECKED_16.img()
-					: Images.CHECKBOX_UNCHECKED_16.img();
+					? Icon.CHECKBOX_CHECKED_16.img()
+					: Icon.CHECKBOX_UNCHECKED_16.img();
 		}
 
 		@Override

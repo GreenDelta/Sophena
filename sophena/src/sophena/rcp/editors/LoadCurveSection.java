@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import sophena.io.LoadProfileWriter;
 import sophena.math.LoadSorting;
 import sophena.model.LoadProfile;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.charts.LoadImageExport;
 import sophena.rcp.charts.LoadProfileChart;
@@ -67,7 +67,7 @@ public class LoadCurveSection {
 
 		public SortAction() {
 			setText("Unsortiert");
-			setImageDescriptor(Images.SORTING_16.des());
+			setImageDescriptor(Icon.SORTING_16.des());
 		}
 
 		@Override
@@ -87,7 +87,7 @@ public class LoadCurveSection {
 
 		public ExportAction() {
 			setText(M.SaveAsFile);
-			setImageDescriptor(Images.EXPORT_FILE_16.des());
+			setImageDescriptor(Icon.EXPORT_FILE_16.des());
 		}
 
 		@Override

@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 
 public class ProjectElement extends ContentElement<ProjectDescriptor> {
 
@@ -50,7 +50,7 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 
 	@Override
 	public Image getImage() {
-		return Images.PROJECT_16.img();
+		return Icon.PROJECT_16.img();
 	}
 
 }

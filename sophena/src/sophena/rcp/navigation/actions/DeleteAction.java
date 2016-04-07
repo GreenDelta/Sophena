@@ -14,7 +14,7 @@ import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.descriptors.Descriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
@@ -33,7 +33,7 @@ public class DeleteAction extends NavigationAction {
 
 	public DeleteAction() {
 		setText(M.Delete);
-		setImageDescriptor(Images.DELETE_16.des());
+		setImageDescriptor(Icon.DELETE_16.des());
 	}
 
 	@Override

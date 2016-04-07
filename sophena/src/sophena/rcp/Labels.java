@@ -178,15 +178,15 @@ public final class Labels {
 			return null;
 		switch (t) {
 		case BIOMASS_BOILER:
-			return Images.PRODUCER_16.img();
+			return Icon.PRODUCER_16.img();
 		case FOSSIL_FUEL_BOILER:
-			return Images.PRODUCER_16.img();
+			return Icon.PRODUCER_16.img();
 		case COGENERATION_PLANT:
-			return Images.CO_GEN_16.img();
+			return Icon.CO_GEN_16.img();
 		case BOILER_ACCESSORIES:
 			return null;
 		case BUFFER_TANK:
-			return Images.BUFFER_16.img();
+			return Icon.BUFFER_16.img();
 		case HEAT_RECOVERY:
 			return null;
 		case FLUE_GAS_CLEANING:
@@ -194,7 +194,7 @@ public final class Labels {
 		case BOILER_HOUSE_TECHNOLOGY:
 			return null;
 		case BUILDING:
-			return Images.BUILDING_TYPE_16.img();
+			return Icon.BUILDING_TYPE_16.img();
 		case HEATING_NET_TECHNOLOGY:
 			return null;
 		case HEATING_NET_CONSTRUCTION:

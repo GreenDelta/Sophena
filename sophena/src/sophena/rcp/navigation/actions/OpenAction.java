@@ -3,7 +3,7 @@ package sophena.rcp.navigation.actions;
 import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.costs.CostEditor;
@@ -26,7 +26,7 @@ public class OpenAction extends NavigationAction {
 
 	public OpenAction() {
 		setText(M.Open);
-		setImageDescriptor(Images.OPEN_16.des());
+		setImageDescriptor(Icon.OPEN_16.des());
 	}
 
 	@Override

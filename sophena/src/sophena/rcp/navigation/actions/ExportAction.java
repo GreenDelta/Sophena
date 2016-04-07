@@ -8,7 +8,7 @@ import sophena.io.datapack.Export;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
 import sophena.rcp.utils.FileChooser;
@@ -21,7 +21,7 @@ public class ExportAction extends NavigationAction {
 
 	public ExportAction() {
 		setText("Projekt exportieren");
-		setImageDescriptor(Images.EXPORT_16.des());
+		setImageDescriptor(Icon.EXPORT_16.des());
 	}
 
 	@Override

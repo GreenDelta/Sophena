@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 
 public class ProducerElement extends ContentElement<ProducerDescriptor> {
 
@@ -30,7 +30,7 @@ public class ProducerElement extends ContentElement<ProducerDescriptor> {
 
 	@Override
 	public Image getImage() {
-		return Images.PRODUCER_16.img();
+		return Icon.PRODUCER_16.img();
 	}
 
 	@Override

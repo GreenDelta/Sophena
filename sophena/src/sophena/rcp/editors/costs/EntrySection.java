@@ -16,7 +16,7 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
 import sophena.model.Project;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
@@ -48,11 +48,11 @@ class EntrySection {
 		table = createTable(composite);
 		fillEntries();
 		Action addGlobal = Actions.create("Product aus Produktdatenbank hinzufügen",
-				Images.SEARCH_16.des(), this::addGlobal);
+				Icon.SEARCH_16.des(), this::addGlobal);
 		Action addPrivate = Actions.create("Neues Produkt erstellen",
-				Images.ADD_16.des(), this::addPrivate);
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), this::edit);
-		Action del = Actions.create(M.Remove, Images.DELETE_16.des(),
+				Icon.ADD_16.des(), this::addPrivate);
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
+		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::delete);
 		Actions.bind(section, addGlobal, addPrivate, edit, del);
 		Actions.bind(table, addGlobal, addPrivate, edit, del);

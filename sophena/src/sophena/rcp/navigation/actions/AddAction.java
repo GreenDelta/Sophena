@@ -6,7 +6,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
@@ -36,7 +36,7 @@ public class AddAction extends NavigationAction {
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return Images.ADD_16.des();
+		return Icon.ADD_16.des();
 	}
 
 	@Override

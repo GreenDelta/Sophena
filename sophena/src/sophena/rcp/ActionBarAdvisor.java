@@ -83,10 +83,10 @@ public class ActionBarAdvisor extends
 	private void fillProjectMenu(IMenuManager menu) {
 		MenuManager projectMenu = new MenuManager(M.Project);
 		Action newAction = Actions.create(M.NewProject,
-				Images.NEW_PROJECT_16.des(), ProjectWizard::open);
+				Icon.NEW_PROJECT_16.des(), ProjectWizard::open);
 		projectMenu.add(newAction);
 		Action compare = Actions.create("Projekte vergleichen",
-				Images.BAR_CHART_16.des(),
+				Icon.BAR_CHART_16.des(),
 				() -> ComparisonDialog.open(Optional.empty()));
 		projectMenu.add(compare);
 		menu.add(projectMenu);
@@ -94,15 +94,15 @@ public class ActionBarAdvisor extends
 
 	private void fillBaseDataMenu(IMenuManager menu) {
 		MenuManager m = new MenuManager(M.BaseData);
-		m.add(Actions.create(M.ClimateData, Images.CLIMATE_16.des(),
+		m.add(Actions.create(M.ClimateData, Icon.CLIMATE_16.des(),
 				ClimateDataEditor::open));
-		m.add(Actions.create("Gebäudetypen", Images.BUILDING_TYPE_16.des(),
+		m.add(Actions.create("Gebäudetypen", Icon.BUILDING_TYPE_16.des(),
 				BuildingStateEditor::open));
-		m.add(Actions.create(M.Fuels, Images.FUEL_16.des(),
+		m.add(Actions.create(M.Fuels, Icon.FUEL_16.des(),
 				FuelEditor::open));
-		m.add(Actions.create("Produktgruppen", Images.PRODUCT_16.des(),
+		m.add(Actions.create("Produktgruppen", Icon.PRODUCT_16.des(),
 				ProductGroupEditor::open));
-		m.add(Actions.create("Kosteneinstellungen", Images.COSTS_16.des(),
+		m.add(Actions.create("Kosteneinstellungen", Icon.COSTS_16.des(),
 				BaseCostEditor::open));
 		menu.add(m);
 	}
@@ -110,13 +110,13 @@ public class ActionBarAdvisor extends
 	private void fillProductMenu(IMenuManager menu) {
 		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
-		m.add(Actions.create("Heizkessel", Images.BOILER_16.des(),
+		m.add(Actions.create("Heizkessel", Icon.BOILER_16.des(),
 				BoilerEditor::open));
-		m.add(Actions.create("KWK-Anlagen", Images.CO_GEN_16.des(),
+		m.add(Actions.create("KWK-Anlagen", Icon.CO_GEN_16.des(),
 				CoGenPlantEditor::open));
-		m.add(Actions.create("Wärmeleitungen", Images.PIPE_16.des(),
+		m.add(Actions.create("Wärmeleitungen", Icon.PIPE_16.des(),
 				PipeEditor::open));
-		m.add(Actions.create("Pufferspeicher", Images.BUFFER_16.des(),
+		m.add(Actions.create("Pufferspeicher", Icon.BUFFER_16.des(),
 				BufferTankEditor::open));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
 		m.add(Actions.create("Wärmerückgewinnung", HeatRecoveryEditor::open));
@@ -146,7 +146,7 @@ public class ActionBarAdvisor extends
 		fileMenu.add(closeAction);
 		fileMenu.add(closeAllAction);
 		fileMenu.add(new Separator());
-		fileMenu.add(Actions.create("Datenimport", Images.IMPORT_16.des(),
+		fileMenu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
 				this::importFile));
 		fileMenu.add(exitAction);
 		menuBar.add(fileMenu);

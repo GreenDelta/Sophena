@@ -3,7 +3,7 @@ package sophena.rcp;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-public enum Images {
+public enum Icon {
 
 	ADD_16("add_16.png"),
 
@@ -91,7 +91,7 @@ public enum Images {
 
 	private final String fileName;
 
-	private Images(String fileName) {
+	private Icon(String fileName) {
 		this.fileName = fileName;
 	}
 

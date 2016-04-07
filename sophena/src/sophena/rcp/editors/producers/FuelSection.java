@@ -18,7 +18,7 @@ import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
@@ -77,7 +77,7 @@ class FuelSection {
 				+ f.unit + ")";
 		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
 		link.setText(text);
-		link.setImage(Images.FUEL_16.img());
+		link.setImage(Icon.FUEL_16.img());
 		link.setForeground(Colors.getLinkBlue());
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override

@@ -15,7 +15,7 @@ import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -111,7 +111,7 @@ class HeatNetSection {
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
 		});
-		UI.formLabel(comp, tk, "").setImage(Images.INFO_16.img());
+		UI.formLabel(comp, tk, "").setImage(Icon.INFO_16.img());
 		UI.filler(comp, tk);
 	}
 

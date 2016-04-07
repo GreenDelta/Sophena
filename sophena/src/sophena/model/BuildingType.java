@@ -24,6 +24,8 @@ public enum BuildingType {
 
 	RESTAURANT,
 
-	HOTEL
+	HOTEL,
+
+	OTHER
 
 }

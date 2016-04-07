@@ -10,7 +10,7 @@ import sophena.db.daos.ConsumerDao;
 import sophena.db.daos.ProducerDao;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 
 public class FolderElement implements NavigationElement {
@@ -111,15 +111,15 @@ public class FolderElement implements NavigationElement {
 	public Image getImage() {
 		switch (type) {
 		case CONSUMPTION:
-			return Images.CONSUMER_16.img();
+			return Icon.CONSUMER_16.img();
 		case COSTS:
-			return Images.COSTS_16.img();
+			return Icon.COSTS_16.img();
 		case PRODUCTION:
-			return Images.PRODUCER_16.img();
+			return Icon.PRODUCER_16.img();
 		case DISTRIBUTION:
-			return Images.PUMP_16.img();
+			return Icon.PUMP_16.img();
 		case RESULTS:
-			return Images.LOAD_PROFILE_16.img();
+			return Icon.LOAD_PROFILE_16.img();
 		default:
 			return null;
 		}

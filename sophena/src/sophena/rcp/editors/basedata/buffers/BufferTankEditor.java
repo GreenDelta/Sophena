@@ -21,7 +21,7 @@ import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.BufferTank;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.UsageError;
@@ -88,11 +88,11 @@ public class BufferTankEditor extends Editor {
 		}
 
 		private void bindActions(Section section, TableViewer table) {
-			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+			Action add = Actions.create(M.Add, Icon.ADD_16.des(),
 					() -> add(table));
-			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
-			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
@@ -152,7 +152,7 @@ public class BufferTankEditor extends Editor {
 	private class Label extends LabelProvider implements ITableLabelProvider {
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Images.BUFFER_16.img() : null;
+			return col == 0 ? Icon.BUFFER_16.img() : null;
 		}
 
 		@Override

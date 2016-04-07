@@ -15,7 +15,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
@@ -46,7 +46,7 @@ class DisplaySection<T> {
 			table.setInput(content.get());
 		if (onOpen != null) {
 			Tables.onDoubleClick(table, (e) -> doOpen(table));
-			Actions.bind(table, Actions.create("Öffnen", Images.OPEN_16.des(),
+			Actions.bind(table, Actions.create("Öffnen", Icon.OPEN_16.des(),
 					() -> doOpen(table)));
 		}
 	}

@@ -20,7 +20,7 @@ import sophena.io.HoursProfile;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.FileChooser;
@@ -61,9 +61,9 @@ class TablePage extends FormPage {
 
 	private void bindActions(Section section, TableViewer table) {
 		Action open = Actions.create("Temperaturverlauf anzeigen",
-				Images.OPEN_16.des(), () -> openClimateCurve(table));
+				Icon.OPEN_16.des(), () -> openClimateCurve(table));
 		Action export = Actions.create("Temperaturverlauf exportieren",
-				Images.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
+				Icon.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
 		Actions.bind(section, open, export);
 		Actions.bind(table, open, export);
 		Tables.onDoubleClick(table, e -> openClimateCurve(table));
@@ -94,7 +94,7 @@ class TablePage extends FormPage {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Images.CLIMATE_16.img() : null;
+			return col == 0 ? Icon.CLIMATE_16.img() : null;
 		}
 
 		@Override

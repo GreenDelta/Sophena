@@ -15,7 +15,7 @@ class ImageManager {
 		}
 	}
 
-	public static Image getImage(Images type) {
+	public static Image getImage(Icon type) {
 		if (reg == null)
 			reg = new ImageRegistry();
 		String name = type.getFileName();
@@ -29,7 +29,7 @@ class ImageManager {
 		return image;
 	}
 
-	public static ImageDescriptor getImageDescriptor(Images type) {
+	public static ImageDescriptor getImageDescriptor(Icon type) {
 		if (reg == null)
 			reg = new ImageRegistry();
 		String name = type.getFileName();

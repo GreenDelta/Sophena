@@ -11,7 +11,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import sophena.model.BufferTank;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
@@ -73,7 +73,7 @@ class BufferTankSection {
 			link.setText(net().bufferTank.name);
 		else
 			link.setText("(kein Pufferspeicher ausgewählt)");
-		link.setImage(Images.BUFFER_16.img());
+		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override

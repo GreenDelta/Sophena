@@ -18,7 +18,7 @@ import sophena.io.LoadProfileWriter;
 import sophena.model.Consumer;
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.FileChooser;
@@ -56,13 +56,13 @@ class LoadProfileSection {
 	}
 
 	private void bindActions(Section section, TableViewer table) {
-		Action add = Actions.create(M.Add, Images.ADD_16.des(),
+		Action add = Actions.create(M.Add, Icon.ADD_16.des(),
 				() -> addLoadProfile(table));
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				() -> editLoadProfile(table));
-		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> deleteLoadProfile(table));
-		Action export = Actions.create(M.SaveAsFile, Images.EXPORT_FILE_16.des(),
+		Action export = Actions.create(M.SaveAsFile, Icon.EXPORT_FILE_16.des(),
 				() -> exportProfile(table));
 		Actions.bind(section, add, edit, del, export);
 		Actions.bind(table, add, edit, del, export);
@@ -125,7 +125,7 @@ class LoadProfileSection {
 
 		@Override
 		public Image getColumnImage(Object element, int col) {
-			return col == 0 ? Images.LOAD_PROFILE_16.img() : null;
+			return col == 0 ? Icon.LOAD_PROFILE_16.img() : null;
 		}
 
 		@Override

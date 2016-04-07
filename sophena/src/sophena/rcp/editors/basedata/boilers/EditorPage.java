@@ -23,7 +23,7 @@ import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.Boiler;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
@@ -87,11 +87,11 @@ class EditorPage extends FormPage {
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
-		Action add = Actions.create(M.Add, Images.ADD_16.des(),
+		Action add = Actions.create(M.Add, Icon.ADD_16.des(),
 				() -> addBoiler(table));
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				() -> editBoiler(table));
-		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> deleteBoiler(table));
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
@@ -156,7 +156,7 @@ class EditorPage extends FormPage {
 		public Image getColumnImage(Object element, int col) {
 			if (col != 0)
 				return null;
-			return isForCoGen ? Images.CO_GEN_16.img() : Images.BOILER_16.img();
+			return isForCoGen ? Icon.CO_GEN_16.img() : Icon.BOILER_16.img();
 		}
 
 		@Override

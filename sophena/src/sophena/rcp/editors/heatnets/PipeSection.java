@@ -22,7 +22,7 @@ import sophena.calc.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.ProductCosts;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
@@ -82,7 +82,7 @@ class PipeSection {
 		UI.formLabel(comp, tk, "W/m");
 		UI.formLabel(comp, "");
 		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
-		button.setImage(Images.CALCULATE_16.img());
+		button.setImage(Icon.CALCULATE_16.img());
 		Controls.onSelect(button, e -> {
 			HeatNet net = net();
 			net.length = HeatNets.calculateLength(net);
@@ -128,9 +128,9 @@ class PipeSection {
 	}
 
 	private void bindActions(Section section) {
-		Action add = Actions.create(M.Add, Images.ADD_16.des(), this::add);
-		Action edit = Actions.create(M.Edit, Images.EDIT_16.des(), this::edit);
-		Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+		Action add = Actions.create(M.Add, Icon.ADD_16.des(), this::add);
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
+		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				this::del);
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
@@ -187,7 +187,7 @@ class PipeSection {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Images.PIPE_16.img() : null;
+			return col == 0 ? Icon.PIPE_16.img() : null;
 		}
 
 		@Override

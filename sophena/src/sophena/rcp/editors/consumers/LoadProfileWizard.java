@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.io.LoadProfileReader;
 import sophena.model.LoadProfile;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Controls;
@@ -77,7 +77,7 @@ class LoadProfileWizard extends Wizard {
 		private void createFileSection(Composite composite) {
 			UI.formLabel(composite, "");
 			Button button = new Button(composite, SWT.NONE);
-			button.setImage(Images.FILE_16.img());
+			button.setImage(Icon.FILE_16.img());
 			button.setText(M.SelectFile);
 			Controls.onSelect(button, (e) -> data.readFile());
 		}

@@ -14,13 +14,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 
 public class Popup {
 
 	private String message;
 	private String title;
-	private Images imageType;
+	private Icon imageType;
 
 	public static void showInfo(String message) {
 		showInfo("Information", message);
@@ -28,7 +28,7 @@ public class Popup {
 
 	public static void showInfo(String title, String message) {
 		Popup p = new Popup(title, message);
-		p.setImageType(Images.INFO_16);
+		p.setImageType(Icon.INFO_16);
 		p.show();
 	}
 
@@ -38,7 +38,7 @@ public class Popup {
 
 	public static void showWarning(String title, String message) {
 		Popup p = new Popup(title, message);
-		p.setImageType(Images.WARNING_16);
+		p.setImageType(Icon.WARNING_16);
 		p.show();
 	}
 
@@ -48,7 +48,7 @@ public class Popup {
 
 	public static void showError(String title, String message) {
 		Popup p = new Popup(title, message);
-		p.setImageType(Images.ERROR_16);
+		p.setImageType(Icon.ERROR_16);
 		p.show();
 	}
 
@@ -57,7 +57,7 @@ public class Popup {
 		this.message = message;
 	}
 
-	public void setImageType(Images imageType) {
+	public void setImageType(Icon imageType) {
 		this.imageType = imageType;
 	}
 
@@ -104,7 +104,7 @@ public class Popup {
 		@Override
 		protected Image getPopupShellImage(int maximumHeight) {
 			if (imageType == null)
-				return Images.INFO_16.img();
+				return Icon.INFO_16.img();
 			else
 				return imageType.img();
 		}

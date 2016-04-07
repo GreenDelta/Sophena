@@ -20,7 +20,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Strings;
@@ -69,7 +69,7 @@ public class SqlEditorPage extends FormPage {
 		RunAction() {
 			setToolTipText("Run SQL statement");
 			setText("Run SQL statement");
-			setImageDescriptor(Images.RUN_16.des());
+			setImageDescriptor(Icon.RUN_16.des());
 		}
 
 		@Override

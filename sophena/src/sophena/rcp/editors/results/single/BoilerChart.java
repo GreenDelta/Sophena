@@ -21,7 +21,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.charts.LoadImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
@@ -167,7 +167,7 @@ class BoilerChart {
 		private boolean active = false;
 
 		public LoadTraceSwitch() {
-			setImageDescriptor(Images.REQUIRED_LOAD_16.des());
+			setImageDescriptor(Icon.REQUIRED_LOAD_16.des());
 			setText("Lastkurve anzeigen");
 		}
 

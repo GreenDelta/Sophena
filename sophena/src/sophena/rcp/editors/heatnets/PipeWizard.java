@@ -14,7 +14,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
 import sophena.model.ProductCosts;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
@@ -81,7 +81,7 @@ class PipeWizard extends Wizard {
 				link.setText(pipe.pipe.name);
 			else
 				link.setText("(keine Wärmeleitung ausgewählt)");
-			link.setImage(Images.PIPE_16.img());
+			link.setImage(Icon.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
 			link.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override

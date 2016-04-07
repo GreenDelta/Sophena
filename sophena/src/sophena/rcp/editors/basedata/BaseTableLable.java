@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.BaseDataEntity;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -23,9 +23,7 @@ public abstract class BaseTableLable extends LabelProvider
 		if (!(obj instanceof BaseDataEntity))
 			return null;
 		BaseDataEntity entity = (BaseDataEntity) obj;
-		if (entity.isProtected)
-			return Images.LOCK_16.img();
-		return Images.EDIT_16.img();
+		return entity.isProtected ? Icon.LOCK_16.img() : Icon.EDIT_16.img();
 	}
 
 	@Override

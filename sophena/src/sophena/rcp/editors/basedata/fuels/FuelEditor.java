@@ -21,7 +21,7 @@ import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.Fuel;
 import sophena.rcp.App;
-import sophena.rcp.Images;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLable;
@@ -102,11 +102,11 @@ public class FuelEditor extends Editor {
 		}
 
 		private void bindFuelActions(Section section, TableViewer table) {
-			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+			Action add = Actions.create(M.Add, Icon.ADD_16.des(),
 					() -> addFuel(table));
-			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table, fuels, false));
-			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table, fuels, false));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
@@ -185,11 +185,11 @@ public class FuelEditor extends Editor {
 		}
 
 		private void bindWoodActions(Section section, TableViewer table) {
-			Action add = Actions.create(M.Add, Images.ADD_16.des(),
+			Action add = Actions.create(M.Add, Icon.ADD_16.des(),
 					() -> addWood(table));
-			Action edit = Actions.create(M.Edit, Images.EDIT_16.des(),
+			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table, woodFuels, true));
-			Action del = Actions.create(M.Delete, Images.DELETE_16.des(),
+			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table, woodFuels, true));
 			Actions.bind(section, add, edit, del);
 			Actions.bind(table, add, edit, del);
