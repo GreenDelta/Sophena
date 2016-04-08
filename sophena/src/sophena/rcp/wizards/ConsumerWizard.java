@@ -116,7 +116,7 @@ public class ConsumerWizard extends Wizard {
 			Text nt = UI.formText(composite, M.Name);
 			nt.setBackground(Colors.forRequiredField());
 			nt.setText(consumer.name);
-			nt.addModifyListener((e) -> {
+			nt.addModifyListener(e -> {
 				consumer.name = nt.getText();
 				validate();
 			});
@@ -136,7 +136,7 @@ public class ConsumerWizard extends Wizard {
 			}
 			combo.setItems(items);
 			combo.select(0);
-			Controls.onSelect(combo, (e) -> {
+			Controls.onSelect(combo, e -> {
 				int idx = combo.getSelectionIndex();
 				initBuildingState(types[idx]);
 			});
@@ -146,7 +146,7 @@ public class ConsumerWizard extends Wizard {
 			stateCombo = new EntityCombo<>();
 			stateCombo.create(M.BuildingState, composite);
 			initBuildingState(BuildingType.values()[0]);
-			stateCombo.onSelect((s) -> consumer.buildingState = s);
+			stateCombo.onSelect(s -> consumer.buildingState = s);
 		}
 
 		private void initBuildingState(BuildingType type) {

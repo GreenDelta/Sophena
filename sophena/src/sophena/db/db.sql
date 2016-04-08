@@ -217,7 +217,6 @@ CREATE TABLE tbl_consumers (
 	floor_space DOUBLE,
 
 	f_project CHAR(36),
-	f_building_type CHAR(36),
 	f_building_state CHAR(36),
 	f_location CHAR(36),
 
