@@ -25,6 +25,7 @@ class TableLabel extends BaseTableLable {
 	void index(Collection<? extends BuildingState> states) {
 		if (states == null)
 			return;
+		lowestIndex.clear();
 		for (BuildingState s : states) {
 			if (s.type == null)
 				continue;

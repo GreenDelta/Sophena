@@ -7,6 +7,11 @@ import org.eclipse.jface.viewers.Viewer;
 
 import sophena.model.BuildingState;
 
+/**
+ * We take an own content provider in order to react on input changes which may
+ * change the order of the building states and their display in the label
+ * provider.
+ */
 class TableContent extends ArrayContentProvider {
 
 	private TableLabel label;
