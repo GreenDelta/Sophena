@@ -1,21 +1,56 @@
 package sophena.rcp.editors.basedata.buildings;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.BuildingState;
+import sophena.model.BuildingType;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.editors.basedata.BaseTableLable;
 import sophena.utils.Num;
 
 class TableLabel extends BaseTableLable {
+
+	private Map<BuildingType, Integer> lowestIndex = new HashMap<>();
+
+	/**
+	 * We index the building states with the lowest index value to display the
+	 * building type label and icon only for the first building state with a
+	 * given type.
+	 */
+	void index(Collection<? extends BuildingState> states) {
+		if (states == null)
+			return;
+		for (BuildingState s : states) {
+			if (s.type == null)
+				continue;
+			Integer lowest = lowestIndex.get(s.type);
+			if (lowest == null || s.index < lowest) {
+				lowestIndex.put(s.type, s.index);
+			}
+		}
+	}
+
+	private boolean isFirst(BuildingState s) {
+		if (s == null || s.type == null)
+			return false;
+		Integer idx = lowestIndex.get(s.type);
+		if (idx == null)
+			return false;
+		return idx == s.index;
+	}
+
 	@Override
 	public Image getColumnImage(Object obj, int col) {
 		if (!(obj instanceof BuildingState))
 			return null;
 		BuildingState s = (BuildingState) obj;
-		if (col == 0)
-			return s.index == 0 ? Icon.BUILDING_TYPE_16.img() : null;
+		if (col == 0 && isFirst(s))
+			return Icon.BUILDING_TYPE_16.img();
 		if (col == 1)
 			return s.isProtected ? Icon.LOCK_16.img() : Icon.EDIT_16.img();
 		if (col == 5)
@@ -32,9 +67,9 @@ class TableLabel extends BaseTableLable {
 		BuildingState s = (BuildingState) obj;
 		switch (col) {
 		case 0:
-			return s.index == 0 ? Labels.get(s.type) : null;
+			return isFirst(s) ? Labels.get(s.type) : null;
 		case 1:
-			return s.name;
+			return Num.intStr(s.index) + ".) " + s.name;
 		case 2:
 			return Num.str(s.heatingLimit) + " °C";
 		case 3:

@@ -70,10 +70,12 @@ public class BuildingStateEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
+			TableLabel label = new TableLabel();
 			TableViewer table = Tables.createViewer(comp, "Gebäudetyp",
 					"Gebäudezustand", "Heizgrenztemperatur", "Warmwasseranteil",
 					"Volllaststunden", "Voreinstellung");
-			table.setLabelProvider(new TableLabel());
+			table.setContentProvider(new TableContent(label));
+			table.setLabelProvider(label);
 			table.setSorter(new TableSorter());
 			table.setInput(states);
 			double x = 1 / 6d;
