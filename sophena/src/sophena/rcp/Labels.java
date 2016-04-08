@@ -92,6 +92,10 @@ public final class Labels {
 			return "Gaststätte";
 		case HOTEL:
 			return "Hotel";
+		case COMMERCIAL_BUILDING:
+			return "Gewerbe";
+		case OTHER:
+			return "Sonstiges";
 		default:
 			return null;
 		}
@@ -104,7 +108,7 @@ public final class Labels {
 			if (Strings.nullOrEqual(label, get(t)))
 				return t;
 		}
-		return null;
+		return BuildingType.OTHER;
 	}
 
 	public static String get(ProductType t) {

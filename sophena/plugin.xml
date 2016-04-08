@@ -159,7 +159,7 @@
 			name="KWK-Anlagen" />
 		
 		<editor
-			class="sophena.rcp.editors.basedata.BuildingStateEditor"
+			class="sophena.rcp.editors.basedata.buildings.BuildingStateEditor"
 			icon="icons/building_type_16.png"
 			id="sophena.BuildingStateEditor"
 			name="Gebäudetypen" />
