@@ -19,7 +19,7 @@ import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-class BuildingStateWizard extends Wizard {
+class StateWizard extends Wizard {
 
 	private Page page;
 	private BuildingState state;
@@ -27,7 +27,7 @@ class BuildingStateWizard extends Wizard {
 	public static int open(BuildingState state) {
 		if (state == null)
 			return Window.CANCEL;
-		BuildingStateWizard wiz = new BuildingStateWizard();
+		StateWizard wiz = new StateWizard();
 		wiz.setWindowTitle("Gebäudezustand");
 		wiz.state = state;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
