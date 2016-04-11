@@ -15,6 +15,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.DeleteLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -68,11 +69,14 @@ class BufferTankSection {
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
 		UI.formLabel(comp, tk, "Produkt");
-		ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
-		if (net().bufferTank != null)
+		Composite inner = tk.createComposite(comp);
+		UI.innerGrid(inner, 2);
+		ImageHyperlink link = new ImageHyperlink(inner, SWT.TOP);
+		if (net().bufferTank != null) {
 			link.setText(net().bufferTank.name);
-		else
+		} else {
 			link.setText("(kein Pufferspeicher ausgewählt)");
+		}
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
 		link.addHyperlinkListener(new HyperlinkAdapter() {
@@ -81,7 +85,19 @@ class BufferTankSection {
 				selectBufferTank(link);
 			}
 		});
+		createDeleteLink(inner, link);
 		UI.formLabel(comp, tk, "");
+	}
+
+	private void createDeleteLink(Composite comp, ImageHyperlink link) {
+		DeleteLink.on(comp, () -> {
+			if (net().bufferTank == null)
+				return;
+			net().bufferTank = null;
+			link.setText("(kein Pufferspeicher ausgewählt)");
+			link.getParent().pack();
+			editor.setDirty();
+		});
 	}
 
 	private void selectBufferTank(ImageHyperlink link) {
@@ -93,7 +109,7 @@ class BufferTankSection {
 		net().bufferTank = b;
 		Texts.set(volText, b.volume);
 		link.setText(b.name);
-		link.pack();
+		link.getParent().pack();
 		ProductCosts costs = net().bufferTankCosts;
 		ProductCosts.copy(b.group, costs);
 		if (b.purchasePrice != null)

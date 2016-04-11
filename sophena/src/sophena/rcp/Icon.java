@@ -37,6 +37,8 @@ public enum Icon {
 
 	DELETE_16("delete_16.png"),
 
+	DELETE_DISABLED_16("delete_disabled_16.png"),
+
 	DISABLED_16("disabled_16.png"),
 
 	EDIT_16("edit_16.png"),
