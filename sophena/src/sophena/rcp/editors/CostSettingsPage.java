@@ -57,7 +57,7 @@ public class CostSettingsPage extends FormPage {
 				.onChanged(s -> costs.vatRate = Num.read(s));
 		t(c, "Mittlerer Stundenlohn", "EUR", costs.hourlyWage)
 				.onChanged(s -> costs.hourlyWage = Num.read(s));
-		t(c, "Strompreis (netto)", "EUR/kWh", costs.electricityPrice)
+		t(c, "Strompreis", "EUR/kWh", costs.electricityPrice)
 				.onChanged(s -> costs.electricityPrice = Num.read(s));
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
 				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
