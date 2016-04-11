@@ -26,13 +26,13 @@ class SimulationSheet {
 			int i = row - 1;
 			double diff = result.suppliedPower[i] - result.loadCurve[i];
 			Excel.cell(sheet, row, 0, row);
-			Excel.cell(sheet, row, 1, result.loadCurve[i]);
-			Excel.cell(sheet, row, 2, result.suppliedPower[i]);
-			Excel.cell(sheet, row, 3, diff);
-			Excel.cell(sheet, row, 4, result.bufferCapacity[i]);
-			Excel.cell(sheet, row, 5, result.suppliedBufferHeat[i]);
+			Excel.cell(sheet, row, 1, r(result.loadCurve[i]));
+			Excel.cell(sheet, row, 2, r(result.suppliedPower[i]));
+			Excel.cell(sheet, row, 3, r(diff));
+			Excel.cell(sheet, row, 4, r(result.bufferCapacity[i]));
+			Excel.cell(sheet, row, 5, r(result.suppliedBufferHeat[i]));
 			for (int k = 0; k < result.producers.length; k++) {
-				Excel.cell(sheet, row, 6 + k, result.producerResults[k][i]);
+				Excel.cell(sheet, row, 6 + k, r(result.producerResults[k][i]));
 			}
 		}
 		Excel.autoSize(sheet, 0, 6);
@@ -56,6 +56,11 @@ class SimulationSheet {
 			Excel.cell(sheet, 0, col, p.name).setCellStyle(style);
 			col++;
 		}
+	}
+
+	/** Rounds the given number and converts it to an interger number. */
+	private int r(double number) {
+		return (int) Math.round(number);
 	}
 
 }
