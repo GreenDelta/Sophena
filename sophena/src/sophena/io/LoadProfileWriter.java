@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
+import sophena.rcp.M;
 import sophena.utils.Num;
 
 public class LoadProfileWriter {
@@ -39,7 +40,7 @@ public class LoadProfileWriter {
 	}
 
 	private void makeRows(LoadProfile p, List<String> rows) {
-		rows.add("Hour;Dynamic value;Static value;Total value");
+		rows.add(M.Hour + ";" + M.HeatingEnergy + ";" + M.HotWater + ";" + M.Total);
 		StringBuilder row = new StringBuilder();
 		double[] totals = p.calculateTotal();
 		for (int i = 0; i < Stats.HOURS; i++) {

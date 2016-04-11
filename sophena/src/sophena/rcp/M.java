@@ -35,10 +35,13 @@ public class M extends NLS {
 	public static String Fuel;
 	public static String Heat;
 	public static String HeatDistribution;
+	public static String HeatingEnergy;
 	public static String HeatingLoad;
 	public static String HeatingNetwork;
 	public static String HeatProduction;
 	public static String HeatUsage;
+	public static String HotWater;
+	public static String Hour;
 	public static String Help;
 	public static String LoadProfile;
 	public static String LoadProfiles;
@@ -59,6 +62,7 @@ public class M extends NLS {
 	public static String ShowViews;
 	public static String Start;
 	public static String Street;
+	public static String Total;
 	public static String Unknown;
 	public static String UtilisationRate;
 	public static String WaterContent;
