@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.navigator,
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.mylyn.commons.ui,
- org.swtchart;bundle-version="0.9.0"
+ org.swtchart;bundle-version="0.9.0",
+ org.eclipse.fx.ui.workbench3;bundle-version="2.3.0"
 Bundle-ClassPath: .,
  libs/commons-io-2.4.jar,
  libs/gson-2.3.1.jar,

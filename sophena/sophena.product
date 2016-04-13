@@ -11,6 +11,8 @@
 de
       </programArgs>
       <vmArgs>-Xmx1024m
+
+-Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -108,6 +110,8 @@ de
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.fx.osgi" fragment="true"/>
+      <plugin id="org.eclipse.fx.ui.workbench3"/>
       <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.nl_de" fragment="true"/>

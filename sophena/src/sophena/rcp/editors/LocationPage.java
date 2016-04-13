@@ -9,8 +9,6 @@ import java.util.function.Supplier;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.browser.ProgressAdapter;
-import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -24,6 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import javafx.concurrent.Worker.State;
+import javafx.embed.swt.FXCanvas;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.rcp.M;
@@ -107,15 +110,28 @@ public class LocationPage extends FormPage {
 		UI.gridData(s, true, true);
 		Composite c = UI.sectionClient(s, toolkit);
 		c.setLayout(new FillLayout());
-		browser = new Browser(c, SWT.NONE);
-		browser.setJavascriptEnabled(true);
-		browser.setUrl(getUrl());
-		browser.addProgressListener(new ProgressAdapter() {
-			@Override
-			public void completed(ProgressEvent event) {
-				initBrowser();
+
+		FXCanvas fxCanvas = new FXCanvas(c, SWT.NONE);
+		fxCanvas.setLayout(new FillLayout());
+		WebView view = new WebView();
+		Scene scene = new Scene(view);
+		fxCanvas.setScene(scene);
+		WebEngine engine = view.getEngine();
+		engine.load(getUrl());
+		engine.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
+			if (newState == State.SUCCEEDED) {
+				initBrowser(engine);
 			}
 		});
+
+		/*
+		 * browser = new Browser(c, SWT.NONE);
+		 * browser.setJavascriptEnabled(true); browser.setUrl(getUrl());
+		 * browser.addProgressListener(new ProgressAdapter() {
+		 * 
+		 * @Override public void completed(ProgressEvent event) { initBrowser();
+		 * } });
+		 */
 	}
 
 	private String getUrl() {
@@ -135,8 +151,8 @@ public class LocationPage extends FormPage {
 		}
 	}
 
-	private void initBrowser() {
-		new LocationChangeFn();
+	private void initBrowser(WebEngine engine) {
+		// new LocationChangeFn();
 		InitData initData = new InitData();
 		Location location = loc.get();
 		if (location.latitude != null && location.longitude != null) {
@@ -151,7 +167,8 @@ public class LocationPage extends FormPage {
 		}
 		String json = new Gson().toJson(initData);
 		try {
-			browser.evaluate("init(" + json + ")");
+			engine.executeScript("init(" + json + ")");
+			// browser.evaluate("init(" + json + ")");
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to initialize browser " + json, e);
