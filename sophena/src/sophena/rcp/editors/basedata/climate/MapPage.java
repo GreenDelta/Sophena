@@ -6,9 +6,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.ProgressAdapter;
-import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -19,6 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import javafx.concurrent.Worker.State;
+import javafx.embed.swt.FXCanvas;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
@@ -28,7 +31,7 @@ import sophena.rcp.utils.UI;
 
 class MapPage extends FormPage {
 
-	private Browser browser;
+	private WebEngine webkit;
 
 	public MapPage(ClimateDataEditor editor) {
 		super(editor, "climate.MapPage", "Karte");
@@ -44,15 +47,18 @@ class MapPage extends FormPage {
 	}
 
 	private void createBrowserSection(Composite body) {
-		browser = new Browser(body, SWT.NONE);
-		UI.gridData(browser, true, true);
-		browser.setJavascriptEnabled(true);
-		browser.setUrl(getUrl());
-		browser.addProgressListener(new ProgressAdapter() {
-			@Override
-			public void completed(ProgressEvent event) {
-				initBrowser();
-			}
+		body.setLayout(new FillLayout());
+		FXCanvas fxCanvas = new FXCanvas(body, SWT.NONE);
+		fxCanvas.setLayout(new FillLayout());
+		WebView view = new WebView();
+		Scene scene = new Scene(view);
+		fxCanvas.setScene(scene);
+		webkit = view.getEngine();
+		webkit.load(getUrl());
+		webkit.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
+			if (newState != State.SUCCEEDED)
+				return;
+			initBrowser();
 		});
 	}
 
@@ -78,7 +84,7 @@ class MapPage extends FormPage {
 			WeatherStationDao dao = new WeatherStationDao(App.getDb());
 			List<WeatherStationDescriptor> list = dao.getDescriptors();
 			String json = new Gson().toJson(list);
-			browser.evaluate("setData(" + json + ")");
+			webkit.executeScript("setData(" + json + ")");
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Failed to set browser data", e);

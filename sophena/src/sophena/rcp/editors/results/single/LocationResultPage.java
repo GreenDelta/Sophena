@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.ProgressAdapter;
-import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -21,6 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import javafx.concurrent.Worker.State;
+import javafx.embed.swt.FXCanvas;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import sophena.model.Consumer;
 import sophena.model.Location;
 import sophena.rcp.M;
@@ -31,7 +33,7 @@ public class LocationResultPage extends FormPage {
 
 	private ResultEditor editor;
 	private FormToolkit toolkit;
-	private Browser browser;
+	private WebEngine webkit;
 
 	public LocationResultPage(ResultEditor editor) {
 		super(editor, "sophena.LocationResultPage.html", M.Locations);
@@ -49,15 +51,20 @@ public class LocationResultPage extends FormPage {
 
 	private void createBrowser(Composite body) {
 		body.setLayout(new FillLayout());
-		browser = new Browser(body, SWT.NONE);
-		browser.setJavascriptEnabled(true);
-		browser.setUrl(getUrl());
-		browser.addProgressListener(new ProgressAdapter() {
-			@Override
-			public void completed(ProgressEvent event) {
-				initBrowser();
-			}
+		FXCanvas fxCanvas = new FXCanvas(body, SWT.NONE);
+		fxCanvas.setLayout(new FillLayout());
+		WebView view = new WebView();
+		Scene scene = new Scene(view);
+		fxCanvas.setScene(scene);
+		webkit = view.getEngine();
+		webkit.load(getUrl());
+		webkit.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
+			if (newState != State.SUCCEEDED)
+				return;
+			String json = createModel();
+			webkit.executeScript("setData(" + json + ")");
 		});
+
 	}
 
 	private String getUrl() {
@@ -74,16 +81,6 @@ public class LocationResultPage extends FormPage {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Could not get URL to location page", e);
 			return "";
-		}
-	}
-
-	private void initBrowser() {
-		String json = createModel();
-		try {
-			browser.evaluate("setData(" + json + ")");
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to initialize browser " + json, e);
 		}
 	}
 

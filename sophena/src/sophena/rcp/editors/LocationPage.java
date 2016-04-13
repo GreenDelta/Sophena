@@ -42,7 +42,7 @@ public class LocationPage extends FormPage {
 
 	private Text latText;
 	private Text lngText;
-	private WebEngine browser;
+	private WebEngine webkit;
 
 	public LocationPage(Editor editor, Supplier<Location> location,
 			Supplier<Project> proj) {
@@ -65,25 +65,23 @@ public class LocationPage extends FormPage {
 	private void createAddressSection(Composite body) {
 		Composite c = UI.formSection(body, toolkit, M.Location);
 		Location init = loc.get();
-		t(c, M.Name, init.name, (s) -> loc.get().name = s);
-		t(c, M.Street, init.street, (s) -> loc.get().street = s);
-		t(c, M.ZipCode, init.zipCode, (s) -> loc.get().zipCode = s);
-		t(c, M.City, init.city, (s) -> loc.get().city = s);
+		t(c, M.Name, init.name, s -> loc.get().name = s);
+		t(c, M.Street, init.street, s -> loc.get().street = s);
+		t(c, M.ZipCode, init.zipCode, s -> loc.get().zipCode = s);
+		t(c, M.City, init.city, s -> loc.get().city = s);
 		latText = d(c, "Breitengrad", init.latitude,
-				(d) -> loc.get().latitude = d);
+				d -> loc.get().latitude = d);
 		lngText = d(c, "Längengrad", init.longitude,
-				(d) -> loc.get().longitude = d);
+				d -> loc.get().longitude = d);
 	}
 
 	private void t(Composite comp, String label, String initial,
 			Consumer<String> fn) {
 		Text t = UI.formText(comp, toolkit, label);
-		Texts.on(t)
-				.init(initial)
-				.onChanged((s) -> {
-					fn.accept(s);
-					editor.setDirty();
-				});
+		Texts.on(t).init(initial).onChanged(s -> {
+			fn.accept(s);
+			editor.setDirty();
+		});
 	}
 
 	private Text d(Composite comp, String label, Double initial,
@@ -107,15 +105,14 @@ public class LocationPage extends FormPage {
 		UI.gridData(s, true, true);
 		Composite c = UI.sectionClient(s, toolkit);
 		c.setLayout(new FillLayout());
-
 		FXCanvas fxCanvas = new FXCanvas(c, SWT.NONE);
 		fxCanvas.setLayout(new FillLayout());
 		WebView view = new WebView();
 		Scene scene = new Scene(view);
 		fxCanvas.setScene(scene);
-		browser = view.getEngine();
-		browser.load(getUrl());
-		browser.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
+		webkit = view.getEngine();
+		webkit.load(getUrl());
+		webkit.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
 			if (newState == State.SUCCEEDED) {
 				initBrowser();
 			}
@@ -143,10 +140,9 @@ public class LocationPage extends FormPage {
 		InitData initData = getInitialLocation();
 		String json = new Gson().toJson(initData);
 		try {
-			JSObject win = (JSObject) browser.executeScript("window");
+			JSObject win = (JSObject) webkit.executeScript("window");
 			win.setMember("java", new JSHandler());
-			browser.executeScript("init(" + json + ")");
-			// browser.evaluate("init(" + json + ")");
+			webkit.executeScript("init(" + json + ")");
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to initialize browser " + json, e);
@@ -196,13 +192,13 @@ public class LocationPage extends FormPage {
 		Rcp.runInUI("update marker", () -> {
 			try {
 				if (l == null || l.latitude == null || l.longitude == null)
-					browser.executeScript("removeMarker()");
+					webkit.executeScript("removeMarker()");
 				else {
 					LatLng latlng = new LatLng();
 					latlng.lat = l.latitude;
 					latlng.lng = l.longitude;
 					String json = new Gson().toJson(latlng);
-					browser.executeScript("setLocation(" + json + ")");
+					webkit.executeScript("setLocation(" + json + ")");
 				}
 			} catch (Exception e) {
 				Logger log = LoggerFactory.getLogger(getClass());
