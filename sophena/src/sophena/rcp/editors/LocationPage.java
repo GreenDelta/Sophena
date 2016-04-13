@@ -7,8 +7,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -27,6 +25,7 @@ import javafx.embed.swt.FXCanvas;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.rcp.M;
@@ -40,10 +39,10 @@ public class LocationPage extends FormPage {
 	private Supplier<Project> proj;
 	private Editor editor;
 	private FormToolkit toolkit;
-	private Browser browser;
 
 	private Text latText;
 	private Text lngText;
+	private WebEngine browser;
 
 	public LocationPage(Editor editor, Supplier<Location> location,
 			Supplier<Project> proj) {
@@ -90,18 +89,16 @@ public class LocationPage extends FormPage {
 	private Text d(Composite comp, String label, Double initial,
 			Consumer<Double> fn) {
 		Text t = UI.formText(comp, toolkit, label);
-		Texts.on(t)
-				.init(initial)
-				.onChanged((s) -> {
-					if (Texts.isEmpty(t)) {
-						fn.accept(null);
-						updateMarker();
-					} else {
-						fn.accept(Texts.getDouble(t));
-						updateMarker();
-					}
-					editor.setDirty();
-				});
+		Texts.on(t).init(initial).onChanged(s -> {
+			if (Texts.isEmpty(t)) {
+				fn.accept(null);
+				updateMarker();
+			} else {
+				fn.accept(Texts.getDouble(t));
+				updateMarker();
+			}
+			editor.setDirty();
+		});
 		return t;
 	}
 
@@ -116,22 +113,13 @@ public class LocationPage extends FormPage {
 		WebView view = new WebView();
 		Scene scene = new Scene(view);
 		fxCanvas.setScene(scene);
-		WebEngine engine = view.getEngine();
-		engine.load(getUrl());
-		engine.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
+		browser = view.getEngine();
+		browser.load(getUrl());
+		browser.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
 			if (newState == State.SUCCEEDED) {
-				initBrowser(engine);
+				initBrowser();
 			}
 		});
-
-		/*
-		 * browser = new Browser(c, SWT.NONE);
-		 * browser.setJavascriptEnabled(true); browser.setUrl(getUrl());
-		 * browser.addProgressListener(new ProgressAdapter() {
-		 * 
-		 * @Override public void completed(ProgressEvent event) { initBrowser();
-		 * } });
-		 */
 	}
 
 	private String getUrl() {
@@ -151,8 +139,21 @@ public class LocationPage extends FormPage {
 		}
 	}
 
-	private void initBrowser(WebEngine engine) {
-		// new LocationChangeFn();
+	private void initBrowser() {
+		InitData initData = getInitialLocation();
+		String json = new Gson().toJson(initData);
+		try {
+			JSObject win = (JSObject) browser.executeScript("window");
+			win.setMember("java", new JSHandler());
+			browser.executeScript("init(" + json + ")");
+			// browser.evaluate("init(" + json + ")");
+		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("failed to initialize browser " + json, e);
+		}
+	}
+
+	private InitData getInitialLocation() {
 		InitData initData = new InitData();
 		Location location = loc.get();
 		if (location.latitude != null && location.longitude != null) {
@@ -165,14 +166,7 @@ public class LocationPage extends FormPage {
 			initData.latlng.lng = initLoc.lng;
 			initData.withMarker = false;
 		}
-		String json = new Gson().toJson(initData);
-		try {
-			engine.executeScript("init(" + json + ")");
-			// browser.evaluate("init(" + json + ")");
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to initialize browser " + json, e);
-		}
+		return initData;
 	}
 
 	private LatLng findInitialLocation() {
@@ -202,13 +196,13 @@ public class LocationPage extends FormPage {
 		Rcp.runInUI("update marker", () -> {
 			try {
 				if (l == null || l.latitude == null || l.longitude == null)
-					browser.evaluate("removeMarker()");
+					browser.executeScript("removeMarker()");
 				else {
 					LatLng latlng = new LatLng();
 					latlng.lat = l.latitude;
 					latlng.lng = l.longitude;
 					String json = new Gson().toJson(latlng);
-					browser.evaluate("setLocation(" + json + ")");
+					browser.executeScript("setLocation(" + json + ")");
 				}
 			} catch (Exception e) {
 				Logger log = LoggerFactory.getLogger(getClass());
@@ -229,24 +223,16 @@ public class LocationPage extends FormPage {
 		double lng;
 	}
 
-	private class LocationChangeFn extends BrowserFunction {
-
-		public LocationChangeFn() {
-			super(browser, "locationChanged");
-		}
-
-		@Override
-		public Object function(Object[] args) {
-			if (args == null || args.length == 0 || args[0] == null)
-				return null;
+	public class JSHandler {
+		public void locationChanged(String json) {
+			if (json == null)
+				return;
 			Rcp.runInUI("update texts", () -> {
-				String json = args[0].toString();
 				Gson gson = new Gson();
 				LatLng latlng = gson.fromJson(json, LatLng.class);
 				Texts.set(latText, latlng.lat);
 				Texts.set(lngText, latlng.lng);
 			});
-			return null;
 		}
 	}
 }

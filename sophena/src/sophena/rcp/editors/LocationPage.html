@@ -100,11 +100,11 @@
             }
 
             function fireLocationChange(latLng) {
-                if (typeof(locationChanged) !== 'function') {
+                if (!java || typeof(java.locationChanged) !== 'function') {
                     console.log('locationChanged is not bound', latLng);
                 } else {
                     var data = '{"lat": ' + latLng.lat + ', "lng":' + latLng.lng + '}';
-                    locationChanged(data);
+                    java.locationChanged(data);
                 }
             }
         </script>
