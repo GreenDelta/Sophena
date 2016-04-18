@@ -53,8 +53,9 @@ public class DataPack implements Closeable {
 			byte[] bytes = json.getBytes("utf-8");
 			String dirName = getPath(type);
 			Path dir = zip.getPath(dirName);
-			if (!Files.exists(dir))
+			if (!Files.exists(dir)) {
 				Files.createDirectory(dir);
+			}
 			Path path = zip.getPath(dirName + "/" + id + ".json");
 			Files.write(path, bytes, StandardOpenOption.CREATE);
 		} catch (Exception e) {

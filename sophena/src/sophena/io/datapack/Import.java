@@ -101,8 +101,7 @@ public class Import implements Runnable {
 		return builder.create();
 	}
 
-	private class Deserializer<T extends RootEntity>
-			implements JsonDeserializer<T> {
+	private class Deserializer<T extends RootEntity> implements JsonDeserializer<T> {
 
 		private Class<T> type;
 
