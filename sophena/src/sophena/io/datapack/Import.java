@@ -2,6 +2,7 @@ package sophena.io.datapack;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.WeatherStation;
+import sophena.rcp.utils.Strings;
 
 public class Import implements Runnable {
 
@@ -113,11 +115,30 @@ public class Import implements Runnable {
 				JsonDeserializationContext context) throws JsonParseException {
 			if (json == null || !json.isJsonObject())
 				return null;
+			if (Objects.equals(this.type, Product.class))
+				return handleProduct(json);
+			else
+				return loadReference(json);
+		}
+
+		private T handleProduct(JsonElement json) {
+			JsonElement projectIdElem = json.getAsJsonObject().get("projectId");
+			if (projectIdElem == null)
+				return loadReference(json);
+			String projectId = projectIdElem.getAsString();
+			if (Strings.nullOrEmpty(projectId))
+				return loadReference(json);
+			Gson gson = getGson(type);
+			return gson.fromJson(json, type);
+		}
+
+		private T loadReference(JsonElement json) {
 			JsonElement idElem = json.getAsJsonObject().get("id");
 			if (idElem == null)
 				return null;
 			Dao<T> dao = new Dao<>(this.type, db);
 			return dao.get(idElem.getAsString());
 		}
+
 	}
 }
