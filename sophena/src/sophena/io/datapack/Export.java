@@ -73,6 +73,11 @@ public class Export {
 			return createRef(entity);
 		}
 
+		/**
+		 * The handling of general products is a bit special: project own
+		 * products are directly serialized into the JSON tree of the project
+		 * while shared products are serialized into the `products` folder.
+		 */
 		private JsonElement handleProduct(Product product) {
 			if (product.projectId == null) { // shared product
 				write(product);

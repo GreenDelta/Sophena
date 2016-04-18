@@ -121,6 +121,10 @@ public class Import implements Runnable {
 				return loadReference(json);
 		}
 
+		/**
+		 * See also the documentation in the export for more information about
+		 * how products are stored.
+		 */
 		private T handleProduct(JsonElement json) {
 			JsonElement projectIdElem = json.getAsJsonObject().get("projectId");
 			if (projectIdElem == null)
