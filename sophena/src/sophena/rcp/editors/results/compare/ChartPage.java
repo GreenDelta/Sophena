@@ -103,6 +103,19 @@ class ChartPage extends FormPage {
 
 	private void createBarChart(Composite composite, String unit,
 			ToDoubleFunction<CostResult> fn) {
+
+		// FxBarChart.create(comparison, composite, new FxBarChart.Val() {
+		// @Override
+		// public String unit() {
+		// return unit;
+		// }
+		//
+		// @Override
+		// public double get(CostResult result) {
+		// return fn.applyAsDouble(result);
+		// }
+		// });
+
 		BarChart.create(comparison, composite, new BarChart.Data() {
 			@Override
 			public double value(CostResult result) {

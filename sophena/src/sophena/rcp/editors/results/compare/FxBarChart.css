@@ -1,0 +1,8 @@
+.bar-chart {
+	-fx-background-color: white ;
+	-fx-bar-gap: 50;	
+	-fx-category-gap: 20;
+}
+
+.chart-bar.series0.data0.default-color0 { -fx-background-color: red; }
+.chart-bar.series0.data1.default-color0 { -fx-background-color:  green }
