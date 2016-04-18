@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -18,6 +17,7 @@ import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
+import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.WeatherStation;
 
@@ -29,26 +29,25 @@ public class Export {
 		this.pack = pack;
 	}
 
-	public void write(AbstractEntity entity) {
-		if (entity == null)
+	public void write(RootEntity root) {
+		if (root == null)
 			return;
-		Class<?> type = entity.getClass();
-		Gson gson = getGson(type);
-		ModelType modelType = ModelType.forModelClass(type);
-		String json = gson.toJson(entity);
-		pack.put(modelType, entity.id, json);
+		Gson gson = getGson(root);
+		ModelType modelType = ModelType.forModelClass(root.getClass());
+		String json = gson.toJson(root);
+		pack.put(modelType, root.id, json);
 	}
 
-	private Gson getGson(Class<?> rootType) {
+	private Gson getGson(RootEntity root) {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
 				WeatherStation.class,
 		};
-		Serializer ed = new Serializer();
+		Serializer ed = new Serializer(root);
 		for (Class<?> refType : refTypes) {
-			if (refType.equals(rootType))
+			if (refType.equals(root.getClass()))
 				continue;
 			builder.registerTypeAdapter(refType, ed);
 		}
@@ -56,17 +55,41 @@ public class Export {
 	}
 
 	private class Serializer implements JsonSerializer<RootEntity> {
+
+		RootEntity root;
+
+		Serializer(RootEntity root) {
+			this.root = root;
+		}
+
 		@Override
 		public JsonElement serialize(RootEntity entity, Type type,
 				JsonSerializationContext context) {
 			if (entity == null)
 				return null;
+			if (entity instanceof Product)
+				return handleProduct((Product) entity);
 			write(entity);
+			return createRef(entity);
+		}
+
+		private JsonElement handleProduct(Product product) {
+			if (product.projectId == null) { // shared product
+				write(product);
+				return createRef(product);
+			}
+			if (!(root instanceof Project))
+				return createRef(product); // product entries
+			// write owned product into project
+			Gson gson = getGson(product);
+			return gson.toJsonTree(product);
+		}
+
+		private JsonElement createRef(RootEntity entity) {
 			JsonObject obj = new JsonObject();
 			obj.addProperty("id", entity.id);
 			obj.addProperty("name", entity.name);
 			return obj;
 		}
 	}
-
 }

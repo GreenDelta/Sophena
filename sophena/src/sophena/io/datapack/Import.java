@@ -45,8 +45,8 @@ public class Import implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			pack = DataPack.open(packFile);
+		try (DataPack pack = DataPack.open(packFile)) {
+			this.pack = pack;
 			// order is important for reference resolving
 			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.PIPE, Pipe.class);
@@ -58,7 +58,6 @@ public class Import implements Runnable {
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			importEntities(ModelType.PROJECT, Project.class);
-			pack.close();
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
 		}
