@@ -9,11 +9,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sophena.Tests;
 import sophena.db.daos.ProductDao;
 import sophena.db.daos.ProjectDao;
 import sophena.io.datapack.DataPack;
+import sophena.io.datapack.Export;
+import sophena.io.datapack.Import;
 import sophena.model.Product;
 import sophena.model.ProductEntry;
 import sophena.model.Project;
@@ -23,6 +27,7 @@ import sophena.model.Project;
  */
 public class ProductsPackTest {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private ProjectDao projectDao = new ProjectDao(Tests.getDb());
 	private ProductDao productDao = new ProductDao(Tests.getDb());
 
@@ -30,9 +35,6 @@ public class ProductsPackTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Path packFile = Files.createTempFile("test_products_pack_", ".sophena");
-		Files.delete(packFile);
-		DataPack pack = new DataPack(packFile.toFile());
 		project = createModel();
 	}
 
@@ -96,6 +98,24 @@ public class ProductsPackTest {
 		Assert.assertNotEquals(project.ownProducts.get(0),
 				clone.ownProducts.get(0));
 		projectDao.delete(clone);
+	}
+
+	@Test
+	public void testPackIO() throws Exception {
+		Path path = Files.createTempFile("test_products_pack_", ".sophena");
+		Files.delete(path);
+		try (DataPack pack = new DataPack(path.toFile())) {
+			log.trace("Created data package: {}", path);
+			Export export = new Export(pack);
+			export.write(project);
+		}
+		projectDao.delete(project);
+		Assert.assertNull(projectDao.get(project.id));
+		Assert.assertNull(productDao.get(project.ownProducts.get(0).id));
+		Import packImport = new Import(path.toFile(), Tests.getDb());
+		packImport.run();
+		project = projectDao.get(project.id);
+		testModel(project);
 	}
 
 	private void testModel(Project project) {
