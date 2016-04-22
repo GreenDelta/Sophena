@@ -32,6 +32,7 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class LocationPage extends FormPage {
 
@@ -226,8 +227,8 @@ public class LocationPage extends FormPage {
 			Rcp.runInUI("update texts", () -> {
 				Gson gson = new Gson();
 				LatLng latlng = gson.fromJson(json, LatLng.class);
-				Texts.set(latText, latlng.lat);
-				Texts.set(lngText, latlng.lng);
+				Texts.set(latText, Num.str(latlng.lat, 6));
+				Texts.set(lngText, Num.str(latlng.lng, 6));
 			});
 		}
 	}
