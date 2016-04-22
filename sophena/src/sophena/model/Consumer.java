@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -55,6 +56,13 @@ public class Consumer extends RootEntity {
 	@JoinColumn(name = "f_location")
 	public Location location;
 
+	@OneToOne
+	@JoinColumn(name = "f_transfer_station")
+	public TransferStation transferStation;
+
+	@Embedded
+	public ProductCosts transferStationCosts;
+
 	@Override
 	public Consumer clone() {
 		Consumer clone = new Consumer();
@@ -72,6 +80,10 @@ public class Consumer extends RootEntity {
 			clone.fuelConsumptions.add(cons.clone());
 		if (location != null)
 			clone.location = location.clone();
+		clone.transferStation = transferStation;
+		if (transferStationCosts != null) {
+			clone.transferStationCosts = transferStationCosts.clone();
+		}
 		return clone;
 	}
 

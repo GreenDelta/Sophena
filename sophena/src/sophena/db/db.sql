@@ -220,6 +220,13 @@ CREATE TABLE tbl_consumers (
 	f_building_state CHAR(36),
 	f_location CHAR(36),
 
+	f_transfer_station CHAR(36),
+	investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE,
+
 	PRIMARY KEY (id)
 );
 
