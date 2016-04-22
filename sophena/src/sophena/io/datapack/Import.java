@@ -29,6 +29,7 @@ import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.RootEntity;
+import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
 import sophena.rcp.utils.Strings;
 
@@ -59,6 +60,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
+			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
 			importEntities(ModelType.PROJECT, Project.class);
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
@@ -91,7 +93,7 @@ public class Import implements Runnable {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class
+				WeatherStation.class, TransferStation.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))
@@ -143,6 +145,5 @@ public class Import implements Runnable {
 			Dao<T> dao = new Dao<>(this.type, db);
 			return dao.get(idElem.getAsString());
 		}
-
 	}
 }

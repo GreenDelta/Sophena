@@ -19,6 +19,7 @@ import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.RootEntity;
+import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
 
 public class Export {
@@ -43,7 +44,7 @@ public class Export {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class,
+				WeatherStation.class, TransferStation.class
 		};
 		Serializer ed = new Serializer(root);
 		for (Class<?> refType : refTypes) {
