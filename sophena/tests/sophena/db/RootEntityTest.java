@@ -1,5 +1,6 @@
 package sophena.db;
 
+import java.lang.reflect.Modifier;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -7,40 +8,17 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.RootEntityDao;
-import sophena.model.Boiler;
-import sophena.model.BufferTank;
-import sophena.model.BuildingState;
-import sophena.model.Consumer;
-import sophena.model.Fuel;
-import sophena.model.Pipe;
-import sophena.model.Producer;
-import sophena.model.Product;
-import sophena.model.ProductGroup;
-import sophena.model.Project;
 import sophena.model.RootEntity;
-import sophena.model.WeatherStation;
 
 public class RootEntityTest {
 
-	@SuppressWarnings("unchecked")
-	private Class<? extends RootEntity>[] classes = new Class[] {
-			BuildingState.class,
-			Consumer.class,
-			Fuel.class,
-			Project.class,
-			WeatherStation.class,
-			Boiler.class,
-			Pipe.class,
-			ProductGroup.class,
-			BufferTank.class,
-			Producer.class,
-			Product.class
-	};
-
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testAll() throws Exception {
-		for (Class<? extends RootEntity> clazz : classes) {
-			test(clazz);
+		for (Class<?> type : Tests.getSubTypes(RootEntity.class, "sophena.model")) {
+			if (Modifier.isAbstract(type.getModifiers()))
+				continue;
+			test((Class<? extends RootEntity>) type);
 		}
 	}
 

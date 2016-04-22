@@ -340,6 +340,30 @@ CREATE TABLE tbl_buffer_tanks (
 );
 
 
+CREATE TABLE tbl_transfer_stations (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	is_protected BOOLEAN,
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
+
+	building_type VARCHAR(255),
+	output_capacity VARCHAR(255),
+	station_type VARCHAR(255),
+	material VARCHAR(255),
+	water_heating VARCHAR(255),
+	control VARCHAR(255),
+		
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_producers (
 
 	id CHAR(36),

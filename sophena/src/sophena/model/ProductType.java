@@ -24,6 +24,8 @@ public enum ProductType {
 
 	HEATING_NET_CONSTRUCTION,
 
-	PLANNING
+	PLANNING,
+
+	TRANSFER_STATION
 
 }

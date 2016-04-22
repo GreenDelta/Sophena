@@ -26,6 +26,8 @@ public enum ModelType {
 
 	PROJECT(Project.class),
 
+	TRANSFER_STATION(TransferStation.class),
+
 	WEATHER_STATION(WeatherStation.class);
 
 	private final Class<? extends AbstractEntity> modelClass;
