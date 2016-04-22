@@ -134,7 +134,6 @@ class BufferTankWizard extends Wizard {
 				setPageComplete(false);
 				return false;
 			}
-
 		}
 	}
 }

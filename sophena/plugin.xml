@@ -177,6 +177,12 @@
 			name="Pufferspeicher" />
 
 		<editor
+			class="sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor"
+			icon="icons/consumer_16.png"
+			id="sophena.TransferStationEditor"
+			name="Hausübergabestationen" />
+
+		<editor
 			class="sophena.rcp.editors.basedata.costs.BaseCostEditor"
 			icon="icons/costs_16.png"
 			id="sophena.BaseCostEditor"

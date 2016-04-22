@@ -1,14 +1,11 @@
-package sophena.rcp.editors.basedata.buffers;
+package sophena.rcp.editors.basedata.transfer.stations;
 
 import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -17,15 +14,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
-import sophena.db.usage.SearchResult;
-import sophena.db.usage.UsageSearch;
-import sophena.model.BufferTank;
 import sophena.model.ProductType;
+import sophena.model.TransferStation;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
-import sophena.rcp.editors.basedata.UsageError;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -36,12 +31,12 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 
-public class BufferTankEditor extends Editor {
+public class TransferStationEditor extends Editor {
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.buffers",
-				"Pufferspeicher");
-		Editors.open(input, "sophena.BufferEditor");
+		KeyEditorInput input = new KeyEditorInput("data.transfer.stations",
+				"Hausübergabestationen");
+		Editors.open(input, "sophena.TransferStationEditor");
 	}
 
 	@Override
@@ -55,34 +50,35 @@ public class BufferTankEditor extends Editor {
 
 	private class Page extends FormPage {
 
-		RootEntityDao<BufferTank> dao;
-		List<BufferTank> buffers;
+		RootEntityDao<TransferStation> dao;
+		List<TransferStation> stations;
 
 		Page() {
-			super(BufferTankEditor.this, "BufferEditorPage", "Pufferspeicher");
-			dao = new RootEntityDao<>(BufferTank.class, App.getDb());
-			buffers = dao.getAll();
-			Sorters.byName(buffers);
+			super(TransferStationEditor.this, "TransferStationPage",
+					"Hausübergabestationen");
+			dao = new RootEntityDao<>(TransferStation.class, App.getDb());
+			stations = dao.getAll();
+			Sorters.byName(stations);
 		}
 
 		@Override
 		protected void createFormContent(IManagedForm managedForm) {
-			ScrolledForm form = UI.formHeader(managedForm, "Pufferspeicher");
-			FormToolkit toolkit = managedForm.getToolkit();
-			Composite body = UI.formBody(form, toolkit);
-			createSection(body, toolkit);
+			ScrolledForm form = UI.formHeader(managedForm, "Hausübergabestationen");
+			FormToolkit tk = managedForm.getToolkit();
+			Composite body = UI.formBody(form, tk);
+			createSection(body, tk);
 			form.reflow(true);
 		}
 
 		private void createSection(Composite body, FormToolkit toolkit) {
-			Section section = UI.section(body, toolkit, "Pufferspeicher");
+			Section section = UI.section(body, toolkit, "Hausübergabestationen");
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
-					"Produktgruppe", "Link", "Preis", "Volumen");
+					"Gebäudetyp", "Link", "Preis", "Leistung");
 			table.setLabelProvider(new Label());
-			table.setInput(buffers);
+			table.setInput(stations);
 			double x = 1.0 / 5.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x);
 			bindActions(section, table);
@@ -101,83 +97,82 @@ public class BufferTankEditor extends Editor {
 		}
 
 		private void add(TableViewer table) {
-			BufferTank b = new BufferTank();
-			b.id = UUID.randomUUID().toString();
-			b.type = ProductType.BUFFER_TANK;
-			b.name = "Neuer Pufferspeicher";
-			if (BufferTankWizard.open(b) != Window.OK)
+			TransferStation s = new TransferStation();
+			s.id = UUID.randomUUID().toString();
+			s.type = ProductType.TRANSFER_STATION;
+			s.name = "Neue Hausübergabestation";
+			if (TransferStationWizard.open(s) != Window.OK)
 				return;
-			dao.insert(b);
-			buffers.add(b);
-			table.setInput(buffers);
+			dao.insert(s);
+			stations.add(s);
+			table.setInput(stations);
 		}
 
 		private void edit(TableViewer table) {
-			BufferTank b = Viewers.getFirstSelected(table);
-			if (b == null)
+			TransferStation s = Viewers.getFirstSelected(table);
+			if (s == null)
 				return;
-			if (BufferTankWizard.open(b) != Window.OK)
+			if (TransferStationWizard.open(s) != Window.OK)
 				return;
 			try {
-				int idx = buffers.indexOf(b);
-				b = dao.update(b);
-				buffers.set(idx, b);
-				table.setInput(buffers);
+				int idx = stations.indexOf(s);
+				s = dao.update(s);
+				stations.set(idx, s);
+				table.setInput(stations);
 			} catch (Exception e) {
-				log.error("failed to update buffer");
+				log.error("failed to update transfer station");
 			}
 		}
 
 		private void delete(TableViewer table) {
-			BufferTank b = Viewers.getFirstSelected(table);
-			if (b == null || b.isProtected)
+			TransferStation s = Viewers.getFirstSelected(table);
+			if (s == null || s.isProtected)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
-					"Soll der ausgewählte Pufferspeicher wirklich gelöscht werden?");
+					"Soll die ausgewählte Hausübergabestation wirklich gelöscht werden?");
 			if (!doIt)
 				return;
-			List<SearchResult> usage = new UsageSearch(App.getDb()).of(b);
-			if (!usage.isEmpty()) {
-				UsageError.show(usage);
-				return;
-			}
+			// TODO: usage search
+			// List<SearchResult> usage = new UsageSearch(App.getDb()).of(s);
+			// if (!usage.isEmpty()) {
+			// UsageError.show(usage);
+			// return;
+			// }
 			try {
-				dao.delete(b);
-				buffers.remove(b);
-				table.setInput(buffers);
+				dao.delete(s);
+				stations.remove(s);
+				table.setInput(stations);
 			} catch (Exception e) {
-				log.error("failed to delete buffer " + b, e);
+				log.error("failed to delete transfer station " + s, e);
 			}
 		}
+
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
-		@Override
-		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Icon.BUFFER_16.img() : null;
-		}
+	private class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof BufferTank))
+			if (!(obj instanceof TransferStation))
 				return null;
-			BufferTank b = (BufferTank) obj;
+			TransferStation s = (TransferStation) obj;
 			switch (col) {
 			case 0:
-				return b.name;
+				return s.name;
 			case 1:
-				return b.group != null ? b.group.name : null;
+				return s.buildingType;
 			case 2:
-				return b.url;
+				return s.url;
 			case 3:
-				return b.purchasePrice == null ? null
-						: Num.str(b.purchasePrice) + " EUR";
+				return s.purchasePrice == null ? null
+						: Num.str(s.purchasePrice) + " EUR";
 			case 4:
-				return Num.str(b.volume) + " L";
+				return Num.str(s.outputCapacity) + " kW";
 			default:
 				return null;
 			}
 		}
+
 	}
 
 }

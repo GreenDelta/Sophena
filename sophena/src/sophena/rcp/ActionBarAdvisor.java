@@ -36,6 +36,7 @@ import sophena.rcp.editors.basedata.products.FlueGasCleaningEditor;
 import sophena.rcp.editors.basedata.products.HeatRecoveryEditor;
 import sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor;
 import sophena.rcp.editors.basedata.products.PlanningEditor;
+import sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.navigation.Navigator;
@@ -118,6 +119,8 @@ public class ActionBarAdvisor extends
 				PipeEditor::open));
 		m.add(Actions.create("Pufferspeicher", Icon.BUFFER_16.des(),
 				BufferTankEditor::open));
+		m.add(Actions.create("Hausübergabestationen", Icon.CONSUMER_16.des(),
+				TransferStationEditor::open));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
 		m.add(Actions.create("Wärmerückgewinnung", HeatRecoveryEditor::open));
 		m.add(Actions.create("Rauchgasreinigung", FlueGasCleaningEditor::open));

@@ -13,7 +13,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-public abstract class BaseTableLable extends LabelProvider
+public abstract class BaseTableLabel extends LabelProvider
 		implements ITableLabelProvider, IFontProvider, IColorProvider {
 
 	@Override

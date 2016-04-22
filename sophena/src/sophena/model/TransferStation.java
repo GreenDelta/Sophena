@@ -17,7 +17,7 @@ public class TransferStation extends AbstractProduct {
 
 	/** Type description */
 	@Column(name = "station_type")
-	public String type;
+	public String stationType;
 
 	/** Description of the material of the transfer station. */
 	@Column(name = "material")

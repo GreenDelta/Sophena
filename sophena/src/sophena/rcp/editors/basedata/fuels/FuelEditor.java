@@ -24,7 +24,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
-import sophena.rcp.editors.basedata.BaseTableLable;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -215,7 +215,7 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private class FuelLabel extends BaseTableLable {
+		private class FuelLabel extends BaseTableLabel {
 
 			@Override
 			public String getColumnText(Object element, int col) {
@@ -236,7 +236,7 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private class WoodLabel extends BaseTableLable {
+		private class WoodLabel extends BaseTableLabel {
 
 			@Override
 			public String getColumnText(Object element, int col) {

@@ -10,10 +10,10 @@ import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
-import sophena.rcp.editors.basedata.BaseTableLable;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.utils.Num;
 
-class TableLabel extends BaseTableLable {
+class TableLabel extends BaseTableLabel {
 
 	private Map<BuildingType, Integer> lowestIndex = new HashMap<>();
 
