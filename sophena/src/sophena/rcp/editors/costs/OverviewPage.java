@@ -11,12 +11,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.Boiler;
+import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductType;
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
+import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.utils.Strings;
@@ -48,6 +50,7 @@ class OverviewPage extends FormPage {
 		entries(ProductType.BOILER_ACCESSORIES, body, tk);
 		bufferSection(body, tk);
 		pipeSection(body, tk);
+		transferStations(body, tk);
 		entries(ProductType.HEAT_RECOVERY, body, tk);
 		entries(ProductType.FLUE_GAS_CLEANING, body, tk);
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
@@ -91,6 +94,27 @@ class OverviewPage extends FormPage {
 		s.costs = p -> p.costs;
 		s.label = p -> p.pipe != null ? p.pipe.name : null;
 		s.onOpen = p -> HeatNetEditor.open(editor.getProject().toDescriptor());
+		s.create(body, tk);
+	}
+
+	private void transferStations(Composite body, FormToolkit tk) {
+		DisplaySection<Consumer> s = new DisplaySection<>(
+				ProductType.TRANSFER_STATION);
+		s.content = () -> {
+			List<Consumer> list = new ArrayList<>();
+			for (Consumer c : editor.getProject().consumers) {
+				if (c.transferStation != null) {
+					list.add(c);
+				}
+			}
+			Collections.sort(list, (c1, c2) -> Strings.compare(
+					c1.transferStation.name, c2.transferStation.name));
+			return list;
+		};
+		s.costs = c -> c.transferStationCosts;
+		s.label = c -> c.transferStation != null ? c.transferStation.name : null;
+		s.onOpen = c -> ConsumerEditor.open(editor.getProject().toDescriptor(),
+				c.toDescriptor());
 		s.create(body, tk);
 	}
 

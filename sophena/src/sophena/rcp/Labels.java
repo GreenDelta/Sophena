@@ -139,6 +139,8 @@ public final class Labels {
 			return "Wärmenetz-Bau";
 		case PLANNING:
 			return "Planung";
+		case TRANSFER_STATION:
+			return "Hausübergabestation";
 		default:
 			return null;
 		}
@@ -172,6 +174,8 @@ public final class Labels {
 			return "Wärmenetz-Bau";
 		case PLANNING:
 			return "Planung";
+		case TRANSFER_STATION:
+			return "Hausübergabestationen";
 		default:
 			return null;
 		}
@@ -205,6 +209,8 @@ public final class Labels {
 			return null;
 		case PLANNING:
 			return null;
+		case TRANSFER_STATION:
+			return Icon.CONSUMER_16.img();
 		default:
 			return null;
 		}
