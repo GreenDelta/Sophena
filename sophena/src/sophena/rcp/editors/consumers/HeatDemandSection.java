@@ -29,7 +29,7 @@ class HeatDemandSection {
 	}
 
 	private Consumer consumer() {
-		return editor.getConsumer();
+		return editor.consumer;
 	}
 
 	void updateBuildingState(BuildingState state) {

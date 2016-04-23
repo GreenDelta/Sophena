@@ -32,7 +32,7 @@ import sophena.rcp.utils.KeyEditorInput;
 public class ConsumerEditor extends Editor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private Consumer consumer;
+	Consumer consumer;
 	private String projectId;
 	private WeatherStation weatherStation;
 
@@ -73,10 +73,6 @@ public class ConsumerEditor extends Editor {
 		}
 		log.error("did not found consumer {} in {}", consumerKey, project);
 		return null;
-	}
-
-	public Consumer getConsumer() {
-		return consumer;
 	}
 
 	public void calculate() {

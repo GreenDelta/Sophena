@@ -21,7 +21,7 @@ class InfoPage extends FormPage {
 	}
 
 	private Consumer consumer() {
-		return editor.getConsumer();
+		return editor.consumer;
 	}
 
 	@Override
@@ -36,6 +36,7 @@ class InfoPage extends FormPage {
 			ConsumptionSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);
+		new TransferStationSection(editor).create(body, tk);
 		editor.onCalculated((profile, totals, total) -> loadCurve.setData(profile));
 		form.reflow(true);
 		editor.calculate();

@@ -36,7 +36,7 @@ class InfoSection {
 	}
 
 	private Consumer consumer() {
-		return editor.getConsumer();
+		return editor.consumer;
 	}
 
 	void setDemandSection(HeatDemandSection demandSection) {

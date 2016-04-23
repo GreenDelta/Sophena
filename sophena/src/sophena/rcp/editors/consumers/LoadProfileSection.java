@@ -42,7 +42,7 @@ class LoadProfileSection {
 	}
 
 	private Consumer consumer() {
-		return editor.getConsumer();
+		return editor.consumer;
 	}
 
 	void create(Composite body, FormToolkit toolkit) {
