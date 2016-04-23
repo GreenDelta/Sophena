@@ -123,7 +123,8 @@ public class ActionBarAdvisor extends
 				TransferStationEditor::open));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
 		m.add(Actions.create("Wärmerückgewinnung", HeatRecoveryEditor::open));
-		m.add(Actions.create("Rauchgasreinigung", FlueGasCleaningEditor::open));
+		m.add(Actions.create("Rauchgasreinigung", Icon.FLUE_GAS_16.des(),
+				FlueGasCleaningEditor::open));
 		m.add(Actions.create("Heizhaus-Technik",
 				BoilerHouseTechnologyEditor::open));
 		m.add(Actions.create("Gebäude", BuildingProductEditor::open));

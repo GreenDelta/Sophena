@@ -55,6 +55,8 @@ public enum Icon {
 
 	FILE_16("file_16.png"),
 
+	FLUE_GAS_16("flue_gas_16.png"),
+
 	FUEL_16("fuel_16.png"),
 
 	IMPORT_16("import_16.png"),

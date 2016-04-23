@@ -232,7 +232,8 @@
 		<editor
 			class="sophena.rcp.editors.basedata.products.FlueGasCleaningEditor"
 			id="sophena.products.FlueGasCleaningEditor"
-			name="Rauchgasreinigung" />
+			name="Rauchgasreinigung"
+			icon="icons/flue_gas_16.png" />
 
 		<editor
 			class="sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor"
