@@ -221,11 +221,11 @@ CREATE TABLE tbl_consumers (
 	f_location CHAR(36),
 
 	f_transfer_station CHAR(36),
-	investment DOUBLE,
-    duration INTEGER,
-    repair DOUBLE,
-    maintenance DOUBLE,
-    operation DOUBLE,
+	transfer_station_investment DOUBLE,
+    transfer_station_duration INTEGER,
+    transfer_station_repair DOUBLE,
+    transfer_station_maintenance DOUBLE,
+    transfer_station_operation DOUBLE,
 
 	PRIMARY KEY (id)
 );

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -61,6 +63,17 @@ public class Consumer extends RootEntity {
 	public TransferStation transferStation;
 
 	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "investment",
+					column = @Column(name = "transfer_station_investment")),
+			@AttributeOverride(name = "duration",
+					column = @Column(name = "transfer_station_duration")),
+			@AttributeOverride(name = "repair",
+					column = @Column(name = "transfer_station_repair")),
+			@AttributeOverride(name = "maintenance",
+					column = @Column(name = "transfer_station_maintenance")),
+			@AttributeOverride(name = "operation",
+					column = @Column(name = "transfer_station_operation")) })
 	public ProductCosts transferStationCosts;
 
 	@Override
