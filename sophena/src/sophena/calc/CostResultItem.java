@@ -1,5 +1,10 @@
 package sophena.calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
@@ -30,11 +35,7 @@ public class CostResultItem {
 			item.productType = entry.product.type;
 			item.label = entry.product.name;
 		}
-		if (entry.costs != null)
-			item.costs = entry.costs.clone();
-		else
-			item.costs = new ProductCosts();
-		return item;
+		return copy(entry.costs, item);
 	}
 
 	static CostResultItem create(Producer producer) {
@@ -46,11 +47,7 @@ public class CostResultItem {
 			item.productType = producer.boiler.type;
 			item.label = producer.boiler.name;
 		}
-		if (producer.costs != null)
-			item.costs = producer.costs.clone();
-		else
-			item.costs = new ProductCosts();
-		return item;
+		return copy(producer.costs, item);
 	}
 
 	static CostResultItem createForBuffer(HeatNet net) {
@@ -64,11 +61,7 @@ public class CostResultItem {
 			item.label = net.bufferTank.name;
 			item.productType = net.bufferTank.type;
 		}
-		if (net.bufferTankCosts != null)
-			item.costs = net.bufferTankCosts.clone();
-		else
-			item.costs = new ProductCosts();
-		return item;
+		return copy(net.bufferTankCosts, item);
 	}
 
 	static CostResultItem create(HeatNetPipe pipe) {
@@ -82,11 +75,30 @@ public class CostResultItem {
 			item.label = pipe.pipe.name;
 			item.productType = pipe.pipe.type;
 		}
-		if (pipe.costs != null)
-			item.costs = pipe.costs.clone();
-		else
-			item.costs = new ProductCosts();
-		return item;
+		return copy(pipe.costs, item);
 	}
 
+	static List<CostResultItem> forTransferStations(List<Consumer> consumers) {
+		if (consumers == null)
+			return Collections.emptyList();
+		List<CostResultItem> items = new ArrayList<>();
+		for (Consumer consumer : consumers) {
+			if (consumer.transferStation == null)
+				continue;
+			CostResultItem item = new CostResultItem();
+			item.label = consumer.transferStation.name;
+			item.productType = ProductType.TRANSFER_STATION;
+			items.add(copy(consumer.transferStationCosts, item));
+		}
+		return items;
+	}
+
+	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {
+		if (costs == null) {
+			item.costs = new ProductCosts();
+		} else {
+			item.costs = costs.clone();
+		}
+		return item;
+	}
 }

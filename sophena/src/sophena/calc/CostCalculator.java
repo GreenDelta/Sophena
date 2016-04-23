@@ -50,8 +50,9 @@ class CostCalculator {
 			handleItem(r, item);
 		}
 		handleNetItems(r);
-		if (withFunding)
+		if (withFunding) {
 			setCapitalCostsFunding(r);
+		}
 		addOtherCosts(r);
 		r.netTotal.revenues = settings.electricityRevenues
 				* GeneratedElectricity.getTotalkWh(energyResult);
@@ -61,6 +62,10 @@ class CostCalculator {
 	}
 
 	private void handleNetItems(CostResult r) {
+		for (CostResultItem item : CostResultItem.forTransferStations(
+				project.consumers)) {
+			handleItem(r, item);
+		}
 		HeatNet net = project.heatNet;
 		if (net == null)
 			return;
