@@ -27,6 +27,7 @@ public class BufferUsageTest {
 	public void setUp() {
 		tank = new BufferTank();
 		tank.id = UUID.randomUUID().toString();
+		tank.name = "Buffer 123";
 		dao.insert(tank);
 	}
 

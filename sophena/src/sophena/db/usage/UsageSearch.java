@@ -16,6 +16,7 @@ import sophena.model.Fuel;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
+import sophena.model.TransferStation;
 
 /**
  * Searches for the usage of entities in other entities.
@@ -69,6 +70,14 @@ public class UsageSearch {
 			return Collections.emptyList();
 		String sql = "select c.id, c.name from tbl_consumers c where "
 				+ "c.f_building_state = '" + state.id + "'";
+		return query(sql, ModelType.CONSUMER);
+	}
+
+	public List<SearchResult> of(TransferStation station) {
+		if (station == null || station.id == null)
+			return Collections.emptyList();
+		String sql = "select c.id, c.name from tbl_consumers c where "
+				+ "c.f_transfer_station = '" + station.id + "'";
 		return query(sql, ModelType.CONSUMER);
 	}
 
