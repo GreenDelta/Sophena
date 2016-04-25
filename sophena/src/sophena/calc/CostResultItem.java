@@ -78,11 +78,11 @@ public class CostResultItem {
 		return copy(pipe.costs, item);
 	}
 
-	static List<CostResultItem> forTransferStations(List<Consumer> consumers) {
-		if (consumers == null)
+	static List<CostResultItem> forTransferStations(Project project) {
+		if (project == null)
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
-		for (Consumer consumer : consumers) {
+		for (Consumer consumer : project.consumers) {
 			if (consumer.transferStation == null)
 				continue;
 			CostResultItem item = new CostResultItem();
@@ -91,6 +91,17 @@ public class CostResultItem {
 			items.add(copy(consumer.transferStationCosts, item));
 		}
 		return items;
+	}
+	
+	static List<CostResultItem> forHeatRecoveries(Project project) {
+		if (project == null)
+			return Collections.emptyList();
+		List<CostResultItem> items = new ArrayList<>();
+		for (Producer producer : project.producers) {
+			if (ProductCosts.empty(producer.heatRecoveryCosts))
+				continue;
+			// TODO: create item
+		}
 	}
 
 	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {
