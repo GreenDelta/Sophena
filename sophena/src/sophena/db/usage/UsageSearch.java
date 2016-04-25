@@ -80,6 +80,15 @@ public class UsageSearch {
 				+ "c.f_transfer_station = '" + station.id + "'";
 		return query(sql, ModelType.CONSUMER);
 	}
+	
+	public List<SearchResult> of(FlueGasCleaning cleaning) {
+		if (cleaning == null || cleaning.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_flue_gas_cleaning_entries e "
+				+ " inner join tbl_projects p on e.f_project = p.id "
+				+ " where e.f_flue_gas_cleaning = '" + cleaning.id + "'";
+		return query(sql, ModelType.PROJECT);
+	}
 
 	public List<SearchResult> of(Fuel fuel) {
 		if (fuel == null || fuel.id == null)

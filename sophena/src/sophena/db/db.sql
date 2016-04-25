@@ -397,6 +397,19 @@ CREATE TABLE tbl_flue_gas_cleaning (
 );
 
 
+CREATE TABLE tbl_flue_gas_cleaning_entries (
+
+	f_project CHAR(36),
+	f_flue_gas_cleaning CHAR(36),
+		
+	investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE
+);
+
+
 CREATE TABLE tbl_heat_recovery (
 
 	id CHAR(36),

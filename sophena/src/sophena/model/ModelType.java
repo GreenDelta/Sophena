@@ -12,7 +12,11 @@ public enum ModelType {
 
 	COST_SETTINGS(CostSettings.class),
 
+	FLUE_GAS_CLEANING(FlueGasCleaning.class),
+
 	FUEL(Fuel.class),
+
+	HEAT_RECOVERY(HeatRecovery.class),
 
 	LOAD_PROFILE(LoadProfile.class),
 

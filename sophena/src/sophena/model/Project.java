@@ -51,6 +51,11 @@ public class Project extends RootEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<Product> ownProducts = new ArrayList<>();
 
+	@ElementCollection
+  	@CollectionTable(name="tbl_flue_gas_cleaning_entries",
+        joinColumns=@JoinColumn(name="f_project"))
+	public final List<FlueGasCleaningEntry> flueGasCleaningEntries = new ArrayList<>();
+
 	@Override
 	public Project clone() {
 		Project clone = new Project();
@@ -68,6 +73,9 @@ public class Project extends RootEntity {
 		if (costSettings != null)
 			clone.costSettings = costSettings.clone();
 		cloneProductEntries(clone);
+		for (FlueGasCleaningEntry e : flueGasCleaningEntries) {
+			clone.flueGasCleaningEntries.add(e.clone());
+		}
 		return clone;
 	}
 
