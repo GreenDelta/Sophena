@@ -123,7 +123,7 @@ public class TransferStationEditor extends Editor {
 				stations.set(idx, s);
 				table.setInput(stations);
 			} catch (Exception e) {
-				log.error("failed to update transfer station");
+				log.error("failed to update transfer station", e);
 			}
 		}
 
