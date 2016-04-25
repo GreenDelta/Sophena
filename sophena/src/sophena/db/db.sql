@@ -371,6 +371,54 @@ CREATE TABLE tbl_transfer_stations (
 );
 
 
+CREATE TABLE tbl_flue_gas_cleaning (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	is_protected BOOLEAN,
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
+
+	flue_gas_cleaning_type VARCHAR(255),
+	max_volume_flow DOUBLE,
+	f_fuel CHAR(36),
+	max_producer_power DOUBLE,
+	max_electricity_consumption DOUBLE,
+	cleaning_method VARCHAR(255),
+	cleaning_type VARCHAR(255),
+	separation_efficiency DOUBLE,
+		
+	PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_heat_recovery (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	is_protected BOOLEAN,
+
+	purchase_price DOUBLE,
+	url VARCHAR(255),
+	product_type VARCHAR(50),
+	f_product_group CHAR(36),
+
+	power DOUBLE,
+	heat_recovery_type VARCHAR(255),
+	f_fuel CHAR(36),
+	producer_power DOUBLE,
+		
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_producers (
 
 	id CHAR(36),
