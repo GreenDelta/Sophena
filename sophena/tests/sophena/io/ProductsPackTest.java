@@ -28,6 +28,8 @@ import sophena.model.Project;
 public class ProductsPackTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
+	
+	private Path path;
 	private ProjectDao projectDao = new ProjectDao(Tests.getDb());
 	private ProductDao productDao = new ProductDao(Tests.getDb());
 
@@ -35,6 +37,8 @@ public class ProductsPackTest {
 
 	@Before
 	public void setUp() throws Exception {
+		path = Files.createTempFile("test_products_pack_", ".sophena");
+		Files.delete(path);
 		project = createModel();
 	}
 
@@ -43,6 +47,7 @@ public class ProductsPackTest {
 		if (project != null) {
 			projectDao.delete(project);
 		}
+		Files.delete(path);
 	}
 
 	/**
@@ -102,8 +107,6 @@ public class ProductsPackTest {
 
 	@Test
 	public void testPackIO() throws Exception {
-		Path path = Files.createTempFile("test_products_pack_", ".sophena");
-		Files.delete(path);
 		try (DataPack pack = new DataPack(path.toFile())) {
 			log.trace("Created data package: {}", path);
 			Export export = new Export(pack);
