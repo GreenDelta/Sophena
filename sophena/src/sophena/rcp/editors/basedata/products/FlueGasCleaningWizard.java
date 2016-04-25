@@ -70,7 +70,7 @@ public class FlueGasCleaningWizard extends Wizard {
 		private Text descriptionTextText;
 
 		Page() {
-			super("TransferStationWizardPage", "Hausübergabestation", null);
+			super("FlueGasCleaningPage", "Rauchgasreinigung", null);
 		}
 
 		@Override
