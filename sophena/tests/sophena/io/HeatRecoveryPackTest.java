@@ -40,7 +40,7 @@ public class HeatRecoveryPackTest {
     @After
 	public void tearDown() throws Exception {
 		if (producer != null) {
-			projectDao.delete(producer);
+			producerDao.delete(producer);
 		}
         if (recovery != null) {
             recoveryDao.delete(recovery);

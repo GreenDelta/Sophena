@@ -44,7 +44,8 @@ public class Export {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class
+				WeatherStation.class, TransferStation.class, FlueGasCleaning.class,
+				HeatRecovery.class
 		};
 		Serializer ed = new Serializer(root);
 		for (Class<?> refType : refTypes) {

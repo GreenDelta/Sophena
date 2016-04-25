@@ -135,8 +135,12 @@ public class DataPack implements Closeable {
 			return "consumers";
 		case COST_SETTINGS:
 			return "cost_settings";
+		case FLUE_GAS_CLEANING:
+			return "flue_gas_cleaning";
 		case FUEL:
 			return "fuels";
+		case HEAT_RECOVERY:
+			return "heat_recovery";
 		case LOAD_PROFILE:
 			return "load_profiles";
 		case PIPE:
