@@ -90,6 +90,14 @@ public class UsageSearch {
 		return query(sql, ModelType.PROJECT);
 	}
 
+	public List<SearchResult> of(HeatRecovery recovery) {
+		if (recovery == null || recovery.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_producers p "
+				+ "where p.f_heat_recovery = '" + recovery.id + "'";
+		return query(sql, ModelType.PRODUCER); 
+	}
+
 	public List<SearchResult> of(Fuel fuel) {
 		if (fuel == null || fuel.id == null)
 			return Collections.emptyList();

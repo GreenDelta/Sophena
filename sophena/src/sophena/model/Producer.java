@@ -36,6 +36,24 @@ public class Producer extends RootEntity {
 
 	@Embedded
 	public FuelSpec fuelSpec;
+	
+	@OneToOne
+	@JoinColumn(name = "f_heat_recovery")
+	public HeatRecovery heatRecovery;
+	 
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "investment",
+					column = @Column(name = "heat_recovery_investment")),
+			@AttributeOverride(name = "duration",
+					column = @Column(name = "heat_recovery_duration")),
+			@AttributeOverride(name = "repair",
+					column = @Column(name = "heat_recovery_repair")),
+			@AttributeOverride(name = "maintenance",
+					column = @Column(name = "heat_recovery_maintenance")),
+			@AttributeOverride(name = "operation",
+					column = @Column(name = "heat_recovery_operation")) })
+	public ProductCosts heatRecoveryCosts; 
 
 	@Override
 	public Producer clone() {
@@ -51,6 +69,10 @@ public class Producer extends RootEntity {
 			clone.costs = costs.clone();
 		if (fuelSpec != null)
 			clone.fuelSpec = fuelSpec.clone();
+		clone.heatRecovery = heatRecovery;
+		if (heatRecoveryCosts != null) {
+			clone.heatRecoveryCosts = heatRecoveryCosts.clone();
+		}
 		return clone;
 	}
 

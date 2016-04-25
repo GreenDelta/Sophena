@@ -455,6 +455,13 @@ CREATE TABLE tbl_producers (
     water_content DOUBLE,
     price_per_unit DOUBLE,
     tax_rate DOUBLE,
-
+	
+	f_heat_recovery CHAR(36),
+	heat_recovery_investment DOUBLE,
+    heat_recovery_duration INTEGER,
+    heat_recovery_repair DOUBLE,
+    heat_recovery_maintenance DOUBLE,
+    heat_recovery_operation DOUBLE,
+	
     PRIMARY KEY (id)
 );
