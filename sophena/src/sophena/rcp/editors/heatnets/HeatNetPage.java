@@ -45,7 +45,7 @@ class HeatNetPage extends FormPage {
 			Composite body) {
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.setSorted(false);
-		loadCurve.setTitle("Netzlast");
+		loadCurve.setTitle("Verlustleistung des Wärmenetzes");
 		loadCurve.render(body, toolkit);
 		loadCurve.setData(NetLoadProfile.get(heatNet()));
 		return loadCurve;
