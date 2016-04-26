@@ -33,7 +33,7 @@ public class TransferStationWizard extends Wizard {
 		w.setWindowTitle("Hausübergabestation");
 		w.station = station;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 700);
+		d.setPageSize(180, 600);
 		return d.open();
 	}
 

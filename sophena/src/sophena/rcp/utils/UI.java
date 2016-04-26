@@ -251,8 +251,8 @@ public class UI {
 			text = new Text(parent, SWT.BORDER | SWT.V_SCROLL | SWT.WRAP
 					| SWT.MULTI);
 		GridData gd = gridData(text, true, false);
-		gd.minimumHeight = 60;
-		gd.heightHint = 60;
+		gd.minimumHeight = 50;
+		gd.heightHint = 50;
 		gd.widthHint = 100;
 		return text;
 	}

@@ -33,7 +33,7 @@ public class HeatRecoveryWizard extends Wizard {
 		w.setWindowTitle("Wärmerückgewinnung");
 		w.recovery = recovery;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 700);
+		d.setPageSize(180, 400);
 		return d.open();
 	}
 

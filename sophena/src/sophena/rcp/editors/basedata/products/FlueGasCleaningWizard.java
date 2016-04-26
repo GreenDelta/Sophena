@@ -33,7 +33,7 @@ public class FlueGasCleaningWizard extends Wizard {
 		w.setWindowTitle("Rauchgasreinigung");
 		w.cleaning = cleaning;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 700);
+		d.setPageSize(200, 550);
 		return d.open();
 	}
 
@@ -107,7 +107,7 @@ public class FlueGasCleaningWizard extends Wizard {
 			cleaningTypeText = UI.formMultiText(c, "Typ der Reinigung");
 			UI.filler(c);
 
-			separationEfficiencyText = UI.formMultiText(c, "Max. Abscheidegrad");
+			separationEfficiencyText = UI.formText(c, "Max. Abscheidegrad");
 			Texts.on(separationEfficiencyText).decimal();
 			UI.formLabel(c, "%");
 

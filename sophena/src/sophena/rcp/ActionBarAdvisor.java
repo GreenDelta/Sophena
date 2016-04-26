@@ -122,7 +122,8 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Hausübergabestationen", Icon.CONSUMER_16.des(),
 				TransferStationEditor::open));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
-		m.add(Actions.create("Wärmerückgewinnung", HeatRecoveryEditor::open));
+		m.add(Actions.create("Wärmerückgewinnung", Icon.HEAT_RECOVERY_16.des(), 
+				HeatRecoveryEditor::open));
 		m.add(Actions.create("Rauchgasreinigung", Icon.FLUE_GAS_16.des(),
 				FlueGasCleaningEditor::open));
 		m.add(Actions.create("Heizhaus-Technik",

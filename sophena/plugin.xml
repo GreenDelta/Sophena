@@ -227,6 +227,7 @@
 		<editor
 			class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
 			id="sophena.products.HeatRecoveryEditor"
+			icon="icons/heat_recovery_16.png"
 			name="Wärmerückgewinnung" />
 
 		<editor
