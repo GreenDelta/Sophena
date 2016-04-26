@@ -71,10 +71,11 @@ class EntryWizard extends Wizard {
 	}
 
 	private void noProduct(boolean b) {
-		if (b)
+		if (b) {
 			page.setErrorMessage("Es wurde kein Produkt ausgewählt");
-		else
+		} else {
 			page.setErrorMessage(null);
+		}
 	}
 
 	private class Page extends WizardPage {
