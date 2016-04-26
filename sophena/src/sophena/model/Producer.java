@@ -2,6 +2,8 @@ package sophena.model;
 
 import java.util.UUID;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -36,11 +38,11 @@ public class Producer extends RootEntity {
 
 	@Embedded
 	public FuelSpec fuelSpec;
-	
+
 	@OneToOne
 	@JoinColumn(name = "f_heat_recovery")
 	public HeatRecovery heatRecovery;
-	 
+
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name = "investment",
@@ -53,7 +55,7 @@ public class Producer extends RootEntity {
 					column = @Column(name = "heat_recovery_maintenance")),
 			@AttributeOverride(name = "operation",
 					column = @Column(name = "heat_recovery_operation")) })
-	public ProductCosts heatRecoveryCosts; 
+	public ProductCosts heatRecoveryCosts;
 
 	@Override
 	public Producer clone() {

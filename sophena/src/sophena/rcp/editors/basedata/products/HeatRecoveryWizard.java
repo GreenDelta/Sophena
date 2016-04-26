@@ -11,9 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.db.daos.ProductGroupDao;
+import sophena.model.HeatRecovery;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
-import sophena.model.TransferStation;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
@@ -22,11 +22,11 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 public class HeatRecoveryWizard extends Wizard {
-    
-    private HeatRecovery recovery;
-    private Page page;
-    
-    static int open(HeatRecovery recovery) {
+
+	private HeatRecovery recovery;
+	private Page page;
+
+	static int open(HeatRecovery recovery) {
 		if (recovery == null)
 			return Window.CANCEL;
 		HeatRecoveryWizard w = new HeatRecoveryWizard();
@@ -35,9 +35,9 @@ public class HeatRecoveryWizard extends Wizard {
 		WizardDialog d = new WizardDialog(UI.shell(), w);
 		d.setPageSize(180, 700);
 		return d.open();
-	} 
- 
-    @Override
+	}
+
+	@Override
 	public boolean performFinish() {
 		page.data.bindToModel();
 		return true;
@@ -58,12 +58,11 @@ public class HeatRecoveryWizard extends Wizard {
 		Text urlText;
 		Text priceText;
 
-        // TODO: fuel
-        Text powerText;
-        Text typeText;
-        Text producerPowerText;
-        Text descriptionText;
-
+		// TODO: fuel
+		Text powerText;
+		Text typeText;
+		Text producerPowerText;
+		Text descriptionText;
 
 		Page() {
 			super("HeatRecoveryPage", "Wärmerückgewinnung", null);
@@ -79,7 +78,7 @@ public class HeatRecoveryWizard extends Wizard {
 			Texts.on(nameText).required().validate(data::validate);
 			UI.filler(c);
 
-			createGroupCombo(c);			
+			createGroupCombo(c);
 
 			powerText = UI.formText(c, "Thermische Leistung");
 			Texts.on(powerText).decimal().required();
@@ -120,12 +119,12 @@ public class HeatRecoveryWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, recovery.name);
 				groupCombo.select(recovery.group);
-				Texts.set(urlText, recovery.url);                
-				Texts.set(priceText, recovery.purchasePrice);                
-                Text.set(powerText, recovery.power);
-                Text.set(typeText, recovery.heatRecoveryType);
-                Text.set(producerPowerText, recovery.producerPower);
-                Texts.set(descriptionText, recovery.description);
+				Texts.set(urlText, recovery.url);
+				Texts.set(priceText, recovery.purchasePrice);
+				Texts.set(powerText, recovery.power);
+				Texts.set(typeText, recovery.heatRecoveryType);
+				Texts.set(producerPowerText, recovery.producerPower);
+				Texts.set(descriptionText, recovery.description);
 			}
 
 			void bindToModel() {
@@ -134,10 +133,10 @@ public class HeatRecoveryWizard extends Wizard {
 				recovery.url = urlText.getText();
 				if (Texts.hasNumber(priceText))
 					recovery.purchasePrice = Texts.getDouble(priceText);
-                recovery.power = Texts.getDouble(powerText);
-                recovery.heatRecoveryType = typeText.getText();
-                recovery.producerPower = Texts.getDouble(producerPowerText);
-                recovery.description = descriptionText.getText();
+				recovery.power = Texts.getDouble(powerText);
+				recovery.heatRecoveryType = typeText.getText();
+				recovery.producerPower = Texts.getDouble(producerPowerText);
+				recovery.description = descriptionText.getText();
 			}
 
 			boolean validate() {
@@ -156,5 +155,5 @@ public class HeatRecoveryWizard extends Wizard {
 				return false;
 			}
 		}
-	}    
+	}
 }

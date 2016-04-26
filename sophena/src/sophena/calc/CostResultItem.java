@@ -11,6 +11,7 @@ import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
+import sophena.model.Project;
 
 public class CostResultItem {
 
@@ -92,16 +93,17 @@ public class CostResultItem {
 		}
 		return items;
 	}
-	
+
 	static List<CostResultItem> forHeatRecoveries(Project project) {
 		if (project == null)
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
 		for (Producer producer : project.producers) {
-			if (ProductCosts.empty(producer.heatRecoveryCosts))
-				continue;
+			// if (ProductCosts.empty(producer.heatRecoveryCosts))
+			// continue;
 			// TODO: create item
 		}
+		return items;
 	}
 
 	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {

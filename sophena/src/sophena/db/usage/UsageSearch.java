@@ -12,7 +12,9 @@ import sophena.db.NativeSql;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
+import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
+import sophena.model.HeatRecovery;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
@@ -80,7 +82,7 @@ public class UsageSearch {
 				+ "c.f_transfer_station = '" + station.id + "'";
 		return query(sql, ModelType.CONSUMER);
 	}
-	
+
 	public List<SearchResult> of(FlueGasCleaning cleaning) {
 		if (cleaning == null || cleaning.id == null)
 			return Collections.emptyList();
@@ -95,7 +97,7 @@ public class UsageSearch {
 			return Collections.emptyList();
 		String sql = "select p.id, p.name from tbl_producers p "
 				+ "where p.f_heat_recovery = '" + recovery.id + "'";
-		return query(sql, ModelType.PRODUCER); 
+		return query(sql, ModelType.PRODUCER);
 	}
 
 	public List<SearchResult> of(Fuel fuel) {

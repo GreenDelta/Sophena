@@ -11,9 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.db.daos.ProductGroupDao;
+import sophena.model.FlueGasCleaning;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
-import sophena.model.TransferStation;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.utils.EntityCombo;
@@ -58,7 +58,7 @@ public class FlueGasCleaningWizard extends Wizard {
 		Text urlText;
 		Text priceText;
 
-        // TODO: fuel
+		// TODO: fuel
 
 		private Text typeText;
 		private Text maxVolumeFlowText;
@@ -66,8 +66,8 @@ public class FlueGasCleaningWizard extends Wizard {
 		private Text maxElectricityConsumptionText;
 		private Text cleaningMethodText;
 		private Text cleaningTypeText;
-        private Text separationEfficiencyText;
-		private Text descriptionTextText;
+		private Text separationEfficiencyText;
+		private Text descriptionText;
 
 		Page() {
 			super("FlueGasCleaningPage", "Rauchgasreinigung", null);
@@ -107,7 +107,7 @@ public class FlueGasCleaningWizard extends Wizard {
 			cleaningTypeText = UI.formMultiText(c, "Typ der Reinigung");
 			UI.filler(c);
 
-            separationEfficiencyText = UI.formMultiText(c, "Max. Abscheidegrad");
+			separationEfficiencyText = UI.formMultiText(c, "Max. Abscheidegrad");
 			Texts.on(separationEfficiencyText).decimal();
 			UI.formLabel(c, "%");
 
@@ -138,15 +138,15 @@ public class FlueGasCleaningWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, cleaning.name);
 				groupCombo.select(cleaning.group);
-				Texts.set(urlText, cleaning.url);                
+				Texts.set(urlText, cleaning.url);
 				Texts.set(priceText, cleaning.purchasePrice);
-                Text.set(typeText, cleaning.flueGasCleaningType);
-                Text.set(maxVolumeFlowText, cleaning.maxVolumeFlow);
-                Text.set(maxProducerPowerText, cleaning.maxProducerPower);
-                Text.set(maxElectricityConsumptionText, cleaning.maxElectricityConsumption);
-                Text.set(cleaningMethodText, cleaning.cleaningMethod);
-                Text.set(cleaningTypeText, cleaning.cleaningType);
-                Text.set(separationEfficiencyText, cleaning.separationEfficiency);                                
+				Texts.set(typeText, cleaning.flueGasCleaningType);
+				Texts.set(maxVolumeFlowText, cleaning.maxVolumeFlow);
+				Texts.set(maxProducerPowerText, cleaning.maxProducerPower);
+				Texts.set(maxElectricityConsumptionText, cleaning.maxElectricityConsumption);
+				Texts.set(cleaningMethodText, cleaning.cleaningMethod);
+				Texts.set(cleaningTypeText, cleaning.cleaningType);
+				Texts.set(separationEfficiencyText, cleaning.separationEfficiency);
 				Texts.set(descriptionText, cleaning.description);
 			}
 
@@ -156,13 +156,13 @@ public class FlueGasCleaningWizard extends Wizard {
 				cleaning.url = urlText.getText();
 				if (Texts.hasNumber(priceText))
 					cleaning.purchasePrice = Texts.getDouble(priceText);
-                cleaning.flueGasCleaningType = typeText.getText();
-                cleaning.maxVolumeFlow = Texts.getDouble(maxVolumeFlowText);
-                cleaning.maxProducerPower = Texts.getDouble(maxProducerPowerText);
-                cleaning.maxElectricityConsumption = Texts.getDouble(maxElectricityConsumptionText);
-                cleaning.cleaningMethod = cleaningMethodText.getText();
-                cleaning.cleaningType = cleaningTypeText.getText();
-                cleaning.separationEfficiency = Texts.getDouble(separationEfficiencyText);
+				cleaning.flueGasCleaningType = typeText.getText();
+				cleaning.maxVolumeFlow = Texts.getDouble(maxVolumeFlowText);
+				cleaning.maxProducerPower = Texts.getDouble(maxProducerPowerText);
+				cleaning.maxElectricityConsumption = Texts.getDouble(maxElectricityConsumptionText);
+				cleaning.cleaningMethod = cleaningMethodText.getText();
+				cleaning.cleaningType = cleaningTypeText.getText();
+				cleaning.separationEfficiency = Texts.getDouble(separationEfficiencyText);
 				cleaning.description = descriptionText.getText();
 			}
 

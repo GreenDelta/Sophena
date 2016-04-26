@@ -62,8 +62,7 @@ class CostCalculator {
 	}
 
 	private void handleNetItems(CostResult r) {
-		for (CostResultItem item : CostResultItem.forTransferStations(
-				project.consumers)) {
+		for (CostResultItem item : CostResultItem.forTransferStations(project)) {
 			handleItem(r, item);
 		}
 		HeatNet net = project.heatNet;

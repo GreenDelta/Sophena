@@ -22,7 +22,9 @@ import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
 import sophena.model.CostSettings;
+import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
+import sophena.model.HeatRecovery;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
@@ -61,7 +63,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
 			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
-			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGlassCleaning.class);
+			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
 			importEntities(ModelType.PROJECT, Project.class);
 		} catch (Exception e) {
@@ -95,7 +97,7 @@ public class Import implements Runnable {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class, FlueGlassCleaning.class,
+				WeatherStation.class, TransferStation.class, FlueGasCleaning.class,
 				HeatRecovery.class
 		};
 		for (Class<?> refType : refTypes) {

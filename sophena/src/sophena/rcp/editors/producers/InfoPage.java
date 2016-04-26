@@ -54,7 +54,7 @@ class InfoPage extends FormPage {
 		new FuelSection(editor).render(body, tk);
 		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);
-		new HeatRecoverySection(this).create(body, tk);
+		new HeatRecoverySection(editor).create(body, tk);
 	}
 
 	private void nameText(FormToolkit tk, Composite comp) {
