@@ -50,7 +50,7 @@ public class HeatRecoveryPackTest {
 		if (recovery != null) {
 			recoveryDao.delete(recovery);
 		}
-		Files.delete(path);
+		Files.deleteIfExists(path);
 	}
 
 	@Test
@@ -68,6 +68,8 @@ public class HeatRecoveryPackTest {
 		deleteModel();
 		Import packImport = new Import(path.toFile(), db);
 		packImport.run();
+		producer = producerDao.get(producer.id);
+		recovery = recoveryDao.get(recovery.id);
 		testModel();
 	}
 

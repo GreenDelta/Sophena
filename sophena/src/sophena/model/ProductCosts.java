@@ -56,4 +56,14 @@ public class ProductCosts {
 			toCosts.repair = fromGroup.repair;
 		}
 	}
+	
+	/** 
+	 * Returns true if the given costs are null or if there are no cost 
+	 * related entries in the given object. 
+	 */
+	public static boolean isEmpty(ProductCosts costs) {
+		if (costs == null)
+			return true;
+		return costs.investment == 0 && costs.operation == 0;	
+	}
 }

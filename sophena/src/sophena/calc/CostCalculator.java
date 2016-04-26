@@ -65,6 +65,12 @@ class CostCalculator {
 		for (CostResultItem item : CostResultItem.forTransferStations(project)) {
 			handleItem(r, item);
 		}
+		for (CostResultItem item : CostResultItem.forHeatRecoveries(project)) {
+			handleItem(r, item);
+		}
+		for (CostResultItem item : CostResultItem.forFlueGasCleanings(project)) {
+			handleItem(r, item);
+		}
 		HeatNet net = project.heatNet;
 		if (net == null)
 			return;
