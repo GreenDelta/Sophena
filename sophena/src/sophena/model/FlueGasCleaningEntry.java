@@ -1,12 +1,16 @@
 package sophena.model;
 
-import javax.persistence.Embeddable;
+import java.util.UUID;
+
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-@Embeddable
-public class FlueGasCleaningEntry {
+@Entity
+@Table(name = "tbl_flue_gas_cleaning_entries")
+public class FlueGasCleaningEntry extends AbstractEntity {
 
 	@OneToOne
 	@JoinColumn(name = "f_flue_gas_cleaning")
@@ -18,6 +22,7 @@ public class FlueGasCleaningEntry {
 	@Override
 	public FlueGasCleaningEntry clone() {
 		FlueGasCleaningEntry clone = new FlueGasCleaningEntry();
+		clone.id = UUID.randomUUID().toString();
 		clone.product = product;
 		if (costs != null) {
 			clone.costs = costs.clone();

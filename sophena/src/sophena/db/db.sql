@@ -399,6 +399,7 @@ CREATE TABLE tbl_flue_gas_cleaning (
 
 CREATE TABLE tbl_flue_gas_cleaning_entries (
 
+	id CHAR(36),
 	f_project CHAR(36),
 	f_flue_gas_cleaning CHAR(36),
 		

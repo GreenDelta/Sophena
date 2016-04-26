@@ -14,6 +14,7 @@
         <class>sophena.model.Consumer</class>
         <class>sophena.model.CostSettings</class>
 		<class>sophena.model.FlueGasCleaning</class>
+		<class>sophena.model.FlueGasCleaningEntry</class>
         <class>sophena.model.FuelConsumption</class>
         <class>sophena.model.Fuel</class>
         <class>sophena.model.HeatNet</class>
