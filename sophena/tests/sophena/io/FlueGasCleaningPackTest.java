@@ -34,12 +34,13 @@ public class FlueGasCleaningPackTest {
 	public void setUp() throws Exception {
 		path = Files.createTempFile("test_fgc_pack_", ".sophena");
 		Files.delete(path);
-		FlueGasCleaning cleaning = new FlueGasCleaning();
+		cleaning = new FlueGasCleaning();
 		cleaning.id = UUID.randomUUID().toString();
 		cleaningDao.insert(cleaning);
-		Project project = new Project();
+		project = new Project();
 		project.id = UUID.randomUUID().toString();
 		FlueGasCleaningEntry entry = new FlueGasCleaningEntry();
+		entry.id = UUID.randomUUID().toString();
 		entry.product = cleaning;
 		project.flueGasCleaningEntries.add(entry);
 		projectDao.insert(project);
@@ -53,7 +54,7 @@ public class FlueGasCleaningPackTest {
 		if (cleaning != null) {
 			cleaningDao.delete(cleaning);
 		}
-		Files.delete(path);
+		Files.deleteIfExists(path);
 	}
 
 	@Test

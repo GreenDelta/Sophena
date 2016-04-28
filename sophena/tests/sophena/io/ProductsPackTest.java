@@ -28,7 +28,7 @@ import sophena.model.Project;
 public class ProductsPackTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	private Path path;
 	private ProjectDao projectDao = new ProjectDao(Tests.getDb());
 	private ProductDao productDao = new ProductDao(Tests.getDb());
@@ -47,7 +47,7 @@ public class ProductsPackTest {
 		if (project != null) {
 			projectDao.delete(project);
 		}
-		Files.delete(path);
+		Files.deleteIfExists(path);
 	}
 
 	/**
