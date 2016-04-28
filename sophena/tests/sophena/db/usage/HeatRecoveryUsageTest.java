@@ -27,6 +27,7 @@ public class HeatRecoveryUsageTest {
 		recovery = new HeatRecovery();
 		recovery.id = UUID.randomUUID().toString();
 		recovery.name = "HeatRecovery 123";
+		dao.insert(recovery);
 	}
 
 	@After

@@ -28,6 +28,7 @@ public class FlueGasCleaningUsageTest {
 		cleaning = new FlueGasCleaning();
 		cleaning.id = UUID.randomUUID().toString();
 		cleaning.name = "FlueGasCleaning 123";
+		dao.insert(cleaning);
 	}
 
 	@After
@@ -51,6 +52,7 @@ public class FlueGasCleaningUsageTest {
 		pDao.insert(p);
 
 		FlueGasCleaningEntry e = new FlueGasCleaningEntry();
+		e.id = UUID.randomUUID().toString();
 		e.product = cleaning;
 		p.flueGasCleaningEntries.add(e);
 		pDao.update(p);
