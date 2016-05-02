@@ -7,8 +7,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Monitor;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +27,11 @@ import sophena.model.Project;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -114,16 +121,37 @@ public class ProjectWizard extends Wizard {
 		@Override
 		public void createControl(Composite parent) {
 			Composite composite = UI.formComposite(parent);
+			UI.gridLayout(composite, 3);
 			setControl(composite);
 			nameText = UI.formText(composite, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
+			UI.filler(composite);
 			descriptionText = UI.formMultiText(composite, M.Description);
+			UI.filler(composite);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
 			Texts.on(timeText).required().integer().validate(data::validate);
+			UI.filler(composite);
 			stationCombo = new EntityCombo<>();
 			stationCombo.create("Wetterstation", composite);
-			stationCombo.onSelect((d) -> data.validate());
+			stationCombo.onSelect(d -> data.validate());
+			ImageHyperlink link = new ImageHyperlink(composite, SWT.NONE);
+			link.setImage(Icon.SEARCH_16.img());
+			Controls.onClick(link, e -> openMap());
 			data.bindToUI();
+		}
+
+		private void openMap() {
+			Shell shell = new Shell(UI.shell());
+			UI.gridLayout(shell, 1);
+			Monitor monitor = UI.shell().getMonitor();
+			Rectangle outer = monitor.getBounds();
+			int width = (int) (outer.width * 0.8);
+			int height = (int) (outer.height * 0.8);
+			shell.setSize(width, height);
+			int x = outer.x + (outer.width - width) / 2;
+			int y = outer.y + (outer.height - height) / 2;
+			shell.setLocation(x, y);
+			shell.open();
 		}
 
 		private class DataBinding {
