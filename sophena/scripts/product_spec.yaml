@@ -1,6 +1,5 @@
 
-product:
-  jType: AbstractProduct
+- jType: AbstractProduct
   label: Allgemein
   fields:
   
@@ -20,7 +19,7 @@ product:
       tableColumn: 3
       required: true
       dataType: String
-      jfield: manufacturer
+      jField: manufacturer
   
     - label: Link
       required: true
@@ -37,8 +36,8 @@ product:
       dataType: String
       jField: description
 
-product:
-  jType: Boiler
+
+- jType: Boiler
   label: Biomassekessel
   fields:
   
@@ -70,14 +69,9 @@ product:
       required: true
       dataType: double
       jField: efficiencyRate
-  
-    - label: Zusatzinformation
-      dataType: String
-      jField: description
 
 
-product:
-  jType: Boiler
+- jType: Boiler
   label: Fossiler Kessel
   fields:
   
@@ -106,14 +100,9 @@ product:
       required: true
       dataType: double
       jField: efficiencyRate
-  
-    - label: Zusatzinformation
-      dataType: String
-      jField: description
 
 
-product:
-  jType: Boiler
+- jType: Boiler
   label: KWK-Anlage
   fields:
   
@@ -165,14 +154,9 @@ product:
       required: true
       dataType: double
       jField: efficiencyRateElectric
-  
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
 
-product:
-  jType: HeatRecovery
+
+- jType: HeatRecovery
   label: Wärmerückgewinnung
   fields:
   
@@ -203,13 +187,8 @@ product:
       dataType: double
       jField: producerPower
 
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
 
-product:
-  jType: FlueGasCleaning
+- jType: FlueGasCleaning
   label: Rauchgasreinigung
   fields:
   
@@ -252,14 +231,9 @@ product:
     - label: Maximaler Abscheidegrad
       dataType: double
       jField: separationEfficiency
-  
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
 
-product:
-  jType: BufferTank
+
+- jType: BufferTank
   label: Pufferspeicher
   fields:
   
@@ -285,15 +259,10 @@ product:
     - label: Isolierstärke
       unit: mm
       dataType: double
-      jField: insulationThickness 
-  
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
+      jField: insulationThickness
 
-product:
-  jType: Pipe
+
+- jType: Pipe
   label: Wärmeleitungen
   fields:
   
@@ -352,14 +321,9 @@ product:
       unit: Bar
       dataType: double
       jField: maxPressure
-  
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
 
-product:
-  jType: TransferStation
+
+- jType: TransferStation
   label: Hausübergabestationen
   fields:
   
@@ -393,8 +357,3 @@ product:
     - label: Regelung
       dataType: String
       jField: control
-  
-    - label: Zusatzinformation
-      shortLabel: Info
-      dataType: String
-      jField: description
