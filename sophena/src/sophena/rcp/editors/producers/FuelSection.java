@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
@@ -22,6 +20,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -79,12 +78,7 @@ class FuelSection {
 		link.setText(text);
 		link.setImage(Icon.FUEL_16.img());
 		link.setForeground(Colors.getLinkBlue());
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				FuelEditor.open();
-			}
-		});
+		Controls.onClick(link, e -> FuelEditor.open());
 		UI.formLabel(composite, "");
 	}
 

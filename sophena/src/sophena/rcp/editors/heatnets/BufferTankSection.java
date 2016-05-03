@@ -3,8 +3,6 @@ package sophena.rcp.editors.heatnets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
@@ -15,6 +13,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.DeleteLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -79,12 +78,7 @@ class BufferTankSection {
 		}
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				selectBufferTank(link);
-			}
-		});
+		Controls.onClick(link, e -> selectBufferTank(link));
 		createDeleteLink(inner, link);
 		UI.formLabel(comp, tk, "");
 	}

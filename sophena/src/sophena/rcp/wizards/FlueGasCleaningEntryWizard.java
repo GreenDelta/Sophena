@@ -6,8 +6,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.FlueGasCleaning;
@@ -17,6 +15,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.UI;
 
 public class FlueGasCleaningEntryWizard extends Wizard {
@@ -95,12 +94,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 			}
 			link.setImage(Icon.FLUE_GAS_16.img());
 			link.setForeground(Colors.getLinkBlue());
-			link.addHyperlinkListener(new HyperlinkAdapter() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					selectProduct(link);
-				}
-			});
+			Controls.onClick(link, e -> selectProduct(link));
 			UI.formLabel(comp, "");
 		}
 

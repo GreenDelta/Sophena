@@ -7,8 +7,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.HeatNetPipe;
@@ -18,6 +16,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -83,12 +82,7 @@ class PipeWizard extends Wizard {
 				link.setText("(keine Wärmeleitung ausgewählt)");
 			link.setImage(Icon.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
-			link.addHyperlinkListener(new HyperlinkAdapter() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					selectPipe(link);
-				}
-			});
+			Controls.onClick(link, e -> selectPipe(link));
 			UI.formLabel(comp, "");
 
 		}
