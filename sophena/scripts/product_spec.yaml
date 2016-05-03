@@ -1,0 +1,400 @@
+
+product:
+  jType: AbstractProduct
+  label: Allgemein
+  fields:
+  
+    - label: Produktgruppe
+      tableColumn: 1
+      required: true
+      dataType: ProductGroup
+      jField: group
+  
+    - label: Bezeichnung
+      tableColumn: 2
+      required: true
+      dataType: String
+      jField: name
+  
+    - label: Hersteller
+      tableColumn: 3
+      required: true
+      dataType: String
+      jfield: manufacturer
+  
+    - label: Link
+      required: true
+      dataType: String
+      jField: url
+  
+    - label: Preis      
+      required: false
+      unit: Euro
+      dataType: Double
+      jField: purchasePrice
+  
+    - label: Zusatzinformation
+      dataType: String
+      jField: description
+
+product:
+  jType: Boiler
+  label: Biomassekessel
+  fields:
+  
+    - label: Brennstoff
+      required: true
+      dataType: Fuel
+      jField: fuel
+
+  
+    - label: Maximale Leistung
+      shortLabel: Max. Leistung
+      tableColumn: 4
+      required: true
+      unit: kW
+      dataType: double
+      jField: maxPower
+
+  
+    - label: Minimale Leistung
+      shortLabel: Min. Leistung
+      required: true
+      unit: kW
+      dataType: double
+      jField: minPower
+
+  
+    - label: Wirkungsgrad
+      tableColumn: 5
+      required: true
+      dataType: double
+      jField: efficiencyRate
+  
+    - label: Zusatzinformation
+      dataType: String
+      jField: description
+
+
+product:
+  jType: Boiler
+  label: Fossiler Kessel
+  fields:
+  
+    - label: Brennstoff
+      required: true
+      dataType: Fuel
+      jField: fuel
+  
+    - label: Maximale Leistung
+      shortLabel: Max. Leistung
+      tableColumn: 4
+      required: true
+      unit: kW
+      dataType: double
+      jField: maxPower
+  
+    - label: Minimale Leistung
+      shortLabel: Min. Leistung
+      required: true
+      unit: kW
+      dataType: double
+      jField: minPower
+  
+    - label: Wirkungsgrad
+      tableColumn: 5
+      required: true
+      dataType: double
+      jField: efficiencyRate
+  
+    - label: Zusatzinformation
+      dataType: String
+      jField: description
+
+
+product:
+  jType: Boiler
+  label: KWK-Anlage
+  fields:
+  
+    - label: Brennstoff
+      required: true
+      dataType: Fuel
+      jField: fuel
+  
+    - label: Maximale Leistung (thermisch)
+      shortLabel: Max. Leistung th.
+      tableColumn: 6
+      required: true
+      unit: kW
+      dataType: double
+      jField: maxPower
+  
+    - label: Minimale Leistung (thermisch)
+      shortLabel: Min. Leistung th.
+      required: true
+      unit: kW
+      dataType: double
+      jField: minPower
+  
+    - label: Wirkungsgrad (thermisch)
+      shortLabel: Wirkungsgrad th.
+      tableColumn: 7
+      required: true
+      dataType: double
+      jField: efficiencyRate
+  
+    - label: Maximale Leistung (elektrisch)
+      shortLabel: Max. Leistung el.
+      tableColumn: 4
+      required: true
+      unit: kW
+      dataType: double
+      jField: maxPowerElectric
+  
+    - label: Minimale Leistung (elektrisch)
+      shortLabel: Min. Leistung el.
+      required: true
+      unit: kW
+      dataType: double
+      jField: minPowerElectric
+  
+    - label: Wirkungsgrad (elektrisch)
+      shortLabel: Wirkungsgrad el.
+      tableColumn: 5
+      required: true
+      dataType: double
+      jField: efficiencyRateElectric
+  
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
+
+product:
+  jType: HeatRecovery
+  label: Wärmerückgewinnung
+  fields:
+  
+    - label: Leistung
+      tableColumn: 4
+      required: true
+      unit: kW
+      dataType: double
+      jField: power
+
+    - label: Wärmeerzeuger
+      required: true
+      dataType: String
+      jField: heatRecoveryType
+
+    - label: Brennstoff (Wärmeerzeuger)
+      shortLabel: Brennstoff (Erz.)
+      tableColumn: 5
+      required: true
+      dataType: String
+      jField: fuel
+
+    - label: Leistung (Wärmeerzeuger)
+      shortLabel: Leistung (Erz.)
+      tableColumn: 6
+      required: true
+      unit: kW
+      dataType: double
+      jField: producerPower
+
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
+
+product:
+  jType: FlueGasCleaning
+  label: Rauchgasreinigung
+  fields:
+  
+    - label: Maximaler Volumenstrom
+      shortLabel: Max. Volumenstrom
+      tableColumn: 6
+      required: true
+      unit: m3/h
+      dataType: double
+      jField: maxVolumeFlow
+  
+    - label: Brennstoff (Wärmeerzeuger)
+      shortLabel: Brennstoff (Erz.)
+      tableColumn: 4
+      required: true
+      dataType: String
+      jField: fuel
+  
+    - label: Maximale Leistung (Wärmeerzeuger)
+      shortLabel: Max. Leistung (Erz.)
+      tableColumn: 5
+      required: true
+      unit: kW
+      dataType: double
+      jField: maxProducerPower
+  
+    - label: Eigenstrombedarf
+      unit: kW
+      dataType: double
+      jField: maxElectricityConsumption
+  
+    - label: Art der Reinigung
+      dataType: String
+      jField: cleaningMethod
+  
+    - label: Typ der Reinigung
+      dataType: String
+      jField: cleaningType
+  
+    - label: Maximaler Abscheidegrad
+      dataType: double
+      jField: separationEfficiency
+  
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
+
+product:
+  jType: BufferTank
+  label: Pufferspeicher
+  fields:
+  
+    - label: Volumen
+      tableColumn: 4
+      required: true
+      unit: l
+      dataType: double
+      jField: volume
+  
+    - label: Durchmesser
+      tableColumn: 5
+      unit: mm
+      dataType: double
+      jField: diameter
+  
+    - label: Höhe
+      tableColumn: 6
+      unit: mm
+      dataType: double
+      jField: height
+  
+    - label: Isolierstärke
+      unit: mm
+      dataType: double
+      jField: insulationThickness 
+  
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
+
+product:
+  jType: Pipe
+  label: Wärmeleitungen
+  fields:
+  
+    - label: Material
+      required: true
+      dataType: String
+      jField: material
+  
+    - label: Art
+      tableColumn: 4
+      required: true
+      dataType: PipeType
+      jField: pipeType
+  
+    - label: U-Wert
+      tableColumn: 6
+      required: true
+      unit: W/m*K
+      dataType: double
+      jField: uValue
+  
+    - label: Innendurchmesser (Medienrohr)
+      shortLabel: Innend. Medienrohr
+      required: true
+      unit: mm
+      dataType: double
+      jField: innerDiameter
+  
+    - label: Außendurchmesser (Medienrohr)
+      shortLabel: Außend. Medienrohr
+      tableColumn: 5
+      required: true
+      unit: mm
+      dataType: double
+      jField: outerDiameter
+  
+    - label: Außendurchmesser (Gesamt)
+      shortLabel: Außend. Gesamt
+      required: true
+      unit: mm
+      dataType: double
+      jField: totalDiameter
+  
+    - label: Lieferausführung
+      dataType: String
+      jField: deliveryType
+  
+    - label: Maximale Temperatur
+      shortLabel: Max. Temperatur
+      unit: °C
+      dataType: double
+      jField: maxTemperature
+  
+    - label: Maximaler Druck
+      shortLabel: Max. Druck
+      unit: Bar
+      dataType: double
+      jField: maxPressure
+  
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
+
+product:
+  jType: TransferStation
+  label: Hausübergabestationen
+  fields:
+  
+    - label: Gebäudetyp
+      tableColumn: 5
+      required: true
+      dataType: String
+      jField: buildingType
+  
+    - label: Leistung
+      tableColumn: 4
+      required: true
+      unit: kW
+      dataType: double
+      jField: outputCapacity
+  
+    - label: Wärmetauscher
+      required: true
+      dataType: String
+      jField: stationType
+  
+    - label: Material (Wärmetauscher)
+      required: true
+      dataType: String
+      jField: material
+  
+    - label: Warmwasserbereitung
+      dataType: String
+      jField: waterHeating
+  
+    - label: Regelung
+      dataType: String
+      jField: control
+  
+    - label: Zusatzinformation
+      shortLabel: Info
+      dataType: String
+      jField: description
