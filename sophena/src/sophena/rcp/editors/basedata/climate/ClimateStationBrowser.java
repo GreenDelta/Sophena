@@ -8,10 +8,6 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,30 +21,22 @@ import javafx.scene.web.WebView;
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.M;
 import sophena.rcp.utils.Rcp;
-import sophena.rcp.utils.UI;
 
-class MapPage extends FormPage {
+public class ClimateStationBrowser {
 
 	private WebEngine webkit;
 
-	public MapPage(ClimateDataEditor editor) {
-		super(editor, "climate.MapPage", "Karte");
+	private ClimateStationBrowser() {
 	}
 
-	@Override
-	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, M.Location);
-		FormToolkit tk = mform.getToolkit();
-		Composite body = UI.formBody(form, tk);
-		createBrowserSection(body);
-		form.reflow(true);
+	public static void create(Composite parent) {
+		new ClimateStationBrowser().render(parent);
 	}
 
-	private void createBrowserSection(Composite body) {
-		body.setLayout(new FillLayout());
-		FXCanvas fxCanvas = new FXCanvas(body, SWT.NONE);
+	private void render(Composite parent) {
+		parent.setLayout(new FillLayout());
+		FXCanvas fxCanvas = new FXCanvas(parent, SWT.NONE);
 		fxCanvas.setLayout(new FillLayout());
 		WebView view = new WebView();
 		Scene scene = new Scene(view);
@@ -90,5 +78,4 @@ class MapPage extends FormPage {
 			log.error("Failed to set browser data", e);
 		}
 	}
-
 }

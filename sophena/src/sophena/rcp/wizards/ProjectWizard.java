@@ -29,6 +29,7 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.editors.basedata.climate.ClimateStationBrowser;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
@@ -142,7 +143,6 @@ public class ProjectWizard extends Wizard {
 
 		private void openMap() {
 			Shell shell = new Shell(UI.shell());
-			UI.gridLayout(shell, 1);
 			Monitor monitor = UI.shell().getMonitor();
 			Rectangle outer = monitor.getBounds();
 			int width = (int) (outer.width * 0.8);
@@ -151,6 +151,7 @@ public class ProjectWizard extends Wizard {
 			int x = outer.x + (outer.width - width) / 2;
 			int y = outer.y + (outer.height - height) / 2;
 			shell.setLocation(x, y);
+			ClimateStationBrowser.create(shell);
 			shell.open();
 		}
 
