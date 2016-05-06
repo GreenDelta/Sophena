@@ -3,8 +3,8 @@
     "name": "Niedrigstenergiehaus (KFW 40)/ Passivhaus",
     "type": "MULTI_FAMILY_HOUSE",
     "heatingLimit": 10.0,
-    "waterFraction": 86,
-    "loadHours": 707,
+    "waterFraction": 86.4,
+    "loadHours": 619,
     "isDefault": false,
     "index": 11
 }
