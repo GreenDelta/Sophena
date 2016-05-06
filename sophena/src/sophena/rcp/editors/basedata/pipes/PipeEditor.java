@@ -174,7 +174,7 @@ public class PipeEditor extends Editor {
 				return p.purchasePrice == null ? null
 						: Num.str(p.purchasePrice) + " EUR/m";
 			case 4:
-				return Num.str(p.diameter) + " mm";
+				return Num.str(p.totalDiameter) + " mm";
 			case 5:
 				return Num.str(p.uValue);
 			default:

@@ -109,7 +109,7 @@ class PipeWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, pipe.name);
 				groupCombo.select(pipe.group);
-				Texts.set(diamText, pipe.diameter);
+				Texts.set(diamText, pipe.totalDiameter);
 				Texts.set(uText, pipe.uValue);
 				Texts.set(urlText, pipe.url);
 				Texts.set(priceText, pipe.purchasePrice);
@@ -118,7 +118,7 @@ class PipeWizard extends Wizard {
 			void bindToModel() {
 				pipe.name = nameText.getText();
 				pipe.group = groupCombo.getSelected();
-				pipe.diameter = Texts.getDouble(diamText);
+				pipe.totalDiameter = Texts.getDouble(diamText);
 				pipe.uValue = Texts.getDouble(uText);
 				pipe.url = urlText.getText();
 				if (Texts.hasNumber(priceText))

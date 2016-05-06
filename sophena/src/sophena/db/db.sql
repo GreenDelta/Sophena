@@ -271,8 +271,9 @@ CREATE TABLE tbl_products (
 	purchase_price DOUBLE,
 	url VARCHAR(255),
 	product_type VARCHAR(50),
-	
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
+	
 	f_project CHAR(36),
 	
 	PRIMARY KEY (id)
@@ -285,12 +286,13 @@ CREATE TABLE tbl_boilers (
 	name VARCHAR(255),
 	description CLOB(64 K),
 
-	is_protected BOOLEAN,
-
+	is_protected BOOLEAN,	
+	
 	purchase_price DOUBLE,
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 	
 	max_power DOUBLE,
 	min_power DOUBLE,
@@ -320,10 +322,18 @@ CREATE TABLE tbl_pipes (
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 
 	u_value DOUBLE,
 	diameter DOUBLE,
-
+	material VARCHAR(255),
+	pipe_type VARCHAR(255),	
+	inner_diameter DOUBLE,	
+	outer_diameter DOUBLE,
+	total_diameter DOUBLE,
+	delivery_type VARCHAR(255),
+	max_temperature DOUBLE,
+	max_pressure DOUBLE,
 	PRIMARY KEY (id)
 );
 
@@ -340,9 +350,13 @@ CREATE TABLE tbl_buffer_tanks (
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 	
-	volume DOUBLE,	
-
+	volume DOUBLE,		
+	diameter DOUBLE,	
+	height DOUBLE,	
+	insulation_thickness DOUBLE,
+	
 	PRIMARY KEY (id)
 );
 
@@ -359,6 +373,7 @@ CREATE TABLE tbl_transfer_stations (
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 
 	building_type VARCHAR(255),
 	output_capacity VARCHAR(255),
@@ -383,6 +398,7 @@ CREATE TABLE tbl_flue_gas_cleaning (
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 
 	flue_gas_cleaning_type VARCHAR(255),
 	max_volume_flow DOUBLE,
@@ -423,6 +439,7 @@ CREATE TABLE tbl_heat_recovery (
 	url VARCHAR(255),
 	product_type VARCHAR(50),
 	f_product_group CHAR(36),
+	f_manufacturer CHAR(36),
 
 	power DOUBLE,
 	heat_recovery_type VARCHAR(255),
@@ -465,4 +482,18 @@ CREATE TABLE tbl_producers (
     heat_recovery_operation DOUBLE,
 	
     PRIMARY KEY (id)
+);
+
+CREATE TABLE tbl_manufacturer (
+
+	id CHAR(36),
+	name VARCHAR(255),
+	description CLOB(64 K),
+
+	is_protected BOOLEAN,
+
+	address VARCHAR(255),
+	url VARCHAR(255),	
+
+	PRIMARY KEY (id)
 );

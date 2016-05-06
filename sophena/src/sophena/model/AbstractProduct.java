@@ -16,6 +16,10 @@ public abstract class AbstractProduct extends BaseDataEntity {
 	@Column(name = "url")
 	public String url;
 
+	@OneToOne
+	@JoinColumn(name = "f_manufacturer")
+	public Manufacturer manufacturer;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "product_type")
 	public ProductType type;

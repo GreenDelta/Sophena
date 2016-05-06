@@ -20,6 +20,8 @@ public enum ModelType {
 
 	LOAD_PROFILE(LoadProfile.class),
 
+	MANUFACTURER(Manufacturer.class),
+
 	PIPE(Pipe.class),
 
 	PRODUCER(Producer.class),

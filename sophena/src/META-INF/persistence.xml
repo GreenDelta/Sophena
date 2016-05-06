@@ -22,6 +22,7 @@
 		<class>sophena.model.HeatRecovery</class>
         <class>sophena.model.LoadProfile</class>
 		<class>sophena.model.Location</class>
+		<class>sophena.model.Manufacturer</class>
 		<class>sophena.model.Pipe</class>
 		<class>sophena.model.Producer</class>
 		<class>sophena.model.Product</class>
