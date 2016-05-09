@@ -247,18 +247,18 @@
     - label: Durchmesser
       tableColumn: 5
       unit: mm
-      dataType: double
+      dataType: Double
       jField: diameter
   
     - label: Höhe
       tableColumn: 6
       unit: mm
-      dataType: double
+      dataType: Double
       jField: height
   
     - label: Isolierstärke
       unit: mm
-      dataType: double
+      dataType: Double
       jField: insulationThickness
 
 
@@ -313,13 +313,13 @@
     - label: Maximale Temperatur
       shortLabel: Max. Temperatur
       unit: °C
-      dataType: double
+      dataType: Double
       jField: maxTemperature
   
     - label: Maximaler Druck
       shortLabel: Max. Druck
       unit: Bar
-      dataType: double
+      dataType: Double
       jField: maxPressure
 
 

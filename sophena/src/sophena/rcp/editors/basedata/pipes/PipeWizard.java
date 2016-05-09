@@ -97,8 +97,7 @@ class PipeWizard extends Wizard {
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			List<ProductGroup> list = dao
-					.getAll(ProductType.HEATING_NET_TECHNOLOGY);
+			List<ProductGroup> list = dao.getAll(ProductType.PIPE);
 			Sorters.byName(list);
 			groupCombo.setInput(list);
 			UI.formLabel(c, "");

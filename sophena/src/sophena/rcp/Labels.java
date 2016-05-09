@@ -133,8 +133,8 @@ public final class Labels {
 			return "Heizhaus-Technik";
 		case BUILDING:
 			return "Gebäude";
-		case HEATING_NET_TECHNOLOGY:
-			return "Wärmenetz-Technik";
+		case PIPE:
+			return "Wärmeleitung";
 		case HEATING_NET_CONSTRUCTION:
 			return "Wärmenetz-Bau";
 		case PLANNING:
@@ -168,8 +168,8 @@ public final class Labels {
 			return "Heizhaus-Technik";
 		case BUILDING:
 			return "Gebäude";
-		case HEATING_NET_TECHNOLOGY:
-			return "Wärmenetz-Technik";
+		case PIPE:
+			return "Wärmeleitungen";
 		case HEATING_NET_CONSTRUCTION:
 			return "Wärmenetz-Bau";
 		case PLANNING:
@@ -203,8 +203,8 @@ public final class Labels {
 			return null;
 		case BUILDING:
 			return Icon.BUILDING_TYPE_16.img();
-		case HEATING_NET_TECHNOLOGY:
-			return null;
+		case PIPE:
+			return Icon.PIPE_16.img();
 		case HEATING_NET_CONSTRUCTION:
 			return null;
 		case PLANNING:

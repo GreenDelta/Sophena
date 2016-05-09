@@ -83,7 +83,7 @@ class OverviewPage extends FormPage {
 
 	private void pipeSection(Composite body, FormToolkit tk) {
 		DisplaySection<HeatNetPipe> s = new DisplaySection<>(
-				ProductType.HEATING_NET_TECHNOLOGY);
+				ProductType.PIPE);
 		HeatNet net = editor.getProject().heatNet;
 		s.content = () -> {
 			if (net == null)

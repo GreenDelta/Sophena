@@ -12,12 +12,12 @@ public class BufferTank extends AbstractProduct {
 	public double volume;
 
 	@Column(name = "diameter")
-	public double diameter;
+	public Double diameter;
 
 	@Column(name = "height")
-	public double height;
+	public Double height;
 
 	@Column(name = "insulation_thickness")
-	public double insulationThickness;
+	public Double insulationThickness;
 
 }

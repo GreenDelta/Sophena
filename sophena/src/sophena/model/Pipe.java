@@ -30,9 +30,9 @@ public class Pipe extends AbstractProduct {
 	public String deliveryType;
 
 	@Column(name = "max_temperature")
-	public double maxTemperature;
+	public Double maxTemperature;
 
 	@Column(name = "max_pressure")
-	public double maxPressure;
+	public Double maxPressure;
 
 }

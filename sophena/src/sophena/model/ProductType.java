@@ -20,7 +20,7 @@ public enum ProductType {
 
 	BUILDING,
 
-	HEATING_NET_TECHNOLOGY,
+	PIPE,
 
 	HEATING_NET_CONSTRUCTION,
 

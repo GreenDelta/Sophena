@@ -66,7 +66,7 @@ public class CostResultItem {
 		if (pipe == null)
 			return new CostResultItem();
 		CostResultItem item = init(pipe.pipe,
-				ProductType.HEATING_NET_TECHNOLOGY,
+				ProductType.PIPE,
 				"Wärmeleitung");
 		return copy(pipe.costs, item);
 	}

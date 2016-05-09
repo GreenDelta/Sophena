@@ -101,7 +101,7 @@ public class PipeEditor extends Editor {
 
 		private void add(TableViewer table) {
 			Pipe p = new Pipe();
-			p.type = ProductType.HEATING_NET_TECHNOLOGY;
+			p.type = ProductType.PIPE;
 			p.id = UUID.randomUUID().toString();
 			p.name = "Neue Wärmeleitung";
 			if (PipeWizard.open(p) != Window.OK)

@@ -19,8 +19,9 @@ public class BuildDb {
 			Files.delete(dbDir);
 			System.out.println("Database folder: " + dbDir);
 			Database db = new Database(dbDir.toFile());
+			String dataPath = "C:/Users/Besitzer/Projects/go_path/src/git.greendelta.com/sophdat/gen/base_data.sophena";
 			Import dataImport = new Import(
-					new File("../basedata/data_package.sophena"), db);
+					new File(dataPath), db);
 			dataImport.run();
 			db.close();
 		} catch (Exception e) {
