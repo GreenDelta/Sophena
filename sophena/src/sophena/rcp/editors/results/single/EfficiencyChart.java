@@ -76,6 +76,9 @@ class EfficiencyChart {
 				+ result.producedElectrictiy
 				+ result.conversionLoss
 				+ result.distributionLoss;
+		if (max == 0) {
+			max = 1;
+		}
 		y.setRange(new Range(0, max));
 	}
 
