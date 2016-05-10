@@ -12,6 +12,7 @@ import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.editors.results.single.ResultEditor;
+import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
@@ -63,6 +64,13 @@ public class DoubleClick extends Action {
 	private void openProducer() {
 		ProducerElement e = (ProducerElement) elem;
 		ProducerEditor.open(e.getProject(), e.getDescriptor());
+	}
+
+	@Handler(type = CleaningElement.class,
+			title = "Open cleaning")
+	private void openCleaning() {
+		CleaningElement e = (CleaningElement) elem;
+		Cleanings.open(e);
 	}
 
 	@Handler(type = FolderElement.class,

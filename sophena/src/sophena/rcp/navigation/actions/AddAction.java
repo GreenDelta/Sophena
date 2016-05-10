@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.rcp.Icon;
+import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.FolderType;
@@ -77,6 +78,13 @@ public class AddAction extends NavigationAction {
 	private void consumerOnElement() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ConsumerWizard.open(e.getProject());
+	}
+
+	@Handler(type = CleaningElement.class,
+			title = "Neue Rauchgasreinigung")
+	private void cleaningOnElement() {
+		CleaningElement e = (CleaningElement) elem;
+		Cleanings.add(e.getProject());
 	}
 
 }

@@ -1,8 +1,6 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +9,10 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Producer;
 import sophena.model.Project;
-import sophena.model.RootEntity;
-import sophena.model.descriptors.Descriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -89,7 +86,7 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Consumer c = find(p.consumers, e.getDescriptor());
+			Consumer c = Util.find(p.consumers, e.getDescriptor());
 			if (c == null)
 				return;
 			p.consumers.remove(c);
@@ -114,7 +111,7 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Producer prod = find(p.producers, e.getDescriptor());
+			Producer prod = Util.find(p.producers, e.getDescriptor());
 			if (prod == null)
 				return;
 			p.producers.remove(prod);
@@ -127,14 +124,10 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	private <T extends RootEntity> T find(List<T> list, Descriptor d) {
-		if (list == null || d == null)
-			return null;
-		for (T e : list) {
-			if (Objects.equals(e.id, d.id))
-				return e;
-		}
-		return null;
+	@Handler(type = CleaningElement.class, title = "Lösche Rauchgasreinigung")
+	private void deleteCleaning() {
+		CleaningElement e = (CleaningElement) elem;
+		Cleanings.delete(e);
 	}
 
 }
