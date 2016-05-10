@@ -1,6 +1,7 @@
 package sophena.db.daos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sophena.db.Database;
@@ -36,11 +37,13 @@ public class ProjectDao extends RootEntityDao<Project> {
 	/**
 	 * Returns the descriptors of the flue gas cleaning facilities of a project.
 	 */
-	public List<CleaningDescriptor> getCleaningDescriptors(String projectId) {
+	public List<CleaningDescriptor> getCleaningDescriptors(ProjectDescriptor pd) {
+		if (pd == null)
+			return Collections.emptyList();
 		String sql = "SELECT e.id, c.name, c.description FROM "
 				+ "tbl_flue_gas_cleaning_entries e INNER JOIN "
 				+ "tbl_flue_gas_cleaning c ON e.f_flue_gas_cleaning = c.id "
-				+ "WHERE e.f_project = '" + projectId + "'";
+				+ "WHERE e.f_project = '" + pd.id + "'";
 		List<CleaningDescriptor> list = new ArrayList<>();
 		try {
 			NativeSql.on(db).query(sql, r -> {

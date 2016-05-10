@@ -8,6 +8,8 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.db.daos.ConsumerDao;
 import sophena.db.daos.ProducerDao;
+import sophena.db.daos.ProjectDao;
+import sophena.model.ModelType;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
@@ -54,6 +56,7 @@ public class FolderElement implements NavigationElement {
 			break;
 		case PRODUCTION:
 			syncProducers();
+			syncCleanings();
 			break;
 		default:
 			break;
@@ -64,14 +67,24 @@ public class FolderElement implements NavigationElement {
 		ConsumerDao dao = new ConsumerDao(App.getDb());
 		ChildSync.sync(childs,
 				dao.getDescriptors(getProject()),
-				(d) -> new ConsumerElement(this, d));
+				ModelType.CONSUMER,
+				d -> new ConsumerElement(this, d));
 	}
 
 	private void syncProducers() {
 		ProducerDao dao = new ProducerDao(App.getDb());
 		ChildSync.sync(childs,
 				dao.getDescriptors(getProject()),
-				(d) -> new ProducerElement(this, d));
+				ModelType.PRODUCER,
+				d -> new ProducerElement(this, d));
+	}
+
+	private void syncCleanings() {
+		ProjectDao dao = new ProjectDao(App.getDb());
+		ChildSync.sync(childs,
+				dao.getCleaningDescriptors(getProject()),
+				ModelType.FLUE_GAS_CLEANING,
+				d -> new CleaningElement(this, d));
 	}
 
 	@Override

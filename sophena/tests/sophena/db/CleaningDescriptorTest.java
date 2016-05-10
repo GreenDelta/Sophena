@@ -45,7 +45,8 @@ public class CleaningDescriptorTest {
 
 	@Test
 	public void testNoDescriptors() {
-		List<CleaningDescriptor> list = pDao.getCleaningDescriptors(project.id);
+		List<CleaningDescriptor> list = pDao.getCleaningDescriptors(
+				project.toDescriptor());
 		Assert.assertTrue(list.isEmpty());
 	}
 
@@ -56,7 +57,8 @@ public class CleaningDescriptorTest {
 		e.product = cleaning;
 		project.flueGasCleaningEntries.add(e);
 		project = pDao.update(project);
-		List<CleaningDescriptor> list = pDao.getCleaningDescriptors(project.id);
+		List<CleaningDescriptor> list = pDao.getCleaningDescriptors(
+				project.toDescriptor());
 		Assert.assertEquals(1, list.size());
 		CleaningDescriptor d = list.get(0);
 		Assert.assertEquals(e.id, d.id);

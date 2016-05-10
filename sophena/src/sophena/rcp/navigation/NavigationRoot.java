@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.db.daos.ProjectDao;
+import sophena.model.ModelType;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 
@@ -28,8 +29,8 @@ public class NavigationRoot implements NavigationElement {
 			return;
 		ProjectDao dao = new ProjectDao(App.getDb());
 		List<ProjectDescriptor> dbContent = dao.getDescriptors();
-		ChildSync.sync(childs, dbContent,
-				(d) -> new ProjectElement(this, d));
+		ChildSync.sync(childs, dbContent, ModelType.PROJECT,
+				d -> new ProjectElement(this, d));
 	}
 
 	@Override
