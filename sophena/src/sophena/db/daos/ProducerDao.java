@@ -19,8 +19,8 @@ public class ProducerDao extends RootEntityDao<Producer> {
 	public List<ProducerDescriptor> getDescriptors(ProjectDescriptor pd) {
 		if (pd == null)
 			return Collections.emptyList();
-		String sql = "SELECT id, name, description, is_disabled FROM tbl_producers"
-				+ " WHERE f_project = '" + pd.id + "'";
+		String sql = "SELECT id, name, description, is_disabled, rank FROM "
+				+ "tbl_producers WHERE f_project = '" + pd.id + "'";
 		List<ProducerDescriptor> list = new ArrayList<>();
 		try {
 			NativeSql.on(db).query(sql, (r) -> {
@@ -29,6 +29,7 @@ public class ProducerDao extends RootEntityDao<Producer> {
 				d.name = r.getString(2);
 				d.description = r.getString(3);
 				d.disabled = r.getBoolean(4);
+				d.rank = r.getInt(5);
 				list.add(d);
 				return true;
 			});
