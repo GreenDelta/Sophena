@@ -36,4 +36,12 @@ public class ProducerElement extends ContentElement<ProducerDescriptor> {
 	@Override
 	public void update() {
 	}
+
+	@Override
+	public String getLabel() {
+		ProducerDescriptor d = getDescriptor();
+		if (d == null || d.name == null)
+			return super.getLabel();
+		return d.rank + ". " + d.name;
+	}
 }

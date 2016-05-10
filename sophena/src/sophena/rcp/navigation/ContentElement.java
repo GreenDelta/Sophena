@@ -1,6 +1,8 @@
 package sophena.rcp.navigation;
 
 import java.util.Objects;
+
+import sophena.model.ModelType;
 import sophena.model.descriptors.Descriptor;
 import sophena.rcp.utils.Strings;
 
@@ -47,9 +49,12 @@ abstract class ContentElement<T extends Descriptor> implements
 		Descriptor otherDes = otherElem.descriptor;
 		if (this.descriptor == null || otherDes == null)
 			return 0;
-		else
-			return Strings.compare(this.descriptor.name,
-					otherDes.name);
+		ModelType type = this.descriptor.getType();
+		ModelType otherType = otherDes.getType();
+		// sort producers and flue gas cleanings by type
+		if (type != null && otherType != null && type != otherType)
+			return otherType.ordinal() - type.ordinal();
+		return Strings.compare(this.getLabel(), otherElem.getLabel());
 	}
 
 	@Override
