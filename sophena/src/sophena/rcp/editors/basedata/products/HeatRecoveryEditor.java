@@ -23,6 +23,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -157,13 +158,9 @@ public class HeatRecoveryEditor extends Editor {
 			if (!(obj instanceof HeatRecovery))
 				return null;
 			HeatRecovery hrc = (HeatRecovery) obj;
+			if (col < 3)
+				return ProductTables.getText(hrc, col);
 			switch (col) {
-			case 0:
-				return hrc.group != null ? hrc.group.name : null;
-			case 1:
-				return hrc.name;
-			case 2:
-				return hrc.manufacturer != null ? hrc.manufacturer.name : null;
 			case 3:
 				return Num.str(hrc.power) + " kW";
 			case 4:

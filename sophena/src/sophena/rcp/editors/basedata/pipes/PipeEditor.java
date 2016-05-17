@@ -25,6 +25,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -164,13 +165,9 @@ public class PipeEditor extends Editor {
 			if (!(e instanceof Pipe))
 				return null;
 			Pipe p = (Pipe) e;
+			if (col < 3)
+				return ProductTables.getText(p, col);
 			switch (col) {
-			case 0:
-				return p.group != null ? p.group.name : null;
-			case 1:
-				return p.name;
-			case 2:
-				return p.manufacturer != null ? p.manufacturer.name : null;
 			case 3:
 				return p.pipeType != null ? p.pipeType.name() : null;
 			case 4:

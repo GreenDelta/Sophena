@@ -23,6 +23,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -158,13 +159,9 @@ public class TransferStationEditor extends Editor {
 			if (!(obj instanceof TransferStation))
 				return null;
 			TransferStation s = (TransferStation) obj;
+			if (col < 3)
+				return ProductTables.getText(s, col);
 			switch (col) {
-			case 0:
-				return s.group != null ? s.group.name : null;
-			case 1:
-				return s.name;
-			case 2:
-				return s.manufacturer != null ? s.manufacturer.name : null;
 			case 3:
 				return Num.str(s.outputCapacity) + " kW";
 			case 4:

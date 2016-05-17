@@ -25,6 +25,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -162,13 +163,9 @@ public class BufferTankEditor extends Editor {
 			if (!(obj instanceof BufferTank))
 				return null;
 			BufferTank b = (BufferTank) obj;
+			if (col < 3)
+				return ProductTables.getText(b, col);
 			switch (col) {
-			case 0:
-				return b.group != null ? b.group.name : null;
-			case 1:
-				return b.name;
-			case 2:
-				return b.manufacturer != null ? b.manufacturer.name : null;
 			case 3:
 				return Num.str(b.volume) + " L";
 			case 4:

@@ -24,9 +24,9 @@ import sophena.db.usage.UsageSearch;
 import sophena.model.Boiler;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -164,13 +164,10 @@ class EditorPage extends FormPage {
 			if (!(element instanceof Boiler))
 				return null;
 			Boiler boiler = (Boiler) element;
+			if (col < 3)
+				return ProductTables.getText(boiler, col);
 			switch (col) {
-			case 0:
-				return boiler.group != null ? boiler.group.name : null;
-			case 1:
-				return boiler.name;
-			case 2:
-				return boiler.manufacturer != null ? boiler.manufacturer.name : null;
+
 			case 3:
 				if (isForCoGen) {
 					return Num.str(boiler.maxPowerElectric) + " kW";
@@ -196,36 +193,5 @@ class EditorPage extends FormPage {
 			}
 		}
 
-		private String getPrice(Boiler boiler) {
-			if (boiler == null || boiler.purchasePrice == null)
-				return null;
-			else
-				return Num.str(boiler.purchasePrice) + " EUR";
-		}
-
-		private String getPowerInfo(Boiler boiler) {
-			if (boiler == null)
-				return null;
-			String min = Num.str(boiler.minPower);
-			String max = Num.str(boiler.maxPower);
-			String eta = Num.str(boiler.efficiencyRate);
-			return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
-		}
-
-		private String getElectricPowerInfo(Boiler boiler) {
-			if (boiler == null)
-				return null;
-			String min = Num.str(boiler.minPowerElectric);
-			String max = Num.str(boiler.maxPowerElectric);
-			String eta = Num.str(boiler.efficiencyRateElectric);
-			return min + " kW - " + max + " kW (\u03B7=" + eta + "%)";
-		}
-
-		private String getFuelLabel(Boiler boiler) {
-			if (boiler.fuel != null)
-				return boiler.fuel.name;
-			else
-				return Labels.get(boiler.woodAmountType);
-		}
 	}
 }

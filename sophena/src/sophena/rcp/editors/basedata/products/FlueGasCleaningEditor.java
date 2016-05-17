@@ -23,6 +23,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -157,13 +158,9 @@ public class FlueGasCleaningEditor extends Editor {
 			if (!(obj instanceof FlueGasCleaning))
 				return null;
 			FlueGasCleaning c = (FlueGasCleaning) obj;
+			if (col < 3)
+				return ProductTables.getText(c, col);
 			switch (col) {
-			case 0:
-				return c.group != null ? c.group.name : null;
-			case 1:
-				return c.name;
-			case 2:
-				return c.manufacturer != null ? c.manufacturer.name : null;
 			case 3:
 				return c.fuel == null ? null : (c.fuel.name);
 			case 4:
