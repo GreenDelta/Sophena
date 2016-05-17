@@ -79,11 +79,12 @@ public class PipeEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Bezeichnung",
-					"Produktgruppe", "Link", "Preis", "Durchmesser", "U-Wert");
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller", "Art",
+					"Außend. Medienrohr", "U-Wert");
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
-			Tables.bindColumnWidths(table, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1);
+			double x = 1.0 / 6.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
@@ -165,18 +166,17 @@ public class PipeEditor extends Editor {
 			Pipe p = (Pipe) e;
 			switch (col) {
 			case 0:
-				return p.name;
-			case 1:
 				return p.group != null ? p.group.name : null;
+			case 1:
+				return p.name;
 			case 2:
-				return p.url;
+				return p.manufacturer != null ? p.manufacturer.name : null;
 			case 3:
-				return p.purchasePrice == null ? null
-						: Num.str(p.purchasePrice) + " EUR/m";
+				return p.pipeType != null ? p.pipeType.name() : null;
 			case 4:
-				return Num.str(p.totalDiameter) + " mm";
+				return Num.str(p.outerDiameter) + " mm";
 			case 5:
-				return Num.str(p.uValue);
+				return Num.str(p.uValue) + "W/m*K";
 			default:
 				return null;
 			}

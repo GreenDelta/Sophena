@@ -78,12 +78,12 @@ class EditorPage extends FormPage {
 
 	private String[] getColumns() {
 		if (isForCoGen)
-			return new String[] { "Bezeichnung", "Produktgruppe", "Link",
-					"Preis", "Brennstoff", "Leistungsbereich th.",
-					"Leistungsbereich el." };
+			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
+					"Max. Leistung el.", "Wirkungsgrad el.", "Max. Leistung th.",
+					"Wirkungsgrad th." };
 		else
-			return new String[] { "Bezeichnung", "Produktgruppe", "Link",
-					"Preis", "Brennstoff", "Leistungsbereich" };
+			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
+					"Maximale Leistung", "Wirkungsgrad" };
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
@@ -166,19 +166,31 @@ class EditorPage extends FormPage {
 			Boiler boiler = (Boiler) element;
 			switch (col) {
 			case 0:
-				return boiler.name;
-			case 1:
 				return boiler.group != null ? boiler.group.name : null;
+			case 1:
+				return boiler.name;
 			case 2:
-				return boiler.url;
+				return boiler.manufacturer != null ? boiler.manufacturer.name : null;
 			case 3:
-				return getPrice(boiler);
+				if (isForCoGen) {
+					return Num.str(boiler.maxPowerElectric) + " kW";
+				} else {
+					return Num.str(boiler.maxPower) + " kW";
+				}
 			case 4:
-				return getFuelLabel(boiler);
+				if (isForCoGen) {
+					return Num.str(boiler.efficiencyRateElectric) + " %";
+				} else {
+					return Num.str(boiler.efficiencyRate) + " %";
+				}
 			case 5:
-				return getPowerInfo(boiler);
+				if (isForCoGen) {
+					return Num.str(boiler.maxPower) + " kW";
+				}
 			case 6:
-				return getElectricPowerInfo(boiler);
+				if (isForCoGen) {
+					return Num.str(boiler.efficiencyRate) + "%";
+				}
 			default:
 				return null;
 			}
