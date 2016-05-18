@@ -402,7 +402,7 @@ CREATE TABLE tbl_flue_gas_cleaning (
 
 	flue_gas_cleaning_type VARCHAR(255),
 	max_volume_flow DOUBLE,
-	f_fuel CHAR(36),
+	fuel VARCHAR(255),
 	max_producer_power DOUBLE,
 	max_electricity_consumption DOUBLE,
 	cleaning_method VARCHAR(255),
@@ -443,7 +443,7 @@ CREATE TABLE tbl_heat_recovery (
 
 	power DOUBLE,
 	heat_recovery_type VARCHAR(255),
-	f_fuel CHAR(36),
+	fuel VARCHAR(255),
 	producer_power DOUBLE,
 		
 	PRIMARY KEY (id)

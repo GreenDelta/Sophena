@@ -164,7 +164,7 @@ public class HeatRecoveryEditor extends Editor {
 			case 3:
 				return Num.str(hrc.power) + " kW";
 			case 4:
-				return hrc.fuel != null ? hrc.fuel.name : null;
+				return hrc.fuel;
 			case 5:
 				return Num.str(hrc.producerPower) + " kW";
 			default:

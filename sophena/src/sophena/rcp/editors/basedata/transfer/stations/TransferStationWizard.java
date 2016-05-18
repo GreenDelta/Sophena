@@ -83,7 +83,7 @@ public class TransferStationWizard extends Wizard {
 			Texts.on(nameText).required().validate(data::validate);
 			UI.filler(c);
 
-			manufacturerText = UI.formText(c, M.Name);
+			manufacturerText = UI.formText(c, "Hersteller");
 			Texts.on(manufacturerText).required().validate(data::validate);
 			UI.filler(c);
 

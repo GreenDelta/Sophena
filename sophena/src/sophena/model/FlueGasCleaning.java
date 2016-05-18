@@ -2,8 +2,6 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +14,8 @@ public class FlueGasCleaning extends AbstractProduct {
 	@Column(name = "max_volume_flow")
 	public double maxVolumeFlow;
 
-	@OneToOne
-	@JoinColumn(name = "f_fuel")
-	public Fuel fuel;
+	@Column(name = "fuel")
+	public String fuel;
 
 	@Column(name = "max_producer_power")
 	public double maxProducerPower;

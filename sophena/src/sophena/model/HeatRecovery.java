@@ -2,8 +2,6 @@ package sophena.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +14,8 @@ public class HeatRecovery extends AbstractProduct {
 	@Column(name = "heat_recovery_type")
 	public String heatRecoveryType;
 
-	@OneToOne
-	@JoinColumn(name = "f_fuel")
-	public Fuel fuel;
+	@Column(name = "fuel")
+	public String fuel;
 
 	@Column(name = "producer_power")
 	public double producerPower;

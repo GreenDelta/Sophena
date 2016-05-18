@@ -7,7 +7,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -61,8 +60,7 @@ public class FlueGasCleaningWizard extends Wizard {
 		Text priceText;
 		private Text maxVolumeFlowText;
 
-		// TODO: fuel
-		Combo fuelCombo;
+		private Text fuelText;
 		private Text maxProducerPowerText;
 		private Text maxElectricityConsumptionText;
 		private Text cleaningMethodText;
@@ -101,8 +99,9 @@ public class FlueGasCleaningWizard extends Wizard {
 			Texts.on(maxVolumeFlowText).decimal().required();
 			UI.formLabel(c, "m3/h");
 
-			fuelCombo = UI.formCombo(c, M.Fuel);
-			UI.formLabel(c, "");
+			fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
+			Texts.on(fuelText).required();
+			UI.filler(c);
 
 			maxProducerPowerText = UI.formText(c, "Max. Leistung Wärmeerzeuger");
 			Texts.on(maxProducerPowerText).decimal().required();
@@ -145,6 +144,7 @@ public class FlueGasCleaningWizard extends Wizard {
 				groupCombo.select(cleaning.group);
 				Texts.set(urlText, cleaning.url);
 				Texts.set(priceText, cleaning.purchasePrice);
+				Texts.set(fuelText, cleaning.fuel);
 				Texts.set(maxVolumeFlowText, cleaning.maxVolumeFlow);
 				Texts.set(maxProducerPowerText, cleaning.maxProducerPower);
 				Texts.set(maxElectricityConsumptionText, cleaning.maxElectricityConsumption);
@@ -167,6 +167,7 @@ public class FlueGasCleaningWizard extends Wizard {
 				cleaning.cleaningType = cleaningTypeText.getText();
 				cleaning.separationEfficiency = Texts.getDouble(separationEfficiencyText);
 				cleaning.description = descriptionText.getText();
+				cleaning.fuel = fuelText.getText();
 			}
 
 			boolean validate() {

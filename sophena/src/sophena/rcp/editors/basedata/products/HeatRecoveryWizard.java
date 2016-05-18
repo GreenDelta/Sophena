@@ -7,7 +7,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -60,8 +59,7 @@ public class HeatRecoveryWizard extends Wizard {
 		Text urlText;
 		Text priceText;
 
-		// TODO: fuel
-		Combo fuelCombo;
+		Text fuelText;
 		Text powerText;
 		Text typeText;
 		Text producerPowerText;
@@ -102,8 +100,9 @@ public class HeatRecoveryWizard extends Wizard {
 			Texts.on(typeText).required();
 			UI.filler(c);
 
-			fuelCombo = UI.formCombo(c, M.Fuel);
-			UI.formLabel(c, "");
+			fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
+			Texts.on(fuelText).required();
+			UI.filler(c);
 
 			producerPowerText = UI.formText(c, "Leistung des Wärmeerzeugers");
 			Texts.on(producerPowerText).decimal().required();
@@ -136,6 +135,7 @@ public class HeatRecoveryWizard extends Wizard {
 				Texts.set(typeText, recovery.heatRecoveryType);
 				Texts.set(producerPowerText, recovery.producerPower);
 				Texts.set(descriptionText, recovery.description);
+				Texts.set(fuelText, recovery.fuel);
 			}
 
 			void bindToModel() {
@@ -148,6 +148,7 @@ public class HeatRecoveryWizard extends Wizard {
 				recovery.heatRecoveryType = typeText.getText();
 				recovery.producerPower = Texts.getDouble(producerPowerText);
 				recovery.description = descriptionText.getText();
+				recovery.fuel = fuelText.getText();
 			}
 
 			boolean validate() {

@@ -162,7 +162,7 @@ public class FlueGasCleaningEditor extends Editor {
 				return ProductTables.getText(c, col);
 			switch (col) {
 			case 3:
-				return c.fuel == null ? null : (c.fuel.name);
+				return c.fuel;
 			case 4:
 				return Num.str(c.maxProducerPower) + " KW";
 			case 5:
