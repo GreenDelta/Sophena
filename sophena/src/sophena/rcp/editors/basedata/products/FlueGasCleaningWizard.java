@@ -7,6 +7,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -33,7 +34,7 @@ public class FlueGasCleaningWizard extends Wizard {
 		w.setWindowTitle("Rauchgasreinigung");
 		w.cleaning = cleaning;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(200, 550);
+		d.setPageSize(200, 520);
 		return d.open();
 	}
 
@@ -55,13 +56,13 @@ public class FlueGasCleaningWizard extends Wizard {
 
 		Text nameText;
 		EntityCombo<ProductGroup> groupCombo;
+		Text manufacturerText;
 		Text urlText;
 		Text priceText;
+		private Text maxVolumeFlowText;
 
 		// TODO: fuel
-
-		private Text typeText;
-		private Text maxVolumeFlowText;
+		Combo fuelCombo;
 		private Text maxProducerPowerText;
 		private Text maxElectricityConsumptionText;
 		private Text cleaningMethodText;
@@ -79,19 +80,29 @@ public class FlueGasCleaningWizard extends Wizard {
 			setControl(c);
 			UI.gridLayout(c, 3);
 
+			createGroupCombo(c);
+
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.filler(c);
 
-			createGroupCombo(c);
-
-			typeText = UI.formText(c, "Art");
-			Texts.on(typeText).required();
+			manufacturerText = UI.formText(c, "Hersteller");
+			Texts.on(manufacturerText).required().validate(data::validate);
 			UI.filler(c);
+
+			urlText = UI.formText(c, "Web-Link");
+			Texts.on(urlText).required().validate(data::validate);
+			UI.filler(c);
+
+			priceText = UI.formText(c, "Preis");
+			UI.formLabel(c, "EUR");
 
 			maxVolumeFlowText = UI.formText(c, "Max. reinigbarer Volumenstrom");
 			Texts.on(maxVolumeFlowText).decimal().required();
 			UI.formLabel(c, "m3/h");
+
+			fuelCombo = UI.formCombo(c, M.Fuel);
+			UI.formLabel(c, "");
 
 			maxProducerPowerText = UI.formText(c, "Max. Leistung Wärmeerzeuger");
 			Texts.on(maxProducerPowerText).decimal().required();
@@ -101,10 +112,10 @@ public class FlueGasCleaningWizard extends Wizard {
 			Texts.on(maxElectricityConsumptionText).decimal();
 			UI.formLabel(c, "kW");
 
-			cleaningMethodText = UI.formMultiText(c, "Art der Reinigung");
+			cleaningMethodText = UI.formText(c, "Art der Reinigung");
 			UI.filler(c);
 
-			cleaningTypeText = UI.formMultiText(c, "Typ der Reinigung");
+			cleaningTypeText = UI.formText(c, "Typ der Reinigung");
 			UI.filler(c);
 
 			separationEfficiencyText = UI.formText(c, "Max. Abscheidegrad");
@@ -113,12 +124,6 @@ public class FlueGasCleaningWizard extends Wizard {
 
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.filler(c);
-
-			urlText = UI.formText(c, "Web-Link");
-			UI.filler(c);
-
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
 
 			data.bindToUI();
 		}
@@ -140,7 +145,6 @@ public class FlueGasCleaningWizard extends Wizard {
 				groupCombo.select(cleaning.group);
 				Texts.set(urlText, cleaning.url);
 				Texts.set(priceText, cleaning.purchasePrice);
-				Texts.set(typeText, cleaning.flueGasCleaningType);
 				Texts.set(maxVolumeFlowText, cleaning.maxVolumeFlow);
 				Texts.set(maxProducerPowerText, cleaning.maxProducerPower);
 				Texts.set(maxElectricityConsumptionText, cleaning.maxElectricityConsumption);
@@ -156,7 +160,6 @@ public class FlueGasCleaningWizard extends Wizard {
 				cleaning.url = urlText.getText();
 				if (Texts.hasNumber(priceText))
 					cleaning.purchasePrice = Texts.getDouble(priceText);
-				cleaning.flueGasCleaningType = typeText.getText();
 				cleaning.maxVolumeFlow = Texts.getDouble(maxVolumeFlowText);
 				cleaning.maxProducerPower = Texts.getDouble(maxProducerPowerText);
 				cleaning.maxElectricityConsumption = Texts.getDouble(maxElectricityConsumptionText);

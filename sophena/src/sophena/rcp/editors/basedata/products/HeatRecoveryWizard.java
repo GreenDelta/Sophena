@@ -7,6 +7,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -33,7 +34,7 @@ public class HeatRecoveryWizard extends Wizard {
 		w.setWindowTitle("Wärmerückgewinnung");
 		w.recovery = recovery;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 400);
+		d.setPageSize(180, 410);
 		return d.open();
 	}
 
@@ -53,12 +54,14 @@ public class HeatRecoveryWizard extends Wizard {
 
 		DataBinding data = new DataBinding();
 
-		Text nameText;
 		EntityCombo<ProductGroup> groupCombo;
+		Text nameText;
+		Text manufacturerText;
 		Text urlText;
 		Text priceText;
 
 		// TODO: fuel
+		Combo fuelCombo;
 		Text powerText;
 		Text typeText;
 		Text producerPowerText;
@@ -74,11 +77,22 @@ public class HeatRecoveryWizard extends Wizard {
 			setControl(c);
 			UI.gridLayout(c, 3);
 
+			createGroupCombo(c);
+
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.filler(c);
 
-			createGroupCombo(c);
+			manufacturerText = UI.formText(c, "Hersteller");
+			Texts.on(manufacturerText).required();
+			UI.filler(c);
+
+			urlText = UI.formText(c, "Web-Link");
+			Texts.on(urlText).required().validate(data::validate);
+			UI.filler(c);
+
+			priceText = UI.formText(c, "Preis");
+			UI.formLabel(c, "EUR");
 
 			powerText = UI.formText(c, "Thermische Leistung");
 			Texts.on(powerText).decimal().required();
@@ -88,18 +102,15 @@ public class HeatRecoveryWizard extends Wizard {
 			Texts.on(typeText).required();
 			UI.filler(c);
 
+			fuelCombo = UI.formCombo(c, M.Fuel);
+			UI.formLabel(c, "");
+
 			producerPowerText = UI.formText(c, "Leistung des Wärmeerzeugers");
 			Texts.on(producerPowerText).decimal().required();
 			UI.formLabel(c, "kW");
 
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.filler(c);
-
-			urlText = UI.formText(c, "Web-Link");
-			UI.filler(c);
-
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
 
 			data.bindToUI();
 		}

@@ -53,8 +53,9 @@ public class TransferStationWizard extends Wizard {
 
 		DataBinding data = new DataBinding();
 
-		Text nameText;
 		EntityCombo<ProductGroup> groupCombo;
+		Text nameText;
+		Text manufacturerText;
 		Text urlText;
 		Text priceText;
 
@@ -76,11 +77,22 @@ public class TransferStationWizard extends Wizard {
 			setControl(c);
 			UI.gridLayout(c, 3);
 
+			createGroupCombo(c);
+
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.filler(c);
 
-			createGroupCombo(c);
+			manufacturerText = UI.formText(c, M.Name);
+			Texts.on(manufacturerText).required().validate(data::validate);
+			UI.filler(c);
+
+			urlText = UI.formText(c, "Web-Link");
+			Texts.on(urlText).required().validate(data::validate);
+			UI.filler(c);
+
+			priceText = UI.formText(c, "Preis");
+			UI.formLabel(c, "EUR");
 
 			buildingTypeText = UI.formText(c, M.BuildingType);
 			Texts.on(buildingTypeText).required();
@@ -106,12 +118,6 @@ public class TransferStationWizard extends Wizard {
 
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.filler(c);
-
-			urlText = UI.formText(c, "Web-Link");
-			UI.filler(c);
-
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
 
 			data.bindToUI();
 		}

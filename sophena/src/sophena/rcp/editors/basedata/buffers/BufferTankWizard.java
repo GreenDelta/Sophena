@@ -33,7 +33,7 @@ class BufferTankWizard extends Wizard {
 		w.setWindowTitle("Pufferspeicher");
 		w.buffer = buffer;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(150, 400);
+		d.setPageSize(150, 410);
 		return d.open();
 	}
 
@@ -53,11 +53,16 @@ class BufferTankWizard extends Wizard {
 
 		DataBinding data = new DataBinding();
 
-		Text nameText;
 		EntityCombo<ProductGroup> groupCombo;
-		Text volText;
+		Text nameText;
+		Text manufacturerText;
 		Text urlText;
 		Text priceText;
+		Text volText;
+		Text diameterText;
+		Text heightText;
+		Text insulationText;
+		Text descriptionText;
 
 		Page() {
 			super("BufferWizardPage", "Pufferspeicher", null);
@@ -69,21 +74,38 @@ class BufferTankWizard extends Wizard {
 			setControl(c);
 			UI.gridLayout(c, 3);
 
+			createGroupCombo(c);
+
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
 
-			createGroupCombo(c);
+			manufacturerText = UI.formText(c, "Hersteller");
+			Texts.on(manufacturerText).required().validate(data::validate);
+			UI.formLabel(c, "");
+
+			urlText = UI.formText(c, "Web-Link");
+			Texts.on(urlText).required().validate(data::validate);
+			UI.formLabel(c, "");
+
+			priceText = UI.formText(c, "Preis");
+			UI.formLabel(c, "EUR");
 
 			volText = UI.formText(c, "Volumen");
 			Texts.on(volText).required().decimal().validate(data::validate);
 			UI.formLabel(c, "L");
 
-			urlText = UI.formText(c, "Web-Link");
-			UI.formLabel(c, "");
+			diameterText = UI.formText(c, "Durchmesser");
+			UI.formLabel(c, "mm");
 
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
+			heightText = UI.formText(c, "Höhe");
+			UI.formLabel(c, "mm");
+
+			insulationText = UI.formText(c, "Isolierung");
+			UI.formLabel(c, "mm");
+
+			descriptionText = UI.formMultiText(c, "Zusatzinformation");
+			UI.formLabel(c, "");
 
 			data.bindToUI();
 		}
@@ -103,16 +125,26 @@ class BufferTankWizard extends Wizard {
 			void bindToUI() {
 				Texts.set(nameText, buffer.name);
 				groupCombo.select(buffer.group);
+				// Texts.set(manufacturerText, buffer.manufacturer.name);
 				Texts.set(volText, buffer.volume);
 				Texts.set(urlText, buffer.url);
 				Texts.set(priceText, buffer.purchasePrice);
+				Texts.set(diameterText, buffer.diameter);
+				Texts.set(heightText, buffer.height);
+				Texts.set(insulationText, buffer.insulationThickness);
+				Texts.set(descriptionText, buffer.description);
 			}
 
 			void bindToModel() {
 				buffer.name = nameText.getText();
 				buffer.group = groupCombo.getSelected();
+				// buffer.manufacturer.name = manufacturerText.getText();
 				buffer.volume = Texts.getDouble(volText);
+				buffer.diameter = Texts.getDouble(diameterText);
+				buffer.height = Texts.getDouble(heightText);
+				buffer.insulationThickness = Texts.getDouble(insulationText);
 				buffer.url = urlText.getText();
+				buffer.description = descriptionText.getText();
 				if (Texts.hasNumber(priceText))
 					buffer.purchasePrice = Texts.getDouble(priceText);
 			}

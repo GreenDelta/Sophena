@@ -46,7 +46,10 @@ class BoilerWizard extends Wizard {
 		wiz.setWindowTitle(boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel");
 		wiz.boiler = boiler;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 500);
+		if (boiler.isCoGenPlant)
+			dialog.setPageSize(150, 500);
+		else
+			dialog.setPageSize(150, 410);
 		return dialog.open();
 	}
 
@@ -71,8 +74,11 @@ class BoilerWizard extends Wizard {
 
 		private DataBinding data = new DataBinding();
 
-		private Text nameText;
 		private EntityCombo<ProductGroup> groupCombo;
+		private Text nameText;
+		private Text manufacturerText;
+		private Text urlText;
+		private Text priceText;
 		private Combo fuelCombo;
 		private Text maxText;
 		private Text minText;
@@ -80,8 +86,7 @@ class BoilerWizard extends Wizard {
 		private Text maxElText;
 		private Text minElText;
 		private Text efficiencyElText;
-		private Text linkText;
-		private Text priceText;
+		private Text descriptionText;
 
 		private Page() {
 			super("FuelWizardPage",
@@ -94,25 +99,35 @@ class BoilerWizard extends Wizard {
 			setControl(c);
 			UI.gridLayout(c, 3);
 			createNameTextAndFuelCombo(c);
-			createEfficiencyText(c);
 			createMinMaxTexts(c);
+			createEfficiencyText(c);
 			if (boiler.isCoGenPlant) {
-				createEfficiencyElText(c);
 				createMinMaxElTexts(c);
+				createEfficiencyElText(c);
 			}
-			createLinkAndPriceText(c);
+			createDescriptionText(c);
 			data.bindToUI();
 		}
 
 		private void createNameTextAndFuelCombo(Composite c) {
-			nameText = UI.formText(c, M.Name);
-			Texts.on(nameText).required().validate(data::validate);
-			UI.formLabel(c, "");
+
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
 			List<ProductGroup> list = getGroups();
 			groupCombo.setInput(list);
 			UI.formLabel(c, "");
+			nameText = UI.formText(c, M.Name);
+			Texts.on(nameText).required().validate(data::validate);
+			UI.formLabel(c, "");
+			manufacturerText = UI.formText(c, "Hersteller");
+			Texts.on(manufacturerText).required().validate(data::validate);
+			UI.formLabel(c, "");
+			urlText = UI.formText(c, "Web-Link");
+			Texts.on(urlText).required().validate(data::validate);
+			UI.formLabel(c, "");
+			priceText = UI.formText(c, "Preis");
+			Texts.on(priceText).decimal();
+			UI.formLabel(c, "EUR");
 			fuelCombo = UI.formCombo(c, M.Fuel);
 			UI.formLabel(c, "");
 			Controls.onSelect(fuelCombo, (e) -> data.validate());
@@ -167,12 +182,10 @@ class BoilerWizard extends Wizard {
 			UI.formLabel(c, "%");
 		}
 
-		private void createLinkAndPriceText(Composite c) {
-			linkText = UI.formText(c, "Web-Link");
+		private void createDescriptionText(Composite c) {
+			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.formLabel(c, "");
-			priceText = UI.formText(c, "Preis");
-			Texts.on(priceText).decimal();
-			UI.formLabel(c, "EUR");
+
 		}
 
 		private class DataBinding {
@@ -180,6 +193,7 @@ class BoilerWizard extends Wizard {
 			private void bindToModel() {
 				boiler.name = nameText.getText();
 				boiler.group = groupCombo.getSelected();
+				// boiler.manufacturer.name = manufacturerText.getText();
 				int idx = fuelCombo.getSelectionIndex();
 				String label = fuelCombo.getItem(idx);
 				WoodAmountType wat = Labels.getWoodAmountType(label);
@@ -197,7 +211,8 @@ class BoilerWizard extends Wizard {
 				boiler.maxPowerElectric = Texts.getDouble(maxElText);
 				boiler.minPowerElectric = Texts.getDouble(minElText);
 				boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText);
-				boiler.url = linkText.getText();
+				boiler.url = urlText.getText();
+				boiler.description = descriptionText.getText();
 				if (Texts.hasNumber(priceText))
 					boiler.purchasePrice = Texts.getDouble(priceText);
 				else
@@ -224,6 +239,7 @@ class BoilerWizard extends Wizard {
 
 			private void bindToUI() {
 				Texts.set(nameText, boiler.name);
+				// Texts.set(manufacturerText, boiler.manufacturer.name);
 				groupCombo.select(boiler.group);
 				String[] items = getFuelItems();
 				fuelCombo.setItems(items);
@@ -234,8 +250,9 @@ class BoilerWizard extends Wizard {
 				Texts.set(maxElText, boiler.maxPowerElectric);
 				Texts.set(minElText, boiler.minPowerElectric);
 				Texts.set(efficiencyElText, boiler.efficiencyRateElectric);
-				Texts.set(linkText, boiler.url);
+				Texts.set(urlText, boiler.url);
 				Texts.set(priceText, boiler.purchasePrice);
+				Texts.set(descriptionText, boiler.description);
 				validate();
 			}
 

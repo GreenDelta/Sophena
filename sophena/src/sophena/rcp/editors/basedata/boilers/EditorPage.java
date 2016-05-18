@@ -71,7 +71,7 @@ class EditorPage extends FormPage {
 		TableViewer table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new BoilerLabel());
 		table.setInput(boilers);
-		double x = 1 / (isForCoGen ? 7.0 : 6.0);
+		double x = 1 / (isForCoGen ? 7.0 : 5.0);
 		Tables.bindColumnWidths(table, x, x, x, x, x, (isForCoGen ? x : 0));
 		bindBoilerActions(section, table);
 	}
