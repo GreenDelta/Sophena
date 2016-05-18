@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
@@ -25,6 +23,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
@@ -63,7 +62,7 @@ public class PipeEditor extends Editor {
 			super(PipeEditor.this, "PipeEditorPage", "Wärmeleitungen");
 			dao = new RootEntityDao<>(Pipe.class, App.getDb());
 			pipes = dao.getAll();
-			Sorters.byName(pipes);
+			Sorters.pipes(pipes);
 		}
 
 		@Override
@@ -153,7 +152,7 @@ public class PipeEditor extends Editor {
 
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends BaseTableLabel {
 
 		@Override
 		public Image getColumnImage(Object e, int col) {
