@@ -62,7 +62,7 @@ public class HeatRecoveryEditor extends Editor {
 					"Wärmerückgewinnungsanlagen");
 			dao = new RootEntityDao<>(HeatRecovery.class, App.getDb());
 			recoveries = dao.getAll();
-			Sorters.byName(recoveries);
+			Sorters.heatRecoveries(recoveries);
 		}
 
 		@Override
@@ -130,7 +130,7 @@ public class HeatRecoveryEditor extends Editor {
 
 		private void delete(TableViewer table) {
 			HeatRecovery r = Viewers.getFirstSelected(table);
-			if (r == null)
+			if (r == null || r.isProtected)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
 					"Soll die ausgewählte Wärmerückgewinnung wirklich gelöscht werden?");

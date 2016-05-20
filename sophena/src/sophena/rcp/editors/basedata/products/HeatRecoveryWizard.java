@@ -155,7 +155,7 @@ public class HeatRecoveryWizard extends Wizard {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
 				else {
-					setPageComplete(true);
+					setPageComplete(!recovery.isProtected);
 					setErrorMessage(null);
 					return true;
 				}

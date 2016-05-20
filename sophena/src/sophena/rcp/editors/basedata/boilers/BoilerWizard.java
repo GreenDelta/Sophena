@@ -302,7 +302,7 @@ class BoilerWizard extends Wizard {
 				if (!validCoGen())
 					return false;
 				else {
-					setPageComplete(true);
+					setPageComplete(!boiler.isProtected);
 					setErrorMessage(null);
 					return true;
 				}

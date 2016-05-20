@@ -62,7 +62,7 @@ public class FlueGasCleaningEditor extends Editor {
 					"Rauchgasreinigungsanlagen");
 			dao = new RootEntityDao<>(FlueGasCleaning.class, App.getDb());
 			cleanings = dao.getAll();
-			Sorters.byName(cleanings);
+			Sorters.flueGasCleanings(cleanings);
 		}
 
 		@Override

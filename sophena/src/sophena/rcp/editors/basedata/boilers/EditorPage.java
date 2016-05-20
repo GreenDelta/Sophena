@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -26,6 +24,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
@@ -49,7 +48,7 @@ class EditorPage extends FormPage {
 				isForCoGen ? "KWK-Anlage" : "Heizkessel");
 		this.isForCoGen = isForCoGen;
 		boilers = isForCoGen ? dao.getCoGenPlants() : dao.getBoilers();
-		Sorters.byName(boilers);
+		Sorters.boilers(boilers);
 	}
 
 	@Override
@@ -129,7 +128,7 @@ class EditorPage extends FormPage {
 
 	private void deleteBoiler(TableViewer table) {
 		Boiler boiler = Viewers.getFirstSelected(table);
-		if (boiler == null)
+		if (boiler == null || boiler.isProtected)
 			return;
 		boolean doIt = MsgBox.ask(M.Delete,
 				"Soll das ausgewählte Produkt wirklich gelöscht werden?");
@@ -149,15 +148,7 @@ class EditorPage extends FormPage {
 		}
 	}
 
-	private class BoilerLabel extends LabelProvider
-			implements ITableLabelProvider {
-
-		@Override
-		public Image getColumnImage(Object element, int col) {
-			if (col != 0)
-				return null;
-			return isForCoGen ? Icon.CO_GEN_16.img() : Icon.BOILER_16.img();
-		}
+	private class BoilerLabel extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object element, int col) {

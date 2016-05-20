@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -130,7 +129,7 @@ public class PipeEditor extends Editor {
 
 		private void delete(TableViewer table) {
 			Pipe p = Viewers.getFirstSelected(table);
-			if (p == null)
+			if (p == null || p.isProtected)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
 					"Soll die ausgewählte Wärmeleitung wirklich gelöscht werden?");
@@ -155,11 +154,6 @@ public class PipeEditor extends Editor {
 	private class Label extends BaseTableLabel {
 
 		@Override
-		public Image getColumnImage(Object e, int col) {
-			return col == 0 ? Icon.PIPE_16.img() : null;
-		}
-
-		@Override
 		public String getColumnText(Object e, int col) {
 			if (!(e instanceof Pipe))
 				return null;
@@ -177,7 +171,5 @@ public class PipeEditor extends Editor {
 				return null;
 			}
 		}
-
 	}
-
 }

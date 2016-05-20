@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -25,6 +23,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductTables;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
@@ -63,7 +62,7 @@ public class BufferTankEditor extends Editor {
 			super(BufferTankEditor.this, "BufferEditorPage", "Pufferspeicher");
 			dao = new RootEntityDao<>(BufferTank.class, App.getDb());
 			buffers = dao.getAll();
-			Sorters.byName(buffers);
+			Sorters.buffers(buffers);
 		}
 
 		@Override
@@ -152,11 +151,7 @@ public class BufferTankEditor extends Editor {
 		}
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
-		@Override
-		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Icon.BUFFER_16.img() : null;
-		}
+	private class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {

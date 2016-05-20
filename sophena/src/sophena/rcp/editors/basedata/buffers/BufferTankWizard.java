@@ -155,7 +155,7 @@ class BufferTankWizard extends Wizard {
 				if (!Texts.hasNumber(volText))
 					return error("Es muss ein Volumen angegeben werden.");
 				else {
-					setPageComplete(true);
+					setPageComplete(!buffer.isProtected);
 					setErrorMessage(null);
 					return true;
 				}

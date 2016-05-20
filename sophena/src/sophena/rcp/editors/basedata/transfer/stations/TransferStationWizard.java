@@ -167,7 +167,7 @@ public class TransferStationWizard extends Wizard {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
 				else {
-					setPageComplete(true);
+					setPageComplete(!station.isProtected);
 					setErrorMessage(null);
 					return true;
 				}

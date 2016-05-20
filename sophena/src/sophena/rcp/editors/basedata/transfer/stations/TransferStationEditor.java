@@ -62,7 +62,7 @@ public class TransferStationEditor extends Editor {
 					"Hausübergabestationen");
 			dao = new RootEntityDao<>(TransferStation.class, App.getDb());
 			stations = dao.getAll();
-			Sorters.byName(stations);
+			Sorters.transferStations(stations);
 		}
 
 		@Override
@@ -170,7 +170,5 @@ public class TransferStationEditor extends Editor {
 				return null;
 			}
 		}
-
 	}
-
 }

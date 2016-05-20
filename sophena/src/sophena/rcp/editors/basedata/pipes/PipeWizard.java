@@ -193,11 +193,10 @@ class PipeWizard extends Wizard {
 				if (!Texts.hasNumber(uValueText))
 					return error("Es muss ein U-Wert angegeben werden.");
 				else {
-					setPageComplete(true);
+					setPageComplete(!pipe.isProtected);
 					setErrorMessage(null);
 					return true;
 				}
-
 			}
 
 			boolean error(String message) {

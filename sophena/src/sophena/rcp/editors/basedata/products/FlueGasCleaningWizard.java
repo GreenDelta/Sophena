@@ -174,7 +174,7 @@ public class FlueGasCleaningWizard extends Wizard {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
 				else {
-					setPageComplete(true);
+					setPageComplete(!cleaning.isProtected);
 					setErrorMessage(null);
 					return true;
 				}

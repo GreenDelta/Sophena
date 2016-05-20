@@ -5,9 +5,14 @@ import java.util.List;
 
 import sophena.model.AbstractProduct;
 import sophena.model.BaseDataEntity;
+import sophena.model.Boiler;
+import sophena.model.BufferTank;
+import sophena.model.FlueGasCleaning;
+import sophena.model.HeatRecovery;
 import sophena.model.Pipe;
 import sophena.model.PipeType;
 import sophena.model.RootEntity;
+import sophena.model.TransferStation;
 
 public class Sorters {
 
@@ -23,7 +28,27 @@ public class Sorters {
 			if (o1 == null || o2 == null)
 				return o1 == null ? -1 : 1;
 			return Strings.compare(o1.name, o2.name);
+		});
+	}
 
+	public static void boilers(List<Boiler> boilers) {
+		if (boilers == null)
+			return;
+		Collections.sort(boilers, (p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+			if (p1.isCoGenPlant) {
+				if (Math.abs(p1.maxPowerElectric - p2.maxPowerElectric) > 1e-6) {
+					return Double.compare(p1.maxPowerElectric,
+							p2.maxPowerElectric);
+				}
+			} else {
+				if (Math.abs(p1.maxPower - p2.maxPower) > 1e-6) {
+					return Double.compare(p1.maxPower, p2.maxPower);
+				}
+			}
+			return byManufacturer(p1, p2);
 		});
 	}
 
@@ -41,6 +66,67 @@ public class Sorters {
 			}
 			if (Math.abs(p1.outerDiameter - p2.outerDiameter) > 1e-6) {
 				return Double.compare(p1.outerDiameter, p2.outerDiameter);
+			}
+			return byManufacturer(p1, p2);
+		});
+	}
+
+	public static void transferStations(List<TransferStation> ts) {
+		if (ts == null)
+			return;
+		Collections.sort(ts, (p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+
+			if (Math.abs(p1.outputCapacity - p2.outputCapacity) > 1e-6) {
+				return Double.compare(p1.outputCapacity, p2.outputCapacity);
+			}
+			return byManufacturer(p1, p2);
+		});
+	}
+
+	public static void heatRecoveries(List<HeatRecovery> hr) {
+		if (hr == null)
+			return;
+		Collections.sort(hr, (p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+			if (Math.abs(p1.power - p2.power) > 1e-6) {
+				return Double.compare(p1.power, p2.power);
+			}
+			c = Strings.compare(p1.fuel, p2.fuel);
+			return c == 0 ? byManufacturer(p1, p2) : c;
+		});
+	}
+
+	public static void flueGasCleanings(List<FlueGasCleaning> fgc) {
+		if (fgc == null)
+			return;
+		Collections.sort(fgc, (p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+			c = Strings.compare(p1.fuel, p2.fuel);
+			if (c != 0)
+				return c;
+			if (Math.abs(p1.maxProducerPower - p2.maxProducerPower) > 1e-6) {
+				return Double.compare(p1.maxProducerPower, p2.maxProducerPower);
+			}
+			return byManufacturer(p1, p2);
+		});
+	}
+
+	public static void buffers(List<BufferTank> buffers) {
+		if (buffers == null)
+			return;
+		Collections.sort(buffers, (p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+			if (Math.abs(p1.volume - p2.volume) > 1e-6) {
+				return Double.compare(p1.volume, p2.volume);
 			}
 			return byManufacturer(p1, p2);
 		});
