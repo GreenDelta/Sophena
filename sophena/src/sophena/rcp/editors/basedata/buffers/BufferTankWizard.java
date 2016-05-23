@@ -1,171 +1,81 @@
 package sophena.rcp.editors.basedata.buffers;
 
-import java.util.List;
-
 import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.db.daos.ProductGroupDao;
 import sophena.model.BufferTank;
-import sophena.model.ProductGroup;
-import sophena.model.ProductType;
-import sophena.rcp.App;
-import sophena.rcp.M;
-import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Sorters;
+import sophena.rcp.editors.basedata.ProductWizard;
+import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-class BufferTankWizard extends Wizard {
+class BufferTankWizard implements IContent {
 
-	private Page page;
-	private BufferTank buffer;
+	private final BufferTank buffer;
+
+	private ProductWizard wizard;
+	private Text volText;
+	private Text diameterText;
+	private Text heightText;
+	private Text insulationText;
+
+	private BufferTankWizard(BufferTank buffer) {
+		this.buffer = buffer;
+	}
 
 	static int open(BufferTank buffer) {
 		if (buffer == null)
 			return Window.CANCEL;
-		BufferTankWizard w = new BufferTankWizard();
+		BufferTankWizard content = new BufferTankWizard(buffer);
+		ProductWizard w = new ProductWizard(buffer, content);
+		content.wizard = w;
 		w.setWindowTitle("Pufferspeicher");
-		w.buffer = buffer;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
 		d.setPageSize(150, 410);
 		return d.open();
 	}
 
 	@Override
-	public boolean performFinish() {
-		page.data.bindToModel();
-		return true;
+	public void render(Composite c) {
+		volText = UI.formText(c, "Volumen");
+		Texts.on(volText).required().decimal().validate(wizard::validate);
+		UI.formLabel(c, "L");
+
+		diameterText = UI.formText(c, "Durchmesser");
+		Texts.on(diameterText).decimal();
+		UI.formLabel(c, "mm");
+
+		heightText = UI.formText(c, "Höhe");
+		Texts.on(diameterText).decimal();
+		UI.formLabel(c, "mm");
+
+		insulationText = UI.formText(c, "Isolierung");
+		Texts.on(insulationText).decimal();
+		UI.formLabel(c, "mm");
 	}
 
 	@Override
-	public void addPages() {
-		page = new Page();
-		addPage(page);
+	public void bindToUI() {
+		Texts.set(volText, buffer.volume);
+		Texts.set(diameterText, buffer.diameter);
+		Texts.set(heightText, buffer.height);
+		Texts.set(insulationText, buffer.insulationThickness);
 	}
 
-	private class Page extends WizardPage {
+	@Override
+	public void bindToModel() {
+		buffer.volume = Texts.getDouble(volText);
+		buffer.diameter = Texts.getDouble(diameterText);
+		buffer.height = Texts.getDouble(heightText);
+		buffer.insulationThickness = Texts.getDouble(insulationText);
+	}
 
-		DataBinding data = new DataBinding();
-
-		EntityCombo<ProductGroup> groupCombo;
-		Text nameText;
-		Text manufacturerText;
-		Text urlText;
-		Text priceText;
-		Text volText;
-		Text diameterText;
-		Text heightText;
-		Text insulationText;
-		Text descriptionText;
-
-		Page() {
-			super("BufferWizardPage", "Pufferspeicher", null);
-		}
-
-		@Override
-		public void createControl(Composite parent) {
-			Composite c = new Composite(parent, SWT.NONE);
-			setControl(c);
-			UI.gridLayout(c, 3);
-
-			createGroupCombo(c);
-
-			nameText = UI.formText(c, M.Name);
-			Texts.on(nameText).required().validate(data::validate);
-			UI.formLabel(c, "");
-
-			manufacturerText = UI.formText(c, "Hersteller");
-			Texts.on(manufacturerText).required().validate(data::validate);
-			UI.formLabel(c, "");
-
-			urlText = UI.formText(c, "Web-Link");
-			Texts.on(urlText).required().validate(data::validate);
-			UI.formLabel(c, "");
-
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
-
-			volText = UI.formText(c, "Volumen");
-			Texts.on(volText).required().decimal().validate(data::validate);
-			UI.formLabel(c, "L");
-
-			diameterText = UI.formText(c, "Durchmesser");
-			UI.formLabel(c, "mm");
-
-			heightText = UI.formText(c, "Höhe");
-			UI.formLabel(c, "mm");
-
-			insulationText = UI.formText(c, "Isolierung");
-			UI.formLabel(c, "mm");
-
-			descriptionText = UI.formMultiText(c, "Zusatzinformation");
-			UI.formLabel(c, "");
-
-			data.bindToUI();
-		}
-
-		private void createGroupCombo(Composite c) {
-			groupCombo = new EntityCombo<>();
-			groupCombo.create("Produktgruppe", c);
-			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			List<ProductGroup> list = dao.getAll(ProductType.BUFFER_TANK);
-			Sorters.byName(list);
-			groupCombo.setInput(list);
-			UI.formLabel(c, "");
-		}
-
-		private class DataBinding {
-
-			void bindToUI() {
-				Texts.set(nameText, buffer.name);
-				groupCombo.select(buffer.group);
-				// Texts.set(manufacturerText, buffer.manufacturer.name);
-				Texts.set(volText, buffer.volume);
-				Texts.set(urlText, buffer.url);
-				Texts.set(priceText, buffer.purchasePrice);
-				Texts.set(diameterText, buffer.diameter);
-				Texts.set(heightText, buffer.height);
-				Texts.set(insulationText, buffer.insulationThickness);
-				Texts.set(descriptionText, buffer.description);
-			}
-
-			void bindToModel() {
-				buffer.name = nameText.getText();
-				buffer.group = groupCombo.getSelected();
-				// buffer.manufacturer.name = manufacturerText.getText();
-				buffer.volume = Texts.getDouble(volText);
-				buffer.diameter = Texts.getDouble(diameterText);
-				buffer.height = Texts.getDouble(heightText);
-				buffer.insulationThickness = Texts.getDouble(insulationText);
-				buffer.url = urlText.getText();
-				buffer.description = descriptionText.getText();
-				if (Texts.hasNumber(priceText))
-					buffer.purchasePrice = Texts.getDouble(priceText);
-			}
-
-			boolean validate() {
-				if (Texts.isEmpty(nameText))
-					return error("Es muss ein Name angegeben werden.");
-				if (!Texts.hasNumber(volText))
-					return error("Es muss ein Volumen angegeben werden.");
-				else {
-					setPageComplete(!buffer.isProtected);
-					setErrorMessage(null);
-					return true;
-				}
-			}
-
-			boolean error(String message) {
-				setErrorMessage(message);
-				setPageComplete(false);
-				return false;
-			}
-		}
+	@Override
+	public String validate() {
+		if (!Texts.hasNumber(volText))
+			return "Es muss ein Volumen angegeben werden.";
+		return null;
 	}
 }

@@ -44,6 +44,10 @@ public class ProductWizard extends Wizard {
 		addPage(page);
 	}
 
+	public void validate() {
+		page.data.validate();
+	}
+
 	private class Page extends WizardPage {
 
 		DataBinding data = new DataBinding();
@@ -74,7 +78,7 @@ public class ProductWizard extends Wizard {
 			createManufacturerCombo(c);
 
 			urlText = UI.formText(c, "Web-Link");
-			Texts.on(urlText).required().validate(data::validate);
+			Texts.on(urlText).required();
 			UI.formLabel(c, "");
 
 			priceText = UI.formText(c, "Preis");
