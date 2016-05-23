@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
