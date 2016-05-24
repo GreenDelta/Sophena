@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Sophena's documentation!
-===================================
+Dokumentation von Sophena
+=========================
 
 Contents:
 
@@ -16,10 +16,4 @@ Contents:
    de/holz
    de/netz
    de/glossar
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
 
