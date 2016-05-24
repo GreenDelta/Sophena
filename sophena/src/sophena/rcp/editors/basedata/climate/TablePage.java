@@ -57,6 +57,8 @@ class TablePage extends FormPage {
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
 		bindActions(section, table);
 		form.reflow(true);
+		UI.formLabel(comp, "Datenbasis: Deutscher Wetterdienst,"
+				+ " Werte bearbeitet");
 	}
 
 	private void bindActions(Section section, TableViewer table) {

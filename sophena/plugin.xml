@@ -140,6 +140,12 @@
             id="sophena.FuelEditor"
             name="Brennstoffe" />
             
+         <editor
+            class="sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor"
+            icon="icons/manufacturer_16.png"
+            id="sophena.ManufacturerEditor"
+            name="Hersteller" />
+            
         <editor
             class="sophena.rcp.editors.basedata.ProductGroupEditor"
             icon="icons/product_16.png"

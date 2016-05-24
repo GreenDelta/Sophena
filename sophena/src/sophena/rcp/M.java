@@ -47,6 +47,8 @@ public class M extends NLS {
 	public static String LoadProfiles;
 	public static String Location;
 	public static String Locations;
+	public static String Manufacturer;
+	public static String Manufacturers;
 	public static String Name;
 	public static String NewConsumer;
 	public static String NewProducer;
