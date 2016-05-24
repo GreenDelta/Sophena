@@ -196,9 +196,9 @@ public final class Labels {
 		case BUFFER_TANK:
 			return Icon.BUFFER_16.img();
 		case HEAT_RECOVERY:
-			return null;
+			return Icon.HEAT_RECOVERY_16.img();
 		case FLUE_GAS_CLEANING:
-			return null;
+			return Icon.FLUE_GAS_16.img();
 		case BOILER_HOUSE_TECHNOLOGY:
 			return null;
 		case BUILDING:

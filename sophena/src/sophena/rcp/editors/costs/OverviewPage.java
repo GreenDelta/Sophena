@@ -16,6 +16,7 @@ import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductType;
+import sophena.model.Project;
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.editors.consumers.ConsumerEditor;
@@ -31,7 +32,7 @@ class OverviewPage extends FormPage {
 	public OverviewPage(CostEditor editor) {
 		super(editor, "sophena.CostOverviewPage", "Investitionen");
 		this.editor = editor;
-		Collections.sort(editor.getProject().productEntries, (e1, e2) -> {
+		Collections.sort(project().productEntries, (e1, e2) -> {
 			if (e1.product == null || e2.product == null)
 				return 0;
 			else
@@ -39,20 +40,26 @@ class OverviewPage extends FormPage {
 		});
 	}
 
+	private Project project() {
+		return editor.getProject();
+	}
+
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		ScrolledForm form = UI.formHeader(mform, "Investitionen");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		boilerSection(ProductType.BIOMASS_BOILER, body, tk);
-		boilerSection(ProductType.FOSSIL_FUEL_BOILER, body, tk);
-		boilerSection(ProductType.COGENERATION_PLANT, body, tk);
+		boilers(ProductType.BIOMASS_BOILER, body, tk);
+		boilers(ProductType.FOSSIL_FUEL_BOILER, body, tk);
+		boilers(ProductType.COGENERATION_PLANT, body, tk);
 		entries(ProductType.BOILER_ACCESSORIES, body, tk);
-		bufferSection(body, tk);
-		pipeSection(body, tk);
+		buffers(body, tk);
+		pipes(body, tk);
 		transferStations(body, tk);
-		entries(ProductType.HEAT_RECOVERY, body, tk);
+		heatRecoveries(body, tk);
+
 		entries(ProductType.FLUE_GAS_CLEANING, body, tk);
+
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
 		entries(ProductType.BUILDING, body, tk);
 		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
@@ -65,7 +72,7 @@ class OverviewPage extends FormPage {
 		s.create(body, tk);
 	}
 
-	private void bufferSection(Composite body, FormToolkit tk) {
+	private void buffers(Composite body, FormToolkit tk) {
 		DisplaySection<HeatNet> s = new DisplaySection<>(
 				ProductType.BUFFER_TANK);
 		HeatNet net = editor.getProject().heatNet;
@@ -77,14 +84,14 @@ class OverviewPage extends FormPage {
 		};
 		s.costs = n -> n.bufferTankCosts;
 		s.label = n -> n.bufferTank.name;
-		s.onOpen = n -> HeatNetEditor.open(editor.getProject().toDescriptor());
+		s.onOpen = n -> HeatNetEditor.open(project().toDescriptor());
 		s.create(body, tk);
 	}
 
-	private void pipeSection(Composite body, FormToolkit tk) {
+	private void pipes(Composite body, FormToolkit tk) {
 		DisplaySection<HeatNetPipe> s = new DisplaySection<>(
 				ProductType.PIPE);
-		HeatNet net = editor.getProject().heatNet;
+		HeatNet net = project().heatNet;
 		s.content = () -> {
 			if (net == null)
 				return Collections.emptyList();
@@ -93,7 +100,7 @@ class OverviewPage extends FormPage {
 		};
 		s.costs = p -> p.costs;
 		s.label = p -> p.pipe != null ? p.pipe.name : null;
-		s.onOpen = p -> HeatNetEditor.open(editor.getProject().toDescriptor());
+		s.onOpen = p -> HeatNetEditor.open(project().toDescriptor());
 		s.create(body, tk);
 	}
 
@@ -102,7 +109,7 @@ class OverviewPage extends FormPage {
 				ProductType.TRANSFER_STATION);
 		s.content = () -> {
 			List<Consumer> list = new ArrayList<>();
-			for (Consumer c : editor.getProject().consumers) {
+			for (Consumer c : project().consumers) {
 				if (c.transferStation != null) {
 					list.add(c);
 				}
@@ -112,20 +119,39 @@ class OverviewPage extends FormPage {
 			return list;
 		};
 		s.costs = c -> c.transferStationCosts;
-		s.label = c -> c.transferStation != null ? c.transferStation.name : null;
-		s.onOpen = c -> ConsumerEditor.open(editor.getProject().toDescriptor(),
+		s.label = c -> c.transferStation.name;
+		s.onOpen = c -> ConsumerEditor.open(project().toDescriptor(),
 				c.toDescriptor());
 		s.create(body, tk);
 	}
 
-	private void boilerSection(ProductType type, Composite body,
-			FormToolkit tk) {
+	private void heatRecoveries(Composite body, FormToolkit tk) {
+		DisplaySection<Producer> s = new DisplaySection<>(ProductType.HEAT_RECOVERY);
+		s.content = () -> {
+			List<Producer> list = new ArrayList<>();
+			for (Producer p : project().producers) {
+				if (p.heatRecovery != null) {
+					list.add(p);
+				}
+			}
+			Collections.sort(list, (p1, p2) -> Strings.compare(
+					p1.heatRecovery.name, p2.heatRecovery.name));
+			return list;
+		};
+		s.costs = p -> p.heatRecoveryCosts;
+		s.label = p -> p.heatRecovery.name;
+		s.onOpen = p -> ProducerEditor.open(project().toDescriptor(),
+				p.toDescriptor());
+		s.create(body, tk);
+	}
+
+	private void boilers(ProductType type, Composite body, FormToolkit tk) {
 		DisplaySection<Producer> s = new DisplaySection<>(type);
 		s.content = () -> getProducers(type);
 		s.costs = p -> p.costs;
 		s.label = p -> p.boiler == null ? null : p.boiler.name;
 		s.onOpen = p -> {
-			ProjectDescriptor project = editor.getProject().toDescriptor();
+			ProjectDescriptor project = project().toDescriptor();
 			ProducerDescriptor producer = p.toDescriptor();
 			ProducerEditor.open(project, producer);
 		};
@@ -134,7 +160,7 @@ class OverviewPage extends FormPage {
 
 	private List<Producer> getProducers(ProductType type) {
 		List<Producer> list = new ArrayList<>();
-		for (Producer p : editor.getProject().producers) {
+		for (Producer p : project().producers) {
 			Boiler b = p.boiler;
 			if (b != null && b.type == type)
 				list.add(p);
@@ -143,5 +169,4 @@ class OverviewPage extends FormPage {
 				(p1, p2) -> Strings.compare(p1.boiler.name, p2.boiler.name));
 		return list;
 	}
-
 }
