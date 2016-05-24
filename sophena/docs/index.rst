@@ -12,6 +12,10 @@ Contents:
    :maxdepth: 2
 
    de/erzeuger
+   de/verbraucher
+   de/holz
+   de/netz
+   de/glossar
 
 Indices and tables
 ==================
