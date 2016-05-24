@@ -143,6 +143,8 @@ public class DataPack implements Closeable {
 			return "heat_recovery";
 		case LOAD_PROFILE:
 			return "load_profiles";
+		case MANUFACTURER:
+			return "manufacturers";
 		case PIPE:
 			return "pipes";
 		case PRODUCER:

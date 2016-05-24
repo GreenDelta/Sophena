@@ -11,22 +11,26 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.Database;
+import sophena.db.daos.Dao;
 import sophena.db.daos.ProjectDao;
-import sophena.db.daos.RootEntityDao;
 import sophena.io.datapack.DataPack;
 import sophena.io.datapack.Export;
 import sophena.io.datapack.Import;
 import sophena.model.Consumer;
+import sophena.model.Manufacturer;
 import sophena.model.Project;
 import sophena.model.TransferStation;
 
-public class TransferStationPackTest {
+public class ManufacturerPackTest {
 
 	private Path path;
 	private Database db = Tests.getDb();
-	private RootEntityDao<TransferStation> stationDao = new RootEntityDao<>(TransferStation.class, db);
+
+	private Dao<Manufacturer> manufacturerDao = new Dao<>(Manufacturer.class, db);
+	private Dao<TransferStation> stationDao = new Dao<>(TransferStation.class, db);
 	private ProjectDao projectDao = new ProjectDao(db);
 
+	private Manufacturer manufacturer;
 	private TransferStation station;
 	private Project project;
 
@@ -34,8 +38,12 @@ public class TransferStationPackTest {
 	public void setUp() throws Exception {
 		path = Files.createTempFile("test_fgc_pack_", ".sophena");
 		Files.delete(path);
+		manufacturer = new Manufacturer();
+		manufacturer.id = UUID.randomUUID().toString();
+		manufacturerDao.insert(manufacturer);
 		station = new TransferStation();
 		station.id = UUID.randomUUID().toString();
+		station.manufacturer = manufacturer;
 		stationDao.insert(station);
 		project = new Project();
 		project.id = UUID.randomUUID().toString();
@@ -50,6 +58,7 @@ public class TransferStationPackTest {
 	public void tearDown() throws Exception {
 		projectDao.delete(project);
 		stationDao.delete(station);
+		manufacturerDao.delete(manufacturer);
 		Files.deleteIfExists(path);
 	}
 
@@ -59,6 +68,8 @@ public class TransferStationPackTest {
 		Assert.assertEquals(1, p.consumers.size());
 		Consumer c = p.consumers.get(0);
 		Assert.assertEquals(station.id, c.transferStation.id);
+		Manufacturer m = c.transferStation.manufacturer;
+		Assert.assertEquals(manufacturer.id, m.id);
 	}
 
 	@Test
@@ -76,8 +87,10 @@ public class TransferStationPackTest {
 	private void deleteModel() {
 		projectDao.delete(project);
 		stationDao.delete(station);
+		manufacturerDao.delete(manufacturer);
 		Assert.assertNull(projectDao.get(project.id));
 		Assert.assertNull(stationDao.get(station.id));
+		Assert.assertNull(manufacturerDao.get(manufacturer.id));
 	}
 
 }

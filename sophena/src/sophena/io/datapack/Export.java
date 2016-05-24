@@ -15,6 +15,7 @@ import sophena.model.BuildingState;
 import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
 import sophena.model.HeatRecovery;
+import sophena.model.Manufacturer;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
@@ -47,7 +48,7 @@ public class Export {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
 				WeatherStation.class, TransferStation.class, FlueGasCleaning.class,
-				HeatRecovery.class
+				HeatRecovery.class, Manufacturer.class
 		};
 		Serializer ed = new Serializer(root);
 		for (Class<?> refType : refTypes) {
