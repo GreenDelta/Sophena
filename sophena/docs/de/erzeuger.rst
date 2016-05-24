@@ -1,6 +1,8 @@
-# Wärmeerzeuger
+Wärmeerzeuger
+=============
 
-## Stromerzeugung
+Stromerzeugung
+--------------
 Wärmeerzeuger mit Kraft-Wärme-Kopplung (KWK-Anlagen, `Boiler.isCoGenPlant = true`) 
 können zusätzlich zu Wärme auch Strom erzeugen. Die erzeugte Menge an Strom 
 wird dabei wie folgt aus der erzeugten Wärmemenge berechnet:
