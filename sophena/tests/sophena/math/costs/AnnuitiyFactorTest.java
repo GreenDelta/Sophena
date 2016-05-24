@@ -9,10 +9,7 @@ public class AnnuitiyFactorTest {
 
 	@Test
 	public void testGet() {
-		double af = AnnuitiyFactor
-				.ofInterestRate(2)
-				.withDuration_years(20)
-				.get();
+		double af = AnnuitiyFactor.get(1.02, 20);
 		Assert.assertEquals(0.06115671812529034, af, 1e-10);
 	}
 

@@ -321,30 +321,6 @@
 
 	<h2>Funktionen der Wirtschaftlichkeitsberechnung</h2>
 
-	<h3><a name="Annuitätenfaktor">Annuitätenfaktor</a></h3>
-	Der Annuitätenfaktor $anf$ dient dazu eine Zahlungsgröße in eine Reihe gleich hoher Zahlungen pro Jahr umzuwandeln:
-
-		$$ anf = \frac{i}{1 - (1+i)^{-n}} $$
-
-	Dabei ist $i$ der Zinssatz (z.B. 0.02) und $n$ die Laufzeit (z.B. 20 Jahre).
-
-	<p>Basis API:</p>
-	<pre><code class="java">
-		double anf = AnnuitiyFactor
-				.ofInterestRate(0.02)
-				.withDuration_years(20)
-				.get();
-	</code></pre>
-
-	<p>Convenience API:</p>
-	<pre><code class="java">
-		if (withFunding)
-			return AnnuitiyFactor.getForFunding(project);
-		else
-			return AnnuitiyFactor.get(project);
-	</code></pre>
-
-
 	<h3><a name="Barwertfaktor">Barwertfaktor</a></h3>
 	Der Barwertfaktor $cvf$ wird wie folgt berechnet:
 

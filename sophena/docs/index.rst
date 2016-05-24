@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   de/energetisch/heizwert
+
+   de/wirtschaftlich/annuitaetenfaktor
+
    de/erzeuger
    de/verbraucher
    de/holz
