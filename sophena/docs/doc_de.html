@@ -39,38 +39,7 @@
 <body>
 
 	<h2>Funktionen der energetischen Berechnung</h2>
-
-	<h3>TODO</h3>
-	<ul>
-		<li>FuelEnergyDemand: benötigte Brennstoffenergie, je nach Erzeugertyp
-	</ul>
-
-	<h3><a name="Heizwert">Heizwert</a></h3>
-	Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für Erdgas). Der Heizwert $cv$ [kWh/u]
-	entspricht der Menge Wärme $Q_{gen,u}$ [kWh], die pro Referenzeinheit des Brennstoffs erzeugt werden können:
-
-		$$ cv = \frac{Q_{gen,u}}{u} $$
-
-	Für Holzbrennstoffe wird der Heizwert pro Kilogramm absolut trockener Masse (kg atro) angegeben [kWh/kg atro].
-
-
-	<h3><a name="Brennstoffenergie">Brennstoffenergie</a></h3>
-	Die Wärme $Q$ [kWh], die durch die Verbrennung einer Menge $a$ eines Brennstoffs erzeugt werden kann, wird wie folgt
-	berechnet:
-
-		$$ Q = a * cv $$
-
-	Die Brennstoffmenge $a$ wird in der Referenzeinheit des Brennstoffs angegeben. $cv$ ist der <a href="#Heizwert">Heizwert</a>
-	des Brennstoffs in kWh pre Referenzeinheit.
-
-	<pre><code class="java">
-		double q = FuelEnergy
-				.ofAmount_unit(10)
-				.calorificValue_kWh_per_unit(10)
-				.get_kWh();
-	</code></pre>
-
-
+	
 	<h3><a name="BrennstoffenergieHolz">Brennstoffenergie von Holz</a></h3>
 	Bei der Berechnung der Brennstoffeinergie von Holz geht der Wassergehalt des Holzes mit ein:
 
@@ -319,7 +288,7 @@
 
 
 
-	<h2>Funktionen der Wirtschaftlichkeitsberechnung</h2>
+	<h2></h2>
 
 	<h3><a name="Barwertfaktor">Barwertfaktor</a></h3>
 	Der Barwertfaktor $cvf$ wird wie folgt berechnet:

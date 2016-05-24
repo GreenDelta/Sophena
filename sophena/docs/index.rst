@@ -11,9 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   de/energetisch/heizwert
-
-   de/wirtschaftlich/annuitaetenfaktor
+   de/energetische_berechnung
+   de/wirtschaftliche_berechnung
 
    de/erzeuger
    de/verbraucher

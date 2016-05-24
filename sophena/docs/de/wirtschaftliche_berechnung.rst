@@ -1,5 +1,8 @@
+Funktionen der Wirtschaftlichkeitsberechnung
+============================================
+
 Annuitätenfaktor
-================
+----------------
 Der Annuitätenfaktor :math:`anf` dient dazu eine Zahlungsgröße in eine Reihe
 gleich hoher Zahlungen pro Jahr umzuwandeln:
 
