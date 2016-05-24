@@ -11,7 +11,7 @@ public class CapitalCosts {
 	public static double get(CostResultItem item, Project project, double interestRate) {
 		if (item == null || item.costs == null || project == null)
 			return 0;
-		double annuityFactor = AnnuitiyFactor.get(project, interestRate);
+		double annuityFactor = AnnuityFactor.get(project, interestRate);
 		double residualValue = ResidualValue.get(item, project, interestRate);
 		int projectDuration = project.projectDuration;
 		int usageDuration = item.costs.duration;

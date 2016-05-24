@@ -16,7 +16,7 @@ public class CapitalCostsTest {
 		Project project = TestProject.create();
 		CostResultItem item = new CostResultItem();
 		item.costs = new ProductCosts();
-		item.costs.investment = 10000;
+		item.costs.investment = 10_000;
 		double interestRate = project.costSettings.interestRate;
 		DoubleSupplier fn = () -> CapitalCosts.get(item, project, interestRate);
 

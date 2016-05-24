@@ -2,7 +2,7 @@ package sophena.math.costs;
 
 import sophena.model.Project;
 
-public class AnnuitiyFactor {
+public class AnnuityFactor {
 
 	public static double get(double interestFactor, int duration) {
 		return (interestFactor - 1) / (1 - Math.pow(interestFactor, -duration));

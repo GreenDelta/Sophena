@@ -1,6 +1,6 @@
 package sophena.calc;
 
-import sophena.math.costs.AnnuitiyFactor;
+import sophena.math.costs.AnnuityFactor;
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
@@ -102,7 +102,7 @@ class CostCalculator {
 	private void addOperationCosts(CostResult r, CostResultItem item) {
 		double interestRate = withFunding ? settings.interestRateFunding
 				: settings.interestRate;
-		double af = AnnuitiyFactor.get(project, interestRate);
+		double af = AnnuityFactor.get(project, interestRate);
 		double opFactor = getCashValueFactor(settings.operationFactor);
 		double maFactor = getCashValueFactor(settings.maintenanceFactor);
 		double opNetto = item.costs.operation * settings.hourlyWage * af * opFactor
@@ -118,7 +118,7 @@ class CostCalculator {
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
 		double interestRate = withFunding ? settings.interestRateFunding
 				: settings.interestRate;
-		double af = AnnuitiyFactor.get(project, interestRate);
+		double af = AnnuityFactor.get(project, interestRate);
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
 		double producedHeat = energyResult.totalHeat(p);
@@ -143,7 +143,7 @@ class CostCalculator {
 	private void addOtherCosts(CostResult r) {
 		double interestRate = withFunding ? settings.interestRateFunding
 				: settings.interestRate;
-		double annuityFactor = AnnuitiyFactor.get(project, interestRate);
+		double annuityFactor = AnnuityFactor.get(project, interestRate);
 		double cashValueFactor = getCashValueFactor(settings.operationFactor);
 		double share = (settings.insuranceShare
 				+ settings.otherShare
