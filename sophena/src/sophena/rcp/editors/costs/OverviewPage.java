@@ -12,6 +12,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.Boiler;
 import sophena.model.Consumer;
+import sophena.model.FlueGasCleaningEntry;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
@@ -57,9 +58,7 @@ class OverviewPage extends FormPage {
 		pipes(body, tk);
 		transferStations(body, tk);
 		heatRecoveries(body, tk);
-
-		entries(ProductType.FLUE_GAS_CLEANING, body, tk);
-
+		flueGasCleanings(body, tk);
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
 		entries(ProductType.BUILDING, body, tk);
 		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
@@ -126,7 +125,8 @@ class OverviewPage extends FormPage {
 	}
 
 	private void heatRecoveries(Composite body, FormToolkit tk) {
-		DisplaySection<Producer> s = new DisplaySection<>(ProductType.HEAT_RECOVERY);
+		DisplaySection<Producer> s = new DisplaySection<>(
+				ProductType.HEAT_RECOVERY);
 		s.content = () -> {
 			List<Producer> list = new ArrayList<>();
 			for (Producer p : project().producers) {
@@ -142,6 +142,25 @@ class OverviewPage extends FormPage {
 		s.label = p -> p.heatRecovery.name;
 		s.onOpen = p -> ProducerEditor.open(project().toDescriptor(),
 				p.toDescriptor());
+		s.create(body, tk);
+	}
+
+	public void flueGasCleanings(Composite body, FormToolkit tk) {
+		DisplaySection<FlueGasCleaningEntry> s = new DisplaySection<>(
+				ProductType.FLUE_GAS_CLEANING);
+		s.content = () -> {
+			List<FlueGasCleaningEntry> list = new ArrayList<>();
+			for (FlueGasCleaningEntry e : project().flueGasCleaningEntries) {
+				if (e.product != null) {
+					list.add(e);
+				}
+			}
+			Collections.sort(list, (e1, e2) -> Strings.compare(
+					e1.product.name, e2.product.name));
+			return list;
+		};
+		s.costs = e -> e.costs;
+		s.label = e -> e.product.name;
 		s.create(body, tk);
 	}
 

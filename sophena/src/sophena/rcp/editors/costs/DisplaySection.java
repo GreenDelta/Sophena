@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -33,6 +34,8 @@ class DisplaySection<T> {
 	Function<T, ProductCosts> costs;
 	Consumer<T> onOpen;
 
+	private TableViewer table;
+
 	DisplaySection(ProductType type) {
 		this.type = type;
 	}
@@ -40,20 +43,18 @@ class DisplaySection<T> {
 	void create(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, Labels.getPlural(type));
 		Composite composite = UI.sectionClient(section, tk);
-		TableViewer table = createTable(composite);
+		table = createTable(composite);
 		table.setLabelProvider(new Label());
-		if (content != null)
-			table.setInput(content.get());
-		if (onOpen != null) {
-			Tables.onDoubleClick(table, (e) -> doOpen(table));
-			Actions.bind(table, Actions.create("Öffnen", Icon.OPEN_16.des(),
-					() -> doOpen(table)));
-		}
+		Tables.onDoubleClick(table, e -> doOpen(table));
+		Action open = Actions.create("Öffnen", Icon.OPEN_16.des(),
+				() -> doOpen(table));
+		Actions.bind(table, open);
+		refresh();
 	}
 
 	private void doOpen(TableViewer table) {
 		T elem = Viewers.getFirstSelected(table);
-		if (elem != null)
+		if (elem != null && onOpen != null)
 			onOpen.accept(elem);
 	}
 
@@ -63,6 +64,12 @@ class DisplaySection<T> {
 				"Wartung und Inspektion", "Aufwand für Bedienen");
 		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
 		return table;
+	}
+
+	void refresh() {
+		if (content != null) {
+			table.setInput(content.get());
+		}
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {

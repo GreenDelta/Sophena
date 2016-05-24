@@ -87,6 +87,8 @@ public enum Icon {
 
 	PUMP_16("pump_16.png"),
 
+	REFRESH_16("refresh_16.png"),
+
 	REQUIRED_LOAD_16("required_load_16.png"),
 
 	RUN_16("run_16.png"),
