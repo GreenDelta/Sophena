@@ -28,7 +28,7 @@ public class FuelCosts {
 	}
 
 	public static double getPriceChangeFactor(Producer p, CostSettings settings) {
-		if (p == null || settings == null)
+		if (p == null || p.boiler == null || settings == null)
 			return 0;
 		if (p.boiler.fuel != null)
 			return settings.fossilFuelFactor;
