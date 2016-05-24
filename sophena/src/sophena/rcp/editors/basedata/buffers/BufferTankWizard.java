@@ -78,4 +78,9 @@ class BufferTankWizard implements IContent {
 			return "Es muss ein Volumen angegeben werden.";
 		return null;
 	}
+
+	@Override
+	public String getPageName() {
+		return "Pufferspeicher";
+	}
 }

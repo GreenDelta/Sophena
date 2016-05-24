@@ -61,7 +61,7 @@ public class ProductWizard extends Wizard {
 		Text descriptionText;
 
 		Page() {
-			super("BufferWizardPage", "Pufferspeicher", null);
+			super("WizardPage", content.getPageName(), null);
 		}
 
 		@Override
@@ -78,7 +78,7 @@ public class ProductWizard extends Wizard {
 			createManufacturerCombo(c);
 
 			urlText = UI.formText(c, "Web-Link");
-			Texts.on(urlText).required();
+			Texts.on(urlText).required().validate(data::validate);
 			UI.formLabel(c, "");
 
 			priceText = UI.formText(c, "Preis");
@@ -138,6 +138,8 @@ public class ProductWizard extends Wizard {
 			boolean validate() {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
+				if (Texts.isEmpty(urlText))
+					return error("Es muss ein Web-Link angegeben werden.");
 				String message = content.validate();
 				if (message != null)
 					return error(message);
@@ -158,6 +160,8 @@ public class ProductWizard extends Wizard {
 
 	/** Interface for product specific content in wizards. */
 	public interface IContent {
+
+		String getPageName();
 
 		/** Render the components in a 3-column grid layout. */
 		void render(Composite c);
