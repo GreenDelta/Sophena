@@ -71,6 +71,23 @@ aus:
     double generatedElectricity = GeneratedElectricity.get(p, generatedHeat);
 
 
+Eigenstrombedarf
+----------------
+Der Eigenstrombedarf wird nicht aus den Daten des ausgewählten Kessels berechnet, da 
+eine vernünftige Abschätzung auf Basis der dort angegebenen elektrischen Anschlussleistung 
+sehr schwierig ist. Stattdessen wird dafür bei den allgemeinen Angaben eine Kennzahl 
+angegeben, diese %-Angabe bezieht sich auf die im Heizhaus erzeugte Wärmemenge, als Default 
+werden 1,5 % angegeben. Werden also z.B. 2000 MWh Wärme pro Jahr erzeugt, so würde im 
+Defaultfall der Eigenstrombedarf mit 2000 * 0,015 = 30 MWh = 30.000 kWh abgeschätzt werden.
+
+Der Anteil wird derzeit in den `CostSettings` eines Projekts gespeichert. Die Hilfsfunktion
+zur Berechnung des Eigenstrombedarfs sieht entsprechend so aus:
+
+.. code-block:: java
+
+    double usedElectricity = UsedElectricity.get(producedHeat, costSettings);
+
+
 Primärenergiefaktor der Nahwärme
 --------------------------------
 Der Primärenergiefaktor des Wärmenetzes :math:`pef_{net}` ist eine Kennzahl, die unter den 

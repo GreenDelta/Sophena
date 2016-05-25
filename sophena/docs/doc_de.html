@@ -153,57 +153,6 @@
 				.get();
 	</code></pre>
 
-
-    <h3><a name="Jahresdauerlinie">Jahresdauerlinie einzelner Abnehmer</a></h3>
-    In die Berechnung der Jahresdauerlinie oder Lastkurve für einzelne Abnehmer geht zunächst
-    die benötigte Wärme $Q_{total}$ [kWh] des Abnehmers für das gesamte Jahr ein. Bei
-    Abnehmern mit Brennstoffangaben (verbrauchsgebundene Berechnung) ergibt
-    sich dieser Wert aus den Brennstoffmengen. Bei Abnehmern mit Angabe der
-    Heizlast $P_{max}$ [kW] (bedarfsgebundene Berechnung) wird der Wert mit Hilfe der
-    <a href="#Volllaststunden">Volllaststunden</a> $t_{full}$ [h] (Gebäudedefaults oder
-    Nutzereingabe) berechnet:
-
-        $$ Q_{total} = P_{max} * t_{full} $$
-
-    Mit dem Warmwasseranteil $wf$ des Abnehmers lässt sich daraus die benötigte
-    Wärmemenge für Warmwasser $Q_{water}$ [kWh] berechnen:
-
-        $$ Q_{water} = wf * Q_{total} $$
-
-    Daraus lässt sich die minimale Leistung $P_{min}$ [kW], die unabhängig von
-    der Temperatur für die 8760 Stunden im Jahr erbracht werden muss, wie folgt
-    berechnen:
-
-        $$ P_{min} = \frac{Q_{water}}{8760} $$
-
-    Dies ist der statische Anteil der Lastkurve, der zu jeder Stunde gleich ist.
-    Der dynamische Anteil wird anhand der Temperaturkurve ermittelt. Dazu werden
-    zunächst die Heizgrade $hd_i$ [°C] für jede Stunde $i$ mit Hilfe der Heizgrenztemperatur
-    $T_{lim}$ [°C] und der jeweiligen Temperatur $T_i$ [°C] der Temperaturkurve
-    berechnet. Die gebäudespezifische Heizgrenztemperatur ist dabei die Temperatur,
-    ab der nicht mehr geheizt wird:
-
-        $$ hd_i = \left\{\begin{matrix}
-              & 0 & \text{if} & T_i >= T_{lim} \\
-              & T_{lim} - T_i & \text{else} \\
-             \end{matrix}\right.
-        $$
-
-    Damit lässt sich dann ein Wärmebedarf pro Heizgrad $Qd$ [kWh/°C] für den
-    dynamischen Anteil der Lastkurve berechnen:
-
-        $$ Qd = \frac{Q_{total} - Q_{water}}{\sum{hd_i}}$$
-
-    Der dynamische Anteil $P_{dyn,i}$ [kW] der Lastkurve zur Stunde $i$ berechnet
-    sich dann zu:
-
-        $$ P_{dyn,i} = hd_i * Qd $$
-
-    Und damit ist die benötigte Leistung zur Stunde $i$ für den Abnehmer:
-
-        $$ P_i = P_{min} + P_{dyn,i} $$
-
-
 	<h3>Kapazität des Pufferspeichers</h3>
 	In der Simulationsrechnung wird die Kapazität des Pufferspeichers $Q_{cap,buff}$ [kWh] wie folgt
 	berechnet:

@@ -1,5 +1,6 @@
 package sophena.math.costs;
 
+import sophena.math.energetic.UsedElectricity;
 import sophena.model.CostSettings;
 
 /**
@@ -22,7 +23,7 @@ public class ElectricityCosts {
 	public static double net(double producedHeat, CostSettings settings) {
 		if (producedHeat == 0 || settings == null)
 			return 0;
-		double amount = producedHeat * settings.electricityDemandShare / 100;
+		double amount = UsedElectricity.get(producedHeat, settings);
 		double net = amount * settings.electricityPrice;
 		return net;
 	}
