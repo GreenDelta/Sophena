@@ -45,18 +45,19 @@ class EmissionTable {
 			Double val = m.get(p);
 			items.add(new Item(p.name, val == null ? 0 : val));
 		}
-		addCreditsItem(items);
+		addElectricityItems(items);
 		Item totalItem = new Item("Wärmenetz", result.total);
 		totalItem.total = true;
 		items.add(new Item());
 		items.add(totalItem);
 		items.add(new Item());
-		items.add(new Item("Variante Erdgas", result.variantNaturalGas));
-		items.add(new Item("Variante Heizöl", result.variantOil));
+		items.add(new Item("Erdgas dezentral", result.variantNaturalGas));
+		items.add(new Item("Heizöl dezentral", result.variantOil));
 		return items;
 	}
 
-	private void addCreditsItem(List<Item> items) {
+	private void addElectricityItems(List<Item> items) {
+		items.add(new Item("Eigenstromverbrauch", result.electricityEmissions));
 		double credits = result.electricityCredits;
 		if (credits > 0) {
 			items.add(new Item("Gutschrift Stromerzeugung", -credits));

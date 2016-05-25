@@ -32,9 +32,9 @@ class FurtherResultsPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		Function<String, Composite> s = title -> UI.formSection(body, tk, title);
-		CO2Emissions emissions = CO2Emissions.calculate(editor.result);
-		EmissionTable.create(emissions, s.apply("Treibhausgasemissionen"));
-		EmissionChart.create(emissions, s.apply("Vergleich Treibhausgasemissionen"));
+		CO2Emissions co2 = CO2Emissions.calculate(editor.project, editor.result);
+		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
+		EmissionChart.create(co2, s.apply("Vergleich Treibhausgasemissionen"));
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
 		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
 		EfficiencyChart.create(efficiency, s.apply("Verwendung Brennstoffenergie"));

@@ -8,17 +8,19 @@ import sophena.calc.ConsumerResult;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
+import sophena.model.Project;
 
 public class CO2Emissions {
 
+	public double electricityEmissions;
 	public double electricityCredits;
 	public double total;
 	public double variantOil;
 	public double variantNaturalGas;
 	public final Map<Producer, Double> producerEmissions = new HashMap<>();
 
-	public static CO2Emissions calculate(ProjectResult result) {
-		return new Calculator(result).calculate();
+	public static CO2Emissions calculate(Project project, ProjectResult result) {
+		return new Calculator(project, result).calculate();
 	}
 
 	private CO2Emissions() {
@@ -26,9 +28,11 @@ public class CO2Emissions {
 
 	private static class Calculator {
 
+		final Project project;
 		final ProjectResult result;
 
-		Calculator(ProjectResult result) {
+		Calculator(Project project, ProjectResult result) {
+			this.project = project;
 			this.result = result;
 		}
 
@@ -37,9 +41,11 @@ public class CO2Emissions {
 			if (result == null)
 				return co2;
 			EnergyResult eResult = result.energyResult;
+			// order is important !!!
+			addElectricityEmissions(co2);
 			addElectrivityCredits(co2, eResult);
 			addEmissions(co2, eResult);
-			double heatDemand = getHeatDemand();
+			double heatDemand = getTotalHeatDemand();
 			co2.variantNaturalGas = (heatDemand / 0.95) * Defaults.EMISSION_FACTOR_NATURAL_GAS;
 			co2.variantOil = (heatDemand / 0.92) * Defaults.EMISSION_FACTOR_OIL;
 			return co2;
@@ -50,8 +56,17 @@ public class CO2Emissions {
 			co2.electricityCredits = e * Defaults.EMISSION_FACTOR_ELECTRICITY;
 		}
 
+		private void addElectricityEmissions(CO2Emissions co2) {
+			if (result == null || result.energyResult == null || project == null)
+				return;
+			EnergyResult eResult = result.energyResult;
+			double used = UsedElectricity.get(eResult.totalProducedHeat,
+					project.costSettings);
+			co2.electricityEmissions = used * Defaults.EMISSION_FACTOR_ELECTRICITY;
+		}
+
 		private void addEmissions(CO2Emissions co2, EnergyResult eResult) {
-			co2.total = -co2.electricityCredits;
+			co2.total = co2.electricityEmissions - co2.electricityCredits;
 			for (Producer p : eResult.producers) {
 				double genHeat = eResult.totalHeat(p);
 				double demand = FuelDemand.getKWh(p, genHeat);
@@ -72,7 +87,7 @@ public class CO2Emissions {
 				return 0;
 		}
 
-		private double getHeatDemand() {
+		private double getTotalHeatDemand() {
 			double totalDemand = 0;
 			for (ConsumerResult cr : result.consumerResults) {
 				totalDemand += cr.heatDemand;
