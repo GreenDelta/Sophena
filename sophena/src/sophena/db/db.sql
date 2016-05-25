@@ -34,6 +34,7 @@ CREATE TABLE tbl_fuels (
 	density DOUBLE,
 	is_wood BOOLEAN,
 	co2_emissions DOUBLE,
+	primary_energy_factor DOUBLE,
 
 	PRIMARY KEY (id)
 );

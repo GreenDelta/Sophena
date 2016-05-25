@@ -35,4 +35,7 @@ public class Fuel extends BaseDataEntity {
 	 */
 	@Column(name = "co2_emissions")
 	public double co2Emissions;
+
+	@Column(name = "primary_energy_factor")
+	public double primaryEnergyFactor;
 }
