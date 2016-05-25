@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    de/energetische_berechnung
+   de/jahresdauerlinie_abnehmer.rst
    de/wirtschaftliche_berechnung
 
    de/erzeuger
