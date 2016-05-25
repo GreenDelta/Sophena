@@ -104,29 +104,6 @@
 	</code></pre>
 
 
-	<h3><a name="Volllaststunden">Volllaststunden</a></h3>
-	Die Volllaststunden $t_{full}$ [h] eines Kessels ergeben sich aus der erzeugten Wärme $Q_{gen}$ [kWh] und
-	der thermischen Nennleistung $P_{max,th}$ [kW] (= maximale Leistung) des Kessels:
-
-		$$ t_{full} = \frac{Q_{gen}}{P_{max,th}} $$
-
-	Die Volllaststunden entsprechen somit der Zeit, die der Kessel bei maximaler Leistung betrieben werden
-	müsste, um die gegebene Wärme zu erzeugen.
-
-	<p>Basis API:</p>
-	<pre><code class="java">
-		double fullLoadHours = FullLoadHours
-				.boilerPower_kW(50)
-				.generatedHeat_kWh(500)
-				.get_h();
-	</code></pre>
-
-	<p>Convenience API:</p>
-	<pre><code class="java">
-		double fullLoadHours = FullLoadHours.get(p, producedHeat);
-	</code></pre>
-
-
 	<h3><a name="Nutzungsgrad">Nutzungsgrad</a></h3>
 	Der Nutzungsgrad $ur$ ist allgemein das Verhältnis aus nutzbar gemachter Energie zu zugeführter Energie
 	und wird aus dem Wirkungsgrad $er$ und dem Bereitschaftswirkungsgrad $sr$ berechnet:
@@ -280,14 +257,7 @@
 	Die Brennstoffmenge wird in der Referenzeinheit des Heizwerts errechnet. Für Holzbrennstoffe ist das kg atro.
 
 
-	<h3>Stromerzeugung in KWK-Anlagen</h3>
-	Die erzeugte Menge an Strom ${E_{gen}}$ [kWh] wird aus den <a href="#Volllaststunden">Volllaststunden</a>
-	$t_{full}$ [h] und der elektrischen Nennleistung $P_{max,el}$ [kW] berechnet:
-
-		$$ {E_{gen}} = t_{full} * P_{max,el} $$
-
-
-
+	
 	<h2></h2>
 
 	<h3><a name="Barwertfaktor">Barwertfaktor</a></h3>

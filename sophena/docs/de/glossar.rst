@@ -11,6 +11,10 @@ Heizperiode
 -----------
 Tage an denen die Tagesmitteltemperatur unter der Heizgrenztemperatur liegt.
 
+Nennleistung
+------------
+Ist die maximale Leistung eines Kessels.
+
 Nutzungsgrad
 ------------
 Verhältnis zwischen Nutzen und Aufwand bezogen auf die Energiemenge. Wird meist
