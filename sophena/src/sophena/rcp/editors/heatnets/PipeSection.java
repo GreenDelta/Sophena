@@ -69,20 +69,21 @@ class PipeSection {
 	private void createFields(Composite parent, FormToolkit tk) {
 		Composite comp = tk.createComposite(parent);
 		UI.gridData(comp, true, false);
-		GridLayout layout = UI.gridLayout(comp, 3);
+		GridLayout layout = UI.gridLayout(comp, 4);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		lengthText = UI.formText(comp, tk, "Länge");
 		Texts.on(lengthText).init(net().length).decimal().required()
 				.onChanged(s -> textsChanged());
 		UI.formLabel(comp, tk, "m");
+		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
+		button.setImage(Icon.CALCULATE_16.img());
 		powerText = UI.formText(comp, tk, "Verlustleistung");
 		Texts.on(powerText).init(net().powerLoss).decimal().required()
 				.onChanged(s -> textsChanged());
 		UI.formLabel(comp, tk, "W/m");
 		UI.formLabel(comp, "");
-		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
-		button.setImage(Icon.CALCULATE_16.img());
+
 		Controls.onSelect(button, e -> {
 			HeatNet net = net();
 			net.length = HeatNets.calculateLength(net);

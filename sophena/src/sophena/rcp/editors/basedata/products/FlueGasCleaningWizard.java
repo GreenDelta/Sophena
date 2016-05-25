@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.FlueGasCleaning;
+import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
@@ -111,8 +112,11 @@ public class FlueGasCleaningWizard implements IContent {
 
 	@Override
 	public String getPageName() {
-
 		return "Rauchgasreinigung";
 	}
 
+	@Override
+	public ProductType getProductType() {
+		return ProductType.FLUE_GAS_CLEANING;
+	}
 }

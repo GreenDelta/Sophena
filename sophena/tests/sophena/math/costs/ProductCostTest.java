@@ -5,13 +5,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sophena.calc.ProjectResult;
+import sophena.model.Boiler;
+import sophena.model.BufferTank;
+import sophena.model.Consumer;
 import sophena.model.CostSettings;
 import sophena.model.FlueGasCleaning;
 import sophena.model.FlueGasCleaningEntry;
+import sophena.model.HeatNet;
+import sophena.model.HeatNetPipe;
 import sophena.model.HeatRecovery;
+import sophena.model.Pipe;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
+import sophena.model.TransferStation;
 
 public class ProductCostTest {
 
@@ -36,7 +43,6 @@ public class ProductCostTest {
 		project.flueGasCleaningEntries.add(entry);
 		FlueGasCleaning cleaning = new FlueGasCleaning();
 		entry.product = cleaning;
-		testNoCosts();
 		entry.costs = new ProductCosts();
 		checkCapitalCosts(entry.costs);
 	}
@@ -50,7 +56,43 @@ public class ProductCostTest {
 		checkCapitalCosts(p.heatRecoveryCosts);
 	}
 
+	@Test
+	public void testTransferStation() {
+		Consumer p = new Consumer();
+		project.consumers.add(p);
+		p.transferStationCosts = new ProductCosts();
+		p.transferStation = new TransferStation();
+		checkCapitalCosts(p.transferStationCosts);
+	}
+
+	@Test
+	public void testBoiler() {
+		Producer p = new Producer();
+		project.producers.add(p);
+		p.costs = new ProductCosts();
+		p.boiler = new Boiler();
+		checkCapitalCosts(p.costs);
+	}
+
+	@Test
+	public void testBuffer() {
+		HeatNet net = new HeatNet();
+		project.heatNet = net;
+		net.bufferTank = new BufferTank();
+		net.bufferTankCosts = new ProductCosts();
+		checkCapitalCosts(net.bufferTankCosts);
+	}
+
+	public void testPipe() {
+		HeatNetPipe pipe = new HeatNetPipe();
+		project.heatNet.pipes.add(pipe);
+		pipe.pipe = new Pipe();
+		pipe.costs = new ProductCosts();
+		checkCapitalCosts(pipe.costs);
+	}
+
 	private void checkCapitalCosts(ProductCosts costs) {
+		testNoCosts();
 		costs.duration = project.projectDuration;
 		costs.investment = 10_000;
 		CostSettings settings = project.costSettings;

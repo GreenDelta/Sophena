@@ -242,4 +242,12 @@ class BoilerWizard implements IContent {
 			return "Heizkessel";
 	}
 
+	@Override
+	public ProductType getProductType() {
+		if (boiler.isCoGenPlant)
+			return ProductType.COGENERATION_PLANT;
+		else
+			return ProductType.FOSSIL_FUEL_BOILER;
+	}
+
 }

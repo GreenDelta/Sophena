@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.BufferTank;
+import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
@@ -82,5 +83,10 @@ class BufferTankWizard implements IContent {
 	@Override
 	public String getPageName() {
 		return "Pufferspeicher";
+	}
+
+	@Override
+	public ProductType getProductType() {
+		return ProductType.BUFFER_TANK;
 	}
 }

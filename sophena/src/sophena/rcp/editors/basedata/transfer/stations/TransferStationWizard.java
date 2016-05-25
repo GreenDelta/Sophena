@@ -5,6 +5,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.model.ProductType;
 import sophena.model.TransferStation;
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.ProductWizard;
@@ -105,4 +106,8 @@ public class TransferStationWizard implements IContent {
 		return "Hausübergabestation";
 	}
 
+	@Override
+	public ProductType getProductType() {
+		return ProductType.TRANSFER_STATION;
+	}
 }

@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Pipe;
+import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
@@ -85,6 +86,7 @@ class PipeWizard implements IContent {
 		Texts.set(totalDiamText, pipe.totalDiameter);
 		Texts.set(materialText, pipe.material);
 		// Texts.set(pTypeText, pipe.pipeType);
+		Texts.set(uValueText, pipe.uValue);
 		Texts.set(innerDiamText, pipe.innerDiameter);
 		Texts.set(outerDiamText, pipe.outerDiameter);
 		Texts.set(totalDiamText, pipe.totalDiameter);
@@ -122,6 +124,11 @@ class PipeWizard implements IContent {
 	@Override
 	public String getPageName() {
 		return "Wärmeleitung";
+	}
+
+	@Override
+	public ProductType getProductType() {
+		return ProductType.PIPE;
 	}
 
 }

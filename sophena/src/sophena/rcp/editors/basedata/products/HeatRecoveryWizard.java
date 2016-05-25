@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.HeatRecovery;
+import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
@@ -92,4 +93,8 @@ public class HeatRecoveryWizard implements IContent {
 		return "Wärmerückgewinnung";
 	}
 
+	@Override
+	public ProductType getProductType() {
+		return ProductType.HEAT_RECOVERY;
+	}
 }

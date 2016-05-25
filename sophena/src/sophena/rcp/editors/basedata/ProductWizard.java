@@ -96,7 +96,7 @@ public class ProductWizard extends Wizard {
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			List<ProductGroup> list = dao.getAll(ProductType.BUFFER_TANK);
+			List<ProductGroup> list = dao.getAll(content.getProductType());
 			Sorters.byName(list);
 			groupCombo.setInput(list);
 			UI.formLabel(c, "");
@@ -162,6 +162,8 @@ public class ProductWizard extends Wizard {
 	public interface IContent {
 
 		String getPageName();
+
+		ProductType getProductType();
 
 		/** Render the components in a 3-column grid layout. */
 		void render(Composite c);
