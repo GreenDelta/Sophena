@@ -62,6 +62,14 @@ KWK-Anlage berechnet:
 .. math::
     E_{gen} = t_{full} * P_{max,el}
 
+Da die Volllaststunden aus der erzeugten Wärme berechnet werden, sieht die Hilfsfunktion so
+aus:
+
+.. code-block:: java
+
+    Producer p = ...
+    double generatedElectricity = GeneratedElectricity.get(p, generatedHeat);
+
 
 Primärenergiefaktor der Nahwärme
 --------------------------------

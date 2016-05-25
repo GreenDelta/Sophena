@@ -55,7 +55,7 @@ class CostCalculator {
 		}
 		addOtherCosts(r);
 		r.netTotal.revenues = settings.electricityRevenues
-				* GeneratedElectricity.getTotalkWh(energyResult);
+				* GeneratedElectricity.getTotal(energyResult);
 		r.grossTotal.revenues = r.netTotal.revenues * vat();
 		calcTotals(r);
 		return r;

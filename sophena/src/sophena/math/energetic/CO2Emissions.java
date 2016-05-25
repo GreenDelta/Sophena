@@ -46,7 +46,7 @@ public class CO2Emissions {
 		}
 
 		private void addElectrivityCredits(CO2Emissions co2, EnergyResult eResult) {
-			double e = GeneratedElectricity.getTotalkWh(eResult);
+			double e = GeneratedElectricity.getTotal(eResult);
 			co2.electricityCredits = e * Defaults.EMISSION_FACTOR_ELECTRICITY;
 		}
 

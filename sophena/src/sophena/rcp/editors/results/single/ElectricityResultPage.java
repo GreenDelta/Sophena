@@ -75,7 +75,7 @@ class ElectricityResultPage extends FormPage {
 			item.efficiencyRate = p.boiler.efficiencyRateElectric;
 			double heat = result.totalHeat(p);
 			item.fullLoadHours = FullLoadHours.get(p, heat);
-			item.value = GeneratedElectricity.getkWh(p, heat);
+			item.value = GeneratedElectricity.get(p, heat);
 			total.set(total.get() + item.value);
 		}
 		if (total.get() != 0)

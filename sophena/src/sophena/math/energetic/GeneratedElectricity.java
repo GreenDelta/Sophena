@@ -6,23 +6,30 @@ import sophena.model.Producer;
 
 public class GeneratedElectricity {
 
-	public static double getkWh(Producer producer, double generatedHeat) {
+	/**
+	 * Returns the generated electricity [kWh] for the given producer and
+	 * generated heat [kWh].
+	 */
+	public static double get(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return 0;
 		Boiler boiler = producer.boiler;
 		if (!boiler.isCoGenPlant || boiler.maxPowerElectric == 0)
 			return 0;
-		double fullLoadHours = FullLoadHours.get(producer, generatedHeat);
-		return fullLoadHours * boiler.maxPowerElectric;
+		double hours = FullLoadHours.get(producer, generatedHeat);
+		return hours * boiler.maxPowerElectric;
 	}
 
-	public static double getTotalkWh(EnergyResult result) {
+	/**
+	 * Returns the total generated electricity of the given energy result.
+	 */
+	public static double getTotal(EnergyResult result) {
 		if (result == null)
 			return 0;
 		double total = 0;
 		for (Producer p : result.producers) {
 			double genHeat = result.totalHeat(p);
-			total += getkWh(p, genHeat);
+			total += get(p, genHeat);
 		}
 		return total;
 	}
