@@ -44,7 +44,7 @@ class TablePage extends FormPage {
 		ScrolledForm form = UI.formHeader(managedForm, M.ClimateData);
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		Section section = UI.section(body, toolkit, "Wetterstationen");
+		Section section = UI.section(body, toolkit, "Wetterstationen (" + M.DwdSourceInfo + ")");
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
@@ -57,8 +57,6 @@ class TablePage extends FormPage {
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
 		bindActions(section, table);
 		form.reflow(true);
-		UI.formLabel(comp, "Datenbasis: Deutscher Wetterdienst,"
-				+ " Werte bearbeitet");
 	}
 
 	private void bindActions(Section section, TableViewer table) {

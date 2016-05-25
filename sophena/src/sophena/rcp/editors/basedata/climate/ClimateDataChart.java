@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
+import sophena.rcp.M;
+import sophena.rcp.utils.Colors;
 
 class ClimateDataChart extends Dialog {
 
@@ -30,9 +32,12 @@ class ClimateDataChart extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
+		container.setBackground(Colors.getWhite());
 		container.setLayout(new FillLayout());
 		Canvas canvas = new Canvas(container, SWT.NONE);
+		canvas.setBackground(Colors.getWhite());
 		createChart(canvas);
+		parent.getParent().setBackground(Colors.getWhite());
 		return container;
 	}
 
@@ -53,17 +58,20 @@ class ClimateDataChart extends Dialog {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
-		CircularBufferDataProvider provider = new CircularBufferDataProvider(
-				true);
-		provider.setBufferSize(Stats.HOURS);
-		provider.setCurrentYDataArray(station.data);
-		provider.setConcatenate_data(false);
-		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis,
-				provider);
+		CircularBufferDataProvider data = new CircularBufferDataProvider(true);
+		data.setBufferSize(Stats.HOURS);
+		data.setCurrentYDataArray(station.data);
+		data.setConcatenate_data(false);
+		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis, data);
 		trace.setPointStyle(Trace.PointStyle.NONE);
+		trace.setTraceColor(Colors.getLinkBlue());
 		g.addTrace(trace);
-		g.getXAxisList().get(0).setVisible(false);
-		g.primaryXAxis.setRange(0, Stats.HOURS);
+		Axis x = g.primaryXAxis;
+		x.setRange(0, Stats.HOURS);
+		x.setTitle(M.DwdSourceInfo);
+		x.setMinorTicksVisible(false);
+		x.setMajorGridStep(10000);
+		x.setTitleFont(x.getFont());
 		formatY(g);
 	}
 

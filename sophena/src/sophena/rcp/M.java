@@ -28,6 +28,7 @@ public class M extends NLS {
 	public static String DeliveredHeat;
 	public static String DemandBasedCalculation;
 	public static String Description;
+	public static String DwdSourceInfo;
 	public static String Edit;
 	public static String EfficiencyRate;
 	public static String End;
