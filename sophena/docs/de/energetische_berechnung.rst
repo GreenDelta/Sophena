@@ -30,3 +30,10 @@ erzeugt werden kann, wird wie folgt berechnet:
 
 Die Brennstoffmenge :math:`a` wird in der Referenzeinheit des Brennstoffs angegeben. 
 :math:`cv` ist der :ref:`Heizwert` des Brennstoffs in kWh pro Referenzeinheit.
+
+
+Primärenergiefaktor der Nahwärme
+--------------------------------
+
+.. math::
+    pef_{net} = \frac

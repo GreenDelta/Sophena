@@ -19,5 +19,5 @@ auf die Energiemenge in einem Jahr bezogen:
 	Nutzungsgrad = Nutzen (Energie) / Aufwand (Energie)
 	
 Volllaststunden
---------------
+---------------
 (auch Vollbenutzungsstunden)
