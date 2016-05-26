@@ -460,6 +460,7 @@ CREATE TABLE tbl_producers (
     is_disabled BOOLEAN,
     rank INTEGER,
     producer_function VARCHAR(255),
+    utilisation_rate DOUBLE,
 
 	f_project CHAR(36),
     f_boiler VARCHAR(36),

@@ -57,6 +57,14 @@ public class Producer extends RootEntity {
 					column = @Column(name = "heat_recovery_operation")) })
 	public ProductCosts heatRecoveryCosts;
 
+	/**
+	 * The utlisation rate is normally calculated (field is null) but if the
+	 * export knows better it can be directly entered by the expert (field
+	 * contains a value).
+	 */
+	@Column(name = "utilisation_rate")
+	public Double utilisationRate;
+
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
@@ -75,6 +83,7 @@ public class Producer extends RootEntity {
 		if (heatRecoveryCosts != null) {
 			clone.heatRecoveryCosts = heatRecoveryCosts.clone();
 		}
+		clone.utilisationRate = utilisationRate;
 		return clone;
 	}
 
