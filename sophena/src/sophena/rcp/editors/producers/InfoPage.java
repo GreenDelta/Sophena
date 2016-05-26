@@ -51,6 +51,7 @@ class InfoPage extends FormPage {
 		boilerCombo(tk, comp);
 		functionCombo(tk, comp);
 		rankText(tk, comp);
+		UtilisationRateSwitch.create(editor, comp, tk);
 		new FuelSection(editor).render(body, tk);
 		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);
