@@ -25,7 +25,7 @@ class WoodFuelWizard extends Wizard {
 		wiz.setWindowTitle(M.WoodFuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
+		dialog.setPageSize(150, 300);
 		return dialog.open();
 	}
 
@@ -52,6 +52,7 @@ class WoodFuelWizard extends Wizard {
 		private Text descriptionText;
 		private Text densityText;
 		private Text calText;
+		private Text energyFactorText;
 		private Text co2Text;
 
 		private Page() {
@@ -67,6 +68,7 @@ class WoodFuelWizard extends Wizard {
 			createDensityText(composite);
 			createCalText(composite);
 			createCO2Text(composite);
+			createEnergyFactorText(composite);
 			createDescriptionText(composite);
 			data.validate();
 		}
@@ -116,6 +118,16 @@ class WoodFuelWizard extends Wizard {
 			UI.formLabel(composite, "g CO2 äq./kWh");
 		}
 
+		private void createEnergyFactorText(Composite composite) {
+			energyFactorText = UI.formText(composite, "Primärenergiefaktor");
+			Texts.on(energyFactorText)
+					.init(fuel.primaryEnergyFactor)
+					.required()
+					.decimal()
+					.validate(data::validate);
+			UI.filler(composite);
+		}
+
 		private class DataBinding {
 
 			void bindToModel() {
@@ -124,15 +136,12 @@ class WoodFuelWizard extends Wizard {
 				fuel.density = Texts.getDouble(densityText);
 				fuel.calorificValue = Texts.getDouble(calText);
 				fuel.co2Emissions = Texts.getDouble(co2Text);
+				fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
 			}
 
 			private boolean validate() {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
-				if (!Texts.hasNumber(densityText))
-					return error("Die Dichte muss numerisch sein");
-				if (!Texts.hasNumber(calText))
-					return error("Der Heizwert muss numerisch sein");
 				setPageComplete(!fuel.isProtected);
 				setErrorMessage(null);
 				return true;

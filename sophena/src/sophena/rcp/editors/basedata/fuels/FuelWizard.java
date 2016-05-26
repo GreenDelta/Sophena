@@ -31,7 +31,7 @@ class FuelWizard extends Wizard {
 		wiz.setWindowTitle(M.Fuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
+		dialog.setPageSize(150, 300);
 		return dialog.open();
 	}
 
@@ -43,6 +43,7 @@ class FuelWizard extends Wizard {
 			fuel.unit = page.unitText.getText();
 			fuel.calorificValue = Texts.getDouble(page.calText);
 			fuel.co2Emissions = Texts.getDouble(page.co2Text);
+			fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
 			fuel.wood = false;
 			return true;
 		} catch (Exception e) {
@@ -66,6 +67,7 @@ class FuelWizard extends Wizard {
 		private Text unitText;
 		private Text calText;
 		private Text co2Text;
+		private Text energyFactorText;
 		private Text descriptionText;
 
 		private Page() {
@@ -81,6 +83,7 @@ class FuelWizard extends Wizard {
 			createUnitText(composite);
 			createCalText(composite);
 			createCO2Text(composite);
+			createEnergyFactorText(composite);
 			createDescriptionText(composite);
 			validate();
 		}
@@ -134,6 +137,16 @@ class FuelWizard extends Wizard {
 					.decimal()
 					.validate(this::validate);
 			UI.formLabel(composite, "g CO2 äq./kWh");
+		}
+
+		private void createEnergyFactorText(Composite composite) {
+			energyFactorText = UI.formText(composite, "Primärenergiefaktor");
+			Texts.on(energyFactorText)
+					.init(fuel.primaryEnergyFactor)
+					.required()
+					.decimal()
+					.validate(this::validate);
+			UI.filler(composite);
 		}
 
 		private boolean validate() {

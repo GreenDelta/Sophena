@@ -93,11 +93,11 @@ public class FuelEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.Fuel,
-					M.CalorificValue, "CO2 Emissionen");
+					M.CalorificValue, "CO2 Emissionen", "Primärenergiefaktor");
 			table.setLabelProvider(new FuelLabel());
 			table.setInput(fuels);
-			double w = 1d / 3d;
-			Tables.bindColumnWidths(table, w, w, w);
+			double w = 1d / 4d;
+			Tables.bindColumnWidths(table, w, w, w, w);
 			bindFuelActions(section, table);
 		}
 
@@ -120,6 +120,7 @@ public class FuelEditor extends Editor {
 			fuel.unit = "L";
 			fuel.calorificValue = (double) 10;
 			fuel.wood = false;
+			fuel.primaryEnergyFactor = (double) 1;
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -176,10 +177,10 @@ public class FuelEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
-					"Dichte", "Heizwert", "CO2 Emissionen");
+					"Dichte", "Heizwert", "CO2 Emissionen", "Primärenergiefaktor");
 			table.setLabelProvider(new WoodLabel());
-			double w = 1d / 4d;
-			Tables.bindColumnWidths(table, w, w, w, w);
+			double w = 1d / 5d;
+			Tables.bindColumnWidths(table, w, w, w, w, w);
 			table.setInput(woodFuels);
 			bindWoodActions(section, table);
 		}
@@ -201,9 +202,10 @@ public class FuelEditor extends Editor {
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.WoodFuel;
 			fuel.unit = "kg";
-			fuel.calorificValue = (double) 5;
-			fuel.density = (double) 450;
+			fuel.calorificValue = 5d;
+			fuel.density = 450d;
 			fuel.wood = true;
+			fuel.primaryEnergyFactor = 1d;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -230,6 +232,8 @@ public class FuelEditor extends Editor {
 							+ " kWh/" + f.unit;
 				case 2:
 					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
+				case 3:
+					return Num.str(f.primaryEnergyFactor);
 				default:
 					return null;
 				}
@@ -253,6 +257,8 @@ public class FuelEditor extends Editor {
 							+ " kWh/kg atro";
 				case 3:
 					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
+				case 4:
+					return Num.str(f.primaryEnergyFactor);
 				default:
 					return null;
 				}
