@@ -17,4 +17,6 @@ public interface Defaults {
 	/** The emission factor for natural gas in kg CO2 eq./kWh . */
 	public double EMISSION_FACTOR_NATURAL_GAS = 0.2392;
 
+	public double PRIMARY_ENERGY_FACTOR_ELECTRICITY = 2.8;
+
 }

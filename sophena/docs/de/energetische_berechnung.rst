@@ -22,14 +22,15 @@ angegeben [kWh/kg atro].
 
 Brennstoffenergie
 -----------------
-Die Wärme :math:`Q` [kWh], die durch die Verbrennung einer Menge :math:`a` eines Brennstoffs 
-erzeugt werden kann, wird wie folgt berechnet:
+Die Wärmemenge :math:`Q_{fuel}` [kWh], die durch die Verbrennung einer Menge :math:`a` 
+eines Brennstoffs erzeugt werden kann, wird wie folgt berechnet:
 
 .. math::
-    Q = a * cv
+    Q_{fuel} = a * cv
 
 Die Brennstoffmenge :math:`a` wird in der Referenzeinheit des Brennstoffs angegeben. 
 :math:`cv` ist der :ref:`Heizwert` des Brennstoffs in kWh pro Referenzeinheit.
+
 
 .. _Volllaststunden:
 
@@ -116,7 +117,7 @@ weiteren Ergebnissen ausgewiesem und wie folgt berechnet wird:
 Dabei sind:
 
 =======================  ==========================================================================
-:math:`Q_{fuel,i}`       die Brennstoffenergie (Brennstoffmenge * Heizwert) für Erzeuger :math:`i` 
+:math:`Q_{fuel,i}`       die :ref:`Brennstoffenergie` für Erzeuger :math:`i` 
 :math:`pef_{fuel,i}`     der Primärenergiefaktor des Brennstoffs
 :math:`E_{use,i}`        :ref:`Eigenstrombedarf` des Erzeugers
 :math:`E_{gen,i}`        :ref:`Stromerzeugung` in der Anlage
@@ -124,3 +125,8 @@ Dabei sind:
 :math:`Q_u`              :ref:`GenutzteWaerme`
 =======================  ==========================================================================
 
+Die Hilfsfunktion dafür ist:
+
+.. code-block:: java
+
+    double pef = PrimaryEnergyFactor.get(project, projectResult);

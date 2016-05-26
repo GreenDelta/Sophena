@@ -13,6 +13,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.math.energetic.CO2Emissions;
 import sophena.math.energetic.EfficiencyResult;
+import sophena.math.energetic.PrimaryEnergyFactor;
+import sophena.math.energetic.UsedHeat;
 import sophena.rcp.M;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -38,17 +40,11 @@ class FurtherResultsPage extends FormPage {
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
 		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
 		EfficiencyChart.create(efficiency, s.apply("Verwendung Brennstoffenergie"));
-		new KeyFigureTable(efficiency).render(s.apply("Kennzahlen Wärmenetz"), tk);
+		new KeyFigureTable().render(s.apply("Kennzahlen Wärmenetz"), tk);
 		form.reflow(true);
 	}
 
 	private class KeyFigureTable {
-
-		private EfficiencyResult er;
-
-		KeyFigureTable(EfficiencyResult er) {
-			this.er = er;
-		}
 
 		private void render(Composite comp, FormToolkit tk) {
 			if (editor.project == null || editor.project.heatNet == null)
@@ -63,11 +59,18 @@ class FurtherResultsPage extends FormPage {
 			UI.formLabel(comp, tk, "m");
 
 			UI.formLabel(comp, tk, "Wärmebelegungsdichte");
-			double hl = er.usedHeat / (1000 * length);
-			Label hlLabel = UI.formLabel(comp, tk, Num.str(hl));
+			double hl = UsedHeat.get(editor.result) / (1000 * length);
+			Label hlLabel = UI.formLabel(comp, tk, Num.str(hl, 1));
 			hlLabel.setAlignment(SWT.RIGHT);
 			hlLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			UI.formLabel(comp, tk, "MWh/(m*a)");
+
+			UI.formLabel(comp, tk, "Primärenergiefaktor");
+			double pef = PrimaryEnergyFactor.get(editor.project, editor.result);
+			Label pefLabel = UI.formLabel(comp, tk, Num.str(pef, 1));
+			pefLabel.setAlignment(SWT.RIGHT);
+			pefLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+			UI.formLabel(comp, tk, "");
 		}
 	}
 }
