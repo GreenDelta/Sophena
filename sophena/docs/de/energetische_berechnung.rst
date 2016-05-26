@@ -53,8 +53,10 @@ Die Hilfsfunktion ist:
     double fullLoadHours = FullLoadHours.get(p, producedHeat);
     
 
-Stromerzeugung in KWK-Anlagen
------------------------------
+.. _Stromerzeugung:
+
+Stromerzeugung
+--------------
 Die erzeugte Menge an Strom :math:`{E_{gen}}` [kWh] wird aus den :ref:`Volllaststunden`
 :math:`t_{full}` [h] und der elektrischen Nennleistung :math:`P_{max,el}` [kW] einer
 KWK-Anlage berechnet:
@@ -70,6 +72,8 @@ aus:
     Producer p = ...
     double generatedElectricity = GeneratedElectricity.get(p, generatedHeat);
 
+
+.. _Eigenstrombedarf:
 
 Eigenstrombedarf
 ----------------
@@ -88,6 +92,19 @@ zur Berechnung des Eigenstrombedarfs sieht entsprechend so aus:
     double usedElectricity = UsedElectricity.get(producedHeat, costSettings);
 
 
+.. _GenutzteWaerme:
+
+Genutzte Wärme
+--------------
+Die Genutze Wärme ist die erzeugte Wärme insgesamt abzüglich der Verteilungsverluste im Netz.
+
+Die Hilfsfunktion dafür ist:
+
+.. code-block:: java
+
+    double usedHeat = UsedHeat.get(projectResult);
+
+
 Primärenergiefaktor der Nahwärme
 --------------------------------
 Der Primärenergiefaktor des Wärmenetzes :math:`pef_{net}` ist eine Kennzahl, die unter den 
@@ -101,8 +118,9 @@ Dabei sind:
 =======================  ==========================================================================
 :math:`Q_{fuel,i}`       die Brennstoffenergie (Brennstoffmenge * Heizwert) für Erzeuger :math:`i` 
 :math:`pef_{fuel,i}`     der Primärenergiefaktor des Brennstoffs
-:math:`E_{use,i}`        Eigenstromverbrauch der Anlage
-:math:`E_{gen,i}`        Stromerzeugung in der Anlage
+:math:`E_{use,i}`        :ref:`Eigenstrombedarf` des Erzeugers
+:math:`E_{gen,i}`        :ref:`Stromerzeugung` in der Anlage
 :math:`pef_{el}`         Primärenergiefaktor von Strom
+:math:`Q_u`              :ref:`GenutzteWaerme`
 =======================  ==========================================================================
 
