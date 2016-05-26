@@ -87,16 +87,16 @@ class HeatNetSection {
 					double val = Num.read(s);
 					if (isDefault.apply(val)) {
 						heatNet().maxLoad = null;
-						t.setBackground(Colors.forDefaultField());
+						t.setBackground(Colors.forRequiredField());
 					} else {
 						heatNet().maxLoad = val;
-						t.setBackground(Colors.forRequiredField());
+						t.setBackground(Colors.forModifiedDefault());						
 					}
 					Texts.set(maxSimLoadText, calculateMaxSimLoad());
 					editor.setDirty();
 				});
-		if (isDefault.apply(heatNet().maxLoad))
-			t.setBackground(Colors.forDefaultField());
+		if (!isDefault.apply(heatNet().maxLoad))
+			t.setBackground(Colors.forModifiedDefault());
 		UI.formLabel(comp, tk, "kW");
 		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
@@ -133,13 +133,13 @@ class HeatNetSection {
 			heatNet().smoothingFactor = val;
 			editor.setDirty();
 			if (Num.equal(val, Defaults.SMOOTHING_FACTOR)) {
-				t.setBackground(Colors.forDefaultField());
-			} else {
 				t.setBackground(Colors.forRequiredField());
+			} else {
+				t.setBackground(Colors.forModifiedDefault());
 			}
 		});
-		if (Num.equal(heatNet().smoothingFactor, Defaults.SMOOTHING_FACTOR))
-			t.setBackground(Colors.forDefaultField());
+		if (!Num.equal(heatNet().smoothingFactor, Defaults.SMOOTHING_FACTOR))
+			t.setBackground(Colors.forModifiedDefault());
 		UI.filler(comp, tk);
 		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");

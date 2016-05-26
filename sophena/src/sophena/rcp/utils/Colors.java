@@ -134,7 +134,7 @@ public class Colors {
 		return getColor(230, 230, 233);
 	}
 
-	public static Color forDefaultField() {
+	public static Color forModifiedDefault() {
 		return getColor(225, 213, 232);
 	}
 

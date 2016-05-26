@@ -26,6 +26,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
@@ -96,6 +97,21 @@ class PipeSection {
 	}
 
 	private void textsChanged() {
+		HeatNet net = net();
+		double power = Texts.getDouble(powerText);
+		if (Num.equal(power,HeatNets.calculatePowerLoss(net))) {
+			powerText.setBackground(Colors.forRequiredField());
+		} else {
+			powerText.setBackground(Colors.forModifiedDefault());
+		}
+
+		double length = Texts.getDouble(lengthText);
+		if (Num.equal(length,HeatNets.getTotalSupplyLength(net))) {
+			lengthText.setBackground(Colors.forRequiredField());
+		} else {
+			lengthText.setBackground(Colors.forModifiedDefault());
+		}
+
 		if (!disableTextBinding) {
 			net().length = Texts.getDouble(lengthText);
 			net().powerLoss = Texts.getDouble(powerText);
@@ -146,6 +162,7 @@ class PipeSection {
 			table.setInput(net().pipes);
 			editor.setDirty();
 		}
+		textsChanged();
 	}
 
 	private void edit() {
@@ -161,6 +178,7 @@ class PipeSection {
 		pipe.pricePerMeter = clone.pricePerMeter;
 		table.setInput(net().pipes);
 		editor.setDirty();
+		textsChanged();
 	}
 
 	private void del() {
@@ -170,6 +188,7 @@ class PipeSection {
 		net().pipes.remove(pipe);
 		table.setInput(net().pipes);
 		editor.setDirty();
+		textsChanged();
 	}
 
 	private HeatNetPipe getSelected() {
