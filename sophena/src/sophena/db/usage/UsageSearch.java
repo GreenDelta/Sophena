@@ -61,7 +61,7 @@ public class UsageSearch {
 		if (pipe == null || pipe.id == null)
 			return Collections.emptyList();
 		String sql = "select distinct p.id, p.name from tbl_heat_net_pipes hp "
-				+ "inner join tbl_heat_nets hn on hp.f_project = hn.id "
+				+ "inner join tbl_heat_nets hn on hp.f_heat_net = hn.id "
 				+ "inner join tbl_projects p on p.f_heat_net = hn.id "
 				+ " where hp.f_pipe = '" + pipe.id + "'";
 		return query(sql, ModelType.PROJECT);

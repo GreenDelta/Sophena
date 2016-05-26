@@ -60,8 +60,8 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "interruption_end")
 	public String interruptionEnd;
 
+	@JoinColumn(name = "f_heat_net")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "f_project")
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
 
 	@Override

@@ -188,7 +188,7 @@ CREATE TABLE tbl_heat_net_pipes (
 	
 	id CHAR(36),
 	
-	f_project CHAR(36),
+	f_heat_net CHAR(36),
 	f_pipe CHAR(36),
 	length DOUBLE,
 	price_per_meter DOUBLE,
