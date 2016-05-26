@@ -86,7 +86,7 @@ class PipeSection {
 
 		Controls.onSelect(button, e -> {
 			HeatNet net = net();
-			net.length = HeatNets.calculateLength(net);
+			net.length = HeatNets.getTotalSupplyLength(net);
 			net.powerLoss = HeatNets.calculatePowerLoss(net);
 			disableTextBinding = true;
 			Texts.set(lengthText, net.length);

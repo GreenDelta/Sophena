@@ -2,21 +2,32 @@ package sophena.calc;
 
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
+import sophena.model.PipeType;
 
 public class HeatNets {
 
 	private HeatNets() {
 	}
 
+	public static double getSupplyLength(HeatNetPipe pipe) {
+		if (pipe == null)
+			return 0;
+		if (pipe.pipe != null && pipe.pipe.pipeType == PipeType.UNO)
+			return pipe.length / 2;
+		else
+			return pipe.length;
+	}
+
 	/**
 	 * Calculates the length of the heating net from the pipes that are used.
 	 */
-	public static double calculateLength(HeatNet net) {
+	public static double getTotalSupplyLength(HeatNet net) {
 		if (net == null)
 			return 0;
 		double sum = 0;
-		for (HeatNetPipe p : net.pipes)
-			sum += p.length;
+		for (HeatNetPipe p : net.pipes) {
+			sum += getSupplyLength(p);
+		}
 		return sum;
 	}
 
@@ -26,12 +37,13 @@ public class HeatNets {
 	public static double calculatePowerLoss(HeatNet net) {
 		if (net == null)
 			return 0;
-		double totalLength = calculateLength(net);
+		double totalLength = getTotalSupplyLength(net);
 		if (totalLength <= 0)
 			return 0;
 		double sum = 0;
 		for (HeatNetPipe p : net.pipes) {
-			sum += getPowerLoss(p, net) * p.length;
+			double length = getSupplyLength(p);
+			sum += getPowerLoss(p, net) * length;
 		}
 		return sum / totalLength;
 	}

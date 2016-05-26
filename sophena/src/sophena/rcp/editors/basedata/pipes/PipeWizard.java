@@ -2,10 +2,12 @@ package sophena.rcp.editors.basedata.pipes;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Pipe;
+import sophena.model.PipeType;
 import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
@@ -18,7 +20,7 @@ class PipeWizard implements IContent {
 
 	private ProductWizard wizard;
 	private Text materialText;
-	private Text pTypeText;
+	private Combo typeCombo;
 	private Text uValueText;
 	private Text innerDiamText;
 	private Text outerDiamText;
@@ -48,11 +50,12 @@ class PipeWizard implements IContent {
 
 		materialText = UI.formText(c, "Material");
 		Texts.on(materialText).required().validate(wizard::validate);
-		UI.formLabel(c, "");
+		UI.filler(c);
 
-		pTypeText = UI.formText(c, "Art");
-		Texts.on(pTypeText).required().validate(wizard::validate);
-		UI.formLabel(c, "");
+		typeCombo = UI.formCombo(c, "Art");
+		typeCombo.setItems(new String[] { "UNO", "DUO" });
+		typeCombo.select(0);
+		UI.filler(c);
 
 		uValueText = UI.formText(c, "U-Wert");
 		Texts.on(uValueText).required().decimal().validate(wizard::validate);
@@ -85,7 +88,9 @@ class PipeWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(totalDiamText, pipe.totalDiameter);
 		Texts.set(materialText, pipe.material);
-		// Texts.set(pTypeText, pipe.pipeType);
+		int idx = pipe.pipeType == PipeType.UNO ? 0 : 1;
+		typeCombo.select(idx);
+		typeCombo.select(1);
 		Texts.set(uValueText, pipe.uValue);
 		Texts.set(innerDiamText, pipe.innerDiameter);
 		Texts.set(outerDiamText, pipe.outerDiameter);
@@ -97,9 +102,9 @@ class PipeWizard implements IContent {
 
 	@Override
 	public void bindToModel() {
-
 		pipe.material = materialText.getText();
-		// pipe.pipeType. = pTypeText.getText();
+		pipe.pipeType = typeCombo.getSelectionIndex() == 0 ? PipeType.UNO
+				: PipeType.DUO;
 		pipe.totalDiameter = Texts.getDouble(totalDiamText);
 		pipe.innerDiameter = Texts.getDouble(innerDiamText);
 		pipe.outerDiameter = Texts.getDouble(outerDiamText);
@@ -108,7 +113,6 @@ class PipeWizard implements IContent {
 		pipe.outerDiameter = Texts.getDouble(outerDiamText);
 		pipe.deliveryType = deliveryTypeText.getText();
 		pipe.uValue = Texts.getDouble(uValueText);
-
 	}
 
 	@Override

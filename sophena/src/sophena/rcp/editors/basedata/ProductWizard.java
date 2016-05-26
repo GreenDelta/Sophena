@@ -78,7 +78,7 @@ public class ProductWizard extends Wizard {
 			createManufacturerCombo(c);
 
 			urlText = UI.formText(c, "Web-Link");
-			Texts.on(urlText).required().validate(data::validate);
+			Texts.on(urlText).required();
 			UI.formLabel(c, "");
 
 			priceText = UI.formText(c, "Preis");
@@ -138,8 +138,6 @@ public class ProductWizard extends Wizard {
 			boolean validate() {
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
-				if (Texts.isEmpty(urlText))
-					return error("Es muss ein Web-Link angegeben werden.");
 				String message = content.validate();
 				if (message != null)
 					return error(message);

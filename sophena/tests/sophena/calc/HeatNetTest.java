@@ -28,7 +28,7 @@ public class HeatNetTest {
 	@Test
 	public void testCalculateLength() {
 		HeatNet net = buildHeatNet();
-		double length = HeatNets.calculateLength(net);
+		double length = HeatNets.getTotalSupplyLength(net);
 		Assert.assertEquals(60, length, 1e-16);
 	}
 
