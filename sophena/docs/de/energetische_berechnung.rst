@@ -151,6 +151,45 @@ zur Berechnung des Eigenstrombedarfs sieht entsprechend so aus:
     double usedElectricity = UsedElectricity.get(producedHeat, costSettings);
 
 
+Wärmerückgewinnung
+------------------
+In erster Näherung kann dieser Effekt linear berechnet werden. Dazu teilt man die in den 
+Produktdaten angegebene Leistung des Abgaswärmetauschers (AWT) durch die dort ebenfalls 
+angegebene Leistung des passenden Wärmeerzeugers. Diesen Wert addiert man zu 1 und erhält 
+damit den Faktor der Leistungssteigerung. Bei den Berechnungen müssen die 
+Wärmeerzeuger-Maximal- und Minimalleistungen dann mit diesem Faktor multipliziert werden, 
+im gleichen Maß muss auch der angegebene Wirkungsgrad erhöht werden.
+
+Beispiel für ein BHKW:
+
+=======================================  =======
+Leistung AWT:                            100 kW
+Thermische Leistung des passenden BHKW:  250 kW
+=======================================  =======
+
+Damit ergibt sich ein Faktor von 1 + (100 / 250) =  1,4.
+
+Im Projekt wird ein BHKW mit einer (thermischen) Maximalleistung von 200 kW und Minimalleistung 
+von 130 kW und einem (thermischen) Wirkungsgrad von 35% eingeplant. Für die Berechnungen müssen 
+nun folgende Werte verwendet werden:
+
+================  ==================
+Maximalleistung:  200 * 1,4 = 280
+Minimalleistung:  130 * 1,4 = 182
+Wirkungsgrad:     35 % * 1,4 = 49 %
+================  ==================
+
+An der elektrischen Leistung des BHKW ändert sich nichts. Die Hilfsfunktionen zum Einbezug der
+Wärmerückgewinnung sind in der Klasse `Producers` implementiert. Diese werden entsprechend in
+der Berechnung und Simulation verwendet:
+
+.. code-block:: java
+
+    Producers.minPower(producer);
+    Producers.maxPower(producer);
+    Producers.efficiencyRate(producer);
+
+
 .. _GenutzteWaerme:
 
 Genutzte Wärme
