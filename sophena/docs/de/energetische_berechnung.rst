@@ -54,6 +54,36 @@ Die Hilfsfunktion ist:
     double fullLoadHours = FullLoadHours.get(p, producedHeat);
     
 
+.. _Nutzungsgrad:
+
+Nutzungsgrad
+------------
+Der Nutzungsgrad :math:`ur` ist allgemein das Verhältnis aus nutzbar gemachter Energie zu zugeführter 
+Energie und wird aus dem Wirkungsgrad :math:`er` und dem Bereitschaftswirkungsgrad :math:`sr` berechnet:
+
+.. math::
+    ur = er * sr
+
+Der Wirkungsgrad des Kessels ist eine Herstellerangabe. Der Bereitschaftswirkungsgrad :math:`sr` wird
+wie folgt berechnet:
+
+.. math::
+    sr = \frac{1}{(\frac{t_u}{t_{full}}-1)*sl + 1}
+
+Dabei sind :math:`t_u` [h] die Nutzungsdauer (gewöhnlich 8760 Stunden) des Kessels, :math:`t_{full}` [h] die
+:ref:`Volllaststunden` und :math:`sl` der spezifische Bereitschaftsverlust. Als spezifischer 
+Bereitschaftsverlust wird in Sophena immer ein empirischer Wert für kleine Kessel von 0.014 angenommen. 
+
+.. code-block:: java
+
+    double ur = UtilisationRate
+                .ofSmallBoiler()
+                .efficiencyRate(0.9)
+                .usageDuration_h(8760)
+                .fullLoadHours_h(2000)
+                .get();
+
+
 .. _Stromerzeugung:
 
 Stromerzeugung

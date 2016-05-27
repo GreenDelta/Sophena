@@ -103,33 +103,6 @@
 				.getAmountInLogs_stere();
 	</code></pre>
 
-
-	<h3><a name="Nutzungsgrad">Nutzungsgrad</a></h3>
-	Der Nutzungsgrad $ur$ ist allgemein das Verhältnis aus nutzbar gemachter Energie zu zugeführter Energie
-	und wird aus dem Wirkungsgrad $er$ und dem Bereitschaftswirkungsgrad $sr$ berechnet:
-
-		$$ ur = er * sr $$
-
-	Der Wirkungsgrad des Kessels ist eine Herstellerangabe. Der Bereitschaftswirkungsgrad $sr$ wird
-	wie folgt berechnet:
-
-		$$ sr = \frac{1}{(\frac{t_u}{t_{full}}-1)*sl + 1} $$
-
-	Dabei sind $t_u$ [h] die Nutzungsdauer (gewöhnlich 8760 Stunden) des Kessels, $t_{full}$ [h] die
-	<a href="#Volllaststunden">Volllaststunden</a> und $sl$ der spezifische Bereitschaftsverlust.
-	Für kleine Kessel (= Kessel der bisherigen Verbräuche) wird für $sl$ ein Wert von 0.014 und
-	für große Kessel (= Kessel des Wärmenetzes) ein Wert von 0.0055 angesetzt.
-
-	<p>Basis API:</p>
-	<pre><code class="java">
-		double ur = UtilisationRate
-				.ofSmallBoiler()
-				.efficiencyRate(0.9)
-				.usageDuration_h(8760)
-				.fullLoadHours_h(2000)
-				.get();
-	</code></pre>
-
 	<h3><a name="Wirkungsgrad">Wirkungsgrad</a></h3>
 	Der Wirkungsgrad $er$ ist eine Herstellerangabe. Bei manchen Nutzerangaben muss er aber aus dem
 	<a href="#Nutzungsgrad">Nutzungsgrad</a> $ur$ berechnet werden:
