@@ -17,6 +17,6 @@ public class FullLoadHours {
 	public static double get(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return 0;
-		return get(generatedHeat, producer.boiler.maxPower);
+		return get(generatedHeat, Producers.maxPower(producer));
 	}
 }

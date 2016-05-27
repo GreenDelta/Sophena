@@ -1,7 +1,7 @@
 package sophena.calc;
 
 import sophena.math.energetic.BufferCapacity;
-import sophena.model.Boiler;
+import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
@@ -44,8 +44,7 @@ class EnergyCalculator {
 					break;
 				}
 
-				Boiler boiler = producer.boiler;
-				if (maxLoad < boiler.minPower)
+				if (maxLoad < Producers.minPower(producer))
 					continue;
 
 				double power = getSuppliedPower(requiredLoad, maxLoad, producer);
@@ -83,9 +82,8 @@ class EnergyCalculator {
 
 	private double getSuppliedPower(double requiredLoad, double maxLoad,
 			Producer producer) {
-		Boiler boiler = producer.boiler;
-		double bMin = boiler.minPower;
-		double bMax = boiler.maxPower;
+		double bMin = Producers.minPower(producer);
+		double bMax = Producers.maxPower(producer);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 				? requiredLoad : maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);

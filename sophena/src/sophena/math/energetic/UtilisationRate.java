@@ -31,7 +31,7 @@ public class UtilisationRate {
 		double generatedHeat = result.totalHeat(producer);
 		int fullLoadHours = (int) FullLoadHours.get(producer, generatedHeat);
 		int usageDuration = UsageDuration.get(producer, result);
-		double er = producer.boiler.efficiencyRate / 100;
+		double er = Producers.efficiencyRate(producer) / 100;
 		return get(er, fullLoadHours, usageDuration);
 	}
 }

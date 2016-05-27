@@ -14,6 +14,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelDemand;
+import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -67,7 +68,7 @@ class BoilerTableSection {
 			Producer p = producers[i];
 			Item item = new Item();
 			item.name = p.name;
-			double power = p.boiler != null ? p.boiler.maxPower : 0;
+			double power = Producers.maxPower(p);
 			item.power = Num.str(power) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
@@ -87,7 +88,7 @@ class BoilerTableSection {
 	private Integer getFullLoadHours(Producer p, double producedHeat) {
 		if (p == null || p.boiler == null)
 			return null;
-		double maxPower = p.boiler.maxPower;
+		double maxPower = Producers.maxPower(p);
 		return (int) Math.round(producedHeat / maxPower);
 	}
 
@@ -112,8 +113,7 @@ class BoilerTableSection {
 	private double calculatePowerDiff(Producer[] producers) {
 		double power = 0;
 		for (Producer p : producers) {
-			if (p.boiler != null)
-				power += p.boiler.maxPower;
+			power += Producers.maxPower(p);
 		}
 		return power - maxLoad;
 	}

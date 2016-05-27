@@ -16,6 +16,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
+import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.utils.Colors;
@@ -115,7 +116,7 @@ class ElectricityChart {
 	private int getFullLoadHours(Producer p, double producedHeat) {
 		if (p == null || p.boiler == null)
 			return 0;
-		double maxPower = p.boiler.maxPower;
+		double maxPower = Producers.maxPower(p);
 		return (int) Math.round(producedHeat / maxPower);
 	}
 
