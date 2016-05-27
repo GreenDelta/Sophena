@@ -90,14 +90,13 @@ Dabei sind :math:`t_u` [h] die :ref:`Nutzungsdauer` (z.B. 8760 Stunden) des Kess
 :ref:`Volllaststunden` und :math:`sl` der spezifische Bereitschaftsverlust. Als spezifischer 
 Bereitschaftsverlust wird in Sophena immer ein empirischer Wert für kleine Kessel von 0.014 angenommen. 
 
+Die Klasse `UtilisationRate` enthält entsprechende Funktionen zur Berechnung des Nutzungsgrades. Der
+Nutzungsgrad eines Kessels kann jedoch auch direkt von Nutzer angegeben werden. Dies wird in der 
+entsprechenden Hilfsfunktion berücksichtigt:
+
 .. code-block:: java
 
-    double ur = UtilisationRate
-                .ofSmallBoiler()
-                .efficiencyRate(0.9)
-                .usageDuration_h(8760)
-                .fullLoadHours_h(2000)
-                .get();
+    double ur = UtilisationRate.get(producer, energyResult);
 
 Wie oben erwähnt ist der Wirkungsgrad eine Herstellerangabe. Jedoch ist es bei Verbrauchsangaben
 in Sophena möglich den Nutzungsgrad anzugegben. Daraus lässt sich dann der Wirkungsgrad durch
