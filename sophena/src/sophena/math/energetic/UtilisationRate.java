@@ -1,5 +1,6 @@
 package sophena.math.energetic;
 
+import sophena.Defaults;
 import sophena.model.Producer;
 import sophena.model.Stats;
 
@@ -8,56 +9,26 @@ import sophena.model.Stats;
  */
 public class UtilisationRate {
 
-	private final double standByLoss;
-
-	private double usageDuration = 8760;
-	private double fullLoadHours;
-	private double efficiencyRate;
-
-	private UtilisationRate(double standByLoss) {
-		this.standByLoss = standByLoss;
+	public static double get(double efficiencyRate, int fullLoadHours) {
+		return get(efficiencyRate, fullLoadHours, Stats.HOURS);
 	}
 
-	public static UtilisationRate ofBigBoiler() {
-		return new UtilisationRate(0.0055);
-	}
-
-	public static UtilisationRate ofSmallBoiler() {
-		return new UtilisationRate(0.014);
-	}
-
-	public UtilisationRate usageDuration_h(double usageDuration) {
-		this.usageDuration = usageDuration;
-		return this;
-	}
-
-	public UtilisationRate fullLoadHours_h(double fullLoadHours) {
-		this.fullLoadHours = fullLoadHours;
-		return this;
-	}
-
-	public UtilisationRate efficiencyRate(double efficiencyRate) {
-		this.efficiencyRate = efficiencyRate;
-		return this;
-	}
-
-	public double get() {
+	public static double get(double efficiencyRate, int fullLoadHours, int usageDuration) {
 		if (fullLoadHours == 0)
 			return 0;
-		double standbyRate = 1 / ((usageDuration / fullLoadHours - 1) * standByLoss + 1);
+		double ud = usageDuration;
+		double fh = fullLoadHours;
+		double standbyRate = 1 / ((ud / fh - 1) * Defaults.SPECIFIC_STAND_BY_LOSS + 1);
 		return standbyRate * efficiencyRate;
 	}
 
 	public static double get(Producer producer, double generatedHeat) {
 		if (producer == null || producer.boiler == null)
 			return 0;
-		double fullLoadHours = FullLoadHours.get(producer, generatedHeat);
-		return UtilisationRate
-				.ofBigBoiler()
-				.efficiencyRate(producer.boiler.efficiencyRate / 100)
-				.fullLoadHours_h(fullLoadHours)
-				.usageDuration_h(Stats.HOURS)
-				.get();
+		if (producer.utilisationRate != null)
+			return producer.utilisationRate;
+		int fullLoadHours = (int) FullLoadHours.get(producer, generatedHeat);
+		double er = producer.boiler.efficiencyRate / 100;
+		return get(er, fullLoadHours);
 	}
-
 }

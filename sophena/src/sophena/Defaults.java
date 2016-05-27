@@ -19,4 +19,6 @@ public interface Defaults {
 
 	public double PRIMARY_ENERGY_FACTOR_ELECTRICITY = 2.8;
 
+	public double SPECIFIC_STAND_BY_LOSS = 0.014;
+
 }
