@@ -25,7 +25,7 @@ public class UsageDurationTest {
 
 	@Test
 	public void testEmpty() {
-		Assert.assertEquals(0, UsageDuration.get(result, p));
+		Assert.assertEquals(0, UsageDuration.get(p, result));
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class UsageDurationTest {
 		for (int i = 1000; i < 4000; i++) {
 			values[i] = 42;
 		}
-		Assert.assertEquals(3000, UsageDuration.get(result, p));
+		Assert.assertEquals(3000, UsageDuration.get(p, result));
 	}
 
 	@Test
@@ -41,6 +41,6 @@ public class UsageDurationTest {
 		for (int i = 0; i < Stats.HOURS; i++) {
 			values[i] = 42;
 		}
-		Assert.assertEquals(Stats.HOURS, UsageDuration.get(result, p));
+		Assert.assertEquals(Stats.HOURS, UsageDuration.get(p, result));
 	}
 }

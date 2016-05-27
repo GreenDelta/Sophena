@@ -1,6 +1,7 @@
 package sophena.math.energetic;
 
 import sophena.Defaults;
+import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 
@@ -22,13 +23,15 @@ public class UtilisationRate {
 		return standbyRate * efficiencyRate;
 	}
 
-	public static double get(Producer producer, double generatedHeat) {
-		if (producer == null || producer.boiler == null)
+	public static double get(Producer producer, EnergyResult result) {
+		if (producer == null || producer.boiler == null || result == null)
 			return 0;
 		if (producer.utilisationRate != null)
 			return producer.utilisationRate;
+		double generatedHeat = result.totalHeat(producer);
 		int fullLoadHours = (int) FullLoadHours.get(producer, generatedHeat);
+		int usageDuration = UsageDuration.get(producer, result);
 		double er = producer.boiler.efficiencyRate / 100;
-		return get(er, fullLoadHours);
+		return get(er, fullLoadHours, usageDuration);
 	}
 }

@@ -76,10 +76,10 @@ class BoilerTableSection {
 			item.pos = i;
 			item.heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
-					+ (int) FuelDemand.getAmount(p, item.heat)
+					+ (int) FuelDemand.getAmount(p, result)
 					+ " " + Labels.getFuelUnit(p);
 			item.fullLoadHours = getFullLoadHours(p, item.heat);
-			item.utilisationRate = UtilisationRate.get(p, item.heat);
+			item.utilisationRate = UtilisationRate.get(p, result);
 			items.add(item);
 		}
 	}

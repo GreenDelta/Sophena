@@ -122,9 +122,9 @@ class CostCalculator {
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
 		double producedHeat = energyResult.totalHeat(p);
-		double netCosts = FuelCosts.net(p, producedHeat)
+		double netCosts = FuelCosts.net(p, energyResult)
 				+ ElectricityCosts.net(producedHeat, settings);
-		double grossCosts = FuelCosts.gross(p, producedHeat)
+		double grossCosts = FuelCosts.gross(p, energyResult)
 				+ ElectricityCosts.gross(producedHeat, settings);
 		item.netConsumtionCosts = netCosts * cashValueFactor * af;
 		item.grossConsumptionCosts = grossCosts * cashValueFactor * af;

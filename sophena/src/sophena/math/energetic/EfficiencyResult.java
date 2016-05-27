@@ -35,11 +35,11 @@ public class EfficiencyResult {
 				return res;
 			for (Producer p : pr.energyResult.producers) {
 				double genHeat = pr.energyResult.totalHeat(p);
-				double fuelDemand = FuelDemand.getKWh(p, genHeat);
+				double fuelDemand = FuelDemand.getKWh(p, pr.energyResult);
 				res.fuelEnergy += fuelDemand;
 				double ur;
 				if (p.boiler == null || !p.boiler.isCoGenPlant)
-					ur = UtilisationRate.get(p, genHeat);
+					ur = UtilisationRate.get(p, pr.energyResult);
 				else
 					ur = (p.boiler.efficiencyRate + p.boiler.efficiencyRateElectric) / 100;
 				double loss = fuelDemand * (1 - ur);

@@ -10,7 +10,7 @@ public class UsageDuration {
 	private UsageDuration() {
 	}
 
-	public static int get(EnergyResult result, Producer p) {
+	public static int get(Producer p, EnergyResult result) {
 		if (result == null || p == null)
 			return 0;
 		double[] vals = null;
