@@ -83,6 +83,19 @@ Bereitschaftsverlust wird in Sophena immer ein empirischer Wert für kleine Kess
                 .fullLoadHours_h(2000)
                 .get();
 
+Wie oben erwähnt ist der Wirkungsgrad eine Herstellerangabe. Jedoch ist es bei Verbrauchsangaben
+in Sophena möglich den Nutzungsgrad anzugegben. Daraus lässt sich dann der Wirkungsgrad durch
+Umstellen der obigen Formel berechnen:
+
+.. math::
+    er = \frac{ur}{sr} = ur * [(\frac{t_u}{t_{full}}-1)*sl + 1]
+
+Auch dafür gibt es wieder eine Hilfsfunktion:
+
+.. code-block:: java
+
+    double eta = EfficiencyRate.get(utilisationRate, loadHours);
+
 
 .. _Stromerzeugung:
 

@@ -145,11 +145,7 @@ class ConsumptionSection {
 			if (c == null)
 				return null;
 			String heat = Num.intStr(c.getUsedHeat()) + " kWh";
-			double eta = EfficiencyRate
-					.ofSmallBoiler()
-					.utilisationRate(c.utilisationRate)
-					.fullLoadHours_h(consumer().loadHours)
-					.get();
+			double eta = EfficiencyRate.get(c.utilisationRate, consumer().loadHours);
 			return heat + " (\u03B7=" + Num.str(eta) + "%)";
 		}
 	}

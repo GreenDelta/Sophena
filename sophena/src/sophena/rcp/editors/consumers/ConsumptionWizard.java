@@ -167,11 +167,7 @@ class ConsumptionWizard extends Wizard {
 				data.validate();
 			} else {
 				double ur = Num.read(utilText.getText());
-				double er = EfficiencyRate
-						.ofSmallBoiler()
-						.utilisationRate(ur)
-						.fullLoadHours_h(loadHours)
-						.get();
+				double er = EfficiencyRate.get(ur, loadHours);
 				effiText.setText(Num.str(er));
 				data.validate();
 			}
@@ -220,11 +216,7 @@ class ConsumptionWizard extends Wizard {
 					ur = UtilisationRate.get(90, loadHours);
 				}
 				Texts.set(utilText, ur);
-				double er = EfficiencyRate
-						.ofSmallBoiler()
-						.utilisationRate(ur)
-						.fullLoadHours_h(loadHours)
-						.get();
+				double er = EfficiencyRate.get(ur, loadHours);
 				Texts.set(effiText, er);
 				validate();
 			}
