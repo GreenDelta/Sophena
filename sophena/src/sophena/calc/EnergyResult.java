@@ -27,7 +27,7 @@ public class EnergyResult {
 
 	HashMap<String, Double> totalHeats = new HashMap<>();
 
-	private EnergyResult() {
+	public EnergyResult() {
 	}
 
 	EnergyResult(Project project) {

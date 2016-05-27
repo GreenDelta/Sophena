@@ -54,6 +54,22 @@ Die Hilfsfunktion ist:
     double fullLoadHours = FullLoadHours.get(p, producedHeat);
     
 
+.. _Nutzungsdauer:
+
+Nutzungsdauer
+-------------
+Die Nutzungsdauer eines Kessels ist die Anzahl der Stunden im Jahr, die der Kessel läuft. Im
+Berechnungsergebnis von Sophena wird für jeden Kessel ein Array berechnet, welches die 
+produzierte Wärme für die jeweilige Jahresstunde enthält. Die Nutzungsdauer lässt sich daraus
+direkt bestimmen, indem man die Anzahl der Stunden zählt, in denen das Array einen Wert enthält.
+
+Die Hilfsfunktion dafür ist:
+
+.. code-block:: java
+
+    UsageDuration.get(energyResult, producer);
+
+
 .. _Nutzungsgrad:
 
 Nutzungsgrad
@@ -70,7 +86,7 @@ wie folgt berechnet:
 .. math::
     sr = \frac{1}{(\frac{t_u}{t_{full}}-1)*sl + 1}
 
-Dabei sind :math:`t_u` [h] die Nutzungsdauer (gewöhnlich 8760 Stunden) des Kessels, :math:`t_{full}` [h] die
+Dabei sind :math:`t_u` [h] die :ref:`Nutzungsdauer` (z.B. 8760 Stunden) des Kessels, :math:`t_{full}` [h] die
 :ref:`Volllaststunden` und :math:`sl` der spezifische Bereitschaftsverlust. Als spezifischer 
 Bereitschaftsverlust wird in Sophena immer ein empirischer Wert für kleine Kessel von 0.014 angenommen. 
 
