@@ -7,7 +7,7 @@ class TestProject {
 
 	static Project create() {
 		Project project = new Project();
-		project.projectDuration = 20;
+		project.duration = 20;
 		CostSettings settings = new CostSettings();
 		project.costSettings = settings;
 		settings.interestRate = 2;

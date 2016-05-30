@@ -75,7 +75,7 @@ class EntrySection {
 		entry.id = UUID.randomUUID().toString();
 		entry.costs = new ProductCosts();
 		entry.count = 1;
-		if (EntryWizard.open(entry, type) != Window.OK)
+		if (EntryWizard.open(entry, type, project().duration) != Window.OK)
 			return;
 		project().productEntries.add(entry);
 		fillEntries();
@@ -93,7 +93,7 @@ class EntrySection {
 		product.projectId = project().id;
 		product.type = type;
 		entry.product = product;
-		if (EntryWizard.open(entry, type) != Window.OK)
+		if (EntryWizard.open(entry, type, project().duration) != Window.OK)
 			return;
 		project().productEntries.add(entry);
 		project().ownProducts.add(entry.product);
@@ -106,7 +106,7 @@ class EntrySection {
 		if (entry == null)
 			return;
 		ProductEntry clone = copy(entry); // copy allows cancel options
-		if (EntryWizard.open(clone, type) != Window.OK)
+		if (EntryWizard.open(clone, type, project().duration) != Window.OK)
 			return;
 		ProductEntry managed = getJpaManaged(entry.id);
 		if (managed == null)

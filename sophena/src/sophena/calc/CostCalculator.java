@@ -29,7 +29,7 @@ class CostCalculator {
 		settings = project.costSettings;
 		if (settings == null)
 			settings = new CostSettings();
-		projectDuration = project.projectDuration;
+		projectDuration = project.duration;
 	}
 
 	public void withFunding(boolean withFunding) {

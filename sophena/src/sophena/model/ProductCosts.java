@@ -10,7 +10,7 @@ public class ProductCosts {
 	@Column(name = "investment")
 	public double investment;
 
-	/** The usage duration of the product. */
+	/** The usage duration of the product in years. */
 	@Column(name = "duration")
 	public int duration;
 
@@ -22,7 +22,7 @@ public class ProductCosts {
 	@Column(name = "maintenance")
 	public double maintenance;
 
-	/** Amount of hours that are used for operation in one year. */
+	/** Hours per year that are used for operation of the product. */
 	@Column(name = "operation")
 	public double operation;
 
@@ -56,14 +56,14 @@ public class ProductCosts {
 			toCosts.repair = fromGroup.repair;
 		}
 	}
-	
-	/** 
-	 * Returns true if the given costs are null or if there are no cost 
-	 * related entries in the given object. 
+
+	/**
+	 * Returns true if the given costs are null or if there are no cost related
+	 * entries in the given object.
 	 */
 	public static boolean isEmpty(ProductCosts costs) {
 		if (costs == null)
 			return true;
-		return costs.investment == 0 && costs.operation == 0;	
+		return costs.investment == 0 && costs.operation == 0;
 	}
 }

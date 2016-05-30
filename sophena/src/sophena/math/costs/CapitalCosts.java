@@ -13,7 +13,7 @@ public class CapitalCosts {
 			return 0;
 		double annuityFactor = AnnuityFactor.get(project, interestRate);
 		double residualValue = ResidualValue.get(item, project, interestRate);
-		int projectDuration = project.projectDuration;
+		int projectDuration = project.duration;
 		int usageDuration = item.costs.duration;
 		if (projectDuration <= usageDuration)
 			return (item.costs.investment - residualValue) * annuityFactor;

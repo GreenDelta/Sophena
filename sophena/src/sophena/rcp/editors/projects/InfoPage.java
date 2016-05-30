@@ -76,11 +76,11 @@ class InfoPage extends FormPage {
 	private void createDurationText(FormToolkit toolkit, Composite composite) {
 		Text t = UI.formText(composite, toolkit, M.ProjectDurationYears);
 		Texts.on(t)
-				.init(project().projectDuration)
+				.init(project().duration)
 				.required()
 				.integer()
 				.onChanged((s) -> {
-					project().projectDuration = Texts.getInt(t);
+					project().duration = Texts.getInt(t);
 					editor.setDirty();
 				});
 	}

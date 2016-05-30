@@ -12,7 +12,7 @@ public class AnnuityFactor {
 		if (project == null)
 			return 0;
 		double q = 1 + interestRate / 100;
-		return get(q, project.projectDuration);
+		return get(q, project.duration);
 	}
 
 }

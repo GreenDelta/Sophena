@@ -21,7 +21,7 @@ import sophena.model.descriptors.ProjectDescriptor;
 public class Project extends RootEntity {
 
 	@Column(name = "project_duration")
-	public int projectDuration;
+	public int duration;
 
 	@JoinColumn(name = "f_project")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -61,7 +61,7 @@ public class Project extends RootEntity {
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
-		clone.projectDuration = projectDuration;
+		clone.duration = duration;
 		clone.weatherStation = weatherStation;
 		for (Consumer consumer : consumers)
 			clone.consumers.add(consumer.clone());

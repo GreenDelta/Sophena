@@ -93,7 +93,7 @@ public class ProductCostTest {
 
 	private void checkCapitalCosts(ProductCosts costs) {
 		testNoCosts();
-		costs.duration = project.projectDuration;
+		costs.duration = project.duration;
 		costs.investment = 10_000;
 		CostSettings settings = project.costSettings;
 		double af = AnnuityFactor.get(project, settings.interestRate);

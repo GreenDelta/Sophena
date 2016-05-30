@@ -16,7 +16,7 @@ public class AnnuityFactorTest {
 	@Test
 	public void testGetForProject() {
 		Project project = new Project();
-		project.projectDuration = 20;
+		project.duration = 20;
 		double af = AnnuityFactor.get(project, 2);
 		Assert.assertEquals(0.0611567181252903, af, 1e-10);
 	}

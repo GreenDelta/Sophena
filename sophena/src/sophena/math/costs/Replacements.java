@@ -12,7 +12,7 @@ public class Replacements {
 		if (item == null || item.costs == null || project == null)
 			return 0;
 		int usageDuration = item.costs.duration;
-		int projectDuration = project.projectDuration;
+		int projectDuration = project.duration;
 		if (usageDuration >= projectDuration || usageDuration == 0)
 			return 0;
 		double pdur = (double) projectDuration;

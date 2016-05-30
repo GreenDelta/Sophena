@@ -162,7 +162,7 @@ public class ProjectWizard extends Wizard {
 					return;
 				p.name = nameText.getText();
 				p.description = descriptionText.getText();
-				p.projectDuration = Texts.getInt(timeText);
+				p.duration = Texts.getInt(timeText);
 				p.weatherStation = getWeatherStation();
 			}
 

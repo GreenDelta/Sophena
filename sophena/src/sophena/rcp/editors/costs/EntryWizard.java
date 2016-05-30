@@ -41,14 +41,17 @@ class EntryWizard extends Wizard {
 	private Page page;
 	private ProductType type;
 	private ProductEntry entry;
+	private int projectDuration;
 
-	public static int open(ProductEntry entry, ProductType type) {
+	public static int open(ProductEntry entry, ProductType type,
+			int projectDuration) {
 		if (entry == null)
 			return Window.CANCEL;
 		EntryWizard w = new EntryWizard();
 		w.setWindowTitle(Labels.get(type));
 		w.entry = entry;
 		w.type = type;
+		w.projectDuration = projectDuration;
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		dialog.setPageSize(150, 400);
 		return dialog.open();
@@ -132,6 +135,9 @@ class EntryWizard extends Wizard {
 			entry.pricePerPiece = price;
 			Texts.set(priceText, price);
 			ProductCosts.copy(p.group, entry.costs);
+			if (entry.costs.duration == 0) {
+				entry.costs.duration = projectDuration;
+			}
 			updateCosts();
 		}
 
@@ -162,6 +168,9 @@ class EntryWizard extends Wizard {
 				}
 				entry.product.group = group;
 				ProductCosts.copy(group, entry.costs);
+				if (entry.costs.duration == 0) {
+					entry.costs.duration = projectDuration;
+				}
 				costSection.refresh();
 			});
 			UI.filler(comp);
