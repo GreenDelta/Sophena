@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
+import org.eclipse.nebula.visualization.xygraph.figures.Annotation;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
@@ -88,8 +89,26 @@ class BoilerChart {
 		Axis y = g.primaryYAxis;
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
-		y.setRange(0, maxLoad);
 		y.setMinorTicksVisible(false);
+
+		double magnitude = Math.floor(Math.log10(maxLoad));
+		double max = Math.pow(10, magnitude);
+		double step = max / 10;
+		double upper = step;
+		while (upper <= maxLoad) {
+			upper += step;
+		}
+		y.setRange(0, upper);
+
+		// set annotation
+		Annotation a = new Annotation("ML", x, y);
+		g.addAnnotation(a);
+		a.setValues(5, maxLoad);
+		a.setShowName(false);
+		a.setShowPosition(false);
+		a.setShowSampleInfo(false);
+		a.setAnnotationColor(Colors.getChartRed());
+
 		return g;
 	}
 
