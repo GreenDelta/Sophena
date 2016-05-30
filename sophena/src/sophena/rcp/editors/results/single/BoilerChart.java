@@ -101,21 +101,39 @@ class BoilerChart {
 		renderChart(result);
 	}
 
-	private void renderChart(EnergyResult pr) {
+	private void renderChart(EnergyResult r) {
 
-		double[] supTop = Arrays.copyOf(pr.suppliedPower, Stats.HOURS);
-		Producer[] producers = pr.producers;
-		double[][] results = pr.producerResults;
+		double[] supTop = Arrays.copyOf(r.suppliedPower, Stats.HOURS);
+		Producer[] producers = r.producers;
+		double[][] results = r.producerResults;
 
 		List<Trace> traces = new ArrayList<>();
 
-		// top area for buffer result
+		// uncovered load
+		double[] uncovered = new double[Stats.HOURS];
+		boolean addUncovered = false;
+		for (int i = 0; i < Stats.HOURS; i++) {
+			double load = r.loadCurve[i];
+			double supplied = r.suppliedPower[i];
+			if ((load - supplied) > 1) {
+				uncovered[i] = load;
+				addUncovered = true;
+			}
+		}
+		if (addUncovered) {
+			Trace u = makeSuplierTrace("Ungedeckte Leistung", uncovered);
+			u.setTraceColor(Colors.getSystemColor(SWT.COLOR_RED));
+			traces.add(u);
+		}
+
+		// buffer tank on top
 		int idx = producers.length;
 		Trace bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
 		traces.add(bufferTrace);
-		substract(supTop, pr.suppliedBufferHeat);
+		substract(supTop, r.suppliedBufferHeat);
 
+		// suppliers
 		for (int i = producers.length - 1; i >= 0; i--) {
 			String label = producers[i].name;
 			Trace boilerTrace = makeSuplierTrace(label, supTop);
@@ -124,8 +142,9 @@ class BoilerChart {
 			substract(supTop, results[i]);
 		}
 
-		for (Trace trace : traces)
+		for (Trace trace : traces) {
 			chart.addTrace(trace);
+		}
 	}
 
 	private void substract(double[] top, double[] result) {
