@@ -8,16 +8,17 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +36,14 @@ import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
+import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -123,7 +126,7 @@ public class ProducerWizard extends Wizard {
 		private Text nameText;
 		private boolean nameEdited;
 		private Combo groupCombo;
-		private ListViewer boilerList;
+		private TableViewer boilerTable;
 		private Text rankText;
 		private Combo functionCombo;
 
@@ -140,7 +143,7 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(comp, true, false);
 			nameField(comp);
 			groupCombo(comp);
-			boilerList(root);
+			boilerTable(root);
 			functionFields(root);
 			data.bindToUI();
 		}
@@ -150,7 +153,7 @@ public class ProducerWizard extends Wizard {
 			nameEdited = false;
 			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged((t) -> {
-				Boiler b = Viewers.getFirstSelected(boilerList);
+				Boiler b = Viewers.getFirstSelected(boilerTable);
 				if (b == null) {
 					nameEdited = true;
 				} else {
@@ -167,19 +170,19 @@ public class ProducerWizard extends Wizard {
 			});
 		}
 
-		private void boilerList(Composite root) {
+		private void boilerTable(Composite root) {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridData(composite, true, true);
 			UI.gridLayout(composite, 1);
-			List list = new List(composite, SWT.BORDER | SWT.V_SCROLL);
-			boilerList = new ListViewer(list);
-			boilerList.setContentProvider(ArrayContentProvider.getInstance());
-			boilerList.setLabelProvider(new BoilerLabel());
-			boilerList.addSelectionChangedListener((e) -> {
+			boilerTable = Tables.createViewer(composite, "Leistungsbereich",
+					"Bezeichnung", "Hersteller");
+			Tables.bindColumnWidths(boilerTable, 0.3, 0.4, 0.3);
+			boilerTable.setContentProvider(ArrayContentProvider.getInstance());
+			boilerTable.setLabelProvider(new BoilerLabel());
+			boilerTable.addSelectionChangedListener((e) -> {
 				data.suggestName();
 				data.validate();
 			});
-			UI.gridData(list, true, true);
 		}
 
 		private void functionFields(Composite root) {
@@ -191,16 +194,30 @@ public class ProducerWizard extends Wizard {
 			functionCombo = UI.formCombo(composite, "Funktion");
 		}
 
-		private class BoilerLabel extends LabelProvider {
+		private class BoilerLabel extends LabelProvider
+				implements ITableLabelProvider {
+
 			@Override
-			public String getText(Object element) {
-				if (!(element instanceof Boiler))
+			public Image getColumnImage(Object elem, int col) {
+				return col == 0 ? Icon.BOILER_16.img() : null;
+			}
+
+			@Override
+			public String getColumnText(Object elem, int col) {
+				if (!(elem instanceof Boiler))
 					return null;
-				Boiler boiler = (Boiler) element;
-				String label = boiler.name + " ("
-						+ Num.str(boiler.minPower) + " kW - "
-						+ Num.str(boiler.maxPower) + " kW)";
-				return label;
+				Boiler b = (Boiler) elem;
+				switch (col) {
+				case 0:
+					return Num.str(b.minPower) + " - "
+							+ Num.str(b.maxPower) + " kW";
+				case 1:
+					return b.name;
+				case 2:
+					return b.manufacturer != null ? b.manufacturer.name : null;
+				default:
+					return null;
+				}
 			}
 		}
 
@@ -209,7 +226,7 @@ public class ProducerWizard extends Wizard {
 			private void bindToModel(Producer producer) {
 				if (producer == null)
 					return;
-				Boiler b = Viewers.getFirstSelected(boilerList);
+				Boiler b = Viewers.getFirstSelected(boilerTable);
 				producer.boiler = b;
 				producer.name = nameText.getText();
 				producer.rank = Texts.getInt(rankText);
@@ -233,7 +250,7 @@ public class ProducerWizard extends Wizard {
 			private void suggestName() {
 				if (nameEdited && !Texts.isEmpty(nameText))
 					return;
-				Boiler b = Viewers.getFirstSelected(boilerList);
+				Boiler b = Viewers.getFirstSelected(boilerTable);
 				if (b == null)
 					nameText.setText("");
 				else
@@ -293,8 +310,14 @@ public class ProducerWizard extends Wizard {
 						input.add(b);
 					}
 				}
-				input.sort((b1, b2) -> Strings.compare(b1.name, b2.name));
-				boilerList.setInput(input);
+				input.sort((b1, b2) -> {
+					if (Math.abs(b1.minPower - b2.minPower) > 0.1)
+						return Double.compare(b1.minPower, b2.minPower);
+					if (Math.abs(b1.maxPower - b2.maxPower) > 0.1)
+						return Double.compare(b1.maxPower, b2.maxPower);
+					return Strings.compare(b1.name, b2.name);
+				});
+				boilerTable.setInput(input);
 				setPageComplete(false);
 			}
 
@@ -317,7 +340,7 @@ public class ProducerWizard extends Wizard {
 					return false;
 				}
 				setErrorMessage(null);
-				if (Viewers.getFirstSelected(boilerList) == null) {
+				if (Viewers.getFirstSelected(boilerTable) == null) {
 					setPageComplete(false);
 					return false;
 				} else {
