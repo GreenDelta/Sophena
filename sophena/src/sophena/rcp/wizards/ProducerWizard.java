@@ -2,6 +2,7 @@ package sophena.rcp.wizards;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,16 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
-import sophena.db.daos.FuelDao;
+import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.Fuel;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
+import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 import sophena.model.Project;
-import sophena.model.WoodAmountType;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
@@ -121,7 +122,7 @@ public class ProducerWizard extends Wizard {
 
 		private Text nameText;
 		private boolean nameEdited;
-		private Combo fuelCombo;
+		private Combo groupCombo;
 		private ListViewer boilerList;
 		private Text rankText;
 		private Combo functionCombo;
@@ -138,7 +139,7 @@ public class ProducerWizard extends Wizard {
 			Composite comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
 			nameField(comp);
-			fuelCombo(comp);
+			groupCombo(comp);
 			boilerList(root);
 			functionFields(root);
 			data.bindToUI();
@@ -158,9 +159,9 @@ public class ProducerWizard extends Wizard {
 			});
 		}
 
-		private void fuelCombo(Composite comp) {
-			fuelCombo = UI.formCombo(comp, "Brennstoff");
-			Controls.onSelect(fuelCombo, (e) -> {
+		private void groupCombo(Composite comp) {
+			groupCombo = UI.formCombo(comp, "Produktgruppe");
+			Controls.onSelect(groupCombo, e -> {
 				data.updateBoilers();
 				data.suggestName();
 			});
@@ -170,7 +171,7 @@ public class ProducerWizard extends Wizard {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridData(composite, true, true);
 			UI.gridLayout(composite, 1);
-			List list = new List(composite, SWT.BORDER);
+			List list = new List(composite, SWT.BORDER | SWT.V_SCROLL);
 			boilerList = new ListViewer(list);
 			boilerList.setContentProvider(ArrayContentProvider.getInstance());
 			boilerList.setLabelProvider(new BoilerLabel());
@@ -220,8 +221,9 @@ public class ProducerWizard extends Wizard {
 			}
 
 			private void bindToUI() {
-				fuelCombo.setItems(getFuelItems());
-				fuelCombo.select(0);
+				String[] groupItems = getGroupItems();
+				groupCombo.setItems(groupItems);
+				groupCombo.select(groupItems.length > 1 ? 1 : 0);
 				Texts.set(rankText, getNextRank());
 				updateBoilers();
 				fillFunctionCombo();
@@ -238,17 +240,24 @@ public class ProducerWizard extends Wizard {
 					Texts.set(nameText, b.name);
 			}
 
-			private String[] getFuelItems() {
+			private String[] getGroupItems() {
 				java.util.List<String> list = new ArrayList<>();
-				list.add(Labels.get(WoodAmountType.CHIPS));
-				list.add(Labels.get(WoodAmountType.LOGS));
-				FuelDao dao = new FuelDao(App.getDb());
-				for (Fuel fuel : dao.getAll()) {
-					if (!fuel.wood)
-						list.add(fuel.name);
+				list.add("");
+				ProductGroupDao dao = new ProductGroupDao(App.getDb());
+				EnumSet<ProductType> types = EnumSet.of(
+						ProductType.BIOMASS_BOILER,
+						ProductType.FOSSIL_FUEL_BOILER,
+						ProductType.COGENERATION_PLANT);
+				for (ProductGroup g : dao.getAll()) {
+					if (g.name == null || g.type == null)
+						continue;
+					if (types.contains(g.type)) {
+						list.add(g.name);
+					}
 				}
 				Collections.sort(list);
 				return list.toArray(new String[list.size()]);
+
 			}
 
 			private int getNextRank() {
@@ -280,27 +289,25 @@ public class ProducerWizard extends Wizard {
 				BoilerDao dao = new BoilerDao(App.getDb());
 				ArrayList<Boiler> input = new ArrayList<>();
 				for (Boiler b : dao.getAll()) {
-					if (matchSelection(b))
+					if (matchGroup(b)) {
 						input.add(b);
+					}
 				}
-				input.sort((b1, b2) -> Strings.compare(b1.name,
-						b2.name));
+				input.sort((b1, b2) -> Strings.compare(b1.name, b2.name));
 				boilerList.setInput(input);
 				setPageComplete(false);
 			}
 
-			private boolean matchSelection(Boiler b) {
+			private boolean matchGroup(Boiler b) {
 				if (b == null)
 					return false;
-				int idx = fuelCombo.getSelectionIndex();
-				String fuel = fuelCombo.getItem(idx);
-				if (b.fuel != null)
-					return Strings.nullOrEqual(fuel, b.fuel.name);
-				if (b.woodAmountType != null)
-					return Strings.nullOrEqual(fuel,
-							Labels.get(b.woodAmountType));
-				else
+				int idx = groupCombo.getSelectionIndex();
+				String group = groupCombo.getItem(idx);
+				if (group.equals(""))
+					return true;
+				if (b.group == null || b.group.name == null)
 					return false;
+				return Strings.nullOrEqual(group, b.group.name);
 			}
 
 			private boolean validate() {
