@@ -1,5 +1,6 @@
 package sophena;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,11 @@ public class AppConfigTest {
 		AppConfig config = AppConfig.load();
 		config.dataDir = System.getProperty("user.dir") + "/data";
 		config.save();
+	}
+
+	@After
+	public void tearDown() {
+		AppConfig.delete();
 	}
 
 	@Test
