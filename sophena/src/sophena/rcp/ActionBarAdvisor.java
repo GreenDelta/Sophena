@@ -145,19 +145,22 @@ public class ActionBarAdvisor extends
 	}
 
 	private void fillFileMenu(IMenuManager menuBar) {
-		MenuManager fileMenu = new MenuManager(M.File,
+		MenuManager menu = new MenuManager(M.File,
 				IWorkbenchActionConstants.M_FILE);
-		fileMenu.add(saveAction);
-		fileMenu.add(saveAsAction);
-		fileMenu.add(saveAllAction);
-		fileMenu.add(new Separator());
-		fileMenu.add(closeAction);
-		fileMenu.add(closeAllAction);
-		fileMenu.add(new Separator());
-		fileMenu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
+		menu.add(saveAction);
+		menu.add(saveAsAction);
+		menu.add(saveAllAction);
+		menu.add(new Separator());
+		menu.add(closeAction);
+		menu.add(closeAllAction);
+		menu.add(new Separator());
+		menu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
 				this::importFile));
-		fileMenu.add(exitAction);
-		menuBar.add(fileMenu);
+		menu.add(Actions.create("Datenverzeichnis wechseln",
+				WorkspaceSwitch::run));
+		menu.add(new Separator());
+		menu.add(exitAction);
+		menuBar.add(menu);
 	}
 
 	@Override
