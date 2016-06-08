@@ -10,13 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.calc.ProjectResult;
+import sophena.model.Project;
 
 public class ExcelExport implements Runnable {
 
 	private ProjectResult result;
 	private File file;
 
-	public ExcelExport(ProjectResult result, File file) {
+	public ExcelExport(Project project, ProjectResult result, File file) {
 		this.result = result;
 		this.file = file;
 	}
@@ -27,8 +28,13 @@ public class ExcelExport implements Runnable {
 			return;
 		try {
 			Workbook wb = new XSSFWorkbook();
+			new HeatSheet(wb, result).write();
+			new ElectricitySheet(wb, result).write();
+			new CostSheet(wb, result).write();
+			new FurtherResultsSheet(wb, result).write();
 			new ConsumerSheet(wb, result).write();
 			new SimulationSheet(wb, result.energyResult).write();
+
 			try (FileOutputStream fos = new FileOutputStream(file);
 					BufferedOutputStream buffer = new BufferedOutputStream(fos)) {
 				wb.write(buffer);
@@ -38,5 +44,4 @@ public class ExcelExport implements Runnable {
 			log.error("Failed to export results to Excel", e);
 		}
 	}
-
 }
