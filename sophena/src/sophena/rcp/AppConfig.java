@@ -64,19 +64,7 @@ public class AppConfig {
 	}
 
 	private static File getFile() {
-		try {
-			File home = new File(System.getProperty("user.home"));
-			if (home == null || !home.isDirectory())
-				return null;
-			File confDir = new File(home, ".sophena");
-			if (!confDir.exists())
-				confDir.mkdirs();
-			return new File(confDir, "config.json");
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(AppConfig.class);
-			log.error("Failed to get configuration file", e);
-			return null;
-		}
+		return new File("sophena_config.json");
 	}
 
 }
