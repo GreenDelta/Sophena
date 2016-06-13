@@ -29,19 +29,22 @@ class ElectricitySheet {
 		Arrays.sort(result.energyResult.producers,
 				(r1, r2) -> Integer.compare(r1.rank, r2.rank));
 		double total = calculateTotal(result.energyResult.producers);
-		for (Producer pr : result.energyResult.producers) {
-			double heat = result.energyResult.totalHeat(pr);
-			double value = GeneratedElectricity.get(pr, heat);
-			Excel.cell(sheet, row, 0, pr.name);
-			if (pr.function == ProducerFunction.BASE_LOAD)
-				Excel.cell(sheet, row, 1, pr.rank + " - Grundlast");
-			else
-				Excel.cell(sheet, row, 1, pr.rank + " - Spitzenlast");
-			Excel.cell(sheet, row, 2, (int) pr.boiler.maxPowerElectric);
+		for (Producer p : result.energyResult.producers) {
+			if (p.boiler == null || !p.boiler.isCoGenPlant)
+				continue;
+			double heat = result.energyResult.totalHeat(p);
+			double value = GeneratedElectricity.get(p, heat);
+			Excel.cell(sheet, row, 0, p.name);
+			if (p.function == ProducerFunction.BASE_LOAD) {
+				Excel.cell(sheet, row, 1, p.rank + " - Grundlast");
+			} else {
+				Excel.cell(sheet, row, 1, p.rank + " - Spitzenlast");
+			}
+			Excel.cell(sheet, row, 2, (int) p.boiler.maxPowerElectric);
 			Excel.cell(sheet, row, 3, (int) value);
 			Excel.cell(sheet, row, 4, (int) ((value / total) * 100));
-			Excel.cell(sheet, row, 5, (int) FullLoadHours.get(pr, heat));
-			Excel.cell(sheet, row, 6, (int) pr.boiler.efficiencyRateElectric);
+			Excel.cell(sheet, row, 5, (int) FullLoadHours.get(p, heat));
+			Excel.cell(sheet, row, 6, (int) p.boiler.efficiencyRateElectric);
 			row++;
 		}
 		Excel.autoSize(sheet, 0, 1);
