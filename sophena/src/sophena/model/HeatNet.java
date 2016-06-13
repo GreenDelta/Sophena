@@ -77,6 +77,7 @@ public class HeatNet extends AbstractEntity {
 		clone.powerLoss = powerLoss;
 		clone.returnTemperature = returnTemperature;
 		clone.simultaneityFactor = simultaneityFactor;
+		clone.smoothingFactor = smoothingFactor;
 		clone.maxLoad = maxLoad;
 		clone.supplyTemperature = supplyTemperature;
 		clone.withInterruption = withInterruption;
