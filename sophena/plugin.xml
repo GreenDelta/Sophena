@@ -211,7 +211,8 @@
         	id="sophena.ComparisonView"
         	icon="icons/bar_chart_16.png"
         	class="sophena.rcp.editors.results.compare.ComparisonView"
-        	name="Ergebnisvergleich" />
+        	name="Ergebnisvergleich"
+        	contributorClass="sophena.rcp.editors.results.compare.ComparisonToolBar" />
 
 		<editor
 			class="sophena.rcp.editors.costs.CostEditor"
