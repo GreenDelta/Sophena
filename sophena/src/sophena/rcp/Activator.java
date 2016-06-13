@@ -28,7 +28,9 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public void start(BundleContext bundleContext) throws Exception {
+		super.start(bundleContext);
 		Activator.context = bundleContext;
+		// File workspace = Workspace.init();
 		LoggerConfig.setUp();
 		try {
 			File workspace = Rcp.getWorkspace();
