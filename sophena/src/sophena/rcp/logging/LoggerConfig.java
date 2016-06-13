@@ -31,10 +31,11 @@ public class LoggerConfig {
 
 	private static void setLogLevel(Logger logger) {
 		String level = EclipseCommandLine.getArg("logLevel");
-		if (level != null)
+		if (level != null) {
 			setLevelFromCommandLine(logger, level);
-		else
-			logger.setLevel(Level.WARN);
+		} else {
+			logger.setLevel(Level.INFO);
+		}
 	}
 
 	private static void setLevelFromCommandLine(Logger logger, String level) {
