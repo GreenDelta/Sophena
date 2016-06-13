@@ -24,8 +24,7 @@ class ComparisonSheet {
 	void write() {
 		Sheet sheet = wb.createSheet("Ergebnisvergleich");
 		CellStyle style = Excel.headerStyle(wb);
-		Excel.cell(sheet, row, 0,
-				"Ergebnisvergleich").setCellStyle(style);
+		Excel.cell(sheet, row, 0, "Ergebnisvergleich").setCellStyle(style);
 		row += 2;
 		heatCosts(sheet, style);
 		annualCosts(sheet, style);

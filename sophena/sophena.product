@@ -7,8 +7,8 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-nl
-de
+      <programArgs>-nl de
+-data @noDefault
       </programArgs>
       <vmArgs>-Xmx1024m
 -Djava.net.useSystemProxies=true

@@ -157,7 +157,7 @@ public class ActionBarAdvisor extends
 		menu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
 				this::importFile));
 		menu.add(Actions.create("Datenverzeichnis wechseln",
-				WorkspaceSwitch::run));
+				Workspace::switchWorkspace));
 		menu.add(new Separator());
 		menu.add(exitAction);
 		menuBar.add(menu);

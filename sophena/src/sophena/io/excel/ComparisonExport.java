@@ -28,7 +28,6 @@ public class ComparisonExport implements Runnable {
 		try {
 			Workbook wb = new XSSFWorkbook();
 			new ComparisonSheet(wb, comparison).write();
-
 			try (FileOutputStream fos = new FileOutputStream(file);
 					BufferedOutputStream buffer = new BufferedOutputStream(fos)) {
 				wb.write(buffer);

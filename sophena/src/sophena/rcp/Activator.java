@@ -15,7 +15,6 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import sophena.db.Database;
 import sophena.rcp.logging.LoggerConfig;
-import sophena.rcp.utils.Rcp;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -30,13 +29,14 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		Activator.context = bundleContext;
-		// File workspace = Workspace.init();
+		File workspace = Workspace.init();
 		LoggerConfig.setUp();
+		log.info("Workspace initialized at {}", workspace);
 		try {
-			File workspace = Rcp.getWorkspace();
 			File dbDir = new File(workspace, "database");
-			if (!dbDir.exists())
+			if (!dbDir.exists()) {
 				extractDefaultDatabase(workspace);
+			}
 			Database db = new Database(dbDir);
 			App.init(db);
 		} catch (Exception e) {
@@ -46,6 +46,7 @@ public class Activator extends AbstractUIPlugin {
 
 	private void extractDefaultDatabase(File workspace) {
 		try {
+			log.info("initialize database @ {}", workspace);
 			InputStream zipStream = FileLocator.openStream(getBundle(),
 					new Path("resources/database.zip"), false);
 			File zipFile = new File(workspace, "@temp.zip");
