@@ -1,12 +1,15 @@
 package sophena.rcp.editors.projects;
 
+import java.io.File;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.db.daos.WeatherStationDao;
@@ -15,7 +18,11 @@ import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -42,13 +49,20 @@ class InfoPage extends FormPage {
 		form.reflow(true);
 	}
 
-	private void createInfoSection(Composite body, FormToolkit toolkit) {
-		Composite composite = UI.formSection(body, toolkit,
-				M.ProjectInformation);
-		createNameText(toolkit, composite);
-		createDescriptionText(toolkit, composite);
-		createDurationText(toolkit, composite);
-		createStationCombo(toolkit, composite);
+	private void createInfoSection(Composite body, FormToolkit tk) {
+		Composite comp = UI.formSection(body, tk, M.ProjectInformation);
+		createNameText(tk, comp);
+		createDescriptionText(tk, comp);
+		createDurationText(tk, comp);
+		createStationCombo(tk, comp);
+		UI.formLabel(comp, "Datenbankpfad");
+		File dbDir = Rcp.getWorkspace();
+		Hyperlink link = tk.createHyperlink(comp, dbDir.getAbsolutePath(),
+				SWT.NONE);
+		link.setForeground(Colors.getLinkBlue());
+		Controls.onClick(link, e -> {
+			Desktop.browse(dbDir.toURI().toASCIIString());
+		});
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -56,7 +70,7 @@ class InfoPage extends FormPage {
 		Texts.on(t)
 				.init(project().name)
 				.required()
-				.onChanged((s) -> {
+				.onChanged(s -> {
 					project().name = t.getText();
 					editor.setDirty();
 				});
@@ -67,7 +81,7 @@ class InfoPage extends FormPage {
 		Text t = UI.formMultiText(composite, toolkit, M.Description);
 		Texts.on(t)
 				.init(project().description)
-				.onChanged((s) -> {
+				.onChanged(s -> {
 					project().description = t.getText();
 					editor.setDirty();
 				});
@@ -79,7 +93,7 @@ class InfoPage extends FormPage {
 				.init(project().duration)
 				.required()
 				.integer()
-				.onChanged((s) -> {
+				.onChanged(s -> {
 					project().duration = Texts.getInt(t);
 					editor.setDirty();
 				});
@@ -95,7 +109,7 @@ class InfoPage extends FormPage {
 		WeatherStation s = project().weatherStation;
 		if (s != null)
 			combo.select(s.toDescriptor());
-		combo.onSelect((d) -> {
+		combo.onSelect(d -> {
 			if (d == null) {
 				return;
 			}

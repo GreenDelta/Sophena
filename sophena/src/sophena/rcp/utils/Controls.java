@@ -12,14 +12,14 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 public final class Controls {
 
 	private Controls() {
 	}
 
-	public static void onClick(ImageHyperlink link, Consumer<HyperlinkEvent> fn) {
+	public static void onClick(Hyperlink link, Consumer<HyperlinkEvent> fn) {
 		if (link == null || fn == null)
 			return;
 		link.addHyperlinkListener(new HyperlinkAdapter() {
