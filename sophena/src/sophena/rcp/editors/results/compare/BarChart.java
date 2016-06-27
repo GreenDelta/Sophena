@@ -28,8 +28,10 @@ class BarChart {
 		this.data = data;
 	}
 
-	static void create(Comparison comparison, Composite comp, Data data) {
-		new BarChart(comparison, data).render(comp);
+	static XYGraph create(Comparison comparison, Composite comp, Data data) {
+		BarChart chart = new BarChart(comparison, data);
+		chart.render(comp);
+		return chart.graph;
 	}
 
 	private void render(Composite composite) {

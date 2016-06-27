@@ -17,11 +17,13 @@ import sophena.rcp.utils.Popup;
 import sophena.rcp.utils.Rcp;
 import sophena.utils.Ref;
 
-public class LoadImageExport extends Action {
+public class ChartImageExport extends Action {
 
 	private final Supplier<XYGraph> chart;
+	private String defaultName;
 
-	public LoadImageExport(Supplier<XYGraph> chart) {
+	public ChartImageExport(String defaultName, Supplier<XYGraph> chart) {
+		this.defaultName = defaultName;
 		this.chart = chart;
 		setText("Als Bild speichern");
 		setImageDescriptor(Icon.CAMERA_16.des());
@@ -31,8 +33,7 @@ public class LoadImageExport extends Action {
 	public void run() {
 		if (chart == null || chart.get() == null)
 			return;
-		File file = FileChooser.saveFile("Jahresdauerlinie.jpg",
-				"*.jpg", "*.png");
+		File file = FileChooser.saveFile(defaultName, "*.jpg", "*.png");
 		if (file == null)
 			return;
 		ImageData data = chart.get().getImage().getImageData();

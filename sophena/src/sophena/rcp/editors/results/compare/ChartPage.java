@@ -2,6 +2,7 @@ package sophena.rcp.editors.results.compare;
 
 import java.util.function.ToDoubleFunction;
 
+import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -12,6 +13,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
+import sophena.rcp.charts.ChartImageExport;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
 
 class ChartPage extends FormPage {
@@ -87,7 +90,8 @@ class ChartPage extends FormPage {
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1).verticalSpacing = 0;
-		createBarChart(composite, unit, fn);
+		XYGraph graph = createBarChart(composite, unit, fn);
+		Actions.bind(section, new ChartImageExport(title + ".jpg", () -> graph));
 		ChartTable.create(comparison, composite, new ChartTable.Data() {
 			@Override
 			public double value(CostResult result) {
@@ -101,22 +105,9 @@ class ChartPage extends FormPage {
 		});
 	}
 
-	private void createBarChart(Composite composite, String unit,
+	private XYGraph createBarChart(Composite composite, String unit,
 			ToDoubleFunction<CostResult> fn) {
-
-		// FxBarChart.create(comparison, composite, new FxBarChart.Val() {
-		// @Override
-		// public String unit() {
-		// return unit;
-		// }
-		//
-		// @Override
-		// public double get(CostResult result) {
-		// return fn.applyAsDouble(result);
-		// }
-		// });
-
-		BarChart.create(comparison, composite, new BarChart.Data() {
+		return BarChart.create(comparison, composite, new BarChart.Data() {
 			@Override
 			public double value(CostResult result) {
 				return fn.applyAsDouble(result);

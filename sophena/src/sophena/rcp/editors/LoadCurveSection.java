@@ -16,7 +16,7 @@ import sophena.math.LoadSorting;
 import sophena.model.LoadProfile;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
-import sophena.rcp.charts.LoadImageExport;
+import sophena.rcp.charts.ChartImageExport;
 import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Rcp;
@@ -58,7 +58,7 @@ public class LoadCurveSection {
 		UI.gridLayout(composite, 1);
 		chart = new LoadProfileChart(composite, 250);
 		Actions.bind(section, new SortAction(), new ExportAction(),
-				new LoadImageExport(() -> chart.graph));
+				new ChartImageExport("Jahresdauerlinie.jpg", () -> chart.graph));
 		if (chartData != null)
 			chart.setData(chartData);
 	}
