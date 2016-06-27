@@ -40,7 +40,7 @@ public class LoadProfileWriter {
 	}
 
 	private void makeRows(LoadProfile p, List<String> rows) {
-		rows.add(M.Hour + ";" + M.HeatingEnergy + ";" + M.HotWater + ";" + M.Total);
+		rows.add(M.Hour + ";Heizwaerme;" + M.HotWater + ";" + M.Total);
 		StringBuilder row = new StringBuilder();
 		double[] totals = p.calculateTotal();
 		for (int i = 0; i < Stats.HOURS; i++) {

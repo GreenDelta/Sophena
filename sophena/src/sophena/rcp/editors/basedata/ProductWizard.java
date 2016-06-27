@@ -7,6 +7,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProductGroupDao;
@@ -16,8 +17,12 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
+import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -76,10 +81,7 @@ public class ProductWizard extends Wizard {
 
 			createGroupCombo(c);
 			createManufacturerCombo(c);
-
-			urlText = UI.formText(c, "Web-Link");
-			Texts.on(urlText).required();
-			UI.formLabel(c, "");
+			createWebLink(c);
 
 			priceText = UI.formText(c, "Preis");
 			UI.formLabel(c, "EUR");
@@ -90,6 +92,26 @@ public class ProductWizard extends Wizard {
 			UI.formLabel(c, "");
 
 			data.bindToUI();
+		}
+
+		private void createWebLink(Composite c) {
+			if (!product.isProtected) {
+				urlText = UI.formText(c, "Web-Link");
+				Texts.on(urlText).required();
+				UI.filler(c);
+				return;
+			}
+			UI.formLabel(c, "Web-Link");
+			Hyperlink link = new Hyperlink(c, SWT.NONE);
+			link.setForeground(Colors.getLinkBlue());
+			if (product.url != null) {
+				link.setText(Strings.cut(product.url, 60));
+				link.setToolTipText(product.url);
+			}
+			UI.filler(c);
+			Controls.onClick(link, e -> {
+				Desktop.browse(product.url);
+			});
 		}
 
 		private void createGroupCombo(Composite c) {
@@ -128,10 +150,13 @@ public class ProductWizard extends Wizard {
 				product.name = nameText.getText();
 				product.group = groupCombo.getSelected();
 				product.manufacturer = manufacturerCombo.getSelected();
-				product.url = urlText.getText();
 				product.description = descriptionText.getText();
-				if (Texts.hasNumber(priceText))
+				if (urlText != null) {
+					product.url = urlText.getText();
+				}
+				if (Texts.hasNumber(priceText)) {
 					product.purchasePrice = Texts.getDouble(priceText);
+				}
 				content.bindToModel();
 			}
 
