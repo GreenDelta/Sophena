@@ -257,6 +257,11 @@
 			class="sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor"
 			id="sophena.products.HeatingNetConstructionEditor"
 			name="Wärmenetz-Bau" />
+			
+		<editor
+			class="sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor"
+			id="sophena.products.HeatingNetTechnologyEditor"
+			name="Wärmenetz-Technik" />
 
 		<editor
 			class="sophena.rcp.editors.basedata.products.PlanningEditor"

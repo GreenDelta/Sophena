@@ -135,6 +135,8 @@ public final class Labels {
 			return "Gebäude";
 		case PIPE:
 			return "Wärmeleitung";
+		case HEATING_NET_TECHNOLOGY:
+			return "Wärmenetz-Technik";
 		case HEATING_NET_CONSTRUCTION:
 			return "Wärmenetz-Bau";
 		case PLANNING:
@@ -170,6 +172,8 @@ public final class Labels {
 			return "Gebäude";
 		case PIPE:
 			return "Wärmeleitungen";
+		case HEATING_NET_TECHNOLOGY:
+			return "Wärmenetz-Technik";
 		case HEATING_NET_CONSTRUCTION:
 			return "Wärmenetz-Bau";
 		case PLANNING:
@@ -177,7 +181,7 @@ public final class Labels {
 		case TRANSFER_STATION:
 			return "Hausübergabestationen";
 		default:
-			return null;
+			return get(t);
 		}
 	}
 
@@ -205,6 +209,8 @@ public final class Labels {
 			return Icon.BUILDING_TYPE_16.img();
 		case PIPE:
 			return Icon.PIPE_16.img();
+		case HEATING_NET_TECHNOLOGY:
+			return null;
 		case HEATING_NET_CONSTRUCTION:
 			return null;
 		case PLANNING:

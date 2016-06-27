@@ -22,6 +22,8 @@ public enum ProductType {
 
 	PIPE,
 
+	HEATING_NET_TECHNOLOGY,
+
 	HEATING_NET_CONSTRUCTION,
 
 	PLANNING,

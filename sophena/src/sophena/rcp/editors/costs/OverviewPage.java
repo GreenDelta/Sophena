@@ -61,6 +61,7 @@ class OverviewPage extends FormPage {
 		flueGasCleanings(body, tk);
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
 		entries(ProductType.BUILDING, body, tk);
+		entries(ProductType.HEATING_NET_TECHNOLOGY, body, tk);
 		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
 		entries(ProductType.PLANNING, body, tk);
 		form.reflow(true);
