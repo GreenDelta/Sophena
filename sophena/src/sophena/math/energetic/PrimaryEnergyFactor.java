@@ -31,7 +31,8 @@ public class PrimaryEnergyFactor {
 					+ (usedElectricity - generatedElectricity)
 							* Defaults.PRIMARY_ENERGY_FACTOR_ELECTRICITY);
 		}
-		return sum / usedHeat;
+		double pf = sum / usedHeat;
+		return pf < 0 ? 0 : pf;
 	}
 
 	private static double getFuelFactor(Producer p) {
