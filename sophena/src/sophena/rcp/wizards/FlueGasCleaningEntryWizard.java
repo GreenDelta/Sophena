@@ -13,6 +13,7 @@ import sophena.model.FlueGasCleaningEntry;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -100,7 +101,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 
 		private void selectProduct(ImageHyperlink link) {
 			FlueGasCleaning c = SearchDialog.open("Rauchgasreinigung",
-					FlueGasCleaning.class);
+					FlueGasCleaning.class, SearchLabel::forFlueGasCleaning);
 			if (c == null)
 				return;
 			selectedProduct = c;

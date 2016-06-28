@@ -22,6 +22,7 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -122,7 +123,8 @@ class EntryWizard extends Wizard {
 
 		private void searchGlobalProduct(ImageHyperlink link) {
 			ProductDao dao = new ProductDao(App.getDb());
-			Product p = SearchDialog.open((Labels.get(type)), dao.getAllGlobal(type));
+			Product p = SearchDialog.open(Labels.get(type),
+					dao.getAllGlobal(type), SearchLabel::forProduct);
 			if (p == null) {
 				noProduct(true);
 				return;

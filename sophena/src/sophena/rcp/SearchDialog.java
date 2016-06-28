@@ -1,6 +1,7 @@
 package sophena.rcp;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -30,22 +31,26 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	private T selection;
 	private String title;
 	private List<T> list;
+	private Function<T, String> labelFn;
 
 	private Text filterText;
 	private ListViewer viewer;
 
-	public static <T extends RootEntity> T open(String title, Class<T> clazz) {
+	public static <T extends RootEntity> T open(String title, Class<T> clazz,
+			Function<T, String> labelFn) {
 		RootEntityDao<T> dao = new RootEntityDao<>(clazz, App.getDb());
 		List<T> all = dao.getAll();
-		return open(title, all);
+		return open(title, all, labelFn);
 	}
 
-	public static <T extends RootEntity> T open(String title, List<T> list) {
+	public static <T extends RootEntity> T open(String title, List<T> list,
+			Function<T, String> labelFn) {
 		if (list == null)
 			return null;
 		SearchDialog<T> d = new SearchDialog<>();
 		d.list = list;
 		d.title = title;
+		d.labelFn = labelFn;
 		if (d.open() == OK)
 			return d.selection;
 		else
@@ -93,11 +98,12 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		viewer.setSorter(new Sorter());
 		viewer.setLabelProvider(new LabelProvider() {
 			@Override
+			@SuppressWarnings("unchecked")
 			public String getText(Object obj) {
-				if (!(obj instanceof RootEntity))
+				if (obj == null)
 					return null;
-				RootEntity e = (RootEntity) obj;
-				return e.name;
+				T e = (T) obj;
+				return labelFn.apply(e);
 			}
 		});
 	}
@@ -128,36 +134,35 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	private class Filter extends ViewerFilter {
 
 		@Override
-		public boolean select(Viewer viewer, Object parent, Object element) {
-			if (!(element instanceof RootEntity))
+		@SuppressWarnings("unchecked")
+		public boolean select(Viewer viewer, Object parent, Object obj) {
+			if (obj == null)
 				return false;
 			if (Texts.isEmpty(filterText))
 				return true;
-			RootEntity e = (RootEntity) element;
-			if (Strings.nullOrEmpty(e.name))
+			String label = labelFn.apply((T) obj);
+			if (Strings.nullOrEmpty(label))
 				return false;
-			String s = filterText.getText().trim().toLowerCase();
-			String n = e.name.trim().toLowerCase();
-			return n.contains(s);
+			String[] parts = filterText.getText().trim().toLowerCase().split(" ");
+			String n = label.toLowerCase();
+			for (String part : parts) {
+				if (!n.contains(part))
+					return false;
+			}
+			return true;
 		}
 	}
 
 	private class Sorter extends ViewerSorter {
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public int compare(Viewer viewer, Object o1, Object o2) {
-			if (!(o1 instanceof RootEntity) || !(o2 instanceof RootEntity))
+			if (o1 == null || o2 == null)
 				return 0;
-			RootEntity e1 = (RootEntity) o1;
-			RootEntity e2 = (RootEntity) o2;
-			if (Texts.isEmpty(filterText)
-					|| e1.name == null
-					|| e2.name == null)
-				return Strings.compare(e1.name, e2.name);
-			String s = filterText.getText().trim().toLowerCase();
-			int i1 = e1.name.trim().toLowerCase().indexOf(s);
-			int i2 = e2.name.trim().toLowerCase().indexOf(s);
-			return i1 - i2;
+			String label1 = labelFn.apply((T) o1);
+			String label2 = labelFn.apply((T) o1);
+			return Strings.compare(label1, label2);
 		}
 	}
 

@@ -10,6 +10,7 @@ import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -70,7 +71,8 @@ class HeatRecoverySection {
 	}
 
 	private void selectHeatRecovery(ImageHyperlink link) {
-		HeatRecovery hr = SearchDialog.open("Wärmerückgewinnung", HeatRecovery.class);
+		HeatRecovery hr = SearchDialog.open("Wärmerückgewinnung",
+				HeatRecovery.class, SearchLabel::forHeatRecovery);
 		if (hr == null)
 			return;
 		producer().heatRecovery = hr;

@@ -14,6 +14,7 @@ import sophena.model.Pipe;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -88,7 +89,8 @@ class PipeWizard extends Wizard {
 		}
 
 		private void selectPipe(ImageHyperlink link) {
-			Pipe p = SearchDialog.open("Wärmeleitung", Pipe.class);
+			Pipe p = SearchDialog.open("Wärmeleitung", Pipe.class,
+					SearchLabel::forPipe);
 			if (p == null)
 				return;
 			pipe.pipe = p;

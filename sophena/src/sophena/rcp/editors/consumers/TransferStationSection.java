@@ -10,6 +10,7 @@ import sophena.model.ProductCosts;
 import sophena.model.TransferStation;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
+import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -71,7 +72,7 @@ class TransferStationSection {
 
 	private void selectTransferStation(ImageHyperlink link) {
 		TransferStation s = SearchDialog.open("Hausübergabestation",
-				TransferStation.class);
+				TransferStation.class, SearchLabel::forTransferStation);
 		if (s == null)
 			return;
 		consumer().transferStation = s;
