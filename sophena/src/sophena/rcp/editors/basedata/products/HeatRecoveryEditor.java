@@ -80,7 +80,7 @@ public class HeatRecoveryEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller", "Leistung",
-					"Brennstoff (Erz.)", "Leistung (Erz.)");
+					"Wärmeerzeuger", "Brennstoff (Erz.)", "Leistung (Erz.)");
 			table.setLabelProvider(new Label());
 			table.setInput(recoveries);
 			double x = 1.0 / 6.0;
@@ -164,8 +164,10 @@ public class HeatRecoveryEditor extends Editor {
 			case 3:
 				return Num.str(hrc.power) + " kW";
 			case 4:
-				return hrc.fuel;
+				return hrc.heatRecoveryType;
 			case 5:
+				return hrc.fuel;
+			case 6:
 				return Num.str(hrc.producerPower) + " kW";
 			default:
 				return null;

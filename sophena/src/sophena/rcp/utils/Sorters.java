@@ -67,6 +67,9 @@ public class Sorters {
 			if (Math.abs(p1.outerDiameter - p2.outerDiameter) > 1e-6) {
 				return Double.compare(p1.outerDiameter, p2.outerDiameter);
 			}
+			if (Math.abs(p1.uValue - p2.uValue) > 1e-6) {
+				return Double.compare(p1.uValue, p2.uValue);
+			}
 			return byManufacturer(p1, p2);
 		});
 	}
@@ -93,8 +96,11 @@ public class Sorters {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
-			if (Math.abs(p1.power - p2.power) > 1e-6) {
-				return Double.compare(p1.power, p2.power);
+			c = Strings.compare(p1.heatRecoveryType, p2.heatRecoveryType);
+			if (c != 0)
+				return c;
+			if (Math.abs(p1.producerPower - p2.producerPower) > 1e-6) {
+				return Double.compare(p1.producerPower, p2.producerPower);
 			}
 			c = Strings.compare(p1.fuel, p2.fuel);
 			return c == 0 ? byManufacturer(p1, p2) : c;
@@ -108,12 +114,12 @@ public class Sorters {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
-			c = Strings.compare(p1.fuel, p2.fuel);
-			if (c != 0)
-				return c;
 			if (Math.abs(p1.maxProducerPower - p2.maxProducerPower) > 1e-6) {
 				return Double.compare(p1.maxProducerPower, p2.maxProducerPower);
 			}
+			c = Strings.compare(p1.fuel, p2.fuel);
+			if (c != 0)
+				return c;
 			return byManufacturer(p1, p2);
 		});
 	}
