@@ -41,7 +41,7 @@ class PipeWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Wärmeleitung");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(150, 660);
+		d.setPageSize(200, 660);
 		return d.open();
 	}
 

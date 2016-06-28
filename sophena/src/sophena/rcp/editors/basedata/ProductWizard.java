@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -13,6 +14,7 @@ import sophena.db.daos.Dao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.model.AbstractProduct;
 import sophena.model.Manufacturer;
+import sophena.model.Pipe;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
@@ -74,7 +76,6 @@ public class ProductWizard extends Wizard {
 			Composite c = new Composite(parent, SWT.NONE);
 			setControl(c);
 			UI.gridLayout(c, 3);
-
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
@@ -82,16 +83,21 @@ public class ProductWizard extends Wizard {
 			createGroupCombo(c);
 			createManufacturerCombo(c);
 			createWebLink(c);
-
-			priceText = UI.formText(c, "Preis");
-			UI.formLabel(c, "EUR");
+			createPriceText(c);
 
 			content.render(c);
-
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.formLabel(c, "");
-
 			data.bindToUI();
+		}
+
+		private void createPriceText(Composite c) {
+			priceText = UI.formText(c, "Preis");
+			if (product instanceof Pipe) {
+				UI.formLabel(c, "EUR/m");
+			} else {
+				UI.formLabel(c, "EUR");
+			}
 		}
 
 		private void createWebLink(Composite c) {
