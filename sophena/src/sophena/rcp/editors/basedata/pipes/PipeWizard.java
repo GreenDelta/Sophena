@@ -41,7 +41,7 @@ class PipeWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Wärmeleitung");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(150, 560);
+		d.setPageSize(150, 660);
 		return d.open();
 	}
 
@@ -90,7 +90,6 @@ class PipeWizard implements IContent {
 		Texts.set(materialText, pipe.material);
 		int idx = pipe.pipeType == PipeType.UNO ? 0 : 1;
 		typeCombo.select(idx);
-		typeCombo.select(1);
 		Texts.set(uValueText, pipe.uValue);
 		Texts.set(innerDiamText, pipe.innerDiameter);
 		Texts.set(outerDiamText, pipe.outerDiameter);
