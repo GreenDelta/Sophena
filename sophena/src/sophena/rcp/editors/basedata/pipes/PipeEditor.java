@@ -131,11 +131,11 @@ public class PipeEditor extends Editor {
 
 		private void saveAs(TableViewer table) {
 			Pipe p = Viewers.getFirstSelected(table);
-			p.isProtected = false;
 			if (p == null)
 				return;
 			Pipe copy = p.clone();
 			copy.id = UUID.randomUUID().toString();
+			copy.isProtected = false;
 			if (PipeWizard.open(copy) != Window.OK)
 				return;
 			dao.insert(copy);

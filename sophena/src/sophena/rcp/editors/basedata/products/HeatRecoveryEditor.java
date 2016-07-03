@@ -94,10 +94,12 @@ public class HeatRecoveryEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
+			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, saveAs, del);
+			Actions.bind(table, add, edit, saveAs, del);
 			Tables.onDoubleClick(table, e -> edit(table));
 		}
 
@@ -127,6 +129,20 @@ public class HeatRecoveryEditor extends Editor {
 			} catch (Exception e) {
 				log.error("failed to update", e);
 			}
+		}
+
+		private void saveAs(TableViewer table) {
+			HeatRecovery r = Viewers.getFirstSelected(table);
+			if (r == null)
+				return;
+			HeatRecovery copy = r.clone();
+			copy.id = UUID.randomUUID().toString();
+			copy.isProtected = false;
+			if (HeatRecoveryWizard.open(copy) != Window.OK)
+				return;
+			dao.insert(copy);
+			recoveries.add(copy);
+			table.setInput(recoveries);
 		}
 
 		private void delete(TableViewer table) {

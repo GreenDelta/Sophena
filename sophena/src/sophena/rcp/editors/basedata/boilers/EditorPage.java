@@ -95,7 +95,7 @@ class EditorPage extends FormPage {
 				() -> deleteBoiler(table));
 		Actions.bind(section, add, edit, saveAs, del);
 		Actions.bind(table, add, edit, saveAs, del);
-		Tables.onDoubleClick(table, (e) -> editBoiler(table));
+		Tables.onDoubleClick(table, e -> editBoiler(table));
 	}
 
 	private void addBoiler(TableViewer table) {
@@ -129,11 +129,11 @@ class EditorPage extends FormPage {
 
 	private void saveAs(TableViewer table) {
 		Boiler b = Viewers.getFirstSelected(table);
-		b.isProtected = false;
 		if (b == null)
 			return;
 		Boiler copy = b.clone();
 		copy.id = UUID.randomUUID().toString();
+		copy.isProtected = false;
 		if (BoilerWizard.open(copy) != Window.OK)
 			return;
 		dao.insert(copy);

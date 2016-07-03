@@ -131,11 +131,11 @@ public class BufferTankEditor extends Editor {
 
 		private void saveAs(TableViewer table) {
 			BufferTank b = Viewers.getFirstSelected(table);
-			b.isProtected = false;
 			if (b == null)
 				return;
 			BufferTank copy = b.clone();
 			copy.id = UUID.randomUUID().toString();
+			copy.isProtected = false;
 			if (BufferTankWizard.open(copy) != Window.OK)
 				return;
 			dao.insert(copy);

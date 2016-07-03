@@ -79,11 +79,13 @@ class EditorPage extends FormPage {
 				() -> addProduct(table));
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				() -> editProduct(table));
+		Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+				() -> saveAs(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> deleteProduct(table));
-		Actions.bind(section, add, edit, del);
-		Actions.bind(table, add, edit, del);
-		Tables.onDoubleClick(table, (e) -> editProduct(table));
+		Actions.bind(section, add, edit, saveAs, del);
+		Actions.bind(table, add, edit, saveAs, del);
+		Tables.onDoubleClick(table, e -> editProduct(table));
 	}
 
 	private void addProduct(TableViewer table) {
@@ -114,6 +116,20 @@ class EditorPage extends FormPage {
 		} catch (Exception e) {
 			log.error("failed to update Product ", product, e);
 		}
+	}
+
+	private void saveAs(TableViewer table) {
+		Product p = Viewers.getFirstSelected(table);
+		if (b == null)
+			return;
+		Product copy = b.clone();
+		copy.id = UUID.randomUUID().toString();
+		copy.isProtected = false;
+		if (ProductWizard.open(copy) != Window.OK)
+			return;
+		dao.insert(copy);
+		products.add(copy);
+		table.setInput(products);
 	}
 
 	private void deleteProduct(TableViewer table) {
