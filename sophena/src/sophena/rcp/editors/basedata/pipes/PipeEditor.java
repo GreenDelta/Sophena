@@ -78,8 +78,8 @@ public class PipeEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller", "Art",
-					"Außend. Medienrohr", "U-Wert");
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", 
+					"Hersteller", "Art", "Außend. Medienrohr", "U-Wert");
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
 			double x = 1.0 / 6.0;
@@ -92,6 +92,8 @@ public class PipeEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
+			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
 			Actions.bind(section, add, edit, del);
@@ -125,6 +127,20 @@ public class PipeEditor extends Editor {
 			} catch (Exception e) {
 				log.error("failed to update pipe");
 			}
+		}
+
+		private void saveAs(TableViewer table) {
+			Pipe p = Viewers.getFirstSelected(table);
+			p.isProtected = false;
+			if (p == null)
+				return;
+			Pipe copy = p.clone();
+			copy.id = UUID.randomUUID().toString();
+			if (PipeWizard.open(copy) != Window.OK)
+				return;
+			dao.insert(copy);
+			pipes.add(copy);
+			table.setInput(pipes);
 		}
 
 		private void delete(TableViewer table) {

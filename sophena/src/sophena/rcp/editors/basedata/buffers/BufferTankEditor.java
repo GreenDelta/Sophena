@@ -92,10 +92,12 @@ public class BufferTankEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
+			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, saveAs, del);
+			Actions.bind(table, add, edit, saveAs, del);
 			Tables.onDoubleClick(table, (e) -> edit(table));
 		}
 
@@ -125,6 +127,20 @@ public class BufferTankEditor extends Editor {
 			} catch (Exception e) {
 				log.error("failed to update buffer");
 			}
+		}
+
+		private void saveAs(TableViewer table) {
+			BufferTank b = Viewers.getFirstSelected(table);
+			b.isProtected = false;
+			if (b == null)
+				return;
+			BufferTank copy = b.clone();
+			copy.id = UUID.randomUUID().toString();
+			if (BufferTankWizard.open(copy) != Window.OK)
+				return;
+			dao.insert(copy);
+			buffers.add(copy);
+			table.setInput(buffers);
 		}
 
 		private void delete(TableViewer table) {
