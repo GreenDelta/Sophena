@@ -12,16 +12,21 @@ import sophena.rcp.utils.UI;
 class Workspace {
 
 	static void switchWorkspace() {
+		switchWorkspace(null);
+	}
+
+	static void switchWorkspace(String toDir) {
 		AppConfig conf = AppConfig.load();
-		DirectoryDialog dialog = new DirectoryDialog(UI.shell());
-		if (conf.dataDir != null) {
-			dialog.setFilterPath(conf.dataDir);
-		}
-		String newDir = dialog.open();
-		if (newDir == null || newDir.equals(conf.dataDir))
+		if(toDir == null) {
+			DirectoryDialog dialog = new DirectoryDialog(UI.shell());
+			if (conf.dataDir != null) {
+				dialog.setFilterPath(conf.dataDir);
+			}
+			toDir = dialog.open();			
+		}		
+		if (toDir == null || toDir.equals(conf.dataDir))
 			return;
-		conf.dataDir = newDir;
-		conf.save();
+		conf.switchDataDir(toDir);
 		PlatformUI.getWorkbench().restart();
 	}
 

@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 public class AppConfig {
 
 	public String dataDir;
+	public List<String> lastDataDirs = new ArrayList<>();
 
 	/** Loads the application configuration from the user folder. */
 	public static AppConfig load() {
@@ -49,6 +50,26 @@ public class AppConfig {
 			Logger log = LoggerFactory.getLogger(AppConfig.class);
 			log.error("Failed to write configuration file", e);
 		}
+	}
+
+	public void switchDataDir(String newDir) {
+		if (newDir == null)
+			return;
+		List<String> recent = new ArrayList<>();
+		if (dataDir != null) {
+			recent.add(dataDir);
+		}
+		// save max. 5 recent dirs but in order
+		int i = recent.size();
+		for (String dir : lastDataDirs) {
+			if (i >= 5)
+				break;
+			if (recent.contains(dir))
+				continue;
+			recent.add(dir);
+		}
+		dataDir = newDir;
+		save();
 	}
 
 	/**

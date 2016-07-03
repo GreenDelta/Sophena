@@ -159,11 +159,26 @@ public class ActionBarAdvisor extends
 		menu.add(new Separator());
 		menu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
 				this::importFile));
-		menu.add(Actions.create("Datenverzeichnis wechseln",
-				Workspace::switchWorkspace));
+		createWorkspaceActions(menu);
 		menu.add(new Separator());
 		menu.add(exitAction);
 		menuBar.add(menu);
+	}
+
+	private void createWorkspaceActions(MenuManager parent) {
+		AppConfig conf = AppConfig.load();
+		if (conf.lastDataDirs.isEmpty()) {
+			parent.add(Actions.create("Datenverzeichnis wechseln",
+				Workspace::switchWorkspace));
+			return;
+		}
+		MenuManager menu = new MenuManager("Datenverzeichnis wechseln");
+		parent.add(menu);
+		for (String dir : conf.lastDataDirs) {
+			Action a = Actions.create(dir, () -> Workspace.switchWorkspace(dir));
+			menu.add(a)
+		}
+		menu.add(Actions.create("Anderes ...", Workspace::switchWorkspace))
 	}
 
 	@Override
