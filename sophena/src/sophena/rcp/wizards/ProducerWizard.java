@@ -261,20 +261,20 @@ public class ProducerWizard extends Wizard {
 				java.util.List<String> list = new ArrayList<>();
 				list.add("");
 				ProductGroupDao dao = new ProductGroupDao(App.getDb());
+				java.util.List<ProductGroup> groups = dao.getAll();
+				Sorters.sort(groups);
 				EnumSet<ProductType> types = EnumSet.of(
 						ProductType.BIOMASS_BOILER,
 						ProductType.FOSSIL_FUEL_BOILER,
 						ProductType.COGENERATION_PLANT);
-				for (ProductGroup g : dao.getAll()) {
+				for (ProductGroup g : groups) {
 					if (g.name == null || g.type == null)
 						continue;
 					if (types.contains(g.type)) {
 						list.add(g.name);
 					}
 				}
-				Collections.sort(list);
 				return list.toArray(new String[list.size()]);
-
 			}
 
 			private int getNextRank() {

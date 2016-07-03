@@ -125,7 +125,7 @@ public class ProductWizard extends Wizard {
 			groupCombo.create("Produktgruppe", c);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
 			List<ProductGroup> list = dao.getAll(content.getProductType());
-			Sorters.byName(list);
+			Sorters.productGroup(list);
 			groupCombo.setInput(list);
 			UI.formLabel(c, "");
 		}

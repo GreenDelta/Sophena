@@ -53,13 +53,7 @@ public class ProductGroupEditor extends Editor {
 					"Produktgruppen");
 			dao = new RootEntityDao<>(ProductGroup.class, App.getDb());
 			groups = dao.getAll();
-			Collections.sort(groups, (s1, s2) -> {
-				if (s2.type == null || s1.type == null)
-					return 0;
-				if (s1.type != s2.type)
-					return s1.type.ordinal() - s2.type.ordinal();
-				return s1.index - s2.index;
-			});
+			Sorters.productGroups(groups);
 		}
 
 		@Override

@@ -180,4 +180,18 @@ public class Sorters {
 		});
 	}
 
+	public static void productGroups(List<ProductGroup> groups) {
+		if (groups == null)
+			return;
+		Collections.sort(groups, (g1, g2) -> {
+			if (g1.type == null || g2.type == null)
+				return 0;
+			if (g1.type != g2.type)
+				return g1.type.ordinal() - g2.type.ordinal();
+			if (g1.index != g2.index)
+				return g1.index - g2.index;
+			return Strings.compare(g1.name, g2.name);
+		});
+	}
+
 }
