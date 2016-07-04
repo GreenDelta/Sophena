@@ -28,6 +28,8 @@ public enum BuildingType {
 
 	COMMERCIAL_BUILDING,
 
+	FERMENTER,
+
 	OTHER
 
 }
