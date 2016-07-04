@@ -109,7 +109,9 @@ public class ProductWizard extends Wizard {
 			UI.formLabel(c, "Web-Link");
 			Hyperlink link = new Hyperlink(c, SWT.NONE);
 			link.setForeground(Colors.getLinkBlue());
-			if (product.url != null) {
+			if (product.url == null) {
+				link.setText(""); // SWT throws a NullPointer otherwise
+			} else {
 				link.setText(Strings.cut(product.url, 60));
 				link.setToolTipText(product.url);
 			}
