@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 public class Desktop {
 
-	private static Logger log = LoggerFactory.getLogger(Desktop.class);
-
 	public static void browse(String uri) {
 		try {
 			if (java.awt.Desktop.isDesktopSupported()) {
@@ -19,7 +17,8 @@ public class Desktop {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Browse URI failed", e);
+			Logger log = LoggerFactory.getLogger(Desktop.class);
+			log.error("Browse URI failed: " + uri, e);
 		}
 	}
 

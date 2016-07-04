@@ -15,8 +15,8 @@ import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
@@ -90,7 +90,7 @@ class HeatNetSection {
 						t.setBackground(Colors.forRequiredField());
 					} else {
 						heatNet().maxLoad = val;
-						t.setBackground(Colors.forModifiedDefault());						
+						t.setBackground(Colors.forModifiedDefault());
 					}
 					Texts.set(maxSimLoadText, calculateMaxSimLoad());
 					editor.setDirty();
@@ -111,7 +111,7 @@ class HeatNetSection {
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
 		});
-		UI.formLabel(comp, tk, "").setImage(Icon.INFO_16.img());
+		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor", "noch nicht verfügbar");
 		UI.filler(comp, tk);
 	}
 
