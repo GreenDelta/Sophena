@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 public class AppConfig {
 
 	public String dataDir;
-	public List<String> lastDataDirs = new ArrayList<>();
+	public final List<String> lastDataDirs = new ArrayList<>();
 
 	/** Loads the application configuration from the user folder. */
 	public static AppConfig load() {
@@ -66,11 +66,14 @@ public class AppConfig {
 		for (String dir : lastDataDirs) {
 			if (i >= 5)
 				break;
-			if (recent.contains(dir))
+			if (recent.contains(dir) || newDir.equals(dir))
 				continue;
 			recent.add(dir);
+			i++;
 		}
 		dataDir = newDir;
+		lastDataDirs.clear();
+		lastDataDirs.addAll(recent);
 		save();
 	}
 
