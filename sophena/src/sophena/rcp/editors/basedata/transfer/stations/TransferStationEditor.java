@@ -93,7 +93,7 @@ public class TransferStationEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
-			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+			Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
@@ -134,7 +134,7 @@ public class TransferStationEditor extends Editor {
 			TransferStation s = Viewers.getFirstSelected(table);
 			if (s == null)
 				return;
-			TransferStation copy = b.clone();
+			TransferStation copy = s.clone();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (TransferStationWizard.open(copy) != Window.OK)

@@ -79,7 +79,7 @@ class EditorPage extends FormPage {
 				() -> addProduct(table));
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				() -> editProduct(table));
-		Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+		Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 				() -> saveAs(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> deleteProduct(table));
@@ -120,9 +120,9 @@ class EditorPage extends FormPage {
 
 	private void saveAs(TableViewer table) {
 		Product p = Viewers.getFirstSelected(table);
-		if (b == null)
+		if (p == null)
 			return;
-		Product copy = b.clone();
+		Product copy = p.clone();
 		copy.id = UUID.randomUUID().toString();
 		copy.isProtected = false;
 		if (ProductWizard.open(copy) != Window.OK)

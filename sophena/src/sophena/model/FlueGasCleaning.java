@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -31,5 +33,21 @@ public class FlueGasCleaning extends AbstractProduct {
 
 	@Column(name = "separation_efficiency")
 	public double separationEfficiency;
+
+	@Override
+	public FlueGasCleaning clone() {
+		FlueGasCleaning clone = new FlueGasCleaning();
+		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
+		clone.flueGasCleaningType = flueGasCleaningType;
+		clone.maxVolumeFlow = maxVolumeFlow;
+		clone.fuel = fuel;
+		clone.maxProducerPower = maxProducerPower;
+		clone.maxElectricityConsumption = maxElectricityConsumption;
+		clone.cleaningMethod = cleaningMethod;
+		clone.cleaningType = cleaningType;
+		clone.separationEfficiency = separationEfficiency;
+		return clone;
+	}
 
 }

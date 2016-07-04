@@ -169,16 +169,16 @@ public class ActionBarAdvisor extends
 		AppConfig conf = AppConfig.load();
 		if (conf.lastDataDirs.isEmpty()) {
 			parent.add(Actions.create("Datenverzeichnis wechseln",
-				Workspace::switchWorkspace));
+					Workspace::switchWorkspace));
 			return;
 		}
 		MenuManager menu = new MenuManager("Datenverzeichnis wechseln");
 		parent.add(menu);
 		for (String dir : conf.lastDataDirs) {
 			Action a = Actions.create(dir, () -> Workspace.switchWorkspace(dir));
-			menu.add(a)
+			menu.add(a);
 		}
-		menu.add(Actions.create("Anderes ...", Workspace::switchWorkspace))
+		menu.add(Actions.create("Anderes ...", Workspace::switchWorkspace));
 	}
 
 	@Override

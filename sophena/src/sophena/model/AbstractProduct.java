@@ -27,4 +27,18 @@ public abstract class AbstractProduct extends BaseDataEntity {
 	@OneToOne
 	@JoinColumn(name = "f_product_group")
 	public ProductGroup group;
+
+	static void copyFields(AbstractProduct from, AbstractProduct to) {
+		if (from == null || to == null)
+			return;
+		to.name = from.name;
+		to.description = from.description;
+		to.isProtected = from.isProtected;
+		to.purchasePrice = from.purchasePrice;
+		to.url = from.url;
+		to.manufacturer = from.manufacturer;
+		to.type = from.type;
+		to.group = from.group;
+	}
+
 }

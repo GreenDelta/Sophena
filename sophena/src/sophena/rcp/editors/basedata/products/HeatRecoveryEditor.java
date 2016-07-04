@@ -79,8 +79,8 @@ public class HeatRecoveryEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", 
-					"Hersteller", "Leistung", "Wärmeerzeuger", "Brennstoff (Erz.)", 
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung",
+					"Hersteller", "Leistung", "Wärmeerzeuger", "Brennstoff (Erz.)",
 					"Leistung (Erz.)");
 			table.setLabelProvider(new Label());
 			table.setInput(recoveries);
@@ -94,7 +94,7 @@ public class HeatRecoveryEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
-			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+			Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));

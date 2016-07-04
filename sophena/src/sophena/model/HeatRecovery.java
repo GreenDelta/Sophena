@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,5 +21,17 @@ public class HeatRecovery extends AbstractProduct {
 
 	@Column(name = "producer_power")
 	public double producerPower;
+
+	@Override
+	public HeatRecovery clone() {
+		HeatRecovery clone = new HeatRecovery();
+		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
+		clone.power = power;
+		clone.heatRecoveryType = heatRecoveryType;
+		clone.fuel = fuel;
+		clone.producerPower = producerPower;
+		return clone;
+	}
 
 }

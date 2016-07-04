@@ -1,7 +1,6 @@
 package sophena.rcp.wizards;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +41,7 @@ import sophena.rcp.M;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
@@ -262,7 +262,7 @@ public class ProducerWizard extends Wizard {
 				list.add("");
 				ProductGroupDao dao = new ProductGroupDao(App.getDb());
 				java.util.List<ProductGroup> groups = dao.getAll();
-				Sorters.sort(groups);
+				Sorters.productGroups(groups);
 				EnumSet<ProductType> types = EnumSet.of(
 						ProductType.BIOMASS_BOILER,
 						ProductType.FOSSIL_FUEL_BOILER,

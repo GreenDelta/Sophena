@@ -89,7 +89,7 @@ class EditorPage extends FormPage {
 				() -> addBoiler(table));
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 				() -> editBoiler(table));
-		Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+		Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 				() -> saveAs(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> deleteBoiler(table));

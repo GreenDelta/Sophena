@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -35,4 +37,20 @@ public class Pipe extends AbstractProduct {
 	@Column(name = "max_pressure")
 	public Double maxPressure;
 
+	@Override
+	public Pipe clone() {
+		Pipe clone = new Pipe();
+		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
+		clone.material = material;
+		clone.pipeType = pipeType;
+		clone.uValue = uValue;
+		clone.innerDiameter = innerDiameter;
+		clone.outerDiameter = outerDiameter;
+		clone.totalDiameter = totalDiameter;
+		clone.deliveryType = deliveryType;
+		clone.maxTemperature = maxTemperature;
+		clone.maxPressure = maxPressure;
+		return clone;
+	}
 }

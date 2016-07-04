@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -30,4 +32,18 @@ public class TransferStation extends AbstractProduct {
 	/** Description of the control */
 	@Column(name = "control")
 	public String control;
+
+	@Override
+	public TransferStation clone() {
+		TransferStation clone = new TransferStation();
+		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
+		clone.buildingType = buildingType;
+		clone.outputCapacity = outputCapacity;
+		clone.stationType = stationType;
+		clone.material = material;
+		clone.waterHeating = waterHeating;
+		clone.control = control;
+		return clone;
+	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -125,7 +124,7 @@ public class ProductWizard extends Wizard {
 			groupCombo.create("Produktgruppe", c);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
 			List<ProductGroup> list = dao.getAll(content.getProductType());
-			Sorters.productGroup(list);
+			Sorters.productGroups(list);
 			groupCombo.setInput(list);
 			UI.formLabel(c, "");
 		}

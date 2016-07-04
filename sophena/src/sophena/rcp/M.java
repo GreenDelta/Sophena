@@ -21,6 +21,7 @@ public class M extends NLS {
 	public static String ConsumptionBasedCalculation;
 	public static String ConsumptionData;
 	public static String ConsumptionPerYear;
+	public static String Copy;
 	public static String Costs;
 	public static String CreateNewConsumer;
 	public static String CreateNewProducer;

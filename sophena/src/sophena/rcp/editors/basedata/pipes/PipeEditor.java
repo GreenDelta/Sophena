@@ -78,7 +78,7 @@ public class PipeEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", 
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung",
 					"Hersteller", "Art", "Außend. Medienrohr", "U-Wert");
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
@@ -92,12 +92,12 @@ public class PipeEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
-			Action saveAs = Actions.create(M.SaveAs, Icon.SAVE_AS_16.des(),
+			Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> saveAs(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, saveAs, del);
+			Actions.bind(table, add, edit, saveAs, del);
 			Tables.onDoubleClick(table, (e) -> edit(table));
 		}
 

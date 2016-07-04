@@ -11,6 +11,7 @@ import sophena.model.FlueGasCleaning;
 import sophena.model.HeatRecovery;
 import sophena.model.Pipe;
 import sophena.model.PipeType;
+import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
 

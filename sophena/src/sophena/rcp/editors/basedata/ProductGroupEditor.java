@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -22,6 +21,7 @@ import sophena.rcp.Labels;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;

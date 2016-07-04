@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,4 +54,21 @@ public class Boiler extends AbstractProduct {
 
 	@Column(name = "efficiency_rate_electric")
 	public double efficiencyRateElectric;
+
+	@Override
+	public Boiler clone() {
+		Boiler clone = new Boiler();
+		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
+		clone.maxPower = maxPower;
+		clone.minPower = minPower;
+		clone.fuel = fuel;
+		clone.efficiencyRate = efficiencyRate;
+		clone.woodAmountType = woodAmountType;
+		clone.isCoGenPlant = isCoGenPlant;
+		clone.maxPowerElectric = maxPowerElectric;
+		clone.minPowerElectric = minPowerElectric;
+		clone.efficiencyRateElectric = efficiencyRateElectric;
+		return clone;
+	}
 }
