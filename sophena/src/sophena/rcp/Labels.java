@@ -96,8 +96,10 @@ public final class Labels {
 			return "Gewerbe";
 		case OTHER:
 			return "Sonstiges";
+		case FERMENTER:
+			return "Fermenter";
 		default:
-			return null;
+			return "";
 		}
 	}
 
