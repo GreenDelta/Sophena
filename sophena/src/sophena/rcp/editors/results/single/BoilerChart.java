@@ -95,7 +95,7 @@ class BoilerChart {
 		double max = Math.pow(10, magnitude);
 		double step = max / 10;
 		double upper = step;
-		while (upper <= maxLoad) {
+		while (step > 0 && upper <= maxLoad) {
 			upper += step;
 		}
 		y.setRange(0, upper);

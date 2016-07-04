@@ -18,10 +18,10 @@ import sophena.utils.Num;
 
 class EfficiencyTable {
 
-	private EfficiencyResult result;
+	private EfficiencyResult r;
 
 	private EfficiencyTable(EfficiencyResult result) {
-		this.result = result;
+		this.r = result;
 	}
 
 	static void create(EfficiencyResult result, Composite comp) {
@@ -38,18 +38,16 @@ class EfficiencyTable {
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
-		items.add(new Item("Brennstoffenergie", result.fuelEnergy));
-		items.add(new Item("Konversionsverluste", result.conversionLoss,
-				result.conversionLoss / result.fuelEnergy));
-		items.add(new Item("Erzeugte Wärme", result.producedHeat));
-		if (result.producedElectrictiy > 0)
-			items.add(new Item("Erzeugter Strom", result.producedElectrictiy));
-		items.add(new Item("Verteilungsverluste", result.distributionLoss,
-				result.distributionLoss / result.producedHeat));
-		items.add(new Item("Genutzte Wärme", result.usedHeat));
+		items.add(new Item("Brennstoffenergie", r.fuelEnergy));
+		items.add(new Item("Konversionsverluste", r.conversionLoss, r.fuelEnergy));
+		items.add(new Item("Erzeugte Wärme", r.producedHeat));
+		if (r.producedElectrictiy > 0)
+			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
+		items.add(new Item("Verteilungsverluste", r.distributionLoss,
+				r.producedHeat));
+		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
-		Item total = new Item("Gesamtverluste", result.totalLoss,
-				result.totalLoss / result.fuelEnergy);
+		Item total = new Item("Gesamtverluste", r.totalLoss, r.fuelEnergy);
 		total.total = true;
 		items.add(total);
 		return items;
@@ -69,9 +67,10 @@ class EfficiencyTable {
 			this.absolute = Num.intStr(absolute) + " kWh";
 		}
 
-		Item(String label, double absolute, double relative) {
+		Item(String label, double absolute, double total) {
 			this(label, absolute);
-			this.relative = Num.intStr(relative * 100) + "%";
+			double rel = total == 0 ? 0 : absolute / total;
+			this.relative = Num.intStr(rel * 100) + "%";
 		}
 	}
 
