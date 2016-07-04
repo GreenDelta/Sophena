@@ -174,9 +174,9 @@ public class ProducerWizard extends Wizard {
 			Composite composite = new Composite(root, SWT.NONE);
 			UI.gridData(composite, true, true);
 			UI.gridLayout(composite, 1);
-			boilerTable = Tables.createViewer(composite, "Leistungsbereich",
-					"Bezeichnung", "Hersteller");
-			Tables.bindColumnWidths(boilerTable, 0.3, 0.4, 0.3);
+			boilerTable = Tables.createViewer(composite, "Hersteller",
+					"Nennleistung", "Bezeichnung");
+			Tables.bindColumnWidths(boilerTable, 0.3, 0.25, 0.45);
 			boilerTable.setContentProvider(ArrayContentProvider.getInstance());
 			boilerTable.setLabelProvider(new BoilerLabel());
 			boilerTable.addSelectionChangedListener((e) -> {
@@ -209,12 +209,14 @@ public class ProducerWizard extends Wizard {
 				Boiler b = (Boiler) elem;
 				switch (col) {
 				case 0:
-					return Num.str(b.minPower) + " - "
-							+ Num.str(b.maxPower) + " kW";
-				case 1:
-					return b.name;
-				case 2:
 					return b.manufacturer != null ? b.manufacturer.name : null;
+				case 1:
+					if (b.isCoGenPlant)
+						return Num.str(b.maxPowerElectric) + " kW el.";
+					else
+						return Num.str(b.maxPower) + " kW";
+				case 2:
+					return b.name;
 				default:
 					return null;
 				}
