@@ -40,11 +40,11 @@ class ElectricitySheet {
 			} else {
 				Excel.cell(sheet, row, 1, p.rank + " - Spitzenlast");
 			}
-			Excel.cell(sheet, row, 2, (int) p.boiler.maxPowerElectric);
-			Excel.cell(sheet, row, 3, (int) value);
-			Excel.cell(sheet, row, 4, (int) ((value / total) * 100));
-			Excel.cell(sheet, row, 5, (int) FullLoadHours.get(p, heat));
-			Excel.cell(sheet, row, 6, (int) p.boiler.efficiencyRateElectric);
+			Excel.cell(sheet, row, 2, Math.round(p.boiler.maxPowerElectric));
+			Excel.cell(sheet, row, 3, Math.round(value));
+			Excel.cell(sheet, row, 4, Math.round(((value / total) * 100)));
+			Excel.cell(sheet, row, 5, Math.round(FullLoadHours.get(p, heat)));
+			Excel.cell(sheet, row, 6, Math.round(p.boiler.efficiencyRateElectric));
 			row++;
 		}
 		Excel.autoSize(sheet, 0, 1);

@@ -15,11 +15,13 @@ import sophena.model.Project;
 public class ExcelExport implements Runnable {
 
 	private ProjectResult result;
+	private Project project;
 	private File file;
 
 	public ExcelExport(Project project, ProjectResult result, File file) {
 		this.result = result;
 		this.file = file;
+		this.project = project;
 	}
 
 	@Override
@@ -28,11 +30,11 @@ public class ExcelExport implements Runnable {
 			return;
 		try {
 			Workbook wb = new XSSFWorkbook();
-			new HeatSheet(wb, result).write();
+			new HeatSheet(wb, result, project).write();
 			new ElectricitySheet(wb, result).write();
 			new CostSheet(wb, result).write();
-			new FurtherResultsSheet(wb, result).write();
-			new ConsumerSheet(wb, result).write();
+			new FurtherResultsSheet(wb, result, project).write();
+			new ConsumerSheet(wb, result, project).write();
 			new SimulationSheet(wb, result.energyResult).write();
 
 			try (FileOutputStream fos = new FileOutputStream(file);

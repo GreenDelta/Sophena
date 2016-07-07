@@ -98,24 +98,24 @@ class CostSheet {
 
 	private void resultItems(Sheet sheet, int row, CostResult cr) {
 
-		Excel.cell(sheet, row + 2, 1, (int) cr.netTotal.investments);
-		Excel.cell(sheet, row + 2, 2, (int) cr.grossTotal.investments);
-		Excel.cell(sheet, row + 3, 1, (int) cr.netTotal.capitalCosts);
-		Excel.cell(sheet, row + 3, 2, (int) cr.grossTotal.capitalCosts);
-		Excel.cell(sheet, row + 4, 1, (int) cr.netTotal.consumptionCosts);
-		Excel.cell(sheet, row + 4, 2, (int) cr.grossTotal.consumptionCosts);
-		Excel.cell(sheet, row + 5, 1, (int) cr.netTotal.operationCosts);
-		Excel.cell(sheet, row + 5, 2, (int) cr.grossTotal.operationCosts);
-		Excel.cell(sheet, row + 6, 1, (int) cr.netTotal.otherCosts);
-		Excel.cell(sheet, row + 6, 2, (int) cr.grossTotal.otherCosts);
-		Excel.cell(sheet, row + 7, 1, (int) cr.netTotal.revenues);
-		Excel.cell(sheet, row + 7, 2, (int) cr.grossTotal.revenues);
-		Excel.cell(sheet, row + 8, 1, (int) cr.netTotal.annualCosts);
-		Excel.cell(sheet, row + 8, 2, (int) cr.grossTotal.annualCosts);
-		Excel.cell(sheet, row + 9, 1, (int) (cr.netTotal.heatGenerationCosts
-				* 1000));
-		Excel.cell(sheet, row + 9, 2, (int) (cr.grossTotal.heatGenerationCosts
-				* 1000));
+		Excel.cell(sheet, row + 2, 1, Math.round(cr.netTotal.investments));
+		Excel.cell(sheet, row + 2, 2, Math.round(cr.grossTotal.investments));
+		Excel.cell(sheet, row + 3, 1, Math.round(cr.netTotal.capitalCosts));
+		Excel.cell(sheet, row + 3, 2, Math.round(cr.grossTotal.capitalCosts));
+		Excel.cell(sheet, row + 4, 1, Math.round(cr.netTotal.consumptionCosts));
+		Excel.cell(sheet, row + 4, 2, Math.round(cr.grossTotal.consumptionCosts));
+		Excel.cell(sheet, row + 5, 1, Math.round(cr.netTotal.operationCosts));
+		Excel.cell(sheet, row + 5, 2, Math.round(cr.grossTotal.operationCosts));
+		Excel.cell(sheet, row + 6, 1, Math.round(cr.netTotal.otherCosts));
+		Excel.cell(sheet, row + 6, 2, Math.round(cr.grossTotal.otherCosts));
+		Excel.cell(sheet, row + 7, 1, Math.round(cr.netTotal.revenues));
+		Excel.cell(sheet, row + 7, 2, Math.round(cr.grossTotal.revenues));
+		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualCosts));
+		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualCosts));
+		Excel.cell(sheet, row + 9, 1, Math.round((cr.netTotal.heatGenerationCosts
+				* 1000)));
+		Excel.cell(sheet, row + 9, 2, Math.round((cr.grossTotal.heatGenerationCosts
+				* 1000)));
 	}
 
 	private class Item {
@@ -150,10 +150,10 @@ class CostSheet {
 		for (int i = 0; i < items.size(); i++) {
 			Excel.cell(sheet, row, 0, items.get(i).category);
 			Excel.cell(sheet, row, 1, items.get(i).product);
-			Excel.cell(sheet, row, 2, (int) items.get(i).investment);
-			Excel.cell(sheet, row, 3, (int) items.get(i).capitalCosts);
-			Excel.cell(sheet, row, 4, (int) items.get(i).consumptionCosts);
-			Excel.cell(sheet, row, 5, (int) items.get(i).operationCosts);
+			Excel.cell(sheet, row, 2, Math.round(items.get(i).investment));
+			Excel.cell(sheet, row, 3, Math.round(items.get(i).capitalCosts));
+			Excel.cell(sheet, row, 4, Math.round(items.get(i).consumptionCosts));
+			Excel.cell(sheet, row, 5, Math.round(items.get(i).operationCosts));
 			row++;
 		}
 		row++;

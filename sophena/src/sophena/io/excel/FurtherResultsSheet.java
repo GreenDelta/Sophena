@@ -22,10 +22,10 @@ class FurtherResultsSheet {
 
 	public int row = 0;
 
-	FurtherResultsSheet(Workbook wb, ProjectResult result) {
+	FurtherResultsSheet(Workbook wb, ProjectResult result, Project project) {
 		this.wb = wb;
 		this.result = result;
-
+		this.project = project;
 	}
 
 	void write() {
@@ -52,26 +52,26 @@ class FurtherResultsSheet {
 		for (Producer p : m.keySet()) {
 			Double val = m.get(p);
 			Excel.cell(sheet, row, 0, p.name);
-			Excel.cell(sheet, row, 1, val.intValue());
+			Excel.cell(sheet, row, 1, Math.round(val));
 			row++;
 		}
 		Excel.cell(sheet, row, 0, "Eigenstromverbrauch");
-		Excel.cell(sheet, row, 1, (int) co2.electricityEmissions);
+		Excel.cell(sheet, row, 1, Math.round(co2.electricityEmissions));
 		row++;
 		Excel.cell(sheet, row, 0, "Gutschrift Stromerzeugung");
-		double credits = co2.electricityCredits;
+		double credits = Math.round(co2.electricityCredits);
 		if (credits > 0) {
 			Excel.cell(sheet, row, 1, (int) -credits);
 		}
 		row += 2;
 		Excel.cell(sheet, row, 0, "Wärmenetz").setCellStyle(style);
-		Excel.cell(sheet, row, 1, (int) co2.total).setCellStyle(style);
+		Excel.cell(sheet, row, 1, Math.round(co2.total)).setCellStyle(style);
 		row += 2;
 		Excel.cell(sheet, row, 0, "Erdgas dezentral");
-		Excel.cell(sheet, row, 1, (int) co2.variantNaturalGas);
+		Excel.cell(sheet, row, 1, Math.round(co2.variantNaturalGas));
 		row++;
 		Excel.cell(sheet, row, 0, "Heizöl dezentral");
-		Excel.cell(sheet, row, 1, (int) co2.variantOil);
+		Excel.cell(sheet, row, 1, Math.round(co2.variantOil));
 		row += 2;
 
 		this.row = row;
@@ -86,34 +86,34 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 2, "Prozentual in %").setCellStyle(style);
 		row++;
 		Excel.cell(sheet, row, 0, "Brennstoffenergie");
-		Excel.cell(sheet, row, 1, (int) efficiency.fuelEnergy);
+		Excel.cell(sheet, row, 1, Math.round(efficiency.fuelEnergy));
 		row++;
 		Excel.cell(sheet, row, 0, "Konversionsverluste");
-		Excel.cell(sheet, row, 1, (int) efficiency.conversionLoss);
-		Excel.cell(sheet, row, 2, (int) ((efficiency.conversionLoss
-				/ efficiency.fuelEnergy) * 100));
+		Excel.cell(sheet, row, 1, Math.round(efficiency.conversionLoss));
+		Excel.cell(sheet, row, 2, Math.round(((efficiency.conversionLoss
+				/ efficiency.fuelEnergy) * 100)));
 		row++;
 		Excel.cell(sheet, row, 0, "Erzeugte Wärme");
-		Excel.cell(sheet, row, 1, (int) efficiency.producedHeat);
+		Excel.cell(sheet, row, 1, Math.round(efficiency.producedHeat));
 		if (efficiency.producedElectrictiy > 0) {
 			row++;
 			Excel.cell(sheet, row, 0, "Erzeugter Strom");
-			Excel.cell(sheet, row, 1, (int) efficiency.producedElectrictiy);
+			Excel.cell(sheet, row, 1, Math.round(efficiency.producedElectrictiy));
 		}
 		row++;
 		Excel.cell(sheet, row, 0, "Verteilungsverluste");
-		Excel.cell(sheet, row, 1, (int) efficiency.distributionLoss);
-		Excel.cell(sheet, row, 2, (int) ((efficiency.distributionLoss
-				/ efficiency.producedHeat) * 100));
+		Excel.cell(sheet, row, 1, Math.round(efficiency.distributionLoss));
+		Excel.cell(sheet, row, 2, Math.round(((efficiency.distributionLoss
+				/ efficiency.producedHeat) * 100)));
 		row++;
 		Excel.cell(sheet, row, 0, "Genutzte Wärme");
-		Excel.cell(sheet, row, 1, (int) efficiency.usedHeat);
+		Excel.cell(sheet, row, 1, Math.round(efficiency.usedHeat));
 		row += 2;
 		Excel.cell(sheet, row, 0, "Gesamtverluste").setCellStyle(style);
-		Excel.cell(sheet, row, 1, (int) efficiency.totalLoss).setCellStyle(style);
+		Excel.cell(sheet, row, 1, Math.round(efficiency.totalLoss)).setCellStyle(style);
 
-		Excel.cell(sheet, row, 2, (int) ((efficiency.totalLoss
-				/ efficiency.fuelEnergy) * 100)).setCellStyle(style);
+		Excel.cell(sheet, row, 2, Math.round(((efficiency.totalLoss
+				/ efficiency.fuelEnergy) * 100))).setCellStyle(style);
 		row += 2;
 
 		this.row = row;
@@ -124,6 +124,7 @@ class FurtherResultsSheet {
 
 		try {
 			length = project.heatNet.length;
+
 		} catch (Exception e) {
 			length = 0;
 		}
@@ -131,13 +132,13 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 0, "Kennzahlen Wärmenetz").setCellStyle(style);
 		row++;
 		Excel.cell(sheet, row, 0, "Trassenlänge in m");
-		Excel.cell(sheet, row, 1, length);
+		Excel.cell(sheet, row, 1, Math.round(length));
 		row++;
 		Excel.cell(sheet, row, 0, "Wärmebelegungsdichte in MWh/(m*a)");
-		Excel.cell(sheet, row, 1, UsedHeat.get(result) / (1000 * length));
+		Excel.cell(sheet, row, 1, Math.round(UsedHeat.get(result) / (1000 * length)));
 		row++;
 		Excel.cell(sheet, row, 0, "Primärenergiefaktor");
-		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(project, result));
+		Excel.cell(sheet, row, 1, Math.round(PrimaryEnergyFactor.get(project, result)));
 
 		this.row = row;
 	}
