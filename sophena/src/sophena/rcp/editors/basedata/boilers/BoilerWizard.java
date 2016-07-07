@@ -246,6 +246,12 @@ class BoilerWizard implements IContent {
 	public ProductType getProductType() {
 		if (boiler.isCoGenPlant)
 			return ProductType.COGENERATION_PLANT;
+		if (boiler.woodAmountType != null)
+			return ProductType.BIOMASS_BOILER;
+		// TODO: this is a hack, we need a 'isBiomass' field for fuels/boilers
+		if (boiler.fuel != null
+				&& Strings.nullOrEqual("Pellets", boiler.fuel.name))
+			return ProductType.BIOMASS_BOILER;
 		else
 			return ProductType.FOSSIL_FUEL_BOILER;
 	}
