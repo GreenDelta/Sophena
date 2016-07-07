@@ -29,6 +29,7 @@ import netscape.javascript.JSObject;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.rcp.M;
+import sophena.rcp.Workspace;
 import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -122,8 +123,7 @@ public class LocationPage extends FormPage {
 
 	private String getUrl() {
 		String pageName = "LocationPage.html";
-		File dir = Rcp.getWorkspace();
-		File f = new File(dir, pageName);
+		File f = new File(Workspace.dir(), pageName);
 		try {
 			if (!f.exists()) {
 				InputStream is = getClass().getResourceAsStream(pageName);

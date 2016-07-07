@@ -1,29 +1,10 @@
 package sophena.rcp.utils;
 
-import java.io.File;
-import java.net.URL;
-
-import org.eclipse.core.runtime.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import sophena.rcp.App;
 
 public final class Rcp {
 
 	private Rcp() {
-	}
-
-	/**
-	 * Returns the workspace directory of the application.
-	 */
-	public static File getWorkspace() {
-		try {
-			URL url = Platform.getInstanceLocation().getURL();
-			return new File(url.toURI());
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(Rcp.class);
-			log.error("failed to get workspace location", e);
-			return null;
-		}
 	}
 
 	public static void runInUI(String name, Runnable runnable) {

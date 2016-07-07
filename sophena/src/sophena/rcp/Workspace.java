@@ -9,7 +9,14 @@ import org.eclipse.ui.PlatformUI;
 
 import sophena.rcp.utils.UI;
 
-class Workspace {
+public class Workspace {
+
+	private static File dir;
+
+	/** Returns the workspace folder. */
+	public static File dir() {
+		return dir;
+	}
 
 	static void switchWorkspace() {
 		switchWorkspace(null);
@@ -17,30 +24,31 @@ class Workspace {
 
 	static void switchWorkspace(String toDir) {
 		AppConfig conf = AppConfig.load();
-		if(toDir == null) {
+		if (toDir == null) {
 			DirectoryDialog dialog = new DirectoryDialog(UI.shell());
 			if (conf.dataDir != null) {
 				dialog.setFilterPath(conf.dataDir);
 			}
-			toDir = dialog.open();			
-		}		
+			toDir = dialog.open();
+		}
 		if (toDir == null || toDir.equals(conf.dataDir))
 			return;
 		conf.switchDataDir(toDir);
 		PlatformUI.getWorkbench().restart();
 	}
 
-	static File init() {
+	static void init() {
 		try {
-			File dir = getDataDir();
+			dir = getDataDir();
 			Platform.getInstanceLocation().release();
-			URL workspaceUrl = new URL("file", null, dir.getAbsolutePath());
+			URL workspaceUrl = new URL("file", null, dir().getAbsolutePath());
 			Platform.getInstanceLocation().set(workspaceUrl, true);
-			return dir;
 		} catch (Exception e) {
 			// no logging here as the logger is not yet configured
 			e.printStackTrace();
-			return null;
+			if (dir == null) {
+				dir = new File(".");
+			}
 		}
 	}
 
@@ -59,4 +67,5 @@ class Workspace {
 		conf.save();
 		return dir;
 	}
+
 }

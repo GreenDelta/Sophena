@@ -26,7 +26,7 @@ import javafx.scene.web.WebView;
 import sophena.model.Consumer;
 import sophena.model.Location;
 import sophena.rcp.M;
-import sophena.rcp.utils.Rcp;
+import sophena.rcp.Workspace;
 import sophena.rcp.utils.UI;
 
 public class LocationResultPage extends FormPage {
@@ -69,8 +69,7 @@ public class LocationResultPage extends FormPage {
 
 	private String getUrl() {
 		String pageName = "LocationResultPage.html";
-		File dir = Rcp.getWorkspace();
-		File f = new File(dir, pageName);
+		File f = new File(Workspace.dir(), pageName);
 		try {
 			if (!f.exists()) {
 				InputStream is = getClass().getResourceAsStream(pageName);

@@ -21,7 +21,7 @@ import javafx.scene.web.WebView;
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.utils.Rcp;
+import sophena.rcp.Workspace;
 
 public class ClimateStationBrowser {
 
@@ -52,8 +52,7 @@ public class ClimateStationBrowser {
 
 	private String getUrl() {
 		String pageName = "WeatherStations.html";
-		File dir = Rcp.getWorkspace();
-		File f = new File(dir, pageName);
+		File f = new File(Workspace.dir(), pageName);
 		try {
 			if (!f.exists()) {
 				InputStream is = getClass().getResourceAsStream(pageName);

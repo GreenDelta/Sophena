@@ -29,13 +29,13 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		Activator.context = bundleContext;
-		File workspace = Workspace.init();
+		Workspace.init();
 		LoggerConfig.setUp();
-		log.info("Workspace initialized at {}", workspace);
+		log.info("Workspace initialized at {}", Workspace.dir());
 		try {
-			File dbDir = new File(workspace, "database");
+			File dbDir = new File(Workspace.dir(), "database");
 			if (!dbDir.exists()) {
-				extractDefaultDatabase(workspace);
+				extractDefaultDatabase(Workspace.dir());
 			}
 			Database db = new Database(dbDir);
 			App.init(db);

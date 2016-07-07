@@ -18,11 +18,11 @@ import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.Workspace;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -56,7 +56,7 @@ class InfoPage extends FormPage {
 		createDurationText(tk, comp);
 		createStationCombo(tk, comp);
 		UI.formLabel(comp, "Datenbankpfad");
-		File dbDir = Rcp.getWorkspace();
+		File dbDir = Workspace.dir();
 		Hyperlink link = tk.createHyperlink(comp, dbDir.getAbsolutePath(),
 				SWT.NONE);
 		link.setForeground(Colors.getLinkBlue());
