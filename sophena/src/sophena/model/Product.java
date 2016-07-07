@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,6 +21,7 @@ public class Product extends AbstractProduct {
 	public Product clone() {
 		Product clone = new Product();
 		AbstractProduct.copyFields(this, clone);
+		clone.id = UUID.randomUUID().toString();
 		clone.projectId = projectId;
 		return clone;
 	}

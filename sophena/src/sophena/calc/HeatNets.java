@@ -37,19 +37,18 @@ public class HeatNets {
 	public static double calculatePowerLoss(HeatNet net) {
 		if (net == null)
 			return 0;
-		double totalLength = getTotalSupplyLength(net);
-		if (totalLength <= 0)
+		double supplyLength = getTotalSupplyLength(net);
+		if (supplyLength <= 0)
 			return 0;
 		double sum = 0;
 		for (HeatNetPipe p : net.pipes) {
-			double length = getSupplyLength(p);
-			sum += getPowerLoss(p, net) * length;
+			sum += getPowerLoss(p, net) * p.length;
 		}
-		return sum / totalLength;
+		return sum / supplyLength;
 	}
 
 	/**
-	 * Get the power loss of the given pipe in the given heating net.
+	 * Get the power loss per meter of the given pipe in the given heating net.
 	 */
 	public static double getPowerLoss(HeatNetPipe pipe, HeatNet net) {
 		if (pipe == null || pipe.pipe == null || net == null)

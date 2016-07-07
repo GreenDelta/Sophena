@@ -8,6 +8,7 @@ import org.junit.Test;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
+import sophena.model.PipeType;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -58,4 +59,36 @@ public class HeatNetTest {
 		net.pipes.add(netPipe);
 	}
 
+	@Test
+	public void testUnoDouPipes() {
+		HeatNet net = new HeatNet();
+		net.supplyTemperature = 100;
+		net.returnTemperature = 80;
+
+		// 2000m of uno pipe with heatloss of 8W/m
+		Pipe uno = new Pipe();
+		uno.uValue = 8d / 80d;
+		uno.pipeType = PipeType.UNO;
+		HeatNetPipe hUno = new HeatNetPipe();
+		net.pipes.add(hUno);
+		hUno.pipe = uno;
+		hUno.length = 2000;
+		Assert.assertEquals(8d, HeatNets.getPowerLoss(hUno, net), 1e-16);
+
+		// 1000m of duo pipe with heatloss of 12W/m
+		Pipe duo = new Pipe();
+		duo.uValue = 12d / 80d;
+		duo.pipeType = PipeType.DUO;
+		HeatNetPipe hDuo = new HeatNetPipe();
+		net.pipes.add(hDuo);
+		hDuo.pipe = duo;
+		hDuo.length = 1000;
+		Assert.assertEquals(12d, HeatNets.getPowerLoss(hDuo, net), 1e-16);
+
+		// net length is 2000m
+		Assert.assertEquals(2000d, HeatNets.getTotalSupplyLength(net), 1e-16);
+
+		// net loss = (2000m * 8W/m + 1000m * 12W/m) / 2000m = 14W/m
+		Assert.assertEquals(14d, HeatNets.calculatePowerLoss(net), 1e-16);
+	}
 }
