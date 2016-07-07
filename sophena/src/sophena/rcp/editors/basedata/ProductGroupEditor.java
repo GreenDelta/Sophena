@@ -106,31 +106,17 @@ public class ProductGroupEditor extends Editor {
 				case 1:
 					return p.name;
 				case 2:
-					return str(p.duration, " Jahre");
+					return p.duration == 0 ? "-" : Num.intStr(p.duration) + " Jahre";
 				case 3:
-					return str(p.repair, " %");
+					return p.repair == 0 ? "-" : Num.str(p.repair, 1) + " %";
 				case 4:
-					return str(p.maintenance, " %");
+					return p.maintenance == 0 ? "-" : Num.str(p.maintenance, 1) + " %";
 				case 5:
-					return str(p.operation, " Stunden/Jahr");
+					return p.operation == 0 ? "-" : Num.intStr(p.operation) + " Stunden/Jahr";
 				default:
 					return null;
 				}
 			}
-
-			private String str(double d, String suffix) {
-				if (d == 0)
-					return "-";
-				return Num.str(d) + suffix;
-			}
-
-			private String str(int i, String suffix) {
-				if (i == 0)
-					return "-";
-				return Num.intStr(i) + suffix;
-			}
-
 		}
 	}
-
 }

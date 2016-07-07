@@ -15,7 +15,7 @@ public class Num {
 		if (format == null) {
 			format = (DecimalFormat) DecimalFormat
 					.getInstance(Locale.GERMAN);
-			format.applyLocalizedPattern("#.###.###.###.###,##");
+			format.applyLocalizedPattern("#.###.###.###.##0,##");
 		}
 		return format;
 	}
@@ -83,9 +83,9 @@ public class Num {
 	public static String str(double val, int decimalPlaces) {
 		if (decimalPlaces <= 0)
 			return intStr(val);
-		StringBuilder pattern = new StringBuilder("#.###.###.###.###,");
+		StringBuilder pattern = new StringBuilder("#.###.###.###.##0,");
 		for (int i = 0; i < decimalPlaces; i++) {
-			pattern.append('#');
+			pattern.append('0');
 		}
 		DecimalFormat f = (DecimalFormat) DecimalFormat.getInstance(Locale.GERMAN);
 		f.applyLocalizedPattern(pattern.toString());
