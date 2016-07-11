@@ -8,6 +8,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 import sophena.db.daos.ProjectDao;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProducerDescriptor;
@@ -17,6 +18,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 
 public class ProducerEditor extends Editor {
 
@@ -70,6 +72,8 @@ public class ProducerEditor extends Editor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
+		if (!valid())
+			return;
 		try {
 			log.info("update producer {} in project {}", producer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -85,6 +89,18 @@ public class ProducerEditor extends Editor {
 		} catch (Exception e) {
 			log.error("failed to update project " + projectId, e);
 		}
+	}
+
+	private boolean valid() {
+		FuelSpec fuelSpec = producer.fuelSpec;
+		if (fuelSpec != null && fuelSpec.woodFuel != null) {
+			if (fuelSpec.waterContent < 0 || fuelSpec.waterContent > 60) {
+				MsgBox.error("Plausibilitätsfehler",
+						"Der Wassergehalt muss zwischen 0% und 60% liegen.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static class EditorInput extends KeyEditorInput {
