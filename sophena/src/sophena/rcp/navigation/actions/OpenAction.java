@@ -91,7 +91,7 @@ public class OpenAction extends NavigationAction {
 	}
 
 	@Handler(type = FolderElement.class,
-			title = "Öffne Kosten",
+			title = "Öffne Investitionen",
 			folderType = FolderType.COSTS)
 	private void openCostEditor() {
 		FolderElement e = (FolderElement) elem;
