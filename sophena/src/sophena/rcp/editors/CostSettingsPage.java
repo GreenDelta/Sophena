@@ -25,13 +25,14 @@ public class CostSettingsPage extends FormPage {
 	private boolean forProject;
 
 	public CostSettingsPage(Editor editor, CostSettings costs) {
-		super(editor, "CostSettingsPage", "Kosteneinstellungen");
+		super(editor, "CostSettingsPage", "Basis-Kosteneinstellungen");
 		this.editor = editor;
 		this.costs = costs;
 	}
 
 	public void setForProject(boolean forProject) {
 		this.forProject = forProject;
+		setPartName("Projekt-Kosteneinstellungen");
 	}
 
 	public CostSettings getCosts() {
@@ -42,7 +43,7 @@ public class CostSettingsPage extends FormPage {
 	protected void createFormContent(IManagedForm mform) {
 		String title = forProject ? "Projekt-" : "Basis-";
 		title += "Kosteneinstellungen";
-		ScrolledForm form  = UI.formHeader(mform, title);
+		ScrolledForm form = UI.formHeader(mform, title);
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		if (costs != null) {
