@@ -119,24 +119,24 @@ public class ActionBarAdvisor extends
 				BoilerEditor::open));
 		m.add(Actions.create("KWK-Anlagen", Icon.CO_GEN_16.des(),
 				CoGenPlantEditor::open));
-		m.add(Actions.create("Wärmeleitungen", Icon.PIPE_16.des(),
-				PipeEditor::open));
-		m.add(Actions.create("Pufferspeicher", Icon.BUFFER_16.des(),
-				BufferTankEditor::open));
-		m.add(Actions.create("Hausübergabestationen", Icon.CONSUMER_16.des(),
-				TransferStationEditor::open));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
 		m.add(Actions.create("Wärmerückgewinnung", Icon.HEAT_RECOVERY_16.des(),
 				HeatRecoveryEditor::open));
 		m.add(Actions.create("Rauchgasreinigung", Icon.FLUE_GAS_16.des(),
 				FlueGasCleaningEditor::open));
+		m.add(Actions.create("Pufferspeicher", Icon.BUFFER_16.des(),
+				BufferTankEditor::open));
 		m.add(Actions.create("Heizhaus-Technik",
 				BoilerHouseTechnologyEditor::open));
 		m.add(Actions.create("Gebäude", BuildingProductEditor::open));
+		m.add(Actions.create("Wärmeleitungen", Icon.PIPE_16.des(),
+				PipeEditor::open));
 		m.add(Actions.create("Wärmenetz-Technik",
 				HeatingNetTechnologyEditor::open));
 		m.add(Actions.create("Wärmenetz-Bau",
 				HeatingNetConstructionEditor::open));
+		m.add(Actions.create("Wärmeübergabestationen", Icon.CONSUMER_16.des(),
+				TransferStationEditor::open));
 		m.add(Actions.create("Planung", PlanningEditor::open));
 	}
 

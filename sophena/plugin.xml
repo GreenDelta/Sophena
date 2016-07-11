@@ -186,7 +186,7 @@
 			class="sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor"
 			icon="icons/consumer_16.png"
 			id="sophena.TransferStationEditor"
-			name="Hausübergabestationen" />
+			name="Wärmeübergabestationen" />
 
 		<editor
 			class="sophena.rcp.editors.basedata.costs.BaseCostEditor"

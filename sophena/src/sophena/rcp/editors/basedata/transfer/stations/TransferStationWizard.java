@@ -35,7 +35,7 @@ public class TransferStationWizard implements IContent {
 		TransferStationWizard content = new TransferStationWizard(station);
 		ProductWizard w = new ProductWizard(station, content);
 		content.wizard = w;
-		w.setWindowTitle("Hausübergabestation");
+		w.setWindowTitle("Wärmeübergabestation");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
 		d.setPageSize(180, 600);
 		return d.open();
@@ -103,7 +103,7 @@ public class TransferStationWizard implements IContent {
 
 	@Override
 	public String getPageName() {
-		return "Hausübergabestation";
+		return "Wärmeübergabestation";
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class TransferStationEditor extends Editor {
 
 	public static void open() {
 		KeyEditorInput input = new KeyEditorInput("data.transfer.stations",
-				"Hausübergabestationen");
+				"Wärmeübergabestationen");
 		Editors.open(input, "sophena.TransferStationEditor");
 	}
 
@@ -59,7 +59,7 @@ public class TransferStationEditor extends Editor {
 
 		Page() {
 			super(TransferStationEditor.this, "TransferStationPage",
-					"Hausübergabestationen");
+					"Wärmeübergabestationen");
 			dao = new RootEntityDao<>(TransferStation.class, App.getDb());
 			stations = dao.getAll();
 			Sorters.transferStations(stations);
@@ -67,7 +67,7 @@ public class TransferStationEditor extends Editor {
 
 		@Override
 		protected void createFormContent(IManagedForm managedForm) {
-			ScrolledForm form = UI.formHeader(managedForm, "Hausübergabestationen");
+			ScrolledForm form = UI.formHeader(managedForm, "Wärmeübergabestationen");
 			FormToolkit tk = managedForm.getToolkit();
 			Composite body = UI.formBody(form, tk);
 			createSection(body, tk);
@@ -75,7 +75,7 @@ public class TransferStationEditor extends Editor {
 		}
 
 		private void createSection(Composite body, FormToolkit toolkit) {
-			Section section = UI.section(body, toolkit, "Hausübergabestationen");
+			Section section = UI.section(body, toolkit, "Wärmeübergabestationen");
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
@@ -106,7 +106,7 @@ public class TransferStationEditor extends Editor {
 			TransferStation s = new TransferStation();
 			s.id = UUID.randomUUID().toString();
 			s.type = ProductType.TRANSFER_STATION;
-			s.name = "Neue Hausübergabestation";
+			s.name = "Neue Wärmeübergabestation";
 			if (TransferStationWizard.open(s) != Window.OK)
 				return;
 			dao.insert(s);
@@ -149,7 +149,7 @@ public class TransferStationEditor extends Editor {
 			if (s == null || s.isProtected)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
-					"Soll die ausgewählte Hausübergabestation wirklich gelöscht werden?");
+					"Soll die ausgewählte Wärmeübergabestation wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			List<SearchResult> usage = new UsageSearch(App.getDb()).of(s);

@@ -144,7 +144,7 @@ public final class Labels {
 		case PLANNING:
 			return "Planung";
 		case TRANSFER_STATION:
-			return "Hausübergabestation";
+			return "Wärmeübergabestation";
 		default:
 			return null;
 		}
@@ -181,7 +181,7 @@ public final class Labels {
 		case PLANNING:
 			return "Planung";
 		case TRANSFER_STATION:
-			return "Hausübergabestationen";
+			return "Wärmeübergabestationen";
 		default:
 			return get(t);
 		}

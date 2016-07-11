@@ -102,7 +102,7 @@ public class ProductGroupEditor extends Editor {
 				ProductGroup p = (ProductGroup) obj;
 				switch (col) {
 				case 0:
-					return p.index == 0 ? Labels.get(p.type) : null;
+					return p.index == 0 ? Labels.getPlural(p.type) : null;
 				case 1:
 					return p.name;
 				case 2:
