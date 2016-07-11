@@ -336,20 +336,30 @@ public class ProducerWizard extends Wizard {
 			}
 
 			private boolean validate() {
-				if (!Texts.hasNumber(rankText)) {
-					setPageComplete(false);
-					setErrorMessage("Der Rang muss ein numerischer Wert sein");
-					return false;
+				if (!Texts.hasNumber(rankText))
+					return err("Der Rang muss ein numerischer Wert sein");
+				int rank = Texts.getInt(rankText);
+				for (Producer p : project.producers) {
+					if (p.rank == rank) {
+						return err("Es besteht bereits ein Wärmeerzeuger mit"
+								+ " dem angegebenen Rang.");
+					}
 				}
 				setErrorMessage(null);
 				if (Viewers.getFirstSelected(boilerTable) == null) {
 					setPageComplete(false);
 					return false;
-				} else {
-					setPageComplete(true);
-					return true;
 				}
+				setPageComplete(true);
+				return true;
 			}
+
+			private boolean err(String msg) {
+				setPageComplete(false);
+				setErrorMessage(msg);
+				return false;
+			}
+
 		}
 	}
 }

@@ -87,6 +87,11 @@ public class HeatNetEditor extends Editor {
 					"Der Gleichzeitigkeitsfaktor muss zwischen 0 und 1 liegen.");
 			return false;
 		}
+		if (heatNet.smoothingFactor < 0) {
+			MsgBox.error("Plausibilitätsfehler",
+					"Der Glättungsfaktor darf nicht negativ sein.");
+			return false;
+		}
 		return true;
 	}
 
