@@ -26,6 +26,8 @@ import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -168,10 +170,11 @@ public class ConsumerWizard extends Wizard {
 			demand.setText(M.DemandBasedCalculation);
 			UI.formLabel(composite, "");
 			Composite inner = new Composite(composite, SWT.NONE);
-			UI.innerGrid(inner, 2);
+			UI.innerGrid(inner, 3);
 			Text text = UI.formText(inner, M.HeatingLoad + " (kW)");
 			text.addModifyListener(
 					(e) -> consumer.heatingLoad = Num.read(text.getText()));
+			HelpLink.create(inner, M.HeatingLoad, H.HeatingLoad);
 			inner.setVisible(false);
 			Controls.onSelect(consumption, (e) -> {
 				consumer.demandBased = false;

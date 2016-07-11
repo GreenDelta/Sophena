@@ -13,9 +13,18 @@ public class HelpLink {
 	private HelpLink() {
 	}
 
+	public static void create(Composite comp, String title, String helpKey) {
+		create(comp, null, title, helpKey);
+	}
+
 	public static void create(Composite comp, FormToolkit tk, String title,
 			String helpKey) {
-		ImageHyperlink link = tk.createImageHyperlink(comp, SWT.NONE);
+		ImageHyperlink link = null;
+		if (tk == null) {
+			link = new ImageHyperlink(comp, SWT.NONE);
+		} else {
+			link = tk.createImageHyperlink(comp, SWT.NONE);
+		}
 		link.setImage(Icon.INFO_16.img());
 		Controls.onClick(link, e -> HelpBox.show(title, helpKey));
 	}

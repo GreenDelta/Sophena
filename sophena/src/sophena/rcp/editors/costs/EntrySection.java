@@ -58,8 +58,8 @@ class EntrySection {
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
 		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::delete);
-		Actions.bind(section, info, addGlobal, addPrivate, edit, del);
-		Actions.bind(table, info, addGlobal, addPrivate, edit, del);
+		Actions.bind(section, addGlobal, addPrivate, edit, del, info);
+		Actions.bind(table, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
 
@@ -74,23 +74,23 @@ class EntrySection {
 	}
 
 	private void info() {
-		switch (type.toString()) {
-		case "BOILER_ACCESSORIES":
+		switch (type) {
+		case BOILER_ACCESSORIES:
 			HelpBox.show("Kesselzubehör", H.BoilerAccessories);
 			break;
-		case "BOILER_HOUSE_TECHNOLOGY":
+		case BOILER_HOUSE_TECHNOLOGY:
 			HelpBox.show("Heizhaus-Technik", H.BoilerHouseTechnology);
 			break;
-		case "BUILDING":
+		case BUILDING:
 			HelpBox.show("Gebäude", H.Buildings);
 			break;
-		case "HEATING_NET_TECHNOLOGY":
+		case HEATING_NET_TECHNOLOGY:
 			HelpBox.show("Wärmenetz-Technik", H.HeatingNetTechnology);
 			break;
-		case "HEATING_NET_CONSTRUCTION":
+		case HEATING_NET_CONSTRUCTION:
 			HelpBox.show("Wärmenetz-Bau", H.HeatingNetConstruction);
 			break;
-		case "PLANNING":
+		case PLANNING:
 			HelpBox.show("Planung", H.Planning);
 			break;
 		default:
