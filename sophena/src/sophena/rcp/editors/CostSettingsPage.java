@@ -10,6 +10,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.CostSettings;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
 import sophena.rcp.utils.UI;
@@ -38,7 +40,9 @@ public class CostSettingsPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, "Kosteneinstellungen");
+		String title = forProject ? "Projekt-" : "Basis-";
+		title += "Kosteneinstellungen";
+		ScrolledForm form  = UI.formHeader(mform, title);
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		if (costs != null) {
@@ -52,18 +56,23 @@ public class CostSettingsPage extends FormPage {
 
 	private void generalSection(Composite body) {
 		Composite c = UI.formSection(body, toolkit, "Allgemein");
-		UI.gridLayout(c, 3);
+		UI.gridLayout(c, 4);
 		t(c, "Mehrwertsteuersatz", "%", costs.vatRate)
 				.onChanged(s -> costs.vatRate = Num.read(s));
+		UI.filler(c);
 		t(c, "Mittlerer Stundenlohn", "EUR", costs.hourlyWage)
 				.onChanged(s -> costs.hourlyWage = Num.read(s));
+		UI.filler(c);
 		t(c, "Strompreis", "EUR/kWh", costs.electricityPrice)
 				.onChanged(s -> costs.electricityPrice = Num.read(s));
+		UI.filler(c);
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
 				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
+		HelpLink.create(c, toolkit, "Eigenstrombedarf", H.ElectricityDemandShare);
 		if (forProject) {
 			t(c, "Mittlere Stromerlöse", "EUR/kWh", Num.str(costs.electricityRevenues, 4))
 					.onChanged(s -> costs.electricityRevenues = Num.read(s));
+			HelpLink.create(c, toolkit, "Mittlere Stromerlöse", H.ElectricityRevenues);
 		}
 	}
 
@@ -80,7 +89,7 @@ public class CostSettingsPage extends FormPage {
 		if (forProject) {
 			t(c, "Investitionsförderung", "EUR", costs.funding)
 					.onChanged(s -> costs.funding = Num.read(s));
-			t(c, "Einmalige Anschlussgebühren", "EUR", 0);
+			t(c, "Einmalige Anschlusskosten", "EUR", 0);
 		}
 	}
 

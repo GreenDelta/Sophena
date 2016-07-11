@@ -19,6 +19,8 @@ import sophena.model.Project;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
@@ -47,6 +49,8 @@ class EntrySection {
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		fillEntries();
+		Action info = Actions.create("Information",
+				Icon.INFO_16.des(), this::info);
 		Action addGlobal = Actions.create("Product aus Produktdatenbank hinzufügen",
 				Icon.SEARCH_16.des(), this::addGlobal);
 		Action addPrivate = Actions.create("Neues Produkt erstellen",
@@ -54,8 +58,8 @@ class EntrySection {
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
 		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::delete);
-		Actions.bind(section, addGlobal, addPrivate, edit, del);
-		Actions.bind(table, addGlobal, addPrivate, edit, del);
+		Actions.bind(section, info, addGlobal, addPrivate, edit, del);
+		Actions.bind(table, info, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
 
@@ -67,6 +71,31 @@ class EntrySection {
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		table.setLabelProvider(new EntryLabel(type));
 		return table;
+	}
+
+	private void info() {
+		switch (type.toString()) {
+		case "BOILER_ACCESSORIES":
+			HelpBox.show("Kesselzubehör", H.BoilerAccessories);
+			break;
+		case "BOILER_HOUSE_TECHNOLOGY":
+			HelpBox.show("Heizhaus-Technik", H.BoilerHouseTechnology);
+			break;
+		case "BUILDING":
+			HelpBox.show("Gebäude", H.Buildings);
+			break;
+		case "HEATING_NET_TECHNOLOGY":
+			HelpBox.show("Wärmenetz-Technik", H.HeatingNetTechnology);
+			break;
+		case "HEATING_NET_CONSTRUCTION":
+			HelpBox.show("Wärmenetz-Bau", H.HeatingNetConstruction);
+			break;
+		case "PLANNING":
+			HelpBox.show("Planung", H.Planning);
+			break;
+		default:
+			break;
+		}
 	}
 
 	/** Add a product from the product database. */

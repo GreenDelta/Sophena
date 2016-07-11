@@ -16,6 +16,7 @@ import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -111,7 +112,7 @@ class HeatNetSection {
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
 		});
-		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor", "noch nicht verfügbar");
+		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor", H.SimultaneityFactor);
 		UI.filler(comp, tk);
 	}
 
@@ -140,7 +141,7 @@ class HeatNetSection {
 		});
 		if (!Num.equal(heatNet().smoothingFactor, Defaults.SMOOTHING_FACTOR))
 			t.setBackground(Colors.forModifiedDefault());
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, "Glättungsfaktor", H.SmoothingFactor);
 		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
 		Controls.onSelect(reset, e -> Texts.set(t, Defaults.SMOOTHING_FACTOR));

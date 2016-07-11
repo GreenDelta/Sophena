@@ -16,6 +16,8 @@ import sophena.math.energetic.EfficiencyResult;
 import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.UsedHeat;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
@@ -70,6 +72,7 @@ class FurtherResultsPage extends FormPage {
 			Label pefLabel = UI.formLabel(comp, tk, Num.str(pef, 1));
 			pefLabel.setAlignment(SWT.RIGHT);
 			pefLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+			HelpLink.create(comp, tk, "Primärenergiefaktor", H.PrimaryEnergyFactor);
 			UI.formLabel(comp, tk, "");
 		}
 	}

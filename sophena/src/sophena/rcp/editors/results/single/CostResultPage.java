@@ -76,7 +76,7 @@ class CostResultPage extends FormPage {
 				new Item("Sonstige Kosten", "EUR/a",
 						netto.otherCosts,
 						brutto.otherCosts),
-				new Item("Erlöse", "EUR/a",
+				new Item("Stromerlöse", "EUR/a",
 						netto.revenues,
 						brutto.revenues),
 				new Item("Kosten - Erlöse", "EUR/a",

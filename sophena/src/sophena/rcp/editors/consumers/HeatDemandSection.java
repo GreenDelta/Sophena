@@ -7,6 +7,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.model.BuildingState;
 import sophena.model.Consumer;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -42,7 +44,7 @@ class HeatDemandSection {
 
 	HeatDemandSection create(Composite body, FormToolkit tk) {
 		Composite composite = UI.formSection(body, tk, M.HeatDemand);
-		UI.gridLayout(composite, 6);
+		UI.gridLayout(composite, 7);
 		createHeatingLoadText(composite, tk);
 		createWaterText(composite, tk);
 		createHeatLimitText(composite, tk);
@@ -55,6 +57,7 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, "Heizlast");
 		Texts.set(t, Num.intStr(consumer().heatingLoad));
 		UI.formLabel(composite, tk, "kW");
+		HelpLink.create(composite, tk, "Heizlast", H.HeatingLoad);
 		if (!consumer().demandBased) {
 			Texts.on(t).calculated();
 			editor.onCalculated((profile, totals, total) -> {
@@ -93,6 +96,7 @@ class HeatDemandSection {
 			editor.setDirty();
 		});
 		heatingLimitText = t;
+		UI.filler(composite);
 	}
 
 	private void createLoadHoursText(Composite composite, FormToolkit tk) {

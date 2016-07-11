@@ -18,6 +18,8 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -48,6 +50,11 @@ class DisplaySection<T> {
 		Tables.onDoubleClick(table, e -> doOpen(table));
 		Action open = Actions.create("Öffnen", Icon.OPEN_16.des(),
 				() -> doOpen(table));
+		if (type == ProductType.COGENERATION_PLANT) {
+			Action help = Actions.create("Hilfe", Icon.INFO_16.des(),
+					() -> HelpBox.show("KWK-Anlagen", H.CoGenPlants));
+			Actions.bind(section, help);
+		}
 		Actions.bind(table, open);
 		refresh();
 	}
