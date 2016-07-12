@@ -52,7 +52,7 @@ class HeatSheet {
 			Excel.cell(sheet, row, 5, Math.round(share > 100 ? 100 : share));
 			Excel.cell(sheet, row, 6, Math.round(FullLoadHours.get(pr, heat)));
 			Excel.cell(sheet, row, 7, Math.round(UtilisationRate.get(pr,
-					result.energyResult)));
+					result.energyResult) * 100));
 			row++;
 		}
 		powerDiffRow(sheet, row, result.energyResult.producers);

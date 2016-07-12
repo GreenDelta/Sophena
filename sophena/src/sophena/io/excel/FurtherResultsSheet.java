@@ -35,14 +35,14 @@ class FurtherResultsSheet {
 		Sheet sheet = wb.createSheet("Weitere Ergebnisse");
 		CellStyle style = Excel.headerStyle(wb);
 
-		createEmissions(sheet, style, row, co2);
-		createEfficiency(sheet, style, row, efficiency);
-		heatNetInfo(sheet, style, row);
+		createEmissions(sheet, style, co2);
+		createEfficiency(sheet, style, efficiency);
+		heatNetInfo(sheet, style);
 
 		Excel.autoSize(sheet, 0, 1);
 	}
 
-	public void createEmissions(Sheet sheet, CellStyle style, int row, CO2Emissions co2) {
+	public void createEmissions(Sheet sheet, CellStyle style, CO2Emissions co2) {
 
 		Excel.cell(sheet, row, 0, "Treibhausgasemissionen").setCellStyle(style);
 		row++;
@@ -73,11 +73,9 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 0, "Heizöl dezentral");
 		Excel.cell(sheet, row, 1, Math.round(co2.variantOil));
 		row += 2;
-
-		this.row = row;
 	}
 
-	public void createEfficiency(Sheet sheet, CellStyle style, int row,
+	public void createEfficiency(Sheet sheet, CellStyle style,
 			EfficiencyResult efficiency) {
 
 		Excel.cell(sheet, row, 0, "Effizienz").setCellStyle(style);
@@ -116,31 +114,22 @@ class FurtherResultsSheet {
 				/ efficiency.fuelEnergy) * 100))).setCellStyle(style);
 		row += 2;
 
-		this.row = row;
 	}
 
-	public void heatNetInfo(Sheet sheet, CellStyle style, int row) {
-		double length;
-
-		try {
-			length = project.heatNet.length;
-
-		} catch (Exception e) {
-			length = 0;
-		}
-
+	public void heatNetInfo(Sheet sheet, CellStyle style) {
+		if (project.heatNet == null)
+			return;
+		double length = project.heatNet.length;
 		Excel.cell(sheet, row, 0, "Kennzahlen Wärmenetz").setCellStyle(style);
 		row++;
 		Excel.cell(sheet, row, 0, "Trassenlänge in m");
 		Excel.cell(sheet, row, 1, Math.round(length));
 		row++;
 		Excel.cell(sheet, row, 0, "Wärmebelegungsdichte in MWh/(m*a)");
-		Excel.cell(sheet, row, 1, Math.round(UsedHeat.get(result) / (1000 * length)));
+		Excel.cell(sheet, row, 1, UsedHeat.get(result) / (1000 * length));
 		row++;
 		Excel.cell(sheet, row, 0, "Primärenergiefaktor");
-		Excel.cell(sheet, row, 1, Math.round(PrimaryEnergyFactor.get(project, result)));
-
-		this.row = row;
+		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(project, result));
 	}
 
 }

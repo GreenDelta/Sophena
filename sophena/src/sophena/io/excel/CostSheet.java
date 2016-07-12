@@ -81,7 +81,7 @@ class CostSheet {
 		Excel.cell(sheet, row + 4, 0, "Bedarfsgebundene Kosten in EUR/a");
 		Excel.cell(sheet, row + 5, 0, "Betriebsgebundene Kosten in EUR/a");
 		Excel.cell(sheet, row + 6, 0, "Sonstige Kosten in EUR/a");
-		Excel.cell(sheet, row + 7, 0, "Erlöse in EUR/a");
+		Excel.cell(sheet, row + 7, 0, "Stromerlöse in EUR/a");
 		Excel.cell(sheet, row + 8, 0, "Kosten - Erlöse in EUR/a");
 		Excel.cell(sheet, row + 9, 0, "Wärmegestehungskosten in EUR/MWh");
 	}
