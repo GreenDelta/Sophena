@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="0.8" useFeatures="false" includeLaunchers="true">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="1.0" useFeatures="false" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/sophena/icons/AboutDialogLogo.png"/>
+      <text>
+         Sophena - Version 1.0, 25.Juli 2016
+
+Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License zur Verfügung gestellt.
+_____________________________________________________________________________
+
+C.A.R.M.E.N. e.V.
+Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.
+http://www.carmen-ev.de - contact@carmen-ev.de
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
@@ -18,15 +32,24 @@
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
+
 
    <launcher name="Sophena">
       <solaris/>
       <win useIco="true">
-         <ico path="/sophena/icons/icon.ico"/>
-         <bmp/>
+         <ico path="/sophena/icons/Sophena_web.ico"/>
+         <bmp
+            winSmallHigh="icons/App/16x16bmp.bmp"
+            winSmallLow="icons/App/16x16bmp8b.bmp"
+            winMediumHigh="icons/App/32x32bmp.bmp"
+            winMediumLow="icons/App/32x32bmp8b.bmp"
+            winLargeHigh="icons/App/48x48bmp.bmp"
+            winLargeLow="icons/App/48x48bmp8b.bmp"
+            winExtraLargeHigh="icons/App/256x256bmp.bmp"/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -185,5 +208,12 @@
       <plugin id="sophena"/>
    </plugins>
 
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

@@ -9,7 +9,7 @@ public class HeatingNetTechnologyEditor extends Editor {
 
 	public static void open() {
 		KeyEditorInput input = new KeyEditorInput(
-				"heating.net.construction.products", "Wärmenetz-Technik");
+				"heating.net.technology.products", "Wärmenetz-Technik");
 		Editors.open(input, "sophena.products.HeatingNetTechnologyEditor");
 	}
 

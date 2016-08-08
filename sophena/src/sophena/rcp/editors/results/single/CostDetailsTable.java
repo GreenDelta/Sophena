@@ -14,6 +14,7 @@ import sophena.calc.CostResultItem;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
+import sophena.utils.Num;
 
 class CostDetailsTable {
 
@@ -71,7 +72,7 @@ class CostDetailsTable {
 
 	private String s(double value, String unit) {
 		long v = Math.round(value);
-		return Long.toString(v) + " " + unit;
+		return Num.intStr(v) + " " + unit;
 	}
 
 	private class Item {

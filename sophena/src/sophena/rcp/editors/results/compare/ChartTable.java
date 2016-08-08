@@ -16,6 +16,7 @@ import sophena.model.Project;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class ChartTable {
 
@@ -63,7 +64,7 @@ class ChartTable {
 			Item item = new Item();
 			item.i = i;
 			item.project = project.name + " - ohne Förderung";
-			item.value = Long.toString(Math.round(value));
+			item.value = Num.intStr(Math.round(value));
 			return item;
 		}
 
@@ -72,7 +73,7 @@ class ChartTable {
 			item.fundingTrace = true;
 			item.i = i;
 			item.project = project.name + " - mit Förderung";
-			item.value = Long.toString(Math.round(value));
+			item.value = Num.intStr(Math.round(value));
 			return item;
 		}
 	}

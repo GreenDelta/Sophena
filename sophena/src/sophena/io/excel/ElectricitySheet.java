@@ -44,7 +44,7 @@ class ElectricitySheet {
 			Excel.cell(sheet, row, 3, Math.round(value));
 			Excel.cell(sheet, row, 4, Math.round(((value / total) * 100)));
 			Excel.cell(sheet, row, 5, Math.round(FullLoadHours.get(p, heat)));
-			Excel.cell(sheet, row, 6, Math.round(p.boiler.efficiencyRateElectric));
+			Excel.cell(sheet, row, 6, Math.round(p.boiler.efficiencyRateElectric * 100d));
 			row++;
 		}
 		Excel.autoSize(sheet, 0, 1);

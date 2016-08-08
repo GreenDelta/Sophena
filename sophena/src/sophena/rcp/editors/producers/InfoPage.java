@@ -82,7 +82,7 @@ class InfoPage extends FormPage {
 		combo.setLabelProvider(b -> b.name + " ("
 				+ Num.str(b.minPower) + " kW - "
 				+ Num.str(b.maxPower) + " kW, \u03B7 = "
-				+ Num.str(b.efficiencyRate) + "%)");
+				+ Num.str(b.efficiencyRate * 100d) + "%)");
 		Boiler b = producer().boiler;
 		if (b == null)
 			return;

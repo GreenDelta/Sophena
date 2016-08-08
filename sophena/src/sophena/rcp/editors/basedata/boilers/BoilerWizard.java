@@ -119,10 +119,10 @@ class BoilerWizard implements IContent {
 		fuelCombo.select(getFuelIndex(items));
 		Texts.set(maxText, boiler.maxPower);
 		Texts.set(minText, boiler.minPower);
-		Texts.set(efficiencyText, boiler.efficiencyRate);
+		Texts.set(efficiencyText, boiler.efficiencyRate * 100d);
 		Texts.set(maxElText, boiler.maxPowerElectric);
 		Texts.set(minElText, boiler.minPowerElectric);
-		Texts.set(efficiencyElText, boiler.efficiencyRateElectric);
+		Texts.set(efficiencyElText, boiler.efficiencyRateElectric * 100d);
 	}
 
 	private String[] getFuelItems() {
@@ -171,10 +171,10 @@ class BoilerWizard implements IContent {
 		setType(wat);
 		boiler.maxPower = Texts.getDouble(maxText);
 		boiler.minPower = Texts.getDouble(minText);
-		boiler.efficiencyRate = Texts.getDouble(efficiencyText);
+		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
-		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText);
+		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText) / 100d;
 	}
 
 	private void setType(WoodAmountType wat) {
@@ -209,7 +209,7 @@ class BoilerWizard implements IContent {
 		if (!Texts.hasNumber(minText))
 			return ("Es wurde keine minimale Leistung angegeben");
 		if (!Texts.hasPercentage(efficiencyText))
-			return ("Es wurde kein Wirkungsgrad angegeben");
+			return ("Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.");
 		double max = Texts.getDouble(maxText);
 		double min = Texts.getDouble(minText);
 		if (min > max)
@@ -222,7 +222,7 @@ class BoilerWizard implements IContent {
 		if (message != null)
 			return message;
 		if (!Texts.hasPercentage(efficiencyElText))
-			return ("Es wurde kein elektrischer Wirkungsgrad angegeben");
+			return ("Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.");
 		if (!Texts.hasNumber(maxElText))
 			return ("Es wurde keine maximale elektrische Leistung angegeben.");
 		if (!Texts.hasNumber(minElText))

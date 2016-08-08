@@ -103,7 +103,7 @@ class EditorPage extends FormPage {
 		boiler.isCoGenPlant = isForCoGen;
 		boiler.id = UUID.randomUUID().toString();
 		boiler.name = isForCoGen ? "Neue KWK-Anlage" : "Neuer Heizkessel";
-		boiler.efficiencyRate = 80;
+		boiler.efficiencyRate = .8;
 		if (BoilerWizard.open(boiler) != Window.OK)
 			return;
 		dao.insert(boiler);
@@ -182,9 +182,9 @@ class EditorPage extends FormPage {
 				}
 			case 4:
 				if (isForCoGen) {
-					return Num.str(boiler.efficiencyRateElectric) + " %";
+					return Num.str(boiler.efficiencyRateElectric * 100d) + " %";
 				} else {
-					return Num.str(boiler.efficiencyRate) + " %";
+					return Num.str(boiler.efficiencyRate * 100d) + " %";
 				}
 			case 5:
 				if (isForCoGen) {
@@ -192,7 +192,7 @@ class EditorPage extends FormPage {
 				}
 			case 6:
 				if (isForCoGen) {
-					return Num.str(boiler.efficiencyRate) + "%";
+					return Num.str(boiler.efficiencyRate * 100d) + "%";
 				}
 			default:
 				return null;

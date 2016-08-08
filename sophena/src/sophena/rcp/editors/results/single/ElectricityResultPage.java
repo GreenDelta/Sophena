@@ -121,11 +121,11 @@ class ElectricityResultPage extends FormPage {
 			case 3:
 				return Num.intStr(item.value) + " kWh";
 			case 4:
-				return Num.intStr(item.share * 100) + " %";
+				return Num.intStr(item.share * 100d) + " %";
 			case 5:
 				return Num.intStr(item.fullLoadHours) + " h";
 			case 6:
-				return Num.intStr(item.efficiencyRate) + " %";
+				return Num.intStr(item.efficiencyRate * 100d) + " %";
 			default:
 				return null;
 			}

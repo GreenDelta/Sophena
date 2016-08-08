@@ -1,5 +1,6 @@
 package sophena.rcp.editors.basedata.pipes;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -171,6 +172,7 @@ public class PipeEditor extends Editor {
 
 		@Override
 		public String getColumnText(Object e, int col) {
+			DecimalFormat df = new DecimalFormat("#.####");
 			if (!(e instanceof Pipe))
 				return null;
 			Pipe p = (Pipe) e;
@@ -182,7 +184,7 @@ public class PipeEditor extends Editor {
 			case 4:
 				return Num.str(p.outerDiameter) + " mm";
 			case 5:
-				return Num.str(p.uValue) + "W/m*K";
+				return df.format(p.uValue) + "W/m*K";
 			default:
 				return null;
 			}

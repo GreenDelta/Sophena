@@ -25,7 +25,7 @@ public class FuelDemand {
 			return generatedHeat / ur;
 		} else {
 			double fullLoadHours = FullLoadHours.get(producer, generatedHeat);
-			double er = boiler.efficiencyRateElectric / 100d;
+			double er = boiler.efficiencyRateElectric;
 			double p = boiler.maxPowerElectric / er;
 			return p * fullLoadHours;
 		}

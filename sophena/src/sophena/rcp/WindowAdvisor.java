@@ -7,6 +7,8 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
+import sophena.rcp.editors.StartPage;
+
 public class WindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public WindowAdvisor(IWorkbenchWindowConfigurer configurer) {
@@ -45,7 +47,8 @@ public class WindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public void postWindowOpen() {
-		// TODO: open start page
+		StartPage.open();
+		StartPage.open();
 	}
 
 	@Override

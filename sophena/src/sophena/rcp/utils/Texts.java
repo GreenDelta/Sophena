@@ -101,7 +101,7 @@ public final class Texts {
 		if (n == null)
 			return false;
 		double d = n.doubleValue();
-		return 0 <= d && d <= 100;
+		return 0 <= d && d <= 120;
 	}
 
 	public static TextDispatch on(Text text) {

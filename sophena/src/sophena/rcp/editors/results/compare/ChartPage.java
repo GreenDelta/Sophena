@@ -41,7 +41,7 @@ class ChartPage extends FormPage {
 	}
 
 	private void heatCostsSection() {
-		makeSection("Wärmegestehungskosten (netto)", "EUR/MWh",
+		makeSection("Wärmegestehungskosten", "EUR/MWh",
 				result -> {
 					if (result == null || result.netTotal == null)
 						return 0;
@@ -51,7 +51,7 @@ class ChartPage extends FormPage {
 	}
 
 	private void annualCostsSection() {
-		makeSection("Jährliche Kosten (netto)", "EUR",
+		makeSection("Jährliche Kosten", "EUR",
 				result -> {
 					if (result == null || result.netTotal == null)
 						return 0;
@@ -72,11 +72,11 @@ class ChartPage extends FormPage {
 		}
 		if (max == 0)
 			return;
-		makeSection("Jährliche Erlöse (netto)", "EUR", fn);
+		makeSection("Jährliche Erlöse", "EUR", fn);
 	}
 
 	private void investmentSection() {
-		makeSection("Investitionskosten (netto)", "EUR",
+		makeSection("Investitionskosten", "EUR",
 				result -> {
 					if (result == null || result.netTotal == null)
 						return 0;

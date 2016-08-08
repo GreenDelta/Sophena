@@ -27,7 +27,6 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -224,7 +223,8 @@ class ConsumptionWizard extends Wizard {
 			private void initFuels() {
 				FuelDao dao = new FuelDao(App.getDb());
 				List<Fuel> fuels = dao.getAll();
-				Sorters.byName(fuels);
+				FuelSorter.sort(fuels);
+				// Collections.sort(fuels);
 				fuelCombo.setInput(fuels);
 				if (fuels.isEmpty())
 					return;

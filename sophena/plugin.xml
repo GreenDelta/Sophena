@@ -8,6 +8,18 @@
 			application="sophena.application" 
 			name="Sophena">
 			<property name="appName" value="Sophena"/>
+   <property
+         name="aboutImage"
+         value="icons/AboutDialogLogo.png">
+   </property>
+   <property
+         name="aboutText"
+         value="Sophena - Version 1.0, 25.Juli 2016&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License zur Verfügung gestellt.&#x0A;_____________________________________________________________________________&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de">
+   </property>
+   <property
+         name="windowImages"
+         value="icons/WindowImages/16x16.png,icons/WindowImages/32x32.png,icons/WindowImages/48x48.png,icons/WindowImages/64x64.png,icons/WindowImages/128x128.png,icons/WindowImages/256x256.png">
+   </property>
 		</product>
 	</extension>
 	
@@ -267,5 +279,12 @@
 			class="sophena.rcp.editors.basedata.products.PlanningEditor"
 			id="sophena.products.PlanningEditor"
 			name="Planung" />
+  <editor
+        class="sophena.rcp.editors.StartPage"
+        default="false"
+        icon="icons/home.png"
+        id="sophena.StartPage"
+        name="Start page">
+  </editor>
 	</extension>
 </plugin>
