@@ -1,6 +1,6 @@
 Sophena
 =======
-Sophena is a tool for calculating heating networks...
+Sophena is a tool for calculating heating networks... **TODO** write README
 
 ## Development tools
 * Eclipse for RCP/RAP developers (Mars)
@@ -23,5 +23,7 @@ VM argument must be added to the launching configuration:
 
     -Dosgi.framework.extensions=org.eclipse.fx.osgi
 
-
-
+## License
+Unless stated otherwise, all source code of the Sophena project is licensed 
+under the [Mozilla Public License, v. 2.0](http://mozilla.org/MPL/2.0/). Please 
+see the LICENSE.txt file in the root directory of the source code.
