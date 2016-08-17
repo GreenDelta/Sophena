@@ -1,9 +1,0 @@
-{
-	"id": "905c55bc-00ab-4fd1-8993-94e1ad83ba0f",
-	"name": "Strom",
-	"isProtected": true,
-	"unit": "kWh",
-	"calorificValue": 1,
-	"wood": false,
-	"co2Emissions": 614.8
-}
