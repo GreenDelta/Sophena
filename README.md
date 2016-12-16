@@ -3,6 +3,8 @@ Sophena
 Sophena is a quick planning tool for local heating networks. See [here](https://www.carmen-ev.de/infothek/downloads/sophena/1989-sophena-die-software)
 for further information.
 
+![screenshot of Sophena](sophena.png "screenshot of Sophena")
+
 ## Building from source
 Sophena is an Eclipse RCP application with a setup very similar to 
 [openLCA](https://github.com/GreenDelta/olca-app). Thus, you should be able to
