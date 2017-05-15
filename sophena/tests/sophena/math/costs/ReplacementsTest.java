@@ -32,15 +32,15 @@ public class ReplacementsTest {
 		item.costs.investment = 10000;
 		item.costs.duration = 15;
 		Assert.assertEquals(9289.408414,
-				Replacements.getCashValue(1, item, project, interestRate), 1E-5);
+				Replacements.getPresentValue(1, item, project, interestRate), 1E-5);
 		Assert.assertEquals(8629.310869,
-				Replacements.getCashValue(2, item, project, interestRate), 1E-5);
+				Replacements.getPresentValue(2, item, project, interestRate), 1E-5);
 		Assert.assertEquals(8016.119299,
-				Replacements.getCashValue(3, item, project, interestRate), 1E-5);
+				Replacements.getPresentValue(3, item, project, interestRate), 1E-5);
 		Assert.assertEquals(7446.500607,
-				Replacements.getCashValue(4, item, project, interestRate), 1E-5);
+				Replacements.getPresentValue(4, item, project, interestRate), 1E-5);
 		Assert.assertEquals(6917.358539,
-				Replacements.getCashValue(5, item, project, interestRate), 1E-5);
+				Replacements.getPresentValue(5, item, project, interestRate), 1E-5);
 	}
 
 }

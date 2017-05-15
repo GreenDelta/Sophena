@@ -21,7 +21,7 @@ public class Replacements {
 		return (int) res;
 	}
 
-	public static double getCashValue(int replacement, CostResultItem item,
+	public static double getPresentValue(int replacement, CostResultItem item,
 			Project project, double interestRate) {
 		if (item == null)
 			return 0;

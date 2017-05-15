@@ -20,7 +20,7 @@ public class CapitalCosts {
 		int replacements = Replacements.getNumber(item, project);
 		double costs = item.costs.investment;
 		for (int i = 1; i <= replacements; i++) {
-			costs += Replacements.getCashValue(i, item, project, interestRate);
+			costs += Replacements.getPresentValue(i, item, project, interestRate);
 		}
 		costs -= residualValue;
 		return costs * annuityFactor;
