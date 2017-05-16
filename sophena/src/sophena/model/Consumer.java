@@ -91,6 +91,8 @@ public class Consumer extends RootEntity {
 		clone.loadHours = loadHours;
 		for (FuelConsumption cons : fuelConsumptions)
 			clone.fuelConsumptions.add(cons.clone());
+		for (LoadProfile lp : loadProfiles) 
+			clone.loadProfiles.add(lp.clone());
 		if (location != null)
 			clone.location = location.clone();
 		clone.transferStation = transferStation;
