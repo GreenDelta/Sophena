@@ -38,6 +38,7 @@ Beispiel: Der Preis eines Produkts ist 5000 EUR und der Preisänderungsfaktor is
 
 $$ c_3 = ((5000 * 1.02) * 1.02) * 1.02 =  5000 * 1.02^3 = 5306.04$$
 
+
 ## Anzahl der Wiederbeschaffungen
 Ist die Lebensdauer eines Produktes $t_p$ kleiner als die Projektlaufzeit $t$,
 so muss dieses Produkt entsprechend oft während der Projektlaufzeit ersetzt
@@ -66,9 +67,20 @@ der Preisänderung $pcf$:
 
 $$ PV_{r,i} = \frac{C * pcf^{t_{r,i}}}{ir^{t_{r,i}}} $$
 
+## Einbezug einer Projektförderung
+Bei einer Projektförderung werden die Kapitalkosten $C$ wie folgt reduziert:
+
+$$ C_F = C - F * af $$
+
+Dabei ist $F$ die Fördersumme und $af$ der Annuitätenfaktor in den die
+Projektlaufzeit und der Zinsatz (welcher möglicherweise bei der Förderung
+anders ist) eingehen.
+
+
 ## Einmalige Anschlusskosten
 
 __TODO__ derzeit nicht berücksichtigt; passt auch nicht mit der Beschreibung
+-> könnte man wie bei der Projektförderung berechnen.
 
 Die einmaligen Anschlusskosten sind die Summe aus allen Anschlussgebühren, die
 von den Abnehmern gezahlt werden.  Sie werden bei der Berechnung der 

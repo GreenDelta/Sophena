@@ -18,7 +18,6 @@ class CostCalculator {
 	private EnergyResult energyResult;
 
 	private CostSettings settings;
-	private double projectDuration;
 	private boolean withFunding;
 
 	public CostCalculator(Project project, EnergyResult energyResult) {
@@ -29,7 +28,6 @@ class CostCalculator {
 		settings = project.costSettings;
 		if (settings == null)
 			settings = new CostSettings();
-		projectDuration = project.duration;
 	}
 
 	public void withFunding(boolean withFunding) {
@@ -133,10 +131,8 @@ class CostCalculator {
 	}
 
 	private void setCapitalCostsFunding(CostResult r) {
-		double ir = ir();
-		r.netTotal.capitalCosts = r.netTotal.capitalCosts - settings.funding
-				* (Math.pow(ir, projectDuration) * (ir - 1)
-						/ (Math.pow(ir, projectDuration) - 1));
+		double anf = AnnuityFactor.get(ir(), project.duration);
+		r.netTotal.capitalCosts -= (settings.funding * anf);
 		r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
 	}
 
@@ -155,6 +151,7 @@ class CostCalculator {
 
 	double getCashValueFactor(double priceChangeFactor) {
 		double ir = ir();
+		double projectDuration = project.duration;
 		if (ir == priceChangeFactor)
 			return ((double) projectDuration) / ir;
 		else
