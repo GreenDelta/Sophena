@@ -171,12 +171,6 @@
 			name="Heizkessel" />
 			
 		<editor
-			class="sophena.rcp.editors.basedata.boilers.CoGenPlantEditor"
-			icon="icons/co_gen_16.png"
-			id="sophena.CoGenPlantEditor"
-			name="KWK-Anlagen" />
-		
-		<editor
 			class="sophena.rcp.editors.basedata.buildings.BuildingStateEditor"
 			icon="icons/building_type_16.png"
 			id="sophena.BuildingStateEditor"

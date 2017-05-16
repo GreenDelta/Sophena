@@ -20,9 +20,9 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.io.datapack.Import;
+import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
-import sophena.rcp.editors.basedata.boilers.CoGenPlantEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.buildings.BuildingStateEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
@@ -116,10 +116,12 @@ public class ActionBarAdvisor extends
 	private void fillProductMenu(IMenuManager menu) {
 		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
-		m.add(Actions.create("Heizkessel", Icon.BOILER_16.des(),
-				BoilerEditor::open));
+		m.add(Actions.create("Biomassekessel", Icon.BOILER_16.des(),
+				() -> BoilerEditor.open(ProductType.BIOMASS_BOILER)));
+		m.add(Actions.create("Fossile Kessel", Icon.BOILER_16.des(),
+				() -> BoilerEditor.open(ProductType.FOSSIL_FUEL_BOILER)));
 		m.add(Actions.create("KWK-Anlagen", Icon.CO_GEN_16.des(),
-				CoGenPlantEditor::open));
+				() -> BoilerEditor.open(ProductType.COGENERATION_PLANT)));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
 		m.add(Actions.create("Wärmerückgewinnung", Icon.HEAT_RECOVERY_16.des(),
 				HeatRecoveryEditor::open));

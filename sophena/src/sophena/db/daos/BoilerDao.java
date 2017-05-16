@@ -2,12 +2,11 @@ package sophena.db.daos;
 
 import java.util.Collections;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import java.util.stream.Collectors;
 
 import sophena.db.Database;
 import sophena.model.Boiler;
+import sophena.model.ProductType;
 
 public class BoilerDao extends RootEntityDao<Boiler> {
 
@@ -15,26 +14,12 @@ public class BoilerDao extends RootEntityDao<Boiler> {
 		super(Boiler.class, db);
 	}
 
-	public List<Boiler> getCoGenPlants() {
-		return getAll(true);
-	}
-
-	public List<Boiler> getBoilers() {
-		return getAll(false);
-	}
-
-	private List<Boiler> getAll(boolean coGen) {
-		EntityManager em = createManager();
-		try {
-			String jpql = "SELECT b FROM Boiler b where b.isCoGenPlant = :coGen";
-			TypedQuery<Boiler> query = em.createQuery(jpql, Boiler.class);
-			query.setParameter("coGen", coGen);
-			return query.getResultList();
-		} catch (Exception e) {
-			log.error("failed to get all boiles coGen=" + coGen, e);
+	public List<Boiler> getAll(ProductType type) {
+		if (type == null)
 			return Collections.emptyList();
-		} finally {
-			em.close();
-		}
+		return getAll().stream()
+				.filter(b -> b.type == type)
+				.collect(Collectors.toList());
 	}
+
 }

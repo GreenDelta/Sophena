@@ -43,12 +43,12 @@ class BoilerWizard implements IContent {
 	}
 
 	public static int open(Boiler boiler) {
-		if (boiler == null)
+		if (boiler == null || boiler.type == null)
 			return Window.CANCEL;
 		BoilerWizard content = new BoilerWizard(boiler);
 		ProductWizard w = new ProductWizard(boiler, content);
 		content.wizard = w;
-		w.setWindowTitle(boiler.isCoGenPlant ? "KWK-Anlage" : "Heizkessel");
+		w.setWindowTitle(Labels.get(boiler.type));
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		if (boiler.isCoGenPlant)
 			dialog.setPageSize(150, 500);
@@ -168,22 +168,12 @@ class BoilerWizard implements IContent {
 			boiler.fuel = findFuel(label);
 			boiler.woodAmountType = null;
 		}
-		setType(wat);
 		boiler.maxPower = Texts.getDouble(maxText);
 		boiler.minPower = Texts.getDouble(minText);
 		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
 		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText) / 100d;
-	}
-
-	private void setType(WoodAmountType wat) {
-		if (boiler.isCoGenPlant)
-			boiler.type = ProductType.COGENERATION_PLANT;
-		else if (wat != null)
-			boiler.type = ProductType.BIOMASS_BOILER;
-		else
-			boiler.type = ProductType.FOSSIL_FUEL_BOILER;
 	}
 
 	private Fuel findFuel(String label) {
@@ -236,24 +226,12 @@ class BoilerWizard implements IContent {
 
 	@Override
 	public String getPageName() {
-		if (boiler.isCoGenPlant)
-			return "KWK-Anlage";
-		else
-			return "Heizkessel";
+		return Labels.get(boiler.type);
 	}
 
 	@Override
 	public ProductType getProductType() {
-		if (boiler.isCoGenPlant)
-			return ProductType.COGENERATION_PLANT;
-		if (boiler.woodAmountType != null)
-			return ProductType.BIOMASS_BOILER;
-		// TODO: this is a hack, we need a 'isBiomass' field for fuels/boilers
-		if (boiler.fuel != null
-				&& Strings.nullOrEqual("Pellets", boiler.fuel.name))
-			return ProductType.BIOMASS_BOILER;
-		else
-			return ProductType.FOSSIL_FUEL_BOILER;
+		return boiler.type;
 	}
 
 }

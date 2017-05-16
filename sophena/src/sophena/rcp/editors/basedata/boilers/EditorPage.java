@@ -1,5 +1,6 @@
 package sophena.rcp.editors.basedata.boilers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +20,10 @@ import sophena.db.daos.BoilerDao;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.Boiler;
+import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
@@ -40,20 +43,19 @@ class EditorPage extends FormPage {
 
 	private BoilerDao dao = new BoilerDao(App.getDb());
 	private List<Boiler> boilers;
-	private boolean isForCoGen;
+	private final ProductType type;
 
-	public EditorPage(Editor editor, boolean isForCoGen) {
-		super(editor, "BoilerEditorPage",
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
-		this.isForCoGen = isForCoGen;
-		boilers = isForCoGen ? dao.getCoGenPlants() : dao.getBoilers();
+	public EditorPage(Editor editor, ProductType type) {
+		super(editor, "BoilerEditorPage", Labels.getPlural(type));
+		this.type = type;
+		boilers = new ArrayList<>(dao.getAll(type));
 		Sorters.boilers(boilers);
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 		ScrolledForm form = UI.formHeader(managedForm,
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
+				Labels.getPlural(type));
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createBoilerSection(body, toolkit);
@@ -62,20 +64,25 @@ class EditorPage extends FormPage {
 
 	private void createBoilerSection(Composite parent, FormToolkit toolkit) {
 		Section section = UI.section(parent, toolkit,
-				isForCoGen ? "KWK-Anlage" : "Heizkessel");
+				Labels.getPlural(type));
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new BoilerLabel());
 		table.setInput(boilers);
-		double x = 1 / (isForCoGen ? 7.0 : 5.0);
-		Tables.bindColumnWidths(table, x, x, x, x, x, (isForCoGen ? x : 0));
+		if (type == ProductType.COGENERATION_PLANT) {
+			double x = 1 / 7.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
+		} else {
+			double x = 1 / 5.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x);
+		}
 		bindBoilerActions(section, table);
 	}
 
 	private String[] getColumns() {
-		if (isForCoGen)
+		if (type == ProductType.COGENERATION_PLANT)
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
 					"Max. Leistung el.", "Wirkungsgrad el.", "Max. Leistung th.",
 					"Wirkungsgrad th." };
@@ -100,9 +107,10 @@ class EditorPage extends FormPage {
 
 	private void addBoiler(TableViewer table) {
 		Boiler boiler = new Boiler();
-		boiler.isCoGenPlant = isForCoGen;
+		boiler.isCoGenPlant = type == ProductType.COGENERATION_PLANT;
+		boiler.type = type;
 		boiler.id = UUID.randomUUID().toString();
-		boiler.name = isForCoGen ? "Neue KWK-Anlage" : "Neuer Heizkessel";
+		boiler.name = Labels.get(type) + " - neu";
 		boiler.efficiencyRate = .8;
 		if (BoilerWizard.open(boiler) != Window.OK)
 			return;
@@ -166,37 +174,31 @@ class EditorPage extends FormPage {
 	private class BoilerLabel extends BaseTableLabel {
 
 		@Override
-		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Boiler))
+		public String getColumnText(Object obj, int col) {
+			if (!(obj instanceof Boiler))
 				return null;
-			Boiler boiler = (Boiler) element;
+			Boiler boiler = (Boiler) obj;
 			if (col < 3)
 				return ProductTables.getText(boiler, col);
+			boolean coGen = type == ProductType.COGENERATION_PLANT;
 			switch (col) {
-
 			case 3:
-				if (isForCoGen) {
-					return Num.str(boiler.maxPowerElectric) + " kW";
-				} else {
-					return Num.str(boiler.maxPower) + " kW";
-				}
+				return coGen ? s(boiler.maxPowerElectric, "kW")
+						: s(boiler.maxPower, "kW");
 			case 4:
-				if (isForCoGen) {
-					return Num.str(boiler.efficiencyRateElectric * 100d) + " %";
-				} else {
-					return Num.str(boiler.efficiencyRate * 100d) + " %";
-				}
+				return coGen ? s(boiler.efficiencyRateElectric * 100d, "%")
+						: s(boiler.efficiencyRate * 100d, "%");
 			case 5:
-				if (isForCoGen) {
-					return Num.str(boiler.maxPower) + " kW";
-				}
+				return coGen ? s(boiler.maxPower, "kW") : null;
 			case 6:
-				if (isForCoGen) {
-					return Num.str(boiler.efficiencyRate * 100d) + "%";
-				}
+				return coGen ? s(boiler.efficiencyRate * 100d, "%") : null;
 			default:
 				return null;
 			}
+		}
+
+		private String s(double val, String unit) {
+			return Num.str(val) + " " + unit;
 		}
 
 	}
