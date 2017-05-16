@@ -1,6 +1,8 @@
 package sophena.rcp.wizards;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.jface.window.Window;
@@ -131,7 +133,7 @@ public class ConsumerWizard extends Wizard {
 
 		private void createTypeCombo(Composite composite) {
 			Combo combo = UI.formCombo(composite, M.BuildingType);
-			BuildingType[] types = BuildingType.values();
+			BuildingType[] types = buildingTypes();
 			String[] items = new String[types.length];
 			for (int i = 0; i < types.length; i++) {
 				items[i] = Labels.get(types[i]);
@@ -142,6 +144,27 @@ public class ConsumerWizard extends Wizard {
 				int idx = combo.getSelectionIndex();
 				initBuildingState(types[idx]);
 			});
+		}
+
+		/** Get the building types that have at least one building state. */
+		private BuildingType[] buildingTypes() {
+			BuildingStateDao dao = new BuildingStateDao(App.getDb());
+			BuildingType[] types = BuildingType.values();
+			Set<BuildingType> used = new HashSet<>();
+			for (BuildingState s : dao.getAll()) {
+				if (s.type == null)
+					continue;
+				used.add(s.type);
+			}
+			BuildingType[] selected = new BuildingType[used.size()];
+			int i = 0;
+			for (BuildingType type : types) {
+				if (!used.contains(type) || i >= selected.length)
+					continue;
+				selected[i] = type;
+				i++;
+			}
+			return selected;
 		}
 
 		private void createStateCombo(Composite composite) {
