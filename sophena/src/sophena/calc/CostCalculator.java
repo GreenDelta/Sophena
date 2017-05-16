@@ -166,8 +166,8 @@ class CostCalculator {
 				+ r.netTotal.otherCosts
 				- r.netTotal.revenues;
 		r.grossTotal.annualCosts = vat() * r.netTotal.annualCosts;
-		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts
-				/ energyResult.totalProducedHeat;
+		double aQ = (energyResult.totalProducedHeat - energyResult.heatNetLoss);
+		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
 		r.grossTotal.heatGenerationCosts = vat() * r.netTotal.heatGenerationCosts;
 	}
 

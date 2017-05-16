@@ -73,7 +73,7 @@ class ConsumerResultPage extends FormPage {
 		Item totalItem = new Item();
 		totalItem.isTotal = true;
 		totalItem.label = "Summe";
-		totalItem.heatDemand = totalDemand + result.heatNetLoss;
+		totalItem.heatDemand = totalDemand + result.energyResult.heatNetLoss;
 		totalItem.heatingLoad = totalLoad + netItem.heatingLoad;
 		items.add(totalItem);
 		return items;
@@ -82,7 +82,7 @@ class ConsumerResultPage extends FormPage {
 	private Item addNetItem(List<Item> items) {
 		Item netItem = new Item();
 		netItem.label = "Netzverluste";
-		netItem.heatDemand = result.heatNetLoss;
+		netItem.heatDemand = result.energyResult.heatNetLoss;
 		netItem.heatingLoad = ProjectLoad.getNetLoad(project.heatNet);
 		items.add(netItem);
 		return netItem;

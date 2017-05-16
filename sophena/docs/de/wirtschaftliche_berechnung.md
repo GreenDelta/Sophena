@@ -76,6 +76,13 @@ Dabei ist $F$ die Fördersumme und $af$ der Annuitätenfaktor in den die
 Projektlaufzeit und der Zinsatz (welcher möglicherweise bei der Förderung
 anders ist) eingehen.
 
+## Wärmegestehungskosten
+Die Wärmegestehungskosten $C_Q$ [EUR/MWh] werden berechnet aus:
+
+$$ C_Q = 1000 * \frac{C_a}{Q_{total} - Q_{net}} $$
+
+Wobei $C_a$ die jährlichen Kosten, $Q_{total}$ die insgesamt erzeugte Wärme,
+und $Q_{net}$ die Netzverluste sind (beides in [kWh]).
 
 ## Einmalige Anschlusskosten
 

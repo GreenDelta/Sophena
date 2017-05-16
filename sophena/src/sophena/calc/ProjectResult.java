@@ -14,7 +14,6 @@ public class ProjectResult {
 	public CostResult costResult;
 	public CostResult costResultFunding;
 
-	public double heatNetLoss;
 	public final List<ConsumerResult> consumerResults = new ArrayList<>();
 
 	ProjectResult() {
@@ -31,7 +30,6 @@ public class ProjectResult {
 		costCalc.withFunding(true);
 		r.costResultFunding = costCalc.calculate();
 		consumers(project, r);
-		r.heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project.heatNet));
 		return r;
 	}
 

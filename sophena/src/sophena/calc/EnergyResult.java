@@ -26,6 +26,7 @@ public class EnergyResult {
 	public double[] bufferCapacity;
 
 	HashMap<String, Double> totalHeats = new HashMap<>();
+	public double heatNetLoss;
 
 	public EnergyResult() {
 	}
@@ -36,6 +37,7 @@ public class EnergyResult {
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
+		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project.heatNet));
 	}
 
 	public double totalHeat(Producer p) {
@@ -80,6 +82,7 @@ public class EnergyResult {
 		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat,
 				Stats.HOURS);
 		clone.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
+		clone.heatNetLoss = heatNetLoss;
 		return clone;
 	}
 

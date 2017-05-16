@@ -48,7 +48,7 @@ class ConsumerSheet {
 	private void netRow(Sheet sheet, int row) {
 		Excel.cell(sheet, row, 0, "Netzverluste");
 		Excel.cell(sheet, row, 1, Math.round(ProjectLoad.getNetLoad(project.heatNet)));
-		Excel.cell(sheet, row, 2, Math.round(result.heatNetLoss));
+		Excel.cell(sheet, row, 2, Math.round(result.energyResult.heatNetLoss));
 	}
 
 	private void totalRow(Sheet sheet, int row, double totalDemand, double totalLoad) {
@@ -57,7 +57,7 @@ class ConsumerSheet {
 				.setCellStyle(style);
 		Excel.cell(sheet, row, 1, Math.round(totalLoad + ProjectLoad.getNetLoad(project.heatNet)))
 				.setCellStyle(style);
-		Excel.cell(sheet, row, 2, Math.round((totalDemand + result.heatNetLoss)))
+		Excel.cell(sheet, row, 2, Math.round((totalDemand + result.energyResult.heatNetLoss)))
 				.setCellStyle(style);
 	}
 

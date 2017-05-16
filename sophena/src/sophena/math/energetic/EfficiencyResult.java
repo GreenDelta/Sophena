@@ -47,7 +47,7 @@ public class EfficiencyResult {
 				res.producedElectrictiy += GeneratedElectricity.get(p, genHeat);
 			}
 			res.producedHeat = pr.energyResult.totalProducedHeat;
-			res.distributionLoss = pr.heatNetLoss;
+			res.distributionLoss = pr.energyResult.heatNetLoss;
 			res.usedHeat = res.producedHeat - res.distributionLoss;
 			res.totalLoss = res.conversionLoss + res.distributionLoss;
 			return res;
