@@ -72,12 +72,12 @@ public class ProducerEditor extends Editor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (!valid())
-			return;
 		try {
-			log.info("update producer {} in project {}", producer, projectId);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project project = dao.get(projectId);
+			if (!valid(project))
+				return;
+			log.info("update producer {} in project {}", producer, projectId);
 			Producer old = findProducer(project, producer.id);
 			project.producers.remove(old);
 			project.producers.add(producer);
@@ -91,7 +91,7 @@ public class ProducerEditor extends Editor {
 		}
 	}
 
-	private boolean valid() {
+	private boolean valid(Project project) {
 		FuelSpec fuelSpec = producer.fuelSpec;
 		if (fuelSpec != null && fuelSpec.woodFuel != null) {
 			if (fuelSpec.waterContent < 0 || fuelSpec.waterContent > 60) {
@@ -99,6 +99,15 @@ public class ProducerEditor extends Editor {
 						"Der Wassergehalt muss zwischen 0% und 60% liegen.");
 				return false;
 			}
+		}
+		for (Producer other : project.producers) {
+			if (Objects.equals(other, producer))
+				continue;
+			if (other.rank != producer.rank)
+				continue;
+			MsgBox.error("Plausibilitätsfehler",
+					"Der Rang des Erzeugers ist bereits vergeben.");
+			return false;
 		}
 		return true;
 	}
