@@ -7,10 +7,40 @@ for further information.
 ![screenshot of Sophena](sophena.png "screenshot of Sophena")
 
 ## Building from source
-Sophena is an Eclipse RCP application with a setup very similar to 
-[openLCA](https://github.com/GreenDelta/olca-app). Thus, you should be able to
-compile the application from source when you follow the steps documented in
-the openLCA repository.
+Sophena is an [Eclipse RCP application](https://wiki.eclipse.org/Rich_Client_Platform)
+using the Eclipse 3.x API. In order to build it from source you need to have the
+following tools installed:
+
+* a Java Runtime or [JDK >= 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [Apache Maven](https://maven.apache.org/)
+* the [Eclipse package for RCP & RAP developers](http://www.eclipse.org/downloads/eclipse-packages/).
+
+Then, checkout the source code:
+
+```bash
+cd <your project folder>
+git clone https://github.com/GreenDelta/Sophena.git
+```
+
+Start Eclipse, create a workspace, and import the projects in `<your project folder>/Sophena`
+(`build`, `runtime`, `sophena`) via `Import > General > Existing Projects into Workspace`.
+In the `runtime` project open the `build.xml` file and run it as `Ant Build`. This
+will download and prepare the _Eclipse Target Platform_ of Sophena. When the
+Ant Build finished, refresh the project (`F5`), open the file
+`runtime/platform.target`, correct the platform link so that it points to your
+`<your project folder>/Sophena/runtime/platform` folder, and press
+`Set as Target Platform`.
+
+Then, right click on the file `sophena/pom.xml` and run it as `Maven build` with
+`package` as goal in the upcoming dialog. You can also do this from the console
+via:
+
+```bash
+cd <your project folder>/Sophena/sophena
+mvn package
+``` 
+
+After this, refresh the project.
 
 ## License
 Unless stated otherwise, all source code of the Sophena project is licensed 

@@ -58,8 +58,8 @@
 		</get>
 		
 		<!-- SWT Charts -->
-		<get dest="${download_dir}/swt_charts_0.9.0.zip" verbose="true" skipexisting="true">
-			<url url="http://sourceforge.net/projects/swt-chart/files/SWTChart/0.9.0/org.swtchart_0.9.0.zip/download" />
+		<get dest="${download_dir}/swt_charts_0.10.0.zip" verbose="true" skipexisting="true">
+			<url url="https://sourceforge.net/projects/swt-chart/files/SWTChart/0.10.0/org.swtchart_0.10.0.zip/download" />
 		</get>
 
 	</target>
@@ -120,9 +120,14 @@
 
 		<!-- SWT Charts -->
 		<copy todir="${platform_dir}" overwrite="false">
-			<zipfileset src="${download_dir}/swt_charts_0.9.0.zip">
+			<zipfileset src="${download_dir}/swt_charts_0.10.0.zip">
 				<include name="plugins/**" />
 			</zipfileset>
+		</copy>
+		
+		<!-- plugins to enable JavaFX -->
+		<copy todir="${platform_dir}/plugins" overwrite="false">
+			<fileset dir="${basedir}/fxlibs" includes="*.jar" />
 		</copy>
 		
 	</target>
