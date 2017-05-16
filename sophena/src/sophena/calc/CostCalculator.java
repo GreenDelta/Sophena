@@ -165,10 +165,18 @@ class CostCalculator {
 				+ r.netTotal.operationCosts
 				+ r.netTotal.otherCosts
 				- r.netTotal.revenues;
-		r.grossTotal.annualCosts = vat() * r.netTotal.annualCosts;
+
+		// Note that there can be different VAT rates in the cost categories
+		// so we have to calculate each sum separately
+		r.grossTotal.annualCosts = r.grossTotal.capitalCosts
+				+ r.grossTotal.consumptionCosts
+				+ r.grossTotal.operationCosts
+				+ r.grossTotal.otherCosts
+				- r.grossTotal.revenues;
+
 		double aQ = (energyResult.totalProducedHeat - energyResult.heatNetLoss);
 		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
-		r.grossTotal.heatGenerationCosts = vat() * r.netTotal.heatGenerationCosts;
+		r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / aQ;
 	}
 
 	/** Returns the interest rate that is used for the calculation. */
