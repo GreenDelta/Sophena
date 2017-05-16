@@ -156,18 +156,21 @@ class EntryWizard extends Wizard {
 		}
 
 		private void privateGroupCombo(Composite comp) {
+			if (entry.product == null)
+				return;
 			EntityCombo<ProductGroup> combo = new EntityCombo<>();
 			combo.create("Produktgruppe", comp);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
 			List<ProductGroup> list = dao.getAll(type);
 			Sorters.byName(list);
 			combo.setInput(list);
-			if (entry.product != null && entry.product.group != null)
+			if (entry.product.group != null)
 				combo.select(entry.product.group);
+			else if (list.size() > 0) {
+				entry.product.group = list.get(0);
+				combo.select(list.get(0));
+			}
 			combo.onSelect(group -> {
-				if (entry.product == null) {
-					return;
-				}
 				entry.product.group = group;
 				ProductCosts.copy(group, entry.costs);
 				if (entry.costs.duration == 0) {

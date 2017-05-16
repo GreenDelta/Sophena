@@ -89,6 +89,8 @@ class ProductWizard extends Wizard {
 			List<ProductGroup> list = dao.getAll(product.type);
 			Sorters.byName(list);
 			groupCombo.setInput(list);
+			if (!list.isEmpty())
+				groupCombo.select(list.get(0));
 			UI.formLabel(c, "");
 		}
 
