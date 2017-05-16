@@ -181,6 +181,8 @@ class OverviewPage extends FormPage {
 	private List<Producer> getProducers(ProductType type) {
 		List<Producer> list = new ArrayList<>();
 		for (Producer p : project().producers) {
+			if (p.disabled)
+				continue;
 			Boiler b = p.boiler;
 			if (b != null && b.type == type)
 				list.add(p);
