@@ -48,7 +48,7 @@ class EnergyResultPage extends FormPage {
 
 	private void createLoadCurve(FormToolkit tk, Composite body) {
 		LoadCurveSection section = new LoadCurveSection();
-		section.setTitle("Geordnete Jahresdauerlinie (Netzlast)");
+		section.setTitle("Jahresdauerlinie - Netzlast");
 		section.setSorted(true);
 		LoadProfile profile = new LoadProfile();
 		profile.dynamicData = Stats.copy(result.loadCurve);
