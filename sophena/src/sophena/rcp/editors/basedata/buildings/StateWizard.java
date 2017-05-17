@@ -1,5 +1,8 @@
 package sophena.rcp.editors.basedata.buildings;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.rcp.Labels;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -23,13 +27,15 @@ class StateWizard extends Wizard {
 
 	private Page page;
 	private BuildingState state;
+	private List<BuildingState> states;
 
-	public static int open(BuildingState state) {
-		if (state == null)
+	public static int open(BuildingState state, List<BuildingState> states) {
+		if (state == null || states == null)
 			return Window.CANCEL;
 		StateWizard wiz = new StateWizard();
 		wiz.setWindowTitle("Gebäudezustand");
 		wiz.state = state;
+		wiz.states = states;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 400);
 		return dialog.open();
@@ -105,15 +111,20 @@ class StateWizard extends Wizard {
 
 			void bindToUI() {
 				typeToUI();
+				Controls.onSelect(typeCombo, e -> validate());
 				Texts.on(nameText).required().init(state.name);
-				Texts.on(indexText).required().integer().init(state.index);
-				Texts.on(heatingLimitText).required().decimal()
-						.init(state.heatingLimit);
-				Texts.on(waterFractionText).required().decimal()
-						.init(state.waterFraction);
-				Texts.on(loadHoursText).required().integer()
-						.init(state.loadHours);
+				Texts.on(indexText).required()
+						.integer().init(state.index)
+						.validate(() -> validate());
+				Texts.on(heatingLimitText).required()
+						.decimal().init(state.heatingLimit);
+				Texts.on(waterFractionText).required()
+						.decimal().init(state.waterFraction);
+				Texts.on(loadHoursText).required()
+						.integer().init(state.loadHours);
 				isDefaultCheck.setSelection(state.isDefault);
+				Controls.onSelect(isDefaultCheck, e -> validate());
+				validate();
 			}
 
 			void typeToUI() {
@@ -131,9 +142,7 @@ class StateWizard extends Wizard {
 			}
 
 			void bintToModel() {
-				int idx = typeCombo.getSelectionIndex();
-				String item = typeCombo.getItem(idx);
-				state.type = Labels.getBuildingType(item);
+				state.type = getType();
 				state.name = nameText.getText();
 				state.index = Texts.getInt(indexText);
 				state.isDefault = isDefaultCheck.getSelection();
@@ -141,6 +150,37 @@ class StateWizard extends Wizard {
 				state.waterFraction = Texts.getDouble(waterFractionText);
 				state.loadHours = Texts.getInt(loadHoursText);
 			}
+
+			boolean validate() {
+				BuildingType type = getType();
+				int idx = Texts.getInt(indexText);
+				boolean isDefault = isDefaultCheck.getSelection();
+				for (BuildingState other : states) {
+					if (type != other.type || Objects.equals(state, other))
+						continue;
+					if (idx == other.index)
+						return err("Der Index " + idx + " ist bereits vergeben.");
+					if (isDefault && other.isDefault)
+						return err("Ein anderer Gebäudezustand ist bereits als "
+								+ "Voreinstellung ausgewählt.");
+				}
+				setErrorMessage(null);
+				Page.this.setPageComplete(true);
+				return true;
+			}
+
+			BuildingType getType() {
+				int idx = typeCombo.getSelectionIndex();
+				String item = typeCombo.getItem(idx);
+				return Labels.getBuildingType(item);
+			}
+
+			boolean err(String msg) {
+				Page.this.setErrorMessage(msg);
+				Page.this.setPageComplete(false);
+				return false;
+			}
+
 		}
 	}
 }

@@ -102,19 +102,22 @@ public class BuildingStateEditor extends Editor {
 			BuildingState s = new BuildingState();
 			s.id = UUID.randomUUID().toString();
 			s.name = "Neuer Gebäudezustand";
-			s.type = BuildingType.OTHER;
+			BuildingState selected = Viewers.getFirstSelected(table);
+			s.type = selected == null ? BuildingType.OTHER : selected.type;
 			s.heatingLimit = 15;
 			s.waterFraction = 10;
 			s.loadHours = 2500;
 			s.index = 0;
-			for (BuildingState state : states) {
-				if (state.type != s.type)
+			s.isDefault = true;
+			for (BuildingState other : states) {
+				if (other.type != s.type)
 					continue;
-				s.index = Math.max(s.index, state.index + 1);
+				s.index = Math.max(s.index, other.index + 1);
+				if (other.isDefault)
+					s.isDefault = false;
 			}
-			s.isDefault = s.index == 0;
 			s.isProtected = false;
-			if (StateWizard.open(s) != Window.OK)
+			if (StateWizard.open(s, states) != Window.OK)
 				return;
 			dao.insert(s);
 			states.add(s);
@@ -125,7 +128,7 @@ public class BuildingStateEditor extends Editor {
 			BuildingState s = Viewers.getFirstSelected(table);
 			if (s == null || s.isProtected)
 				return;
-			if (StateWizard.open(s) != Window.OK)
+			if (StateWizard.open(s, states) != Window.OK)
 				return;
 			int idx = states.indexOf(s);
 			s = dao.update(s);
