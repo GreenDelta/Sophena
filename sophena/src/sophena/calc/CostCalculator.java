@@ -48,9 +48,7 @@ class CostCalculator {
 			handleItem(r, item);
 		}
 		handleNetItems(r);
-		if (withFunding) {
-			setCapitalCostsFunding(r);
-		}
+		finishCapitalCosts(r);
 		addOtherCosts(r);
 		r.netTotal.revenues = settings.electricityRevenues
 				* GeneratedElectricity.getTotal(energyResult);
@@ -130,10 +128,14 @@ class CostCalculator {
 		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
 	}
 
-	private void setCapitalCostsFunding(CostResult r) {
+	/** Reduce capital costs with fundings etc. */
+	private void finishCapitalCosts(CostResult r) {
 		double anf = AnnuityFactor.get(ir(), project.duration);
-		r.netTotal.capitalCosts -= (settings.funding * anf);
-		r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
+		if (withFunding) {
+			r.netTotal.capitalCosts -= (settings.funding * anf);
+			r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
+		}
+		// TODO: connection fees
 	}
 
 	private void addOtherCosts(CostResult r) {

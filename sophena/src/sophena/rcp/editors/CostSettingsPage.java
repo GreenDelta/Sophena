@@ -90,7 +90,7 @@ public class CostSettingsPage extends FormPage {
 		if (forProject) {
 			t(c, "Investitionsförderung", "EUR", costs.funding)
 					.onChanged(s -> costs.funding = Num.read(s));
-			t(c, "Einmalige Anschlusskosten", "EUR", 0);
+			// TODO t(c, "Einmalige Anschlusskosten", "EUR", 0);
 		}
 	}
 
