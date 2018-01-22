@@ -69,7 +69,7 @@ class FurtherResultsPage extends FormPage {
 
 			UI.formLabel(comp, tk, "Primärenergiefaktor");
 			double pef = PrimaryEnergyFactor.get(editor.project, editor.result);
-			Label pefLabel = UI.formLabel(comp, tk, Num.str(pef, 1));
+			Label pefLabel = UI.formLabel(comp, tk, Num.str(pef, 2));
 			pefLabel.setAlignment(SWT.RIGHT);
 			pefLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			HelpLink.create(comp, tk, "Primärenergiefaktor", H.PrimaryEnergyFactor);
