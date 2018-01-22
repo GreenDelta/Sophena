@@ -188,7 +188,7 @@ class BoilerChart {
 		Trace t = new Trace("Req", chart.primaryXAxis, chart.primaryYAxis, d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.SOLID_LINE);
-		t.setTraceColor(Colors.getSystemColor(SWT.COLOR_RED));
+		t.setTraceColor(Colors.getSystemColor(SWT.COLOR_BLACK));
 		return t;
 	}
 
