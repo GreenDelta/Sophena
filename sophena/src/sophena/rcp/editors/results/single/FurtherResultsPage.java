@@ -38,10 +38,10 @@ class FurtherResultsPage extends FormPage {
 		Function<String, Composite> s = title -> UI.formSection(body, tk, title);
 		CO2Emissions co2 = CO2Emissions.calculate(editor.project, editor.result);
 		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
-		EmissionChart.create(co2, s.apply("Vergleich Treibhausgasemissionen"));
+		EmissionChart.create(co2, body, tk);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
 		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
-		EfficiencyChart.create(efficiency, s.apply("Verwendung Brennstoffenergie"));
+		EfficiencyChart.create(efficiency, body, tk);
 		new KeyFigureTable().render(s.apply("Kennzahlen Wärmenetz"), tk);
 		form.reflow(true);
 	}

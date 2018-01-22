@@ -6,10 +6,14 @@ import java.util.function.Supplier;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.swtchart.Chart;
 
 import sophena.rcp.Icon;
 import sophena.rcp.utils.FileChooser;
@@ -17,26 +21,55 @@ import sophena.rcp.utils.Popup;
 import sophena.rcp.utils.Rcp;
 import sophena.utils.Ref;
 
-public class ChartImageExport extends Action {
+public class ImageExport extends Action {
 
-	private final Supplier<XYGraph> chart;
+	private final Supplier<Image> image;
 	private String defaultName;
 
-	public ChartImageExport(String defaultName, Supplier<XYGraph> chart) {
+	public ImageExport(String defaultName, Supplier<Image> image) {
 		this.defaultName = defaultName;
-		this.chart = chart;
+		this.image = image;
 		setText("Als Bild speichern");
 		setImageDescriptor(Icon.CAMERA_16.des());
 	}
 
+	public static ImageExport forChart(String defaultName,
+			Supplier<Chart> chart) {
+		Supplier<Image> image = () -> {
+			Chart c = chart.get();
+			if (c == null)
+				return null;
+			Rectangle bounds = c.getBounds();
+			Image img = new Image(c.getDisplay(), bounds.width, bounds.height);
+			GC gc = new GC(img);
+			c.print(gc);
+			// gc.copyArea(img, 0, 0);
+			gc.dispose();
+			return img;
+		};
+		return new ImageExport(defaultName, image);
+	}
+
+	public static ImageExport forXYGraph(String defaultName,
+			Supplier<XYGraph> chart) {
+		return new ImageExport(defaultName, () -> {
+			if (chart == null)
+				return null;
+			XYGraph g = chart.get();
+			if (g == null)
+				return null;
+			return g.getImage();
+		});
+	}
+
 	@Override
 	public void run() {
-		if (chart == null || chart.get() == null)
+		if (image == null || image.get() == null)
 			return;
 		File file = FileChooser.saveFile(defaultName, "*.jpg", "*.png");
 		if (file == null)
 			return;
-		ImageData data = chart.get().getImage().getImageData();
+		ImageData data = image.get().getImageData();
 		Ref<Throwable> err = new Ref<>();
 		Rcp.run("Speichere Bild",
 				() -> doIt(data, file, err),

@@ -13,7 +13,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
-import sophena.rcp.charts.ChartImageExport;
+import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
 
@@ -91,7 +91,8 @@ class ChartPage extends FormPage {
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1).verticalSpacing = 0;
 		XYGraph graph = createBarChart(composite, unit, fn);
-		Actions.bind(section, new ChartImageExport(title + ".jpg", () -> graph));
+		Actions.bind(section, ImageExport.forXYGraph(title + ".jpg",
+				() -> graph));
 		ChartTable.create(comparison, composite, new ChartTable.Data() {
 			@Override
 			public double value(CostResult result) {

@@ -3,6 +3,8 @@ package sophena.rcp.editors.results.single;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
 import org.swtchart.IBarSeries;
@@ -12,23 +14,30 @@ import org.swtchart.ISeriesSet;
 import org.swtchart.Range;
 
 import sophena.math.energetic.EfficiencyResult;
+import sophena.rcp.charts.ImageExport;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
 class EfficiencyChart {
 
 	private EfficiencyResult result;
+	private Chart chart;
 
 	private EfficiencyChart(EfficiencyResult result) {
 		this.result = result;
 	}
 
-	public static void create(EfficiencyResult result, Composite comp) {
-		new EfficiencyChart(result).render(comp);
+	public static void create(EfficiencyResult result, Composite comp, FormToolkit tk) {
+		new EfficiencyChart(result).render(comp, tk);
 	}
 
-	private void render(Composite comp) {
-		Chart chart = new Chart(comp, SWT.NONE);
+	private void render(Composite body, FormToolkit tk) {
+		Section section = UI.section(body, tk, "Verwendung Brennstoffenergie");
+		Actions.bind(section, ImageExport.forChart(
+				"Brennstoffenergie.jpg", () -> chart));
+		Composite comp = UI.sectionClient(section, tk);
+		chart = new Chart(comp, SWT.NONE);
 		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
 		data.minimumHeight = 250;
 		data.minimumWidth = 650;
