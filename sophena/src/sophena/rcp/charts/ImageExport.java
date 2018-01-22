@@ -43,7 +43,6 @@ public class ImageExport extends Action {
 			Image img = new Image(c.getDisplay(), bounds.width, bounds.height);
 			GC gc = new GC(img);
 			c.print(gc);
-			// gc.copyArea(img, 0, 0);
 			gc.dispose();
 			return img;
 		};

@@ -19,6 +19,8 @@ import sophena.calc.EnergyResult;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.Stats;
+import sophena.rcp.charts.ImageExport;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -34,6 +36,8 @@ class ElectricityChart {
 
 	void render(Composite body, FormToolkit tk) {
 		Section section = UI.section(body, tk, "Stromerzeugung");
+		Actions.bind(section, ImageExport.forXYGraph("Stromerzeugung.jpg",
+				() -> chart));
 		UI.gridData(section, true, false);
 		Composite composite = UI.sectionClient(section, tk);
 		UI.gridLayout(composite, 1);
