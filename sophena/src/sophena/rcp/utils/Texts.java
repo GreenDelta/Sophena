@@ -1,8 +1,13 @@
 package sophena.rcp.utils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.utils.Num;
@@ -185,7 +190,7 @@ public final class Texts {
 		public TextDispatch onChanged(Consumer<String> fn) {
 			if (text == null || fn == null)
 				return this;
-			text.addModifyListener((e) -> fn.accept(text.getText()));
+			text.addModifyListener(new ChangeListener(text, fn));
 			return this;
 		}
 
@@ -221,6 +226,36 @@ public final class Texts {
 			return this;
 		}
 
+	}
+
+	private static class ChangeListener implements ModifyListener {
+
+		private final Text text;
+		private final Consumer<String> fn;
+		private AtomicBoolean hasFocus = new AtomicBoolean(false);
+
+		private ChangeListener(Text text, Consumer<String> fn) {
+			this.fn = fn;
+			this.text = text;
+			text.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					hasFocus.set(false);
+				}
+
+				@Override
+				public void focusGained(FocusEvent e) {
+					hasFocus.set(true);
+				}
+			});
+		}
+
+		@Override
+		public void modifyText(ModifyEvent e) {
+			if (!hasFocus.get())
+				return;
+			fn.accept(text.getText());
+		}
 	}
 
 }

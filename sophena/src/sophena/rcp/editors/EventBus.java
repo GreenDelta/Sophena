@@ -1,0 +1,35 @@
+package sophena.rcp.editors;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class EventBus {
+
+	private final HashMap<String, List<Runnable>> clients = new HashMap<>();
+
+	public void notify(String event) {
+		List<Runnable> targets = clients.get(event);
+		if (targets == null)
+			return;
+		for (Runnable target : targets) {
+			target.run();
+		}
+	}
+
+	public void on(String event, Runnable target) {
+		if (target == null)
+			return;
+		List<Runnable> list = clients.get(event);
+		if (list == null) {
+			list = new ArrayList<>();
+			clients.put(event, list);
+		}
+		for (Runnable t : list) {
+			if (t == target)
+				return;
+		}
+		list.add(target);
+	}
+
+}

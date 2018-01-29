@@ -96,6 +96,7 @@ public class ProjectWizard extends Wizard {
 		n.smoothingFactor = Defaults.SMOOTHING_FACTOR;
 		n.powerLoss = 20;
 		n.maxBufferLoadTemperature = 95;
+		n.bufferLoss = 0.15;
 		n.supplyTemperature = 80;
 		n.returnTemperature = 50;
 	}

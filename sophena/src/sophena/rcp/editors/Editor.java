@@ -11,6 +11,7 @@ abstract public class Editor extends FormEditor implements IEditor {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());
 	private boolean dirty;
+	public final EventBus bus = new EventBus();
 
 	@Override
 	public void setDirty() {

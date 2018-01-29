@@ -39,6 +39,7 @@ import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
 import sophena.rcp.editors.basedata.products.PlanningEditor;
 import sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
+import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -147,7 +148,7 @@ public class ActionBarAdvisor extends
 		MenuManager m = new MenuManager(M.Help);
 		m.add(aboutAction);
 		// SQL query editor
-		// m.add(Actions.create("SQL", SqlEditor::open));
+		m.add(Actions.create("SQL", SqlEditor::open));
 		menu.add(m);
 	}
 

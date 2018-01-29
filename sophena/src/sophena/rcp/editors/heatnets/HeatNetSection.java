@@ -68,6 +68,7 @@ class HeatNetSection {
 		Texts.on(t).init(heatNet().returnTemperature).decimal().required()
 				.onChanged(s -> {
 					heatNet().returnTemperature = Num.read(s);
+					editor.bus.notify("returnTemperature");
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "°C");

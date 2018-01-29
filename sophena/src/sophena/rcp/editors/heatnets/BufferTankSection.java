@@ -40,6 +40,7 @@ class BufferTankSection {
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
 		createMaxTempText(comp, tk);
+		createLowerTempText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ProductCosts();
 		costSection = new ProductCostSection(() -> net().bufferTankCosts)
@@ -64,6 +65,25 @@ class BufferTankSection {
 					net().maxBufferLoadTemperature = Texts.getDouble(t);
 					editor.setDirty();
 				});
+		UI.formLabel(comp, tk, "°C");
+	}
+
+	private void createLowerTempText(Composite comp, FormToolkit tk) {
+		Text t = UI.formText(comp, tk, "Untere Ladetemperatur");
+		double initial = net().returnTemperature;
+		Double lowerBuffTemp = net().lowerBufferLoadTemperature;
+		if (lowerBuffTemp != null) {
+			initial = lowerBuffTemp;
+		}
+		Texts.on(t).init(initial).decimal().onChanged(s -> {
+			net().lowerBufferLoadTemperature = Texts.getDouble(t);
+			editor.setDirty();
+		});
+		editor.bus.on("returnTemperature", () -> {
+			if (net().lowerBufferLoadTemperature == null) {
+				Texts.set(t, net().returnTemperature);
+			}
+		});
 		UI.formLabel(comp, tk, "°C");
 	}
 
