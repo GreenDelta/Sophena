@@ -16,7 +16,7 @@ import sophena.io.datapack.Import;
  */
 public class BuildDb {
 
-	private static final String PACKAGE_PATH = "C:/Users/Besitzer/Projects/go_path/src/git.greendelta.com/sophdat/gen/base_data.sophena";
+	private static final String PACKAGE_PATH = "../sophdat/gen/base_data.sophena";
 
 	public static void main(String[] args) {
 		try {
@@ -32,8 +32,10 @@ public class BuildDb {
 			db.close();
 
 			File zip = new File("resources/database.zip");
-			System.out.println("Delete old databse: " + zip);
-			FileUtils.forceDelete(zip);
+			if (zip.exists()) {
+				System.out.println("Delete old databse: " + zip);
+				FileUtils.forceDelete(zip);
+			}
 			System.out.println("Package new database");
 			ZipUtil.pack(tmpDir.toFile(), zip);
 

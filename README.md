@@ -42,6 +42,16 @@ mvn package
 
 After this, refresh the project.
 
+### Building the database template
+The application contains a database template that contains the base data of
+Sophena. This template is extracted into the workspace if the database folder
+`<WORKSPACE>/database` does not exist. The template is located in
+`./sophena/resources/database.zip` and is currently generated via the
+[BuildDb](./sophena/src/sophena/db/BuildDb.java) script which simply imports
+the `./sophdat/gen/base_data.sophena` package in an empty database. Thus, you
+first have to run the [sophdat](./sophdat) tool in order to create the database
+template which is distributed with the application.
+
 ## License
 Unless stated otherwise, all source code of the Sophena project is licensed 
 under the [Mozilla Public License, v. 2.0](http://mozilla.org/MPL/2.0/). Please 
