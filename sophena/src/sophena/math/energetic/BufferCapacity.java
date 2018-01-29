@@ -4,40 +4,37 @@ import sophena.model.HeatNet;
 
 public class BufferCapacity {
 
-	private final double volume;
-	private double maxChargingTemperatur;
-	private double returnTemperature;
+	/** The buffer tank volume in litre. */
+	public double volume;
 
-	private BufferCapacity(double volume) {
-		this.volume = volume;
+	/** The maximum charging temperature of the buffer tank, in °C */
+	public double maxChargingTemperatur;
+
+	/** The lower charging temperature of the buffer tank, in °C */
+	public double lowerChargingTemperatur;
+
+	/**
+	 * Calulcates the value of the buffer capacity, in kWh
+	 */
+	public double value() {
+		return 0.001166 * volume * (maxChargingTemperatur - lowerChargingTemperatur);
 	}
 
-	public static BufferCapacity ofVolume_L(double volume) {
-		return new BufferCapacity(volume);
-	}
-
-	public BufferCapacity maxChargingTemperatur_degC(double maxTemperatur) {
-		this.maxChargingTemperatur = maxTemperatur;
-		return this;
-	}
-
-	public BufferCapacity returnTemperature_degC(double returnTemperature) {
-		this.returnTemperature = returnTemperature;
-		return this;
-	}
-
-	public double get_kWh() {
-		return 0.001166 * volume * (maxChargingTemperatur - returnTemperature);
-	}
-
-	public static double get(HeatNet net) {
+	/**
+	 * Calulcates the buffer tank capacity of the given heating net
+	 * specification, in kWh.
+	 */
+	public static double of(HeatNet net) {
 		if (net == null)
 			return 0;
-		return BufferCapacity
-				.ofVolume_L(net.bufferTankVolume)
-				.maxChargingTemperatur_degC(net.maxBufferLoadTemperature)
-				.returnTemperature_degC(net.returnTemperature)
-				.get_kWh();
+		BufferCapacity cap = new BufferCapacity();
+		cap.volume = net.bufferTankVolume;
+		cap.maxChargingTemperatur = net.maxBufferLoadTemperature;
+		cap.lowerChargingTemperatur = net.returnTemperature;
+		if (net.lowerBufferLoadTemperature != null) {
+			cap.lowerChargingTemperatur = net.lowerBufferLoadTemperature;
+		}
+		return cap.value();
 	}
 
 }

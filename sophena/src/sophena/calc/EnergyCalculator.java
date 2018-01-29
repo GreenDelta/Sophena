@@ -22,7 +22,7 @@ class EnergyCalculator {
 	}
 
 	private EnergyResult doIt() {
-		maxBufferCapacity = BufferCapacity.get(project.heatNet);
+		maxBufferCapacity = BufferCapacity.of(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
 		for (int i = 0; i < Stats.HOURS; i++) {
@@ -85,7 +85,8 @@ class EnergyCalculator {
 		double bMin = Producers.minPower(producer);
 		double bMax = Producers.maxPower(producer);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
-				? requiredLoad : maxLoad;
+				? requiredLoad
+				: maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);
 	}
 
