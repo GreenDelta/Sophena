@@ -73,7 +73,7 @@ class PipeSection {
 		GridLayout layout = UI.gridLayout(comp, 4);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		lengthText = UI.formText(comp, tk, "Länge");
+		lengthText = UI.formText(comp, tk, "Trassenlänge");
 		Texts.on(lengthText).init(net().length).decimal().required()
 				.onChanged(s -> textsChanged());
 		UI.formLabel(comp, tk, "m");
@@ -99,14 +99,14 @@ class PipeSection {
 	private void textsChanged() {
 		HeatNet net = net();
 		double power = Texts.getDouble(powerText);
-		if (Num.equal(power,HeatNets.calculatePowerLoss(net))) {
+		if (Num.equal(power, HeatNets.calculatePowerLoss(net))) {
 			powerText.setBackground(Colors.forRequiredField());
 		} else {
 			powerText.setBackground(Colors.forModifiedDefault());
 		}
 
 		double length = Texts.getDouble(lengthText);
-		if (Num.equal(length,HeatNets.getTotalSupplyLength(net))) {
+		if (Num.equal(length, HeatNets.getTotalSupplyLength(net))) {
 			lengthText.setBackground(Colors.forRequiredField());
 		} else {
 			lengthText.setBackground(Colors.forModifiedDefault());
