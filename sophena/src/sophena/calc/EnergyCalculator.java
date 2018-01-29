@@ -22,9 +22,12 @@ class EnergyCalculator {
 	}
 
 	private EnergyResult doIt() {
+
 		maxBufferCapacity = BufferCapacity.of(project.heatNet);
+		double bufferLossFactor = project.heatNet.bufferLoss / 100d;
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
+
 		for (int i = 0; i < Stats.HOURS; i++) {
 
 			double requiredLoad = r.loadCurve[i];
@@ -64,15 +67,26 @@ class EnergyCalculator {
 
 			if (requiredLoad >= 0 && bufferPotential > 0) {
 				double bufferPower = requiredLoad;
-				if (bufferPotential < requiredLoad)
+				if (bufferPotential < requiredLoad) {
 					bufferPower = bufferPotential;
+				}
 				suppliedPower += bufferPower;
 				r.suppliedBufferHeat[i] = bufferPower;
 				bufferCapacity += bufferPower;
 			}
-			if ((i + 1) < Stats.HOURS)
-				r.bufferCapacity[i + 1] = bufferCapacity;
+
 			r.suppliedPower[i] = suppliedPower;
+
+			// buffer capacity with buffer loss
+			bufferPotential = maxBufferCapacity - bufferCapacity;
+			if (bufferPotential > 0) {
+				double bufferLoss = bufferPotential * bufferLossFactor;
+				r.bufferLoss[i] = bufferLoss;
+				bufferCapacity = bufferCapacity + bufferLoss;
+			}
+			if ((i + 1) < Stats.HOURS) {
+				r.bufferCapacity[i + 1] = bufferCapacity;
+			}
 		}
 
 		calcTotals(r);
@@ -99,5 +113,6 @@ class EnergyCalculator {
 			r.totalProducedHeat += total;
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
+		r.totalBufferLoss = Stats.sum(r.bufferLoss);
 	}
 }

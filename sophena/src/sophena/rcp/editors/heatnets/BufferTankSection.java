@@ -41,6 +41,7 @@ class BufferTankSection {
 		createVolText(comp, tk);
 		createMaxTempText(comp, tk);
 		createLowerTempText(comp, tk);
+		createHeatLossText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ProductCosts();
 		costSection = new ProductCostSection(() -> net().bufferTankCosts)
@@ -85,6 +86,15 @@ class BufferTankSection {
 			}
 		});
 		UI.formLabel(comp, tk, "°C");
+	}
+
+	private void createHeatLossText(Composite comp, FormToolkit tk) {
+		Text t = UI.formText(comp, tk, "Wärmeverluste");
+		Texts.on(t).init(net().bufferLoss).decimal().required().onChanged(s -> {
+			net().bufferLoss = Texts.getDouble(t);
+			editor.setDirty();
+		});
+		UI.formLabel(comp, tk, "%");
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {

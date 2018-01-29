@@ -1,5 +1,6 @@
 # Pufferspeicher
 
+## Kapazität eines Pufferspeichers
 Die Kapazität `Q` eines Pufferspeichers wird wie folgt berechnet:
 
 ```julia
@@ -20,3 +21,21 @@ m = 10000     # kg = L
 Q = c * m * (80 - 60)  # kWh
 ```
 
+Die Klasse `BufferCapacity` berechnet diese Funktion aus einer
+Heiznetzkonfiguration.
+
+## Wärmeverlust eines Pufferspeichers
+Neben Volumen sowie der maximalen und unteren Ladetemperatur kann auch der
+Wärmeverlust des Pufferspeichers angegeben werden. Dieser Wert wird in der
+Simulationsrechnung berücksichtig und mit 0.15% voreingestellt. Während der
+Simulation wird die Kapazität des Puffers zur Stunde `i` um diesen Wert
+verringert, **nachdem** alle Kessel zum Einsatz gekommen sind und dann für die
+Stunde `i+1` übertragen. Außerdem wird dieser Pufferspeicherverlust für die
+Stunde `i` gespeichert.
+
+```julia
+loss_factor = 0.15 / 100
+buffer_load = max_buffer_capacity - buffer_capacity
+buffer_loss = buffer_load * loss_factor
+buffer_capacity = buffer_capacity + buffer_loss
+```
