@@ -1,0 +1,7 @@
+*.exe
+*.xlsx
+*.pyc
+
+.vscode/
+/gen/
+/data/

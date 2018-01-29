@@ -75,8 +75,8 @@ public class BuildingStateEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			TableLabel label = new TableLabel();
 			TableViewer table = Tables.createViewer(comp, "Gebäudetyp",
-					"Gebäudezustand (unsaniert)", "Heizgrenztemperatur", "Warmwasseranteil",
-					"Volllaststunden", "Voreinstellung");
+					"Gebäudezustand (unsaniert)", "Heizgrenztemperatur",
+					"Warmwasseranteil", "Volllaststunden", "Voreinstellung");
 			table.setContentProvider(new TableContent(label));
 			table.setLabelProvider(label);
 			table.setSorter(new TableSorter());
