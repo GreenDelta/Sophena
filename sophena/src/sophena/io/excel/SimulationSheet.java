@@ -31,8 +31,9 @@ class SimulationSheet {
 			Excel.cell(sheet, row, 3, r(diff));
 			Excel.cell(sheet, row, 4, r(result.bufferCapacity[i]));
 			Excel.cell(sheet, row, 5, r(result.suppliedBufferHeat[i]));
+			Excel.cell(sheet, row, 6, r(result.bufferLoss[i]));
 			for (int k = 0; k < result.producers.length; k++) {
-				Excel.cell(sheet, row, 6 + k, r(result.producerResults[k][i]));
+				Excel.cell(sheet, row, 7 + k, r(result.producerResults[k][i]));
 			}
 		}
 		Excel.autoSize(sheet, 0, 6);
@@ -46,7 +47,8 @@ class SimulationSheet {
 				"Gelieferte Leistung",
 				"Differenz",
 				"Pufferspeicherkapazität",
-				"Beitrag Pufferspeicher" };
+				"Beitrag Pufferspeicher",
+				"Pufferspeicherverluste" };
 		int col = 0;
 		for (String s : columns) {
 			Excel.cell(sheet, 0, col, s).setCellStyle(style);

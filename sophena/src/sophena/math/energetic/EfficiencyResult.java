@@ -2,6 +2,7 @@ package sophena.math.energetic;
 
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
+import sophena.model.Stats;
 
 /** All results are given in kWh. */
 public class EfficiencyResult {
@@ -10,6 +11,7 @@ public class EfficiencyResult {
 	public double conversionLoss;
 	public double producedHeat;
 	public double producedElectrictiy;
+	public double bufferLoss;
 	public double distributionLoss;
 	public double usedHeat;
 	public double totalLoss;
@@ -48,8 +50,9 @@ public class EfficiencyResult {
 			}
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.energyResult.heatNetLoss;
-			res.usedHeat = res.producedHeat - res.distributionLoss;
-			res.totalLoss = res.conversionLoss + res.distributionLoss;
+			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
+			res.usedHeat = res.producedHeat - res.distributionLoss - res.bufferLoss;
+			res.totalLoss = res.conversionLoss + res.distributionLoss + res.bufferLoss;
 			return res;
 		}
 	}

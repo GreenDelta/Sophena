@@ -49,7 +49,8 @@ class EfficiencyChart {
 		if (result.producedElectrictiy > 0)
 			addSeries(set, "Erzeugter Strom", result.producedElectrictiy, 1);
 		addSeries(set, "Konversionsverluste", result.conversionLoss, 2);
-		addSeries(set, "Verteilungsverluste", result.distributionLoss, 3);
+		addSeries(set, "Pufferspeicherverluste", result.bufferLoss, 3);
+		addSeries(set, "Verteilungsverluste", result.distributionLoss, 4);
 		formatX(chart);
 		formatY(chart);
 	}

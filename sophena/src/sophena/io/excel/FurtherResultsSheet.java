@@ -99,6 +99,11 @@ class FurtherResultsSheet {
 			Excel.cell(sheet, row, 1, Math.round(efficiency.producedElectrictiy));
 		}
 		row++;
+		Excel.cell(sheet, row, 0, "Pufferspeicherverluste");
+		Excel.cell(sheet, row, 1, Math.round(efficiency.bufferLoss));
+		Excel.cell(sheet, row, 2, Math.round(((efficiency.bufferLoss
+				/ efficiency.producedHeat) * 100)));
+		row++;
 		Excel.cell(sheet, row, 0, "Verteilungsverluste");
 		Excel.cell(sheet, row, 1, Math.round(efficiency.distributionLoss));
 		Excel.cell(sheet, row, 2, Math.round(((efficiency.distributionLoss

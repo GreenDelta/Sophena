@@ -43,8 +43,8 @@ class EfficiencyTable {
 		items.add(new Item("Erzeugte Wärme", r.producedHeat));
 		if (r.producedElectrictiy > 0)
 			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
-		items.add(new Item("Verteilungsverluste", r.distributionLoss,
-				r.producedHeat));
+		items.add(new Item("Pufferspeicherverluste", r.bufferLoss, r.producedHeat));
+		items.add(new Item("Verteilungsverluste", r.distributionLoss, r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
 		Item total = new Item("Gesamtverluste", r.totalLoss, r.fuelEnergy);
