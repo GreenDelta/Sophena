@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class MonthDayBox {
@@ -23,14 +24,26 @@ public class MonthDayBox {
 	private Combo dayCombo;
 	private Combo monthCombo;
 
+	public MonthDayBox(String label, Composite parent) {
+		this(label, parent, null);
+	}
+
 	public MonthDayBox(String label, Composite parent, FormToolkit tk) {
-		Composite c = tk.createComposite(parent);
+		Composite c = tk != null ? tk.createComposite(parent)
+				: new Composite(parent, SWT.NONE);
 		UI.innerGrid(c, 3);
-		tk.createLabel(c, label);
+		if (tk != null) {
+			tk.createLabel(c, label);
+		} else {
+			Label lab = new Label(c, SWT.NONE);
+			lab.setText(label);
+		}
 		dayCombo = createCombo(c, 25, getDayItems(0));
-		tk.adapt(dayCombo);
 		monthCombo = createCombo(c, 75, MONTHS);
-		tk.adapt(monthCombo);
+		if (tk != null) {
+			tk.adapt(dayCombo);
+			tk.adapt(monthCombo);
+		}
 		Controls.onSelect(monthCombo, (e) -> monthChanged());
 		Controls.onSelect(dayCombo, (e) -> fireChange());
 	}

@@ -74,9 +74,7 @@ class ConsumptionSection {
 		int code = ConsumptionWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
 			consumer().fuelConsumptions.add(c);
-			table.setInput(consumer().fuelConsumptions);
-			editor.calculate();
-			editor.setDirty();
+			updateUI();
 		}
 	}
 
@@ -85,9 +83,7 @@ class ConsumptionSection {
 		if (list == null || list.isEmpty())
 			return;
 		consumer().fuelConsumptions.removeAll(list);
-		table.setInput(consumer().fuelConsumptions);
-		editor.calculate();
-		editor.setDirty();
+		updateUI();
 	}
 
 	private void onEdit() {
@@ -96,10 +92,14 @@ class ConsumptionSection {
 			return;
 		int code = ConsumptionWizard.open(c, consumer().loadHours);
 		if (code == Window.OK) {
-			table.setInput(consumer().fuelConsumptions);
-			editor.calculate();
-			editor.setDirty();
+			updateUI();
 		}
+	}
+
+	private void updateUI() {
+		table.setInput(consumer().fuelConsumptions);
+		editor.calculate();
+		editor.setDirty();
 	}
 
 	private class Label extends LabelProvider

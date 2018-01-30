@@ -1,9 +1,13 @@
 package sophena.rcp.editors.consumers;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -16,6 +20,7 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 
 class InterruptionSection {
 
@@ -60,15 +65,35 @@ class InterruptionSection {
 	}
 
 	private void onAdd() {
-
+		TimeInterval time = new TimeInterval();
+		time.id = UUID.randomUUID().toString();
+		if (InterruptionWizard.open(time) != Window.OK)
+			return;
+		consumer().interruptions.add(time);
+		updateUI();
 	}
 
 	private void onEdit() {
-
+		TimeInterval time = Viewers.getFirstSelected(table);
+		if (time == null)
+			return;
+		if (InterruptionWizard.open(time) != Window.OK)
+			return;
+		updateUI();
 	}
 
 	private void onRemove() {
+		List<TimeInterval> list = Viewers.getAllSelected(table);
+		if (list == null || list.isEmpty())
+			return;
+		consumer().interruptions.removeAll(list);
+		updateUI();
+	}
 
+	private void updateUI() {
+		table.setInput(consumer().interruptions);
+		editor.calculate();
+		editor.setDirty();
 	}
 
 	private class Label extends LabelProvider
