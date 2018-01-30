@@ -23,6 +23,9 @@ public class BuildingState extends BaseDataEntity {
 	@Column(name = "heating_limit")
 	public double heatingLimit;
 
+	@Column(name = "antifreezing_temperature")
+	public double antifreezingTemperature;
+
 	@Column(name = "water_fraction")
 	public double waterFraction;
 

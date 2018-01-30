@@ -67,6 +67,7 @@ class StateWizard extends Wizard {
 		Text nameText;
 		Text indexText;
 		Text heatingLimitText;
+		Text antifreezingText;
 		Text waterFractionText;
 		Text loadHoursText;
 		Button isDefaultCheck;
@@ -86,6 +87,8 @@ class StateWizard extends Wizard {
 			indexText = UI.formText(c, "Index");
 			UI.filler(c);
 			heatingLimitText = UI.formText(c, "Heizgrenztemperatur");
+			UI.formLabel(c, "°C");
+			antifreezingText = UI.formText(c, "Frostschutztemperatur");
 			UI.formLabel(c, "°C");
 			waterFractionText = UI.formText(c, "Warmwasseranteil");
 			UI.formLabel(c, "%");
@@ -118,6 +121,8 @@ class StateWizard extends Wizard {
 						.validate(() -> validate());
 				Texts.on(heatingLimitText).required()
 						.decimal().init(state.heatingLimit);
+				Texts.on(antifreezingText).required()
+						.decimal().init(state.antifreezingTemperature);
 				Texts.on(waterFractionText).required()
 						.decimal().init(state.waterFraction);
 				Texts.on(loadHoursText).required()
@@ -129,7 +134,8 @@ class StateWizard extends Wizard {
 
 			void typeToUI() {
 				String label = state.type != null
-						? Labels.get(state.type) : Labels.get(BuildingType.OTHER);
+						? Labels.get(state.type)
+						: Labels.get(BuildingType.OTHER);
 				int select = 0;
 				String[] items = typeCombo.getItems();
 				for (int i = 0; i < items.length; i++) {
@@ -147,6 +153,7 @@ class StateWizard extends Wizard {
 				state.index = Texts.getInt(indexText);
 				state.isDefault = isDefaultCheck.getSelection();
 				state.heatingLimit = Texts.getDouble(heatingLimitText);
+				state.antifreezingTemperature = Texts.getDouble(antifreezingText);
 				state.waterFraction = Texts.getDouble(waterFractionText);
 				state.loadHours = Texts.getInt(loadHoursText);
 			}

@@ -52,6 +52,7 @@ CREATE TABLE tbl_building_states (
 	is_default BOOLEAN,
 	building_type VARCHAR(50),
 	heating_limit DOUBLE,
+	antifreezing_temperature DOUBLE,
 	water_fraction DOUBLE,
 	load_hours INTEGER,
 

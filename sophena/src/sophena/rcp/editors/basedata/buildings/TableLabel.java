@@ -74,8 +74,10 @@ class TableLabel extends BaseTableLabel {
 		case 2:
 			return Num.str(s.heatingLimit) + " °C";
 		case 3:
-			return Num.str(s.waterFraction) + " %";
+			return Num.str(s.antifreezingTemperature) + " °C";
 		case 4:
+			return Num.str(s.waterFraction) + " %";
+		case 5:
 			return Num.intStr(s.loadHours) + " h";
 		default:
 			return null;

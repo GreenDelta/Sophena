@@ -76,7 +76,8 @@ public class BuildingStateEditor extends Editor {
 			TableLabel label = new TableLabel();
 			TableViewer table = Tables.createViewer(comp, "Gebäudetyp",
 					"Gebäudezustand (unsaniert)", "Heizgrenztemperatur",
-					"Warmwasseranteil", "Volllaststunden", "Voreinstellung");
+					"Frostschutztemperatur", "Warmwasseranteil",
+					"Volllaststunden", "Voreinstellung");
 			table.setContentProvider(new TableContent(label));
 			table.setLabelProvider(label);
 			table.setSorter(new TableSorter());
@@ -105,6 +106,7 @@ public class BuildingStateEditor extends Editor {
 			BuildingState selected = Viewers.getFirstSelected(table);
 			s.type = selected == null ? BuildingType.OTHER : selected.type;
 			s.heatingLimit = 15;
+			s.antifreezingTemperature = 5;
 			s.waterFraction = 10;
 			s.loadHours = 2500;
 			s.index = 0;
