@@ -25,3 +25,19 @@ only for tests:
 ```sql
 update tbl_building_states set antifreezing_temperature = 5;
 ```
+
+#### New Table `tbl_time_intervals`
+
+```sql
+CREATE TABLE tbl_time_intervals (
+    
+    id CHAR(36),
+    f_owner CHAR(36),
+    
+    start_time VARCHAR(255),
+    end_time VARCHAR(255),
+    description VARCHAR(255),
+    
+    PRIMARY KEY (id)
+);
+```

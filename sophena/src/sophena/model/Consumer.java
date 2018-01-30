@@ -51,6 +51,10 @@ public class Consumer extends RootEntity {
 	public final List<FuelConsumption> fuelConsumptions = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_owner")
+	public final List<TimeInterval> interruptions = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
 	public List<LoadProfile> loadProfiles = new ArrayList<>();
 
@@ -89,9 +93,13 @@ public class Consumer extends RootEntity {
 		clone.heatingLoad = heatingLoad;
 		clone.waterFraction = waterFraction;
 		clone.loadHours = loadHours;
-		for (FuelConsumption cons : fuelConsumptions)
+		for (FuelConsumption cons : fuelConsumptions) {
 			clone.fuelConsumptions.add(cons.clone());
-		for (LoadProfile lp : loadProfiles) 
+		}
+		for (TimeInterval i : interruptions) {
+			clone.interruptions.add(i.clone());
+		}
+		for (LoadProfile lp : loadProfiles)
 			clone.loadProfiles.add(lp.clone());
 		if (location != null)
 			clone.location = location.clone();
