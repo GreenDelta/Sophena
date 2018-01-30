@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import sophena.math.Smoothing;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
+import sophena.model.HoursTrace;
 import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -78,19 +79,10 @@ public class ProjectLoad {
 	public static void applyInterruption(double[] curve, HeatNet net) {
 		if (curve == null || net == null || !net.withInterruption)
 			return;
-		int startIndex = getIndex(net.interruptionStart, true);
-		int endIndex = getIndex(net.interruptionEnd, false);
-		if (startIndex == -1 || endIndex == -1)
-			return;
-		if (startIndex < endIndex) {
-			for (int i = startIndex; i <= endIndex; i++)
-				curve[i] = 0;
-		} else {
-			for (int i = 0; i < Stats.HOURS; i++) {
-				if (i > startIndex || i < endIndex)
-					curve[i] = 0;
-			}
-		}
+		int start = getIndex(net.interruptionStart, true);
+		int end = getIndex(net.interruptionEnd, false);
+		int[] interval = { start, end };
+		HoursTrace.applyInterval(curve, interval, (old, i) -> 0.0);
 	}
 
 	private static int getIndex(String monthDay, boolean beginOfDay) {

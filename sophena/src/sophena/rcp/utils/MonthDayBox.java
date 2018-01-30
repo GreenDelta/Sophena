@@ -12,13 +12,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.model.HoursTrace;
+
 public class MonthDayBox {
 
 	private final String[] MONTHS = {
 			"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
 			"August", "September", "Oktober", "November", "Dezember" };
-	private final int[] DAYS_IN_MONTH = {
-			31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 	private List<Consumer<MonthDay>> listeners = new ArrayList<>();
 	private Combo dayCombo;
@@ -107,7 +107,7 @@ public class MonthDayBox {
 	private String[] getDayItems(int monthIndex) {
 		if (monthIndex < 0 || monthIndex > 11)
 			return new String[0];
-		int count = DAYS_IN_MONTH[monthIndex];
+		int count = HoursTrace.DAYS_IN_MONTH[monthIndex];
 		String[] items = new String[count];
 		for (int i = 0; i < count; i++)
 			items[i] = Integer.toString(i + 1).concat(".");
