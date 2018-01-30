@@ -82,8 +82,8 @@ public class BuildingStateEditor extends Editor {
 			table.setLabelProvider(label);
 			table.setSorter(new TableSorter());
 			table.setInput(states);
-			double x = 1 / 6d;
-			Tables.bindColumnWidths(table, x, x, x, x, x, x);
+			double x = 1 / 7d;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
 			bindActions(section, table);
 		}
 

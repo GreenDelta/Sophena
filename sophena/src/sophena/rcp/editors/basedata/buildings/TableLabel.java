@@ -54,7 +54,7 @@ class TableLabel extends BaseTableLabel {
 			return Icon.BUILDING_TYPE_16.img();
 		if (col == 1)
 			return s.isProtected ? Icon.LOCK_16.img() : Icon.EDIT_16.img();
-		if (col == 5)
+		if (col == 6)
 			return s.isDefault ? Icon.CHECKBOX_CHECKED_16.img()
 					: Icon.CHECKBOX_UNCHECKED_16.img();
 		else

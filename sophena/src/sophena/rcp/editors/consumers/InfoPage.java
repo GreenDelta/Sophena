@@ -34,6 +34,7 @@ class InfoPage extends FormPage {
 				HeatDemandSection.of(editor).create(body, tk));
 		if (!consumer().demandBased)
 			ConsumptionSection.of(editor).create(body, tk);
+		InterruptionSection.of(editor).create(body, tk);
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);
 		new TransferStationSection(editor).create(body, tk);

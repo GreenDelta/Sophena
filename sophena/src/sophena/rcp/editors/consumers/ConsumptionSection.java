@@ -43,15 +43,16 @@ class ConsumptionSection {
 		return editor.consumer;
 	}
 
-	void create(Composite body, FormToolkit toolkit) {
-		Section section = UI.section(body, toolkit, M.ConsumptionData);
-		Composite composite = UI.sectionClient(section, toolkit);
+	void create(Composite body, FormToolkit tk) {
+		Section section = UI.section(body, tk, M.ConsumptionData);
+		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
-		Action add = Actions.create(M.Add, Icon.ADD_16.des(), this::onAdd);
-		Action remove = Actions.create(M.Remove, Icon.DELETE_16.des(),
-				this::onRemove);
-		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
-				this::onEdit);
+		Action add = Actions.create(M.Add,
+				Icon.ADD_16.des(), this::onAdd);
+		Action remove = Actions.create(M.Remove,
+				Icon.DELETE_16.des(), this::onRemove);
+		Action edit = Actions.create(M.Edit,
+				Icon.EDIT_16.des(), this::onEdit);
 		Actions.bind(section, add, edit, remove);
 		Actions.bind(table, add, edit, remove);
 	}
@@ -101,18 +102,19 @@ class ConsumptionSection {
 		}
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends LabelProvider
+			implements ITableLabelProvider {
 
 		@Override
-		public Image getColumnImage(Object element, int col) {
+		public Image getColumnImage(Object obj, int col) {
 			return col == 0 ? Icon.FUEL_16.img() : null;
 		}
 
 		@Override
-		public String getColumnText(Object element, int col) {
-			if (!(element instanceof FuelConsumption))
+		public String getColumnText(Object obj, int col) {
+			if (!(obj instanceof FuelConsumption))
 				return null;
-			FuelConsumption c = (FuelConsumption) element;
+			FuelConsumption c = (FuelConsumption) obj;
 			switch (col) {
 			case 0:
 				return c.fuel != null ? c.fuel.name : null;
