@@ -1,5 +1,8 @@
 package sophena.rcp;
 
+import java.time.Month;
+import java.time.MonthDay;
+
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.Boiler;
@@ -148,6 +151,45 @@ public final class Labels {
 		default:
 			return null;
 		}
+	}
+
+	public static String get(Month month) {
+		if (month == null)
+			return "";
+		switch (month) {
+		case JANUARY:
+			return "Januar";
+		case FEBRUARY:
+			return "Februar";
+		case MARCH:
+			return "März";
+		case APRIL:
+			return "April";
+		case MAY:
+			return "Mai";
+		case JUNE:
+			return "Juni";
+		case JULY:
+			return "Juli";
+		case AUGUST:
+			return "August";
+		case SEPTEMBER:
+			return "September";
+		case OCTOBER:
+			return "Oktober";
+		case NOVEMBER:
+			return "November";
+		case DECEMBER:
+			return "Dezember";
+		default:
+			return "";
+		}
+	}
+
+	public static String get(MonthDay md) {
+		if (md == null)
+			return "";
+		return md.getDayOfMonth() + ". " + get(md.getMonth());
 	}
 
 	public static String getPlural(ProductType t) {

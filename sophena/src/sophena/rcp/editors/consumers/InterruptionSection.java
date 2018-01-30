@@ -1,5 +1,6 @@
 package sophena.rcp.editors.consumers;
 
+import java.time.MonthDay;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,8 +17,10 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.model.Consumer;
 import sophena.model.TimeInterval;
 import sophena.rcp.Icon;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Log;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -111,13 +114,25 @@ class InterruptionSection {
 			TimeInterval time = (TimeInterval) obj;
 			switch (col) {
 			case 0:
-				return time.start;
+				return format(time.start);
 			case 1:
-				return time.end;
+				return format(time.end);
 			case 2:
 				return time.description;
 			default:
 				return null;
+			}
+		}
+
+		private String format(String time) {
+			if (time == null)
+				return "";
+			try {
+				MonthDay md = MonthDay.parse(time);
+				return Labels.get(md);
+			} catch (Exception e) {
+				Log.error(this, "failed to parse time " + time, e);
+				return "<ERROR>";
 			}
 		}
 	}
