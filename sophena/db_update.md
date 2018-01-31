@@ -41,3 +41,7 @@ CREATE TABLE tbl_time_intervals (
     PRIMARY KEY (id)
 );
 ```
+
+#### Nice to have
+
+* HeatNet -> replace single interruption fields with TimeInterval reference @OneToOne
