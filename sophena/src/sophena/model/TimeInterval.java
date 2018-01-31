@@ -29,4 +29,9 @@ public class TimeInterval extends AbstractEntity {
 		return clone;
 	}
 
+	@Override
+	public String toString() {
+		return "TimeInterval { start: " + start + ", end: " + end + "}";
+	}
+
 }

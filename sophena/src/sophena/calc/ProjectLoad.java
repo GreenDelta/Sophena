@@ -1,10 +1,6 @@
 package sophena.calc;
 
-import java.time.MonthDay;
 import java.util.Arrays;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sophena.math.Smoothing;
 import sophena.model.Consumer;
@@ -13,6 +9,7 @@ import sophena.model.HoursTrace;
 import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.TimeInterval;
 
 public class ProjectLoad {
 
@@ -20,8 +17,8 @@ public class ProjectLoad {
 	}
 
 	/**
-	 * The maximum load of the project can be entered by the user. If no value
-	 * is entered the value is calculated from the heat net and consumer data.
+	 * The maximum load of the project can be entered by the user. If no value is
+	 * entered the value is calculated from the heat net and consumer data.
 	 */
 	public static double getMax(Project project) {
 		if (project == null)
@@ -46,8 +43,7 @@ public class ProjectLoad {
 		for (Consumer consumer : project.consumers) {
 			if (consumer.disabled)
 				continue;
-			LoadProfile p = ConsumerLoadCurve.calculate(consumer,
-					project.weatherStation);
+			LoadProfile p = ConsumerLoadCurve.calculate(consumer, project.weatherStation);
 			Stats.add(p.dynamicData, dynamicData);
 			Stats.add(p.staticData, staticData);
 		}
@@ -79,30 +75,10 @@ public class ProjectLoad {
 	public static void applyInterruption(double[] curve, HeatNet net) {
 		if (curve == null || net == null || !net.withInterruption)
 			return;
-		int start = getIndex(net.interruptionStart, true);
-		int end = getIndex(net.interruptionEnd, false);
-		int[] interval = { start, end };
+		TimeInterval time = new TimeInterval();
+		time.start = net.interruptionStart;
+		time.end = net.interruptionEnd;
+		int[] interval = HoursTrace.getDayInterval(time);
 		HoursTrace.applyInterval(curve, interval, (old, i) -> 0.0);
-	}
-
-	private static int getIndex(String monthDay, boolean beginOfDay) {
-		if (monthDay == null)
-			return -1;
-		int[] daysInMonths = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-		try {
-			MonthDay value = MonthDay.parse(monthDay);
-			int monthIdx = value.getMonthValue() - 1;
-			int hours = 0;
-			for (int m = 0; m < monthIdx; m++)
-				hours += daysInMonths[m] * 24; // hours in months before
-			hours += (value.getDayOfMonth() - 1) * 24; // + hours in current
-			// month
-			hours = beginOfDay ? hours : hours + 24;
-			return hours < Stats.HOURS ? hours : Stats.HOURS - 1;
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(ProjectLoad.class);
-			log.error("failed to parse MonthDay " + monthDay, e);
-			return -1;
-		}
 	}
 }

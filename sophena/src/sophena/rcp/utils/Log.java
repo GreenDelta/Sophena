@@ -9,7 +9,14 @@ public class Log {
 	}
 
 	public static void error(Object caller, String message, Throwable error) {
-		Class<?> c = caller != null ? caller.getClass() : Log.class;
+		Class<?> c;
+		if (caller instanceof Class) {
+			c = (Class<?>) caller;
+		} else if (caller != null) {
+			c = caller.getClass();
+		} else {
+			c = Log.class;
+		}
 		Logger log = LoggerFactory.getLogger(c);
 		log.error(message, error);
 	}
