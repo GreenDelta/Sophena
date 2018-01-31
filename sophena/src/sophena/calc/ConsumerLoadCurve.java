@@ -2,8 +2,10 @@ package sophena.calc;
 
 import sophena.model.Consumer;
 import sophena.model.FuelConsumption;
+import sophena.model.HoursTrace;
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
+import sophena.model.TimeInterval;
 import sophena.model.WeatherStation;
 
 public class ConsumerLoadCurve {
@@ -42,21 +44,60 @@ public class ConsumerLoadCurve {
 	}
 
 	private void calcCurve(double totalHeat, LoadProfile profile) {
-		double heatForWater = totalHeat * consumer.waterFraction / 100;
-		double pMin = heatForWater / Stats.HOURS;
-		double heatingDegrees = 0;
-		double tmax = consumer.heatingLimit;
-		for (double temperature : station.data) {
-			if (temperature < tmax)
-				heatingDegrees += (tmax - temperature);
-		}
-		double qd = (totalHeat - heatForWater) / heatingDegrees;
+
+		// interruptions and operation hours
+		boolean[] interruptions = maskInterruptions();
+		int operationHours = 0;
 		for (int i = 0; i < Stats.HOURS; i++) {
-			profile.staticData[i] = pMin;
-			double temperature = station.data[i];
-			if (temperature < tmax)
-				profile.dynamicData[i] = ((tmax - temperature) * qd);
+			if (!interruptions[i]) {
+				operationHours++;
+			}
 		}
+
+		// static load for water heating
+		double heatForWater = totalHeat * consumer.waterFraction / 100;
+		double pStat = operationHours > 0
+				? heatForWater / operationHours
+				: 0.0;
+
+		// dynamic heat: heating degrees
+		double[] heatingDegrees = new double[Stats.HOURS];
+		double totalHeatingDegrees = 0.0;
+		double tLim = consumer.heatingLimit;
+		double tAfr = 4;
+		if (consumer.buildingState != null) {
+			tAfr = consumer.buildingState.antifreezingTemperature;
+		}
+		for (int i = 0; i < Stats.HOURS; i++) {
+			double limit = interruptions[i] ? tAfr : tLim;
+			double temperature = station.data[i];
+			if (temperature < limit) {
+				double degs = limit - temperature;
+				heatingDegrees[i] = degs;
+				totalHeatingDegrees += degs;
+			}
+		}
+
+		// fill the load curve
+		double heatPerDegree = totalHeatingDegrees > 0
+				? (totalHeat - heatForWater) / totalHeatingDegrees
+				: 0.0;
+		for (int i = 0; i < Stats.HOURS; i++) {
+			if (!interruptions[i]) {
+				profile.staticData[i] = pStat;
+			}
+			profile.dynamicData[i] = heatingDegrees[i] * heatPerDegree;
+		}
+	}
+
+	private boolean[] maskInterruptions() {
+		boolean[] trace = new boolean[Stats.HOURS];
+		for (TimeInterval time : consumer.interruptions) {
+			int[] interval = HoursTrace.getDayInterval(time);
+			HoursTrace.applyInterval(
+					trace, interval, (old, i) -> true);
+		}
+		return trace;
 	}
 
 	private void addLoadProfiles(LoadProfile profile) {
