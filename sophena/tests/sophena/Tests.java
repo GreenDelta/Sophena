@@ -1,6 +1,7 @@
 package sophena;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -11,7 +12,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import javassist.Modifier;
 import sophena.db.Database;
 
 public class Tests {

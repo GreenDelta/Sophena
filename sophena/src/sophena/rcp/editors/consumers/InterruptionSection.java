@@ -1,6 +1,7 @@
 package sophena.rcp.editors.consumers;
 
 import java.time.MonthDay;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.Consumer;
+import sophena.model.HoursTrace;
 import sophena.model.TimeInterval;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
@@ -62,6 +64,11 @@ class InterruptionSection {
 				M.Start, M.End, M.Description);
 		Tables.bindColumnWidths(table, 0.3, 0.3, 0.4);
 		table.setLabelProvider(new Label());
+		Collections.sort(consumer().interruptions, (t1, t2) -> {
+			int[] i1 = HoursTrace.getDayInterval(t1);
+			int[] i2 = HoursTrace.getDayInterval(t2);
+			return i1[0] - i2[0];
+		});
 		table.setInput(consumer().interruptions);
 		Tables.onDoubleClick(table, (e) -> onEdit());
 		return table;
