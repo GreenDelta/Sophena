@@ -42,6 +42,15 @@ CREATE TABLE tbl_time_intervals (
 );
 ```
 
+#### Table `tbl_heat_net_pipes`
+
+* `name`
+
+```sql
+alter table tbl_heat_net_pipes add column name VARCHAR(255);
+```
+
+
 #### Nice to have
 
 * HeatNet -> replace single interruption fields with TimeInterval reference @OneToOne

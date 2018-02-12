@@ -128,14 +128,18 @@ class PipeSection {
 		GridLayout layout = UI.gridLayout(comp, 1);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		table = Tables.createViewer(comp, "Komponente", "Länge",
+		table = Tables.createViewer(comp, "Name", "Komponente", "Länge",
 				"Wärmeverlust", "Investitionskosten", "Nutzungsdauer",
 				"Instandsetzung", "Wartung und Inspektion",
 				"Aufwand für Bedienen");
-		Tables.bindColumnWidths(table, 0.3, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+		double x = 1d / 9d;
+		Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x, x);
 		bindActions(section);
 		table.setLabelProvider(new Label());
 		Collections.sort(net().pipes, (p1, p2) -> {
+			int c = Strings.compare(p1.name, p2.name);
+			if (c != 0)
+				return c;
 			if (p1.pipe == null || p2.pipe == null) {
 				return 0;
 			}
@@ -172,6 +176,7 @@ class PipeSection {
 		HeatNetPipe clone = pipe.clone();
 		if (PipeWizard.open(clone) != Window.OK)
 			return;
+		pipe.name = clone.name;
 		pipe.costs = clone.costs;
 		pipe.length = clone.length;
 		pipe.pipe = clone.pipe;
@@ -207,7 +212,7 @@ class PipeSection {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Icon.PIPE_16.img() : null;
+			return col == 1 ? Icon.PIPE_16.img() : null;
 		}
 
 		@Override
@@ -217,10 +222,12 @@ class PipeSection {
 			HeatNetPipe pipe = (HeatNetPipe) obj;
 			switch (col) {
 			case 0:
-				return pipe.pipe != null ? pipe.pipe.name : null;
+				return pipe.name != null ? pipe.name : null;
 			case 1:
-				return Num.str(pipe.length) + " m";
+				return pipe.pipe != null ? pipe.pipe.name : null;
 			case 2:
+				return Num.str(pipe.length) + " m";
+			case 3:
 				return Num.str(HeatNets.getPowerLoss(pipe, net()))
 						+ " W/m";
 			default:
@@ -232,15 +239,15 @@ class PipeSection {
 			if (costs == null)
 				return null;
 			switch (col) {
-			case 3:
-				return Num.str(costs.investment) + " EUR";
 			case 4:
-				return costs.duration + " Jahr(e)";
+				return Num.str(costs.investment) + " EUR";
 			case 5:
-				return Num.str(costs.repair) + " %";
+				return costs.duration + " Jahr(e)";
 			case 6:
-				return Num.str(costs.maintenance) + " %";
+				return Num.str(costs.repair) + " %";
 			case 7:
+				return Num.str(costs.maintenance) + " %";
+			case 8:
 				return Num.str(costs.operation) + " Stunden/Jahr";
 			default:
 				return null;

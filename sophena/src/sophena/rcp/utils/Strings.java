@@ -83,11 +83,13 @@ public class Strings {
 	 * A null-save method for comparing two strings ignoring the case.
 	 */
 	public static int compare(String str1, String str2) {
-		if (str1 == null && str2 == null)
+		boolean empty1 = Strings.nullOrEmpty(str1);
+		boolean empty2 = Strings.nullOrEmpty(str2);
+		if (empty1 && empty2)
 			return 0;
-		if (str1 != null && str2 == null)
+		if (!empty1 && empty2)
 			return 1;
-		if (str1 == null && str2 != null)
+		if (empty1 && !empty2)
 			return -1;
 		return str1.compareToIgnoreCase(str2);
 	}

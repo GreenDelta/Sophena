@@ -13,6 +13,7 @@ import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
+import sophena.rcp.M;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
@@ -67,11 +68,20 @@ class PipeWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 3);
 			createProductRow(comp);
+			createNameText(comp);
 			createLengthText(comp);
 			createPriceText(comp);
 			costSection = new ProductCostSection(() -> pipe.costs)
 					.createFields(comp);
 			Texts.on(costSection.investmentText).calculated();
+		}
+
+		private void createNameText(Composite comp) {
+			Text t = UI.formText(comp, M.Name);
+			Texts.on(t).init(pipe.name).onChanged((s) -> {
+				pipe.name = s;
+			});
+			UI.filler(comp);
 		}
 
 		private void createProductRow(Composite comp) {

@@ -207,6 +207,7 @@ CREATE TABLE tbl_heat_net_pipes (
     
     f_heat_net CHAR(36),
     f_pipe CHAR(36),
+    name VARCHAR(255),
     length DOUBLE,
     price_per_meter DOUBLE,
     
