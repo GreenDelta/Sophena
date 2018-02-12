@@ -20,7 +20,7 @@ update tbl_heat_nets set buffer_loss = 0.15;
 alter table tbl_building_states add column antifreezing_temperature double;
 ```
 
-only for tests:
+Set it initially to 5°C:
 
 ```sql
 update tbl_building_states set antifreezing_temperature = 5;

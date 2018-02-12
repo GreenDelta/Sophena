@@ -86,10 +86,11 @@ when generating the data packages.
 1. name
 2. type
 3. heatingLimit
-4. waterFraction
-5. loadHours
-6. isDefault
-7. index
+4. antifreezingTemperature
+5. waterFraction
+6. loadHours
+7. isDefault
+8. index
 ```
 
 ### `flue_gas_cleanings.csv`

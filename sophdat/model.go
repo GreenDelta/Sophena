@@ -121,12 +121,13 @@ type BufferTank struct {
 // building type and state.
 type BuildingState struct {
 	BaseDataEntity
-	Index         int          `json:"index"`
-	IsDefault     bool         `json:"isDefault"`
-	Type          BuildingType `json:"type"`
-	HeatingLimit  float64      `json:"heatingLimit"`
-	WaterFraction float64      `json:"waterFraction"`
-	LoadHours     int          `json:"loadHours"`
+	Index                   int          `json:"index"`
+	IsDefault               bool         `json:"isDefault"`
+	Type                    BuildingType `json:"type"`
+	HeatingLimit            float64      `json:"heatingLimit"`
+	AntifreezingTemperature float64      `json:"antifreezingTemperature"`
+	WaterFraction           float64      `json:"waterFraction"`
+	LoadHours               int          `json:"loadHours"`
 }
 
 // Pipe stores product data of pipes.
