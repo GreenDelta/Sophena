@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -38,4 +40,21 @@ public class Fuel extends BaseDataEntity {
 
 	@Column(name = "primary_energy_factor")
 	public double primaryEnergyFactor;
+
+	@Override
+	public Fuel clone() {
+		Fuel clone = new Fuel();
+		clone.id = UUID.randomUUID().toString();
+		clone.name = name;
+		clone.description = description;
+		clone.isProtected = isProtected;
+		clone.unit = unit;
+		clone.calorificValue = calorificValue;
+		clone.density = density;
+		clone.wood = wood;
+		clone.co2Emissions = co2Emissions;
+		clone.primaryEnergyFactor = primaryEnergyFactor;
+		return clone;
+	}
+
 }

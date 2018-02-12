@@ -106,10 +106,12 @@ public class FuelEditor extends Editor {
 					() -> addFuel(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table, fuels, false));
+			Action copy = Actions.create(M.Copy, Icon.COPY_16.des(),
+					() -> copy(table, false));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table, fuels, false));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, copy, del);
+			Actions.bind(table, add, edit, copy, del);
 			Tables.onDoubleClick(table, (e) -> edit(table, fuels, false));
 		}
 
@@ -146,6 +148,26 @@ public class FuelEditor extends Editor {
 				table.setInput(list);
 			} catch (Exception e) {
 				log.error("failed to update fuel " + f, e);
+			}
+		}
+
+		private void copy(TableViewer table, boolean wood) {
+			Fuel f = Viewers.getFirstSelected(table);
+			if (f == null)
+				return;
+			Fuel copy = f.clone();
+			copy.id = UUID.randomUUID().toString();
+			copy.isProtected = false;
+			int code = wood ? WoodFuelWizard.open(copy) : FuelWizard.open(copy);
+			if (code != Window.OK)
+				return;
+			dao.insert(copy);
+			if (wood) {
+				woodFuels.add(copy);
+				table.setInput(woodFuels);
+			} else {
+				fuels.add(copy);
+				table.setInput(fuels);
 			}
 		}
 
@@ -190,10 +212,12 @@ public class FuelEditor extends Editor {
 					() -> addWood(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table, woodFuels, true));
+			Action copy = Actions.create(M.Copy, Icon.COPY_16.des(),
+					() -> copy(table, true));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table, woodFuels, true));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, copy, del);
+			Actions.bind(table, add, edit, copy, del);
 			Tables.onDoubleClick(table, (e) -> edit(table, woodFuels, true));
 		}
 
