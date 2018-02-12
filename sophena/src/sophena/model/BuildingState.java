@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -32,4 +34,20 @@ public class BuildingState extends BaseDataEntity {
 	@Column(name = "load_hours")
 	public int loadHours;
 
+	@Override
+	public BuildingState clone() {
+		BuildingState clone = new BuildingState();
+		clone.id = UUID.randomUUID().toString();
+		clone.name = name;
+		clone.description = description;
+		clone.isProtected = isProtected;
+		clone.index = index;
+		clone.isDefault = isDefault;
+		clone.type = type;
+		clone.heatingLimit = heatingLimit;
+		clone.antifreezingTemperature = antifreezingTemperature;
+		clone.waterFraction = waterFraction;
+		clone.loadHours = loadHours;
+		return clone;
+	}
 }

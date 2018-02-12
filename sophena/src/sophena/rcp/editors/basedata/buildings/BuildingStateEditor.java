@@ -92,10 +92,12 @@ public class BuildingStateEditor extends Editor {
 					() -> add(table));
 			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
+			Action copy = Actions.create(M.Copy, Icon.COPY_16.des(),
+					() -> copy(table));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
-			Actions.bind(section, add, edit, del);
-			Actions.bind(table, add, edit, del);
+			Actions.bind(section, add, edit, copy, del);
+			Actions.bind(table, add, edit, copy, del);
 			Tables.onDoubleClick(table, (e) -> edit(table));
 		}
 
@@ -135,6 +137,27 @@ public class BuildingStateEditor extends Editor {
 			int idx = states.indexOf(s);
 			s = dao.update(s);
 			states.set(idx, s);
+			table.setInput(states);
+		}
+
+		private void copy(TableViewer table) {
+			BuildingState s = Viewers.getFirstSelected(table);
+			if (s == null || s.isProtected)
+				return;
+			BuildingState copy = s.clone();
+			copy.id = UUID.randomUUID().toString();
+			copy.isProtected = false;
+			copy.isDefault = false;
+			copy.index = 0;
+			for (BuildingState other : states) {
+				if (other.type != copy.type)
+					continue;
+				copy.index = Math.max(copy.index, other.index + 1);
+			}
+			if (StateWizard.open(copy, states) != Window.OK)
+				return;
+			dao.insert(copy);
+			states.add(copy);
 			table.setInput(states);
 		}
 
