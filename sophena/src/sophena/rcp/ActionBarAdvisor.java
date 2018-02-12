@@ -28,6 +28,7 @@ import sophena.rcp.editors.basedata.buildings.BuildingStateEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
+import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
 import sophena.rcp.editors.basedata.pipes.PipeEditor;
 import sophena.rcp.editors.basedata.products.BoilerAccessoriesEditor;
 import sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor;
@@ -102,13 +103,10 @@ public class ActionBarAdvisor extends
 				BuildingStateEditor::open));
 		m.add(Actions.create(M.Fuels, Icon.FUEL_16.des(),
 				FuelEditor::open));
-
-		// TODO: we do not have manufacturer information currently
-		// m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
-		// ManufacturerEditor::open));
-
 		m.add(Actions.create("Produktgruppen", Icon.PRODUCT_16.des(),
 				ProductGroupEditor::open));
+		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
+				ManufacturerEditor::open));
 		m.add(Actions.create("Kosteneinstellungen", Icon.COSTS_16.des(),
 				BaseCostEditor::open));
 		menu.add(m);
