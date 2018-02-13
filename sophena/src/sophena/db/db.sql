@@ -279,6 +279,17 @@ CREATE TABLE tbl_load_profiles (
 );
 
 
+CREATE TABLE tbl_producer_profiles (
+
+    id CHAR(36),
+
+    min_power BLOB (80 K),
+    max_power BLOB (80 K),
+
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_products (
 
     id CHAR(36),
@@ -471,23 +482,25 @@ CREATE TABLE tbl_heat_recovery (
 
 CREATE TABLE tbl_producers (
 
-    id CHAR(36),
-    name VARCHAR(255),
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
     
-    is_disabled BOOLEAN,
-    rank INTEGER,
+    is_disabled       BOOLEAN,
+    rank              INTEGER,
     producer_function VARCHAR(255),
-    utilisation_rate DOUBLE,
+    utilisation_rate  DOUBLE,
 
-    f_project CHAR(36),
-    f_boiler VARCHAR(36),
+    f_project   CHAR(36),
+    f_boiler    CHAR(36),
+    has_profile BOOLEAN,
+    f_profile   CHAR(36),
 
-    investment DOUBLE,
-    duration INTEGER,
-    repair DOUBLE,
+    investment  DOUBLE,
+    duration    INTEGER,
+    repair      DOUBLE,
     maintenance DOUBLE,
-    operation DOUBLE,
+    operation   DOUBLE,
 
     f_wood_fuel CHAR(36),
     water_content DOUBLE,

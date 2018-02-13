@@ -51,6 +51,30 @@ alter table tbl_heat_net_pipes add column name VARCHAR(255);
 ```
 
 
+#### New Table `tbl_producer_profiles`
+
+
+```sql
+CREATE TABLE tbl_producer_profiles (
+
+    id CHAR(36),
+    
+    min_power BLOB (80 K),
+    max_power BLOB (80 K),
+
+    PRIMARY KEY (id)
+);
+```
+
+#### Table `tbl_producers`
+
+```sql
+alter table tbl_producers add column has_profile BOOLEAN;
+alter table tbl_producers add column f_profile CHAR(36);
+```
+
+
 #### Nice to have
 
 * HeatNet -> replace single interruption fields with TimeInterval reference @OneToOne
+* use JPA Converter API and not the one from EclipseLink

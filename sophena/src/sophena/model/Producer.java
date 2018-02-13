@@ -22,12 +22,22 @@ public class Producer extends RootEntity {
 	@Column(name = "is_disabled")
 	public boolean disabled;
 
+	@Column(name = "rank")
+	public int rank;
+
 	@OneToOne
 	@JoinColumn(name = "f_boiler")
 	public Boiler boiler;
 
-	@Column(name = "rank")
-	public int rank;
+	/**
+	 * Indicates whether the producer is based on a producer profile or not.
+	 */
+	@Column(name = "has_profile")
+	public boolean hasProfile;
+
+	@OneToOne
+	@JoinColumn(name = "f_profile")
+	public ProducerProfile profile;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
@@ -73,6 +83,9 @@ public class Producer extends RootEntity {
 		clone.description = description;
 		clone.disabled = disabled;
 		clone.boiler = boiler;
+		clone.hasProfile = hasProfile;
+		if (profile != null)
+			clone.profile = profile.clone();
 		clone.function = function;
 		clone.rank = rank;
 		if (costs != null)
