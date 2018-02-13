@@ -49,10 +49,10 @@ public class Colors {
 
 	public static Color getErrorColor() {
 		RGB rgb = new RGB(255, 180, 180);
-		return getColor(rgb);
+		return get(rgb);
 	}
 
-	public static Color getColor(RGB rgb) {
+	public static Color get(RGB rgb) {
 		Color color = createdColors.get(rgb);
 		if (color == null || color.isDisposed()) {
 			color = new Color(display, rgb);
@@ -61,9 +61,21 @@ public class Colors {
 		return color;
 	}
 
-	public static Color getColor(int r, int g, int b) {
+	public static Color get(int r, int g, int b) {
 		RGB rgb = new RGB(r, g, b);
-		return getColor(rgb);
+		return get(rgb);
+	}
+
+	public static Color get(String hex) {
+		if (Strings.nullOrEmpty(hex))
+			return getWhite();
+		String s = hex.replace("#", "").trim();
+		if (s.length() < 6)
+			return getWhite();
+		int r = Integer.valueOf(s.substring(0, 2), 16);
+		int g = Integer.valueOf(s.substring(2, 4), 16);
+		int b = Integer.valueOf(s.substring(4, 6), 16);
+		return get(r, g, b);
 	}
 
 	public static Color getWhite() {
@@ -75,7 +87,7 @@ public class Colors {
 	 * of the range of the pre-defined colors, a random color is returned.
 	 */
 	public static Color getForChart(int idx) {
-		return Colors.getColor(getRgbForChart(idx));
+		return Colors.get(getRgbForChart(idx));
 	}
 
 	/**
@@ -99,11 +111,11 @@ public class Colors {
 	}
 
 	public static Color getChartBlue() {
-		return getColor(68, 114, 162);
+		return get(68, 114, 162);
 	}
 
 	public static Color getChartRed() {
-		return getColor(180, 26, 30);
+		return get(180, 26, 30);
 	}
 
 	public static Color getDarkGray() {
@@ -111,11 +123,11 @@ public class Colors {
 	}
 
 	public static Color getLinkBlue() {
-		return getColor(25, 76, 127);
+		return get(25, 76, 127);
 	}
 
 	public static Color getGray() {
-		return getColor(128, 128, 128);
+		return get(128, 128, 128);
 	}
 
 	public static Color getBlack() {
@@ -127,15 +139,15 @@ public class Colors {
 	}
 
 	public static Color forRequiredField() {
-		return getColor(255, 255, 220);
+		return get(255, 255, 220);
 	}
 
 	public static Color forCalculatedField() {
-		return getColor(230, 230, 233);
+		return get(230, 230, 233);
 	}
 
 	public static Color forModifiedDefault() {
-		return getColor(225, 213, 232);
+		return get(225, 213, 232);
 	}
 
 	private static class ShutDown implements IWorkbenchListener {

@@ -66,12 +66,21 @@ public class ProducerProfileChart {
 	}
 
 	private void addMaxTrace(XYGraph g) {
+
 		Trace t = new Trace("Max", g.primaryXAxis,
 				g.primaryYAxis, maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.getChartBlue());
+		t.setTraceColor(Colors.get("#f6e58d"));
+		t.setAreaAlpha(255);
 		g.addTrace(t);
+
+		// Trace maxLine = new Trace("MaxLine", g.primaryXAxis,
+		// g.primaryYAxis, maxData);
+		// maxLine.setPointStyle(Trace.PointStyle.NONE);
+		// maxLine.setTraceType(Trace.TraceType.SOLID_LINE);
+		// maxLine.setTraceColor(Colors.get("#ff7979"));
+		// g.addTrace(maxLine);
 	}
 
 	private void addMinTrace(XYGraph g) {
@@ -80,7 +89,15 @@ public class ProducerProfileChart {
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
 		t.setTraceColor(Colors.getWhite());
+		t.setAreaAlpha(255);
 		g.addTrace(t);
+
+		Trace minLine = new Trace("MinLine", g.primaryXAxis,
+				g.primaryYAxis, minData);
+		minLine.setPointStyle(Trace.PointStyle.NONE);
+		minLine.setTraceType(Trace.TraceType.SOLID_LINE);
+		minLine.setTraceColor(Colors.get("#ff7979"));
+		g.addTrace(minLine);
 	}
 
 }
