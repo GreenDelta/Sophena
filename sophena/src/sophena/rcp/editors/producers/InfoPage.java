@@ -52,6 +52,9 @@ class InfoPage extends FormPage {
 		functionCombo(tk, comp);
 		rankText(tk, comp);
 		UtilisationRateSwitch.create(editor, comp, tk);
+		if (producer().hasProfile) {
+			ProfileSection.of(editor).create(body, tk);
+		}
 		new FuelSection(editor).render(body, tk);
 		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);

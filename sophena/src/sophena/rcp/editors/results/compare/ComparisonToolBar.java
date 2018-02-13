@@ -27,7 +27,7 @@ public class ComparisonToolBar extends EditorActionBarContributor {
 		ComparisonView editor = Editors.getActive();
 		if (editor == null)
 			return;
-		File file = FileChooser.saveFile("Ergebnisvergleich.xlsx", "*.xlsx");
+		File file = FileChooser.save("Ergebnisvergleich.xlsx", "*.xlsx");
 		if (file == null)
 			return;
 		ComparisonExport export = new ComparisonExport(editor.comparison, file);

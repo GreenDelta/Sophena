@@ -27,7 +27,7 @@ public class ResultToolBar extends EditorActionBarContributor {
 		ResultEditor editor = Editors.getActive();
 		if (editor == null)
 			return;
-		File file = FileChooser.saveFile(editor.project.name + ".xlsx", "*.xlsx");
+		File file = FileChooser.save(editor.project.name + ".xlsx", "*.xlsx");
 		if (file == null)
 			return;
 		ExcelExport export = new ExcelExport(editor.project, editor.result, file);

@@ -65,7 +65,7 @@ public class ImageExport extends Action {
 	public void run() {
 		if (image == null || image.get() == null)
 			return;
-		File file = FileChooser.saveFile(defaultName, "*.jpg", "*.png");
+		File file = FileChooser.save(defaultName, "*.jpg", "*.png");
 		if (file == null)
 			return;
 		ImageData data = image.get().getImageData();

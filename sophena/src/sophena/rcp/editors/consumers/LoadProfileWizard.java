@@ -9,7 +9,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.io.LoadProfileReader;
@@ -18,6 +17,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -101,14 +101,11 @@ class LoadProfileWizard extends Wizard {
 			}
 
 			void readFile() {
-				FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-				dialog.setFilterExtensions(new String[] { "*.csv", "*.txt" });
-				dialog.setText(M.SelectFile);
-				String path = dialog.open();
-				if (path == null)
+				File f = FileChooser.open("*.csv", "*.txt");
+				if (f == null)
 					return;
 				LoadProfileReader reader = new LoadProfileReader();
-				fileProfile = reader.read(new File(path));
+				fileProfile = reader.read(f);
 				chart.setData(fileProfile);
 			}
 

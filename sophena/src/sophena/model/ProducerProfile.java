@@ -41,6 +41,7 @@ public class ProducerProfile extends AbstractEntity {
 	public static ProducerProfile read(File file) {
 		try {
 			ProducerProfile profile = new ProducerProfile();
+			profile.id = UUID.randomUUID().toString();
 			profile.maxPower = new double[Stats.HOURS];
 			profile.minPower = new double[Stats.HOURS];
 			List<String> lines = Files.readAllLines(file.toPath());
@@ -56,8 +57,8 @@ public class ProducerProfile extends AbstractEntity {
 				}
 				if (parts.length < 3)
 					continue;
-				int hour = (int) num(parts[0]);
-				if (hour < 0 || hour > Stats.HOURS)
+				int hour = ((int) num(parts[0])) - 1;
+				if (hour < 0 || hour >= Stats.HOURS)
 					continue;
 				profile.maxPower[hour] = num(parts[1]);
 				profile.minPower[hour] = num(parts[2]);

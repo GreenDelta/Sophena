@@ -84,7 +84,7 @@ class TablePage extends FormPage {
 			return;
 		WeatherStation station = dao.get(d.id);
 		String name = station.name != null ? station.name : "station";
-		File file = FileChooser.saveFile(name + ".csv", "*.csv");
+		File file = FileChooser.save(name + ".csv", "*.csv");
 		if (file == null)
 			return;
 		HoursProfile.write(station.data, file);

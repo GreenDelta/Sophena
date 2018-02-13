@@ -9,38 +9,40 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.model.LoadProfile;
+import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
-public class LoadProfileChart {
+public class ProducerProfileChart {
 
-	private final CircularBufferDataProvider sumData;
-	private final CircularBufferDataProvider staticData;
 	public final XYGraph graph;
+	private final CircularBufferDataProvider minData;
+	private final CircularBufferDataProvider maxData;
 
-	public LoadProfileChart(Composite parent, int height) {
-		sumData = Charts.dataProvider();
-		staticData = Charts.dataProvider();
+	public ProducerProfileChart(Composite parent, int height) {
+		minData = Charts.dataProvider();
+		maxData = Charts.dataProvider();
 		Canvas canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
 		UI.gridData(canvas, true, true).minimumHeight = height;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		graph = createGraph(lws);
 	}
 
-	public void setData(LoadProfile profile) {
+	public void setData(ProducerProfile profile) {
 		if (profile == null)
 			return;
-		double[] total = profile.calculateTotal();
-		double[] stat = profile.staticData;
-		if (staticData == null)
-			stat = new double[Stats.HOURS];
-		sumData.setCurrentYDataArray(total);
-		staticData.setCurrentYDataArray(stat);
-		double max = Stats.nextStep(Stats.max(total), 5);
+		double[] max = profile.maxPower;
+		if (max == null)
+			max = new double[Stats.HOURS];
+		double[] min = profile.minPower;
+		if (min == null)
+			min = new double[Stats.HOURS];
+		minData.setCurrentYDataArray(min);
+		maxData.setCurrentYDataArray(max);
+		double top = Stats.nextStep(Stats.max(max), 5);
 		Axis y = graph.primaryYAxis;
-		y.setRange(0, max);
+		y.setRange(0, top);
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -48,8 +50,8 @@ public class LoadProfileChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
-		addSumTrace(g);
-		addStaticTrace(g);
+		addMaxTrace(g);
+		addMinTrace(g);
 		Axis x = g.primaryXAxis;
 		x.setRange(0, Stats.HOURS);
 		x.setTitle("");
@@ -63,22 +65,22 @@ public class LoadProfileChart {
 		return g;
 	}
 
-	private void addSumTrace(XYGraph g) {
-		Trace trace = new Trace("Total", g.primaryXAxis, g.primaryYAxis,
-				sumData);
-		trace.setPointStyle(Trace.PointStyle.NONE);
-		trace.setTraceType(Trace.TraceType.AREA);
-		trace.setTraceColor(Colors.getChartBlue());
-		g.addTrace(trace);
+	private void addMaxTrace(XYGraph g) {
+		Trace t = new Trace("Max", g.primaryXAxis,
+				g.primaryYAxis, maxData);
+		t.setPointStyle(Trace.PointStyle.NONE);
+		t.setTraceType(Trace.TraceType.AREA);
+		t.setTraceColor(Colors.getChartBlue());
+		g.addTrace(t);
 	}
 
-	private void addStaticTrace(XYGraph g) {
-		Trace trace = new Trace("Static", g.primaryXAxis, g.primaryYAxis,
-				staticData);
-		trace.setPointStyle(Trace.PointStyle.NONE);
-		trace.setTraceType(Trace.TraceType.AREA);
-		trace.setTraceColor(Colors.getLinkBlue());
-		g.addTrace(trace);
+	private void addMinTrace(XYGraph g) {
+		Trace t = new Trace("Min", g.primaryXAxis,
+				g.primaryYAxis, minData);
+		t.setPointStyle(Trace.PointStyle.NONE);
+		t.setTraceType(Trace.TraceType.AREA);
+		t.setTraceColor(Colors.getWhite());
+		g.addTrace(t);
 	}
 
 }

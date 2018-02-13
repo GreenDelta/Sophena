@@ -23,6 +23,7 @@ import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.Icon;
+import sophena.rcp.charts.Charts;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
@@ -175,7 +176,7 @@ class BoilerChart {
 	}
 
 	private Trace makeSuplierTrace(String label, double[] data) {
-		CircularBufferDataProvider d = createDataProvider(data);
+		CircularBufferDataProvider d = Charts.dataProvider(data);
 		Trace t = new Trace(label, chart.primaryXAxis, chart.primaryYAxis, d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
@@ -184,20 +185,12 @@ class BoilerChart {
 	}
 
 	private Trace makeLoadTrace(double[] load) {
-		CircularBufferDataProvider d = createDataProvider(load);
+		CircularBufferDataProvider d = Charts.dataProvider(load);
 		Trace t = new Trace("Req", chart.primaryXAxis, chart.primaryYAxis, d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.SOLID_LINE);
 		t.setTraceColor(Colors.getSystemColor(SWT.COLOR_BLACK));
 		return t;
-	}
-
-	private CircularBufferDataProvider createDataProvider(double[] data) {
-		CircularBufferDataProvider d = new CircularBufferDataProvider(true);
-		d.setBufferSize(Stats.HOURS);
-		d.setConcatenate_data(true);
-		d.setCurrentYDataArray(data);
-		return d;
 	}
 
 	private class LoadTraceSwitch extends Action {

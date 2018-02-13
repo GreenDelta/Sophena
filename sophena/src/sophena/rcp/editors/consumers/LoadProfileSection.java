@@ -113,7 +113,7 @@ class LoadProfileSection {
 			return;
 		String name = profile.name == null ? "profile" : profile.name;
 		name = name.replaceAll("[^a-zA-Z0-9]+", "_");
-		File file = FileChooser.saveFile(name + ".csv", "*.csv");
+		File file = FileChooser.save(name + ".csv", "*.csv");
 		if (file == null)
 			return;
 		LoadProfileWriter writer = new LoadProfileWriter();

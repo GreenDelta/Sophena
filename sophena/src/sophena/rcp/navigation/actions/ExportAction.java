@@ -38,7 +38,7 @@ public class ExportAction extends NavigationAction {
 		if (elem == null || elem.getDescriptor() == null)
 			return;
 		ProjectDescriptor d = elem.getDescriptor();
-		File file = FileChooser.saveFile(d.name + ".sophena", "*.sophena");
+		File file = FileChooser.save(d.name + ".sophena", "*.sophena");
 		if (file == null)
 			return;
 		Rcp.run("Exportiere Projekt ...", () -> tryExport(d, file));

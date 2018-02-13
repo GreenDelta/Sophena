@@ -5,13 +5,15 @@ import java.io.File;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
+import sophena.rcp.M;
+
 public class FileChooser {
 
 	/**
 	 * Selects a file for an export. Returns null if the user cancelled the
 	 * dialog.
 	 */
-	public static File saveFile(String fileName, String... extensions) {
+	public static File save(String fileName, String... extensions) {
 		FileDialog dialog = new FileDialog(UI.shell(), SWT.SAVE);
 		dialog.setText("Speichern unter...");
 		if (extensions.length > 0)
@@ -27,6 +29,19 @@ public class FileChooser {
 				"Die ausgewählte Datei existiert bereits. "
 						+ "Soll diese überschrieben werden?");
 		return b ? file : null;
+	}
+
+	public static File open(String... extensions) {
+		FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
+		dialog.setFilterExtensions(extensions);
+		dialog.setText(M.SelectFile);
+		String path = dialog.open();
+		if (path == null)
+			return null;
+		File f = new File(path);
+		if (!f.exists())
+			return null;
+		return f;
 	}
 
 }
