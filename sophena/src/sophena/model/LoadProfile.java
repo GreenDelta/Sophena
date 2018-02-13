@@ -44,16 +44,8 @@ public class LoadProfile extends RootEntity {
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
-		clone.dynamicData = new double[Stats.HOURS];
-		if (dynamicData != null) {
-			System.arraycopy(dynamicData, 0, clone.dynamicData, 0,
-					dynamicData.length);
-		}
-		clone.staticData = new double[Stats.HOURS];
-		if (staticData != null) {
-			System.arraycopy(staticData, 0, clone.staticData, 0,
-					staticData.length);
-		}
+		clone.dynamicData = Stats.copy(dynamicData);
+		clone.staticData = Stats.copy(staticData);
 		return clone;
 	}
 
