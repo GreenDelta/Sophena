@@ -8,6 +8,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 
 import sophena.rcp.navigation.actions.AddAction;
 import sophena.rcp.navigation.actions.AddFlueGasCleaning;
+import sophena.rcp.navigation.actions.AddProducerProfileAction;
 import sophena.rcp.navigation.actions.CalculateAction;
 import sophena.rcp.navigation.actions.CompareAction;
 import sophena.rcp.navigation.actions.DeleteAction;
@@ -27,13 +28,15 @@ public class NavigationMenu extends CommonActionProvider {
 					new OpenAction(),
 					new CompareAction(),
 					new AddAction(),
+					new AddProducerProfileAction(),
 					new AddFlueGasCleaning(),
 					new DuplicateAction(),
 					new DisableAction(),
 					new SaveAsAction(),
 					new DeleteAction(),
 					new ExportAction()
-			}, {
+			},
+			{
 					new CalculateAction()
 			}
 	};

@@ -7,15 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -35,7 +32,6 @@ import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.producers.ProducerEditor;
@@ -47,7 +43,6 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import sophena.utils.Num;
 
 public class ProducerWizard extends Wizard {
 
@@ -192,35 +187,6 @@ public class ProducerWizard extends Wizard {
 			rankText = UI.formText(composite, "Rang");
 			Texts.on(rankText).integer().required().validate(data::validate);
 			functionCombo = UI.formCombo(composite, "Funktion");
-		}
-
-		private class BoilerLabel extends LabelProvider
-				implements ITableLabelProvider {
-
-			@Override
-			public Image getColumnImage(Object elem, int col) {
-				return col == 0 ? Icon.BOILER_16.img() : null;
-			}
-
-			@Override
-			public String getColumnText(Object elem, int col) {
-				if (!(elem instanceof Boiler))
-					return null;
-				Boiler b = (Boiler) elem;
-				switch (col) {
-				case 0:
-					return b.manufacturer != null ? b.manufacturer.name : null;
-				case 1:
-					if (b.isCoGenPlant)
-						return Num.str(b.maxPowerElectric) + " kW el.";
-					else
-						return Num.str(b.maxPower) + " kW";
-				case 2:
-					return b.name;
-				default:
-					return null;
-				}
-			}
 		}
 
 		private class DataBinding {

@@ -15,7 +15,7 @@ public class Producers {
 	}
 
 	public static double maxPower(Producer p) {
-		if (p == null)
+		if (p == null || p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);
 	}
