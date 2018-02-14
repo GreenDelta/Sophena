@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.FuelDemand;
-import sophena.math.energetic.FullLoadHours;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
@@ -50,7 +49,7 @@ class HeatSheet {
 			double share = Math.round(100 * result.energyResult.totalHeat(pr)
 					/ load);
 			Excel.cell(sheet, row, 5, Math.round(share > 100 ? 100 : share));
-			Excel.cell(sheet, row, 6, Math.round(FullLoadHours.get(pr, heat)));
+			Excel.cell(sheet, row, 6, Math.round(Producers.fullLoadHours(pr, heat)));
 			Excel.cell(sheet, row, 7, Math.round(UtilisationRate.get(pr,
 					result.energyResult) * 100));
 			row++;

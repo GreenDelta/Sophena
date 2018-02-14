@@ -491,10 +491,11 @@ CREATE TABLE tbl_producers (
     producer_function VARCHAR(255),
     utilisation_rate  DOUBLE,
 
-    f_project   CHAR(36),
-    f_boiler    CHAR(36),
-    has_profile BOOLEAN,
-    f_profile   CHAR(36),
+    f_project         CHAR(36),
+    f_boiler          CHAR(36),
+    has_profile       BOOLEAN,
+    f_profile         CHAR(36),
+    profile_max_power DOUBLE,
 
     investment  DOUBLE,
     duration    INTEGER,

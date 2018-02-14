@@ -16,7 +16,7 @@ public class GeneratedElectricity {
 		Boiler boiler = producer.boiler;
 		if (!boiler.isCoGenPlant || boiler.maxPowerElectric == 0)
 			return 0;
-		double hours = FullLoadHours.get(producer, generatedHeat);
+		double hours = Producers.fullLoadHours(producer, generatedHeat);
 		return hours * boiler.maxPowerElectric;
 	}
 

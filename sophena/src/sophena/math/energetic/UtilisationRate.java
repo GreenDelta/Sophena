@@ -29,7 +29,7 @@ public class UtilisationRate {
 		if (producer.utilisationRate != null)
 			return producer.utilisationRate;
 		double generatedHeat = result.totalHeat(producer);
-		int fullLoadHours = (int) FullLoadHours.get(producer, generatedHeat);
+		int fullLoadHours = (int) Producers.fullLoadHours(producer, generatedHeat);
 		int usageDuration = 8760; // UsageDuration.get(producer, result);
 		double er = Producers.efficiencyRate(producer);
 		return get(er, fullLoadHours, usageDuration);

@@ -56,7 +56,7 @@ class BoilerTableSection {
 		if (result.producers == null)
 			return Collections.emptyList();
 		initProducerItems(result.producers, items);
-		double powerDiff = calculatePowerDiff(result.producers);
+		double powerDiff = Producers.powerDifference(result.producers, maxLoad);
 		addDiffItem(items, powerDiff);
 		addBufferItem(items, result.producers);
 		calculateShares(items);
@@ -88,8 +88,7 @@ class BoilerTableSection {
 	private Integer getFullLoadHours(Producer p, double producedHeat) {
 		if (p == null || p.boiler == null)
 			return null;
-		double maxPower = Producers.maxPower(p);
-		return (int) Math.round(producedHeat / maxPower);
+		return (int) Producers.fullLoadHours(p, producedHeat);
 	}
 
 	private void calculateShares(List<Item> items) {
@@ -108,14 +107,6 @@ class BoilerTableSection {
 		bufferItem.name = "Pufferspeicher";
 		items.add(bufferItem);
 		bufferItem.heat = result.totalBufferedHeat;
-	}
-
-	private double calculatePowerDiff(Producer[] producers) {
-		double power = 0;
-		for (Producer p : producers) {
-			power += Producers.maxPower(p);
-		}
-		return power - maxLoad;
 	}
 
 	private void addDiffItem(List<Item> items, double powerDiff) {
@@ -179,8 +170,9 @@ class BoilerTableSection {
 			case 5:
 				return Num.str(item.share) + " %";
 			case 6:
-				return item.fullLoadHours == null ? null : Num
-						.intStr(item.fullLoadHours) + " h";
+				return item.fullLoadHours == null ? null
+						: Num
+								.intStr(item.fullLoadHours) + " h";
 			case 7:
 				return item.utilisationRate == null ? null
 						: Num.intStr(item.utilisationRate * 100) + " %";

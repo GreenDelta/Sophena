@@ -15,8 +15,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
-import sophena.math.energetic.FullLoadHours;
 import sophena.math.energetic.GeneratedElectricity;
+import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.rcp.M;
@@ -74,7 +74,7 @@ class ElectricityResultPage extends FormPage {
 			item.maxPower = p.boiler.maxPowerElectric;
 			item.efficiencyRate = p.boiler.efficiencyRateElectric;
 			double heat = result.totalHeat(p);
-			item.fullLoadHours = FullLoadHours.get(p, heat);
+			item.fullLoadHours = Producers.fullLoadHours(p, heat);
 			item.value = GeneratedElectricity.get(p, heat);
 			total.set(total.get() + item.value);
 		}

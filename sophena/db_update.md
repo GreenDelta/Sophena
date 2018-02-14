@@ -71,6 +71,7 @@ CREATE TABLE tbl_producer_profiles (
 ```sql
 alter table tbl_producers add column has_profile BOOLEAN;
 alter table tbl_producers add column f_profile CHAR(36);
+alter table tbl_producers add column profile_max_power DOUBLE;
 ```
 
 

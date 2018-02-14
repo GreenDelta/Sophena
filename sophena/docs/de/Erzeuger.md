@@ -62,7 +62,20 @@ Die minimale und maximale Leistung eines Wärmeerzeugers ergibt sich aus den
 Produktdaten des jeweiligen Heizkessels, der dem Wärmeerzeuger zugeordnet ist.
 Die Leistung erhöht sich entsprechend, wenn der Erzeuger über eine 
 Wärmerückgewinnung verfügt (siehe oben). Bei Erzeugerlastgängen wird die
-minimale und maximale Leistung für eine Stunde aus dem Lastgang gelesen.
+minimale und maximale Leistung für die Simulationsrechnung für die jeweiligen
+Stunden aus dem Lastgang gelesen. Zusätzlich wird bei Erzeugerlastgängen die
+maximale Leistung (Nennleistung) zur Berechnung der Volllaststunden etc. durch
+den Benutzer angegeben (`Producer.profileMaxPower`) bzw. beim Import eines
+Erzeugerprofiles ermittelt.
+
+## Volllaststunden
+Die Volllaststunden (oder Vollbenutzungsstunden) `t_full` ergeben sich aus der
+Menge erzeugter Wärme `Q_gen` [kWh] und der maximalen Leistung (Nennleistung)
+eines Erzeugers (siehe oben) `P_max` [kW]:
+
+```julia
+t_full = Q_gen / P_max  # h
+```
 
 ## Stromerzeugung
 Wärmeerzeuger mit Kraft-Wärme-Kopplung (KWK-Anlagen,

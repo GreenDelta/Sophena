@@ -53,13 +53,13 @@ class ElectricityChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
-		Axis x = g.primaryXAxis;
+		Axis x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setMajorGridStep(500);
 		x.setMinorTicksVisible(false);
 		x.setTitleFont(x.getFont());
 		x.setTitle("Jahresstunden [h]");
-		Axis y = g.primaryYAxis;
+		Axis y = g.getPrimaryYAxis();
 		y.setTitle("Leistung [kW]");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
@@ -71,7 +71,7 @@ class ElectricityChart {
 		double[] top = new double[Stats.HOURS];
 		List<Plant> plants = collectPlants(top);
 		double max = Stats.nextStep(top[0], 5);
-		chart.primaryYAxis.setRange(0, max);
+		chart.getPrimaryYAxis().setRange(0, max);
 		Collections.reverse(plants);
 		for (Plant p : plants) {
 			Trace t = makeTrace(p, top);
@@ -85,8 +85,8 @@ class ElectricityChart {
 		dp.setBufferSize(Stats.HOURS);
 		dp.setConcatenate_data(true);
 		dp.setCurrentYDataArray(data);
-		Trace t = new Trace(plant.name, chart.primaryXAxis, chart.primaryYAxis,
-				dp);
+		Trace t = new Trace(plant.name, chart.getPrimaryXAxis(),
+				chart.getPrimaryYAxis(), dp);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
 		t.setAreaAlpha(255);
@@ -105,7 +105,7 @@ class ElectricityChart {
 			plant.idx = i;
 			plant.name = p.name;
 			double heat = result.totalHeat(p);
-			int hours = getFullLoadHours(p, heat);
+			int hours = (int) Producers.fullLoadHours(p, heat);
 			double power = p.boiler.maxPowerElectric;
 			if (hours <= 0)
 				continue;
@@ -115,13 +115,6 @@ class ElectricityChart {
 			}
 		}
 		return list;
-	}
-
-	private int getFullLoadHours(Producer p, double producedHeat) {
-		if (p == null || p.boiler == null)
-			return 0;
-		double maxPower = Producers.maxPower(p);
-		return (int) Math.round(producedHeat / maxPower);
 	}
 
 	private void substract(double[] top, double[] result) {

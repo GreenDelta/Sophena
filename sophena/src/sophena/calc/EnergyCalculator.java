@@ -28,10 +28,10 @@ class EnergyCalculator {
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
 
-		for (int i = 0; i < Stats.HOURS; i++) {
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
-			double requiredLoad = r.loadCurve[i];
-			double bufferCapacity = r.bufferCapacity[i];
+			double requiredLoad = r.loadCurve[hour];
+			double bufferCapacity = r.bufferCapacity[hour];
 			double maxLoad = requiredLoad + bufferCapacity;
 			double bufferPotential = maxBufferCapacity - bufferCapacity;
 
@@ -47,17 +47,18 @@ class EnergyCalculator {
 					break;
 				}
 
-				if (maxLoad < Producers.minPower(producer))
+				if (maxLoad < Producers.minPower(producer, hour))
 					continue;
 
-				double power = getSuppliedPower(requiredLoad, maxLoad, producer);
+				double power = getSuppliedPower(producer, hour,
+						requiredLoad, maxLoad);
 				if (power > requiredLoad) {
 					bufferCapacity -= (power - requiredLoad);
 				}
 				suppliedPower += power;
 				maxLoad -= power;
 				requiredLoad -= power;
-				r.producerResults[k][i] = power;
+				r.producerResults[k][hour] = power;
 
 				if (bufferPotential >= requiredLoad) {
 					// take rest from buffer
@@ -71,21 +72,21 @@ class EnergyCalculator {
 					bufferPower = bufferPotential;
 				}
 				suppliedPower += bufferPower;
-				r.suppliedBufferHeat[i] = bufferPower;
+				r.suppliedBufferHeat[hour] = bufferPower;
 				bufferCapacity += bufferPower;
 			}
 
-			r.suppliedPower[i] = suppliedPower;
+			r.suppliedPower[hour] = suppliedPower;
 
 			// buffer capacity with buffer loss
 			bufferPotential = maxBufferCapacity - bufferCapacity;
 			if (bufferPotential > 0) {
 				double bufferLoss = bufferPotential * bufferLossFactor;
-				r.bufferLoss[i] = bufferLoss;
+				r.bufferLoss[hour] = bufferLoss;
 				bufferCapacity = bufferCapacity + bufferLoss;
 			}
-			if ((i + 1) < Stats.HOURS) {
-				r.bufferCapacity[i + 1] = bufferCapacity;
+			if ((hour + 1) < Stats.HOURS) {
+				r.bufferCapacity[hour + 1] = bufferCapacity;
 			}
 		}
 
@@ -94,10 +95,10 @@ class EnergyCalculator {
 		return r;
 	}
 
-	private double getSuppliedPower(double requiredLoad, double maxLoad,
-			Producer producer) {
-		double bMin = Producers.minPower(producer);
-		double bMax = Producers.maxPower(producer);
+	private double getSuppliedPower(Producer producer, int hour,
+			double requiredLoad, double maxLoad) {
+		double bMin = Producers.minPower(producer, hour);
+		double bMax = Producers.maxPower(producer, hour);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 				? requiredLoad
 				: maxLoad;

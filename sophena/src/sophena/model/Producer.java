@@ -39,6 +39,14 @@ public class Producer extends RootEntity {
 	@JoinColumn(name = "f_profile")
 	public ProducerProfile profile;
 
+	/**
+	 * This field is only relevant for producers with a producer profile (so
+	 * without a boiler) and contains the maximum power of the producer for
+	 * calculating full load hours etc.
+	 */
+	@Column(name = "profile_max_power")
+	public double profileMaxPower;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	public ProducerFunction function;
