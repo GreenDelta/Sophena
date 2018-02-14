@@ -3,8 +3,10 @@ import os
 
 
 def main():
-    dir_path = os.path.abspath('./data/csv')
+    dir_path = os.path.abspath('../data/csv')
     for f in os.listdir(dir_path):
+        if f != 'product_groups.csv':
+            continue
         file_path = dir_path + os.path.sep + f
         format(file_path)
 

@@ -7,6 +7,7 @@ type ProductType string
 const (
 	ProductBiomassBoiler          ProductType = "BIOMASS_BOILER"
 	ProductFossilFuelBoiler       ProductType = "FOSSIL_FUEL_BOILER"
+	PoductHeatPump                ProductType = "HEAT_PUMP"
 	ProductCogenerationPlant      ProductType = "COGENERATION_PLANT"
 	ProductBoilerAccessories      ProductType = "BOILER_ACCESSORIES"
 	ProductBufferTank             ProductType = "BUFFER_TANK"

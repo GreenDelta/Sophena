@@ -124,8 +124,6 @@ public class ProducerProfileWizard extends Wizard {
 		private void groupCombo(Composite comp) {
 			Combo combo = UI.formCombo(comp, "Produktgruppe");
 			Controls.onSelect(combo, e -> {
-				data.updateBoilers();
-				data.suggestName();
 			});
 		}
 

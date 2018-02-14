@@ -54,3 +54,8 @@ b80024fb-5818-41be-909e-da96d6be67f3 ; 0      ; PLANNING                  ; Vorp
 4d56325d-026f-4050-8749-8d75882e2aba ; 1      ; PLANNING                  ; Detailplanung, Genehmigung, Bauüberwachung                     ; 0         ; 0       ; 0            ; 0          
 aef04552-f19b-4bc9-ae31-fb5fdca8e39d ; 2      ; PLANNING                  ; Finanzierung und Förderanträge                                 ; 0         ; 0       ; 0            ; 0          
 79ac3ebf-238e-43c3-8696-ba777ec06359 ; 3      ; PLANNING                  ; Öffentlichkeitsarbeit, Informationsveranstaltungen, Werbung    ; 0         ; 0       ; 0            ; 0          
+8039cf55-0916-45a7-bb47-61e1464c13f3 ; 0      ; HEAT_PUMP                 ; Luft/Wasser-Wärmepumpe                                         ; 18        ; 1.0     ; 1.5          ; 5          
+371d787e-a67b-40d3-b671-71bd9c589047 ; 1      ; HEAT_PUMP                 ; Sole/Wasser-Wärmepumpe                                         ; 20        ; 1.0     ; 1.5          ; 5          
+2023b906-659f-4a68-b1e8-7240de48472e ; 2      ; HEAT_PUMP                 ; Wasser/Wasser-Wärmepumpe                                       ; 20        ; 1.0     ; 1.5          ; 5          
+532a6841-c90e-46f7-8c80-af0cc0635c8e ; 3      ; HEAT_PUMP                 ; Gas-Wärmepumpe                                                 ; 15        ; 3.0     ; 1.5          ; 40         
+66b4a356-54a7-4d26-8a5d-3af201ded141 ; 4      ; HEAT_PUMP                 ; Erdsonden                                                      ; 50        ; 2.0     ; 1.0          ; 0          

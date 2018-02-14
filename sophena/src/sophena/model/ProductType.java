@@ -6,6 +6,8 @@ public enum ProductType {
 
 	FOSSIL_FUEL_BOILER,
 
+	HEAT_PUMP,
+
 	COGENERATION_PLANT,
 
 	BOILER_ACCESSORIES,
