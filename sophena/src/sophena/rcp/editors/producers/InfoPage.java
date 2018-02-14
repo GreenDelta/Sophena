@@ -59,6 +59,7 @@ class InfoPage extends FormPage {
 		new ProductCostSection(() -> producer().costs).withEditor(editor)
 				.createSection(body, tk);
 		new HeatRecoverySection(editor).create(body, tk);
+		form.reflow(true);
 	}
 
 	private void nameText(FormToolkit tk, Composite comp) {
@@ -105,7 +106,8 @@ class InfoPage extends FormPage {
 		List<Boiler> filtered = new ArrayList<>();
 		for (Boiler b : all) {
 			if (Objects.equals(selection.fuel, b.fuel)
-					&& Objects.equals(selection.woodAmountType, b.woodAmountType)) {
+					&& Objects.equals(selection.woodAmountType,
+							b.woodAmountType)) {
 				filtered.add(b);
 			}
 		}

@@ -41,7 +41,7 @@ public class ProducerProfileChart {
 		minData.setCurrentYDataArray(min);
 		maxData.setCurrentYDataArray(max);
 		double top = Stats.nextStep(Stats.max(max), 5);
-		Axis y = graph.primaryYAxis;
+		Axis y = graph.getPrimaryYAxis();
 		y.setRange(0, top);
 	}
 
@@ -52,12 +52,12 @@ public class ProducerProfileChart {
 		g.setShowLegend(false);
 		addMaxTrace(g);
 		addMinTrace(g);
-		Axis x = g.primaryXAxis;
+		Axis x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setTitle("");
 		x.setMajorGridStep(500);
 		x.setMinorTicksVisible(false);
-		Axis y = g.primaryYAxis;
+		Axis y = g.getPrimaryYAxis();
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
@@ -66,38 +66,22 @@ public class ProducerProfileChart {
 	}
 
 	private void addMaxTrace(XYGraph g) {
-
-		Trace t = new Trace("Max", g.primaryXAxis,
-				g.primaryYAxis, maxData);
+		Trace t = new Trace("Max", g.getPrimaryXAxis(),
+				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.get("#f6e58d"));
+		t.setTraceColor(Colors.get("#ff6b6b"));
 		t.setAreaAlpha(255);
 		g.addTrace(t);
-
-		// Trace maxLine = new Trace("MaxLine", g.primaryXAxis,
-		// g.primaryYAxis, maxData);
-		// maxLine.setPointStyle(Trace.PointStyle.NONE);
-		// maxLine.setTraceType(Trace.TraceType.SOLID_LINE);
-		// maxLine.setTraceColor(Colors.get("#ff7979"));
-		// g.addTrace(maxLine);
 	}
 
 	private void addMinTrace(XYGraph g) {
-		Trace t = new Trace("Min", g.primaryXAxis,
-				g.primaryYAxis, minData);
+		Trace t = new Trace("Min", g.getPrimaryXAxis(),
+				g.getPrimaryYAxis(), minData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.getWhite());
+		t.setTraceColor(Colors.get("#feca57"));
 		t.setAreaAlpha(255);
 		g.addTrace(t);
-
-		Trace minLine = new Trace("MinLine", g.primaryXAxis,
-				g.primaryYAxis, minData);
-		minLine.setPointStyle(Trace.PointStyle.NONE);
-		minLine.setTraceType(Trace.TraceType.SOLID_LINE);
-		minLine.setTraceColor(Colors.get("#ff7979"));
-		g.addTrace(minLine);
 	}
-
 }

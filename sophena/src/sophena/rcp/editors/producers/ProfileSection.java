@@ -10,6 +10,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.model.Producer;
 import sophena.model.ProducerProfile;
 import sophena.rcp.Icon;
+import sophena.rcp.charts.ImageExport;
 import sophena.rcp.charts.ProducerProfileChart;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.FileChooser;
@@ -43,7 +44,13 @@ public class ProfileSection {
 		chart = new ProducerProfileChart(comp, 250);
 		if (producer().profile != null)
 			chart.setData(producer().profile);
-		Action imp = Actions.create("Importiere", Icon.IMPORT_16.des(), () -> {
+		Action imp = importAction();
+		Actions.bind(section, imp, ImageExport.forXYGraph(
+				"Erzeugerlastgang.jpg", () -> chart.graph));
+	}
+
+	private Action importAction() {
+		return Actions.create("Importiere", Icon.IMPORT_16.des(), () -> {
 			File f = FileChooser.open("*.csv", ".txt");
 			if (f == null)
 				return;
@@ -52,11 +59,11 @@ public class ProfileSection {
 				chart.setData(producer().profile);
 				editor.setDirty();
 			} catch (Exception e) {
-				MsgBox.error("Datei konnte nicht gelesen werden", e.getMessage());
+				MsgBox.error("Datei konnte nicht gelesen werden",
+						e.getMessage());
 				Log.error(this, "Failed to read producer profile " + f, e);
 			}
 		});
-		Actions.bind(section, imp);
 	}
 
 }
