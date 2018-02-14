@@ -124,8 +124,14 @@ public final class Labels {
 			return "Biomassekessel";
 		case FOSSIL_FUEL_BOILER:
 			return "Fossiler Kessel";
+		case HEAT_PUMP:
+			return "Wärmepumpe";
 		case COGENERATION_PLANT:
 			return "KWK-Anlage";
+		case SOLAR_THERMAL_PLANT:
+			return "Solarthermische Anlage";
+		case ELECTRIC_HEAT_GENERATOR:
+			return "Elektrischer Wärmeerzeuger";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
 		case BUFFER_TANK:
@@ -200,8 +206,14 @@ public final class Labels {
 			return "Biomassekessel";
 		case FOSSIL_FUEL_BOILER:
 			return "Fossile Kessel";
+		case HEAT_PUMP:
+			return "Wärmepumpen";
 		case COGENERATION_PLANT:
 			return "KWK-Anlagen";
+		case SOLAR_THERMAL_PLANT:
+			return "Solarthermische Anlagen";
+		case ELECTRIC_HEAT_GENERATOR:
+			return "Elektrische Wärmeerzeuger";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
 		case BUFFER_TANK:

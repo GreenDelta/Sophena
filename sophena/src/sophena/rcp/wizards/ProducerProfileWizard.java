@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.window.Window;
@@ -13,16 +14,21 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
+import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -74,6 +80,12 @@ public class ProducerProfileWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		try {
+			int groupIdx = page.groupCombo.getSelectionIndex();
+			ProductGroup[] groups = page.productGroups;
+			if (groups != null && groups.length > groupIdx) {
+				ProductGroup group = groups[groupIdx];
+				ProductCosts.copy(group, producer.costs);
+			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
@@ -96,6 +108,10 @@ public class ProducerProfileWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
+		private ProductType productType;
+		private ProductGroup[] productGroups;
+		private Combo groupCombo;
+
 		private Page() {
 			super("ProducerProfilePage", "Erzeugerlastgang integrieren", null);
 		}
@@ -108,8 +124,9 @@ public class ProducerProfileWizard extends Wizard {
 			Composite comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
 			name(comp);
-			groupCombo(comp);
-			// boilerTable(root);
+			typeCombo(comp);
+			groupCombo = UI.formCombo(comp, "Produktgruppe");
+			updateGroupCombo();
 			functionFields(root);
 		}
 
@@ -121,10 +138,55 @@ public class ProducerProfileWizard extends Wizard {
 			});
 		}
 
-		private void groupCombo(Composite comp) {
-			Combo combo = UI.formCombo(comp, "Produktgruppe");
+		private void typeCombo(Composite comp) {
+			Combo combo = UI.formCombo(comp, "Produktbereich");
+			ProductType[] types = {
+					null, // waste heat
+					ProductType.COGENERATION_PLANT,
+					ProductType.SOLAR_THERMAL_PLANT,
+					ProductType.ELECTRIC_HEAT_GENERATOR,
+					ProductType.BIOMASS_BOILER,
+					ProductType.FOSSIL_FUEL_BOILER
+			};
+			String[] items = new String[types.length];
+			for (int i = 0; i < types.length; i++) {
+				if (types[i] == null)
+					items[i] = "Abwärme";
+				else
+					items[i] = Labels.get(types[i]);
+			}
+			combo.setItems(items);
+			combo.select(0);
 			Controls.onSelect(combo, e -> {
+				int i = combo.getSelectionIndex();
+				this.productType = types[i];
+				updateGroupCombo();
 			});
+		}
+
+		private void updateGroupCombo() {
+			if (productType == null) {
+				productGroups = new ProductGroup[] { null };
+			} else {
+				ProductGroupDao dao = new ProductGroupDao(App.getDb());
+				List<ProductGroup> groups = dao.getAll(productType);
+				Sorters.productGroups(groups);
+				productGroups = new ProductGroup[groups.size() + 1];
+				int i = 1;
+				for (ProductGroup group : groups) {
+					productGroups[i] = group;
+					i++;
+				}
+			}
+			String[] items = new String[productGroups.length];
+			for (int i = 0; i < items.length; i++) {
+				if (productGroups[i] == null)
+					items[i] = "";
+				else
+					items[i] = productGroups[i].name;
+			}
+			groupCombo.setItems(items);
+			groupCombo.select(0);
 		}
 
 		private void functionFields(Composite root) {
