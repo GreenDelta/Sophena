@@ -2,39 +2,31 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 func main() {
-	args := os.Args
-	if len(args) < 2 {
-		fmt.Println("No command given. Use `sophdat help`" +
-			" to see available commands")
-		return
-	}
-
-	cmd := args[1]
-	switch cmd {
-	case "help", "-h":
-		help()
-	case "pack", "-p":
-		Pack()
-	default:
-		fmt.Println("Unknown command:", cmd, ". Use `sophdat help`"+
-			" to see available commands")
-	}
+	fmt.Println("Package data from `data` to `gen` folder ...")
+	prepareOutputDir()
+	Pack()
+	fmt.Println("All done")
 }
 
-func help() {
-	help := `
-    sophdat - the Sophena data packaging tool
-
-    Usage: sophdat <command>
-
-    help, -h:   prints this help
-    pack, -p:   creates the data package
-    `
-	fmt.Println(help)
+func prepareOutputDir() {
+	_, err := os.Stat("gen")
+	if err == os.ErrNotExist {
+		check(os.Mkdir("gen", os.ModePerm))
+	} else {
+		fmt.Println("Delete files in `gen` folder")
+		files, err := ioutil.ReadDir("gen")
+		check(err)
+		for _, file := range files {
+			fmt.Println("  .. delete file", file.Name())
+			check(os.Remove(filepath.Join("gen", file.Name())))
+		}
+	}
 }
 
 func check(err error) {

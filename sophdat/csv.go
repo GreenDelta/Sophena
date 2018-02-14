@@ -63,7 +63,7 @@ func (model *CsvModel) readProductGroups() {
 		pg.IsProtected = true
 		pg.ID = cStr(row, 0)
 		pg.Index = cInt(row, 1)
-		pg.Type = ProductType(cStr(row, 2))
+		pg.Type = cStr(row, 2)
 		pg.Name = cStr(row, 3)
 		pg.Duration = cInt(row, 4)
 		pg.Repair = cFlo(row, 5)
@@ -111,14 +111,14 @@ func (model *CsvModel) readBoilers() {
 	model.Boilers = make([]*Boiler, 0)
 	fn := func(row []string) {
 
-		var productType ProductType
+		var productType string
 		switch cStr(row, 1) {
 		case "Fossiler Kessel":
-			productType = ProductFossilFuelBoiler
+			productType = "FOSSIL_FUEL_BOILER"
 		case "Biomassekessel":
-			productType = ProductBiomassBoiler
+			productType = "BIOMASS_BOILER"
 		case "KWK-Anlage":
-			productType = ProductCogenerationPlant
+			productType = "COGENERATION_PLANT"
 		default:
 			fmt.Println("ERROR: unknown product type for boiler", cStr(row, 1))
 			return
@@ -138,7 +138,7 @@ func (model *CsvModel) readBoilers() {
 		b.MaxPower = cFlo(row, 8)
 		b.MinPower = cFlo(row, 9)
 		b.EfficiencyRate = cFlo(row, 10)
-		if productType != ProductCogenerationPlant {
+		if productType != "COGENERATION_PLANT" {
 			b.IsCoGenPlant = false
 			b.Description = cStr(row, 11)
 		} else {
@@ -158,7 +158,7 @@ func (model *CsvModel) readBufferTanks() {
 	model.BufferTanks = make([]*BufferTank, 0)
 	fn := func(row []string) {
 		b := BufferTank{}
-		model.mapProductData(row, &b.Product, ProductBufferTank)
+		model.mapProductData(row, &b.Product, "BUFFER_TANK")
 		b.Volume = cFlo(row, 7)
 		b.Diameter = cFloPtr(row, 8)
 		b.Height = cFloPtr(row, 9)
@@ -173,9 +173,9 @@ func (model *CsvModel) readPipes() {
 	model.Pipes = make([]*Pipe, 0)
 	fn := func(row []string) {
 		p := Pipe{}
-		model.mapProductData(row, &p.Product, ProductPipe)
+		model.mapProductData(row, &p.Product, "PIPE")
 		p.Material = cStr(row, 7)
-		p.PipeType = PipeType(strings.ToUpper(cStr(row, 8)))
+		p.PipeType = strings.ToUpper(cStr(row, 8))
 		p.UValue = cFlo(row, 9)
 		p.InnerDiameter = cFlo(row, 10)
 		p.OuterDiameter = cFlo(row, 11)
@@ -193,7 +193,7 @@ func (model *CsvModel) readHeatRecoveries() {
 	model.HeatRecoveries = make([]*HeatRecovery, 0)
 	fn := func(row []string) {
 		h := HeatRecovery{}
-		model.mapProductData(row, &h.Product, ProductHeatRecovery)
+		model.mapProductData(row, &h.Product, "HEAT_RECOVERY")
 		h.Power = cFlo(row, 7)
 		h.HeatRecoveryType = cStr(row, 8)
 		h.Fuel = cStr(row, 9)
@@ -208,7 +208,7 @@ func (model *CsvModel) readFlueGasCleanings() {
 	model.FlueGasCleanings = make([]*FlueGasCleaning, 0)
 	fn := func(row []string) {
 		c := FlueGasCleaning{}
-		model.mapProductData(row, &c.Product, ProductFlueGasCleaning)
+		model.mapProductData(row, &c.Product, "FLUE_GAS_CLEANING")
 		c.MaxVolumeFlow = cFlo(row, 7)
 		c.Fuel = cStr(row, 8)
 		c.MaxProducerPower = cFlo(row, 9)
@@ -226,7 +226,7 @@ func (model *CsvModel) readTransferStations() {
 	model.TransferStations = make([]*TransferStation, 0)
 	fn := func(row []string) {
 		t := TransferStation{}
-		model.mapProductData(row, &t.Product, ProductTransferStation)
+		model.mapProductData(row, &t.Product, "TRANSFER_STATION")
 		t.BuildingType = cStr(row, 7)
 		t.OutputCapacity = cFlo(row, 8)
 		t.StationType = cStr(row, 9)
@@ -239,7 +239,7 @@ func (model *CsvModel) readTransferStations() {
 	eachCsvRow("data/csv/transfer_stations.csv", fn)
 }
 
-func (model *CsvModel) mapProductData(row []string, e *Product, pType ProductType) {
+func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
 	e.ID = cStr(row, 0)
 	e.IsProtected = true
 	e.ProductGroup = model.refProductGroup(row, 2)

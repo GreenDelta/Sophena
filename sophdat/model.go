@@ -1,9 +1,6 @@
 package main
 
-// AnnualHours is the number of hours in a year that is used for the
-// calulcation (365 * 24).
-const AnnualHours = 8760
-
+// Entity describes a general thing that is stored in the database.
 type Entity interface {
 	GetID() string
 	GetName() string
@@ -16,10 +13,12 @@ type RootEntity struct {
 	Description string `json:"description,omitempty"`
 }
 
+// GetID returns the ID of the entity.
 func (e *RootEntity) GetID() string {
 	return e.ID
 }
 
+// GetName returns the name of the entity.
 func (e *RootEntity) GetName() string {
 	return e.Name
 }
@@ -42,12 +41,12 @@ type BaseDataEntity struct {
 // default data for the economic calculation.
 type ProductGroup struct {
 	BaseDataEntity
-	Type        ProductType `json:"type"`
-	Index       int         `json:"index"`
-	Duration    int         `json:"duration"`
-	Repair      float64     `json:"repair"`
-	Maintenance float64     `json:"maintenance"`
-	Operation   float64     `json:"operation"`
+	Type        string  `json:"type"`
+	Index       int     `json:"index"`
+	Duration    int     `json:"duration"`
+	Repair      float64 `json:"repair"`
+	Maintenance float64 `json:"maintenance"`
+	Operation   float64 `json:"operation"`
 }
 
 // Product defines general data of products
@@ -55,7 +54,7 @@ type Product struct {
 	BaseDataEntity
 	PurchasePrice *float64    `json:"purchasePrice,omitempty"`
 	URL           string      `json:"url,omitempty"`
-	Type          ProductType `json:"type"`
+	Type          string      `json:"type"`
 	ProductGroup  *RootEntity `json:"group"`
 	Manufacturer  *RootEntity `json:"manufacturer"`
 
@@ -134,7 +133,7 @@ type BuildingState struct {
 type Pipe struct {
 	Product
 	Material       string   `json:"material,omitempty"`
-	PipeType       PipeType `json:"pipeType"`
+	PipeType       string   `json:"pipeType"`
 	UValue         float64  `json:"uValue"`
 	InnerDiameter  float64  `json:"innerDiameter"`
 	OuterDiameter  float64  `json:"outerDiameter"`
