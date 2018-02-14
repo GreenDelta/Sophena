@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -17,17 +19,23 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
+import sophena.model.ProducerProfile;
 import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.Log;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
@@ -111,6 +119,8 @@ public class ProducerProfileWizard extends Wizard {
 		private ProductType productType;
 		private ProductGroup[] productGroups;
 		private Combo groupCombo;
+		private Text fileText;
+		private Text maxPowerText;
 
 		private Page() {
 			super("ProducerProfilePage", "Erzeugerlastgang integrieren", null);
@@ -127,6 +137,11 @@ public class ProducerProfileWizard extends Wizard {
 			typeCombo(comp);
 			groupCombo = UI.formCombo(comp, "Produktgruppe");
 			updateGroupCombo();
+			fileFields(comp);
+			maxPowerText = UI.formText(comp, "Maximale thermische Leistung");
+			Texts.on(maxPowerText).required().decimal().init(0).onChanged(s -> {
+				producer.profileMaxPower = Num.read(s);
+			});
 			functionFields(root);
 		}
 
@@ -205,6 +220,38 @@ public class ProducerProfileWizard extends Wizard {
 			Controls.onSelect(function, e -> {
 				producer.function = Wizards.getProducerFunction(function);
 			});
+		}
+
+		private void fileFields(Composite comp) {
+			UI.formLabel(comp, "Lastgang");
+			Composite fileComp = new Composite(comp, SWT.NONE);
+			UI.gridData(fileComp, true, false);
+			UI.innerGrid(fileComp, 2);
+			fileText = new Text(fileComp, SWT.BORDER | SWT.READ_ONLY);
+			fileText.setBackground(Colors.getWhite());
+			UI.gridData(fileText, true, false);
+			Button btn = new Button(fileComp, SWT.NONE);
+			btn.setText("Öffnen");
+			Controls.onSelect(btn, e -> onSelectFile());
+		}
+
+		private void onSelectFile() {
+			File f = FileChooser.open("*.csv", "*.txt");
+			if (f == null)
+				return;
+			try {
+				producer.profile = ProducerProfile.read(f);
+				fileText.setText(f.getAbsolutePath());
+				if (producer.profileMaxPower == 0) {
+					double max = Stats.max(producer.profile.maxPower);
+					producer.profileMaxPower = max;
+					Texts.set(maxPowerText, max);
+				}
+			} catch (Exception e) {
+				MsgBox.error("Datei konnte nicht gelesen werden",
+						e.getMessage());
+				Log.error(this, "Failed to read producer profile " + f, e);
+			}
 		}
 
 		private boolean validate() {
