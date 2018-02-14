@@ -49,7 +49,7 @@
 
 		<!-- Eclipse Nebula -->
 		<get dest="${download_dir}/nebula.zip" verbose="true" skipexisting="true">
-			<url url="http://download.eclipse.org/technology/nebula/snapshot/repository.zip" />
+			<url url="http://download.eclipse.org/nebula/releases/latest/repository-nebula-latest.zip" />
 		</get>
 
 		<!-- Eclipse SDK -->
