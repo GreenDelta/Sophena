@@ -8,13 +8,13 @@ public class Producers {
 	private Producers() {
 	}
 
-	public static double minPower(Producer p) {
+	public static double minPower(Producer p, int hour) {
 		if (p == null || p.boiler == null)
 			return 0;
 		return p.boiler.minPower * heatRecoveryFactor(p);
 	}
 
-	public static double maxPower(Producer p) {
+	public static double maxPower(Producer p, int hour) {
 		if (p == null || p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);

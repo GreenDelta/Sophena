@@ -56,9 +56,12 @@ class InfoPage extends FormPage {
 			ProfileSection.of(editor).create(body, tk);
 		}
 		new FuelSection(editor).render(body, tk);
-		new ProductCostSection(() -> producer().costs).withEditor(editor)
+		new ProductCostSection(() -> producer().costs)
+				.withEditor(editor)
 				.createSection(body, tk);
-		new HeatRecoverySection(editor).create(body, tk);
+		if (!producer().hasProfile) {
+			new HeatRecoverySection(editor).create(body, tk);
+		}
 		form.reflow(true);
 	}
 
