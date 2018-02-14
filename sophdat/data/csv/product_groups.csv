@@ -1,0 +1,56 @@
+id                                   ; index  ; type                      ; name                                                           ; duration  ; repair  ; maintenance  ; operation  
+adf85ffc-2fd6-4324-9074-d82ddbb275a7 ; 0      ; BIOMASS_BOILER            ; Hackschnitzelkessel                                            ; 15        ; 3       ; 3            ; 150        
+3cbdf69f-3d7b-4046-bf4a-21e62b378db1 ; 1      ; BIOMASS_BOILER            ; Pelletkessel                                                   ; 15        ; 3       ; 3            ; 15         
+32b8206e-b159-462a-b010-401cb46e9a3d ; 2      ; BIOMASS_BOILER            ; Scheitholzkessel                                               ; 25        ; 2       ; 1.5          ; 80         
+ab84021e-5aed-4a07-91f6-af8b95315c19 ; 0      ; FOSSIL_FUEL_BOILER        ; Gaskessel mit Brenner                                          ; 20        ; 1       ; 2            ; 20         
+0e524f7f-23dd-4228-a5b3-e00a78bd0b38 ; 1      ; FOSSIL_FUEL_BOILER        ; Ölkessel mit Brenner                                           ; 20        ; 2       ; 2            ; 10         
+1d9dfb4e-baae-4945-aa03-7d8d7f541f10 ; 0      ; COGENERATION_PLANT        ; Holzgas-BHKW                                                   ; 15        ; 6       ; 2            ; 100        
+3dc9e342-1d55-41e6-aaa7-fd9a4902569c ; 1      ; COGENERATION_PLANT        ; Biogas-BHKW                                                    ; 15        ; 6       ; 2            ; 100        
+53e21feb-9d75-4610-87ce-36076cf9336b ; 2      ; COGENERATION_PLANT        ; Pflanzenöl-BHKW                                                ; 15        ; 6       ; 2            ; 100        
+5c1cbb57-2ef9-43fe-b1b5-8e6ac9d74caa ; 3      ; COGENERATION_PLANT        ; Erdgas-BHKW                                                    ; 15        ; 6       ; 2            ; 100        
+231125ae-754f-4d32-8e6b-5361f71d3dd9 ; 4      ; COGENERATION_PLANT        ; Heizöl-BHKW                                                    ; 15        ; 6       ; 2            ; 100        
+42a6959a-da1e-427e-85fa-572732c6e173 ; 5      ; COGENERATION_PLANT        ; ORC                                                            ; 15        ; 6       ; 2            ; 150        
+ecc29b0e-78b1-42ea-92d6-39a74ce1a169 ; 0      ; BOILER_ACCESSORIES        ; Brennstoffbehälter                                             ; 50        ; 1       ; 1            ; 5          
+71528418-e8a0-47bd-8c1d-99cb7103a322 ; 1      ; BOILER_ACCESSORIES        ; Pelletsilo                                                     ; 50        ; 1       ; 1            ; 5          
+4d96c3d9-395b-482a-bbd7-a796c0d270b7 ; 2      ; BOILER_ACCESSORIES        ; Öltank                                                         ; 50        ; 1       ; 1            ; 5          
+f95e509d-3f9f-48bc-bc9a-34645485615b ; 3      ; BOILER_ACCESSORIES        ; Flüssiggastank                                                 ; 50        ; 1       ; 1            ; 5          
+f229750d-78eb-49fd-9d3a-accec3d91562 ; 4      ; BOILER_ACCESSORIES        ; Mechanische Beschickung                                        ; 25        ; 1.5     ; 2            ; 2          
+b8373e12-defe-406c-b290-147d325e11b7 ; 5      ; BOILER_ACCESSORIES        ; Pneumatische Beschickung                                       ; 15        ; 2       ; 2            ; 2          
+f281676e-0d1f-3dc6-8820-c2d0773c19a5 ; 6      ; BOILER_ACCESSORIES        ; Rückbrandsicherung                                             ; 25        ; 1.5     ; 2            ; 0          
+ba376d47-aaa2-449e-9617-0a3659d2c8f8 ; 7      ; BOILER_ACCESSORIES        ; Luftvorwärmung                                                 ; 15        ; 1       ; 1            ; 0          
+9797badb-68aa-36c4-af32-4e06d354c96d ; 8      ; BOILER_ACCESSORIES        ; Rauchgasrezirkulation                                          ; 15        ; 1       ; 1            ; 0          
+7908eedd-ffdc-41b6-afef-e0bf3823dc1c ; 9      ; BOILER_ACCESSORIES        ; Entaschung, Ascheaustragung und Aschebehälter                  ; 20        ; 2       ; 2            ; 2          
+451fc441-60e8-4254-9852-4712ecc042e2 ; 10     ; BOILER_ACCESSORIES        ; Elektroinstallation, Standardregelung und Steuerung            ; 20        ; 1       ; 1            ; 10         
+5e5fd2c3-4f5a-4ba9-90f9-20679fa392c4 ; 11     ; BOILER_ACCESSORIES        ; Einbauplanung, Fracht, Montage, Inbetriebnahme                 ; 0         ; 0       ; 0            ; 0          
+3b4c76f8-d3dc-43b1-ae42-e3a99c709625 ; 0      ; HEAT_RECOVERY             ; Abgaswärmetauscher / Economiser                                ; 10        ; 2       ; 1            ; 10         
+8eede5b6-a6c4-4b32-a4b1-28ba1f8db4a4 ; 1      ; HEAT_RECOVERY             ; Rauchgaskondensation                                           ; 10        ; 2       ; 1            ; 5          
+7e8d37f2-de71-4a73-86d0-cdf3b8241cc0 ; 0      ; FLUE_GAS_CLEANING         ; Zyklon                                                         ; 15        ; 0       ; 0            ; 0          
+5ccf30a4-edca-4472-b192-ca5675239d7f ; 1      ; FLUE_GAS_CLEANING         ; Elektrofilter                                                  ; 20        ; 3       ; 6            ; 10         
+be3c07b6-4a91-4838-870f-13df68d862ba ; 2      ; FLUE_GAS_CLEANING         ; Gewebefilter                                                   ; 20        ; 3       ; 6            ; 10         
+72857213-2c78-47ed-838f-086480572a12 ; 0      ; BUFFER_TANK               ; Pufferspeicher                                                 ; 15        ; 2       ; 1            ; 0          
+ad82d4bc-0129-4cd5-bbfc-c9f7f718ddd3 ; 0      ; BOILER_HOUSE_TECHNOLOGY   ; Hydraulik                                                      ; 15        ; 2       ; 2            ; 2          
+5b5f9326-c536-407e-a25c-767ef9ba513a ; 1      ; BOILER_HOUSE_TECHNOLOGY   ; Elektroinstallation                                            ; 15        ; 2       ; 2            ; 2          
+4e32f3f4-8788-403b-984a-14a622bd2557 ; 2      ; BOILER_HOUSE_TECHNOLOGY   ; Mess- und Regeltechnik                                         ; 15        ; 1       ; 0            ; 0          
+6e18001e-d977-4fe3-8ebe-ff3070b437ed ; 3      ; BOILER_HOUSE_TECHNOLOGY   ; Wärmeübertrager                                                ; 20        ; 2       ; 0            ; 0          
+a4e8c123-d2c6-364d-a7f8-0aed89590cef ; 4      ; BOILER_HOUSE_TECHNOLOGY   ; Sonstiges                                                      ;           ;         ;              ;            
+4590c26d-52af-45b4-86cc-f8d889ab2020 ; 0      ; BUILDING                  ; Grundstück für Bunker, Heizhaus und Zufahrt                    ; 0         ; 1       ; 1            ; 10         
+71482133-b8ed-4f1a-b798-24e007d65206 ; 1      ; BUILDING                  ; Grundstück für Biomasse-Lagerplatz                             ; 0         ; 1       ; 1            ; 10         
+e7c8f916-414e-42a8-9955-88bba7a20c99 ; 2      ; BUILDING                  ; Erschließung, Außenanlagen, Freilager, Zufahrten, Wege, Zäune  ; 0         ; 1       ; 1            ; 10         
+a59d9868-c167-43db-92b3-6a4419ecfa15 ; 3      ; BUILDING                  ; Heizhaus                                                       ; 50        ; 1       ; 1            ; 0          
+d24d500f-94f7-4545-a32a-03b5c79ab756 ; 4      ; BUILDING                  ; Bühnen und Treppen im Heizhaus                                 ; 40        ; 1       ; 1            ; 0          
+d0313ee3-9474-49c4-bd0f-69ecda76dd21 ; 5      ; BUILDING                  ; Pellet-/ Hackschnitzellager mit Fördereinrichtung              ; 20        ; 3       ; 2            ; 10         
+7a8f1995-557f-47d4-895b-69497d705a1f ; 6      ; BUILDING                  ; Kamin                                                          ; 50        ; 1       ; 2            ; 0          
+9d44fb19-c020-44ee-b72f-e4490408c4bf ; 7      ; BUILDING                  ; Rauchgasrohre                                                  ; 15        ; 1       ; 1            ; 0          
+c3c9a105-ef87-4b67-aed0-12f85bbd47d6 ; 8      ; BUILDING                  ; Abgasventilator                                                ; 15        ; 2       ; 2            ; 0          
+0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0 ; 0      ; PIPE                      ; Leitungsrohre Kunststoff flexibel                              ; 30        ; 0.5     ; 0            ; 0          
+04bf0363-235b-3d6d-adfe-aa6d53f14694 ; 1      ; PIPE                      ; Leitungsrohre Kunststoff starr                                 ; 30        ; 0.5     ; 0            ; 0          
+911b3151-05dc-41c3-a19a-c86694707cc4 ; 2      ; PIPE                      ; Leitungsrohre Stahl                                            ; 40        ; 1       ; 0            ; 0          
+abe0fb52-d5bf-46e4-b648-b831167c6c43 ; 0      ; HEATING_NET_TECHNOLOGY    ; Netz-Pumpen/ Umwälzpumpe                                       ; 10        ; 2       ; 1            ; 0          
+ca2bc2cd-63e4-330e-9ac1-0c970d13e177 ; 1      ; HEATING_NET_TECHNOLOGY    ; Sonstiges                                                      ;           ;         ;              ;            
+e4f33955-8795-428e-bb53-5ec20db9a9f3 ; 0      ; HEATING_NET_CONSTRUCTION  ; Leitungsverlegung                                              ;           ; 0.5     ; 0            ; 0          
+114a932a-1086-4f60-a169-bae8294f3d26 ; 1      ; HEATING_NET_CONSTRUCTION  ; Grabungskosten                                                 ;           ; 0.5     ; 0            ; 0          
+38b47147-d270-4a83-98bb-dc7759578c39 ; 0      ; TRANSFER_STATION          ; Hausübergabestationen                                          ; 20        ; 2       ; 1            ; 0          
+b80024fb-5818-41be-909e-da96d6be67f3 ; 0      ; PLANNING                  ; Vorplanung                                                     ; 0         ; 0       ; 0            ; 0          
+4d56325d-026f-4050-8749-8d75882e2aba ; 1      ; PLANNING                  ; Detailplanung, Genehmigung, Bauüberwachung                     ; 0         ; 0       ; 0            ; 0          
+aef04552-f19b-4bc9-ae31-fb5fdca8e39d ; 2      ; PLANNING                  ; Finanzierung und Förderanträge                                 ; 0         ; 0       ; 0            ; 0          
+79ac3ebf-238e-43c3-8696-ba777ec06359 ; 3      ; PLANNING                  ; Öffentlichkeitsarbeit, Informationsveranstaltungen, Werbung    ; 0         ; 0       ; 0            ; 0          

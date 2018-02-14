@@ -108,7 +108,7 @@ public class ProducerProfileWizard extends Wizard {
 			Composite comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
 			name(comp);
-			// groupCombo(comp);
+			groupCombo(comp);
 			// boilerTable(root);
 			functionFields(root);
 		}
@@ -118,6 +118,14 @@ public class ProducerProfileWizard extends Wizard {
 			Texts.on(t).init(producer.name).required().onChanged(s -> {
 				producer.name = s;
 				validate();
+			});
+		}
+
+		private void groupCombo(Composite comp) {
+			Combo combo = UI.formCombo(comp, "Produktgruppe");
+			Controls.onSelect(combo, e -> {
+				data.updateBoilers();
+				data.suggestName();
 			});
 		}
 

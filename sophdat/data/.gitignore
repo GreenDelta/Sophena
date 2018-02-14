@@ -1,0 +1,12 @@
+
+# exclude weather data
+/json/weather_stations/
+
+# exclude product data
+/csv/boilers*
+/csv/buffer*
+/csv/flue*
+/csv/heat*
+/csv/manu*
+/csv/pipes*
+/csv/trans*

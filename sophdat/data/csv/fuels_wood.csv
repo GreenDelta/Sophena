@@ -1,0 +1,9 @@
+id                                   ; name                       ; unit  ; calorificValue  ; wood  ; density  ; co2Emissions  ; Primärenergiefaktor  
+fe2e05f4-9ec0-4ffc-9cba-83fc8ef16c99 ; Buche                      ; kg    ; 5.0             ; true  ; 558      ; 33.2          ; 0.2                  
+118e84a8-cf54-42cc-93e7-df0afb7dbe25 ; Eiche                      ; kg    ; 5.0             ; true  ; 571      ; 33.2          ; 0.2                  
+4b8a247b-c246-40d4-8d1b-b4f9d72a7fd4 ; Fichte                     ; kg    ; 5.2             ; true  ; 379      ; 44.3          ; 0.2                  
+56687cce-e89a-49fb-8044-71801355ccb7 ; Kiefer                     ; kg    ; 5.2             ; true  ; 431      ; 44.3          ; 0.2                  
+d3c17a44-f7e9-4549-8c46-1946c156847a ; Pappel                     ; kg    ; 5.0             ; true  ; 353      ; 44.3          ; 0.2                  
+24a485d1-739d-4a39-83a4-bfbeafbe56a3 ; Hartholz                   ; kg    ; 5.0             ; true  ; 558      ; 33.2          ; 0.2                  
+b17ef8ca-8dca-4d75-b616-8e468ee1b857 ; Weichholz                  ; kg    ; 5.2             ; true  ; 379      ; 44.3          ; 0.2                  
+97a8c018-3697-41c7-b276-a5e9840fa7da ; Mischung (70% Wh, 30% Hh)  ; kg    ; 5.14            ; true  ; 433      ; 41.0          ; 0.2                  
