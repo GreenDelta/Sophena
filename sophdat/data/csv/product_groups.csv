@@ -59,3 +59,11 @@ aef04552-f19b-4bc9-ae31-fb5fdca8e39d ; 2      ; PLANNING                  ; Fina
 2023b906-659f-4a68-b1e8-7240de48472e ; 2      ; HEAT_PUMP                 ; Wasser/Wasser-Wärmepumpe                                       ; 20        ; 1.0     ; 1.5          ; 5          
 532a6841-c90e-46f7-8c80-af0cc0635c8e ; 3      ; HEAT_PUMP                 ; Gas-Wärmepumpe                                                 ; 15        ; 3.0     ; 1.5          ; 40         
 66b4a356-54a7-4d26-8a5d-3af201ded141 ; 4      ; HEAT_PUMP                 ; Erdsonden                                                      ; 50        ; 2.0     ; 1.0          ; 0          
+aa2387e6-a80b-42db-a672-1b72bfeab1e9 ; 0      ; SOLAR_THERMAL_PLANT       ; Absorber                                                       ; 18        ; 0.5     ; 1.0          ; 5          
+3c97d08d-8771-4fd5-8718-bf81d50a09b8 ; 1      ; SOLAR_THERMAL_PLANT       ; Flachkollektor                                                 ; 20        ; 0.5     ; 1.0          ; 5          
+f2fccc46-dec8-4ea8-9d7e-631e3a160788 ; 2      ; SOLAR_THERMAL_PLANT       ; Vakuum-Röhrenkollektor                                         ; 18        ; 0.5     ; 1.0          ; 5          
+abbbdc85-8657-44f2-9610-ae073ea99c25 ; 3      ; SOLAR_THERMAL_PLANT       ; Vakuum-Flachkollektor                                          ; 15        ; 0.5     ; 1.0          ; 5          
+d3c40048-e0b0-4e4c-8aec-4ae8c5c8aee9 ; 4      ; SOLAR_THERMAL_PLANT       ; Sonstiges                                                      ; 0         ; 0       ; 0            ; 0          
+b0acf705-fcbd-401b-a9d6-a3edfef69d46 ; 0      ; ELECTRIC_HEAT_GENERATOR   ; Heizstab                                                       ; 0         ; 0       ; 0            ; 0          
+51cd5713-171b-4e6b-bc7a-3cd0d1d12734 ; 1      ; ELECTRIC_HEAT_GENERATOR   ; Elektrokessel                                                  ; 0         ; 0       ; 0            ; 0          
+4269d6d2-3713-468a-af0c-2c9e7bc31a66 ; 2      ; ELECTRIC_HEAT_GENERATOR   ; Elektrodenkessel                                               ; 0         ; 0       ; 0            ; 0          
