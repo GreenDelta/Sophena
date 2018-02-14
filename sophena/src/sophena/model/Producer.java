@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class Producer extends RootEntity {
 	@Column(name = "has_profile")
 	public boolean hasProfile;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_profile")
 	public ProducerProfile profile;
 
