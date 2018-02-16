@@ -121,6 +121,10 @@ class BufferTankSection {
 			net().bufferTank = null;
 			link.setText("(kein Pufferspeicher ausgewählt)");
 			link.getParent().pack();
+			net().bufferTankVolume = 0;
+			Texts.set(volText, 0.0);
+			ProductCosts.clear(net().bufferTankCosts);
+			costSection.refresh();
 			editor.setDirty();
 		});
 	}

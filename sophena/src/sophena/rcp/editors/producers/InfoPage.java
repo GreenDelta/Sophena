@@ -107,6 +107,7 @@ class InfoPage extends FormPage {
 		BoilerDao dao = new BoilerDao(App.getDb());
 		List<Boiler> all = dao.getAll();
 		List<Boiler> filtered = new ArrayList<>();
+		// TODO: filter by same product group & fuel group
 		for (Boiler b : all) {
 			if (Objects.equals(selection.fuel, b.fuel)
 					&& Objects.equals(selection.woodAmountType,

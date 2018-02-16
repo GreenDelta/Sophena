@@ -66,4 +66,17 @@ public class ProductCosts {
 			return true;
 		return costs.investment == 0 && costs.operation == 0;
 	}
+
+	/**
+	 * Sets all cost values to zero.
+	 */
+	public static void clear(ProductCosts costs) {
+		if (costs == null)
+			return;
+		costs.investment = 0;
+		costs.duration = 0;
+		costs.repair = 0;
+		costs.maintenance = 0;
+		costs.operation = 0;
+	}
 }
