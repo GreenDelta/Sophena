@@ -62,7 +62,7 @@ class FurtherResultsPage extends FormPage {
 
 			UI.formLabel(comp, tk, "Wärmebelegungsdichte");
 			double hl = length == 0 ? 0 : UsedHeat.get(editor.result) / (1000 * length);
-			Label hlLabel = UI.formLabel(comp, tk, Num.str(hl, 1));
+			Label hlLabel = UI.formLabel(comp, tk, Num.str(hl, 2));
 			hlLabel.setAlignment(SWT.RIGHT);
 			hlLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			UI.formLabel(comp, tk, "MWh/(m*a)");
