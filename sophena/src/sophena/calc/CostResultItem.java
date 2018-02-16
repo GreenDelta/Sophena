@@ -76,6 +76,8 @@ public class CostResultItem {
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
 		for (Consumer consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
 			if (ProductCosts.isEmpty(consumer.transferStationCosts))
 				continue;
 			CostResultItem item = init(consumer.transferStation,
@@ -91,6 +93,8 @@ public class CostResultItem {
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
 		for (Producer producer : project.producers) {
+			if (producer.disabled)
+				continue;
 			if (ProductCosts.isEmpty(producer.heatRecoveryCosts))
 				continue;
 			CostResultItem item = init(producer.heatRecovery,
