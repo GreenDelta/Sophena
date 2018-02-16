@@ -66,6 +66,8 @@ class TransferStationSection {
 			consumer().transferStation = null;
 			link.setText("(keine Hausübergabestation ausgewählt)");
 			link.getParent().pack();
+			ProductCosts.clear(consumer().transferStationCosts);
+			costSection.refresh();
 			editor.setDirty();
 		});
 	}
