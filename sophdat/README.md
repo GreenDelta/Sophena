@@ -3,10 +3,26 @@ sophdat generates the database packages for Sophena. It takes data from CSV
 and JSON files in the `data` folder and creates zip files that can be then
 imported into Sophena. There are also scripts in this repository that prepare
 the CSV files for this conversion from an Excel file (i.e. `xls2csv.py`).
+sophdate is a simple command line tool written in [Go](https://golang.org/).
+If you have Go installed, just switch to the `sophdat` folder and compile the
+tool:
+
+```bash
+cd sophdat
+go build
+```
+
+This should produce a `sophdat` executable in this folder. After this, copy the
+product and weather data that are *not* distributed with the repository into the
+respective data folders (see below) and run the tool:
+
+```bash
+./sophdat  # or sopdat.exe on Windows
+```
 
 The `data` folder should have the following content:
 
-* `data/csv/*.csv`: The CSV files with the product data (see the format
+* `data/csv/*.csv`: The CSV files with base and product data (see the format
     definition below)
 * `data/json/cost_settings/*.json`: The default cost settings of Sophena.
 * `data/json/weather_stations/*.json`: The climate data of the weather stations

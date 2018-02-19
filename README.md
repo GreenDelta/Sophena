@@ -50,7 +50,7 @@ Sophena. This template is extracted into the workspace if the database folder
 [BuildDb](./sophena/src/sophena/db/BuildDb.java) script which simply imports
 the `./sophdat/gen/base_data.sophena` package in an empty database. Thus, you
 first have to run the [sophdat](./sophdat) tool in order to create the database
-template which is distributed with the application.
+template which is distributed with the application (see the README file there).
 
 ## License
 Unless stated otherwise, all source code of the Sophena project is licensed 
