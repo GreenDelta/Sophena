@@ -15,8 +15,7 @@ func main() {
 }
 
 func prepareOutputDir() {
-	_, err := os.Stat("gen")
-	if err == os.ErrNotExist {
+	if _, err := os.Stat("gen"); os.IsNotExist(err) {
 		check(os.Mkdir("gen", os.ModePerm))
 	} else {
 		fmt.Println("Delete files in `gen` folder")
