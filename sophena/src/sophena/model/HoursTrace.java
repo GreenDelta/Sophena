@@ -28,41 +28,39 @@ public class HoursTrace {
 		if (time == null)
 			return new int[] { -1, -1 };
 		try {
-			MonthDay startMD = MonthDay.parse(time.start);
-			int startMonth = startMD.getMonthValue() - 1;
-			int startDay = startMD.getDayOfMonth() - 1;
-			MonthDay endMD = MonthDay.parse(time.end);
-			int endMonth = endMD.getMonthValue() - 1;
-			int endDay = endMD.getDayOfMonth() - 1;
-
-			int start = 0;
-			int end = 0;
-
-			// add the days*hours of the months before
-			int uMonth = Math.max(startMonth, endMonth);
-			for (int month = 0; month < uMonth; month++) {
-				if (month < startMonth) {
-					start += DAYS_IN_MONTH[month] * 24;
-				}
-				if (month < endMonth) {
-					end += DAYS_IN_MONTH[month] * 24;
-				}
-			}
-
-			// add the hours of the days before
-			// note that we have a zero based index (startDay = 1 -> 24 before)
-			if (startDay > 0) {
-				start += 24 * startDay;
-			}
-			if (endDay > 0) {
-				end += 24 * endDay;
-			}
-
-			return new int[] { start, end + 23 };
+			MonthDay startDay = MonthDay.parse(time.start);
+			MonthDay endDay = MonthDay.parse(time.end);
+			int startHour = getFirstHour(startDay);
+			int endHour = getFirstHour(endDay) + 23;
+			return new int[] { startHour, endHour };
 		} catch (Exception e) {
 			Log.error(HoursTrace.class, "Failed to parse time span " + time, e);
 			return new int[] { -1, -1 };
 		}
+	}
+
+	/**
+	 * Get the index of the first hour of the given month-day in an hours trace.
+	 */
+	public static int getFirstHour(MonthDay mday) {
+		if (mday == null)
+			return 0;
+
+		// transform to 0-based indices
+		int month = mday.getMonthValue() - 1;
+		int day = mday.getDayOfMonth() - 1;
+		int hour = 0;
+
+		// add the days*hours of the months before
+		for (int i = 0; i < month; i++) {
+			hour += DAYS_IN_MONTH[i] * 24;
+		}
+
+		// add the hours of the days before
+		if (day > 0) {
+			hour += 24 * day;
+		}
+		return hour;
 	}
 
 	public static void applyInterval(double[] trace, int[] interval,

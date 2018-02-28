@@ -21,43 +21,40 @@ Stundenlinie `[0, 8759]` entspricht der Wert am Index `0` der Stunde
 `00.00 - 01.00` Uhr am `01.01.` und am Index `8759` der Stunde `23.00 - 00.00`
 Uhr am `31.12.`.
 
-Bei Tagesgenauen Intervallen wird für den Startindex die Stunde `00.00 - 01.00`
-Uhr und für den Endindex dies Stunde `23.00 - 00.00` Uhr des jweiligen Tags und
-Monats gewählt. Zum Beispiel wird der Zeitraum `07.08. - 03.09.` auf den
-0-basierten Indixbereich `(5232, 5903)` abgebildet:
+## Tagesbasierte Intervalle
+Bei tagesgenauen Intervallen (z.B. Betriebsunterbrechungen von Abnehmern) wird
+für den Startindex die Stunde `00.00 - 01.00` Uhr und für den Endindex die
+Stunde `23.00 - 00.00` Uhr des jweiligen Tags und Monats gewählt. Der Index der
+ersten Stunde eines Tages in einem bestimmten Monat kann mit der folgenden
+Funktion berechnet werden:
+
+```julia
+function first_hour(month, day)
+    hour = 1
+    for m = 1 : (month - 1)
+        hour += DAYS_IN_MONTH[m] * 24
+    end
+    hour += ((day - 1) * 24)
+    return hour
+end
+```
+
+Der Index der letzten Stunde ergibt sich aus dem Index der ersten Stunde + 23
+(egal, ob für 0-basierte oder 1-basierte Indizes):
+
+```julia
+function last_hour(month, day)
+    return first_hour(month, day) + 23
+end
+```
+
+Zum Beispiel wird der Zeitraum `07.08. - 03.09.` auf den 0-basierten 
+Indixbereich `(5232, 5903)` abgebildet:
 
 
 ```julia
-start_day = 7
-start_month = 8
-end_day = 3
-end_month = 9
-
-start_idx = 0
-end_idx = 0
-
-for month = 1:12
-    if month < start_month
-        start_idx += DAYS_IN_MONTH[month] * 24
-    end
-    if month < end_month
-        end_idx += DAYS_IN_MONTH[month] * 24
-    end
-end
-
-for day = 1:31
-    if day < start_day
-        start_idx += 24
-    end
-    if day < end_day
-        end_idx += 24
-    end
-end
-
-start_idx += 1
-end_idx += 24
-
-println((start_idx - 1, end_idx - 1))  # print 0-based indices
+time_interval = (first_hour(8, 7) - 1, last_hour(9, 3) - 1)
+println(time_interval)  # (5232, 5903)
 ```
 
 Bei Anwenden eines Indexbereichs auf eine Stundenlinie gibt es zwei Fälle. Wenn
