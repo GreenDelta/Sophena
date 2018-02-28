@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.AttributeOverride;
@@ -11,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -62,6 +65,10 @@ public class Producer extends RootEntity {
 	@JoinColumn(name = "f_heat_recovery")
 	public HeatRecovery heatRecovery;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_owner")
+	public final List<TimeInterval> interruptions = new ArrayList<>();
+
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name = "investment",
@@ -106,6 +113,9 @@ public class Producer extends RootEntity {
 			clone.heatRecoveryCosts = heatRecoveryCosts.clone();
 		}
 		clone.utilisationRate = utilisationRate;
+		for (TimeInterval t : interruptions) {
+			clone.interruptions.add(t.clone());
+		}
 		return clone;
 	}
 

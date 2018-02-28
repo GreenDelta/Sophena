@@ -59,6 +59,7 @@ class InfoPage extends FormPage {
 		new ProductCostSection(() -> producer().costs)
 				.withEditor(editor)
 				.createSection(body, tk);
+		new InterruptionSection(editor).create(body, tk);
 		if (!producer().hasProfile) {
 			new HeatRecoverySection(editor).create(body, tk);
 		}

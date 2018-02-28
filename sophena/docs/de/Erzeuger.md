@@ -68,6 +68,9 @@ maximale Leistung (Nennleistung) zur Berechnung der Volllaststunden etc. durch
 den Benutzer angegeben (`Producer.profileMaxPower`) bzw. beim Import eines
 Erzeugerprofiles ermittelt.
 
+## Betriebsunterbrechungen
+
+
 ## Volllaststunden
 Die Volllaststunden (oder Vollbenutzungsstunden) `t_full` ergeben sich aus der
 Menge erzeugter Wärme `Q_gen` [kWh] und der maximalen Leistung (Nennleistung)
