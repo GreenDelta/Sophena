@@ -9,7 +9,12 @@ public class MonthDayHour {
 
 	public MonthDayHour(MonthDay mday, int hour) {
 		this.mday = mday;
-		this.hour = hour;
+		if (hour < 0)
+			this.hour = 0;
+		else if (hour > 23)
+			this.hour = 23;
+		else
+			this.hour = hour;
 	}
 
 	public static MonthDayHour of(int month, int day, int hour) {

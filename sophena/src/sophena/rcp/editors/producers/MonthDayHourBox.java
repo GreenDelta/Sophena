@@ -1,10 +1,5 @@
 package sophena.rcp.editors.producers;
 
-import java.time.MonthDay;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -13,8 +8,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.HoursTrace;
+import sophena.model.MonthDayHour;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.Log;
 import sophena.rcp.utils.UI;
 
 class MonthDayHourBox {
@@ -23,7 +18,6 @@ class MonthDayHourBox {
 			"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
 			"August", "September", "Oktober", "November", "Dezember" };
 
-	private List<Consumer<MonthDay>> listeners = new ArrayList<>();
 	private Combo dayCombo;
 	private Combo monthCombo;
 	private Combo hourCombo;
@@ -55,7 +49,6 @@ class MonthDayHourBox {
 			tk.adapt(hourCombo);
 		}
 		Controls.onSelect(monthCombo, (e) -> monthChanged());
-		Controls.onSelect(dayCombo, (e) -> fireChange());
 	}
 
 	private void monthChanged() {
@@ -67,54 +60,21 @@ class MonthDayHourBox {
 		while (dayIdx >= newDayItems.length)
 			dayIdx--;
 		dayCombo.select(dayIdx);
-		fireChange();
 	}
 
-	private void fireChange() {
-		String value = getSelection();
-		if (value == null)
+	void select(MonthDayHour mdh) {
+		if (mdh == null)
 			return;
-		String[] dates = value.split("-");
-		if (dates.length != 3)
-			return;
-		try {
-			MonthDay monthDay = MonthDay.of(Integer.valueOf(dates[0]),
-					Integer.valueOf(dates[1]));
-			for (Consumer<MonthDay> fn : listeners)
-				fn.accept(monthDay);
-		} catch (Exception e) {
-			Log.error(this, "failed to generate month day time format with"
-					+ "selected value " + value, e);
-		}
+		monthCombo.select(mdh.getMonth() - 1);
+		dayCombo.select(mdh.getDay() - 1);
+		hourCombo.select(mdh.getHour());
 	}
 
-	void select(String value) {
-		if (value == null)
-			return;
-		String[] dates = value.split("-");
-		if (dates.length != 3)
-			return;
-		MonthDay monthDay = MonthDay.of(Integer.valueOf(dates[0]),
-				Integer.valueOf(dates[1]));
-		int monthIdx = monthDay.getMonthValue() - 1;
-		monthCombo.select(monthIdx);
-		dayCombo.select(monthDay.getDayOfMonth() - 1);
-		int hourIdx = Integer.valueOf(dates[2]);
-		hourCombo.select(hourIdx);
-	}
-
-	public String getSelection() {
-		int month = monthCombo.getSelectionIndex() + 1;
-		int day = dayCombo.getSelectionIndex() + 1;
-		int hour = hourCombo.getSelectionIndex();
-		return String.valueOf(month).concat("-").concat(String.valueOf(day))
-				.concat("-").concat(String.valueOf(hour));
-	}
-
-	public void setEnabled(boolean enabled) {
-		dayCombo.setEnabled(enabled);
-		monthCombo.setEnabled(enabled);
-		hourCombo.setEnabled(enabled);
+	MonthDayHour getSelection() {
+		return MonthDayHour.of(
+				monthCombo.getSelectionIndex() + 1,
+				dayCombo.getSelectionIndex() + 1,
+				hourCombo.getSelectionIndex());
 	}
 
 	private Combo createCombo(Composite c, int width, String[] items) {

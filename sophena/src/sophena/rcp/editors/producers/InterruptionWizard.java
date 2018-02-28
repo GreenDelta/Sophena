@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import sophena.model.MonthDayHour;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
 import sophena.rcp.utils.Log;
@@ -110,18 +111,15 @@ class InterruptionWizard extends Wizard {
 			if (time == null)
 				return;
 			try {
-				box.select(time);
+				box.select(MonthDayHour.parse(time));
 			} catch (Exception e) {
-				Log.error(this,
-						"failed to generate month day time format with given time "
-								+ time,
-						e);
+				Log.error(this, "failed to parse MonthDayHour " + time, e);
 			}
 		}
 
 		private void bindToModel() {
-			time.start = startBox.getSelection();
-			time.end = endBox.getSelection();
+			time.start = startBox.getSelection().toString();
+			time.end = endBox.getSelection().toString();
 			time.description = descriptionText.getText();
 		}
 	}
