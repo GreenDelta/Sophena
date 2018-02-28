@@ -25,6 +25,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Lists;
 
 class InterruptionSection {
 
@@ -79,6 +80,7 @@ class InterruptionSection {
 
 	private void onRemove() {
 		List<TimeInterval> list = Viewers.getAllSelected(table);
+		list = Lists.findAll(list, producer().interruptions); // JPA
 		if (list == null || list.isEmpty())
 			return;
 		producer().interruptions.removeAll(list);
@@ -87,6 +89,7 @@ class InterruptionSection {
 
 	private void onEdit() {
 		TimeInterval time = Viewers.getFirstSelected(table);
+		time = Lists.find(time, producer().interruptions); // JPA
 		if (time == null)
 			return;
 		if (InterruptionWizard.open(time) != Window.OK)

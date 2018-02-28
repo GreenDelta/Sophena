@@ -25,6 +25,7 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Lists;
 import sophena.utils.Num;
 
 class LoadProfileSection {
@@ -86,11 +87,11 @@ class LoadProfileSection {
 
 	private void editLoadProfile(TableViewer table) {
 		LoadProfile profile = Viewers.getFirstSelected(table);
+		profile = Lists.find(profile, consumer().loadProfiles); // JPA
 		if (profile == null)
 			return;
 		if (LoadProfileWizard.open(profile) == Window.OK) {
-			List<LoadProfile> profiles = consumer().loadProfiles;
-			table.setInput(profiles);
+			table.setInput(consumer().loadProfiles);
 			editor.calculate();
 			editor.setDirty();
 		}
@@ -98,6 +99,7 @@ class LoadProfileSection {
 
 	private void deleteLoadProfile(TableViewer table) {
 		LoadProfile profile = Viewers.getFirstSelected(table);
+		profile = Lists.find(profile, consumer().loadProfiles); // JPA
 		if (profile == null)
 			return;
 		List<LoadProfile> profiles = consumer().loadProfiles;
@@ -109,6 +111,7 @@ class LoadProfileSection {
 
 	private void exportProfile(TableViewer table) {
 		LoadProfile profile = Viewers.getFirstSelected(table);
+		profile = Lists.find(profile, consumer().loadProfiles); // JPA
 		if (profile == null)
 			return;
 		String name = profile.name == null ? "profile" : profile.name;

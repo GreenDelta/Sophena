@@ -1,7 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
@@ -33,6 +32,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Lists;
 import sophena.utils.Num;
 
 class PipeSection {
@@ -122,7 +122,8 @@ class PipeSection {
 		}
 	}
 
-	private void createTable(Section section, Composite parent, FormToolkit tk) {
+	private void createTable(Section section, Composite parent,
+			FormToolkit tk) {
 		Composite comp = tk.createComposite(parent);
 		UI.gridData(comp, true, false);
 		GridLayout layout = UI.gridLayout(comp, 1);
@@ -170,7 +171,8 @@ class PipeSection {
 	}
 
 	private void edit() {
-		HeatNetPipe pipe = getSelected();
+		HeatNetPipe pipe = Viewers.getFirstSelected(table);
+		pipe = Lists.find(pipe, net().pipes); // JPA
 		if (pipe == null)
 			return;
 		HeatNetPipe clone = pipe.clone();
@@ -187,25 +189,14 @@ class PipeSection {
 	}
 
 	private void del() {
-		HeatNetPipe pipe = getSelected();
+		HeatNetPipe pipe = Viewers.getFirstSelected(table);
+		pipe = Lists.find(pipe, net().pipes); // JPA
 		if (pipe == null)
 			return;
 		net().pipes.remove(pipe);
 		table.setInput(net().pipes);
 		editor.setDirty();
 		textsChanged();
-	}
-
-	private HeatNetPipe getSelected() {
-		HeatNetPipe pipe = Viewers.getFirstSelected(table);
-		if (pipe == null)
-			return null;
-		// get the pipe that is really attached to the heat net (JPA)
-		for (HeatNetPipe p : net().pipes) {
-			if (Objects.equals(pipe.id, p.id))
-				return p;
-		}
-		return pipe;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
