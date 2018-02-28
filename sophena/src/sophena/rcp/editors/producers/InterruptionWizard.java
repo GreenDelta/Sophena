@@ -53,7 +53,6 @@ class InterruptionWizard extends Wizard {
 
 		private Page() {
 			super("InterruptionWizardPage", "Betriebsunterbrechung", null);
-			setDescription("Betriebsunterbrechung des Abnehmers");
 		}
 
 		@Override

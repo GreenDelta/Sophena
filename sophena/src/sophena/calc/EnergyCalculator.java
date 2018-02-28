@@ -2,10 +2,12 @@ package sophena.calc;
 
 import sophena.math.energetic.BufferCapacity;
 import sophena.math.energetic.Producers;
+import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.TimeInterval;
 
 class EnergyCalculator {
 
@@ -27,6 +29,7 @@ class EnergyCalculator {
 		double bufferLossFactor = project.heatNet.bufferLoss / 100d;
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
+		boolean[][] interruptions = interruptions(r);
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
@@ -47,6 +50,8 @@ class EnergyCalculator {
 					break;
 				}
 
+				if (isInterrupted(k, hour, interruptions))
+					continue;
 				if (maxLoad < Producers.minPower(producer, hour))
 					continue;
 
@@ -114,5 +119,31 @@ class EnergyCalculator {
 			r.totalProducedHeat += total;
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
+	}
+
+	private boolean[][] interruptions(EnergyResult r) {
+		boolean[][] interruptions = new boolean[r.producers.length][];
+		for (int i = 0; i < r.producers.length; i++) {
+			Producer p = r.producers[i];
+			if (p == null || p.interruptions.isEmpty())
+				continue;
+			boolean[] interruption = new boolean[Stats.HOURS];
+			for (TimeInterval time : p.interruptions) {
+				int[] interval = HoursTrace.getHourInterval(time);
+				HoursTrace.applyInterval(interruption, interval, (old, idx) -> {
+					return true;
+				});
+			}
+			interruptions[i] = interruption;
+		}
+		return interruptions;
+	}
+
+	private boolean isInterrupted(int producer, int hour,
+			boolean[][] interruptions) {
+		boolean[] interruption = interruptions[producer];
+		if (interruption == null)
+			return false;
+		return interruption[hour];
 	}
 }
