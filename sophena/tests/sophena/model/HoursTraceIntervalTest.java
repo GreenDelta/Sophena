@@ -63,4 +63,21 @@ public class HoursTraceIntervalTest {
 			}
 		}
 	}
+
+	@Test
+	public void testGetFirstHour() {
+		assertEquals(0, HoursTrace.getFirstHour(MonthDay.parse("--01-01")));
+		assertEquals(5232, HoursTrace.getFirstHour(MonthDay.parse("--08-07")));
+		assertEquals(8736, HoursTrace.getFirstHour(MonthDay.parse("--12-31")));
+	}
+
+	@Test
+	public void testHourInterval() {
+		TimeInterval time = new TimeInterval();
+		time.start = "--08-07:06";
+		time.end = "--09-03:22";
+		int[] interval = HoursTrace.getHourInterval(time);
+		assertEquals(5238, interval[0]);
+		assertEquals(5902, interval[1]);
+	}
 }

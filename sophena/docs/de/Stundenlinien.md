@@ -21,7 +21,7 @@ Stundenlinie `[0, 8759]` entspricht der Wert am Index `0` der Stunde
 `00.00 - 01.00` Uhr am `01.01.` und am Index `8759` der Stunde `23.00 - 00.00`
 Uhr am `31.12.`.
 
-## Tagesbasierte Intervalle
+### Tagesbasierte Intervalle
 Bei tagesgenauen Intervallen (z.B. Betriebsunterbrechungen von Abnehmern) wird
 für den Startindex die Stunde `00.00 - 01.00` Uhr und für den Endindex die
 Stunde `23.00 - 00.00` Uhr des jweiligen Tags und Monats gewählt. Der Index der
@@ -57,6 +57,21 @@ time_interval = (first_hour(8, 7) - 1, last_hour(9, 3) - 1)
 println(time_interval)  # (5232, 5903)
 ```
 
+### Stundenbasierte Intervalle und Speicherformat
+Bei stundenbasierten Intervallen (z.B. bei Betriebsunterbrechungen von
+Erzeugern) ergibt sich der Start- und Endindex direkt aus den jeweiligen
+Stundenangaben: Man nimmt die erste Stunde des jeweiligen Tages und Montats
+(`first_hour(month, day)`) und addiert dazu die jeweilige Stundenangabe.
+
+Als Format für Start- und Endpunkte von tagesbasierten Intervallen wird in
+Sophena das Format der Java-Klasse `MonthDay` verwendet: `--MM-DD`, welches
+dann entsprechend geparst werden kann: `MonthDay.parse("--01-01")`. Für
+stundenbasierte Intervalle wird das Format in Sophena so erweitert: `--MM-DD:HH`.
+Die Klasse `MonthDayHour` bietet entsprechende Hilfsmethoden. Für die
+Stundenangaben sind Werte von `00` bis `23` gültig (alles andere wird als `00`
+interpretiert).
+
+### Anwendung der Zeitintervalle
 Bei Anwenden eines Indexbereichs auf eine Stundenlinie gibt es zwei Fälle. Wenn
 der Startindex kleiner als der Endindex ist, so wird die jeweilige Funktion auf
 die Werte dazwischen angewendet (immer einschließlich der Start- und Endindizes):

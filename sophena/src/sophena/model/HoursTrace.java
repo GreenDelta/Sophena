@@ -40,6 +40,24 @@ public class HoursTrace {
 	}
 
 	/**
+	 * Returns the start and end index of an hours trace for the given time
+	 * interval. It is expected that the given interval has a MonthDayHour
+	 * format. If something went wrong [-1, -1] will be returned.
+	 */
+	public static int[] getHourInterval(TimeInterval time) {
+		if (time == null)
+			return new int[] { -1, -1 };
+		try {
+			MonthDayHour start = MonthDayHour.parse(time.start);
+			MonthDayHour end = MonthDayHour.parse(time.end);
+			return new int[] { getHour(start), getHour(end) };
+		} catch (Exception e) {
+			Log.error(HoursTrace.class, "Failed to parse time span " + time, e);
+			return new int[] { -1, -1 };
+		}
+	}
+
+	/**
 	 * Get the index of the first hour of the given month-day in an hours trace.
 	 */
 	public static int getFirstHour(MonthDay mday) {
@@ -61,6 +79,17 @@ public class HoursTrace {
 			hour += 24 * day;
 		}
 		return hour;
+	}
+
+	public static int getHour(MonthDayHour mdh) {
+		if (mdh == null)
+			return 0;
+		int hour = getFirstHour(mdh.getMonthDay());
+		if (mdh.getHour() < 0)
+			return hour;
+		if (mdh.getHour() > 23)
+			return hour + 23;
+		return hour + mdh.getHour();
 	}
 
 	public static void applyInterval(double[] trace, int[] interval,
