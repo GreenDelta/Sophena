@@ -44,7 +44,7 @@ class FuelWizard extends Wizard {
 			fuel.calorificValue = Texts.getDouble(page.calText);
 			fuel.co2Emissions = Texts.getDouble(page.co2Text);
 			fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
-			fuel.wood = false;
+			// TODO: set fuel group
 			return true;
 		} catch (Exception e) {
 			log.error("failed to set fuel data " + fuel, e);

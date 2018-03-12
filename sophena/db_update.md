@@ -1,3 +1,9 @@
+## Fuels
+* each `Fuel` gets a `FuelGroup`
+* some new fuels are added; the unit of some fuels changed! -> need to apply
+  conversion factors in updates
+
+
 Below the new database fields of Sophena 2.0 are listed. We need some kind of
 database update and schema version for Sophena 2.0.
 

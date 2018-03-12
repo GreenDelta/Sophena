@@ -32,7 +32,7 @@ CREATE TABLE tbl_fuels (
     unit VARCHAR(255),
     calorific_value DOUBLE,
     density DOUBLE,
-    is_wood BOOLEAN,
+    fuel_group VARCHAR(50),
     co2_emissions DOUBLE,
     primary_energy_factor DOUBLE,
 

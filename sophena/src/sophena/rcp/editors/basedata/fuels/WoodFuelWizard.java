@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Fuel;
+import sophena.model.FuelGroup;
 import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -31,8 +32,8 @@ class WoodFuelWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		fuel.wood = true;
-		fuel.unit = "kg";
+		fuel.group = FuelGroup.WOOD;
+		fuel.unit = "kg"; // TODO: default units changed for wood!
 		page.data.bindToModel();
 		return true;
 	}

@@ -132,7 +132,7 @@ class ConsumptionSection {
 				return null;
 			String amount = Num.str(c.amount);
 			Fuel fuel = c.fuel;
-			if (!fuel.wood)
+			if (!fuel.isWood())
 				return amount + " " + fuel.unit;
 			String unit;
 			if (c.woodAmountType == null)

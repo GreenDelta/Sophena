@@ -86,7 +86,7 @@ class FuelSection {
 		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
 		combo.create("Brennstoff", composite, tk);
 		FuelDao dao = new FuelDao(App.getDb());
-		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.wood)
+		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
 				.collect(Collectors.toList());
 		Sorters.byName(fuels);
 		combo.setInput(fuels);

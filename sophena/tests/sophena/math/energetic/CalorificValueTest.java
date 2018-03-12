@@ -6,6 +6,7 @@ import org.junit.Test;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
+import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.WoodAmountType;
@@ -73,7 +74,7 @@ public class CalorificValueTest {
 	private Fuel wood() {
 		Fuel fuel = new Fuel();
 		fuel.name = "Wood";
-		fuel.wood = true;
+		fuel.group = FuelGroup.WOOD;
 		fuel.calorificValue = 5.2; // kWh / kg dry mass
 		fuel.density = 379; // kg / solid m3
 		return fuel;

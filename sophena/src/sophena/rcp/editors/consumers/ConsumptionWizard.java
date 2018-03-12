@@ -189,7 +189,7 @@ class ConsumptionWizard extends Wizard {
 				consumption.fuel = fuel;
 				consumption.amount = Texts.getDouble(amountText);
 				consumption.utilisationRate = Texts.getDouble(utilText);
-				if (fuel.wood) {
+				if (fuel.isWood()) {
 					consumption.woodAmountType = getWoodType();
 					consumption.waterContent = Texts.getDouble(waterText);
 				} else {
@@ -241,7 +241,7 @@ class ConsumptionWizard extends Wizard {
 				if (fuel == null)
 					return;
 				initUnit(fuel);
-				if (!fuel.wood) {
+				if (!fuel.isWood()) {
 					waterText.setEnabled(false);
 					waterText.setText("");
 					return;
@@ -258,7 +258,7 @@ class ConsumptionWizard extends Wizard {
 			private void initUnit(Fuel fuel) {
 				String[] units = getUnits(fuel);
 				unitCombo.setItems(units);
-				if (!fuel.wood || consumption.woodAmountType == null) {
+				if (!fuel.isWood() || consumption.woodAmountType == null) {
 					unitCombo.select(0);
 					return;
 				}
@@ -274,7 +274,7 @@ class ConsumptionWizard extends Wizard {
 			private String[] getUnits(Fuel fuel) {
 				if (fuel == null)
 					return new String[0];
-				if (!fuel.wood)
+				if (!fuel.isWood())
 					return new String[] { fuel.unit };
 				else {
 					WoodAmountType[] woodTypes = WoodAmountType.values();
@@ -291,7 +291,7 @@ class ConsumptionWizard extends Wizard {
 					return error("Es wurde kein Brennstoff ausgewählt.");
 				if (!Texts.hasNumber(amountText))
 					return error("Es wurde keine gültige Menge eingetragen.");
-				if (fuel.wood && !Texts.hasPercentage(waterText))
+				if (fuel.isWood() && !Texts.hasPercentage(waterText))
 					return error(
 							"Es wurde kein gültiger Wassergehalt eingetragen.");
 				if (!Texts.hasPercentage(utilText))

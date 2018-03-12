@@ -131,7 +131,7 @@ class BoilerWizard implements IContent {
 		list.add(Labels.get(WoodAmountType.LOGS));
 		FuelDao dao = new FuelDao(App.getDb());
 		for (Fuel fuel : dao.getAll()) {
-			if (!fuel.wood)
+			if (!fuel.isWood())
 				list.add(fuel.name);
 		}
 		Collections.sort(list);

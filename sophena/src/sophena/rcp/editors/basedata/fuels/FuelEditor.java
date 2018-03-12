@@ -20,6 +20,7 @@ import sophena.db.daos.FuelDao;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.Fuel;
+import sophena.model.FuelGroup;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
@@ -70,7 +71,7 @@ public class FuelEditor extends Editor {
 			List<Fuel> all = dao.getAll();
 			Sorters.sortBaseData(all);
 			for (Fuel f : all) {
-				if (f.wood)
+				if (f.isWood())
 					woodFuels.add(f);
 				else
 					fuels.add(f);
@@ -121,7 +122,7 @@ public class FuelEditor extends Editor {
 			fuel.name = M.Fuel;
 			fuel.unit = "L";
 			fuel.calorificValue = (double) 10;
-			fuel.wood = false;
+			// TODO: set fuel group
 			fuel.primaryEnergyFactor = (double) 1;
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
@@ -228,7 +229,7 @@ public class FuelEditor extends Editor {
 			fuel.unit = "kg";
 			fuel.calorificValue = 5d;
 			fuel.density = 450d;
-			fuel.wood = true;
+			fuel.group = FuelGroup.WOOD;
 			fuel.primaryEnergyFactor = 1d;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;

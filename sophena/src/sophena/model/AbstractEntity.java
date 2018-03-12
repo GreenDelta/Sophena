@@ -3,6 +3,10 @@ package sophena.model;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * An abstract entity is basically just a thing that can be stored in a
+ * database.
+ */
 @MappedSuperclass
 public abstract class AbstractEntity {
 
