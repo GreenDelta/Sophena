@@ -7,6 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.Boiler;
 import sophena.model.BuildingType;
+import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -17,6 +18,33 @@ import sophena.rcp.utils.Strings;
 public final class Labels {
 
 	private Labels() {
+	}
+
+	public static String get(FuelGroup fg) {
+		if (fg == null)
+			return null;
+		switch (fg) {
+		case BIOGAS:
+			return "Biogas";
+		case NATURAL_GAS:
+			return "Erdgas";
+		case LIQUID_GAS:
+			return "Flüssiggas";
+		case HEATING_OIL:
+			return "Heizöl";
+		case PELLETS:
+			return "Pellets";
+		case ELECTRICITY:
+			return "Strom";
+		case WOOD:
+			return "Holz";
+		case HOT_WATER:
+			return "Warmwasser";
+		case PLANTS_OIL:
+			return "Pflanzenöl";
+		default:
+			return "";
+		}
 	}
 
 	public static String get(WoodAmountType type) {
