@@ -201,10 +201,11 @@ when generating the data packages.
 1. index
 2. type
 3. name
-4. duration
-5. repair
-6. maintenance
-7. operation
+4. fuel group
+5. duration
+6. repair
+7. maintenance
+8. operation
 ```
 
 ### `transfer_stations.csv`

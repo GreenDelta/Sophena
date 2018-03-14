@@ -16,6 +16,15 @@ public class ProductGroup extends BaseDataEntity {
 	@Column(name = "product_type")
 	public ProductType type;
 
+	/**
+	 * Product groups that contain heat producers must have a fuel group
+	 * assigned.
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column(name = "fuel_group")
+	public FuelGroup fuelGroup;
+
+	/** This is just for ordering the groups in the user interface. */
 	@Column(name = "idx")
 	public int index;
 
@@ -42,6 +51,7 @@ public class ProductGroup extends BaseDataEntity {
 		clone.name = name;
 		clone.description = description;
 		clone.type = type;
+		clone.fuelGroup = fuelGroup;
 		clone.duration = duration;
 		clone.repair = repair;
 		clone.maintenance = maintenance;

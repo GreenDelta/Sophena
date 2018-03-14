@@ -43,6 +43,7 @@ type ProductGroup struct {
 	BaseDataEntity
 	Type        string  `json:"type"`
 	Index       int     `json:"index"`
+	FuelGroup   string  `json:"fuelGroup"`
 	Duration    int     `json:"duration"`
 	Repair      float64 `json:"repair"`
 	Maintenance float64 `json:"maintenance"`

@@ -1,14 +1,19 @@
 import csv
 import os
+import sys
 
 
 def main():
-    dir_path = os.path.abspath('../data/csv')
-    for f in os.listdir(dir_path):
-        if f != 'product_groups.csv':
-            continue
-        file_path = dir_path + os.path.sep + f
-        format(file_path)
+    args = sys.argv
+    if len(args) < 2:
+        print('you need to pass the file name in the CSV folder that you ' +
+              'want to format')
+        return
+    path = '../data/csv/' + args[1]
+    if not os.path.isfile(path):
+        print('The file %s does not exist' % path)
+        return
+    format(path)
 
 
 def format(file_path: str):

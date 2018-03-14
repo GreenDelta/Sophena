@@ -160,6 +160,8 @@ public final class Labels {
 			return "Solarthermische Anlage";
 		case ELECTRIC_HEAT_GENERATOR:
 			return "Elektrischer Wärmeerzeuger";
+		case OTHER_HEAT_SOURCE:
+			return "Sonstige Wärmequelle";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
 		case BUFFER_TANK:
@@ -242,6 +244,8 @@ public final class Labels {
 			return "Solarthermische Anlagen";
 		case ELECTRIC_HEAT_GENERATOR:
 			return "Elektrische Wärmeerzeuger";
+		case OTHER_HEAT_SOURCE:
+			return "Andere Wärmequellen";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
 		case BUFFER_TANK:

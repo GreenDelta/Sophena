@@ -71,6 +71,7 @@ CREATE TABLE tbl_product_groups (
 
     idx INTEGER,
     product_type VARCHAR(50),
+    fuel_group VARCHAR(50),
     duration INTEGER,
     repair DOUBLE,
     maintenance DOUBLE,

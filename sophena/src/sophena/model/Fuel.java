@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
@@ -23,6 +25,7 @@ public class Fuel extends BaseDataEntity {
 	public double density;
 
 	/** Each fuel belongs to a group with equal properties. */
+	@Enumerated(EnumType.STRING)
 	@Column(name = "fuel_group")
 	public FuelGroup group;
 
