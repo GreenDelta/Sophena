@@ -23,6 +23,7 @@ import sophena.rcp.M;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -102,20 +103,18 @@ class InfoPage extends FormPage {
 		});
 	}
 
-	private List<Boiler> getPossibleBoilers(Boiler selection) {
-		if (selection == null)
+	private List<Boiler> getPossibleBoilers(Boiler b) {
+		if (b == null || b.group == null)
 			return Collections.emptyList();
 		BoilerDao dao = new BoilerDao(App.getDb());
 		List<Boiler> all = dao.getAll();
 		List<Boiler> filtered = new ArrayList<>();
-		// TODO: filter by same product group & fuel group
-		for (Boiler b : all) {
-			if (Objects.equals(selection.fuel, b.fuel)
-					&& Objects.equals(selection.woodAmountType,
-							b.woodAmountType)) {
+		for (Boiler other : all) {
+			if (Objects.equals(b.group, other.group)) {
 				filtered.add(b);
 			}
 		}
+		Sorters.boilers(filtered);
 		return filtered;
 	}
 

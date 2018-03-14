@@ -11,8 +11,8 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.FuelDao;
 import sophena.math.energetic.CalorificValue;
-import sophena.model.Boiler;
 import sophena.model.Fuel;
+import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.rcp.App;
@@ -28,12 +28,16 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
+/**
+ * A producer must have always a fuel specification which can be edited in this
+ * section.
+ */
 class FuelSection {
 
 	private ProducerEditor editor;
 	private Text calorificValueText;
 
-	public FuelSection(ProducerEditor editor) {
+	FuelSection(ProducerEditor editor) {
 		this.editor = editor;
 	}
 
@@ -41,37 +45,28 @@ class FuelSection {
 		return editor.getProducer();
 	}
 
-	private FuelSpec spec() {
-		Producer p = editor.getProducer();
-		FuelSpec spec = p.fuelSpec;
-		if (spec != null)
-			return spec;
-		spec = new FuelSpec();
-		p.fuelSpec = spec;
-		return spec;
-	}
-
-	public void render(Composite body, FormToolkit tk) {
-		Composite composite = UI.formSection(body, tk,
+	void render(Composite body, FormToolkit tk) {
+		Composite comp = UI.formSection(body, tk,
 				"Brennstoffspezifikation");
-		UI.gridLayout(composite, 3);
-		Boiler b = producer().boiler;
-		if (b == null)
+		UI.gridLayout(comp, 3);
+		FuelSpec spec = producer().fuelSpec;
+		if (spec == null || spec.fuel == null)
 			return;
-		if (b.fuel != null)
-			createFuelRow(tk, composite);
+		Fuel fuel = spec.fuel;
+		if (fuel.group != FuelGroup.WOOD)
+			createFuelRow(tk, comp);
 		else {
-			createWoodFuelRow(tk, composite);
-			createWaterRow(tk, composite);
+			createWoodFuelRow(tk, comp);
+			createWaterRow(tk, comp);
 		}
-		createCalorificValueRow(tk, composite);
-		createCostRow(tk, composite);
-		createVatRow(tk, composite);
+		createCalorificValueRow(tk, comp);
+		createCostRow(tk, comp);
+		createVatRow(tk, comp);
 	}
 
 	private void createFuelRow(FormToolkit tk, Composite composite) {
 		UI.formLabel(composite, tk, M.Fuel);
-		Fuel f = producer().boiler.fuel;
+		Fuel f = producer().fuelSpec.fuel;
 		String text = f.name + " ("
 				+ Num.str(f.calorificValue) + " kWh/"
 				+ f.unit + ")";
@@ -91,10 +86,10 @@ class FuelSection {
 				.collect(Collectors.toList());
 		Sorters.byName(fuels);
 		combo.setInput(fuels);
-		if (spec().woodFuel != null)
-			combo.select(spec().woodFuel);
+		Fuel fuel = producer().fuelSpec.fuel;
+		combo.select(fuel);
 		combo.onSelect((f) -> {
-			spec().woodFuel = f;
+			producer().fuelSpec.fuel = f;
 			Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
 			editor.setDirty();
 		});
@@ -105,10 +100,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Wassergehalt");
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
-				.init(spec().waterContent)
+				.init(producer().fuelSpec.waterContent)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().waterContent = val;
+					producer().fuelSpec.waterContent = val;
 					Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
 					editor.setDirty();
 				});
@@ -125,10 +120,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Preis (netto)");
 		UI.formLabel(composite, tk, "EUR/" + Labels.getFuelUnit(producer()));
 		Texts.on(t).decimal().required()
-				.init(spec().pricePerUnit)
+				.init(producer().fuelSpec.pricePerUnit)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().pricePerUnit = val;
+					producer().fuelSpec.pricePerUnit = val;
 					editor.setDirty();
 				});
 	}
@@ -137,10 +132,10 @@ class FuelSection {
 		Text t = UI.formText(composite, tk, "Mehrwertsteuersatz");
 		UI.formLabel(composite, tk, "%");
 		Texts.on(t).decimal().required()
-				.init(spec().taxRate)
+				.init(producer().fuelSpec.taxRate)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
-					spec().taxRate = val;
+					producer().fuelSpec.taxRate = val;
 					editor.setDirty();
 				});
 	}

@@ -45,7 +45,7 @@ class FuelWizard extends Wizard {
 			fuel.co2Emissions = Texts.getDouble(page.co2Text);
 			fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
 			fuel.ashContent = Texts.getDouble(page.ashContentText);
-			fuel.group = page.fuelCombo.getSelected();
+			fuel.group = page.groupCombo.getSelected();
 			return true;
 		} catch (Exception e) {
 			log.error("failed to set fuel data " + fuel, e);
@@ -65,7 +65,7 @@ class FuelWizard extends Wizard {
 		private Label unitLabel;
 
 		private Text nameText;
-		private FuelCombo fuelCombo;
+		private FuelGroupCombo groupCombo;
 		private Text unitText;
 		private Text calText;
 		private Text co2Text;
@@ -83,7 +83,7 @@ class FuelWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 3);
 			createNameText(comp);
-			fuelCombo = FuelCombo.on(fuel, comp);
+			groupCombo = FuelGroupCombo.on(fuel, comp);
 			createUnitText(comp);
 			createCalText(comp);
 			createCO2Text(comp);

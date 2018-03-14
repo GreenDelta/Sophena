@@ -93,7 +93,7 @@ public class ProducerEditor extends Editor {
 
 	private boolean valid(Project project) {
 		FuelSpec fuelSpec = producer.fuelSpec;
-		if (fuelSpec != null && fuelSpec.woodFuel != null) {
+		if (fuelSpec != null && fuelSpec.woodAmountType != null) {
 			if (fuelSpec.waterContent < 0 || fuelSpec.waterContent > 60) {
 				MsgBox.error("Plausibilitätsfehler",
 						"Der Wassergehalt muss zwischen 0% und 60% liegen.");

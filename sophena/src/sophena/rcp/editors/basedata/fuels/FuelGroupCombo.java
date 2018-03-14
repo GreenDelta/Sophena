@@ -11,13 +11,13 @@ import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
 
-class FuelCombo {
+class FuelGroupCombo {
 
 	private final Combo combo;
 	private final Fuel fuel;
 	private final FuelGroup[] groups;
 
-	private FuelCombo(Fuel fuel, Combo combo) {
+	private FuelGroupCombo(Fuel fuel, Combo combo) {
 		this.fuel = fuel;
 		this.combo = combo;
 		FuelGroup[] allGroups = FuelGroup.values();
@@ -32,9 +32,9 @@ class FuelCombo {
 		this.init();
 	}
 
-	static FuelCombo on(Fuel fuel, Composite comp) {
+	static FuelGroupCombo on(Fuel fuel, Composite comp) {
 		Combo combo = UI.formCombo(comp, "Gruppe");
-		FuelCombo self = new FuelCombo(fuel, combo);
+		FuelGroupCombo self = new FuelGroupCombo(fuel, combo);
 		UI.filler(comp);
 		return self;
 	}
