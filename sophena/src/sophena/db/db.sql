@@ -335,9 +335,6 @@ CREATE TABLE tbl_boilers (
     min_power_electric DOUBLE,
     efficiency_rate_electric DOUBLE,
 
-    f_fuel CHAR(36),
-    wood_amount_type VARCHAR(255),
-
     PRIMARY KEY (id)
 );
 
@@ -505,7 +502,8 @@ CREATE TABLE tbl_producers (
     maintenance DOUBLE,
     operation   DOUBLE,
 
-    f_wood_fuel CHAR(36),
+    f_fuel CHAR(36),
+    wood_amount_type VARCHAR(255),
     water_content DOUBLE,
     price_per_unit DOUBLE,
     tax_rate DOUBLE,

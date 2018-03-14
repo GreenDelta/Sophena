@@ -5,7 +5,6 @@ import java.time.MonthDay;
 
 import org.eclipse.swt.graphics.Image;
 
-import sophena.model.Boiler;
 import sophena.model.BuildingType;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
@@ -321,27 +320,20 @@ public final class Labels {
 	}
 
 	public static String getFuelUnit(Producer producer) {
-		if (producer == null || producer.boiler == null)
+		if (producer == null || producer.fuelSpec == null)
 			return null;
-		if (producer.boiler.fuel != null) {
-			// no wood fuel
-			return producer.boiler.fuel.unit;
-		}
-		WoodAmountType type = producer.boiler.woodAmountType;
-		return type == null ? null : type.getUnit();
+		FuelSpec spec = producer.fuelSpec;
+		if (spec.woodAmountType != null)
+			return spec.woodAmountType.getUnit();
+		if (spec.fuel == null)
+			return null;
+		return spec.fuel != null ? spec.fuel.unit : null;
 	}
 
 	public static String getFuel(Producer producer) {
-		if (producer == null)
+		if (producer == null || producer.fuelSpec == null)
 			return null;
-		Boiler b = producer.boiler;
-		if (b != null && b.fuel != null)
-			return b.fuel.name;
-		FuelSpec fs = producer.fuelSpec;
-		if (fs != null && fs.woodFuel != null)
-			return fs.woodFuel.name;
-		else
-			return null;
+		FuelSpec spec = producer.fuelSpec;
+		return spec.fuel != null ? spec.fuel.name : null;
 	}
-
 }

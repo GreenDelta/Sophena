@@ -6,7 +6,7 @@ package sophena.model;
  */
 public enum WoodAmountType {
 
-	MASS("kg", 1),
+	MASS("t atro", 1),
 
 	CHIPS("Srm", 0.4),
 

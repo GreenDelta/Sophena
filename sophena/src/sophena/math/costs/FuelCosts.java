@@ -1,8 +1,12 @@
 package sophena.math.costs;
 
+import java.util.EnumSet;
+
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelDemand;
 import sophena.model.CostSettings;
+import sophena.model.Fuel;
+import sophena.model.FuelGroup;
 import sophena.model.Producer;
 
 /**
@@ -29,11 +33,16 @@ public class FuelCosts {
 	}
 
 	public static double getPriceChangeFactor(Producer p, CostSettings settings) {
-		if (p == null || p.boiler == null || settings == null)
-			return 0;
-		if (p.boiler.fuel != null)
+		if (p == null || p.fuelSpec == null || settings == null)
 			return settings.fossilFuelFactor;
-		else
-			return settings.bioFuelFactor; // wood fuel
+		Fuel fuel = p.fuelSpec.fuel;
+		if (fuel == null || fuel.group == null)
+			return settings.fossilFuelFactor;
+		EnumSet<FuelGroup> bioGroups = EnumSet.of(
+				FuelGroup.BIOGAS, FuelGroup.PELLETS,
+				FuelGroup.PLANTS_OIL, FuelGroup.WOOD);
+		return bioGroups.contains(fuel.group)
+				? settings.bioFuelFactor
+				: settings.fossilFuelFactor;
 	}
 }

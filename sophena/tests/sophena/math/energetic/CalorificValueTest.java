@@ -3,7 +3,6 @@ package sophena.math.energetic;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.FuelGroup;
@@ -30,21 +29,19 @@ public class CalorificValueTest {
 	}
 
 	private Producer gasProducer() {
-		Boiler boiler = new Boiler();
-		boiler.fuel = gas();
-		Producer producer = new Producer();
-		producer.boiler = boiler;
-		return producer;
+		FuelSpec spec = new FuelSpec();
+		spec.fuel = gas();
+		Producer p = new Producer();
+		p.fuelSpec = spec;
+		return p;
 	}
 
 	private Producer woodProducer() {
-		Boiler boiler = new Boiler();
-		boiler.woodAmountType = WoodAmountType.LOGS;
 		FuelSpec spec = new FuelSpec();
 		spec.waterContent = 20;
-		spec.woodFuel = wood();
+		spec.woodAmountType = WoodAmountType.LOGS;
+		spec.fuel = wood();
 		Producer p = new Producer();
-		p.boiler = boiler;
 		p.fuelSpec = spec;
 		return p;
 	}

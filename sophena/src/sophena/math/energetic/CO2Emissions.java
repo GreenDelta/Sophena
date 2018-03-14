@@ -7,6 +7,7 @@ import sophena.Defaults;
 import sophena.calc.ConsumerResult;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
+import sophena.model.Fuel;
 import sophena.model.Producer;
 import sophena.model.Project;
 
@@ -75,15 +76,11 @@ public class CO2Emissions {
 			}
 		}
 
-		private double getEmissionFactor(Producer producer) {
-			if (producer == null || producer.boiler == null)
+		private double getEmissionFactor(Producer p) {
+			if (p == null || p.fuelSpec == null)
 				return 0;
-			if (producer.boiler.fuel != null)
-				return producer.boiler.fuel.co2Emissions;
-			if (producer.fuelSpec != null && producer.fuelSpec.woodFuel != null)
-				return producer.fuelSpec.woodFuel.co2Emissions;
-			else
-				return 0;
+			Fuel fuel = p.fuelSpec.fuel;
+			return fuel != null ? fuel.co2Emissions : 0d;
 		}
 
 		private double getTotalHeatDemand() {

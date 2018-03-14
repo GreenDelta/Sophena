@@ -3,6 +3,7 @@ package sophena.math.energetic;
 import sophena.Defaults;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
+import sophena.model.Fuel;
 import sophena.model.Producer;
 import sophena.model.Project;
 
@@ -36,13 +37,9 @@ public class PrimaryEnergyFactor {
 	}
 
 	private static double getFuelFactor(Producer p) {
-		if (p == null)
-			return 0;
-		if (p.fuelSpec != null && p.fuelSpec.woodFuel != null)
-			return p.fuelSpec.woodFuel.primaryEnergyFactor;
-		if (p.boiler != null && p.boiler.fuel != null)
-			return p.boiler.fuel.primaryEnergyFactor;
-		else
-			return 0;
+		if (p == null || p.fuelSpec == null)
+			return 0d;
+		Fuel fuel = p.fuelSpec.fuel;
+		return fuel != null ? fuel.primaryEnergyFactor : 0d;
 	}
 }

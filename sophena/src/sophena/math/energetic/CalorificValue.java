@@ -1,6 +1,5 @@
 package sophena.math.energetic;
 
-import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.FuelSpec;
@@ -9,25 +8,22 @@ import sophena.model.WoodAmountType;
 
 public class CalorificValue {
 
-	public static double get(Producer producer) {
-		if (producer == null || producer.boiler == null)
-			return 0;
-		Boiler boiler = producer.boiler;
-		if (boiler.fuel != null) {
-			// normal fuel
-			return boiler.fuel.calorificValue;
-		}
+	public static double get(Producer p) {
+		if (p == null || p.fuelSpec == null)
+			return 0d;
+		FuelSpec spec = p.fuelSpec;
+		Fuel fuel = spec.fuel;
+		if (fuel == null)
+			return 0d;
+		if (spec.woodAmountType == null)
+			return fuel.calorificValue;
 		// wood fuel
-		WoodAmountType type = producer.boiler.woodAmountType;
-		FuelSpec spec = producer.fuelSpec;
-		if (type == null || spec == null || spec.woodFuel == null)
-			return 0;
-		Fuel woodFuel = spec.woodFuel;
+		WoodAmountType type = spec.woodAmountType;
 		double waterContent = spec.waterContent / 100;
-		double woodMass = getWoodMass(type, woodFuel, waterContent);
+		double woodMass = getWoodMass(type, fuel, waterContent);
 		return WoodFuelEnergy
 				.ofWoodMass_kg(woodMass)
-				.calorificValue_kWh_per_kg(woodFuel.calorificValue)
+				.calorificValue_kWh_per_kg(fuel.calorificValue)
 				.waterContent(waterContent)
 				.get_kWh();
 	}
