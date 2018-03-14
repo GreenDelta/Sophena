@@ -18,9 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
+import sophena.model.Fuel;
+import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
@@ -86,11 +89,27 @@ public class ProducerWizard extends Wizard {
 		}
 	}
 
-	private void addFuelSpec(Producer producer) {
+	private void addFuelSpec(Producer p) {
 		FuelSpec spec = new FuelSpec();
-		producer.fuelSpec = spec;
-		spec.taxRate = (double) 19;
-		spec.waterContent = (double) 20;
+		p.fuelSpec = spec;
+		spec.taxRate = 19d;
+		if (p.productGroup == null)
+			return;
+		FuelGroup group = p.productGroup.fuelGroup;
+		if (group == null)
+			return;
+		FuelDao dao = new FuelDao(App.getDb());
+		// find a matching fuel from the base data
+		for (Fuel fuel : dao.getAll()) {
+			if (fuel.group != group)
+				continue;
+			spec.fuel = fuel;
+			if (fuel.isProtected)
+				break;
+		}
+		if (group == FuelGroup.WOOD) {
+			spec.waterContent = 20d;
+		}
 	}
 
 	private void addCosts(Producer producer) {
@@ -192,6 +211,9 @@ public class ProducerWizard extends Wizard {
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerTable);
 				p.boiler = b;
+				if (b != null) {
+					p.productGroup = b.group;
+				}
 				p.name = nameText.getText();
 				p.rank = Texts.getInt(rankText);
 				p.function = Wizards.getProducerFunction(functionCombo);

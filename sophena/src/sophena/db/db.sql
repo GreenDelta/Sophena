@@ -491,6 +491,7 @@ CREATE TABLE tbl_producers (
     utilisation_rate  DOUBLE,
 
     f_project         CHAR(36),
+    f_product_group   CHAR(36),
     f_boiler          CHAR(36),
     has_profile       BOOLEAN,
     f_profile         CHAR(36),

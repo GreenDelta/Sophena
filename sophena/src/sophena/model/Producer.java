@@ -30,6 +30,10 @@ public class Producer extends RootEntity {
 	public int rank;
 
 	@OneToOne
+	@JoinColumn(name = "f_product_group")
+	public ProductGroup productGroup;
+
+	@OneToOne
 	@JoinColumn(name = "f_boiler")
 	public Boiler boiler;
 
@@ -98,6 +102,7 @@ public class Producer extends RootEntity {
 		clone.name = name;
 		clone.description = description;
 		clone.disabled = disabled;
+		clone.productGroup = productGroup;
 		clone.boiler = boiler;
 		clone.hasProfile = hasProfile;
 		if (profile != null)
