@@ -76,12 +76,13 @@ type WeatherStation struct {
 // fueld and the calorific value per unit.
 type Fuel struct {
 	BaseDataEntity
-	Unit                string  `json:"unit,omitempty"`
+	Group               string  `json:"group"`
+	Unit                string  `json:"unit"`
 	CalorificValue      float64 `json:"calorificValue"`
 	Density             float64 `json:"density"`
-	IsWood              bool    `json:"wood"`
 	Co2Emissions        float64 `json:"co2Emissions"`
 	PrimaryEnergyFactor float64 `json:"primaryEnergyFactor"`
+	AshContent          float64 `json:"ashContent"`
 }
 
 // Manufacturer stores manufacturer information

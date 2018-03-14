@@ -80,16 +80,16 @@ func (model *CsvModel) readFuels() {
 		f.IsProtected = true
 		f.ID = cStr(row, 0)
 		f.Name = cStr(row, 1)
-		f.Unit = cStr(row, 2)
-		f.CalorificValue = cFlo(row, 3)
-		f.IsWood = cBool(row, 4)
+		f.Group = cStr(row, 2)
+		f.Unit = cStr(row, 3)
+		f.CalorificValue = cFlo(row, 4)
 		f.Density = cFlo(row, 5)
 		f.Co2Emissions = cFlo(row, 6)
 		f.PrimaryEnergyFactor = cFlo(row, 7)
+		f.AshContent = cFlo(row, 8)
 		model.Fuels = append(model.Fuels, &f)
 	}
-	eachCsvRow("data/csv/fuels_non_wood.csv", fn)
-	eachCsvRow("data/csv/fuels_wood.csv", fn)
+	eachCsvRow("data/csv/fuels.csv", fn)
 }
 
 func (model *CsvModel) readManufacturers() {

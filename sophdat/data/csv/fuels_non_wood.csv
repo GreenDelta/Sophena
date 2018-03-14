@@ -1,8 +1,0 @@
-id                                   ; name        ; unit  ; calorificValue  ; wood   ; density  ; CO2 Emissionen  ; Primärenergiefaktor  
-60c329a3-cee9-460d-9c21-ae39701b6e07 ; Erdgas      ; m3    ; 10              ; false  ;          ; 239             ; 1.1                  
-8b1776e5-d6f9-499f-a567-2cce41cef756 ; Flüssiggas  ; kg    ; 12.87           ; false  ;          ; 301.3           ; 1.1                  
-7c206ce9-caf4-4390-8958-6d42822ac282 ; Heizöl      ; L     ; 10              ; false  ;          ; 307             ; 1.1                  
-d0233ba5-e913-48d8-a61a-5af90c03bda2 ; Pellets     ; kg    ; 5               ; false  ;          ; 71              ; 0.2                  
-905c55bc-00ab-4fd1-8993-94e1ad83ba0f ; Strom       ; kWh   ; 1               ; false  ;          ; 614.8           ; 2.8                  
-d3e5b634-cb98-4436-afdc-675b4e36dbce ; Biogas      ; m3    ; 5.5             ; false  ;          ; 64.0            ; 0.5                  
-88a2c45b-843a-408d-a6b4-43a3ac68ea10 ; Biomethan   ; m3    ; 9.6             ; false  ;          ; 170             ; 0.5                  
