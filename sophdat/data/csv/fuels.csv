@@ -1,0 +1,18 @@
+id                                   ; name                       ; group        ; unit    ; calorificValue  ; density  ; CO2 emissions  ; prim. energy f.  ; ash_content  
+60c329a3-cee9-460d-9c21-ae39701b6e07 ; Erdgas                     ; NATURAL_GAS  ; m3      ; 10              ;          ; 239            ; 1.1              ; 0            
+8b1776e5-d6f9-499f-a567-2cce41cef756 ; Flüssiggas                 ; LIQUID_GAS   ; kg      ; 12.87           ;          ; 301.3          ; 1.1              ; 0            
+7c206ce9-caf4-4390-8958-6d42822ac282 ; Heizöl                     ; HEATING_OIL  ; L       ; 10              ;          ; 307            ; 1.1              ; 0            
+d0233ba5-e913-48d8-a61a-5af90c03bda2 ; Pellets                    ; PELLETS      ; t       ; 5000            ;          ; 71             ; 0.2              ; 0.7          
+905c55bc-00ab-4fd1-8993-94e1ad83ba0f ; Strom                      ; ELECTRICITY  ; kWh     ; 1               ;          ; 614.8          ; 2.8              ; 0            
+031987ab-4a0d-43b3-b3e5-8f50d8e5df1e ; Warmwasser                 ; HOT_WATER    ; kWh     ; 1               ;          ; 0              ; 0                ; 0            
+8c669381-b3ec-4ec4-b145-97db4adf7545 ; Planzenöl                  ; PLANTS_OIL   ; L       ; 9.7             ;          ; 129.6          ; 0.5              ; 0            
+d3e5b634-cb98-4436-afdc-675b4e36dbce ; Biogas                     ; BIOGAS       ; m3      ; 5.5             ;          ; 64.0           ; 0.5              ; 0            
+88a2c45b-843a-408d-a6b4-43a3ac68ea10 ; Biomethan                  ; NATURAL_GAS  ; m3      ; 9.6             ;          ; 170            ; 0.5              ; 0            
+fe2e05f4-9ec0-4ffc-9cba-83fc8ef16c99 ; Buche                      ; WOOD         ; t atro  ; 5000            ; 558      ; 33.2           ; 0.2              ; 1.0          
+118e84a8-cf54-42cc-93e7-df0afb7dbe25 ; Eiche                      ; WOOD         ; t atro  ; 5000            ; 571      ; 33.2           ; 0.2              ; 1.0          
+4b8a247b-c246-40d4-8d1b-b4f9d72a7fd4 ; Fichte                     ; WOOD         ; t atro  ; 5200            ; 379      ; 44.3           ; 0.2              ; 1.0          
+56687cce-e89a-49fb-8044-71801355ccb7 ; Kiefer                     ; WOOD         ; t atro  ; 5200            ; 431      ; 44.3           ; 0.2              ; 1.0          
+d3c17a44-f7e9-4549-8c46-1946c156847a ; Pappel                     ; WOOD         ; t atro  ; 5000            ; 353      ; 44.3           ; 0.2              ; 1.0          
+24a485d1-739d-4a39-83a4-bfbeafbe56a3 ; Hartholz                   ; WOOD         ; t atro  ; 5000            ; 558      ; 33.2           ; 0.2              ; 1.0          
+b17ef8ca-8dca-4d75-b616-8e468ee1b857 ; Weichholz                  ; WOOD         ; t atro  ; 5200            ; 379      ; 44.3           ; 0.2              ; 1.0          
+97a8c018-3697-41c7-b276-a5e9840fa7da ; Mischung (70% Wh, 30% Hh)  ; WOOD         ; t atro  ; 5140            ; 433      ; 41.0           ; 0.2              ; 1.0          

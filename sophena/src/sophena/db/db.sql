@@ -35,6 +35,7 @@ CREATE TABLE tbl_fuels (
     fuel_group VARCHAR(50),
     co2_emissions DOUBLE,
     primary_energy_factor DOUBLE,
+    ash_content DOUBLE,
 
     PRIMARY KEY (id)
 );

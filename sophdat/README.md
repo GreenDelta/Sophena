@@ -130,30 +130,17 @@ when generating the data packages.
 15. key
 ```
 
-### `fuels_non_wood.csv`
-
+### `fuels.csv`
 ```
 0. id
 1. name
-2. unit
-3. calorificValue
-4. wood
+2. group
+3. unit
+4. calorific value
 5. density
-6. CO2 Emissionen
-7. Primärenergiefaktor
-```
-
-### `fuels_wood.csv`
-
-```
-0. id
-1. name
-2. unit
-3. calorificValue
-4. wood
-5. density
-6. co2Emissions
-7. Primärenergiefaktor
+6. CO2 emissions
+7. primary energy factor
+8. ash content
 ```
 
 ### `heat_recoveries.csv`
