@@ -25,7 +25,6 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
-import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
@@ -35,7 +34,6 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import sophena.utils.Num;
 
 public class FuelEditor extends Editor {
 
@@ -94,11 +92,12 @@ public class FuelEditor extends Editor {
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.Fuel,
-					M.CalorificValue, "CO2 Emissionen", "Primärenergiefaktor");
-			table.setLabelProvider(new FuelLabel());
+					M.CalorificValue, "CO2 Emissionen",
+					"Primärenergiefaktor", "Aschegehalt");
+			table.setLabelProvider(TableLabel.getForNonWood());
 			table.setInput(fuels);
-			double w = 1d / 4d;
-			Tables.bindColumnWidths(table, w, w, w, w);
+			double w = 1d / 5d;
+			Tables.bindColumnWidths(table, w, w, w, w, w);
 			bindFuelActions(section, table);
 		}
 
@@ -194,16 +193,17 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private void createWoodSection(Composite body, FormToolkit toolkit) {
-			Section section = UI.section(body, toolkit, M.WoodFuels);
+		private void createWoodSection(Composite body, FormToolkit tk) {
+			Section section = UI.section(body, tk, M.WoodFuels);
 			UI.gridData(section, true, true);
-			Composite comp = UI.sectionClient(section, toolkit);
+			Composite comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
-					"Dichte", "Heizwert", "CO2 Emissionen", "Primärenergiefaktor");
-			table.setLabelProvider(new WoodLabel());
-			double w = 1d / 5d;
-			Tables.bindColumnWidths(table, w, w, w, w, w);
+					"Dichte", "Heizwert", "CO2 Emissionen",
+					"Primärenergiefaktor", "Aschegehalt");
+			table.setLabelProvider(TableLabel.getForWood());
+			double w = 1d / 6d;
+			Tables.bindColumnWidths(table, w, w, w, w, w, w);
 			table.setInput(woodFuels);
 			bindWoodActions(section, table);
 		}
@@ -239,54 +239,6 @@ public class FuelEditor extends Editor {
 				table.setInput(woodFuels);
 			} catch (Exception e) {
 				log.error("failed to add fuel " + fuel, e);
-			}
-		}
-
-		private class FuelLabel extends BaseTableLabel {
-
-			@Override
-			public String getColumnText(Object element, int col) {
-				if (!(element instanceof Fuel))
-					return null;
-				Fuel f = (Fuel) element;
-				switch (col) {
-				case 0:
-					return f.name;
-				case 1:
-					return Num.str(f.calorificValue)
-							+ " kWh/" + f.unit;
-				case 2:
-					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
-				case 3:
-					return Num.str(f.primaryEnergyFactor);
-				default:
-					return null;
-				}
-			}
-		}
-
-		private class WoodLabel extends BaseTableLabel {
-
-			@Override
-			public String getColumnText(Object element, int col) {
-				if (!(element instanceof Fuel))
-					return null;
-				Fuel f = (Fuel) element;
-				switch (col) {
-				case 0:
-					return f.name;
-				case 1:
-					return Num.str(f.density) + " kg/fm";
-				case 2:
-					return Num.str(f.calorificValue)
-							+ " kWh/kg atro";
-				case 3:
-					return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
-				case 4:
-					return Num.str(f.primaryEnergyFactor);
-				default:
-					return null;
-				}
 			}
 		}
 	}
