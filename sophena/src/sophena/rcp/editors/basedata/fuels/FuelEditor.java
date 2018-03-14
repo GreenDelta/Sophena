@@ -121,7 +121,6 @@ public class FuelEditor extends Editor {
 			fuel.name = M.Fuel;
 			fuel.unit = "L";
 			fuel.calorificValue = 10d;
-			// TODO: set fuel group
 			fuel.primaryEnergyFactor = 1d;
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
