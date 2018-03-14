@@ -56,7 +56,7 @@ public class Consumer extends RootEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_consumer")
-	public List<LoadProfile> loadProfiles = new ArrayList<>();
+	public final List<LoadProfile> loadProfiles = new ArrayList<>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_location")

@@ -1,5 +1,9 @@
 package sophena.model;
 
+/**
+ * Wood amounts can be given in the different quantity types: (dry) mass, chips,
+ * logs.
+ */
 public enum WoodAmountType {
 
 	MASS("kg", 1),

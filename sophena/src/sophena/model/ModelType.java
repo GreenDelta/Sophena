@@ -1,5 +1,9 @@
 package sophena.model;
 
+/**
+ * An enumeration of all root entity types. This is used in things like data
+ * exchange, e.g. for assigning package paths to types and the other way around.
+ */
 public enum ModelType {
 
 	BOILER(Boiler.class),
