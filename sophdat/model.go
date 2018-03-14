@@ -97,15 +97,13 @@ type Manufacturer struct {
 // a heat producer.
 type Boiler struct {
 	Product
-	MaxPower               float64        `json:"maxPower"`
-	MinPower               float64        `json:"minPower"`
-	Fuel                   *RootEntity    `json:"fuel,omitempty"`
-	EfficiencyRate         float64        `json:"efficiencyRate"`
-	WoodAmountType         WoodAmountType `json:"woodAmountType,omitempty"`
-	IsCoGenPlant           bool           `json:"isCoGenPlant"`
-	MaxPowerElectric       float64        `json:"maxPowerElectric"`
-	MinPowerElectric       float64        `json:"minPowerElectric"`
-	EfficiencyRateElectric float64        `json:"efficiencyRateElectric"`
+	MaxPower               float64 `json:"maxPower"`
+	MinPower               float64 `json:"minPower"`
+	EfficiencyRate         float64 `json:"efficiencyRate"`
+	IsCoGenPlant           bool    `json:"isCoGenPlant"`
+	MaxPowerElectric       float64 `json:"maxPowerElectric"`
+	MinPowerElectric       float64 `json:"minPowerElectric"`
+	EfficiencyRateElectric float64 `json:"efficiencyRateElectric"`
 }
 
 // A BufferTank stores data of a buffer tank product that can be

@@ -48,12 +48,11 @@ when generating the data packages.
 4. name
 5. url
 6. price
-7. fuel
-8. max_power
-9. min_power
-10. eff. rate
-11. description
-12. key
+7. max_power
+8. min_power
+9. eff. rate
+10. description
+11. key
 ```
 
 ### `boilers_cogen_plants.csv`
@@ -66,15 +65,14 @@ when generating the data packages.
 4. name
 5. url
 6. price
-7. fuel
-8. max_power
-9. min_power
-10. eff. rate
-11. max_power_el
-12. min_power_el
-13. eff. rate el
-14. description
-15. key
+7. max_power
+8. min_power
+9. eff. rate
+10. max_power_el
+11. min_power_el
+12. eff. rate el
+13. description
+14. key
 ```
 
 ### `buffer_tanks.csv`

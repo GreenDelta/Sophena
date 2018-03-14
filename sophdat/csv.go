@@ -111,43 +111,21 @@ func (model *CsvModel) readManufacturers() {
 func (model *CsvModel) readBoilers() {
 	model.Boilers = make([]*Boiler, 0)
 	fn := func(row []string) {
-
-		var productType string
-		switch cStr(row, 1) {
-		case "Fossiler Kessel":
-			productType = "FOSSIL_FUEL_BOILER"
-		case "Biomassekessel":
-			productType = "BIOMASS_BOILER"
-		case "KWK-Anlage":
-			productType = "COGENERATION_PLANT"
-		default:
-			fmt.Println("ERROR: unknown product type for boiler", cStr(row, 1))
-			return
-		}
-
 		b := Boiler{}
+		productType := cStr(row, 1)
 		model.mapProductData(row, &b.Product, productType)
-
-		// set the fuel or wood chips
-		fuelName := cStr(row, 7)
-		if fuelName == "Hackschnitzel" {
-			b.WoodAmountType = WoodAmountChips
-		} else {
-			b.Fuel = model.refFuel(row, 7)
-		}
-
-		b.MaxPower = cFlo(row, 8)
-		b.MinPower = cFlo(row, 9)
-		b.EfficiencyRate = cFlo(row, 10)
+		b.MaxPower = cFlo(row, 7)
+		b.MinPower = cFlo(row, 8)
+		b.EfficiencyRate = cFlo(row, 9)
 		if productType != "COGENERATION_PLANT" {
 			b.IsCoGenPlant = false
-			b.Description = cStr(row, 11)
+			b.Description = cStr(row, 10)
 		} else {
 			b.IsCoGenPlant = true
-			b.MaxPowerElectric = cFlo(row, 11)
-			b.MinPowerElectric = cFlo(row, 12)
-			b.EfficiencyRateElectric = cFlo(row, 13)
-			b.Description = cStr(row, 14)
+			b.MaxPowerElectric = cFlo(row, 10)
+			b.MinPowerElectric = cFlo(row, 11)
+			b.EfficiencyRateElectric = cFlo(row, 12)
+			b.Description = cStr(row, 13)
 		}
 		model.Boilers = append(model.Boilers, &b)
 	}
