@@ -58,7 +58,7 @@ class TableLabel {
 				return Num.str(f.density) + " kg/fm";
 			case 2:
 				return Num.str(f.calorificValue)
-						+ " kWh/kg atro";
+						+ " kWh/" + f.unit;
 			case 3:
 				return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
 			case 4:

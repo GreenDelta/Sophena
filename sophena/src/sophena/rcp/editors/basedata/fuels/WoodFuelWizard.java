@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Fuel;
-import sophena.model.FuelGroup;
 import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -26,14 +25,12 @@ class WoodFuelWizard extends Wizard {
 		wiz.setWindowTitle(M.WoodFuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 300);
+		dialog.setPageSize(150, 350);
 		return dialog.open();
 	}
 
 	@Override
 	public boolean performFinish() {
-		fuel.group = FuelGroup.WOOD;
-		fuel.unit = "kg"; // TODO: default units changed for wood!
 		page.data.bindToModel();
 		return true;
 	}
@@ -55,6 +52,7 @@ class WoodFuelWizard extends Wizard {
 		private Text calText;
 		private Text energyFactorText;
 		private Text co2Text;
+		private Text ashContentText;
 
 		private Page() {
 			super("FuelWizardPage", M.WoodFuel, null);
@@ -62,71 +60,81 @@ class WoodFuelWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
-			setControl(composite);
-			UI.gridLayout(composite, 3);
-			createNameText(composite);
-			createDensityText(composite);
-			createCalText(composite);
-			createCO2Text(composite);
-			createEnergyFactorText(composite);
-			createDescriptionText(composite);
+			Composite comp = new Composite(parent, SWT.NONE);
+			setControl(comp);
+			UI.gridLayout(comp, 3);
+			createNameText(comp);
+			createDensityText(comp);
+			createCalText(comp);
+			createCO2Text(comp);
+			createEnergyFactorText(comp);
+			createAshContentText(comp);
+			createDescriptionText(comp);
 			data.validate();
 		}
 
-		private void createNameText(Composite composite) {
-			nameText = UI.formText(composite, M.Name);
+		private void createNameText(Composite comp) {
+			nameText = UI.formText(comp, M.Name);
 			Texts.on(nameText)
 					.init(fuel.name)
 					.required()
 					.validate(data::validate);
-			UI.formLabel(composite, "");
+			UI.formLabel(comp, "");
 		}
 
-		private void createDescriptionText(Composite composite) {
-			descriptionText = UI.formMultiText(composite, M.Description);
+		private void createDescriptionText(Composite comp) {
+			descriptionText = UI.formMultiText(comp, M.Description);
 			Texts.set(descriptionText, fuel.description);
-			UI.formLabel(composite, "");
+			UI.formLabel(comp, "");
 		}
 
-		private void createDensityText(Composite composite) {
-			densityText = UI.formText(composite, "Dichte");
+		private void createDensityText(Composite comp) {
+			densityText = UI.formText(comp, "Dichte");
 			Texts.on(densityText)
 					.init(fuel.density)
 					.required()
 					.decimal()
 					.validate(data::validate);
-			UI.formLabel(composite, "kg/FM");
+			UI.formLabel(comp, "kg/FM");
 		}
 
-		private void createCalText(Composite composite) {
-			calText = UI.formText(composite, M.CalorificValue);
+		private void createCalText(Composite comp) {
+			calText = UI.formText(comp, M.CalorificValue);
 			Texts.on(calText)
 					.init(fuel.calorificValue)
 					.required()
 					.decimal()
 					.validate(data::validate);
-			UI.formLabel(composite, "kWh/kg atro");
+			UI.formLabel(comp, "kWh/" + fuel.unit);
 		}
 
-		private void createCO2Text(Composite composite) {
-			co2Text = UI.formText(composite, "CO2 Emissionen");
+		private void createCO2Text(Composite comp) {
+			co2Text = UI.formText(comp, "CO2 Emissionen");
 			Texts.on(co2Text)
 					.init(fuel.co2Emissions)
 					.required()
 					.decimal()
 					.validate(data::validate);
-			UI.formLabel(composite, "g CO2 äq./kWh");
+			UI.formLabel(comp, "g CO2 äq./kWh");
 		}
 
-		private void createEnergyFactorText(Composite composite) {
-			energyFactorText = UI.formText(composite, "Primärenergiefaktor");
+		private void createEnergyFactorText(Composite comp) {
+			energyFactorText = UI.formText(comp, "Primärenergiefaktor");
 			Texts.on(energyFactorText)
 					.init(fuel.primaryEnergyFactor)
 					.required()
 					.decimal()
 					.validate(data::validate);
-			UI.filler(composite);
+			UI.filler(comp);
+		}
+
+		private void createAshContentText(Composite comp) {
+			ashContentText = UI.formText(comp, "Aschegehalt");
+			Texts.on(ashContentText)
+					.init(fuel.ashContent)
+					.decimal()
+					.validate(data::validate);
+			UI.formLabel(comp, "%");
 		}
 
 		private class DataBinding {
@@ -138,6 +146,7 @@ class WoodFuelWizard extends Wizard {
 				fuel.calorificValue = Texts.getDouble(calText);
 				fuel.co2Emissions = Texts.getDouble(co2Text);
 				fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
+				fuel.ashContent = Texts.getDouble(page.ashContentText);
 			}
 
 			private boolean validate() {

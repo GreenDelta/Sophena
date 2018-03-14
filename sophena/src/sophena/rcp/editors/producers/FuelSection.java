@@ -18,6 +18,7 @@ import sophena.model.Producer;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.Labels;
+import sophena.rcp.M;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -69,7 +70,7 @@ class FuelSection {
 	}
 
 	private void createFuelRow(FormToolkit tk, Composite composite) {
-		UI.formLabel(composite, tk, "Brennstoff");
+		UI.formLabel(composite, tk, M.Fuel);
 		Fuel f = producer().boiler.fuel;
 		String text = f.name + " ("
 				+ Num.str(f.calorificValue) + " kWh/"
@@ -84,7 +85,7 @@ class FuelSection {
 
 	private void createWoodFuelRow(FormToolkit tk, Composite composite) {
 		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
-		combo.create("Brennstoff", composite, tk);
+		combo.create(M.Fuel, composite, tk);
 		FuelDao dao = new FuelDao(App.getDb());
 		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
 				.collect(Collectors.toList());

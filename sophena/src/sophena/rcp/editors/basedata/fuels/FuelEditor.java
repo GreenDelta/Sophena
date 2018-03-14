@@ -120,9 +120,9 @@ public class FuelEditor extends Editor {
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.Fuel;
 			fuel.unit = "L";
-			fuel.calorificValue = (double) 10;
+			fuel.calorificValue = 10d;
 			// TODO: set fuel group
-			fuel.primaryEnergyFactor = (double) 1;
+			fuel.primaryEnergyFactor = 1d;
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
@@ -176,7 +176,7 @@ public class FuelEditor extends Editor {
 			if (f == null || f.isProtected)
 				return;
 			boolean doIt = MsgBox.ask(M.Delete,
-					"Soll der ausgewählte Brennstoff wirklich gelöscht werden?");
+					"Soll der ausgewählte Energieträger wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			List<SearchResult> usage = new UsageSearch(App.getDb()).of(f);
@@ -226,11 +226,13 @@ public class FuelEditor extends Editor {
 			Fuel fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.WoodFuel;
-			fuel.unit = "kg";
+			fuel.group = FuelGroup.WOOD;
+			fuel.unit = "t atro";
 			fuel.calorificValue = 5d;
 			fuel.density = 450d;
 			fuel.group = FuelGroup.WOOD;
 			fuel.primaryEnergyFactor = 1d;
+			fuel.ashContent = 1d;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;
 			try {

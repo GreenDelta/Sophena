@@ -79,8 +79,9 @@ public class FlueGasCleaningEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller",
-					"Brennstoff (Erz.)", "Max. Leistung (Erz.)", "Max. Volumenstrom");
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung",
+					"Hersteller", "Brennstoff (Erz.)", "Max. Leistung (Erz.)",
+					"Max. Volumenstrom");
 			table.setLabelProvider(new Label());
 			table.setInput(cleanings);
 			double x = 1.0 / 6.0;

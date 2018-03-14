@@ -150,7 +150,7 @@
             class="sophena.rcp.editors.basedata.fuels.FuelEditor"
             icon="icons/fuel_16.png"
             id="sophena.FuelEditor"
-            name="Brennstoffe" />
+            name="Energieträger" />
             
          <editor
             class="sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor"

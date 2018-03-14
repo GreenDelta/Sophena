@@ -31,7 +31,7 @@ class FuelWizard extends Wizard {
 		wiz.setWindowTitle(M.Fuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 300);
+		dialog.setPageSize(150, 350);
 		return dialog.open();
 	}
 
@@ -44,6 +44,7 @@ class FuelWizard extends Wizard {
 			fuel.calorificValue = Texts.getDouble(page.calText);
 			fuel.co2Emissions = Texts.getDouble(page.co2Text);
 			fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
+			fuel.ashContent = Texts.getDouble(page.ashContentText);
 			// TODO: set fuel group
 			return true;
 		} catch (Exception e) {
@@ -68,6 +69,7 @@ class FuelWizard extends Wizard {
 		private Text calText;
 		private Text co2Text;
 		private Text energyFactorText;
+		private Text ashContentText;
 		private Text descriptionText;
 
 		private Page() {
@@ -76,77 +78,87 @@ class FuelWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
-			setControl(composite);
-			UI.gridLayout(composite, 3);
-			createNameText(composite);
-			createUnitText(composite);
-			createCalText(composite);
-			createCO2Text(composite);
-			createEnergyFactorText(composite);
-			createDescriptionText(composite);
+			Composite comp = new Composite(parent, SWT.NONE);
+			setControl(comp);
+			UI.gridLayout(comp, 3);
+			createNameText(comp);
+			createUnitText(comp);
+			createCalText(comp);
+			createCO2Text(comp);
+			createEnergyFactorText(comp);
+			createAshContentText(comp);
+			createDescriptionText(comp);
 			validate();
 		}
 
-		private void createNameText(Composite composite) {
-			nameText = UI.formText(composite, M.Name);
+		private void createNameText(Composite comp) {
+			nameText = UI.formText(comp, M.Name);
 			Texts.on(nameText)
 					.init(fuel.name)
 					.required()
 					.validate(this::validate);
-			UI.formLabel(composite, "");
+			UI.formLabel(comp, "");
 		}
 
-		private void createDescriptionText(Composite composite) {
-			descriptionText = UI.formMultiText(composite, M.Description);
+		private void createDescriptionText(Composite comp) {
+			descriptionText = UI.formMultiText(comp, M.Description);
 			Texts.set(descriptionText, fuel.description);
-			UI.formLabel(composite, "");
+			UI.formLabel(comp, "");
 		}
 
-		private void createUnitText(Composite composite) {
-			unitText = UI.formText(composite, M.Unit);
+		private void createUnitText(Composite comp) {
+			unitText = UI.formText(comp, M.Unit);
 			Texts.on(unitText)
 					.init(fuel.unit)
 					.required()
 					.onChanged((t) -> {
 						String unit = t == null ? "" : t.trim();
 						unitLabel.setText("kWh/" + unit);
-						composite.layout();
+						comp.layout();
 						validate();
 					});
-			UI.formLabel(composite, "");
+			UI.formLabel(comp, "");
 		}
 
-		private void createCalText(Composite composite) {
-			calText = UI.formText(composite, M.CalorificValue);
+		private void createCalText(Composite comp) {
+			calText = UI.formText(comp, M.CalorificValue);
 			Texts.on(calText)
 					.init(fuel.calorificValue)
 					.required()
 					.decimal()
 					.validate(this::validate);
-			unitLabel = UI.formLabel(composite, "");
+			unitLabel = UI.formLabel(comp, "");
 			if (fuel.unit != null)
 				unitLabel.setText("kWh/" + fuel.unit);
 		}
 
-		private void createCO2Text(Composite composite) {
-			co2Text = UI.formText(composite, "CO2 Emissionen");
+		private void createCO2Text(Composite comp) {
+			co2Text = UI.formText(comp, "CO2 Emissionen");
 			Texts.on(co2Text)
 					.init(fuel.co2Emissions)
 					.required()
 					.decimal()
 					.validate(this::validate);
-			UI.formLabel(composite, "g CO2 äq./kWh");
+			UI.formLabel(comp, "g CO2 äq./kWh");
 		}
 
-		private void createEnergyFactorText(Composite composite) {
-			energyFactorText = UI.formText(composite, "Primärenergiefaktor");
+		private void createEnergyFactorText(Composite comp) {
+			energyFactorText = UI.formText(comp, "Primärenergiefaktor");
 			Texts.on(energyFactorText)
 					.init(fuel.primaryEnergyFactor)
 					.required()
 					.decimal()
 					.validate(this::validate);
-			UI.filler(composite);
+			UI.filler(comp);
+		}
+
+		private void createAshContentText(Composite comp) {
+			ashContentText = UI.formText(comp, "Aschegehalt");
+			Texts.on(ashContentText)
+					.init(fuel.ashContent)
+					.decimal()
+					.validate(this::validate);
+			UI.formLabel(comp, "%");
 		}
 
 		private boolean validate() {
