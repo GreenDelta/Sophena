@@ -1,22 +1,30 @@
-Funktionen der energetischen Berechnung
-=======================================
+# Energetischen Berechnung
 
-TODO: FuelEnergyDemand: benötigte Brennstoffenergie, je nach Erzeugertyp
+## Heizwert und Brennstoffmenge
+Die Simulationsrechnung in Sophena berechnet die Wärmemengen, welche die
+jeweiligen Erzeuger (`Producer`) produzieren müssen (unter Einbezug von
+Nutzungsgrad etc., siehe unten), um den Wärmebedarf zu decken. Jedem Erzeuger
+kann ein Energieträger/Brennstoff (`Fuel`) zugewiesen werden. Der Energieträger
+hat wiederum einen Heizwert (`calorificValue`), mit dem dann die benötigten
+Brennstoffmengen (`FuelDemand`) zurückgerechnet werden können.
 
-Heizwert
---------
-Alle Brennstoffe werden in einer Referenzeinheit $u$ angegeben (z.B. m3 für
-Erdgas). Der Heizwert $cv$ [kWh/u] entspricht der Menge an Wärme $Q_{gen,u}$
-[kWh], die pro Referenzeinheit des Brennstoffs erzeugt werden kann:
+Alle Brennstoffe werden in einer Referenzeinheit (`unit`) angegeben (z.B. m3 für
+Erdgas). Der angegebene Heizwert entspricht der Menge an Wärme (in kWh) die pro
+Referenzeinheit des Brennstoffs erzeugt werden kann (z.B. kWh/m3 für Erdgas).
+Um die Brennstoffmenge aus einer erzeugten Wärmemenge (`producedHeat` in kWh) zu
+berechnen, teilt man diese Wärmemenge durch den Heizwert:
 
-$$ cv = \frac{Q_{gen,u}}{u} $$
+```java
+double fuelDemand = producedHeat / calorificValue;
+``` 
+Für Holzbrennstoffe wird der Heizwert in kWh pro Tonnen absolut trockener Masse
+(t atro) angegeben (also kWh/t atro). Wichtig ist, dass bei Holzbrennstoffen
+Parameter wie Wassergehalt (`waterContent`), Mengentyp (`WoodAmountType`, also
+Schüttraummeter etc.) in die Berechnung vom Heizwert und der Brennstoffmenge
+eingehen (sieh unten). #TODO
 
-Für Holzbrennstoffe wird der Heizwert pro Kilogramm absolut trockener Masse
-(kg atro) angegeben [kWh/kg atro].
+## Brennstoffenergie
 
-
-Brennstoffenergie
------------------
 Die Wärmemenge $Q_{fuel}$ [kWh], die durch die Verbrennung einer Menge $a$ 
 eines Brennstoffs erzeugt werden kann, wird wie folgt berechnet:
 
@@ -26,8 +34,7 @@ Die Brennstoffmenge $a$ wird in der Referenzeinheit des Brennstoffs angegeben.
 $cv$ ist der Heizwert des Brennstoffs in kWh pro Referenzeinheit.
 
 
-Volllaststunden
----------------
+## Volllaststunden
 Die Volllaststunden $t_{full}$ [h] eines Kessels ergeben sich aus der erzeugten
 Wärme $Q_{gen}$ [kWh] und der thermischen Nennleistung $P_{max,th}$ [kW] 
 (= maximale Leistung) des Kessels:
@@ -44,8 +51,7 @@ Die entsprechende Hilfsfunktion ist:
     double fullLoadHours = FullLoadHours.get(p, producedHeat);
 ```
 
-Nutzungsdauer
--------------
+## Nutzungsdauer
 Die Nutzungsdauer eines Kessels ist die Anzahl der Stunden im Jahr, die der
 Kessel läuft. Im Berechnungsergebnis von Sophena wird für jeden Kessel ein
 Array berechnet, welches die produzierte Wärme für die jeweilige Jahresstunde
@@ -58,8 +64,7 @@ Die Hilfsfunktion dafür ist:
 UsageDuration.get(energyResult, producer);
 ```
 
-Nutzungsgrad
-------------
+## Nutzungsgrad
 Der Nutzungsgrad $ur$ ist allgemein das Verhältnis aus nutzbar gemachter Energie
 zu zugeführter Energie und wird aus dem Wirkungsgrad $er$ und dem
 Bereitschaftswirkungsgrad $sr$ berechnet:
@@ -97,8 +102,7 @@ Auch dafür gibt es wieder eine Hilfsfunktion:
 double eta = EfficiencyRate.get(utilisationRate, loadHours);
 ```
 
-Stromerzeugung
---------------
+## Stromerzeugung
 Die erzeugte Menge an Strom ${E_{gen}}$ [kWh] wird aus den Volllaststunden
 $t_{full}$ [h] und der elektrischen Nennleistung $P_{max,el}$ [kW] einer
 KWK-Anlage berechnet:
@@ -113,8 +117,7 @@ Producer p = ...
 double generatedElectricity = GeneratedElectricity.get(p, generatedHeat);
 ```
 
-Eigenstrombedarf
-----------------
+## Eigenstrombedarf
 Der Eigenstrombedarf wird nicht aus den Daten des ausgewählten Kessels berechnet,
 da eine vernünftige Abschätzung auf Basis der dort angegebenen elektrischen
 Anschlussleistung sehr schwierig ist. Stattdessen wird dafür bei den allgemeinen
@@ -130,8 +133,7 @@ Hilfsfunktion zur Berechnung des Eigenstrombedarfs sieht entsprechend so aus:
 double usedElectricity = UsedElectricity.get(producedHeat, costSettings);
 ```
 
-Wärmerückgewinnung
-------------------
+## Wärmerückgewinnung
 In erster Näherung kann dieser Effekt linear berechnet werden. Dazu teilt man
 die in den Produktdaten angegebene Leistung des Abgaswärmetauschers (AWT) durch
 die dort ebenfalls angegebene Leistung des passenden Wärmeerzeugers. Diesen Wert
@@ -169,8 +171,7 @@ Producers.maxPower(producer);
 Producers.efficiencyRate(producer);
 ```
 
-Genutzte Wärme
---------------
+## Genutzte Wärme
 Die Genutze Wärme ist die erzeugte Wärme insgesamt abzüglich der
 Verteilungsverluste im Netz.
 
@@ -180,8 +181,7 @@ Die Hilfsfunktion dafür ist:
 double usedHeat = UsedHeat.get(projectResult);
 ```
 
-Primärenergiefaktor der Nahwärme
---------------------------------
+## Primärenergiefaktor der Nahwärme
 Der Primärenergiefaktor des Wärmenetzes $pef_{net}$ ist eine Kennzahl, die
 unter den weiteren Ergebnissen ausgewiesen und wie folgt berechnet wird:
 
