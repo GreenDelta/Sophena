@@ -12,6 +12,7 @@ import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
+import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 
@@ -98,6 +99,7 @@ class Wizards {
 		}
 		if (group == FuelGroup.WOOD) {
 			spec.waterContent = 20d;
+			spec.woodAmountType = WoodAmountType.MASS;
 		}
 	}
 }

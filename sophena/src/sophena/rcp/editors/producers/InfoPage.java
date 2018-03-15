@@ -130,7 +130,7 @@ class InfoPage extends FormPage {
 		List<Boiler> filtered = new ArrayList<>();
 		for (Boiler other : all) {
 			if (Objects.equals(b.group, other.group)) {
-				filtered.add(b);
+				filtered.add(other);
 			}
 		}
 		Sorters.boilers(filtered);

@@ -321,19 +321,19 @@ public final class Labels {
 
 	public static String getFuelUnit(Producer producer) {
 		if (producer == null || producer.fuelSpec == null)
-			return null;
+			return "?";
 		FuelSpec spec = producer.fuelSpec;
 		if (spec.woodAmountType != null)
 			return spec.woodAmountType.getUnit();
 		if (spec.fuel == null)
-			return null;
-		return spec.fuel != null ? spec.fuel.unit : null;
+			return "?";
+		return spec.fuel.unit != null ? spec.fuel.unit : "?";
 	}
 
 	public static String getFuel(Producer producer) {
 		if (producer == null || producer.fuelSpec == null)
-			return null;
+			return "?";
 		FuelSpec spec = producer.fuelSpec;
-		return spec.fuel != null ? spec.fuel.name : null;
+		return spec.fuel != null ? spec.fuel.name : "?";
 	}
 }

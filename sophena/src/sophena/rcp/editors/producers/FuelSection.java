@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -30,6 +31,8 @@ class FuelSection {
 
 	private ProducerEditor editor;
 	private Text calorificValueText;
+	private Label calorificValueUnit;
+	private Label priceUnit;
 
 	FuelSection(ProducerEditor editor) {
 		this.editor = editor;
@@ -74,10 +77,14 @@ class FuelSection {
 	private void onFuelChange(Fuel f) {
 		if (f == null)
 			return;
-		// TODO: update labels
-		producer().fuelSpec.fuel = f;
+		Producer p = producer();
+		p.fuelSpec.fuel = f;
+		String unit = Labels.getFuelUnit(p);
 		Texts.set(calorificValueText,
-				Num.intStr(CalorificValue.get(producer().fuelSpec)));
+				Num.intStr(CalorificValue.get(p.fuelSpec)));
+		priceUnit.setText("EUR/" + unit);
+		calorificValueUnit.setText("kWh/" + unit);
+		calorificValueUnit.getParent().layout();
 		editor.setDirty();
 	}
 
@@ -96,16 +103,18 @@ class FuelSection {
 				});
 	}
 
-	private void createCalorificValueRow(FormToolkit tk, Composite composite) {
-		calorificValueText = UI.formText(composite, tk, "Heizwert");
-		UI.formLabel(composite, tk, "kWh/" + Labels.getFuelUnit(producer()));
+	private void createCalorificValueRow(FormToolkit tk, Composite comp) {
+		calorificValueText = UI.formText(comp, tk, "Heizwert");
+		calorificValueUnit = UI.formLabel(comp, tk,
+				"kWh/" + Labels.getFuelUnit(producer()));
 		Texts.on(calorificValueText).decimal().calculated()
 				.init(Num.intStr(CalorificValue.get(producer().fuelSpec)));
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {
 		Text t = UI.formText(composite, tk, "Preis (netto)");
-		UI.formLabel(composite, tk, "EUR/" + Labels.getFuelUnit(producer()));
+		priceUnit = UI.formLabel(composite, tk,
+				"EUR/" + Labels.getFuelUnit(producer()));
 		Texts.on(t).decimal().required()
 				.init(producer().fuelSpec.pricePerUnit)
 				.onChanged((s) -> {
