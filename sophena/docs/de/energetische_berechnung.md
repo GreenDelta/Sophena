@@ -1,5 +1,6 @@
 # Energetischen Berechnung
 
+
 ## Heizwert und Brennstoffmenge
 Die Simulationsrechnung in Sophena berechnet die Wärmemengen, welche die
 jeweiligen Erzeuger (`Producer`) produzieren müssen (unter Einbezug von
@@ -22,6 +23,32 @@ Für Holzbrennstoffe wird der Heizwert in kWh pro Tonnen absolut trockener Masse
 Parameter wie Wassergehalt (`waterContent`), Mengentyp (`WoodAmountType`, also
 Schüttraummeter etc.) in die Berechnung vom Heizwert und der Brennstoffmenge
 eingehen (sieh unten). #TODO
+
+
+# Holzmengen
+Neben dem Heizwert werden für jeden Holzbrennstoff auch dessen Dichte in
+Kilogramm pro Festmeter (kg/FM; ein Festmeter ist 1 m3 feste Holzmasse)
+angegeben. Der Heizwert wird in kWh pro Tonne absolut trockenem Holz angegeben
+(kWh/t atro).
+
+Holzmengen werden gewöhnlich in Raummeter (Ster) für Scheitholz
+(`WoodAmountType.LOGS`) und Schüttraummeter für Holzhackschnitzel angegeben
+(`WoodAmountType.CHIPS`). Ein Ster entspricht dabei 1 m3 geschichteter Holzteile
+und ein Schüttraummeter 1 m3 geschütteter Holzteile. Daneben kann die Menge von
+Holz in Sophena auch in Masse angegeben werden (`WoodAmountType.MASS`).
+
+Um Holzmengen sinnvoll in Massen, Heizwerte etc. zu konvertieren braucht man 
+auch immer noch den Wassergehalt (`waterContent`, in %, wird ebenfalls am
+Brennstoff gespeichert). Eine Mengenangabe in Ster oder Schüttraummeter kann man
+mit der folgenden Formel in Kilogramm umrechnen:
+
+```
+Holzmasse = Faktor * Holzmenge * Holzdichte / (1-Wassergehalt)
+```
+
+Dabei ist Faktor der Umrechnungsfaktor von Ster oder Schüttraummeter in
+Festmeter. #TODO
+
 
 ## Brennstoffenergie
 
