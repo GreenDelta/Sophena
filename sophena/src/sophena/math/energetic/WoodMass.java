@@ -13,10 +13,6 @@ public class WoodMass {
 		return new FromAmount(0.4, amount);
 	}
 
-	public static FromEnergy ofEnergy_kWh(double energy) {
-		return new FromEnergy(energy);
-	}
-
 	public static class FromAmount {
 
 		private final double factor;
@@ -45,29 +41,4 @@ public class WoodMass {
 		}
 	}
 
-	public static class FromEnergy {
-
-		private final double energy;
-
-		private double calorificValue;
-		private double waterContent;
-
-		private FromEnergy(double energy) {
-			this.energy = energy;
-		}
-
-		public FromEnergy calorificValue_kWh_per_kg(double calorificValue) {
-			this.calorificValue = calorificValue;
-			return this;
-		}
-
-		public FromEnergy waterContent(double waterContent) {
-			this.waterContent = waterContent;
-			return this;
-		}
-
-		public double get_kg() {
-			return energy / ((1 - waterContent) * calorificValue - waterContent * 0.68);
-		}
-	}
 }

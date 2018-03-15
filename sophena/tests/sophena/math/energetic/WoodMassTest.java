@@ -16,14 +16,4 @@ public class WoodMassTest {
 		assertEquals(0.9475, wm, 1e-10);
 	}
 
-	@Test
-	public void testForEnergy() {
-		double wm = WoodMass
-				.ofEnergy_kWh(1200)
-				.waterContent(0.2)
-				.calorificValue_kWh_per_kg(5)
-				.get_kg();
-		assertEquals(310.55900621118013, wm, 1e-10);
-	}
-
 }
