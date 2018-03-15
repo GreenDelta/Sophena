@@ -12,8 +12,8 @@ public class WoodMassTest {
 				.ofWoodChips_m3(5)
 				.woodDensity_kg_per_m3(379)
 				.waterContent(0.2)
-				.get_kg();
-		assertEquals(947.5, wm, 1e-10);
+				.get_t();
+		assertEquals(0.9475, wm, 1e-10);
 	}
 
 	@Test

@@ -21,11 +21,7 @@ public class CalorificValue {
 		WoodAmountType type = spec.woodAmountType;
 		double waterContent = spec.waterContent / 100;
 		double woodMass = getWoodMass(type, fuel, waterContent);
-		return WoodFuelEnergy
-				.ofWoodMass_kg(woodMass)
-				.calorificValue_kWh_per_kg(fuel.calorificValue)
-				.waterContent(waterContent)
-				.get_kWh();
+		return forWood(woodMass, waterContent, fuel.calorificValue);
 	}
 
 	public static double get(FuelConsumption consumption) {
@@ -40,30 +36,30 @@ public class CalorificValue {
 		double waterContent = consumption.waterContent / 100;
 		double woodMass = getWoodMass(consumption.woodAmountType, woodFuel,
 				waterContent);
-		return WoodFuelEnergy
-				.ofWoodMass_kg(woodMass)
-				.calorificValue_kWh_per_kg(woodFuel.calorificValue)
-				.waterContent(waterContent)
-				.get_kWh();
+		return forWood(woodMass, waterContent, woodFuel.calorificValue);
+	}
+
+	static double forWood(double woodMass, double waterContent, double calorificValue) {
+		return woodMass * ((1 - waterContent) * calorificValue - waterContent * 680);
 	}
 
 	private static double getWoodMass(WoodAmountType type, Fuel woodFuel,
 			double waterContent) {
 		switch (type) {
 		case MASS:
-			return 1; // kg
+			return 1; // t
 		case CHIPS:
 			return WoodMass
 					.ofWoodChips_m3(1)
 					.waterContent(waterContent)
 					.woodDensity_kg_per_m3(woodFuel.density)
-					.get_kg();
+					.get_t();
 		case LOGS:
 			return WoodMass
 					.ofWoodLogs_stere(1)
 					.waterContent(waterContent)
 					.woodDensity_kg_per_m3(woodFuel.density)
-					.get_kg();
+					.get_t();
 		default:
 			return 0;
 		}

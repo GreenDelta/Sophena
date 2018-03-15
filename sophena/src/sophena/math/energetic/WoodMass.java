@@ -40,8 +40,8 @@ public class WoodMass {
 			return this;
 		}
 
-		public double get_kg() {
-			return (amount * factor * density) / (1 - waterContent);
+		public double get_t() {
+			return (amount * factor * density / 1000) / (1 - waterContent);
 		}
 	}
 

@@ -72,9 +72,18 @@ public class CalorificValueTest {
 		Fuel fuel = new Fuel();
 		fuel.name = "Wood";
 		fuel.group = FuelGroup.WOOD;
-		fuel.calorificValue = 5.2; // kWh / kg dry mass
+		fuel.calorificValue = 5200; // kWh / t dry mass
 		fuel.density = 379; // kg / solid m3
 		return fuel;
+	}
+
+	@Test
+	public void testForWood() {
+		double cf = CalorificValue.forWood(
+				1, // 1 t wood
+				0.2, // water content
+				5000); // calorific value in kWh / t dry mass
+		Assert.assertEquals(3864, cf, 1e-10);
 	}
 
 }

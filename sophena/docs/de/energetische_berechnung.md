@@ -19,35 +19,32 @@ berechnen, teilt man diese Wärmemenge durch den Heizwert:
 double fuelDemand = producedHeat / calorificValue;
 ``` 
 Für Holzbrennstoffe wird der Heizwert in kWh pro Tonnen absolut trockener Masse
-(t atro) angegeben (also kWh/t atro). Wichtig ist, dass bei Holzbrennstoffen
-Parameter wie Wassergehalt (`waterContent`), Mengentyp (`WoodAmountType`, also
-Schüttraummeter etc.) in die Berechnung vom Heizwert und der Brennstoffmenge
-eingehen (sieh unten). #TODO
+(t atro) am Brennstoff gespeichert (also kWh/t atro). Für reale Holzbrennstoffe
+muss der Heizwert unter berücksichtigung des Wassergehalts (`waterContent`)
+wie folgt berechnet werden:
 
-
-# Holzmengen
-Neben dem Heizwert werden für jeden Holzbrennstoff auch dessen Dichte in
-Kilogramm pro Festmeter (kg/FM; ein Festmeter ist 1 m3 feste Holzmasse)
-angegeben. Der Heizwert wird in kWh pro Tonne absolut trockenem Holz angegeben
-(kWh/t atro).
-
-Holzmengen werden gewöhnlich in Raummeter (Ster) für Scheitholz
-(`WoodAmountType.LOGS`) und Schüttraummeter für Holzhackschnitzel angegeben
-(`WoodAmountType.CHIPS`). Ein Ster entspricht dabei 1 m3 geschichteter Holzteile
-und ein Schüttraummeter 1 m3 geschütteter Holzteile. Daneben kann die Menge von
-Holz in Sophena auch in Masse angegeben werden (`WoodAmountType.MASS`).
-
-Um Holzmengen sinnvoll in Massen, Heizwerte etc. zu konvertieren braucht man 
-auch immer noch den Wassergehalt (`waterContent`, in %, wird ebenfalls am
-Brennstoff gespeichert). Eine Mengenangabe in Ster oder Schüttraummeter kann man
-mit der folgenden Formel in Kilogramm umrechnen:
-
-```
-Holzmasse = Faktor * Holzmenge * Holzdichte / (1-Wassergehalt)
+```java
+calorificValue = woodMass * ((1 - waterContent) * calorificValue - waterContent * 680);
 ```
 
-Dabei ist Faktor der Umrechnungsfaktor von Ster oder Schüttraummeter in
-Festmeter. #TODO
+Dabei ist `680` die Verdampfungsenergie von Wasser (680 kWh/t). Wenn die Menge
+des Holzbrennstoffs nicht in Tonnen sondern in Ster (`WoodAmountType.LOGS`) oder
+Schüttraummeter (`WoodAmountType.CHIPS`) angegeben wird, so muss zunächst die
+äuquivalente Masse in Tonnen (`woodMass`) für eine Einheit Ster bzw.
+Schüttraummeter berechnet werden und in die obige Gleichung eingesetzt werden.
+Ist die Menge des Holzbrennstoffs schon in Tonnen (feuchter Holzmasse,
+`WoodAmountType.MASS`) angegeben, so wird `woodMass = 1` in die obige Formel
+eingesetzt.
+
+Die Umrechung von Ster und Schüttraummeter erfolgt über die Formel:
+
+```
+woodMass = f * (density/1000) / (1 - waterContent))
+```
+
+Die Dichte (`density`) wird dabei in kg/FM (FM = Festmeter = 1 m3 festes Holz)
+angegeben (Faktor 1/1000 zur Umrechnung in Tonnen). Der Faktor `f` ist Ster
+gleich `0.7` und für Schüttraummeter `0.4`. 
 
 
 ## Brennstoffenergie
