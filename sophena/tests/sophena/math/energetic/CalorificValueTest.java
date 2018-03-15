@@ -16,9 +16,9 @@ public class CalorificValueTest {
 
 	@Test
 	public void testGetProducer() {
-		double cv = CalorificValue.get(gasProducer());
+		double cv = CalorificValue.get(gasProducer().fuelSpec);
 		Assert.assertEquals(10, cv, 1e-10);
-		double cvWood = CalorificValue.get(woodProducer());
+		double cvWood = CalorificValue.get(woodProducer().fuelSpec);
 		Assert.assertEquals(1334.459, cvWood, 1e-10);
 	}
 

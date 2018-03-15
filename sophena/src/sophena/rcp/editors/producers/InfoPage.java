@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.db.daos.BoilerDao;
@@ -21,6 +23,8 @@ import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.ProductCostSection;
+import sophena.rcp.editors.basedata.ProductGroupEditor;
+import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
@@ -48,8 +52,11 @@ class InfoPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		Composite comp = UI.formSection(body, tk, "Erzeugerinformationen");
 		nameText(tk, comp);
+		groupLink(tk, comp);
 		descriptionText(tk, comp);
-		boilerCombo(tk, comp);
+		if (!producer().hasProfile) {
+			boilerCombo(tk, comp);
+		}
 		functionCombo(tk, comp);
 		rankText(tk, comp);
 		UtilisationRateSwitch.create(editor, comp, tk);
@@ -74,6 +81,18 @@ class InfoPage extends FormPage {
 			producer().name = nt.getText();
 			editor.setDirty();
 		});
+	}
+
+	private void groupLink(FormToolkit tk, Composite comp) {
+		UI.formLabel(comp, tk, "Produktgruppe");
+		ImageHyperlink link = new ImageHyperlink(comp, SWT.NONE);
+		if (producer().productGroup != null) {
+			link.setText(producer().productGroup.name);
+		} else {
+			link.setText("FEHLER: keine Produktgruppe");
+		}
+		link.setForeground(Colors.getLinkBlue());
+		Controls.onClick(link, e -> ProductGroupEditor.open());
 	}
 
 	private void descriptionText(FormToolkit tk, Composite comp) {

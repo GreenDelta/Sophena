@@ -24,7 +24,8 @@ public class FuelDemand {
 			double ur = UtilisationRate.get(producer, result);
 			return generatedHeat / ur;
 		} else {
-			double fullLoadHours = Producers.fullLoadHours(producer, generatedHeat);
+			double fullLoadHours = Producers.fullLoadHours(producer,
+					generatedHeat);
 			double er = boiler.efficiencyRateElectric;
 			double p = boiler.maxPowerElectric / er;
 			return p * fullLoadHours;
@@ -36,7 +37,9 @@ public class FuelDemand {
 	 * heat by the given producer.
 	 */
 	public static double getAmount(Producer producer, EnergyResult result) {
-		double cv = CalorificValue.get(producer);
+		if (producer == null || result == null)
+			return 0.0;
+		double cv = CalorificValue.get(producer.fuelSpec);
 		double energyDemand = getKWh(producer, result);
 		return cv == 0 ? 0 : energyDemand / cv;
 	}

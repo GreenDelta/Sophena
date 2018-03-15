@@ -77,7 +77,7 @@ class FuelSection {
 		// TODO: update labels
 		producer().fuelSpec.fuel = f;
 		Texts.set(calorificValueText,
-				Num.intStr(CalorificValue.get(producer())));
+				Num.intStr(CalorificValue.get(producer().fuelSpec)));
 		editor.setDirty();
 	}
 
@@ -89,8 +89,9 @@ class FuelSection {
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					producer().fuelSpec.waterContent = val;
+					FuelSpec spec = producer().fuelSpec;
 					Texts.set(calorificValueText,
-							Num.intStr(CalorificValue.get(producer())));
+							Num.intStr(CalorificValue.get(spec)));
 					editor.setDirty();
 				});
 	}
@@ -99,7 +100,7 @@ class FuelSection {
 		calorificValueText = UI.formText(composite, tk, "Heizwert");
 		UI.formLabel(composite, tk, "kWh/" + Labels.getFuelUnit(producer()));
 		Texts.on(calorificValueText).decimal().calculated()
-				.init(Num.intStr(CalorificValue.get(producer())));
+				.init(Num.intStr(CalorificValue.get(producer().fuelSpec)));
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {

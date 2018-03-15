@@ -3,18 +3,14 @@ package sophena.math.energetic;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.FuelSpec;
-import sophena.model.Producer;
 import sophena.model.WoodAmountType;
 
 public class CalorificValue {
 
-	public static double get(Producer p) {
-		if (p == null || p.fuelSpec == null)
+	public static double get(FuelSpec spec) {
+		if (spec == null || spec.fuel == null)
 			return 0d;
-		FuelSpec spec = p.fuelSpec;
 		Fuel fuel = spec.fuel;
-		if (fuel == null)
-			return 0d;
 		if (spec.woodAmountType == null)
 			return fuel.calorificValue;
 		// wood fuel
@@ -35,15 +31,18 @@ public class CalorificValue {
 		return forWood(woodMass, waterContent, c.fuel.calorificValue);
 	}
 
-	static double forWood(double woodMass, double waterContent, double calorificValue) {
-		return woodMass * ((1 - waterContent) * calorificValue - waterContent * 680);
+	static double forWood(double woodMass, double waterContent,
+			double calorificValue) {
+		return woodMass
+				* ((1 - waterContent) * calorificValue - waterContent * 680);
 	}
 
 	/**
 	 * Calculates the real (wet) wood mass that goes into the calculation of a
 	 * calorific value for a wood fuel.
 	 */
-	static double woodMass(Fuel woodFuel, WoodAmountType type, double waterContent) {
+	static double woodMass(Fuel woodFuel, WoodAmountType type,
+			double waterContent) {
 		if (woodFuel == null || waterContent >= 1.0) {
 			return 0.0;
 		}
