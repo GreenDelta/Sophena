@@ -1,5 +1,7 @@
 package sophena.math.energetic;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -84,6 +86,13 @@ public class CalorificValueTest {
 				0.2, // water content
 				5000); // calorific value in kWh / t dry mass
 		Assert.assertEquals(3864, cf, 1e-10);
+	}
+
+	@Test
+	public void testWoodMass() {
+		double wm = CalorificValue.woodMass(
+				wood(), WoodAmountType.CHIPS, 0.2);
+		assertEquals(0.9475 / 5, wm, 1e-10);
 	}
 
 }

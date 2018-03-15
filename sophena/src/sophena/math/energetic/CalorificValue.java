@@ -18,51 +18,41 @@ public class CalorificValue {
 		if (spec.woodAmountType == null)
 			return fuel.calorificValue;
 		// wood fuel
-		WoodAmountType type = spec.woodAmountType;
-		double waterContent = spec.waterContent / 100;
-		double woodMass = getWoodMass(type, fuel, waterContent);
+		double waterContent = spec.waterContent / 100.0;
+		double woodMass = woodMass(fuel, spec.woodAmountType, waterContent);
 		return forWood(woodMass, waterContent, fuel.calorificValue);
 	}
 
-	public static double get(FuelConsumption consumption) {
-		if (consumption == null || consumption.fuel == null)
+	public static double get(FuelConsumption c) {
+		if (c == null || c.fuel == null)
 			return 0;
-		if (consumption.woodAmountType == null) {
-			// normal fuel
-			return consumption.fuel.calorificValue;
+		if (c.woodAmountType == null) {
+			return c.fuel.calorificValue;
 		}
 		// wood fuel
-		Fuel woodFuel = consumption.fuel;
-		double waterContent = consumption.waterContent / 100;
-		double woodMass = getWoodMass(consumption.woodAmountType, woodFuel,
-				waterContent);
-		return forWood(woodMass, waterContent, woodFuel.calorificValue);
+		double waterContent = c.waterContent / 100;
+		double woodMass = woodMass(c.fuel, c.woodAmountType, waterContent);
+		return forWood(woodMass, waterContent, c.fuel.calorificValue);
 	}
 
 	static double forWood(double woodMass, double waterContent, double calorificValue) {
 		return woodMass * ((1 - waterContent) * calorificValue - waterContent * 680);
 	}
 
-	private static double getWoodMass(WoodAmountType type, Fuel woodFuel,
-			double waterContent) {
-		switch (type) {
-		case MASS:
-			return 1; // t
-		case CHIPS:
-			return WoodMass
-					.ofWoodChips_m3(1)
-					.waterContent(waterContent)
-					.woodDensity_kg_per_m3(woodFuel.density)
-					.get_t();
-		case LOGS:
-			return WoodMass
-					.ofWoodLogs_stere(1)
-					.waterContent(waterContent)
-					.woodDensity_kg_per_m3(woodFuel.density)
-					.get_t();
-		default:
-			return 0;
+	/**
+	 * Calculates the real (wet) wood mass that goes into the calculation of a
+	 * calorific value for a wood fuel.
+	 */
+	static double woodMass(Fuel woodFuel, WoodAmountType type, double waterContent) {
+		if (woodFuel == null || waterContent >= 1.0) {
+			return 0.0;
 		}
+		double f = 1.0; // mass
+		if (type == WoodAmountType.CHIPS) {
+			f = 0.4;
+		} else if (type == WoodAmountType.LOGS) {
+			f = 0.7;
+		}
+		return (f * woodFuel.density / 1000) / (1 - waterContent);
 	}
-
 }
