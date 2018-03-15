@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
+import sophena.model.ProducerFunction;
 import sophena.model.ProducerProfile;
 import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
@@ -91,8 +92,10 @@ public class ProducerProfileWizard extends Wizard {
 			int groupIdx = page.groupCombo.getSelectionIndex();
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
-				ProductGroup group = groups[groupIdx];
-				ProductCosts.copy(group, producer.costs);
+				producer.productGroup = groups[groupIdx];
+				ProductCosts.copy(producer.productGroup,
+						producer.costs);
+				Wizards.initFuelSpec(producer);
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -156,7 +159,7 @@ public class ProducerProfileWizard extends Wizard {
 		private void typeCombo(Composite comp) {
 			Combo combo = UI.formCombo(comp, "Produktbereich");
 			ProductType[] types = {
-					null, // waste heat
+					ProductType.OTHER_HEAT_SOURCE,
 					ProductType.COGENERATION_PLANT,
 					ProductType.SOLAR_THERMAL_PLANT,
 					ProductType.ELECTRIC_HEAT_GENERATOR,
@@ -165,13 +168,11 @@ public class ProducerProfileWizard extends Wizard {
 			};
 			String[] items = new String[types.length];
 			for (int i = 0; i < types.length; i++) {
-				if (types[i] == null)
-					items[i] = "Abwärme";
-				else
-					items[i] = Labels.get(types[i]);
+				items[i] = Labels.get(types[i]);
 			}
 			combo.setItems(items);
 			combo.select(0);
+			this.productType = ProductType.OTHER_HEAT_SOURCE;
 			Controls.onSelect(combo, e -> {
 				int i = combo.getSelectionIndex();
 				this.productType = types[i];
@@ -180,19 +181,10 @@ public class ProducerProfileWizard extends Wizard {
 		}
 
 		private void updateGroupCombo() {
-			if (productType == null) {
-				productGroups = new ProductGroup[] { null };
-			} else {
-				ProductGroupDao dao = new ProductGroupDao(App.getDb());
-				List<ProductGroup> groups = dao.getAll(productType);
-				Sorters.productGroups(groups);
-				productGroups = new ProductGroup[groups.size() + 1];
-				int i = 1;
-				for (ProductGroup group : groups) {
-					productGroups[i] = group;
-					i++;
-				}
-			}
+			ProductGroupDao dao = new ProductGroupDao(App.getDb());
+			List<ProductGroup> groups = dao.getAll(productType);
+			Sorters.productGroups(groups);
+			productGroups = groups.toArray(new ProductGroup[groups.size()]);
 			String[] items = new String[productGroups.length];
 			for (int i = 0; i < items.length; i++) {
 				if (productGroups[i] == null)
@@ -214,9 +206,11 @@ public class ProducerProfileWizard extends Wizard {
 						producer.rank = Num.readInt(rank.getText());
 						validate();
 					});
+			// producer profiles are always initialized as `base load`
 			Combo function = UI.formCombo(composite, "Funktion");
 			Wizards.fillProducerFunctions(project, function);
-			producer.function = Wizards.getProducerFunction(function);
+			function.select(0);
+			producer.function = ProducerFunction.BASE_LOAD;
 			Controls.onSelect(function, e -> {
 				producer.function = Wizards.getProducerFunction(function);
 			});

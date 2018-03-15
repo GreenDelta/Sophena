@@ -3,11 +3,9 @@ package sophena.rcp.editors.producers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.FuelDao;
 import sophena.math.energetic.CalorificValue;
@@ -16,12 +14,8 @@ import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
-import sophena.rcp.editors.basedata.fuels.FuelEditor;
-import sophena.rcp.utils.Colors;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -53,10 +47,8 @@ class FuelSection {
 		if (spec == null || spec.fuel == null)
 			return;
 		Fuel fuel = spec.fuel;
-		if (fuel.group != FuelGroup.WOOD)
-			createFuelRow(tk, comp);
-		else {
-			createWoodFuelRow(tk, comp);
+		createFuelRows(tk, comp);
+		if (fuel.group == FuelGroup.WOOD) {
 			createWaterRow(tk, comp);
 		}
 		createCalorificValueRow(tk, comp);
@@ -64,47 +56,41 @@ class FuelSection {
 		createVatRow(tk, comp);
 	}
 
-	private void createFuelRow(FormToolkit tk, Composite composite) {
-		UI.formLabel(composite, tk, M.Fuel);
-		Fuel f = producer().fuelSpec.fuel;
-		String text = f.name + " ("
-				+ Num.str(f.calorificValue) + " kWh/"
-				+ f.unit + ")";
-		ImageHyperlink link = new ImageHyperlink(composite, SWT.TOP);
-		link.setText(text);
-		link.setImage(Icon.FUEL_16.img());
-		link.setForeground(Colors.getLinkBlue());
-		Controls.onClick(link, e -> FuelEditor.open());
-		UI.formLabel(composite, "");
-	}
-
-	private void createWoodFuelRow(FormToolkit tk, Composite composite) {
+	private void createFuelRows(FormToolkit tk, Composite comp) {
+		Fuel fuel = producer().fuelSpec.fuel;
 		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
-		combo.create(M.Fuel, composite, tk);
+		combo.create(M.Fuel, comp, tk);
 		FuelDao dao = new FuelDao(App.getDb());
-		List<Fuel> fuels = dao.getAll().stream().filter((f) -> f.isWood())
+		List<Fuel> fuels = dao.getAll().stream()
+				.filter((f) -> f.group == fuel.group)
 				.collect(Collectors.toList());
 		Sorters.byName(fuels);
 		combo.setInput(fuels);
-		Fuel fuel = producer().fuelSpec.fuel;
 		combo.select(fuel);
-		combo.onSelect((f) -> {
-			producer().fuelSpec.fuel = f;
-			Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
-			editor.setDirty();
-		});
-		UI.formLabel(composite, "");
+		combo.onSelect(this::onFuelChange);
+		UI.formLabel(comp, "");
 	}
 
-	private void createWaterRow(FormToolkit tk, Composite composite) {
-		Text t = UI.formText(composite, tk, "Wassergehalt");
-		UI.formLabel(composite, tk, "%");
+	private void onFuelChange(Fuel f) {
+		if (f == null)
+			return;
+		// TODO: update labels
+		producer().fuelSpec.fuel = f;
+		Texts.set(calorificValueText,
+				Num.intStr(CalorificValue.get(producer())));
+		editor.setDirty();
+	}
+
+	private void createWaterRow(FormToolkit tk, Composite comp) {
+		Text t = UI.formText(comp, tk, "Wassergehalt");
+		UI.formLabel(comp, tk, "%");
 		Texts.on(t).decimal().required()
 				.init(producer().fuelSpec.waterContent)
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					producer().fuelSpec.waterContent = val;
-					Texts.set(calorificValueText, Num.intStr(CalorificValue.get(producer())));
+					Texts.set(calorificValueText,
+							Num.intStr(CalorificValue.get(producer())));
 					editor.setDirty();
 				});
 	}
@@ -128,9 +114,9 @@ class FuelSection {
 				});
 	}
 
-	private void createVatRow(FormToolkit tk, Composite composite) {
-		Text t = UI.formText(composite, tk, "Mehrwertsteuersatz");
-		UI.formLabel(composite, tk, "%");
+	private void createVatRow(FormToolkit tk, Composite comp) {
+		Text t = UI.formText(comp, tk, "Mehrwertsteuersatz");
+		UI.formLabel(comp, tk, "%");
 		Texts.on(t).decimal().required()
 				.init(producer().fuelSpec.taxRate)
 				.onChanged((s) -> {

@@ -5,9 +5,14 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Combo;
 
+import sophena.db.daos.FuelDao;
+import sophena.model.Fuel;
+import sophena.model.FuelGroup;
+import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.Labels;
 
 /**
@@ -67,5 +72,32 @@ class Wizards {
 				return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Initializes the fuel specification of the producer (or producer profile)
+	 * based on the fuel group in the product group of the producer.
+	 */
+	static void initFuelSpec(Producer p) {
+		FuelSpec spec = new FuelSpec();
+		p.fuelSpec = spec;
+		spec.taxRate = 19d;
+		if (p.productGroup == null)
+			return;
+		FuelGroup group = p.productGroup.fuelGroup;
+		if (group == null)
+			return;
+		FuelDao dao = new FuelDao(App.getDb());
+		// find a matching fuel from the base data
+		for (Fuel fuel : dao.getAll()) {
+			if (fuel.group != group)
+				continue;
+			spec.fuel = fuel;
+			if (fuel.isProtected)
+				break;
+		}
+		if (group == FuelGroup.WOOD) {
+			spec.waterContent = 20d;
+		}
 	}
 }
