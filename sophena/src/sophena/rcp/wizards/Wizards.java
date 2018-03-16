@@ -99,7 +99,7 @@ class Wizards {
 		}
 		if (group == FuelGroup.WOOD) {
 			spec.waterContent = 20d;
-			spec.woodAmountType = WoodAmountType.MASS;
+			spec.woodAmountType = WoodAmountType.CHIPS;
 		}
 	}
 }

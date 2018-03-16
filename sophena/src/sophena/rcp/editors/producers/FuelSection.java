@@ -3,6 +3,8 @@ package sophena.rcp.editors.producers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -14,9 +16,11 @@ import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
+import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -52,6 +56,7 @@ class FuelSection {
 		Fuel fuel = spec.fuel;
 		createFuelRows(tk, comp);
 		if (fuel.group == FuelGroup.WOOD) {
+			createWoodUnitRow(tk, comp);
 			createWaterRow(tk, comp);
 		}
 		createCalorificValueRow(tk, comp);
@@ -86,6 +91,30 @@ class FuelSection {
 		calorificValueUnit.setText("kWh/" + unit);
 		calorificValueUnit.getParent().layout();
 		editor.setDirty();
+	}
+
+	private void createWoodUnitRow(FormToolkit tk, Composite comp) {
+		UI.formLabel(comp, "Referenzeinheit");
+		Composite inner = tk.createComposite(comp);
+		UI.innerGrid(inner, 2);
+		WoodAmountType current = producer().fuelSpec.woodAmountType;
+		Button chips = tk.createButton(inner, WoodAmountType.CHIPS.getUnit()
+				+ " (Schüttraummeter)", SWT.RADIO);
+		chips.setSelection(current == WoodAmountType.CHIPS);
+		Controls.onSelect(chips, e -> {
+			FuelSpec spec = producer().fuelSpec;
+			spec.woodAmountType = WoodAmountType.CHIPS;
+			onFuelChange(spec.fuel); // updates unit labels etc.
+		});
+		Button mass = tk.createButton(inner, WoodAmountType.MASS.getUnit()
+				+ " (Tonnen)", SWT.RADIO);
+		Controls.onSelect(mass, e -> {
+			FuelSpec spec = producer().fuelSpec;
+			spec.woodAmountType = WoodAmountType.MASS;
+			onFuelChange(spec.fuel); // updates unit labels etc.
+		});
+		mass.setSelection(current == WoodAmountType.MASS);
+		UI.filler(comp);
 	}
 
 	private void createWaterRow(FormToolkit tk, Composite comp) {
