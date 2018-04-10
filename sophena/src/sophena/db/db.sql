@@ -183,9 +183,7 @@ CREATE TABLE tbl_heat_nets (
     smoothing_factor DOUBLE,
     max_load DOUBLE,
     power_loss DOUBLE,
-    with_interruption BOOLEAN,
-    interruption_start VARCHAR(10),
-    interruption_end VARCHAR(10),
+    f_interruption CHAR(36),
     
     buffer_tank_volume DOUBLE,
     max_buffer_load_temperature DOUBLE,

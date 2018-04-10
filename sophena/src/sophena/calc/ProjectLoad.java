@@ -9,7 +9,6 @@ import sophena.model.HoursTrace;
 import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.model.TimeInterval;
 
 public class ProjectLoad {
 
@@ -17,8 +16,8 @@ public class ProjectLoad {
 	}
 
 	/**
-	 * The maximum load of the project can be entered by the user. If no value is
-	 * entered the value is calculated from the heat net and consumer data.
+	 * The maximum load of the project can be entered by the user. If no value
+	 * is entered the value is calculated from the heat net and consumer data.
 	 */
 	public static double getMax(Project project) {
 		if (project == null)
@@ -43,11 +42,13 @@ public class ProjectLoad {
 		for (Consumer consumer : project.consumers) {
 			if (consumer.disabled)
 				continue;
-			LoadProfile p = ConsumerLoadCurve.calculate(consumer, project.weatherStation);
+			LoadProfile p = ConsumerLoadCurve.calculate(consumer,
+					project.weatherStation);
 			Stats.add(p.dynamicData, dynamicData);
 			Stats.add(p.staticData, staticData);
 		}
-		double[] data = Smoothing.means(dynamicData, Smoothing.getCount(project));
+		double[] data = Smoothing.means(dynamicData,
+				Smoothing.getCount(project));
 		Stats.add(staticData, data);
 		double netLoad = getNetLoad(project.heatNet);
 		Arrays.setAll(data, i -> data[i] + netLoad);
@@ -73,12 +74,9 @@ public class ProjectLoad {
 	}
 
 	public static void applyInterruption(double[] curve, HeatNet net) {
-		if (curve == null || net == null || !net.withInterruption)
+		if (curve == null || net == null || net.interruption == null)
 			return;
-		TimeInterval time = new TimeInterval();
-		time.start = net.interruptionStart;
-		time.end = net.interruptionEnd;
-		int[] interval = HoursTrace.getDayInterval(time);
+		int[] interval = HoursTrace.getDayInterval(net.interruption);
 		HoursTrace.applyInterval(curve, interval, (old, i) -> 0.0);
 	}
 }

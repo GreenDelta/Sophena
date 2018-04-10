@@ -57,14 +57,9 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "power_loss")
 	public double powerLoss;
 
-	@Column(name = "with_interruption")
-	public boolean withInterruption;
-
-	@Column(name = "interruption_start")
-	public String interruptionStart;
-
-	@Column(name = "interruption_end")
-	public String interruptionEnd;
+	@JoinColumn(name = "f_interruption")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public TimeInterval interruption;
 
 	@JoinColumn(name = "f_heat_net")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -88,9 +83,9 @@ public class HeatNet extends AbstractEntity {
 		clone.smoothingFactor = smoothingFactor;
 		clone.maxLoad = maxLoad;
 		clone.supplyTemperature = supplyTemperature;
-		clone.withInterruption = withInterruption;
-		clone.interruptionStart = interruptionStart;
-		clone.interruptionEnd = interruptionEnd;
+		if (interruption != null) {
+			clone.interruption = interruption.clone();
+		}
 		for (HeatNetPipe p : pipes)
 			clone.pipes.add(p.clone());
 		return clone;

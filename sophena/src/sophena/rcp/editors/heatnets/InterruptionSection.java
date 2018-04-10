@@ -1,6 +1,7 @@
 package sophena.rcp.editors.heatnets;
 
 import java.time.MonthDay;
+import java.util.UUID;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.model.HeatNet;
+import sophena.model.TimeInterval;
 import sophena.rcp.M;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Controls;
@@ -48,14 +50,16 @@ class InterruptionSection {
 	private void createCheck(FormToolkit toolkit, Composite composite) {
 		Button check = new Button(composite, SWT.CHECK);
 		check.setText("Mit Unterbrechung");
-		check.setSelection(heatNet().withInterruption);
+		check.setSelection(heatNet().interruption != null);
 		Controls.onSelect(check, (e) -> {
 			boolean enabled = check.getSelection();
-			heatNet().withInterruption = enabled;
 			startBox.setEnabled(enabled);
 			endBox.setEnabled(enabled);
-			if (enabled)
+			if (enabled) {
 				initInterruptionValues();
+			} else {
+				heatNet().interruption = null;
+			}
 			updateLoadCurve();
 			editor.setDirty();
 		});
@@ -63,27 +67,36 @@ class InterruptionSection {
 	}
 
 	private void initInterruptionValues() {
-		HeatNet net = heatNet();
-		if (net.interruptionStart == null) {
+		TimeInterval interruption = heatNet().interruption;
+		if (interruption == null) {
+			interruption = new TimeInterval();
+			interruption.id = UUID.randomUUID().toString();
+			heatNet().interruption = interruption;
+		}
+		if (interruption.start == null) {
 			MonthDay start = startBox.getSelection();
 			if (start != null)
-				net.interruptionStart = start.toString();
+				interruption.start = start.toString();
 		}
-		if (net.interruptionEnd == null) {
+		if (interruption.end == null) {
 			MonthDay end = endBox.getSelection();
 			if (end != null)
-				net.interruptionEnd = end.toString();
+				interruption.end = end.toString();
 		}
 	}
 
-	private void createStartBox(FormToolkit toolkit, Composite composite) {
-		startBox = new MonthDayBox(M.Start, composite, toolkit);
-		startBox.setEnabled(heatNet().withInterruption);
-		initBoxValue(startBox, heatNet().interruptionStart);
+	private void createStartBox(FormToolkit tk, Composite comp) {
+		startBox = new MonthDayBox(M.Start, comp, tk);
+		TimeInterval interruption = heatNet().interruption;
+		startBox.setEnabled(interruption != null);
+		if (interruption != null) {
+			initBoxValue(startBox, interruption.start);
+		}
 		startBox.onSelect((monthDay) -> {
-			if (monthDay == null)
+			TimeInterval i = heatNet().interruption;
+			if (i == null || monthDay == null)
 				return;
-			heatNet().interruptionStart = monthDay.toString();
+			i.start = monthDay.toString();
 			updateLoadCurve();
 			editor.setDirty();
 		});
@@ -91,12 +104,16 @@ class InterruptionSection {
 
 	private void createEndBox(FormToolkit toolkit, Composite composite) {
 		endBox = new MonthDayBox(M.End, composite, toolkit);
-		endBox.setEnabled(heatNet().withInterruption);
-		initBoxValue(endBox, heatNet().interruptionEnd);
+		TimeInterval interruption = heatNet().interruption;
+		endBox.setEnabled(interruption != null);
+		if (interruption != null) {
+			initBoxValue(endBox, interruption.end);
+		}
 		endBox.onSelect((monthDay) -> {
-			if (monthDay == null)
+			TimeInterval i = heatNet().interruption;
+			if (i == null || monthDay == null)
 				return;
-			heatNet().interruptionEnd = monthDay.toString();
+			i.end = monthDay.toString();
 			updateLoadCurve();
 			editor.setDirty();
 		});

@@ -40,7 +40,7 @@ public class ProjectResult {
 			LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
 					proj.weatherStation);
 			double[] curve = profile.calculateTotal();
-			if (proj.heatNet != null && proj.heatNet.withInterruption) {
+			if (proj.heatNet != null && proj.heatNet.interruption != null) {
 				ProjectLoad.applyInterruption(curve, proj.heatNet);
 			}
 			double total = Stats.sum(curve);
