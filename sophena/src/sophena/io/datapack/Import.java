@@ -2,6 +2,8 @@ package sophena.io.datapack;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class Import implements Runnable {
 	private File packFile;
 	private DataPack pack;
 
+	private final List<Upgrade> upgrades = new ArrayList<>();
+
 	public Import(File packFile, Database db) {
 		this.packFile = packFile;
 		this.db = db;
@@ -53,6 +57,10 @@ public class Import implements Runnable {
 	public void run() {
 		try (DataPack pack = DataPack.open(packFile)) {
 			this.pack = pack;
+			PackInfo info = pack.readInfo();
+			if (info.version < 2) {
+				upgrades.add(new Upgrade2());
+			}
 			// order is important for reference resolving
 			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.MANUFACTURER, Manufacturer.class);
@@ -85,11 +93,20 @@ public class Import implements Runnable {
 					continue;
 				}
 				JsonObject json = pack.get(type, id);
+				checkUpgrades(type, json);
 				T instance = gson.fromJson(json, clazz);
 				dao.insert(instance);
 			}
 		} catch (Exception e) {
 			log.error("failed to import instances of " + clazz, e);
+		}
+	}
+
+	private void checkUpgrades(ModelType type, JsonObject obj) {
+		if (obj == null || upgrades.isEmpty())
+			return;
+		for (Upgrade upgrade : upgrades) {
+			upgrade.on(type, obj);
 		}
 	}
 
@@ -99,7 +116,8 @@ public class Import implements Runnable {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class, FlueGasCleaning.class,
+				WeatherStation.class, TransferStation.class,
+				FlueGasCleaning.class,
 				HeatRecovery.class, Manufacturer.class
 		};
 		for (Class<?> refType : refTypes) {
@@ -111,7 +129,8 @@ public class Import implements Runnable {
 		return builder.create();
 	}
 
-	private class Deserializer<T extends RootEntity> implements JsonDeserializer<T> {
+	private class Deserializer<T extends RootEntity>
+			implements JsonDeserializer<T> {
 
 		private Class<T> type;
 
