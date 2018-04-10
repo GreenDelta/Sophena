@@ -14,6 +14,7 @@ public class GsonTest {
 		assertNull(obj.getAsJsonArray("shouldBeNull"));
 		assertNull(obj.getAsJsonObject("shouldBeNull"));
 		assertNull(obj.getAsJsonPrimitive("shouldBeNull"));
+		assertNull(obj.remove("shouldBeNull"));
 	}
 
 	@Test(expected = IllegalStateException.class)
