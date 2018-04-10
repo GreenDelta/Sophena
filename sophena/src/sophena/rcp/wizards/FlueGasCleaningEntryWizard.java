@@ -106,10 +106,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 				return;
 			selectedProduct = c;
 			link.setText(c.name);
-			ProductCosts.copy(c.group, costs);
-			if (c.purchasePrice != null) {
-				costs.investment = c.purchasePrice;
-			}
+			ProductCosts.copy(c, costs);
 			costSection.refresh();
 		}
 	}

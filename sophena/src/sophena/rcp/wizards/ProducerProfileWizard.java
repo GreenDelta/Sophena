@@ -93,8 +93,9 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
 				producer.productGroup = groups[groupIdx];
-				ProductCosts.copy(producer.productGroup,
-						producer.costs);
+				// TODO: do we need product costs for producer profiles?
+				// ProductCosts.copy(producer.productGroup,
+				// producer.costs);
 				Wizards.initFuelSpec(producer);
 			}
 			project.producers.add(producer);

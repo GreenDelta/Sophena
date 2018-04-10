@@ -79,9 +79,8 @@ class HeatRecoverySection {
 		link.setText(hr.name);
 		link.getParent().pack();
 		ProductCosts costs = producer().heatRecoveryCosts;
-		ProductCosts.copy(hr.group, costs);
-		if (hr.purchasePrice != null)
-			costs.investment = hr.purchasePrice;
+		ProductCosts.copy(hr, costs);
 		costSection.refresh();
+		editor.setDirty();
 	}
 }

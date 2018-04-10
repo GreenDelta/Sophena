@@ -140,9 +140,10 @@ class BufferTankSection {
 		link.setText(b.name);
 		link.getParent().pack();
 		ProductCosts costs = net().bufferTankCosts;
-		ProductCosts.copy(b.group, costs);
+		ProductCosts.copy(b, costs);
 		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
 		costSection.refresh();
+		editor.setDirty();
 	}
 }

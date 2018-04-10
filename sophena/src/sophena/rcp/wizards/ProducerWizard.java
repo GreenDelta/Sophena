@@ -91,9 +91,7 @@ public class ProducerWizard extends Wizard {
 		Boiler b = producer.boiler;
 		if (b == null)
 			return;
-		if (b.purchasePrice != null)
-			costs.investment = b.purchasePrice;
-		ProductCosts.copy(b.group, costs);
+		ProductCosts.copy(b, costs);
 	}
 
 	@Override
