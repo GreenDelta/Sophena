@@ -9,8 +9,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.model.ProductCosts;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
-import sophena.utils.Num;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class ProductCostSection {
 
@@ -90,7 +90,10 @@ public class ProductCostSection {
 	}
 
 	public void refresh() {
-		Texts.set(investmentText, costs().investment);
+		if (costs().investment != 0)
+			Texts.set(investmentText, costs().investment);
+		else
+			Texts.set(investmentText, "");
 		Texts.set(durationText, costs().duration);
 		Texts.set(repairTest, costs().repair);
 		Texts.set(maintenanceText, costs().maintenance);

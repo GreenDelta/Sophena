@@ -37,9 +37,10 @@ class TransferStationSection {
 		if (consumer().transferStationCosts == null) {
 			consumer().transferStationCosts = new ProductCosts();
 		}
-		costSection = new ProductCostSection(() -> consumer().transferStationCosts)
-				.withEditor(editor)
-				.createFields(comp, tk);
+		costSection = new ProductCostSection(
+				() -> consumer().transferStationCosts)
+						.withEditor(editor)
+						.createFields(comp, tk);
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
@@ -84,6 +85,9 @@ class TransferStationSection {
 		ProductCosts.copy(s.group, costs);
 		if (s.purchasePrice != null)
 			costs.investment = s.purchasePrice;
+		else
+			costs.investment = 0d;
 		costSection.refresh();
+		editor.setDirty();
 	}
 }
