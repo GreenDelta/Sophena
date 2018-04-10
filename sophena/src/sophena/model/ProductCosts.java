@@ -37,6 +37,25 @@ public class ProductCosts {
 		return clone;
 	}
 
+	public static void copy(AbstractProduct product, ProductCosts toCosts) {
+		if (toCosts == null)
+			return;
+		if (product == null) {
+			toCosts.investment = 0;
+			toCosts.duration = 0;
+			toCosts.maintenance = 0;
+			toCosts.operation = 0;
+			toCosts.repair = 0;
+			return;
+		}
+		copy(product.group, toCosts);
+		if (product.purchasePrice != null) {
+			toCosts.investment = product.purchasePrice;
+		} else {
+			toCosts.investment = 0d;
+		}
+	}
+
 	/**
 	 * Copies the default values of the given product group to the given product
 	 * costs.

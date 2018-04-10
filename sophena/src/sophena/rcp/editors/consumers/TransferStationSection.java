@@ -82,11 +82,7 @@ class TransferStationSection {
 		link.setText(s.name);
 		link.getParent().pack();
 		ProductCosts costs = consumer().transferStationCosts;
-		ProductCosts.copy(s.group, costs);
-		if (s.purchasePrice != null)
-			costs.investment = s.purchasePrice;
-		else
-			costs.investment = 0d;
+		ProductCosts.copy(s, costs);
 		costSection.refresh();
 		editor.setDirty();
 	}
