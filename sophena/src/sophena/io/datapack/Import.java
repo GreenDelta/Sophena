@@ -59,7 +59,7 @@ public class Import implements Runnable {
 			this.pack = pack;
 			PackInfo info = pack.readInfo();
 			if (info.version < 2) {
-				upgrades.add(new Upgrade2());
+				upgrades.add(new Upgrade2(db));
 			}
 			// order is important for reference resolving
 			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);

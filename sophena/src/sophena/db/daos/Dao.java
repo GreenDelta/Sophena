@@ -41,6 +41,8 @@ public class Dao<T extends AbstractEntity> {
 	}
 
 	public T get(String id) {
+		if (id == null)
+			return null;
 		log.trace("get {} for id={}", type, id);
 		EntityManager entityManager = createManager();
 		try {
