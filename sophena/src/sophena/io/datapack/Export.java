@@ -31,6 +31,7 @@ public class Export {
 
 	public Export(DataPack pack) {
 		this.pack = pack;
+		pack.writeInfo();
 	}
 
 	public void write(RootEntity root) {
@@ -47,7 +48,8 @@ public class Export {
 		Class<?>[] refTypes = {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class, FlueGasCleaning.class,
+				WeatherStation.class, TransferStation.class,
+				FlueGasCleaning.class,
 				HeatRecovery.class, Manufacturer.class
 		};
 		Serializer ed = new Serializer(root);

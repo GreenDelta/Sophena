@@ -29,6 +29,8 @@ import sophena.model.ModelType;
 
 public class DataPack implements Closeable {
 
+	public static final int VERSION = 2;
+
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private FileSystem zip;
@@ -72,6 +74,31 @@ public class DataPack implements Closeable {
 			return false;
 		Path path = zip.getPath(dirName + "/" + id + ".json");
 		return Files.exists(path);
+	}
+
+	public void writeInfo() {
+		try {
+			Path path = zip.getPath("meta.json");
+			String json = new Gson().toJson(PackInfo.current());
+			byte[] bytes = json.getBytes("utf-8");
+			Files.write(path, bytes, StandardOpenOption.CREATE);
+		} catch (Exception e) {
+			log.error("Failed to add meta.json", e);
+		}
+	}
+
+	public PackInfo readInfo() {
+		try {
+			Path path = zip.getPath("meta.json");
+			if (!Files.exists(path))
+				return PackInfo.v1();
+			JsonObject obj = readJson(path);
+			Gson gson = new Gson();
+			return gson.fromJson(obj, PackInfo.class);
+		} catch (Exception e) {
+			log.error("Failed to read meta.json; fall back to v1", e);
+			return PackInfo.v1();
+		}
 	}
 
 	public JsonObject get(ModelType type, String id) {
