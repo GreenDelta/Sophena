@@ -33,6 +33,12 @@ public class FuelSpec {
 	@Column(name = "tax_rate")
 	public double taxRate;
 
+	/**
+	 * Costs for the disposal of ashes in EUR/t.
+	 */
+	@Column(name = "ash_costs")
+	public double ashCosts;
+
 	@Override
 	public FuelSpec clone() {
 		FuelSpec clone = new FuelSpec();
@@ -41,6 +47,7 @@ public class FuelSpec {
 		clone.waterContent = waterContent;
 		clone.pricePerUnit = pricePerUnit;
 		clone.taxRate = taxRate;
+		clone.ashCosts = ashCosts;
 		return clone;
 	}
 }

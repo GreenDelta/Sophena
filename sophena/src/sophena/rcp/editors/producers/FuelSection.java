@@ -62,6 +62,7 @@ class FuelSection {
 		createCalorificValueRow(tk, comp);
 		createCostRow(tk, comp);
 		createVatRow(tk, comp);
+		createAshCostRow(tk, comp);
 	}
 
 	private void createFuelRows(FormToolkit tk, Composite comp) {
@@ -165,4 +166,21 @@ class FuelSection {
 				});
 	}
 
+	private void createAshCostRow(FormToolkit tk, Composite comp) {
+		FuelSpec spec = producer().fuelSpec;
+		if (spec == null || spec.fuel == null)
+			return;
+		FuelGroup g = spec.fuel.group;
+		if (g != FuelGroup.WOOD && g != FuelGroup.PELLETS)
+			return;
+		Text t = UI.formText(comp, tk, "Ascheentsorgungskosten");
+		UI.formLabel(comp, tk, "EUR/t");
+		Texts.on(t).decimal()
+				.init(spec.ashCosts)
+				.onChanged((s) -> {
+					double val = Texts.getDouble(t);
+					producer().fuelSpec.ashCosts = val;
+					editor.setDirty();
+				});
+	}
 }

@@ -506,6 +506,7 @@ CREATE TABLE tbl_producers (
     water_content DOUBLE,
     price_per_unit DOUBLE,
     tax_rate DOUBLE,
+    ash_costs DOUBLE,
     
     f_heat_recovery CHAR(36),
     heat_recovery_investment DOUBLE,
