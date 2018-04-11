@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "ms 4/11/2018 13:54",
+	"super" : "Object",
+	"category" : "Sophena",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"id"
+	],
+	"name" : "SoEntity",
+	"type" : "normal"
+}

@@ -1,0 +1,1 @@
+The most generic entity type in Sophena

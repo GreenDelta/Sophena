@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "ms 4/11/2018 14:01",
+	"super" : "Object",
+	"category" : "Sophena",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"fuel",
+		"woodAmountType",
+		"waterContent",
+		"pricePerUnit",
+		"taxRate",
+		"ashCosts"
+	],
+	"name" : "SoFuelSpec",
+	"type" : "normal"
+}

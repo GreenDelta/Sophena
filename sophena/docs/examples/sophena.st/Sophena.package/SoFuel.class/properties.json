@@ -1,0 +1,19 @@
+{
+	"commentStamp" : "ms 4/11/2018 13:51",
+	"super" : "SoBaseDataEntity",
+	"category" : "Sophena",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"unit",
+		"calorificValue",
+		"density",
+		"group",
+		"co2Emissions",
+		"primaryEnergyFactor",
+		"ashContent"
+	],
+	"name" : "SoFuel",
+	"type" : "normal"
+}

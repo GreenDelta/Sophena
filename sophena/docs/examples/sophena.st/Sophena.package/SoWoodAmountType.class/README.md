@@ -1,0 +1,1 @@
+Enumeration type of the possible wood amouns.

@@ -1,0 +1,1 @@
+A stand alone entity type
