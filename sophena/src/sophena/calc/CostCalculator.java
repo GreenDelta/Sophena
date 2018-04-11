@@ -2,6 +2,7 @@ package sophena.calc;
 
 import sophena.math.costs.AnnuityFactor;
 import sophena.math.costs.CapitalCosts;
+import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
 import sophena.math.energetic.GeneratedElectricity;
@@ -58,13 +59,15 @@ class CostCalculator {
 	}
 
 	private void handleNetItems(CostResult r) {
-		for (CostResultItem item : CostResultItem.forTransferStations(project)) {
+		for (CostResultItem item : CostResultItem
+				.forTransferStations(project)) {
 			handleItem(r, item);
 		}
 		for (CostResultItem item : CostResultItem.forHeatRecoveries(project)) {
 			handleItem(r, item);
 		}
-		for (CostResultItem item : CostResultItem.forFlueGasCleanings(project)) {
+		for (CostResultItem item : CostResultItem
+				.forFlueGasCleanings(project)) {
 			handleItem(r, item);
 		}
 		HeatNet net = project.heatNet;
@@ -101,9 +104,11 @@ class CostCalculator {
 		double af = AnnuityFactor.get(project, interestRate);
 		double opFactor = getCashValueFactor(settings.operationFactor);
 		double maFactor = getCashValueFactor(settings.maintenanceFactor);
-		double opNetto = item.costs.operation * settings.hourlyWage * af * opFactor
+		double opNetto = item.costs.operation * settings.hourlyWage * af
+				* opFactor
 				+ item.costs.investment
-						* (item.costs.repair / 100 + item.costs.maintenance / 100)
+						* (item.costs.repair / 100
+								+ item.costs.maintenance / 100)
 						* af * maFactor;
 		item.netOperationCosts = opNetto;
 		item.grossOperationCosts = vat() * opNetto;
@@ -112,16 +117,28 @@ class CostCalculator {
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
+		double producedHeat = energyResult.totalHeat(p);
+
+		// add fuel costs
+		double netCosts = FuelCosts.net(p, energyResult);
+		double grossCosts = FuelCosts.gross(p, energyResult);
+
+		// add costs for electricity demand
+		double netElectricityCosts = ElectricityCosts.net(producedHeat,
+				settings);
+		netCosts += netElectricityCosts;
+		grossCosts += Costs.gross(netElectricityCosts, settings);
+
+		// add ash costs
+		double netAshCosts = FuelCosts.netAshCosts(p, energyResult);
+		netCosts += netAshCosts;
+		grossCosts += Costs.gross(netAshCosts, settings);
+
 		double interestRate = withFunding ? settings.interestRateFunding
 				: settings.interestRate;
-		double af = AnnuityFactor.get(project, interestRate);
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
-		double producedHeat = energyResult.totalHeat(p);
-		double netCosts = FuelCosts.net(p, energyResult)
-				+ ElectricityCosts.net(producedHeat, settings);
-		double grossCosts = FuelCosts.gross(p, energyResult)
-				+ ElectricityCosts.gross(producedHeat, settings);
+		double af = AnnuityFactor.get(project, interestRate);
 		item.netConsumtionCosts = netCosts * cashValueFactor * af;
 		item.grossConsumptionCosts = grossCosts * cashValueFactor * af;
 		r.netTotal.consumptionCosts += item.netConsumtionCosts;

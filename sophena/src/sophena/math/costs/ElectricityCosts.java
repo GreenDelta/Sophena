@@ -12,14 +12,6 @@ public class ElectricityCosts {
 	private ElectricityCosts() {
 	}
 
-	public static double gross(double producedHeat, CostSettings settings) {
-		double net = net(producedHeat, settings);
-		if (net == 0 || settings == null)
-			return 0;
-		double vat = 1 + settings.vatRate / 100;
-		return net * vat;
-	}
-
 	public static double net(double producedHeat, CostSettings settings) {
 		if (producedHeat == 0 || settings == null)
 			return 0;
