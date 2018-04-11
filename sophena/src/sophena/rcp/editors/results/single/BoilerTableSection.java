@@ -43,11 +43,11 @@ class BoilerTableSection {
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
 				"Brennstoffverbrauch", "Nennleistung", M.GeneratedHeat,
-				"Anteil", "Volllaststunden", "Nutzungsgrad");
+				"Anteil", "Volllaststunden", "Nutzungsgrad", "Taktung");
 		table.setLabelProvider(new Label());
-		double w = 1d / 8d;
-		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 3, 4, 5, 6, 7);
+		double w = 0.8 / 8d;
+		Tables.bindColumnWidths(table, 0.2, w, w, w, w, w, w, w, w);
+		Tables.rightAlignColumns(table, 3, 4, 5, 6, 7, 8);
 		table.setInput(getItems());
 	}
 
@@ -79,16 +79,11 @@ class BoilerTableSection {
 			item.fuelUse = Labels.getFuel(p) + ": "
 					+ Num.intStr(FuelDemand.getAmount(p, result))
 					+ " " + Labels.getFuelUnit(p);
-			item.fullLoadHours = getFullLoadHours(p, item.heat);
+			item.fullLoadHours = (int) Producers.fullLoadHours(p, item.heat);
 			item.utilisationRate = UtilisationRate.get(p, result);
+			item.clocks = getClocks(i);
 			items.add(item);
 		}
-	}
-
-	private Integer getFullLoadHours(Producer p, double producedHeat) {
-		if (p == null || p.boiler == null)
-			return null;
-		return (int) Producers.fullLoadHours(p, producedHeat);
 	}
 
 	private void calculateShares(List<Item> items) {
@@ -99,6 +94,23 @@ class BoilerTableSection {
 			double share = Math.round(100 * item.heat / load);
 			item.share = share > 100 ? 100 : share;
 		}
+	}
+
+	private int getClocks(int producerIndex) {
+		double[] results = result.producerResults[producerIndex];
+		boolean off = true;
+		int clocks = 0;
+		for (int i = 0; i < results.length; i++) {
+			if (results[i] == 0) {
+				off = true;
+				continue;
+			}
+			if (off) {
+				clocks++;
+				off = false;
+			}
+		}
+		return clocks;
 	}
 
 	private void addBufferItem(List<Item> items, Producer[] producers) {
@@ -137,6 +149,7 @@ class BoilerTableSection {
 		double share;
 		Integer fullLoadHours;
 		Double utilisationRate;
+		Integer clocks;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
@@ -171,11 +184,13 @@ class BoilerTableSection {
 				return Num.str(item.share) + " %";
 			case 6:
 				return item.fullLoadHours == null ? null
-						: Num
-								.intStr(item.fullLoadHours) + " h";
+						: Num.intStr(item.fullLoadHours) + " h";
 			case 7:
 				return item.utilisationRate == null ? null
 						: Num.intStr(item.utilisationRate * 100) + " %";
+			case 8:
+				return item.clocks == null ? null
+						: Num.intStr(item.clocks);
 			default:
 				return null;
 			}
