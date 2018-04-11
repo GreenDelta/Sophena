@@ -1,5 +1,5 @@
-Funktionen der Wirtschaftlichkeitsberechnung
-============================================
+# Funktionen der Wirtschaftlichkeitsberechnung
+
 
 ## Annuitätenfaktor
 Der Annuitätenfaktor $anf$ dient dazu eine Zahlungsgröße in eine Reihe gleich
@@ -94,5 +94,18 @@ von den Abnehmern gezahlt werden.  Sie werden bei der Berechnung der
 kapitalgebundenen Kosten von den zugrundegelegten Investitionskosten abgezogen.
 Die angezeigten Investitionskosten bleiben unverändert.
 
+## Ascheentsorgungskosten
+Die Ascheentsorgungskosten werden zu den bedarfsgebundene Kosten eines
+Wärmeerzeugers hinzugerechnet. Sie ergeben sich aus der benötigten
+Brennstoffmenge, des Aschegehalts des Brennstoffs sowie den angegebenen
+Ascheentsorgungskosten pro Tonne in der Brennstoffspezifikation des Erzeugers.
+Die Hilfsfunktion `FuelCosts.netAshCosts` berechnet die Ascheentsorgungskosten.
 
+Der Aschegehalt in den Brennstoffangaben bezieht sich bei Holzbrennstoffen
+auf die Trockenmasse. Werden Brennstoffmengen in Schüttraummeter angegeben
+werden diese entsprechend in (feuchte) Masse umgerechnet (siehe energetische
+Berechnung). Dann wird die feuchte Holzmasse in die entsprechende Trockenmasse
+umgerechnet und schließlich die Menge anfallender Asche berechnet. Bei allen
+anderen Brennstoffen muss sichergestellt werden, dass diese immer in Tonnen
+angegeben werden, da sich die Aschekosten auf Tonnen beziehen. 
 
