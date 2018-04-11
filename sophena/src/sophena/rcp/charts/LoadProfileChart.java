@@ -60,6 +60,7 @@ public class LoadProfileChart {
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
 		y.setMinorTicksVisible(false);
+		y.setFormatPattern("###,###,###,###");
 		return g;
 	}
 

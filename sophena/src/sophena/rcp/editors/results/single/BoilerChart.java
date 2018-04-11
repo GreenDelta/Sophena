@@ -91,7 +91,7 @@ class BoilerChart {
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setMinorTicksVisible(false);
-
+		y.setFormatPattern("###,###,###,###");
 		double magnitude = Math.floor(Math.log10(maxLoad));
 		double max = Math.pow(10, magnitude);
 		double step = max / 10;
