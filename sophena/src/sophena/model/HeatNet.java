@@ -54,6 +54,7 @@ public class HeatNet extends AbstractEntity {
 	@Embedded
 	public ProductCosts bufferTankCosts;
 
+	/** Loss of the heating network per meter of net length in [W/m]. */
 	@Column(name = "power_loss")
 	public double powerLoss;
 

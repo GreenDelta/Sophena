@@ -1,21 +1,24 @@
-Wärmenetz
-=========
+# Jahresdauerlinie des Wärmenetzes
 Zu jedem Projekt gehören Angaben zum Wärmenetz (`HeatNet`), wie zum Beispiel die
 Vorlauf- (`supplyTemperature`) und Rücklauftemperatur (`returnTemperature`). 
 
-Wärmeverluste im Netz
----------------------
+## Wärmeverluste im Netz
 Für die Berechnung der projektspezifischen Jahresdauerlinie müssen die 
-Netzverluste des Wärmenetzes berechnet werden. Dafür wird die Trassenlänge des Wärmenetzes 
-(`length`, in [m]) mit dem Wärmeverlust des Wärmenetzes (`powerLoss`, in [W/m]) multipliziert:
+Netzverluste des Wärmenetzes berechnet werden. Dafür wird die Trassenlänge des
+Wärmenetzes (`length`, in [m]) mit dem durchschnittlichen Wärmeverlust des
+Wärmenetzes (`powerLoss`, in [W/m]) multipliziert:
 
-	Netzlast [kW] = Trassenlänge [m] * Verlustleistung [W/m] / 1000
-	
-Diese Netzlast wird zu jeder Jahresstunde in der projektspezifischen 
-Jahresdauerlinie hinzuaddiert (siehe Funktionen in `ProjectLoad`).
+```julia
+netLoad = (length * powerLoss) / 1000
+```
 
-Wärmeleitungen
---------------
+Diese Netzlast (in [kW]) wird zu jeder Jahresstunde in der projektspezifischen 
+Jahresdauerlinie hinzuaddiert (siehe Funktionen in `ProjectLoad`). Die Werte
+für die Trassenlänge und die durchschnittliche Verlustleistung können pauschal
+angegeben oder aus den angegebenen Wärmeleitungen berechnet werden. Beim Anlegen
+eines Projekts wird der Standardwert für die Verlustleistung auf 20 W/m gesetzt.
+
+### Berechnung aus Wärmeleitungen
 Wärmeleitungen (`Pipe`) aus der Produktdatenbank können in Projekten verwendet
 und mit projektspezifischen Informationen angereichert werden (`HeatNetPipe`).
 Die Trassenlänge und der Wärmeverlust des Wärmenetzes können aus den 
