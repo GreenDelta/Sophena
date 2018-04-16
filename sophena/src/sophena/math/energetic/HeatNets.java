@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.math.energetic;
 
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;

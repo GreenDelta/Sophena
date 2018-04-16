@@ -19,14 +19,30 @@ angegeben oder aus den angegebenen Wärmeleitungen berechnet werden. Beim Anlege
 eines Projekts wird der Standardwert für die Verlustleistung auf 20 W/m gesetzt.
 
 ### Berechnung aus Wärmeleitungen
-Wärmeleitungen (`Pipe`) aus der Produktdatenbank können in Projekten verwendet
-und mit projektspezifischen Informationen angereichert werden (`HeatNetPipe`).
-Die Trassenlänge und der Wärmeverlust des Wärmenetzes können aus den 
-Wärmeleitungen des Projekts berechnet werden. Die Trassenlänge ist dabei einfach
-die Summe der jeweiligen Längen der Wärmeleitungen:
+Wärmeleitungen (Typ `Pipe`) aus der Produktdatenbank können in Projekten
+verwendet und mit projektspezifischen Informationen, wie zum Beispiel der Länge,
+angereichert werden (Typ `HeatNetPipe`). Die Trassenlänge und der Wärmeverlust
+des Wärmenetzes können dann aus den Wärmeleitungen des Projekts berechnet werden.
+Bei der Trassenlänge ist es wichtig, dass diese sowohl den Zulauf als auch den
+Rücklauf beinhaltet und es zwei Typen von Rohren gibt: `PipeType.UNO` sowie
+`PipeType.DUO`. Bei den `DUO`-Rohren ist sowohl der Zulauf als auch der
+Rücklauf in einem Rohr enthalten.
 
-	Trassenlänge [m] = Summe ( Länge Wärmeleitung i [m])
-	
+Dazu ist in den Produktdaten bei jedem Rohr der Wärmedurchgangskoeffizient U
+angegeben. Der Wärmeverlust des Rohrs errechnet sich dann mit der Formel
+(T_Netz – T_Boden) * U. Dabei ist die Netztemperatur der Mittelwert von Vor-
+und Rücklauftemperatur, die Bodentemperatur wird standardmäßig mit 10°C
+angenommen. Die durchschnittliche Verlustleistung des Netzes in
+Watt/Trassenmeter berechnet sich dann aus der Summe der Rohr-Verlustleistungen
+dividiert durch die Trassenlänge.
+
+Beispiel: Für ein Netz werden 2000m eines Uno-Rohrs (berechnete Verlustleistung:
+8 W/m) und 1000m eines Duo-Rohrs (berechnete Verlustleistung: 12 W/m) benötigt.
+Die Trassenlänge beträgt dann 2000m, die gesamte Verlustleistung des Netzes
+28.000 Watt. Die durchschnittliche Verlustleistung des Netzes beträgt somit
+28.000 / 2000 = 14 Watt/Trassenmeter.
+
+
 Die Wärmeverlustleistung eines Rohres `i` errechnet sich wie folgt:
 
 	Verlustleistung i [W/m] = ( Temperatur Netz - Temperatur Boden ) * U-Wert i
@@ -39,8 +55,7 @@ gewichteten Mittel der Wärmeverluste und Längen der einzelnen Rohrleitungen:
 
 	Verlustleistung [W/m] = Summe (Verlustleistung i * Länge i ) / Trassenlänge 
 
-Unterbrechnungen
-----------------
+## Unterbrechnungen
 Es ist möglich, dass ein Wärmenetz für einen Zeitraum im Jahr abgeschaltet wird
 (z.B. Sommerabschaltung). Für diesen Zeitraum wird die projektspezifische 
 Lastkurve einfach auf 0 gesetzt.

@@ -17,8 +17,16 @@ public class EventBus {
 		}
 	}
 
+	public void on(List<String> events, Runnable target) {
+		if (events == null || target == null)
+			return;
+		for (String event : events) {
+			on(event, target);
+		}
+	}
+
 	public void on(String event, Runnable target) {
-		if (target == null)
+		if (event == null || target == null)
 			return;
 		List<Runnable> list = clients.get(event);
 		if (list == null) {

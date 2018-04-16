@@ -57,6 +57,7 @@ class HeatNetSection {
 		Texts.on(t).init(heatNet().supplyTemperature).decimal().required()
 				.onChanged(s -> {
 					heatNet().supplyTemperature = Num.read(s);
+					editor.bus.notify("supplyTemperature");
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "°C");
@@ -84,7 +85,8 @@ class HeatNetSection {
 			double max = calculateMaxLoad();
 			return Num.equal(max, val);
 		};
-		Texts.on(t).init(ProjectLoad.getMax(editor.project)).decimal().required()
+		Texts.on(t).init(ProjectLoad.getMax(editor.project)).decimal()
+				.required()
 				.onChanged(s -> {
 					double val = Num.read(s);
 					if (isDefault.apply(val)) {
@@ -113,7 +115,8 @@ class HeatNetSection {
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
 		});
-		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor", H.SimultaneityFactor);
+		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor",
+				H.SimultaneityFactor);
 		UI.filler(comp, tk);
 	}
 

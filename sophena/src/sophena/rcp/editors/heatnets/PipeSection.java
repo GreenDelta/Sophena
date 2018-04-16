@@ -1,5 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.HeatNets;
+import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.ProductCosts;
@@ -44,8 +45,6 @@ class PipeSection {
 	private Text lengthText;
 	private Text powerText;
 
-	private boolean disableTextBinding = false;
-
 	PipeSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
@@ -64,6 +63,10 @@ class PipeSection {
 		UI.gridLayout(composite, 1).verticalSpacing = 10;
 		createTable(section, composite, tk);
 		createFields(composite, tk);
+		editor.bus.on(Arrays.asList(
+				"supplyTemperature", "returnTemperature"),
+				this::colorTexts);
+		colorTexts();
 		return this;
 	}
 
@@ -75,13 +78,20 @@ class PipeSection {
 		layout.marginWidth = 0;
 		lengthText = UI.formText(comp, tk, "Trassenlänge");
 		Texts.on(lengthText).init(net().length).decimal().required()
-				.onChanged(s -> textsChanged());
+				.onChanged(s -> {
+					net().length = Texts.getDouble(lengthText);
+					textsUpdated();
+				});
 		UI.formLabel(comp, tk, "m");
+
 		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
 		button.setImage(Icon.CALCULATE_16.img());
 		powerText = UI.formText(comp, tk, "Verlustleistung");
 		Texts.on(powerText).init(net().powerLoss).decimal().required()
-				.onChanged(s -> textsChanged());
+				.onChanged(s -> {
+					net().powerLoss = Texts.getDouble(powerText);
+					textsUpdated();
+				});
 		UI.formLabel(comp, tk, "W/m");
 		UI.formLabel(comp, "");
 
@@ -89,36 +99,36 @@ class PipeSection {
 			HeatNet net = net();
 			net.length = HeatNets.getTotalSupplyLength(net);
 			net.powerLoss = HeatNets.calculatePowerLoss(net);
-			disableTextBinding = true;
 			Texts.set(lengthText, net.length);
 			Texts.set(powerText, net.powerLoss);
-			disableTextBinding = false;
+			textsUpdated();
 		});
 	}
 
-	private void textsChanged() {
+	private void textsUpdated() {
+		editor.setDirty();
+		if (loadCurve != null) {
+			loadCurve.setData(NetLoadProfile.get(net()));
+		}
+		colorTexts();
+	}
+
+	private void colorTexts() {
 		HeatNet net = net();
-		double power = Texts.getDouble(powerText);
-		if (Num.equal(power, HeatNets.calculatePowerLoss(net))) {
+		if (net.pipes.isEmpty()) {
+			lengthText.setBackground(Colors.forRequiredField());
+			powerText.setBackground(Colors.forRequiredField());
+			return;
+		}
+		if (Num.equal(net.powerLoss, HeatNets.calculatePowerLoss(net))) {
 			powerText.setBackground(Colors.forRequiredField());
 		} else {
 			powerText.setBackground(Colors.forModifiedDefault());
 		}
-
-		double length = Texts.getDouble(lengthText);
-		if (Num.equal(length, HeatNets.getTotalSupplyLength(net))) {
+		if (Num.equal(net.length, HeatNets.getTotalSupplyLength(net))) {
 			lengthText.setBackground(Colors.forRequiredField());
 		} else {
 			lengthText.setBackground(Colors.forModifiedDefault());
-		}
-
-		if (!disableTextBinding) {
-			net().length = Texts.getDouble(lengthText);
-			net().powerLoss = Texts.getDouble(powerText);
-		}
-		editor.setDirty();
-		if (loadCurve != null) {
-			loadCurve.setData(NetLoadProfile.get(net()));
 		}
 	}
 
@@ -167,7 +177,7 @@ class PipeSection {
 			table.setInput(net().pipes);
 			editor.setDirty();
 		}
-		textsChanged();
+		colorTexts();
 	}
 
 	private void edit() {
@@ -185,7 +195,7 @@ class PipeSection {
 		pipe.pricePerMeter = clone.pricePerMeter;
 		table.setInput(net().pipes);
 		editor.setDirty();
-		textsChanged();
+		colorTexts();
 	}
 
 	private void del() {
@@ -196,7 +206,7 @@ class PipeSection {
 		net().pipes.remove(pipe);
 		table.setInput(net().pipes);
 		editor.setDirty();
-		textsChanged();
+		colorTexts();
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
