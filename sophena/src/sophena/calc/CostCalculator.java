@@ -1,6 +1,5 @@
 package sophena.calc;
 
-import sophena.math.costs.AnnuityFactor;
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
@@ -99,17 +98,15 @@ class CostCalculator {
 	}
 
 	private void addOperationCosts(CostResult r, CostResultItem item) {
-		double interestRate = withFunding ? settings.interestRateFunding
-				: settings.interestRate;
-		double af = AnnuityFactor.get(project, interestRate);
 		double opFactor = getCashValueFactor(settings.operationFactor);
 		double maFactor = getCashValueFactor(settings.maintenanceFactor);
-		double opNetto = item.costs.operation * settings.hourlyWage * af
+		double opNetto = item.costs.operation * settings.hourlyWage
+				* annuityFactor()
 				* opFactor
 				+ item.costs.investment
 						* (item.costs.repair / 100
 								+ item.costs.maintenance / 100)
-						* af * maFactor;
+						* annuityFactor() * maFactor;
 		item.netOperationCosts = opNetto;
 		item.grossOperationCosts = vat() * opNetto;
 		r.netTotal.operationCosts += opNetto;
@@ -134,36 +131,30 @@ class CostCalculator {
 		netCosts += netAshCosts;
 		grossCosts += Costs.gross(netAshCosts, settings);
 
-		double interestRate = withFunding ? settings.interestRateFunding
-				: settings.interestRate;
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
 		double cashValueFactor = getCashValueFactor(priceChangeFactor);
-		double af = AnnuityFactor.get(project, interestRate);
-		item.netConsumtionCosts = netCosts * cashValueFactor * af;
-		item.grossConsumptionCosts = grossCosts * cashValueFactor * af;
+		item.netConsumtionCosts = netCosts * cashValueFactor * annuityFactor();
+		item.grossConsumptionCosts = grossCosts * cashValueFactor
+				* annuityFactor();
 		r.netTotal.consumptionCosts += item.netConsumtionCosts;
 		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
 	}
 
 	/** Reduce capital costs with fundings etc. */
 	private void finishCapitalCosts(CostResult r) {
-		double anf = AnnuityFactor.get(ir(), project.duration);
 		if (withFunding) {
-			r.netTotal.capitalCosts -= (settings.funding * anf);
+			r.netTotal.capitalCosts -= (settings.funding * annuityFactor());
 			r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
 		}
 		// TODO: connection fees
 	}
 
 	private void addOtherCosts(CostResult r) {
-		double interestRate = withFunding ? settings.interestRateFunding
-				: settings.interestRate;
-		double annuityFactor = AnnuityFactor.get(project, interestRate);
 		double cashValueFactor = getCashValueFactor(settings.operationFactor);
 		double share = (settings.insuranceShare
 				+ settings.otherShare
 				+ settings.administrationShare) / 100;
-		r.netTotal.otherCosts = share * r.netTotal.investments * annuityFactor
+		r.netTotal.otherCosts = share * r.netTotal.investments * annuityFactor()
 				* cashValueFactor;
 		r.grossTotal.otherCosts = r.netTotal.otherCosts * vat();
 	}
@@ -196,6 +187,12 @@ class CostCalculator {
 		double aQ = (energyResult.totalProducedHeat - energyResult.heatNetLoss);
 		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
 		r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / aQ;
+	}
+
+	private double annuityFactor() {
+		double ir = withFunding ? settings.interestRateFunding
+				: settings.interestRate;
+		return Costs.annuityFactor(project, ir);
 	}
 
 	/** Returns the interest rate that is used for the calculation. */

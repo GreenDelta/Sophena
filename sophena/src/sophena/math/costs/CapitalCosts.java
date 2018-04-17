@@ -8,10 +8,11 @@ public class CapitalCosts {
 	private CapitalCosts() {
 	}
 
-	public static double get(CostResultItem item, Project project, double interestRate) {
+	public static double get(CostResultItem item, Project project,
+			double interestRate) {
 		if (item == null || item.costs == null || project == null)
 			return 0;
-		double annuityFactor = AnnuityFactor.get(project, interestRate);
+		double annuityFactor = Costs.annuityFactor(project, interestRate);
 		double residualValue = ResidualValue.get(item, project, interestRate);
 		int projectDuration = project.duration;
 		int usageDuration = item.costs.duration;
@@ -20,7 +21,8 @@ public class CapitalCosts {
 		int replacements = Replacements.getNumber(item, project);
 		double costs = item.costs.investment;
 		for (int i = 1; i <= replacements; i++) {
-			costs += Replacements.getPresentValue(i, item, project, interestRate);
+			costs += Replacements.getPresentValue(i, item, project,
+					interestRate);
 		}
 		costs -= residualValue;
 		return costs * annuityFactor;

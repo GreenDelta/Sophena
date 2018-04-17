@@ -1,26 +1,23 @@
 # Funktionen der Wirtschaftlichkeitsberechnung
 
+## Grundlegende Funktionen
 
-## Annuitätenfaktor
-Der Annuitätenfaktor $anf$ dient dazu eine Zahlungsgröße in eine Reihe gleich
+### Annuitätenfaktor
+Der Annuitätenfaktor `anf` dient dazu eine Zahlungsgröße in eine Reihe gleich
 hoher Zahlungen pro Jahr umzuwandeln:
 
-$$ anf = \frac{q - 1}{1 - q^{-n}} $$
-
-Dabei ist $q$ der Zinsfaktor (z.B. 1.02) und $n$ der Betrachtungszeitraum in
-Jahren ( = Projektlaufzeit, z.B. 20 Jahre).
-
-Die Hilfsfunktion ist:
-
-```java
-double anf = AnnuitiyFactor.get(1.02, 20);
+```julia
+anf = (q - 1) / (1 - q^(-n))
 ```
 
-Für Projekte wird allerdings direkt der Zinssatz aus den Kostendaten übergeben 
-(z.B. 2%):
+Dabei ist `q` der Zinsfaktor (z.B. 1.02) und `n` der Betrachtungszeitraum in
+Jahren ( = Projektlaufzeit, z.B. 20 Jahre).
+
+Die Hilfsfunktion in Sophena ist (dabei wird mit `interestRate` direkt der
+Zinssatz übergeben, z.B. 2%):
 
 ```java
-double anf = AnnuitiyFactor.get(project, 2);
+double anf = Costs.annuitiyFactor(project, interestRate);
 ```
 
 ## Preisänderungsfaktoren
