@@ -121,6 +121,7 @@ CREATE TABLE tbl_cost_settings (
     electricity_demand_share DOUBLE,
     
     funding DOUBLE,
+    connection_fees DOUBLE,
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,
     investment_factor DOUBLE,

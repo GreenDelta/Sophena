@@ -44,6 +44,9 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "funding")
 	public double funding;
 
+	@Column(name = "connection_fees")
+	public double connectionFees;
+
 	// other costs
 
 	@Column(name = "insurance_share")

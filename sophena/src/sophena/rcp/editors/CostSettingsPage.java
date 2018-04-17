@@ -69,11 +69,15 @@ public class CostSettingsPage extends FormPage {
 		UI.filler(c);
 		t(c, "Eigenstrombedarf", "%", costs.electricityDemandShare)
 				.onChanged(s -> costs.electricityDemandShare = Num.read(s));
-		HelpLink.create(c, toolkit, "Eigenstrombedarf", H.ElectricityDemandShare);
+		HelpLink.create(c, toolkit, "Eigenstrombedarf",
+				H.ElectricityDemandShare);
 		if (forProject) {
-			t(c, "Mittlere Stromerlöse", "EUR/kWh", Num.str(costs.electricityRevenues, 4))
-					.onChanged(s -> costs.electricityRevenues = Num.read(s));
-			HelpLink.create(c, toolkit, "Mittlere Stromerlöse", H.ElectricityRevenues);
+			t(c, "Mittlere Stromerlöse", "EUR/kWh",
+					Num.str(costs.electricityRevenues, 4))
+							.onChanged(s -> costs.electricityRevenues = Num
+									.read(s));
+			HelpLink.create(c, toolkit, "Mittlere Stromerlöse",
+					H.ElectricityRevenues);
 		}
 	}
 
@@ -90,7 +94,8 @@ public class CostSettingsPage extends FormPage {
 		if (forProject) {
 			t(c, "Investitionsförderung", "EUR", costs.funding)
 					.onChanged(s -> costs.funding = Num.read(s));
-			// TODO t(c, "Einmalige Anschlusskosten", "EUR", 0);
+			t(c, "Einmalige Anschlusskosten", "EUR", costs.connectionFees)
+					.onChanged(s -> costs.connectionFees = Num.read(s));
 		}
 	}
 
@@ -120,14 +125,15 @@ public class CostSettingsPage extends FormPage {
 				.onChanged(s -> costs.operationFactor = Num.read(s));
 		t(c, "Instandhaltung", "", costs.maintenanceFactor)
 				.onChanged(s -> costs.maintenanceFactor = Num.read(s));
-
 	}
 
-	private TextDispatch t(Composite comp, String label, String unit, double initial) {
+	private TextDispatch t(Composite comp, String label, String unit,
+			double initial) {
 		return t(comp, label, unit, Num.str(initial));
 	}
 
-	private TextDispatch t(Composite comp, String label, String unit, String initial) {
+	private TextDispatch t(Composite comp, String label, String unit,
+			String initial) {
 		Label lab = UI.formLabel(comp, toolkit, label);
 		UI.gridData(lab, false, false).widthHint = 250;
 		Text text = toolkit.createText(comp, null, SWT.BORDER);
