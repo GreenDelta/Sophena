@@ -140,13 +140,16 @@ class CostCalculator {
 		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
 	}
 
-	/** Reduce capital costs with fundings etc. */
+	/** Reduce capital costs by fundings and connection fees. */
 	private void finishCapitalCosts(CostResult r) {
+		double bonus = settings.connectionFees;
 		if (withFunding) {
-			r.netTotal.capitalCosts -= (settings.funding * annuityFactor());
-			r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
+			bonus += settings.funding;
 		}
-		// TODO: connection fees
+		if (bonus <= 0)
+			return;
+		r.netTotal.capitalCosts -= (bonus * annuityFactor());
+		r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
 	}
 
 	private void addOtherCosts(CostResult r) {
