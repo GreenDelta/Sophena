@@ -10,6 +10,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.CostSettings;
+import sophena.rcp.editors.costs.AnnualCostsTable;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
@@ -50,6 +51,10 @@ public class CostSettingsPage extends FormPage {
 			generalSection(body);
 			financeSection(body);
 			createOtherSection(body);
+			if (forProject) {
+				AnnualCostsTable.on(editor, this::getCosts)
+						.render(body, toolkit);
+			}
 			createPriceChangeSection(body);
 		}
 		form.reflow(true);

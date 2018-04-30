@@ -1,9 +1,14 @@
 package sophena.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 /**
@@ -58,6 +63,11 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "administration_share")
 	public double administrationShare;
 
+	@ElementCollection
+	@CollectionTable(name = "tbl_annual_costs",
+			joinColumns = @JoinColumn(name = "f_project"))
+	public List<AnnualCostEntry> annualCosts = new ArrayList<>();
+
 	// prices change factors
 
 	@Column(name = "investment_factor")
@@ -99,6 +109,11 @@ public class CostSettings extends AbstractEntity {
 		clone.insuranceShare = insuranceShare;
 		clone.otherShare = otherShare;
 		clone.administrationShare = administrationShare;
+		for (AnnualCostEntry ace : annualCosts) {
+			if (ace != null) {
+				clone.annualCosts.add(ace.clone());
+			}
+		}
 		return clone;
 	}
 }

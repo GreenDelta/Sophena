@@ -138,6 +138,13 @@ CREATE TABLE tbl_cost_settings (
 );
 
 
+CREATE TABLE tbl_annual_costs (
+    f_project CHAR(36),
+    label VARCHAR(255),
+	cost_entry DOUBLE
+);
+
+
 CREATE TABLE tbl_projects (
 
     id CHAR(36),
