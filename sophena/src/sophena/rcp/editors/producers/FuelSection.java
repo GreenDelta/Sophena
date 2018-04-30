@@ -37,6 +37,7 @@ class FuelSection {
 	private Text calorificValueText;
 	private Label calorificValueUnit;
 	private Label priceUnit;
+	private Label ashCostsUnit;
 
 	FuelSection(ProducerEditor editor) {
 		this.editor = editor;
@@ -90,6 +91,8 @@ class FuelSection {
 				Num.intStr(CalorificValue.get(p.fuelSpec)));
 		priceUnit.setText("EUR/" + unit);
 		calorificValueUnit.setText("kWh/" + unit);
+		if (ashCostsUnit != null)
+			ashCostsUnit.setText("EUR/" + (f.isWood() ? "t" : f.unit));
 		calorificValueUnit.getParent().layout();
 		editor.setDirty();
 	}
@@ -142,7 +145,7 @@ class FuelSection {
 	}
 
 	private void createCostRow(FormToolkit tk, Composite composite) {
-		Text t = UI.formText(composite, tk, "Preis (netto)");
+		Text t = UI.formText(composite, tk, "Preis");
 		priceUnit = UI.formLabel(composite, tk,
 				"EUR/" + Labels.getFuelUnit(producer()));
 		Texts.on(t).decimal().required()
@@ -170,11 +173,12 @@ class FuelSection {
 		FuelSpec spec = producer().fuelSpec;
 		if (spec == null || spec.fuel == null)
 			return;
-		FuelGroup g = spec.fuel.group;
-		if (g != FuelGroup.WOOD && g != FuelGroup.PELLETS)
+		Fuel fuel = spec.fuel;
+		if (fuel.ashContent < 1e-6)
 			return;
 		Text t = UI.formText(comp, tk, "Ascheentsorgungskosten");
-		UI.formLabel(comp, tk, "EUR/t");
+		String unit = fuel.isWood() ? "t" : fuel.unit;
+		ashCostsUnit = UI.formLabel(comp, tk, "EUR/" + unit);
 		Texts.on(t).decimal()
 				.init(spec.ashCosts)
 				.onChanged((s) -> {
