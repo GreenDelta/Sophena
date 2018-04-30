@@ -49,9 +49,7 @@ class InfoPage extends FormPage {
 			ProfileSection.of(editor).create(body, tk);
 		}
 		new FuelSection(editor).render(body, tk);
-		if (!producer().hasProfile) {
-			new BoilerSection(editor).create(body, tk);
-		}
+		new CostSection(editor).create(body, tk);
 		new InterruptionSection(editor).create(body, tk);
 		if (!producer().hasProfile) {
 			new HeatRecoverySection(editor).create(body, tk);

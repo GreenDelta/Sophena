@@ -21,7 +21,6 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProducerProfile;
-import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
@@ -82,7 +81,6 @@ public class ProducerProfileWizard extends Wizard {
 		p.name = "Erzeugerlastgang " + i;
 		p.hasProfile = true;
 		p.rank = Wizards.nextProducerRank(project);
-		p.costs = new ProductCosts();
 		return p;
 	}
 
@@ -93,10 +91,8 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
 				producer.productGroup = groups[groupIdx];
-				// TODO: do we need product costs for producer profiles?
-				// ProductCosts.copy(producer.productGroup,
-				// producer.costs);
 				Wizards.initFuelSpec(producer);
+				Wizards.initCosts(producer);
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());

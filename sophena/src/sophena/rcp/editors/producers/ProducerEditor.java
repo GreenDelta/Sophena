@@ -44,6 +44,8 @@ public class ProducerEditor extends Editor {
 		Project project = dao.get(i.projectKey);
 		projectId = project.id;
 		producer = findProducer(project, i.getKey());
+		if (producer == null)
+			return;
 		setPartName(producer.name);
 	}
 

@@ -6,11 +6,13 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Combo;
 
 import sophena.db.daos.FuelDao;
+import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
@@ -100,6 +102,22 @@ class Wizards {
 		if (group == FuelGroup.WOOD) {
 			spec.waterContent = 20d;
 			spec.woodAmountType = WoodAmountType.CHIPS;
+		}
+	}
+
+	static void initCosts(Producer p) {
+		if (p == null)
+			return;
+		ProductCosts costs = new ProductCosts();
+		p.costs = costs;
+		Boiler b = p.boiler;
+		if (b != null) {
+			ProductCosts.copy(b, costs);
+		} else {
+			ProductCosts.copy(p.productGroup, costs);
+		}
+		if (!p.hasProfile) {
+			p.heatRecoveryCosts = new ProductCosts();
 		}
 	}
 }

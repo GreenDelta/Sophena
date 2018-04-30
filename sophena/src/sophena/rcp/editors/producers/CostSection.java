@@ -19,12 +19,12 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
-class BoilerSection {
+class CostSection {
 
 	private ProducerEditor editor;
 	private ProductCostSection costSection;
 
-	BoilerSection(ProducerEditor editor) {
+	CostSection(ProducerEditor editor) {
 		this.editor = editor;
 	}
 
@@ -33,12 +33,12 @@ class BoilerSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Composite comp = UI.formSection(body, tk, "Heizkessel");
+		String label = producer().hasProfile ? "Kosten" : "Heizkessel";
+		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
-		boilerCombo(tk, comp);
-		UI.filler(comp);
-		if (producer().heatRecoveryCosts == null) {
-			producer().heatRecoveryCosts = new ProductCosts();
+		if (!producer().hasProfile) {
+			boilerCombo(tk, comp);
+			UI.filler(comp);
 		}
 		costSection = new ProductCostSection(() -> producer().costs)
 				.withEditor(editor)

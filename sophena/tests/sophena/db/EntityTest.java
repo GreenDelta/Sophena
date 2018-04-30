@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import sophena.Tests;
 import sophena.db.daos.Dao;
+import sophena.db.daos.ProducerDao;
 import sophena.model.AbstractEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
@@ -21,6 +22,7 @@ import sophena.model.Pipe;
 import sophena.model.Producer;
 import sophena.model.ProducerProfile;
 import sophena.model.Product;
+import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
@@ -67,5 +69,19 @@ public class EntityTest {
 		dao.delete(entity);
 		clone = dao.get(entity.id);
 		Assert.assertNull(clone);
+	}
+
+	@Test
+	public void testInitEmbedded() throws Exception {
+		Producer p = new Producer();
+		p.id = UUID.randomUUID().toString();
+		p.costs = new ProductCosts();
+		p.heatRecoveryCosts = new ProductCosts();
+		ProducerDao dao = new ProducerDao(Tests.getDb());
+		dao.insert(p);
+		dao.update(p);
+		p = dao.get(p.id);
+		Assert.assertNotNull(p.costs);
+		Assert.assertNotNull(p.heatRecoveryCosts);
 	}
 }

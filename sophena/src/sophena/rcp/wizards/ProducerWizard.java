@@ -22,7 +22,6 @@ import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
 import sophena.model.Producer;
-import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
@@ -71,7 +70,7 @@ public class ProducerWizard extends Wizard {
 			producer.id = UUID.randomUUID().toString();
 			page.data.bindToModel(producer);
 			Wizards.initFuelSpec(producer);
-			addCosts(producer);
+			Wizards.initCosts(producer);
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
@@ -83,15 +82,6 @@ public class ProducerWizard extends Wizard {
 			log.error("failed to update project with new producer", e);
 			return false;
 		}
-	}
-
-	private void addCosts(Producer producer) {
-		ProductCosts costs = new ProductCosts();
-		producer.costs = costs;
-		Boiler b = producer.boiler;
-		if (b == null)
-			return;
-		ProductCosts.copy(b, costs);
 	}
 
 	@Override
