@@ -19,6 +19,15 @@ class Json {
 		return elem.getAsBoolean();
 	}
 
+	static double getDouble(JsonObject obj, String member, double defaultVal) {
+		if (obj == null || member == null)
+			return defaultVal;
+		JsonElement elem = obj.get(member);
+		if (elem == null || !elem.isJsonPrimitive())
+			return defaultVal;
+		return elem.getAsDouble();
+	}
+
 	static String getString(JsonObject obj, String member) {
 		if (obj == null || member == null)
 			return null;

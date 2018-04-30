@@ -15,6 +15,7 @@ import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.ModelType;
+import sophena.rcp.Labels;
 
 class Upgrade2 implements Upgrade {
 
@@ -29,12 +30,41 @@ class Upgrade2 implements Upgrade {
 		if (type == null || obj == null)
 			return;
 		switch (type) {
+		case FUEL:
+			upgradeFuel(obj);
+			break;
 		case PROJECT:
 			upgradeProject(obj);
 			break;
-
 		default:
 			break;
+		}
+	}
+
+	private void upgradeFuel(JsonObject obj) {
+		if (obj == null)
+			return;
+		if (Json.getBool(obj, "wood", false)) {
+			obj.remove("wood");
+			obj.addProperty("calorificValue",
+					Json.getDouble(obj, "calorificValue", 0.0) * 1000.0);
+			obj.addProperty("unit", "t atro");
+			obj.addProperty("group", FuelGroup.WOOD.name());
+		} else {
+			// try to find a fuel group; at least for the
+			// standard fuels we can try to infer it from the name
+			String name = Json.getString(obj, "name");
+			if (name == null)
+				return;
+			for (FuelGroup g : FuelGroup.values()) {
+				String label = Labels.get(g);
+				if (label == null)
+					continue;
+				if (name.equalsIgnoreCase(label)) {
+					obj.addProperty("group", g.name());
+					break;
+				}
+			}
 		}
 	}
 
