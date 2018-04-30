@@ -19,6 +19,7 @@ import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.Strings;
 
 public class CostEditor extends Editor {
 
@@ -26,12 +27,18 @@ public class CostEditor extends Editor {
 
 	private Project project;
 
-	public static void open(ProjectDescriptor project) {
-		if (project == null)
+	public static void open(ProjectDescriptor d) {
+		if (d == null)
 			return;
-		EditorInput input = new EditorInput(project.id + "/costs",
-				project.name);
-		input.projectId = project.id;
+		Editors.closeIf(editor -> {
+			if (!(editor instanceof CostEditor))
+				return false;
+			CostEditor e = (CostEditor) editor;
+			return Strings.nullOrEqual(d.id, e.project.id);
+		});
+		EditorInput input = new EditorInput(
+				d.id + "/costs", d.name);
+		input.projectId = d.id;
 		Editors.open(input, "sophena.CostEditor");
 	}
 
@@ -65,7 +72,8 @@ public class CostEditor extends Editor {
 			Project dbProject = dao.get(project.id);
 			// sync. with JPA managed entity; we could have the same instance
 			// or two different instances here
-			List<ProductEntry> entries = new ArrayList<>(project.productEntries);
+			List<ProductEntry> entries = new ArrayList<>(
+					project.productEntries);
 			List<Product> ownProducts = new ArrayList<>(project.ownProducts);
 			dbProject.productEntries.clear();
 			dbProject.productEntries.addAll(entries);

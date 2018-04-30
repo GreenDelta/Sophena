@@ -1,6 +1,7 @@
 package sophena.rcp.utils;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -68,6 +69,15 @@ public class Editors {
 					.getActivePage().closeEditor(ref.getEditor(false), true);
 		} catch (Exception e) {
 			log.error("Failed to close an editor", e);
+		}
+	}
+
+	public static void closeIf(Predicate<IEditorPart> fn) {
+		for (IEditorReference ref : Editors.getReferences()) {
+			IEditorPart e = ref.getEditor(false);
+			if (fn.test(e)) {
+				Editors.close(ref);
+			}
 		}
 	}
 

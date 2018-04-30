@@ -1,8 +1,6 @@
 package sophena.rcp.editors.results.single;
 
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -30,7 +28,12 @@ public class ResultEditor extends Editor {
 		if (d == null)
 			return;
 		PlatformUI.getWorkbench().saveAllEditors(true);
-		closeExisting(d);
+		Editors.closeIf(editor -> {
+			if (!(editor instanceof ResultEditor))
+				return false;
+			ResultEditor e = (ResultEditor) editor;
+			return Strings.nullOrEqual(d.id, e.project.id);
+		});
 		Rcp.run("Berechne...", () -> {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(d.id);
@@ -40,17 +43,6 @@ public class ResultEditor extends Editor {
 			KeyEditorInput input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");
 		});
-	}
-
-	private static void closeExisting(ProjectDescriptor d) {
-		for (IEditorReference ref : Editors.getReferences()) {
-			IEditorPart e = ref.getEditor(false);
-			if (!(e instanceof ResultEditor))
-				continue;
-			ResultEditor editor = (ResultEditor) e;
-			if (Strings.nullOrEqual(d.id, editor.project.id))
-				Editors.close(ref);
-		}
 	}
 
 	@Override
