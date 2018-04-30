@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -28,6 +30,7 @@ import sophena.rcp.editors.LocationPage;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.UI;
 
 public class ConsumerEditor extends Editor {
 
@@ -119,6 +122,26 @@ public class ConsumerEditor extends Editor {
 		} catch (Exception e) {
 			log.error("failed to update project " + projectId, e);
 		}
+	}
+
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
+
+	@Override
+	public void doSaveAs() {
+		InputDialog dialog = new InputDialog(UI.shell(), "Speichern unter",
+				"Name des Abnehmers", consumer.name + " - Kopie", null);
+		if (dialog.open() != Window.OK)
+			return;
+		Consumer clone = consumer.clone();
+		clone.name = dialog.getValue();
+		ProjectDao dao = new ProjectDao(App.getDb());
+		Project project = dao.get(projectId);
+		project.consumers.add(clone);
+		dao.update(project);
+		Navigator.refresh();
 	}
 
 	private static class EditorInput extends KeyEditorInput {
