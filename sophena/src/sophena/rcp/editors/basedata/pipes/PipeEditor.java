@@ -79,7 +79,8 @@ public class PipeEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung",
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe",
+					"Bezeichnung",
 					"Hersteller", "Art", "Außend. Medienrohr", "U-Wert");
 			table.setLabelProvider(new Label());
 			table.setInput(pipes);
@@ -184,7 +185,7 @@ public class PipeEditor extends Editor {
 			case 4:
 				return Num.str(p.outerDiameter) + " mm";
 			case 5:
-				return df.format(p.uValue) + "W/m*K";
+				return df.format(p.uValue) + "W/(m*K)";
 			default:
 				return null;
 			}

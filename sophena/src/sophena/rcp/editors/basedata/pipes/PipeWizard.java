@@ -41,7 +41,6 @@ class PipeWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Wärmeleitung");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(200, 660);
 		return d.open();
 	}
 
@@ -59,7 +58,7 @@ class PipeWizard implements IContent {
 
 		uValueText = UI.formText(c, "U-Wert");
 		Texts.on(uValueText).required().decimal().validate(wizard::validate);
-		UI.formLabel(c, "W/(m².K)");
+		UI.formLabel(c, "W/(m*K)");
 
 		innerDiamText = UI.formText(c, "Innend. Medienrohr");
 		Texts.on(innerDiamText).required().decimal().validate(wizard::validate);
@@ -81,7 +80,6 @@ class PipeWizard implements IContent {
 
 		maxPressureText = UI.formText(c, "Maximaler Druck");
 		UI.formLabel(c, "Bar");
-
 	}
 
 	@Override
