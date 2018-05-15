@@ -10,6 +10,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_buffer_tanks")
 public class BufferTank extends AbstractProduct {
 
+	/** The buffer tank volume in liters. */
 	@Column(name = "volume")
 	public double volume;
 

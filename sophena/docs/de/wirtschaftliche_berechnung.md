@@ -21,20 +21,23 @@ double anf = Costs.annuitiyFactor(project, interestRate);
 ```
 
 ## Preisänderungsfaktoren
-Ein Preisänderungsfaktor $pcf$ beschreibt die jährliche Änderung des Preises für
+Ein Preisänderungsfaktor `pcf` beschreibt die jährliche Änderung des Preises für
 ein Produkt. Steigt der Preis zum Beispiel um 2% pro Jahr, so ist der
-Preisänderungsfaktor $pcf = 1.02$.
+Preisänderungsfaktor `pcf = 1.02`.
 
-Damit lässt sich entsprechend der Preis $c_t$ eines Produkts nach $t$ Jahren
+Damit lässt sich entsprechend der Preis `c_t` eines Produkts nach `t` Jahren
 berechnen:
 
-$$ c_t = c_0 * pcf^{t}$$
+```julia
+c_t = c_0 * pcf^t
+```
 
 Beispiel: Der Preis eines Produkts ist 5000 EUR und der Preisänderungsfaktor ist
 1.02, so ist der Preis nach 3 Jahren:
 
-$$ c_3 = ((5000 * 1.02) * 1.02) * 1.02 =  5000 * 1.02^3 = 5306.04$$
-
+```julia
+c_3 = ((5000 * 1.02) * 1.02) * 1.02 =  5000 * 1.02^3 = 5306.04
+```
 
 ## Anzahl der Wiederbeschaffungen
 Ist die Lebensdauer eines Produktes $t_p$ kleiner als die Projektlaufzeit $t$,

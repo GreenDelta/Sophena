@@ -18,6 +18,7 @@ import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.Labels;
 import sophena.rcp.M;
@@ -28,11 +29,13 @@ import sophena.utils.Num;
 
 class BoilerTableSection {
 
-	private EnergyResult result;
-	private double maxLoad;
+	private final EnergyResult result;
+	private final Project project;
+	private final double maxLoad;
 
-	BoilerTableSection(EnergyResult result, double maxLoad) {
-		this.result = result;
+	BoilerTableSection(ResultEditor editor, double maxLoad) {
+		this.result = editor.result.energyResult;
+		this.project = editor.project;
 		this.maxLoad = maxLoad;
 	}
 
@@ -42,12 +45,12 @@ class BoilerTableSection {
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
-				"Brennstoffverbrauch", "Nennleistung", M.GeneratedHeat,
+				"Nennleistung/Volumen", "Brennstoffverbrauch", M.GeneratedHeat,
 				"Anteil", "Volllaststunden", "Nutzungsgrad", "Taktung");
 		table.setLabelProvider(new Label());
-		double w = 0.8 / 8d;
-		Tables.bindColumnWidths(table, 0.2, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 3, 4, 5, 6, 7, 8);
+		double w = 1.0 / 9.0;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
+		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8);
 		table.setInput(getItems());
 	}
 
@@ -69,7 +72,7 @@ class BoilerTableSection {
 			Item item = new Item();
 			item.name = p.name;
 			double power = Producers.maxPower(p);
-			item.power = Num.str(power) + " kW";
+			item.powerOrVolume = Num.str(power) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
 			else
@@ -114,11 +117,15 @@ class BoilerTableSection {
 	}
 
 	private void addBufferItem(List<Item> items, Producer[] producers) {
-		Item bufferItem = new Item();
-		bufferItem.pos = producers.length;
-		bufferItem.name = "Pufferspeicher";
-		items.add(bufferItem);
-		bufferItem.heat = result.totalBufferedHeat;
+		Item item = new Item();
+		item.pos = producers.length;
+		item.name = "Pufferspeicher";
+		items.add(item);
+		item.heat = result.totalBufferedHeat;
+		if (project.heatNet != null && project.heatNet.bufferTank != null) {
+			double volume = project.heatNet.bufferTank.volume;
+			item.powerOrVolume = Num.intStr(volume) + " L";
+		}
 	}
 
 	private void addDiffItem(List<Item> items, double powerDiff) {
@@ -134,7 +141,9 @@ class BoilerTableSection {
 		Item item = new Item();
 		item.pos = -1;
 		item.name = "Ungedeckte Leistung";
-		item.power = powerDiff < 0 ? Num.intStr(powerDiff) + " kW" : null;
+		item.powerOrVolume = powerDiff < 0
+				? Num.intStr(powerDiff) + " kW"
+				: null;
 		item.heat = diff;
 		items.add(item);
 	}
@@ -142,7 +151,7 @@ class BoilerTableSection {
 	private class Item {
 		int pos;
 		String name;
-		String power;
+		String powerOrVolume;
 		String fuelUse;
 		String rank;
 		double heat;
@@ -175,9 +184,9 @@ class BoilerTableSection {
 			case 1:
 				return item.rank;
 			case 2:
-				return item.fuelUse;
+				return item.powerOrVolume;
 			case 3:
-				return item.power;
+				return item.fuelUse;
 			case 4:
 				return Num.intStr(item.heat) + " kWh";
 			case 5:

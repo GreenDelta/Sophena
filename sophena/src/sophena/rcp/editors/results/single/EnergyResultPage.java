@@ -17,16 +17,19 @@ import sophena.rcp.utils.UI;
 
 class EnergyResultPage extends FormPage {
 
+	private final ResultEditor editor;
 	private EnergyResult result;
 	private double maxLoad;
 
 	EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", M.Heat);
+		this.editor = editor;
 		this.result = editor.result.energyResult;
 		Project p = editor.project;
 		maxLoad = ProjectLoad.getMax(p);
-		if (p.heatNet != null)
+		if (p.heatNet != null) {
 			maxLoad = Math.ceil(maxLoad * p.heatNet.simultaneityFactor);
+		}
 	}
 
 	@Override
@@ -34,7 +37,8 @@ class EnergyResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, M.Heat);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		BoilerTableSection tableSection = new BoilerTableSection(result, maxLoad);
+		BoilerTableSection tableSection = new BoilerTableSection(editor,
+				maxLoad);
 		tableSection.render(body, tk);
 		BoilerChart unsortedChart = new BoilerChart(result, maxLoad);
 		unsortedChart.setSorted(false);
