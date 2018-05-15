@@ -36,14 +36,20 @@ class CostDetailsTable {
 
 	private void createItems(Table table) {
 		Map<ProductType, double[]> details = calculate();
+		double[] totals = new double[result.projects.length];
 		for (ProductType type : ProductType.values()) {
 			double[] values = details.get(type);
 			if (values == null)
 				continue;
-			table.row(Labels.get(type), i -> Num.intStr(values[i]) + " EUR");
+			for (int i = 0; i < totals.length; i++) {
+				totals[i] += values[i];
+			}
+			table.row(Labels.get(type),
+					i -> Num.intStr(values[i]) + " EUR");
 		}
 		table.emptyRow();
-		table.row("Investitionssumme", i -> "");
+		table.boldRow("Investitionssumme",
+				i -> Num.intStr(totals[i]) + " EUR");
 	}
 
 	private Map<ProductType, double[]> calculate() {

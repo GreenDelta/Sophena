@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
 
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.calc.Comparison;
 import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.UI;
 
 class Table {
 
@@ -45,14 +48,11 @@ class Table {
 	}
 
 	void row(String header, IntFunction<String> fn) {
-		Item item = new Item();
-		item.aspect = header;
-		int length = comparinson.projects.length;
-		item.results = new String[length];
-		for (int i = 0; i < length; i++) {
-			item.results[i] = fn.apply(i);
-		}
-		items.add(item);
+		makeItem(header, fn);
+	}
+
+	void boldRow(String header, IntFunction<String> fn) {
+		makeItem(header, fn).bold = true;
 	}
 
 	void emptyRow() {
@@ -66,12 +66,36 @@ class Table {
 		items.add(item);
 	}
 
+	private Item makeItem(String header, IntFunction<String> fn) {
+		Item item = new Item();
+		item.aspect = header;
+		int length = comparinson.projects.length;
+		item.results = new String[length];
+		for (int i = 0; i < length; i++) {
+			item.results[i] = fn.apply(i);
+		}
+		items.add(item);
+		return item;
+	}
+
 	private class Item {
 		String aspect;
 		String[] results;
+		boolean bold;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends LabelProvider implements ITableLabelProvider,
+			IFontProvider {
+
+		@Override
+		public Font getFont(Object obj) {
+			if (!(obj instanceof Item))
+				return null;
+			Item item = (Item) obj;
+			if (item.bold)
+				return UI.boldFont();
+			return null;
+		}
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
