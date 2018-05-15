@@ -46,7 +46,7 @@ class BoilerTableSection {
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
 				"Nennleistung/Volumen", "Brennstoffverbrauch", M.GeneratedHeat,
-				"Anteil", "Volllaststunden", "Nutzungsgrad", "Taktung");
+				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts");
 		table.setLabelProvider(new Label());
 		double w = 1.0 / 9.0;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
@@ -62,7 +62,6 @@ class BoilerTableSection {
 		double powerDiff = Producers.powerDifference(result.producers, maxLoad);
 		addDiffItem(items, powerDiff);
 		addBufferItem(items, result.producers);
-		calculateShares(items);
 		return items;
 	}
 
@@ -78,24 +77,20 @@ class BoilerTableSection {
 			else
 				item.rank = p.rank + " - Spitzenlast";
 			item.pos = i;
-			item.heat = result.totalHeat(p);
+			double heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
 					+ Num.intStr(FuelDemand.getAmount(p, result))
 					+ " " + Labels.getFuelUnit(p);
-			item.fullLoadHours = (int) Producers.fullLoadHours(p, item.heat);
+			item.producedHeat = Num.intStr(heat) + " kWh";
+			if (result.totalLoad > 0) {
+				double share = Math.round(100 * heat / result.totalLoad);
+				share = share > 100 ? 100 : share;
+				item.share = Num.str(share) + " %";
+			}
+			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
 			item.utilisationRate = UtilisationRate.get(p, result);
 			item.clocks = getClocks(i);
 			items.add(item);
-		}
-	}
-
-	private void calculateShares(List<Item> items) {
-		double load = result.totalLoad;
-		if (load == 0)
-			return;
-		for (Item item : items) {
-			double share = Math.round(100 * item.heat / load);
-			item.share = share > 100 ? 100 : share;
 		}
 	}
 
@@ -121,7 +116,6 @@ class BoilerTableSection {
 		item.pos = producers.length;
 		item.name = "Pufferspeicher";
 		items.add(item);
-		item.heat = result.totalBufferedHeat;
 		if (project.heatNet != null && project.heatNet.bufferTank != null) {
 			double volume = project.heatNet.bufferTank.volume;
 			item.powerOrVolume = Num.intStr(volume) + " L";
@@ -144,7 +138,7 @@ class BoilerTableSection {
 		item.powerOrVolume = powerDiff < 0
 				? Num.intStr(powerDiff) + " kW"
 				: null;
-		item.heat = diff;
+		item.producedHeat = "-" + Num.intStr(diff) + " kWh";
 		items.add(item);
 	}
 
@@ -154,8 +148,8 @@ class BoilerTableSection {
 		String powerOrVolume;
 		String fuelUse;
 		String rank;
-		double heat;
-		double share;
+		String producedHeat;
+		String share;
 		Integer fullLoadHours;
 		Double utilisationRate;
 		Integer clocks;
@@ -188,9 +182,9 @@ class BoilerTableSection {
 			case 3:
 				return item.fuelUse;
 			case 4:
-				return Num.intStr(item.heat) + " kWh";
+				return item.producedHeat;
 			case 5:
-				return Num.str(item.share) + " %";
+				return item.share;
 			case 6:
 				return item.fullLoadHours == null ? null
 						: Num.intStr(item.fullLoadHours) + " h";
