@@ -38,7 +38,7 @@ public class ComparisonView extends Editor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new ChartPage(this));
+			addPage(new Page(this));
 		} catch (Exception e) {
 			Log.error(this, "failed to add pages", e);
 		}

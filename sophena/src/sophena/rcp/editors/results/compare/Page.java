@@ -17,13 +17,13 @@ import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
 
-class ChartPage extends FormPage {
+class Page extends FormPage {
 
 	private Comparison comparison;
 	private FormToolkit tk;
 	private Composite body;
 
-	ChartPage(ComparisonView view) {
+	Page(ComparisonView view) {
 		super(view, "ComparisonChartPage", "Ergebnisvergleich");
 		this.comparison = view.comparison;
 	}
@@ -33,6 +33,8 @@ class ChartPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisvergleich");
 		tk = mform.getToolkit();
 		body = UI.formBody(form, tk);
+		CostTable.of(comparison).withFunding().render(body, tk);
+		CostTable.of(comparison).render(body, tk);
 		heatCostsSection();
 		annualCostsSection();
 		annualRevenuesSection();

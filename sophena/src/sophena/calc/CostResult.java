@@ -10,7 +10,7 @@ public class CostResult {
 	public final FieldSet netTotal = new FieldSet();
 	public final FieldSet grossTotal = new FieldSet();
 
-	public class FieldSet {
+	public static class FieldSet {
 
 		public double investments;
 		public double capitalCosts;

@@ -33,19 +33,21 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		boolean withFunding = project.costSettings != null && project.costSettings.funding > 0;
+		boolean withFunding = project.costSettings != null
+				&& project.costSettings.funding > 0;
 		if (withFunding) {
 			fillSection(
-					UI.formSection(body, tk, "Wirtschaftlichkeit - mit Förderung"),
+					UI.formSection(body, tk,
+							"Wirtschaftlichkeit - mit Förderung"),
 					result.costResultFunding);
 			CostDetailsTable.create(result.costResultFunding,
-					UI.formSection(body, tk, "Kosten - mit Förderung"));
+					UI.formSection(body, tk, "Kostendetails - mit Förderung"));
 		}
 		fillSection(
 				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
 				result.costResult);
 		CostDetailsTable.create(result.costResult,
-				UI.formSection(body, tk, "Kosten - ohne Förderung"));
+				UI.formSection(body, tk, "Kostendetails - ohne Förderung"));
 		form.reflow(true);
 	}
 
