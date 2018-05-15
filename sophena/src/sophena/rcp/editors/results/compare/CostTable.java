@@ -37,28 +37,28 @@ class CostTable {
 	}
 
 	private void createItems(Table table) {
-		table.item("Investitionskosten",
+		table.row("Investitionskosten",
 				idx -> Num.intStr(costs(idx).investments) + " EUR");
 		if (withFunding) {
-			table.item("Investitionsförderung", idx -> {
+			table.row("Investitionsförderung", idx -> {
 				// TODO: total funding ...
 				double funding = result.projects[idx].costSettings.funding;
 				return Num.intStr(funding) + " EUR";
 			});
 		}
-		table.item("Kapitalgebundene Kosten",
+		table.row("Kapitalgebundene Kosten",
 				idx -> Num.intStr(costs(idx).capitalCosts) + " EUR/a");
-		table.item("Bedarfsgebundene Kosten",
+		table.row("Bedarfsgebundene Kosten",
 				idx -> Num.intStr(costs(idx).consumptionCosts) + " EUR/a");
-		table.item("Betriebsgebundene Kosten",
+		table.row("Betriebsgebundene Kosten",
 				idx -> Num.intStr(costs(idx).operationCosts) + " EUR/a");
-		table.item("Sonstige Kosten",
+		table.row("Sonstige Kosten",
 				idx -> Num.intStr(costs(idx).otherCosts) + " EUR/a");
-		table.item("Erlöse",
+		table.row("Erlöse",
 				idx -> Num.intStr(costs(idx).revenues) + " EUR/a");
-		table.item("Kosten - Erlöse",
+		table.row("Kosten - Erlöse",
 				idx -> Num.intStr(costs(idx).annualCosts) + " EUR/a");
-		table.item("Wärmegestehungskosten",
+		table.row("Wärmegestehungskosten",
 				idx -> Num.intStr(costs(idx).heatGenerationCosts * 1000)
 						+ " EUR/MWh");
 	}

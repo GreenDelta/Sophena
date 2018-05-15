@@ -38,6 +38,7 @@ class Page extends FormPage {
 			CostTable.of(comparison).withFunding().render(body, tk);
 		}
 		CostTable.of(comparison).render(body, tk);
+		CostDetailsTable.of(comparison).render(body, tk);
 		heatCostsSection();
 		annualCostsSection();
 		annualRevenuesSection();

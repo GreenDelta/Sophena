@@ -44,13 +44,24 @@ class Table {
 		table.setInput(items);
 	}
 
-	void item(String aspect, IntFunction<String> fn) {
+	void row(String header, IntFunction<String> fn) {
 		Item item = new Item();
-		item.aspect = aspect;
+		item.aspect = header;
 		int length = comparinson.projects.length;
 		item.results = new String[length];
 		for (int i = 0; i < length; i++) {
 			item.results[i] = fn.apply(i);
+		}
+		items.add(item);
+	}
+
+	void emptyRow() {
+		Item item = new Item();
+		item.aspect = "";
+		int length = comparinson.projects.length;
+		item.results = new String[length];
+		for (int i = 0; i < length; i++) {
+			item.results[i] = "";
 		}
 		items.add(item);
 	}
