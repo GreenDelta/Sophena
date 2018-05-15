@@ -33,6 +33,7 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
+		// TODO: check for total funding
 		boolean withFunding = project.costSettings != null
 				&& project.costSettings.funding > 0;
 		if (withFunding) {

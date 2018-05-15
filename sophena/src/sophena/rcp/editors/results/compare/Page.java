@@ -13,6 +13,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
+import sophena.model.Project;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
@@ -33,13 +34,25 @@ class Page extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisvergleich");
 		tk = mform.getToolkit();
 		body = UI.formBody(form, tk);
-		CostTable.of(comparison).withFunding().render(body, tk);
+		if (withFunding()) {
+			CostTable.of(comparison).withFunding().render(body, tk);
+		}
 		CostTable.of(comparison).render(body, tk);
 		heatCostsSection();
 		annualCostsSection();
 		annualRevenuesSection();
 		investmentSection();
 		form.reflow(true);
+	}
+
+	private boolean withFunding() {
+		for (Project project : comparison.projects) {
+			// TODO: check for total funding
+			if (project.costSettings != null
+					&& project.costSettings.funding > 0)
+				return true;
+		}
+		return false;
 	}
 
 	private void heatCostsSection() {
