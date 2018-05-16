@@ -1,5 +1,6 @@
 package sophena.rcp.editors.results.compare;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,7 @@ class BarChart2 {
 		if (y == null)
 			return;
 		y.getTick().setForeground(Colors.getBlack());
+		y.getTick().setFormat(new DecimalFormat("#,###,###"));
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText(unit);
 		y.getTitle().setFont(UI.defautlFont());

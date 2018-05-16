@@ -43,7 +43,11 @@ class Page extends FormPage {
 		CostTable.of(comparison).render(body, tk);
 		CostDetailsTable.of(comparison).render(body, tk);
 		KeyFigureTable.of(comparison).render(body, tk);
-		addHeatCostsChart(withFunding);
+		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
+		simpleCostsChart("Erlöse", "EUR", v -> v.revenues);
+		simpleCostsChart("Kosten - Erlöse", "EUR", v -> v.annualCosts);
+		heatCostsChart(withFunding);
+
 		heatCostsSection();
 		annualCostsSection();
 		annualRevenuesSection();
@@ -61,17 +65,20 @@ class Page extends FormPage {
 		return false;
 	}
 
-	private void heatCostsSection() {
-		makeSection("Wärmegestehungskosten", "EUR/MWh",
-				result -> {
-					if (result == null || result.netTotal == null)
-						return 0;
-					double val = result.netTotal.heatGenerationCosts;
-					return val * 1000;
-				});
+	private void simpleCostsChart(String title, String unit,
+			ToDoubleFunction<CostResult.FieldSet> fn) {
+		BarChart2 chart = BarChart2.of(title).unit(unit);
+		for (int i = 0; i < comparison.projects.length; i++) {
+			Color color = Colors.getForChart(i);
+			Project project = comparison.projects[i];
+			CostResult r = comparison.results[i].costResult;
+			double value = fn.applyAsDouble(r.netTotal);
+			chart.addBar(project.name, value, color);
+		}
+		chart.render(body, tk);
 	}
 
-	private void addHeatCostsChart(boolean withFunding) {
+	private void heatCostsChart(boolean withFunding) {
 		BarChart2 chart = BarChart2.of("Wärmegestehungskosten")
 				.unit("EUR/MWh");
 		for (int i = 0; i < comparison.projects.length; i++) {
@@ -90,6 +97,18 @@ class Page extends FormPage {
 					color);
 		}
 		chart.render(body, tk);
+	}
+
+	// -> del
+
+	private void heatCostsSection() {
+		makeSection("Wärmegestehungskosten", "EUR/MWh",
+				result -> {
+					if (result == null || result.netTotal == null)
+						return 0;
+					double val = result.netTotal.heatGenerationCosts;
+					return val * 1000;
+				});
 	}
 
 	private void annualCostsSection() {
