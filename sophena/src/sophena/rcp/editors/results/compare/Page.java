@@ -2,21 +2,17 @@ package sophena.rcp.editors.results.compare;
 
 import java.util.function.ToDoubleFunction;
 
-import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
-import sophena.rcp.charts.ImageExport;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
@@ -45,13 +41,8 @@ class Page extends FormPage {
 		KeyFigureTable.of(comparison).render(body, tk);
 		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
 		simpleCostsChart("Erlöse", "EUR", v -> v.revenues);
-		simpleCostsChart("Kosten - Erlöse", "EUR", v -> v.annualCosts);
+		simpleCostsChart("Jährliche Kosten", "EUR", v -> v.annualCosts);
 		heatCostsChart(withFunding);
-
-		heatCostsSection();
-		annualCostsSection();
-		annualRevenuesSection();
-		investmentSection();
 		form.reflow(true);
 	}
 
@@ -67,7 +58,7 @@ class Page extends FormPage {
 
 	private void simpleCostsChart(String title, String unit,
 			ToDoubleFunction<CostResult.FieldSet> fn) {
-		BarChart2 chart = BarChart2.of(title).unit(unit);
+		BarChart chart = BarChart.of(title).unit(unit);
 		for (int i = 0; i < comparison.projects.length; i++) {
 			Color color = Colors.getForChart(i);
 			Project project = comparison.projects[i];
@@ -79,7 +70,7 @@ class Page extends FormPage {
 	}
 
 	private void heatCostsChart(boolean withFunding) {
-		BarChart2 chart = BarChart2.of("Wärmegestehungskosten")
+		BarChart chart = BarChart.of("Wärmegestehungskosten")
 				.unit("EUR/MWh");
 		for (int i = 0; i < comparison.projects.length; i++) {
 			Color color = Colors.getForChart(i);
@@ -97,89 +88,6 @@ class Page extends FormPage {
 					color);
 		}
 		chart.render(body, tk);
-	}
-
-	// -> del
-
-	private void heatCostsSection() {
-		makeSection("Wärmegestehungskosten", "EUR/MWh",
-				result -> {
-					if (result == null || result.netTotal == null)
-						return 0;
-					double val = result.netTotal.heatGenerationCosts;
-					return val * 1000;
-				});
-	}
-
-	private void annualCostsSection() {
-		makeSection("Jährliche Kosten", "EUR",
-				result -> {
-					if (result == null || result.netTotal == null)
-						return 0;
-					return result.netTotal.annualCosts;
-				});
-	}
-
-	private void annualRevenuesSection() {
-		ToDoubleFunction<CostResult> fn = result -> {
-			if (result == null || result.netTotal == null)
-				return 0;
-			return result.netTotal.revenues;
-		};
-		double max = 0;
-		for (ProjectResult result : comparison.results) {
-			max = Math.max(max, fn.applyAsDouble(result.costResult));
-			max = Math.max(max, fn.applyAsDouble(result.costResultFunding));
-		}
-		if (max == 0)
-			return;
-		makeSection("Jährliche Erlöse", "EUR", fn);
-	}
-
-	private void investmentSection() {
-		makeSection("Investitionskosten", "EUR",
-				result -> {
-					if (result == null || result.netTotal == null)
-						return 0;
-					return result.netTotal.investments;
-				});
-	}
-
-	private void makeSection(String title, String unit,
-			ToDoubleFunction<CostResult> fn) {
-		Section section = UI.section(body, tk, title);
-		UI.gridData(section, true, false);
-		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 1).verticalSpacing = 0;
-		XYGraph graph = createBarChart(composite, unit, fn);
-		Actions.bind(section, ImageExport.forXYGraph(title + ".jpg",
-				() -> graph));
-		ChartTable.create(comparison, composite, new ChartTable.Data() {
-			@Override
-			public double value(CostResult result) {
-				return fn.applyAsDouble(result);
-			}
-
-			@Override
-			public String columnLabel() {
-				return title + " [" + unit + "]";
-			}
-		});
-	}
-
-	private XYGraph createBarChart(Composite composite, String unit,
-			ToDoubleFunction<CostResult> fn) {
-		return BarChart.create(comparison, composite, new BarChart.Data() {
-			@Override
-			public double value(CostResult result) {
-				return fn.applyAsDouble(result);
-			}
-
-			@Override
-			public String unit() {
-				return unit;
-			}
-		});
 	}
 
 }

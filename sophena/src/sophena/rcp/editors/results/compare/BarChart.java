@@ -1,115 +1,145 @@
 package sophena.rcp.editors.results.compare;
 
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
-import org.eclipse.nebula.visualization.xygraph.figures.Axis;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
-import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Composite;
+import java.util.ArrayList;
+import java.util.List;
 
-import sophena.calc.Comparison;
-import sophena.calc.CostResult;
-import sophena.calc.ProjectResult;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
+import org.swtchart.Chart;
+import org.swtchart.IAxis;
+import org.swtchart.IAxisTick;
+import org.swtchart.IBarSeries;
+import org.swtchart.IBarSeries.BarWidthStyle;
+import org.swtchart.ISeries.SeriesType;
+import org.swtchart.ISeriesSet;
+import org.swtchart.Range;
+
 import sophena.model.Stats;
+import sophena.rcp.charts.ImageExport;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class BarChart {
 
-	private Comparison comparison;
-	private Data data;
-	private XYGraph graph;
+	private final String title;
+	private String unit = "";
+	private Chart chart;
 
-	private BarChart(Comparison comparison, Data data) {
-		this.comparison = comparison;
-		this.data = data;
+	private final List<String> labels = new ArrayList<>();
+	private final List<Double> values = new ArrayList<>();
+	private final List<Color> colors = new ArrayList<>();
+
+	private BarChart(String title) {
+		this.title = title;
 	}
 
-	static XYGraph create(Comparison comparison, Composite comp, Data data) {
-		BarChart chart = new BarChart(comparison, data);
-		chart.render(comp);
-		return chart.graph;
+	static BarChart of(String title) {
+		return new BarChart(title);
 	}
 
-	private void render(Composite composite) {
-		Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-		UI.gridData(canvas, true, true).minimumHeight = 300;
-		LightweightSystem lws = new LightweightSystem(canvas);
-		graph = new XYGraph();
-		lws.setContents(graph);
-		graph.setShowTitle(false);
-		graph.setShowLegend(false);
-		configureAxis();
-		for (int i = 0; i < comparison.projects.length; i++) {
-			addNormalTrace(i);
-			addFundingTrace(i);
+	BarChart unit(String unit) {
+		this.unit = unit;
+		return this;
+	}
+
+	BarChart addBar(String label, double value) {
+		Color color = Colors.getForChart(labels.size());
+		return addBar(label, value, color);
+	}
+
+	BarChart addBar(String label, double value, Color color) {
+		colors.add(color);
+		labels.add(label);
+		values.add(value);
+		return this;
+	}
+
+	void render(Composite body, FormToolkit tk) {
+		Section section = UI.section(body, tk, title);
+		Actions.bind(section, ImageExport.forChart(
+				title + ".jpg", () -> chart));
+		Composite comp = UI.sectionClient(section, tk);
+		chart = new Chart(comp, SWT.NONE);
+		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
+		data.minimumHeight = 275;
+		data.minimumWidth = 750;
+		chart.setOrientation(SWT.HORIZONTAL);
+		chart.setLayoutData(data);
+		setTitle(chart);
+		ISeriesSet set = chart.getSeriesSet();
+		for (int i = 0; i < labels.size(); i++) {
+			IBarSeries s = (IBarSeries) set.createSeries(
+					SeriesType.BAR, labels.get(i));
+			s.setYSeries(new double[] { values.get(i) });
+			s.setBarColor(colors.get(i));
+			s.setBarWidthStyle(BarWidthStyle.FIXED);
+			s.setBarWidth(125);
 		}
+		formatX(chart);
+		formatY(chart);
 	}
 
-	private void configureAxis() {
-		Axis x = graph.primaryXAxis;
-		Axis y = graph.primaryYAxis;
-		x.setRange(0, comparison.projects.length * 30);
-		x.setMajorGridStep(999);
-		x.setMinorTicksVisible(false);
-		x.getScaleTickLabels().setVisible(false);
-		x.setTitleFont(x.getFont());
-		x.setTitle("");
-		double max = 0;
-		for (int i = 0; i < comparison.projects.length; i++) {
-			ProjectResult pr = comparison.results[i];
-			max = Math.max(max, data.value(pr.costResult));
-			max = Math.max(max, data.value(pr.costResultFunding));
+	private void setTitle(Chart chart) {
+		// we set a white title just to fix the problem that the y-axis is cut
+		// sometimes
+		chart.getTitle().setText(".");
+		chart.getTitle().setFont(UI.defautlFont());
+		chart.getTitle().setForeground(Colors.getWhite());
+		chart.getTitle().setVisible(true);
+	}
+
+	private void formatX(Chart chart) {
+		IAxis x = chart.getAxisSet().getXAxis(0);
+		if (x == null)
+			return;
+		x.getTick().setVisible(false);
+		x.setCategorySeries(new String[] { "" });
+		x.enableCategory(true);
+		x.getTitle().setVisible(false);
+	}
+
+	private void formatY(Chart chart) {
+		IAxis y = chart.getAxisSet().getYAxis(0);
+		if (y == null)
+			return;
+		IAxisTick tick = y.getTick();
+		tick.setForeground(Colors.getBlack());
+		tick.setFormat(Num.getIntFormat());
+		tick.setTickMarkStepHint(50);
+		tick.setTickLabelAngle(45);
+		tick.setVisible(true);
+		y.getTitle().setForeground(Colors.getBlack());
+		y.getTitle().setText(unit);
+		y.getTitle().setFont(UI.defautlFont());
+		y.setRange(getYRange());
+	}
+
+	private Range getYRange() {
+		if (values.isEmpty())
+			return new Range(0, 0);
+		double min = values.get(0);
+		double max = values.get(0);
+		for (int i = 1; i < values.size(); i++) {
+			min = Math.min(min, values.get(i));
+			max = Math.max(max, values.get(i));
 		}
-		int step = (int) Math.pow(10, Math.floor(Math.log10(max)));
-		y.setRange(0, Stats.nextStep(max, step));
-		y.setTitleFont(y.getFont());
-		y.setTitle(data.unit());
-		y.setFormatPattern("#,###,###");
-		y.setShowMajorGrid(true);
-	}
-
-	private void addNormalTrace(int i) {
-		double x = i * 30 + 10;
-		double y = data.value(comparison.results[i].costResult);
-		String label = comparison.projects[i].name;
-		Trace trace = createTrace(label, x, y);
-		trace.setAreaAlpha(255);
-		trace.setTraceColor(Colors.getForChart(i));
-		graph.addTrace(trace);
-	}
-
-	private void addFundingTrace(int i) {
-		double x = i * 30 + 20;
-		double y = data.value(comparison.results[i].costResultFunding);
-		String label = comparison.projects[i].name + " - mit Förderung";
-		Trace trace = createTrace(label, x, y);
-		trace.setAreaAlpha(100);
-		trace.setTraceColor(Colors.getForChart(i));
-		graph.addTrace(trace);
-	}
-
-	private Trace createTrace(String label, double x, double y) {
-		CircularBufferDataProvider data = new CircularBufferDataProvider(false);
-		data.setBufferSize(1);
-		data.setCurrentXData(x);
-		data.setCurrentYData(y);
-		Trace trace = new Trace(label, graph.primaryXAxis,
-				graph.primaryYAxis, data);
-		trace.setTraceType(TraceType.BAR);
-		trace.setLineWidth(40);
-		return trace;
-	}
-
-	interface Data {
-
-		String unit();
-
-		double value(CostResult result);
-
+		if (min > 0) {
+			min = 0;
+		} else {
+			min = -Stats.nextStep(Math.abs(min));
+		}
+		if (max < 0) {
+			max = 0;
+		} else {
+			max = Stats.nextStep(max);
+		}
+		return new Range(min, max);
 	}
 
 }
