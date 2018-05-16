@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
-import sophena.model.ProductType;
+import sophena.model.ProductArea;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -35,16 +35,16 @@ class CostDetailsTable {
 	}
 
 	private void createItems(Table table) {
-		Map<ProductType, double[]> details = calculate();
+		Map<ProductArea, double[]> details = calculate();
 		double[] totals = new double[result.projects.length];
-		for (ProductType type : ProductType.values()) {
-			double[] values = details.get(type);
+		for (ProductArea area : ProductArea.values()) {
+			double[] values = details.get(area);
 			if (values == null)
 				continue;
 			for (int i = 0; i < totals.length; i++) {
 				totals[i] += values[i];
 			}
-			table.row(Labels.get(type),
+			table.row(Labels.get(area),
 					i -> Num.intStr(values[i]) + " EUR");
 		}
 		table.emptyRow();
@@ -52,16 +52,20 @@ class CostDetailsTable {
 				i -> Num.intStr(totals[i]) + " EUR");
 	}
 
-	private Map<ProductType, double[]> calculate() {
-		Map<ProductType, double[]> r = new HashMap<>();
+	private Map<ProductArea, double[]> calculate() {
 		int length = result.projects.length;
+		Map<ProductArea, double[]> r = new HashMap<>();
+		for (ProductArea pa : ProductArea.values()) {
+			r.put(pa, new double[length]);
+		}
 		for (int i = 0; i < length; i++) {
 			CostResult cr = result.results[i].costResult;
 			for (CostResultItem item : cr.items) {
-				if (item.costs == null || item.costs.investment == 0d)
+				if (item.productType == null
+						|| item.costs == null
+						|| item.costs.investment == 0d)
 					continue;
-				double[] values = r.computeIfAbsent(item.productType,
-						t -> new double[length]);
+				double[] values = r.get(item.productType.productArea);
 				values[i] += item.costs.investment;
 			}
 		}

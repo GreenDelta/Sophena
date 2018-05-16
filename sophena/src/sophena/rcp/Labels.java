@@ -10,6 +10,7 @@ import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.utils.Strings;
@@ -185,6 +186,23 @@ public final class Labels {
 			return "Wärmeübergabestation";
 		default:
 			return null;
+		}
+	}
+
+	public static String get(ProductArea area) {
+		if (area == null)
+			return null;
+		switch (area) {
+		case BUILDINGS:
+			return "Gebäude";
+		case HEATING_NET:
+			return "Wärmenetz";
+		case PLANNING:
+			return "Planung";
+		case TECHNOLOGY:
+			return "Anlagentechnik";
+		default:
+			return "?";
 		}
 	}
 

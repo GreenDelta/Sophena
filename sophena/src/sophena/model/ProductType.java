@@ -1,41 +1,51 @@
 package sophena.model;
 
+/**
+ * All products in Sophena have exactly one of the following types. The order in
+ * this enum is equal to the display order in the user interface.
+ */
 public enum ProductType {
 
-	BIOMASS_BOILER,
+	BIOMASS_BOILER(ProductArea.TECHNOLOGY),
 
-	FOSSIL_FUEL_BOILER,
+	FOSSIL_FUEL_BOILER(ProductArea.TECHNOLOGY),
 
-	HEAT_PUMP,
+	HEAT_PUMP(ProductArea.TECHNOLOGY),
 
-	COGENERATION_PLANT,
+	COGENERATION_PLANT(ProductArea.TECHNOLOGY),
 
-	SOLAR_THERMAL_PLANT,
+	SOLAR_THERMAL_PLANT(ProductArea.TECHNOLOGY),
 
-	ELECTRIC_HEAT_GENERATOR,
+	ELECTRIC_HEAT_GENERATOR(ProductArea.TECHNOLOGY),
 
-	OTHER_HEAT_SOURCE,
+	OTHER_HEAT_SOURCE(ProductArea.TECHNOLOGY),
 
-	BOILER_ACCESSORIES,
+	BOILER_ACCESSORIES(ProductArea.TECHNOLOGY),
 
-	HEAT_RECOVERY,
+	HEAT_RECOVERY(ProductArea.TECHNOLOGY),
 
-	FLUE_GAS_CLEANING,
+	FLUE_GAS_CLEANING(ProductArea.TECHNOLOGY),
 
-	BUFFER_TANK,
+	BUFFER_TANK(ProductArea.TECHNOLOGY),
 
-	BOILER_HOUSE_TECHNOLOGY,
+	BOILER_HOUSE_TECHNOLOGY(ProductArea.TECHNOLOGY),
 
-	BUILDING,
+	BUILDING(ProductArea.BUILDINGS),
 
-	PIPE,
+	PIPE(ProductArea.HEATING_NET),
 
-	HEATING_NET_TECHNOLOGY,
+	HEATING_NET_TECHNOLOGY(ProductArea.HEATING_NET),
 
-	HEATING_NET_CONSTRUCTION,
+	HEATING_NET_CONSTRUCTION(ProductArea.HEATING_NET),
 
-	TRANSFER_STATION,
+	TRANSFER_STATION(ProductArea.HEATING_NET),
 
-	PLANNING
+	PLANNING(ProductArea.PLANNING);
+
+	public final ProductArea productArea;
+
+	private ProductType(ProductArea area) {
+		this.productArea = area;
+	}
 
 }
