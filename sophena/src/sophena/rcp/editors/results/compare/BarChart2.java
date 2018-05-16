@@ -1,6 +1,5 @@
 package sophena.rcp.editors.results.compare;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
+import org.swtchart.IAxisTick;
 import org.swtchart.IBarSeries;
 import org.swtchart.IBarSeries.BarWidthStyle;
 import org.swtchart.ISeries.SeriesType;
@@ -23,6 +23,7 @@ import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class BarChart2 {
 
@@ -68,6 +69,7 @@ class BarChart2 {
 		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
 		data.minimumHeight = 250;
 		data.minimumWidth = 750;
+		chart.setOrientation(SWT.HORIZONTAL);
 		chart.setLayoutData(data);
 		chart.getTitle().setVisible(false);
 		ISeriesSet set = chart.getSeriesSet();
@@ -77,7 +79,7 @@ class BarChart2 {
 			s.setYSeries(new double[] { values.get(i) });
 			s.setBarColor(colors.get(i));
 			s.setBarWidthStyle(BarWidthStyle.FIXED);
-			s.setBarWidth(180);
+			s.setBarWidth(125);
 		}
 		formatX(chart);
 		formatY(chart);
@@ -97,8 +99,12 @@ class BarChart2 {
 		IAxis y = chart.getAxisSet().getYAxis(0);
 		if (y == null)
 			return;
-		y.getTick().setForeground(Colors.getBlack());
-		y.getTick().setFormat(new DecimalFormat("#,###,###"));
+		IAxisTick tick = y.getTick();
+		tick.setForeground(Colors.getBlack());
+		tick.setFormat(Num.getIntFormat());
+		tick.setTickMarkStepHint(50);
+		tick.setTickLabelAngle(45);
+		tick.setVisible(true);
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText(unit);
 		y.getTitle().setFont(UI.defautlFont());

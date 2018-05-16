@@ -20,7 +20,7 @@ public class Num {
 		return format;
 	}
 
-	private static DecimalFormat getIntFormat() {
+	public static DecimalFormat getIntFormat() {
 		if (intFormat == null) {
 			intFormat = (DecimalFormat) DecimalFormat
 					.getInstance(Locale.GERMAN);
@@ -87,7 +87,8 @@ public class Num {
 		for (int i = 0; i < decimalPlaces; i++) {
 			pattern.append('0');
 		}
-		DecimalFormat f = (DecimalFormat) DecimalFormat.getInstance(Locale.GERMAN);
+		DecimalFormat f = (DecimalFormat) DecimalFormat
+				.getInstance(Locale.GERMAN);
 		f.applyLocalizedPattern(pattern.toString());
 		return f.format(val);
 	}
