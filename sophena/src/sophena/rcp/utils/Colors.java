@@ -150,6 +150,13 @@ public class Colors {
 		return get(225, 213, 232);
 	}
 
+	public static Color darker(Color color, int with) {
+		int r = color.getRed() > with ? color.getRed() - with : 0;
+		int g = color.getGreen() > with ? color.getGreen() - with : 0;
+		int b = color.getBlue() > with ? color.getBlue() - with : 0;
+		return get(r, g, b);
+	}
+
 	private static class ShutDown implements IWorkbenchListener {
 		@Override
 		public boolean preShutdown(IWorkbench workbench, boolean forced) {

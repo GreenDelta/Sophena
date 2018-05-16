@@ -57,6 +57,15 @@ public final class Stats {
 		return max;
 	}
 
+	public static int nextStep(double value) {
+		double v = Math.abs(value);
+		double p = Math.floor(Math.log10(v));
+		if (p <= 0)
+			return nextStep(value, 1);
+		int step = (int) Math.pow(10, p - 1);
+		return nextStep(value, step);
+	}
+
 	public static int nextStep(double value, int step) {
 		if (step == 0)
 			return 0;
