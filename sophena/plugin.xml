@@ -14,7 +14,7 @@
    </property>
    <property
          name="aboutText"
-         value="Sophena - Version 1.1, Mai 2017&#x0D;&#x0A;&#x0D;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License zur Verfügung gestellt.&#x0D;&#x0A;_____________________________________________________________________________&#x0D;&#x0A;&#x0D;&#x0A;C.A.R.M.E.N. e.V.&#x0D;&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0D;&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de">
+         value="Sophena - Version 1.1, Mai 2017&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License zur Verfügung gestellt.&#x0A;_____________________________________________________________________________&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de">
    </property>
    <property
          name="windowImages"

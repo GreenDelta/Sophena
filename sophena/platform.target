@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Running Platform" sequenceNumber="9">
+    <locations>
+        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+            <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.7.0.v20171231020002"/>
+            <repository location="http://download.eclipse.org/technology/babel/update-site/R0.15.1/oxygen"/>
+        </location>
+        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+            <unit id="org.eclipse.nebula.visualization.feature.feature.group" version="2.1.0.201804281520"/>
+            <unit id="org.eclipse.nebula.widgets.xviewer.feature.feature.group" version="1.1.0.201804281520"/>
+            <repository location="http://download.eclipse.org/nebula/releases/latest"/>
+        </location>
+        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+            <unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.4.v20180322-2228"/>
+            <unit id="org.eclipse.platform.ide" version="4.7.3.M20180330-0640"/>
+            <unit id="org.eclipse.rcp.feature.group" version="4.7.3.v20180330-0640"/>
+            <unit id="org.eclipse.rcp.source.feature.group" version="4.7.3.v20180330-0640"/>
+            <repository location="http://download.eclipse.org/eclipse/updates/4.7"/>
+        </location>
+    </locations>
+    <environment>
+        <os>win32</os>
+        <ws>win32</ws>
+        <arch>x86_64</arch>
+        <nl>en_US</nl>
+    </environment>
+</target>
