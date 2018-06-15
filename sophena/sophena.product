@@ -26,7 +26,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       </programArgs>
       <vmArgs>-Xmx2048m
 -Djava.net.useSystemProxies=true
--Dorg.osgi.framework.bundle.parent=ext
+-Dosgi.framework.extensions=org.eclipse.fx.osgi
 --add-modules=ALL-SYSTEM
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
