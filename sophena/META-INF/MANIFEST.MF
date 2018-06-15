@@ -21,8 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.navigator,
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.mylyn.commons.ui,
- org.swtchart,
- org.eclipse.fx.ui.workbench3
+ org.eclipse.fx.ui.workbench3,
+ org.eclipse.draw2d
 Eclipse-BundleShape: dir
 Bundle-ClassPath: .,
  libs/commons-codec-1.9.jar,
@@ -44,4 +44,6 @@ Bundle-ClassPath: .,
  libs/slf4j-api-1.7.24.jar,
  libs/slf4j-log4j12-1.7.24.jar,
  libs/xmlbeans-2.6.0.jar,
- libs/zt-zip-1.12.jar
+ libs/zt-zip-1.12.jar,
+ libs/org.swtchart_0.10.0.v20160212.jar,
+ libs/org.swtchart.ext_0.10.0.v20160212.jar

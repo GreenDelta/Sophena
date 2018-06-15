@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/org.swtchart_0.10.0.v20160212.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/org.swtchart.ext_0.10.0.v20160212.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/derby-10.14.1.0.jar"/>

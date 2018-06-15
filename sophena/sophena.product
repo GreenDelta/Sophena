@@ -24,9 +24,10 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <programArgs>-nl de
 -data @noDefault
       </programArgs>
-      <vmArgs>-Xmx1024m
+      <vmArgs>-Xmx2048m
 -Djava.net.useSystemProxies=true
--Dosgi.framework.extensions=org.eclipse.fx.osgi
+-Dorg.osgi.framework.bundle.parent=ext
+--add-modules=ALL-SYSTEM
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -34,9 +35,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
-
    <launcher name="Sophena">
-      <solaris/>
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
          <bmp
@@ -50,11 +49,11 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
    <plugins>
+      <plugin id="com.google.guava"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
@@ -62,9 +61,15 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.commons.jxpath"/>
+      <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.scr"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.commands.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.contenttype.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.databinding"/>
       <plugin id="org.eclipse.core.databinding.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.databinding.observable"/>
@@ -72,7 +77,9 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.databinding.property.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.expressions.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.jobs.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.net"/>
       <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.core.net.linux.x86.nl_de" fragment="true"/>
@@ -85,14 +92,24 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.net.win32.x86_64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime.nl_de" fragment="true"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.commands.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
+      <plugin id="org.eclipse.e4.core.contexts.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.annotations"/>
+      <plugin id="org.eclipse.e4.core.di.annotations.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.core.di.extensions"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.supplier.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.di.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.core.services.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.emf.xpath"/>
+      <plugin id="org.eclipse.e4.emf.xpath.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
       <plugin id="org.eclipse.e4.ui.bindings.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.css.core"/>
@@ -107,6 +124,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.e4.ui.model.workbench.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.services"/>
       <plugin id="org.eclipse.e4.ui.services.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.swt.gtk" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.widgets"/>
       <plugin id="org.eclipse.e4.ui.widgets.nl_de" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.workbench"/>
@@ -130,12 +148,19 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.event"/>
       <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.region" fragment="true"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.supplement"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.fx.osgi" fragment="true"/>
       <plugin id="org.eclipse.fx.ui.workbench3"/>
-      <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.nl_de" fragment="true"/>
       <plugin id="org.eclipse.jface"/>
@@ -151,40 +176,19 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.osgi.nl_de" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.osgi.services.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.osgi.util"/>
+      <plugin id="org.eclipse.osgi.util.nl_de" fragment="true"/>
       <plugin id="org.eclipse.platform"/>
       <plugin id="org.eclipse.platform.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.carbon.macosx.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
-      <plugin id="org.eclipse.swt.cocoa.macosx.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.aix.ppc" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.aix.ppc.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.aix.ppc64.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.hpux.ia64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.hpux.ia64_32.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.ppc64.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.s390.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.s390x" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.s390x.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc64le" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.sparc.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.x86.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86.nl_de" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.cocoa.nl_de" fragment="true"/>
@@ -200,7 +204,6 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.ui.win32.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.nl_de" fragment="true"/>
-      <plugin id="org.swtchart"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
