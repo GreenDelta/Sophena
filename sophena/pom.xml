@@ -7,10 +7,14 @@
 		(open the plugin.xml in Eclipse, go to the Runtime tab and modify the classpath). -->
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>rcp.template</groupId>
-	<artifactId>dependencies</artifactId>
+	<groupId>com.greendelta</groupId>
+	<artifactId>sophena-dependencies</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
+
+	<properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	</properties>
 
 	<dependencies>
 
@@ -156,6 +160,31 @@
 						</fileset>
 					</filesets>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/libs</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${java.home}/lib</directory>
+									<includes>
+										<include>javafx-swt.jar</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
