@@ -35,7 +35,6 @@ http://www.carmen-ev.de - contact@carmen-ev.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
-
    <launcher name="Sophena">
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
@@ -50,10 +49,8 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.google.guava" version="21.0.0.v20170206-1425"/>
@@ -202,6 +199,8 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.ui.win32.nl_de" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.nl_de" fragment="true"/>
+      <plugin id="org.swtchart"/>
+      <plugin id="org.swtchart.ext"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>

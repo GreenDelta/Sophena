@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Running Platform" sequenceNumber="23">
+<?pde version="3.8"?><target name="Running Platform" sequenceNumber="24">
     <locations>
         <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.7.0.v20171231020002"/>
@@ -19,6 +19,11 @@
             <unit id="org.eclipse.fx.ide.basic.feature.feature.group" version="3.3.0.201805280700"/>
             <unit id="org.eclipse.fx.ide.pde.feature.feature.group" version="3.3.0.201805280700"/>
             <repository location="http://download.eclipse.org/efxclipse/updates-released/3.3.0/site"/>
+        </location>
+        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+            <unit id="org.swtchart" version="0.10.0.v20160212"/>
+            <unit id="org.swtchart.ext" version="0.10.0.v20160212"/>
+            <repository location="https://msrocka.github.io/swtcharts-update-site/target/repository"/>
         </location>
     </locations>
     <environment>
