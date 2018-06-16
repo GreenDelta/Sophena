@@ -35,6 +35,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
+
    <launcher name="Sophena">
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
@@ -49,11 +50,13 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
+
    <plugins>
-      <plugin id="com.google.guava"/>
+      <plugin id="com.google.guava" version="21.0.0.v20170206-1425"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
@@ -81,13 +84,8 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.jobs.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.net"/>
-      <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.net.linux.x86.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.core.net.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.net.linux.x86_64.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.net.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.net.source"/>
-      <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.net.win32.x86.nl_de" fragment="true"/>
       <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.net.win32.x86_64.nl_de" fragment="true"/>
