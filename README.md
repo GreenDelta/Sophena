@@ -52,6 +52,28 @@ the `./sophdat/gen/base_data.sophena` package in an empty database. Thus, you
 first have to run the [sophdat](./sophdat) tool in order to create the database
 template which is distributed with the application (see the README file there).
 
+### Creating the distribution package
+Currently we just build Windows versions but the target platform already
+supports multi-platform builds. To create the distribution package, first export
+the `sophena` project as `Eclipse product` within Eclipse:
+`Export > Plugin Development > Eclipse product`. Choose the following settings:
+
+* Configuration: `/sophena/sophena.product`
+* Root directory: `sophena`
+* Destination directory: `../build/builds` (the builds folder in the sub-project
+  `build`)
+* Uncheck `Generate p2 repository`
+* Check `Export for multiple platforms`
+
+On the next page select the `win32/x86_64` platform and run the export. If
+everything went well, the export should create a `build/builds/win32.win32.x86_64`
+folder that contains the compiled product.
+
+Finally, the script `make.bat` in the `build` folder copies a Java runtime into
+the product folder and creates the distribution package. Therefore, an extracted
+Java runtime v10 needs to bo located in the `build/jre/win64` folder and the
+[7zip](https://www.7-zip.org/) exexutable in the `tools` folder.
+
 ## License
 Unless stated otherwise, all source code of the Sophena project is licensed 
 under the [Mozilla Public License, v. 2.0](http://mozilla.org/MPL/2.0/). Please 
