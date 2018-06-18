@@ -46,6 +46,8 @@ public class CalorificValue {
 		if (woodFuel == null || waterContent >= 1.0) {
 			return 0.0;
 		}
+		if (type == WoodAmountType.MASS)
+			return 1 / (1 - waterContent);
 		double f = 1.0; // mass
 		if (type == WoodAmountType.CHIPS) {
 			f = 0.4;
