@@ -83,9 +83,10 @@ public class HeatNetEditor extends Editor {
 			return false;
 		}
 		Double lowerBuffTemp = heatNet.lowerBufferLoadTemperature;
-		if (lowerBuffTemp != null && lowerBuffTemp >= heatNet.maxBufferLoadTemperature) {
+		if (lowerBuffTemp != null
+				&& lowerBuffTemp > heatNet.maxBufferLoadTemperature) {
 			MsgBox.error("Plausibilitätsfehler",
-					"Die untere Ladetemperatur ist größer oder gleich der maximalen "
+					"Die untere Ladetemperatur ist größer als die maximale "
 							+ "Ladetemperatur des Pufferspeichers.");
 			return false;
 		}

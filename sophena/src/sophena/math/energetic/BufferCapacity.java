@@ -17,7 +17,8 @@ public class BufferCapacity {
 	 * Calulcates the value of the buffer capacity, in kWh
 	 */
 	public double value() {
-		return 0.001166 * volume * (maxChargingTemperatur - lowerChargingTemperatur);
+		return 0.001166 * volume
+				* (maxChargingTemperatur - lowerChargingTemperatur);
 	}
 
 	/**
@@ -30,7 +31,7 @@ public class BufferCapacity {
 		BufferCapacity cap = new BufferCapacity();
 		cap.volume = net.bufferTankVolume;
 		cap.maxChargingTemperatur = net.maxBufferLoadTemperature;
-		cap.lowerChargingTemperatur = net.returnTemperature;
+		cap.lowerChargingTemperatur = net.supplyTemperature;
 		if (net.lowerBufferLoadTemperature != null) {
 			cap.lowerChargingTemperatur = net.lowerBufferLoadTemperature;
 		}
