@@ -30,7 +30,8 @@ public class ResultToolBar extends EditorActionBarContributor {
 		File file = FileChooser.save(editor.project.name + ".xlsx", "*.xlsx");
 		if (file == null)
 			return;
-		ExcelExport export = new ExcelExport(editor.project, editor.result, file);
+		ExcelExport export = new ExcelExport(editor.project, editor.result,
+				file);
 		Rcp.run("Exportiere Ergebnisse ...", export, () -> {
 			Popup.showInfo("Ergebnisse wurden exportiert");
 		});

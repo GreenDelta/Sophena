@@ -14,9 +14,11 @@ import sophena.model.Project;
 
 public class ExcelExport implements Runnable {
 
-	private ProjectResult result;
-	private Project project;
-	private File file;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	private final ProjectResult result;
+	private final Project project;
+	private final File file;
 
 	public ExcelExport(Project project, ProjectResult result, File file) {
 		this.result = result;
@@ -29,20 +31,29 @@ public class ExcelExport implements Runnable {
 		if (result == null || file == null)
 			return;
 		try {
+			log.info("Export results to file {}", file);
 			Workbook wb = new XSSFWorkbook();
+			log.trace("Write heat results");
 			new HeatSheet(wb, result, project).write();
+			log.trace("Write electricity results");
 			new ElectricitySheet(wb, result).write();
+			log.trace("Write cost results");
 			new CostSheet(wb, result).write();
+			log.trace("Write further results");
 			new FurtherResultsSheet(wb, result, project).write();
+			log.trace("Write consumers");
 			new ConsumerSheet(wb, result, project).write();
+			log.trace("Write simulation results");
 			new SimulationSheet(wb, result.energyResult).write();
 
 			try (FileOutputStream fos = new FileOutputStream(file);
-					BufferedOutputStream buffer = new BufferedOutputStream(fos)) {
+					BufferedOutputStream buffer = new BufferedOutputStream(
+							fos)) {
+				log.trace("Write workbook to file {}", file);
 				wb.write(buffer);
 			}
+			log.trace("Export done");
 		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Failed to export results to Excel", e);
 		}
 	}

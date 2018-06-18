@@ -1,6 +1,8 @@
 package sophena.io.excel;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -22,21 +24,25 @@ class SimulationSheet {
 			return;
 		Sheet sheet = wb.createSheet("Simulationsergebnisse");
 		header(sheet);
-		for (int row = 1; row <= 8760; row++) {
-			int i = row - 1;
+		for (int r = 1; r <= 8760; r++) {
+			Row row = sheet.createRow(r);
+			int i = r - 1;
 			double diff = result.suppliedPower[i] - result.loadCurve[i];
-			Excel.cell(sheet, row, 0, row);
-			Excel.cell(sheet, row, 1, r(result.loadCurve[i]));
-			Excel.cell(sheet, row, 2, r(result.suppliedPower[i]));
-			Excel.cell(sheet, row, 3, r(diff));
-			Excel.cell(sheet, row, 4, r(result.bufferCapacity[i]));
-			Excel.cell(sheet, row, 5, r(result.suppliedBufferHeat[i]));
-			Excel.cell(sheet, row, 6, r(result.bufferLoss[i]));
+			Excel.cell(sheet, r, 0, r);
+			cell(row, 0, r);
+			cell(row, 1, round(result.loadCurve[i]));
+			cell(row, 2, round(result.suppliedPower[i]));
+			cell(row, 3, round(diff));
+			cell(row, 4, round(result.bufferCapacity[i]));
+			cell(row, 5, round(result.suppliedBufferHeat[i]));
+			cell(row, 6, round(result.bufferLoss[i]));
 			for (int k = 0; k < result.producers.length; k++) {
-				Excel.cell(sheet, row, 7 + k, r(result.producerResults[k][i]));
+				cell(row, 7 + k, round(result.producerResults[k][i]));
 			}
 		}
-		Excel.autoSize(sheet, 0, 6);
+		for (int i = 0; i < (7 + result.producers.length); i++) {
+			sheet.setColumnWidth(i, 25 * 256);
+		}
 	}
 
 	private void header(Sheet sheet) {
@@ -61,8 +67,18 @@ class SimulationSheet {
 	}
 
 	/** Rounds the given number and converts it to an interger number. */
-	private int r(double number) {
+	private int round(double number) {
 		return (int) Math.round(number);
+	}
+
+	private Cell cell(Row row, int column) {
+		return row.createCell(column);
+	}
+
+	private Cell cell(Row row, int column, int value) {
+		Cell c = cell(row, column);
+		c.setCellValue(value);
+		return c;
 	}
 
 }
