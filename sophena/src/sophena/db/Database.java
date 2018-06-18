@@ -104,7 +104,7 @@ public class Database implements Closeable {
 		if (entityFactory != null && entityFactory.isOpen())
 			entityFactory.close();
 		if (pool != null)
-			pool.shutdown();
+			pool.close();
 		try {
 			DriverManager.getConnection(url + ";shutdown=true");
 			// TODO: single database shutdown throws unexpected

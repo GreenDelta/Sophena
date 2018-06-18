@@ -30,7 +30,7 @@ class Excel {
 	public static CellStyle headerStyle(Workbook workbook) {
 		CellStyle headerStyle = workbook.createCellStyle();
 		Font font = workbook.createFont();
-		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		headerStyle.setFont(font);
 		return headerStyle;
 	}
