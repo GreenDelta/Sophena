@@ -35,7 +35,7 @@ class SimulationSheet {
 			cell(row, 3, round(diff));
 			cell(row, 4, round(result.bufferCapacity[i]));
 			cell(row, 5, round(result.suppliedBufferHeat[i]));
-			cell(row, 6, round(result.bufferLoss[i]));
+			cell(row, 6).setCellValue(round(result.bufferLoss[i] * 10) / 10d);
 			for (int k = 0; k < result.producers.length; k++) {
 				cell(row, 7 + k, round(result.producerResults[k][i]));
 			}
@@ -66,13 +66,8 @@ class SimulationSheet {
 		}
 	}
 
-	/** Rounds the given number and converts it to an interger number. */
 	private int round(double number) {
 		return (int) Math.round(number);
-	}
-
-	private Cell cell(Row row, int column) {
-		return row.createCell(column);
 	}
 
 	private Cell cell(Row row, int column, int value) {
@@ -81,4 +76,7 @@ class SimulationSheet {
 		return c;
 	}
 
+	private Cell cell(Row row, int column) {
+		return row.createCell(column);
+	}
 }
