@@ -139,6 +139,9 @@ class BarChart {
 		} else {
 			max = Stats.nextStep(max);
 		}
+		if (min == max) {
+			max += 1;
+		}
 		return new Range(min, max);
 	}
 

@@ -188,8 +188,13 @@ class CostCalculator {
 				- r.grossTotal.revenues;
 
 		double aQ = (energyResult.totalProducedHeat - energyResult.heatNetLoss);
-		r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
-		r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / aQ;
+		if (aQ == 0) {
+			r.netTotal.heatGenerationCosts = 0;
+			r.grossTotal.heatGenerationCosts = 0;
+		} else {
+			r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
+			r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / aQ;
+		}
 	}
 
 	private double annuityFactor() {

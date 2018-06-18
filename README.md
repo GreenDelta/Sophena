@@ -59,7 +59,7 @@ the `sophena` project as `Eclipse product` within Eclipse:
 `Export > Plugin Development > Eclipse product`. Choose the following settings:
 
 * Configuration: `/sophena/sophena.product`
-* Root directory: `sophena`
+* Root directory: `Sophena`
 * Destination directory: `../build/builds` (the builds folder in the sub-project
   `build`)
 * Uncheck `Generate p2 repository`

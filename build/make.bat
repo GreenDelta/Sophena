@@ -15,8 +15,8 @@ mkdir builds\dist
 
 IF EXIST builds\win32.win32.x86_64 (
 	REM Build Windows 64-bit version
-	robocopy jre\win64 builds\win32.win32.x86_64\sophena\jre /e
+	robocopy jre\win64 builds\win32.win32.x86_64\Sophena\jre /e
 	cd builds\win32.win32.x86_64
-	..\..\tools\7za a ..\dist\sophena_%vdate%_win64.zip sophena
+	..\..\tools\7za a ..\dist\sophena_%vdate%_win64.zip Sophena
 	cd ..\..
 )
