@@ -49,6 +49,7 @@ class Upgrade2 implements Upgrade {
 			obj.addProperty("calorificValue",
 					Json.getDouble(obj, "calorificValue", 0.0) * 1000.0);
 			obj.addProperty("unit", "t atro");
+			obj.addProperty("ashContent", 1.0);
 			obj.addProperty("group", FuelGroup.WOOD.name());
 		} else {
 			// try to find a fuel group; at least for the

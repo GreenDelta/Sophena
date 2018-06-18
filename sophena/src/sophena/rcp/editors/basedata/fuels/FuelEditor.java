@@ -227,10 +227,11 @@ public class FuelEditor extends Editor {
 			fuel.name = M.WoodFuel;
 			fuel.group = FuelGroup.WOOD;
 			fuel.unit = "t atro";
-			fuel.calorificValue = 5d;
+			fuel.calorificValue = 5000d;
 			fuel.density = 450d;
 			fuel.group = FuelGroup.WOOD;
-			fuel.primaryEnergyFactor = 1d;
+			fuel.primaryEnergyFactor = 0.2d;
+			fuel.co2Emissions = 35d;
 			fuel.ashContent = 1d;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;
