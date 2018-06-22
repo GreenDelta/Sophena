@@ -43,7 +43,7 @@ id                                   ; name                                     
 99056059-23b1-417e-b21c-7397d09d0907 ; NBL Standard 1981-1985                     ; TOWER_BLOCK          ; 15            ; 5                       ; 27             ; 2164       ; false      ; 4      
 9b74bcd5-858a-441f-963a-7dc5488e1a1a ; Standard 1958-1968                         ; MULTI_FAMILY_HOUSE   ; 15            ; 5                       ; 17             ; 1876       ; false      ; 4      
 a3028394-dd38-4322-aae4-be12d5979e57 ; Niedrigenergiehaus (KfW 55)                ; SINGLE_FAMILY_HOUSE  ; 12            ; 5                       ; 44             ; 1114       ; false      ; 8      
-a9b34a22-d5cf-45c8-8df3-9bb45796f7c6 ; 1919-1948                                  ; BLOCK_OF_FLATS       ; 17            ; 5                       ; 12             ; 1555       ; false      ; 1      
+a9b34a22-d5cf-45c8-8df3-9bb45796f7c6 ; Standard 1919-1948                         ; BLOCK_OF_FLATS       ; 17            ; 5                       ; 12             ; 1555       ; false      ; 1      
 a9f01203-9038-4a18-89d9-61cf93360b18 ; Standard 1958-1968                         ; TOWER_BLOCK          ; 15            ; 5                       ; 22             ; 1981       ; false      ; 0      
 b395b7ac-3619-4b2b-b80b-ecd7b945338f ; Standard 1958-1978                         ; TERRACE_HOUSE        ; 15            ; 5                       ; 21             ; 2108       ; false      ; 3      
 b60df5e3-ee78-4ecb-923f-08a859925dc7 ; NBL Standard 1946-1969                     ; MULTI_FAMILY_HOUSE   ; 15            ; 5                       ; 16             ; 1826       ; false      ; 2      
@@ -56,7 +56,7 @@ ce62db54-5312-4b6a-906d-90e58ac95158 ; Standard 1979-1994                       
 d17b86bb-f8ec-409a-9c5b-ea4dd4bfdc1c ;                                            ; HOTEL                ; 17            ; 5                       ; 11             ; 2100       ; true       ; 0      
 d80708a9-db6b-4218-bb2c-9ad9373fd743 ; Standard 1979-1994                         ; TERRACE_HOUSE        ; 15            ; 5                       ; 26             ; 1556       ; true       ; 4      
 da6b4497-d63f-490b-ae27-7ef15ae40fc7 ;                                            ; NURSING_HOME         ; 17            ; 5                       ; 10             ; 2500       ; true       ; 0      
-da9551ee-90ad-4ced-9e26-b3983daceeea ; bis 1918                                   ; BLOCK_OF_FLATS       ; 17            ; 5                       ; 13             ; 1591       ; false      ; 0      
+da9551ee-90ad-4ced-9e26-b3983daceeea ; Standard bis 1918                          ; BLOCK_OF_FLATS       ; 17            ; 5                       ; 13             ; 1591       ; false      ; 0      
 e104ef28-b543-4416-bf3f-d6ae6d6e09a0 ; Niedrigstenergiehaus (KfW 40)/ Passivhaus  ; TOWER_BLOCK          ; 10            ; 5                       ; 72             ; 879        ; false      ; 9      
 e3999888-ae9b-408d-929d-0b6c44bbd7f1 ; Standard bis 1918                          ; MULTI_FAMILY_HOUSE   ; 17            ; 5                       ; 13             ; 1918       ; false      ; 0      
 e61f843d-5e9c-4372-8ae0-9f51b8c7029e ;                                            ; RESTAURANT           ; 17            ; 5                       ; 7              ; 2000       ; true       ; 0      
