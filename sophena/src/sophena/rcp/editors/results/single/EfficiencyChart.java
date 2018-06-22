@@ -28,7 +28,8 @@ class EfficiencyChart {
 		this.result = result;
 	}
 
-	public static void create(EfficiencyResult result, Composite comp, FormToolkit tk) {
+	public static void create(EfficiencyResult result, Composite comp,
+			FormToolkit tk) {
 		new EfficiencyChart(result).render(comp, tk);
 	}
 
@@ -55,7 +56,8 @@ class EfficiencyChart {
 		formatY(chart);
 	}
 
-	private void addSeries(ISeriesSet set, String label, double value, int colorId) {
+	private void addSeries(ISeriesSet set, String label, double value,
+			int colorId) {
 		IBarSeries s = (IBarSeries) set.createSeries(SeriesType.BAR, label);
 		s.setYSeries(new double[] { (double) Math.abs(Math.round(value)) }); // TODO
 		s.setBarColor(Colors.getForChart(colorId));
@@ -85,6 +87,7 @@ class EfficiencyChart {
 		double max = result.usedHeat
 				+ result.producedElectrictiy
 				+ result.conversionLoss
+				+ result.bufferLoss
 				+ result.distributionLoss;
 		if (max == 0) {
 			max = 1;
