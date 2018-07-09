@@ -117,19 +117,28 @@ CREATE TABLE tbl_cost_settings (
     vat_rate DOUBLE,
     hourly_wage DOUBLE,
     electricity_price DOUBLE,
-    electricity_revenues DOUBLE,
     electricity_demand_share DOUBLE,
+    electricity_revenues DOUBLE,
+    heat_revenues DOUBLE,
     
     funding DOUBLE,
+    funding_biomass_boilers DOUBLE,
+    funding_heat_net DOUBLE,
+    funding_transfer_stations DOUBLE,
     connection_fees DOUBLE,
+    
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,
+    
     investment_factor DOUBLE,
     operation_factor DOUBLE,
     bio_fuel_factor DOUBLE,
     fossil_fuel_factor DOUBLE,
     electricity_factor DOUBLE,
     maintenance_factor DOUBLE,
+    heat_revenues_factor DOUBLE,
+    electricity_revenues_factor DOUBLE,
+
     insurance_share DOUBLE,
     other_share DOUBLE,
     administration_share DOUBLE,
@@ -141,7 +150,7 @@ CREATE TABLE tbl_cost_settings (
 CREATE TABLE tbl_annual_costs (
     f_project CHAR(36),
     label VARCHAR(255),
-	cost_entry DOUBLE
+    cost_entry DOUBLE
 );
 
 

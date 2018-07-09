@@ -31,12 +31,16 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_price")
 	public double electricityPrice;
 
+	@Column(name = "electricity_demand_share")
+	public double electricityDemandShare;
+
 	/** Average revenues from generated electricity in EUR/kWh */
 	@Column(name = "electricity_revenues")
 	public double electricityRevenues;
 
-	@Column(name = "electricity_demand_share")
-	public double electricityDemandShare;
+	/** Average revenues from generated heat in EUR/MWh. */
+	@Column(name = "heat_revenues")
+	public double heatRevenues;
 
 	// financial aspects
 
@@ -46,8 +50,21 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "interest_rate_funding")
 	public double interestRateFunding;
 
+	/** General investment funding in EUR */
 	@Column(name = "funding")
 	public double funding;
+
+	/** Funding for biomass boilers in EUR/kW */
+	@Column(name = "funding_biomass_boilers")
+	public double fundingBiomassBoilers;
+
+	/** Funding for the heat net in EUR/m */
+	@Column(name = "funding_heat_net")
+	public double fungingHeatNet;
+
+	/** Funding for transfer stations in EUR */
+	@Column(name = "funding_transfer_stations")
+	public double fungingTransferStations;
 
 	@Column(name = "connection_fees")
 	public double connectionFees;
@@ -87,6 +104,12 @@ public class CostSettings extends AbstractEntity {
 
 	@Column(name = "maintenance_factor")
 	public double maintenanceFactor;
+
+	@Column(name = "heat_revenues_factor")
+	public double heatRevenuesFactor;
+
+	@Column(name = "electricity_revenues_factor")
+	public double electricityRevenuesFactor;
 
 	@Override
 	public CostSettings clone() {

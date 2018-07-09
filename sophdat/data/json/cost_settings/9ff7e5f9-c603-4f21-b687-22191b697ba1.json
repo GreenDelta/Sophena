@@ -19,5 +19,7 @@
     "fossilFuelFactor": 1.03,
     "electricityFactor": 1.03,
     "operationFactor": 1.02,
-    "maintenanceFactor": 1.02
+    "maintenanceFactor": 1.02,
+    "heatRevenuesFactor": 1.02,
+    "electricityRevenuesFactor": 1.00
 }
