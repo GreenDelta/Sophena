@@ -52,7 +52,7 @@ public class CapitalCosts {
 		// add cash values of possible replacements
 		int t = Tu;
 		int n = 0; // the number of replacements
-		while (t < T) {
+		while (t > 0 && t < T) {
 			sum += A * pow(r, t) / pow(q, t);
 			n++;
 			t += Tu;
