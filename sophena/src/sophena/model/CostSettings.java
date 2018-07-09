@@ -60,11 +60,11 @@ public class CostSettings extends AbstractEntity {
 
 	/** Funding for the heat net in EUR/m */
 	@Column(name = "funding_heat_net")
-	public double fungingHeatNet;
+	public double fundingHeatNet;
 
 	/** Funding for transfer stations in EUR */
 	@Column(name = "funding_transfer_stations")
-	public double fungingTransferStations;
+	public double fundingTransferStations;
 
 	@Column(name = "connection_fees")
 	public double connectionFees;
@@ -115,19 +115,33 @@ public class CostSettings extends AbstractEntity {
 	public CostSettings clone() {
 		CostSettings clone = new CostSettings();
 		clone.id = UUID.randomUUID().toString();
+
+		// fundings
 		clone.funding = funding;
+		clone.fundingBiomassBoilers = fundingBiomassBoilers;
+		clone.fundingHeatNet = fundingHeatNet;
+		clone.fundingTransferStations = fundingTransferStations;
+
+		// revenues
 		clone.electricityRevenues = electricityRevenues;
+		clone.heatRevenues = heatRevenues;
+
 		clone.electricityDemandShare = electricityDemandShare;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;
 		clone.operationFactor = operationFactor;
 		clone.hourlyWage = hourlyWage;
+
+		// price change factors
 		clone.bioFuelFactor = bioFuelFactor;
 		clone.fossilFuelFactor = fossilFuelFactor;
 		clone.electricityPrice = electricityPrice;
 		clone.electricityFactor = electricityFactor;
 		clone.maintenanceFactor = maintenanceFactor;
+		clone.heatRevenuesFactor = heatRevenuesFactor;
+		clone.electricityRevenuesFactor = electricityRevenuesFactor;
+
 		clone.vatRate = vatRate;
 		clone.insuranceShare = insuranceShare;
 		clone.otherShare = otherShare;

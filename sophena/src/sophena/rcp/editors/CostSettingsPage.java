@@ -77,10 +77,13 @@ public class CostSettingsPage extends FormPage {
 		HelpLink.create(c, toolkit, "Eigenstrombedarf",
 				H.ElectricityDemandShare);
 		if (forProject) {
+			t(c, "Mittlere Wärmeerlöse", "EUR/MWh",
+					Num.str(costs.heatRevenues, 4)).onChanged(
+							s -> costs.heatRevenues = Num.read(s));
+			UI.filler(c);
 			t(c, "Mittlere Stromerlöse", "EUR/kWh",
-					Num.str(costs.electricityRevenues, 4))
-							.onChanged(s -> costs.electricityRevenues = Num
-									.read(s));
+					Num.str(costs.electricityRevenues, 4)).onChanged(
+							s -> costs.electricityRevenues = Num.read(s));
 			HelpLink.create(c, toolkit, "Mittlere Stromerlöse",
 					H.ElectricityRevenues);
 		}
@@ -97,8 +100,17 @@ public class CostSettingsPage extends FormPage {
 						.onChanged(s -> costs.interestRateFunding = Num
 								.read(s));
 		if (forProject) {
-			t(c, "Investitionsförderung", "EUR", costs.funding)
+			t(c, "Investitionsförderung allgemein", "EUR", costs.funding)
 					.onChanged(s -> costs.funding = Num.read(s));
+			t(c, "Förderung Biomassekessel", "EUR/kW",
+					costs.fundingBiomassBoilers).onChanged(
+							s -> costs.fundingBiomassBoilers = Num.read(s));
+			t(c, "Förderung Wärmenetz", "EUR/m",
+					costs.fundingHeatNet).onChanged(
+							s -> costs.fundingHeatNet = Num.read(s));
+			t(c, "Förderung Hausübergabestationen", "EUR",
+					costs.fundingTransferStations).onChanged(
+							s -> costs.fundingTransferStations = Num.read(s));
 			t(c, "Einmalige Anschlusskosten", "EUR", costs.connectionFees)
 					.onChanged(s -> costs.connectionFees = Num.read(s));
 		}
@@ -126,10 +138,14 @@ public class CostSettingsPage extends FormPage {
 				.onChanged(s -> costs.fossilFuelFactor = Num.read(s));
 		t(c, "Strom", "", costs.electricityFactor)
 				.onChanged(s -> costs.electricityFactor = Num.read(s));
-		t(c, "Betriebsgebundene und sonstige Kosten", "", costs.operationFactor)
+		t(c, "Lohnkosten und sonstige Kosten", "", costs.operationFactor)
 				.onChanged(s -> costs.operationFactor = Num.read(s));
 		t(c, "Instandhaltung", "", costs.maintenanceFactor)
 				.onChanged(s -> costs.maintenanceFactor = Num.read(s));
+		t(c, "Wärmeerlöse", "", costs.heatRevenuesFactor)
+				.onChanged(s -> costs.heatRevenuesFactor = Num.read(s));
+		t(c, "Stromerlöse", "", costs.electricityRevenuesFactor)
+				.onChanged(s -> costs.electricityRevenuesFactor = Num.read(s));
 	}
 
 	private TextDispatch t(Composite comp, String label, String unit,
