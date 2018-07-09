@@ -4,6 +4,7 @@ import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
+import sophena.math.costs.Fundings;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;
@@ -149,11 +150,10 @@ class CostCalculator {
 	private void finishCapitalCosts(CostResult r) {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
-			bonus += settings.funding;
+			bonus += Fundings.get(project);
 		}
 		if (bonus <= 0)
 			return;
-
 		double a = Costs.annuityFactor(project, ir());
 		r.netTotal.capitalCosts -= (bonus * a);
 		r.grossTotal.capitalCosts = Costs.gross(project,
