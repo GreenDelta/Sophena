@@ -80,6 +80,11 @@ class Upgrade2 implements Upgrade {
 		if (producers != null) {
 			producers.forEach(p -> upgradeProducer(p.getAsJsonObject()));
 		}
+		JsonObject costSettings = obj.getAsJsonObject("costSettings");
+		if (costSettings != null) {
+			costSettings.addProperty("heatRevenuesFactor", 1.02);
+			costSettings.addProperty("electricityRevenuesFactor", 1.00);
+		}
 	}
 
 	private void upgradeHeatNet(JsonObject obj) {
