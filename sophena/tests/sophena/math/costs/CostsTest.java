@@ -1,18 +1,16 @@
-package sophena.calc;
+package sophena.math.costs;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
+import sophena.math.costs.Costs;
 import sophena.model.CostSettings;
 import sophena.model.Project;
 
-public class CostCalculatorTest {
+public class CostsTest {
 
-	private CostCalculator calc;
-
-	@Before
-	public void setUp() {
+	@Test
+	public void testGetCashValueFactor() {
 		Project project = new Project();
 		project.duration = 20;
 		CostSettings settings = new CostSettings();
@@ -20,14 +18,10 @@ public class CostCalculatorTest {
 		settings.interestRate = 2;
 		settings.interestRateFunding = 1.5;
 		settings.investmentFactor = 1.015;
-		calc = new CostCalculator(project, new EnergyResult(project));
-	}
 
-	@Test
-	public void testGetPresentValueFactorOperation() {
 		double priceChangeFactor = 1.02;
-		double f = calc.getCashValueFactor(priceChangeFactor);
-		Assert.assertEquals(19.6078431372549, f, 1e-10);
+		double b = Costs.cashValueFactor(project, 2, priceChangeFactor);
+		Assert.assertEquals(19.6078431372549, b, 1e-10);
 	}
 
 }

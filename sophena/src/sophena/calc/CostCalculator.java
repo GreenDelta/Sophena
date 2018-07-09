@@ -52,7 +52,7 @@ class CostCalculator {
 		addOtherCosts(r);
 		r.netTotal.revenues = settings.electricityRevenues
 				* GeneratedElectricity.getTotal(energyResult);
-		r.grossTotal.revenues = r.netTotal.revenues * vat();
+		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
 		calcTotals(r);
 		return r;
 	}
@@ -83,7 +83,7 @@ class CostCalculator {
 	private void handleItem(CostResult r, CostResultItem item) {
 		r.items.add(item);
 		r.netTotal.investments += item.costs.investment;
-		r.grossTotal.investments += vat() * item.costs.investment;
+		r.grossTotal.investments += Costs.gross(project, item.costs.investment);
 		addCapitalCosts(r, item);
 		addOperationCosts(r, item);
 	}
@@ -92,25 +92,29 @@ class CostCalculator {
 		double interestRate = withFunding ? settings.interestRateFunding
 				: settings.interestRate;
 		item.netCapitalCosts = CapitalCosts.get(item, project, interestRate);
-		item.grossCapitalCosts = vat() * item.netCapitalCosts;
+		item.grossCapitalCosts = Costs.gross(project, item.netCapitalCosts);
 		r.netTotal.capitalCosts += item.netCapitalCosts;
 		r.grossTotal.capitalCosts += item.grossCapitalCosts;
 	}
 
 	private void addOperationCosts(CostResult r, CostResultItem item) {
-		double opFactor = getCashValueFactor(settings.operationFactor);
-		double maFactor = getCashValueFactor(settings.maintenanceFactor);
+		double opFactor = Costs.cashValueFactor(project, ir(),
+				settings.operationFactor);
+		double maFactor = Costs.cashValueFactor(project, ir(),
+				settings.maintenanceFactor);
+
+		double a = Costs.annuityFactor(project, ir());
 		double opNetto = item.costs.operation * settings.hourlyWage
-				* annuityFactor()
+				* a
 				* opFactor
 				+ item.costs.investment
 						* (item.costs.repair / 100
 								+ item.costs.maintenance / 100)
-						* annuityFactor() * maFactor;
+						* a * maFactor;
 		item.netOperationCosts = opNetto;
-		item.grossOperationCosts = vat() * opNetto;
+		item.grossOperationCosts = Costs.gross(project, opNetto);
 		r.netTotal.operationCosts += opNetto;
-		r.grossTotal.operationCosts += vat() * opNetto;
+		r.grossTotal.operationCosts += Costs.gross(project, opNetto);
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
@@ -124,18 +128,19 @@ class CostCalculator {
 		double netElectricityCosts = ElectricityCosts.net(producedHeat,
 				settings);
 		netCosts += netElectricityCosts;
-		grossCosts += Costs.gross(netElectricityCosts, settings);
+		grossCosts += Costs.gross(project, netElectricityCosts);
 
 		// add ash costs
 		double netAshCosts = FuelCosts.netAshCosts(p, energyResult);
 		netCosts += netAshCosts;
-		grossCosts += Costs.gross(netAshCosts, settings);
+		grossCosts += Costs.gross(project, netAshCosts);
 
 		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
-		double cashValueFactor = getCashValueFactor(priceChangeFactor);
-		item.netConsumtionCosts = netCosts * cashValueFactor * annuityFactor();
-		item.grossConsumptionCosts = grossCosts * cashValueFactor
-				* annuityFactor();
+
+		double a = Costs.annuityFactor(project, ir());
+		double b = Costs.cashValueFactor(project, ir(), priceChangeFactor);
+		item.netConsumtionCosts = netCosts * a * b;
+		item.grossConsumptionCosts = grossCosts * a * b;
 		r.netTotal.consumptionCosts += item.netConsumtionCosts;
 		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
 	}
@@ -148,28 +153,24 @@ class CostCalculator {
 		}
 		if (bonus <= 0)
 			return;
-		r.netTotal.capitalCosts -= (bonus * annuityFactor());
-		r.grossTotal.capitalCosts = vat() * r.netTotal.capitalCosts;
+
+		double a = Costs.annuityFactor(project, ir());
+		r.netTotal.capitalCosts -= (bonus * a);
+		r.grossTotal.capitalCosts = Costs.gross(project,
+				r.netTotal.capitalCosts);
 	}
 
 	private void addOtherCosts(CostResult r) {
-		double cashValueFactor = getCashValueFactor(settings.operationFactor);
 		double share = (settings.insuranceShare
 				+ settings.otherShare
 				+ settings.administrationShare) / 100;
-		r.netTotal.otherCosts = share * r.netTotal.investments * annuityFactor()
-				* cashValueFactor;
-		r.grossTotal.otherCosts = r.netTotal.otherCosts * vat();
-	}
 
-	double getCashValueFactor(double priceChangeFactor) {
-		double ir = ir();
-		double projectDuration = project.duration;
-		if (ir == priceChangeFactor)
-			return ((double) projectDuration) / ir;
-		else
-			return (1 - Math.pow(priceChangeFactor / ir, projectDuration))
-					/ (ir - priceChangeFactor);
+		double a = Costs.annuityFactor(project, ir());
+		double b = Costs.cashValueFactor(project, ir(),
+				settings.operationFactor);
+
+		r.netTotal.otherCosts = share * r.netTotal.investments * a * b;
+		r.grossTotal.otherCosts = Costs.gross(project, r.netTotal.otherCosts);
 	}
 
 	private void calcTotals(CostResult r) {
@@ -197,22 +198,11 @@ class CostCalculator {
 		}
 	}
 
-	private double annuityFactor() {
-		double ir = withFunding ? settings.interestRateFunding
-				: settings.interestRate;
-		return Costs.annuityFactor(project, ir);
-	}
-
 	/** Returns the interest rate that is used for the calculation. */
 	private double ir() {
-		double rawRate = withFunding ? settings.interestRateFunding
+		return withFunding
+				? settings.interestRateFunding
 				: settings.interestRate;
-		return 1 + rawRate / 100;
-	}
-
-	/** Returns the VAT rate that is used for the calculation. */
-	private double vat() {
-		return 1 + settings.vatRate / 100;
 	}
 
 }

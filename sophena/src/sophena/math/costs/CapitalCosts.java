@@ -10,6 +10,18 @@ public class CapitalCosts {
 	private CapitalCosts() {
 	}
 
+	/**
+	 * Get the capital costs for the given component.
+	 * 
+	 * @param item
+	 *            The component for which the capital costs should be
+	 *            calculated.
+	 * @param project
+	 *            The project with the calculation settings.
+	 * @param interestRate
+	 *            The percentage value of the interest rate that should be used
+	 *            in the calculation (e.g. 2)
+	 */
 	public static double get(CostResultItem item, Project project,
 			double interestRate) {
 		if (item == null || item.costs == null
