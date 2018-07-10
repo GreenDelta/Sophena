@@ -7,6 +7,13 @@ public class Costs {
 	private Costs() {
 	}
 
+	public static double annuity(Project project, double firstYearValue,
+			double interestRate, double priceChangeFactor) {
+		double a = annuityFactor(project, interestRate);
+		double b = cashValueFactor(project, interestRate, priceChangeFactor);
+		return firstYearValue * a * b;
+	}
+
 	/**
 	 * Calculates the gross costs for the given net costs.
 	 * 

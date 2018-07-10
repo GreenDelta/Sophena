@@ -6,6 +6,7 @@ import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
 import sophena.math.costs.Fundings;
 import sophena.math.energetic.GeneratedElectricity;
+import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
@@ -37,6 +38,17 @@ class CostCalculator {
 
 	public CostResult calculate() {
 		CostResult r = new CostResult();
+		createItems(r);
+		finishCapitalCosts(r);
+		addOtherCosts(r);
+		r.netTotal.revenues = settings.electricityRevenues
+				* GeneratedElectricity.getTotal(energyResult);
+		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
+		calcTotals(r);
+		return r;
+	}
+
+	private void createItems(CostResult r) {
 		for (Producer producer : project.producers) {
 			if (producer.disabled)
 				continue;
@@ -48,17 +60,6 @@ class CostCalculator {
 			CostResultItem item = CostResultItem.create(entry);
 			handleItem(r, item);
 		}
-		handleNetItems(r);
-		finishCapitalCosts(r);
-		addOtherCosts(r);
-		r.netTotal.revenues = settings.electricityRevenues
-				* GeneratedElectricity.getTotal(energyResult);
-		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
-		calcTotals(r);
-		return r;
-	}
-
-	private void handleNetItems(CostResult r) {
 		for (CostResultItem item : CostResultItem
 				.forTransferStations(project)) {
 			handleItem(r, item);
@@ -85,37 +86,25 @@ class CostCalculator {
 		r.items.add(item);
 		r.netTotal.investments += item.costs.investment;
 		r.grossTotal.investments += Costs.gross(project, item.costs.investment);
-		addCapitalCosts(r, item);
-		addOperationCosts(r, item);
-	}
 
-	private void addCapitalCosts(CostResult r, CostResultItem item) {
-		double interestRate = withFunding ? settings.interestRateFunding
-				: settings.interestRate;
-		item.netCapitalCosts = CapitalCosts.get(item, project, interestRate);
+		// add capital costs
+		item.netCapitalCosts = CapitalCosts.get(item, project, ir());
 		item.grossCapitalCosts = Costs.gross(project, item.netCapitalCosts);
 		r.netTotal.capitalCosts += item.netCapitalCosts;
 		r.grossTotal.capitalCosts += item.grossCapitalCosts;
-	}
 
-	private void addOperationCosts(CostResult r, CostResultItem item) {
-		double opFactor = Costs.cashValueFactor(project, ir(),
-				settings.operationFactor);
-		double maFactor = Costs.cashValueFactor(project, ir(),
-				settings.maintenanceFactor);
-
-		double a = Costs.annuityFactor(project, ir());
-		double opNetto = item.costs.operation * settings.hourlyWage
-				* a
-				* opFactor
-				+ item.costs.investment
-						* (item.costs.repair / 100
-								+ item.costs.maintenance / 100)
-						* a * maFactor;
-		item.netOperationCosts = opNetto;
-		item.grossOperationCosts = Costs.gross(project, opNetto);
-		r.netTotal.operationCosts += opNetto;
-		r.grossTotal.operationCosts += Costs.gross(project, opNetto);
+		// add operation costs = operation + maintenance
+		double operationCosts = item.costs.operation * settings.hourlyWage;
+		double maintenanceCosts = item.costs.investment
+				* (item.costs.repair / 100 + item.costs.maintenance / 100);
+		double annuityOperations = Costs.annuity(project, operationCosts,
+				ir(), settings.operationFactor);
+		double annuityMaintenance = Costs.annuity(project, maintenanceCosts,
+				ir(), settings.maintenanceFactor);
+		item.netOperationCosts = annuityOperations + annuityMaintenance;
+		item.grossOperationCosts = Costs.gross(project, item.netOperationCosts);
+		r.netTotal.operationCosts += item.netOperationCosts;
+		r.grossTotal.operationCosts += item.grossOperationCosts;
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
@@ -161,15 +150,15 @@ class CostCalculator {
 	}
 
 	private void addOtherCosts(CostResult r) {
-		double share = (settings.insuranceShare
+		double investmentShare = (settings.insuranceShare
 				+ settings.otherShare
 				+ settings.administrationShare) / 100;
-
-		double a = Costs.annuityFactor(project, ir());
-		double b = Costs.cashValueFactor(project, ir(),
+		double otherCosts = investmentShare * r.netTotal.investments;
+		for (AnnualCostEntry e : settings.annualCosts) {
+			otherCosts += e.value;
+		}
+		r.netTotal.otherCosts = Costs.annuity(project, otherCosts, ir(),
 				settings.operationFactor);
-
-		r.netTotal.otherCosts = share * r.netTotal.investments * a * b;
 		r.grossTotal.otherCosts = Costs.gross(project, r.netTotal.otherCosts);
 	}
 
