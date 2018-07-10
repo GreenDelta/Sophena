@@ -1,7 +1,5 @@
 package sophena.math.costs;
 
-import java.util.EnumSet;
-
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.FuelDemand;
 import sophena.model.CostSettings;
@@ -41,12 +39,17 @@ public class FuelCosts {
 		Fuel fuel = p.fuelSpec.fuel;
 		if (fuel == null || fuel.group == null)
 			return settings.fossilFuelFactor;
-		EnumSet<FuelGroup> bioGroups = EnumSet.of(
-				FuelGroup.BIOGAS, FuelGroup.PELLETS,
-				FuelGroup.PLANTS_OIL, FuelGroup.WOOD);
-		return bioGroups.contains(fuel.group)
-				? settings.bioFuelFactor
-				: settings.fossilFuelFactor;
+		switch (fuel.group) {
+		case BIOGAS:
+		case PELLETS:
+		case PLANTS_OIL:
+		case WOOD:
+			return settings.bioFuelFactor;
+		case ELECTRICITY:
+			return settings.electricityFactor;
+		default:
+			return settings.fossilFuelFactor;
+		}
 	}
 
 	public static double netAshCosts(Producer p, EnergyResult result) {

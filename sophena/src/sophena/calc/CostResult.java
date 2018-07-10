@@ -19,6 +19,8 @@ public class CostResult {
 		public double otherCosts;
 		public double revenues;
 		public double annualCosts;
+
+		/** The heat generation costs in EUR/MWh */
 		public double heatGenerationCosts;
 
 	}

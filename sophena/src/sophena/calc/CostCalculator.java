@@ -138,6 +138,7 @@ class CostCalculator {
 
 		double a = Costs.annuityFactor(project, ir());
 		double b = Costs.cashValueFactor(project, ir(), priceChangeFactor);
+
 		item.netConsumtionCosts = netCosts * a * b;
 		item.grossConsumptionCosts = grossCosts * a * b;
 		r.netTotal.consumptionCosts += item.netConsumtionCosts;
