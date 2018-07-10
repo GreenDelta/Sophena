@@ -13,6 +13,7 @@ import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductEntry;
 import sophena.model.Project;
+import sophena.model.Stats;
 
 class CostCalculator {
 
@@ -45,9 +46,11 @@ class CostCalculator {
 		// add revenues
 		double revenuesElectricity = settings.electricityRevenues
 				* GeneratedElectricity.getTotal(energyResult);
-		// TODO: add revenues from heat
+		double revenuesHeat = settings.heatRevenues * usedHeat();
 		r.netTotal.revenues = Costs.annuity(project, revenuesElectricity, ir(),
-				settings.electricityRevenuesFactor);
+				settings.electricityRevenuesFactor)
+				+ Costs.annuity(project, revenuesHeat, ir(),
+						settings.heatRevenuesFactor);
 		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
 
 		calcTotals(r);
@@ -183,13 +186,13 @@ class CostCalculator {
 				+ r.grossTotal.otherCosts
 				- r.grossTotal.revenues;
 
-		double aQ = (energyResult.totalProducedHeat - energyResult.heatNetLoss);
-		if (aQ == 0) {
+		double Q = usedHeat();
+		if (Q == 0) {
 			r.netTotal.heatGenerationCosts = 0;
 			r.grossTotal.heatGenerationCosts = 0;
 		} else {
-			r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / aQ;
-			r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / aQ;
+			r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / Q;
+			r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / Q;
 		}
 	}
 
@@ -198,6 +201,14 @@ class CostCalculator {
 		return withFunding
 				? settings.interestRateFunding
 				: settings.interestRate;
+	}
+
+	/** The used heat in MWh */
+	private double usedHeat() {
+		double bufferLoss = Stats.sum(energyResult.bufferLoss);
+		return (energyResult.totalProducedHeat
+				- energyResult.heatNetLoss
+				- bufferLoss) * 1 / 1000d;
 	}
 
 }

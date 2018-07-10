@@ -103,7 +103,8 @@ class CostSheet {
 		Excel.cell(sheet, row + 3, 1, Math.round(cr.netTotal.capitalCosts));
 		Excel.cell(sheet, row + 3, 2, Math.round(cr.grossTotal.capitalCosts));
 		Excel.cell(sheet, row + 4, 1, Math.round(cr.netTotal.consumptionCosts));
-		Excel.cell(sheet, row + 4, 2, Math.round(cr.grossTotal.consumptionCosts));
+		Excel.cell(sheet, row + 4, 2,
+				Math.round(cr.grossTotal.consumptionCosts));
 		Excel.cell(sheet, row + 5, 1, Math.round(cr.netTotal.operationCosts));
 		Excel.cell(sheet, row + 5, 2, Math.round(cr.grossTotal.operationCosts));
 		Excel.cell(sheet, row + 6, 1, Math.round(cr.netTotal.otherCosts));
@@ -112,10 +113,10 @@ class CostSheet {
 		Excel.cell(sheet, row + 7, 2, Math.round(cr.grossTotal.revenues));
 		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualCosts));
 		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualCosts));
-		Excel.cell(sheet, row + 9, 1, Math.round((cr.netTotal.heatGenerationCosts
-				* 1000)));
-		Excel.cell(sheet, row + 9, 2, Math.round((cr.grossTotal.heatGenerationCosts
-				* 1000)));
+		Excel.cell(sheet, row + 9, 1,
+				Math.round((cr.netTotal.heatGenerationCosts)));
+		Excel.cell(sheet, row + 9, 2,
+				Math.round((cr.grossTotal.heatGenerationCosts)));
 	}
 
 	private class Item {
@@ -127,7 +128,8 @@ class CostSheet {
 		double operationCosts;
 	}
 
-	private void createItems(Sheet sheet, CellStyle style, int row, boolean isFunded) {
+	private void createItems(Sheet sheet, CellStyle style, int row,
+			boolean isFunded) {
 		List<Item> items = new ArrayList<>();
 		List<CostResultItem> cri;
 		if (isFunded) {
@@ -152,7 +154,8 @@ class CostSheet {
 			Excel.cell(sheet, row, 1, items.get(i).product);
 			Excel.cell(sheet, row, 2, Math.round(items.get(i).investment));
 			Excel.cell(sheet, row, 3, Math.round(items.get(i).capitalCosts));
-			Excel.cell(sheet, row, 4, Math.round(items.get(i).consumptionCosts));
+			Excel.cell(sheet, row, 4,
+					Math.round(items.get(i).consumptionCosts));
 			Excel.cell(sheet, row, 5, Math.round(items.get(i).operationCosts));
 			row++;
 		}

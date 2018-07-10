@@ -60,8 +60,7 @@ class CostTable {
 				idx -> Num.intStr(costs(idx).annualCosts) + " EUR/a");
 		table.emptyRow();
 		table.boldRow("Wärmegestehungskosten",
-				idx -> Num.intStr(costs(idx).heatGenerationCosts * 1000)
-						+ " EUR/MWh");
+				idx -> Num.intStr(costs(idx).heatGenerationCosts) + " EUR/MWh");
 	}
 
 	private CostResult.FieldSet costs(int idx) {

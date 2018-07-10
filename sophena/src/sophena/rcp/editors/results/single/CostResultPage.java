@@ -86,8 +86,8 @@ class CostResultPage extends FormPage {
 						netto.annualCosts,
 						brutto.annualCosts),
 				new Item("Wärmegestehungskosten", "EUR/MWh",
-						netto.heatGenerationCosts * 1000,
-						brutto.heatGenerationCosts * 1000)
+						netto.heatGenerationCosts,
+						brutto.heatGenerationCosts)
 		};
 	}
 

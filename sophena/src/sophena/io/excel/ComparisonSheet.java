@@ -77,7 +77,8 @@ class ComparisonSheet {
 		row++;
 	}
 
-	private void tableHead(Sheet sheet, CellStyle style, String title, String unit) {
+	private void tableHead(Sheet sheet, CellStyle style, String title,
+			String unit) {
 		Excel.cell(sheet, row, 0, title).setCellStyle(style);
 		Excel.cell(sheet, row, 1, "Ohne Förderung").setCellStyle(style);
 		Excel.cell(sheet, row, 2, "Mit Förderung").setCellStyle(style);
@@ -119,8 +120,7 @@ class ComparisonSheet {
 	private double getHeatCosts(CostResult res) {
 		if (res == null || res.netTotal == null)
 			return 0;
-		double val = res.netTotal.heatGenerationCosts;
-		return Math.round(val * 1000);
+		return Math.round(res.netTotal.heatGenerationCosts);
 	}
 
 	private double getAnnualCosts(CostResult res) {

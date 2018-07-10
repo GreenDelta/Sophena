@@ -78,13 +78,13 @@ class Page extends FormPage {
 			ProjectResult result = comparison.results[i];
 			if (withFunding) {
 				chart.addBar(project.name + " - mit Förderung",
-						1000 * result.costResult.netTotal.heatGenerationCosts,
+						result.costResult.netTotal.heatGenerationCosts,
 						Colors.darker(color, 40));
 			}
 			String name = withFunding ? project.name + " - ohne Förderung"
 					: project.name;
 			chart.addBar(name,
-					1000 * result.costResultFunding.netTotal.heatGenerationCosts,
+					result.costResultFunding.netTotal.heatGenerationCosts,
 					color);
 		}
 		chart.render(body, tk);
