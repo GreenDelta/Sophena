@@ -41,9 +41,15 @@ class CostCalculator {
 		createItems(r);
 		finishCapitalCosts(r);
 		addOtherCosts(r);
-		r.netTotal.revenues = settings.electricityRevenues
+
+		// add revenues
+		double revenuesElectricity = settings.electricityRevenues
 				* GeneratedElectricity.getTotal(energyResult);
+		// TODO: add revenues from heat
+		r.netTotal.revenues = Costs.annuity(project, revenuesElectricity, ir(),
+				settings.electricityRevenuesFactor);
 		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
+
 		calcTotals(r);
 		return r;
 	}
