@@ -44,7 +44,7 @@ class InfoPage extends FormPage {
 		descriptionText(tk, comp);
 		functionCombo(tk, comp);
 		rankText(tk, comp);
-		UtilisationRateSwitch.create(editor, comp, tk);
+		UtilisationRateSwitch.checkCreate(editor, comp, tk);
 		if (producer().hasProfile) {
 			ProfileSection.of(editor).create(body, tk);
 		}

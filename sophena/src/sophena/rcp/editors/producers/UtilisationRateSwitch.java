@@ -26,8 +26,18 @@ class UtilisationRateSwitch {
 		return editor.getProducer();
 	}
 
-	public static void create(ProducerEditor editor, Composite c, FormToolkit tk) {
+	/**
+	 * Create a switch for manuel input of the utilisation rate if appropiate
+	 * for the producer.
+	 */
+	public static void checkCreate(ProducerEditor editor, Composite c,
+			FormToolkit tk) {
 		if (editor == null || c == null || tk == null)
+			return;
+		Producer p = editor.getProducer();
+		if (p == null)
+			return;
+		if (p.boiler != null && p.boiler.isCoGenPlant)
 			return;
 		new UtilisationRateSwitch(editor).render(c, tk);
 	}
