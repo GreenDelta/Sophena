@@ -1,7 +1,5 @@
 package sophena.math.energetic;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,57 +7,84 @@ import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
-import sophena.model.Producer;
 import sophena.model.WoodAmountType;
 
 public class CalorificValueTest {
 
 	@Test
-	public void testGetProducer() {
-		double cv = CalorificValue.get(gasProducer().fuelSpec);
+	public void testFuelSpecNonWood() {
+		FuelSpec spec = new FuelSpec();
+		spec.fuel = gas();
+		double cv = CalorificValue.get(spec);
 		Assert.assertEquals(10, cv, 1e-10);
-		double cvWood = CalorificValue.get(woodProducer().fuelSpec);
-		Assert.assertEquals(1334.459, cvWood, 1e-10);
 	}
 
 	@Test
-	public void testGetFuelConsumption() {
-		double cv = CalorificValue.get(gasConsumption());
-		Assert.assertEquals(10, cv, 1e-10);
-		double cvWood = CalorificValue.get(woodConsumption());
-		Assert.assertEquals(1334.459, cvWood, 1e-10);
+	public void testFuelSpecWetWoodChips() {
+		FuelSpec spec = new FuelSpec();
+		spec.fuel = wood();
+		spec.waterContent = 20;
+		spec.woodAmountType = WoodAmountType.CHIPS;
+		double cv = CalorificValue.get(spec);
+		Assert.assertEquals(762.548, cv, 1e-10);
 	}
 
-	private Producer gasProducer() {
+	@Test
+	public void testFuelSpecDryWoodChips() {
 		FuelSpec spec = new FuelSpec();
-		spec.fuel = gas();
-		Producer p = new Producer();
-		p.fuelSpec = spec;
-		return p;
+		spec.fuel = wood();
+		spec.waterContent = 0;
+		spec.woodAmountType = WoodAmountType.CHIPS;
+		double cv = CalorificValue.get(spec);
+		Assert.assertEquals(788.32, cv, 1e-10);
 	}
 
-	private Producer woodProducer() {
+	@Test
+	public void testFuelSpecWetWoodTons() {
 		FuelSpec spec = new FuelSpec();
+		spec.fuel = wood();
+		spec.waterContent = 20;
+		spec.woodAmountType = WoodAmountType.MASS;
+		double cv = CalorificValue.get(spec);
+		Assert.assertEquals(4024.0, cv, 1e-10);
+	}
+
+	@Test
+	public void testFuelSpecDryWoodTons() {
+		FuelSpec spec = new FuelSpec();
+		spec.fuel = wood();
+		spec.waterContent = 0;
+		spec.woodAmountType = WoodAmountType.MASS;
+		double cv = CalorificValue.get(spec);
+		Assert.assertEquals(5200.0, cv, 1e-10);
+	}
+
+	@Test
+	public void testFuelSpecWetWoodLogs() {
+		FuelSpec spec = new FuelSpec();
+		spec.fuel = wood();
 		spec.waterContent = 20;
 		spec.woodAmountType = WoodAmountType.LOGS;
-		spec.fuel = wood();
-		Producer p = new Producer();
-		p.fuelSpec = spec;
-		return p;
+		double cv = CalorificValue.get(spec);
+		Assert.assertEquals(1334.459, cv, 1e-10);
 	}
 
-	private FuelConsumption gasConsumption() {
+	@Test
+	public void testConsumptionNonWood() {
 		FuelConsumption c = new FuelConsumption();
 		c.fuel = gas();
-		return c;
+		double cv = CalorificValue.get(c);
+		Assert.assertEquals(10, cv, 1e-10);
 	}
 
-	private FuelConsumption woodConsumption() {
+	@Test
+	public void testConsumptionWood() {
 		FuelConsumption c = new FuelConsumption();
 		c.fuel = wood();
 		c.woodAmountType = WoodAmountType.LOGS;
 		c.waterContent = 20;
-		return c;
+		double cv = CalorificValue.get(c);
+		Assert.assertEquals(1334.459, cv, 1e-10);
 	}
 
 	private Fuel gas() {
@@ -78,21 +103,4 @@ public class CalorificValueTest {
 		fuel.density = 379; // kg / solid m3
 		return fuel;
 	}
-
-	@Test
-	public void testForWood() {
-		double cf = CalorificValue.forWood(
-				1, // 1 t wood
-				0.2, // water content
-				5000); // calorific value in kWh / t dry mass
-		Assert.assertEquals(3864, cf, 1e-10);
-	}
-
-	@Test
-	public void testWoodMass() {
-		double wm = CalorificValue.woodMass(
-				wood(), WoodAmountType.CHIPS, 0.2);
-		assertEquals(0.9475 / 5, wm, 1e-10);
-	}
-
 }

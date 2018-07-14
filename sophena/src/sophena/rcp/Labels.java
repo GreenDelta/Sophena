@@ -13,7 +13,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 public final class Labels {
 

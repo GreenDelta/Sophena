@@ -15,7 +15,8 @@ public class CalorificValue {
 			return fuel.calorificValue;
 		// wood fuel
 		double waterContent = spec.waterContent / 100.0;
-		double woodMass = woodMass(fuel, spec.woodAmountType, waterContent);
+		double woodMass = woodMassFactor(fuel, spec.woodAmountType,
+				waterContent);
 		return forWood(woodMass, waterContent, fuel.calorificValue);
 	}
 
@@ -27,27 +28,31 @@ public class CalorificValue {
 		}
 		// wood fuel
 		double waterContent = c.waterContent / 100;
-		double woodMass = woodMass(c.fuel, c.woodAmountType, waterContent);
+		double woodMass = woodMassFactor(c.fuel, c.woodAmountType,
+				waterContent);
 		return forWood(woodMass, waterContent, c.fuel.calorificValue);
 	}
 
-	static double forWood(double woodMass, double waterContent,
+	private static double forWood(
+			double woodMass,
+			double waterContent,
 			double calorificValue) {
 		return woodMass
 				* ((1 - waterContent) * calorificValue - waterContent * 680);
 	}
 
 	/**
-	 * Calculates the real (wet) wood mass that goes into the calculation of a
-	 * calorific value for a wood fuel.
+	 * Calculates the factor for converting a given wood amount into (wet) mass
+	 * tons.
 	 */
-	static double woodMass(Fuel woodFuel, WoodAmountType type,
+	private static double woodMassFactor(
+			Fuel woodFuel,
+			WoodAmountType type,
 			double waterContent) {
-		if (woodFuel == null || waterContent >= 1.0) {
-			return 0.0;
-		}
+		if (woodFuel == null || type == null)
+			return 1.0;
 		if (type == WoodAmountType.MASS)
-			return 1 / (1 - waterContent);
+			return 1;
 		double f = 1.0; // mass
 		if (type == WoodAmountType.CHIPS) {
 			f = 0.4;
