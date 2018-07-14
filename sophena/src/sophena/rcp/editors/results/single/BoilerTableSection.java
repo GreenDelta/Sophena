@@ -112,12 +112,22 @@ class BoilerTableSection {
 	}
 
 	private void addBufferItem(List<Item> items, Producer[] producers) {
+		Item sep = new Item();
+		sep.separator = true;
+		items.add(sep);
 		Item item = new Item();
 		item.pos = producers.length;
 		item.name = "Pufferspeicher";
 		items.add(item);
-		if (project.heatNet != null && project.heatNet.bufferTank != null) {
-			double volume = project.heatNet.bufferTank.volume;
+		item.producedHeat = Num.intStr(result.totalBufferedHeat) + " kWh";
+		if (result.totalLoad > 0) {
+			double share = Math
+					.round(100 * result.totalBufferedHeat / result.totalLoad);
+			share = share > 100 ? 100 : share;
+			item.share = Num.str(share) + " %";
+		}
+		if (project.heatNet != null) {
+			double volume = project.heatNet.bufferTankVolume;
 			item.powerOrVolume = Num.intStr(volume) + " L";
 		}
 	}
@@ -153,6 +163,7 @@ class BoilerTableSection {
 		Integer fullLoadHours;
 		Double utilisationRate;
 		Integer clocks;
+		boolean separator = false;
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
@@ -164,6 +175,8 @@ class BoilerTableSection {
 			if (!(element instanceof Item) || col != 0)
 				return null;
 			Item item = (Item) element;
+			if (item.separator)
+				return null;
 			return item.pos < 0 ? img.getRed() : img.get(item.pos);
 		}
 
@@ -172,6 +185,8 @@ class BoilerTableSection {
 			if (!(element instanceof Item))
 				return null;
 			Item item = (Item) element;
+			if (item.separator)
+				return null;
 			switch (col) {
 			case 0:
 				return item.name;
