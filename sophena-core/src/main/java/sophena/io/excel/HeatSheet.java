@@ -15,7 +15,7 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.rcp.Labels;
+import sophena.Labels;
 
 class HeatSheet {
 

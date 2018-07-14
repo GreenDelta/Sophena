@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 public class LoadProfileReader {
 

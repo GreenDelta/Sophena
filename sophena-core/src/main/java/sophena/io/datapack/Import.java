@@ -36,7 +36,7 @@ import sophena.model.Project;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 public class Import implements Runnable {
 

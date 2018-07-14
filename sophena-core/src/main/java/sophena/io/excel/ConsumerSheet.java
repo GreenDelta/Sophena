@@ -10,7 +10,7 @@ import sophena.calc.ConsumerResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 class ConsumerSheet {
 

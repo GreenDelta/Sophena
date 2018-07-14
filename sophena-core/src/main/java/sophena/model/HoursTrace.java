@@ -2,7 +2,8 @@ package sophena.model;
 
 import java.time.MonthDay;
 
-import sophena.rcp.utils.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Arrays with elements mapped to annual hours are one of the key data
@@ -34,7 +35,8 @@ public class HoursTrace {
 			int endHour = getFirstHour(endDay) + 23;
 			return new int[] { startHour, endHour };
 		} catch (Exception e) {
-			Log.error(HoursTrace.class, "Failed to parse time span " + time, e);
+			Logger log = LoggerFactory.getLogger(HoursTrace.class);
+			log.error("Failed to parse time span " + time, e);
 			return new int[] { -1, -1 };
 		}
 	}
@@ -52,7 +54,8 @@ public class HoursTrace {
 			MonthDayHour end = MonthDayHour.parse(time.end);
 			return new int[] { getHour(start), getHour(end) };
 		} catch (Exception e) {
-			Log.error(HoursTrace.class, "Failed to parse time span " + time, e);
+			Logger log = LoggerFactory.getLogger(HoursTrace.class);
+			log.error("Failed to parse time span " + time, e);
 			return new int[] { -1, -1 };
 		}
 	}

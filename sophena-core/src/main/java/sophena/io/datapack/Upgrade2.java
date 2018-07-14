@@ -15,7 +15,7 @@ import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.ModelType;
-import sophena.rcp.Labels;
+import sophena.Labels;
 
 class Upgrade2 implements Upgrade {
 

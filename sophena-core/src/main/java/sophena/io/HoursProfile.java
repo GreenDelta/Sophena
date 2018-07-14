@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.model.Stats;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 import sophena.utils.Num;
 
 /**

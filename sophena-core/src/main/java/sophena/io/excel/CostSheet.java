@@ -10,8 +10,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
 import sophena.calc.ProjectResult;
-import sophena.rcp.Labels;
-import sophena.rcp.utils.Strings;
+import sophena.Labels;
+import sophena.utils.Strings;
 
 class CostSheet {
 
