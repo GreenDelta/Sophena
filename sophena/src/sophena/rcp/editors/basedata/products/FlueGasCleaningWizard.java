@@ -11,6 +11,7 @@ import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 public class FlueGasCleaningWizard implements IContent {
 
@@ -37,7 +38,7 @@ public class FlueGasCleaningWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Rauchgasreinigung");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(200, 520);
+		d.setMinimumPageSize(500, 625);
 		return d.open();
 	}
 
@@ -82,7 +83,8 @@ public class FlueGasCleaningWizard implements IContent {
 				cleaning.maxElectricityConsumption);
 		Texts.set(cleaningMethodText, cleaning.cleaningMethod);
 		Texts.set(cleaningTypeText, cleaning.cleaningType);
-		Texts.set(separationEfficiencyText, cleaning.separationEfficiency);
+		Texts.set(separationEfficiencyText,
+				Num.intStr(cleaning.separationEfficiency * 100));
 	}
 
 	@Override
@@ -94,7 +96,8 @@ public class FlueGasCleaningWizard implements IContent {
 				maxElectricityConsumptionText);
 		cleaning.cleaningMethod = cleaningMethodText.getText();
 		cleaning.cleaningType = cleaningTypeText.getText();
-		cleaning.separationEfficiency = Texts.getDouble(separationEfficiencyText);
+		cleaning.separationEfficiency = Texts
+				.getDouble(separationEfficiencyText) / 100;
 		cleaning.fuel = fuelText.getText();
 	}
 
@@ -119,4 +122,5 @@ public class FlueGasCleaningWizard implements IContent {
 	public ProductType getProductType() {
 		return ProductType.FLUE_GAS_CLEANING;
 	}
+
 }
