@@ -1,5 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 import org.eclipse.swt.SWT;
@@ -11,11 +12,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Defaults;
 import sophena.calc.ProjectLoad;
 import sophena.db.daos.ProjectDao;
+import sophena.math.energetic.HeatNets;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Colors;
@@ -30,13 +34,17 @@ class HeatNetSection {
 
 	private Composite comp;
 	private FormToolkit tk;
+	private Text lengthText;
+	private Text powerLossText;
 	private Text maxSimLoadText;
+
+	LoadCurveSection loadCurve;
 
 	HeatNetSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
 
-	private HeatNet heatNet() {
+	private HeatNet net() {
 		return editor.heatNet;
 	}
 
@@ -46,17 +54,22 @@ class HeatNetSection {
 		UI.gridLayout(comp, 4);
 		supplyTemperatureRow();
 		returnTemperatureRow();
+		lengthAndPowerLossRow();
 		maxLoadRow();
 		simultaneityFactorRow();
 		smoothingFactorRow();
 		maxSimultaneousLoadRow();
+		editor.bus.on(Arrays.asList(
+				"pipes", "supplyTemperature", "returnTemperature"),
+				this::colorTexts);
+		colorTexts();
 	}
 
 	private void supplyTemperatureRow() {
 		Text t = UI.formText(comp, tk, "Vorlauftemperatur");
-		Texts.on(t).init(heatNet().supplyTemperature).decimal().required()
+		Texts.on(t).init(net().supplyTemperature).decimal().required()
 				.onChanged(s -> {
-					heatNet().supplyTemperature = Num.read(s);
+					net().supplyTemperature = Num.read(s);
 					editor.bus.notify("supplyTemperature");
 					editor.setDirty();
 				});
@@ -66,14 +79,71 @@ class HeatNetSection {
 
 	private void returnTemperatureRow() {
 		Text t = UI.formText(comp, tk, "Rücklauftemperatur");
-		Texts.on(t).init(heatNet().returnTemperature).decimal().required()
+		Texts.on(t).init(net().returnTemperature).decimal().required()
 				.onChanged(s -> {
-					heatNet().returnTemperature = Num.read(s);
+					net().returnTemperature = Num.read(s);
 					editor.bus.notify("returnTemperature");
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "°C");
 		UI.filler(comp, tk);
+	}
+
+	private void lengthAndPowerLossRow() {
+		lengthText = UI.formText(comp, tk, "Trassenlänge");
+		Texts.on(lengthText).init(net().length).decimal().required()
+				.onChanged(s -> {
+					net().length = Texts.getDouble(lengthText);
+					textsUpdated();
+				});
+		UI.formLabel(comp, tk, "m");
+
+		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
+		button.setImage(Icon.CALCULATE_16.img());
+		powerLossText = UI.formText(comp, tk, "Verlustleistung");
+		Texts.on(powerLossText).init(net().powerLoss).decimal().required()
+				.onChanged(s -> {
+					net().powerLoss = Texts.getDouble(powerLossText);
+					textsUpdated();
+				});
+		UI.formLabel(comp, tk, "W/m");
+		UI.formLabel(comp, "");
+
+		Controls.onSelect(button, e -> {
+			HeatNet net = net();
+			net.length = HeatNets.getTotalSupplyLength(net);
+			net.powerLoss = HeatNets.calculatePowerLoss(net);
+			Texts.set(lengthText, net.length);
+			Texts.set(powerLossText, net.powerLoss);
+			textsUpdated();
+		});
+	}
+
+	private void textsUpdated() {
+		editor.setDirty();
+		if (loadCurve != null) {
+			loadCurve.setData(NetLoadProfile.get(net()));
+		}
+		colorTexts();
+	}
+
+	private void colorTexts() {
+		HeatNet net = net();
+		if (net.pipes.isEmpty()) {
+			lengthText.setBackground(Colors.forRequiredField());
+			powerLossText.setBackground(Colors.forRequiredField());
+			return;
+		}
+		if (Num.equal(net.powerLoss, HeatNets.calculatePowerLoss(net))) {
+			powerLossText.setBackground(Colors.forRequiredField());
+		} else {
+			powerLossText.setBackground(Colors.forModifiedDefault());
+		}
+		if (Num.equal(net.length, HeatNets.getTotalSupplyLength(net))) {
+			lengthText.setBackground(Colors.forRequiredField());
+		} else {
+			lengthText.setBackground(Colors.forModifiedDefault());
+		}
 	}
 
 	private void maxLoadRow() {
@@ -90,16 +160,16 @@ class HeatNetSection {
 				.onChanged(s -> {
 					double val = Num.read(s);
 					if (isDefault.apply(val)) {
-						heatNet().maxLoad = null;
+						net().maxLoad = null;
 						t.setBackground(Colors.forRequiredField());
 					} else {
-						heatNet().maxLoad = val;
+						net().maxLoad = val;
 						t.setBackground(Colors.forModifiedDefault());
 					}
 					Texts.set(maxSimLoadText, calculateMaxSimLoad());
 					editor.setDirty();
 				});
-		if (!isDefault.apply(heatNet().maxLoad))
+		if (!isDefault.apply(net().maxLoad))
 			t.setBackground(Colors.forModifiedDefault());
 		UI.formLabel(comp, tk, "kW");
 		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
@@ -109,9 +179,9 @@ class HeatNetSection {
 
 	private void simultaneityFactorRow() {
 		Text t = UI.formText(comp, tk, "Gleichzeitigkeitsfaktor");
-		Texts.set(t, heatNet().simultaneityFactor);
+		Texts.set(t, net().simultaneityFactor);
 		Texts.on(t).decimal().required().onChanged(s -> {
-			heatNet().simultaneityFactor = Texts.getDouble(t);
+			net().simultaneityFactor = Texts.getDouble(t);
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
 		});
@@ -132,10 +202,10 @@ class HeatNetSection {
 
 	private void smoothingFactorRow() {
 		Text t = UI.formText(comp, tk, "Glättungsfaktor");
-		Texts.set(t, heatNet().smoothingFactor);
+		Texts.set(t, net().smoothingFactor);
 		Texts.on(t).decimal().required().onChanged(s -> {
 			double val = Num.read(s);
-			heatNet().smoothingFactor = val;
+			net().smoothingFactor = val;
 			editor.setDirty();
 			if (Num.equal(val, Defaults.SMOOTHING_FACTOR)) {
 				t.setBackground(Colors.forRequiredField());
@@ -143,7 +213,7 @@ class HeatNetSection {
 				t.setBackground(Colors.forModifiedDefault());
 			}
 		});
-		if (!Num.equal(heatNet().smoothingFactor, Defaults.SMOOTHING_FACTOR))
+		if (!Num.equal(net().smoothingFactor, Defaults.SMOOTHING_FACTOR))
 			t.setBackground(Colors.forModifiedDefault());
 		HelpLink.create(comp, tk, "Glättungsfaktor", H.SmoothingFactor);
 		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
@@ -152,7 +222,7 @@ class HeatNetSection {
 	}
 
 	private double calculateMaxSimLoad() {
-		HeatNet net = heatNet();
+		HeatNet net = net();
 		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
 		double sim = net.simultaneityFactor * max;
 		return Math.ceil(sim);
@@ -161,7 +231,7 @@ class HeatNetSection {
 	private double calculateMaxLoad() {
 		try {
 			// net load from the net-specification on this page
-			double load = ProjectLoad.getNetLoad(heatNet());
+			double load = ProjectLoad.getNetLoad(net());
 			// add consumer loads from the consumers in the database
 			// we load them freshly from the database because the may changed
 			// in other editors

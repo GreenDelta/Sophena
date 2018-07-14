@@ -76,7 +76,7 @@ class BufferTankSection {
 		if (lowerBuffTemp != null) {
 			initial = lowerBuffTemp;
 		}
-		Texts.on(t).init(initial).decimal().onChanged(s -> {
+		Texts.on(t).init(initial).decimal().required().onChanged(s -> {
 			net().lowerBufferLoadTemperature = Texts.getDouble(t);
 			editor.setDirty();
 		});
