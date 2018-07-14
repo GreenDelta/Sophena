@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -32,7 +32,7 @@ public class BuildDb {
 			dataImport.run();
 			db.close();
 
-			File zip = new File("resources/database.zip");
+			File zip = new File("../sophena/resources/database.zip");
 			if (zip.exists()) {
 				System.out.println("Delete old databse: " + zip);
 				FileUtils.forceDelete(zip);
