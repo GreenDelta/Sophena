@@ -13,11 +13,18 @@ public class CostResult {
 	public static class FieldSet {
 
 		public double investments;
+		public double funding;
 		public double capitalCosts;
 		public double consumptionCosts;
 		public double operationCosts;
 		public double otherCosts;
-		public double revenues;
+
+		/** Revenues from generated electricity. */
+		public double revenuesElectricity;
+
+		/** Revenues from generated heat. */
+		public double revenuesHeat;
+
 		public double annualCosts;
 
 		/** The heat generation costs in EUR/MWh */

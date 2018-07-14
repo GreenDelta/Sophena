@@ -53,7 +53,8 @@ class ComparisonSheet {
 		ToDoubleFunction<CostResult> fn = result -> {
 			if (result == null || result.netTotal == null)
 				return 0;
-			return result.netTotal.revenues;
+			return result.netTotal.revenuesElectricity
+					+ result.netTotal.revenuesHeat;
 		};
 		double max = 0;
 		for (ProjectResult result : comparison.results) {
@@ -132,7 +133,8 @@ class ComparisonSheet {
 	private double getAnnualRevenues(CostResult res) {
 		if (res == null || res.netTotal == null)
 			return 0;
-		return Math.round(res.netTotal.revenues);
+		return Math.round(
+				res.netTotal.revenuesElectricity + res.netTotal.revenuesHeat);
 	}
 
 	private double getInvestment(CostResult res) {

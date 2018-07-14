@@ -40,17 +40,28 @@ class Page extends FormPage {
 		CostDetailsTable.of(comparison).render(body, tk);
 		KeyFigureTable.of(comparison).render(body, tk);
 		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
-		simpleCostsChart("Erlöse", "EUR", v -> v.revenues);
+
+		// revenues charts
+		simpleCostsChart("Wärmeerlöse", "EUR", v -> v.revenuesHeat);
+		boolean withElectricityRevenues = false;
+		for (ProjectResult r : comparison.results) {
+			if (r.costResult.netTotal.revenuesElectricity > 0) {
+				withElectricityRevenues = true;
+				break;
+			}
+		}
+		if (withElectricityRevenues) {
+			simpleCostsChart("Stromerlöse", "EUR", v -> v.revenuesElectricity);
+		}
+
 		simpleCostsChart("Jährliche Kosten", "EUR", v -> v.annualCosts);
 		heatCostsChart(withFunding);
 		form.reflow(true);
 	}
 
 	private boolean withFunding() {
-		for (Project project : comparison.projects) {
-			// TODO: check for total funding
-			if (project.costSettings != null
-					&& project.costSettings.funding > 0)
+		for (ProjectResult r : comparison.results) {
+			if (r.costResultFunding.netTotal.funding > 0)
 				return true;
 		}
 		return false;

@@ -40,11 +40,8 @@ class CostTable {
 		table.row("Investitionskosten",
 				idx -> Num.intStr(costs(idx).investments) + " EUR");
 		if (withFunding) {
-			table.row("Investitionsförderung", idx -> {
-				// TODO: total funding ...
-				double funding = result.projects[idx].costSettings.funding;
-				return Num.intStr(funding) + " EUR";
-			});
+			table.row("Investitionsförderung",
+					idx -> Num.intStr(costs(idx).funding) + " EUR");
 		}
 		table.row("Kapitalgebundene Kosten",
 				idx -> Num.intStr(costs(idx).capitalCosts) + " EUR/a");
@@ -54,8 +51,10 @@ class CostTable {
 				idx -> Num.intStr(costs(idx).operationCosts) + " EUR/a");
 		table.row("Sonstige Kosten",
 				idx -> Num.intStr(costs(idx).otherCosts) + " EUR/a");
-		table.row("Erlöse",
-				idx -> Num.intStr(costs(idx).revenues) + " EUR/a");
+		table.row("Wärmeerlöse",
+				idx -> Num.intStr(costs(idx).revenuesHeat) + " EUR/a");
+		table.row("Stromerlöse",
+				idx -> Num.intStr(costs(idx).revenuesElectricity) + " EUR/a");
 		table.row("Kosten - Erlöse",
 				idx -> Num.intStr(costs(idx).annualCosts) + " EUR/a");
 		table.emptyRow();

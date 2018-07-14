@@ -46,12 +46,17 @@ class CostCalculator {
 		// add revenues
 		double revenuesElectricity = settings.electricityRevenues
 				* GeneratedElectricity.getTotal(energyResult);
+		r.netTotal.revenuesElectricity = Costs.annuity(project,
+				revenuesElectricity, ir(),
+				settings.electricityRevenuesFactor);
+		r.grossTotal.revenuesElectricity = Costs.gross(project,
+				r.netTotal.revenuesElectricity);
+
 		double revenuesHeat = settings.heatRevenues * usedHeat();
-		r.netTotal.revenues = Costs.annuity(project, revenuesElectricity, ir(),
-				settings.electricityRevenuesFactor)
-				+ Costs.annuity(project, revenuesHeat, ir(),
-						settings.heatRevenuesFactor);
-		r.grossTotal.revenues = Costs.gross(project, r.netTotal.revenues);
+		r.netTotal.revenuesHeat = Costs.annuity(project, revenuesHeat, ir(),
+				settings.heatRevenuesFactor);
+		r.grossTotal.revenuesHeat = Costs.gross(project,
+				r.netTotal.revenuesHeat);
 
 		calcTotals(r);
 		return r;
@@ -149,7 +154,10 @@ class CostCalculator {
 	private void finishCapitalCosts(CostResult r) {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
-			bonus += Fundings.get(project);
+			double funding = Fundings.get(project);
+			r.netTotal.funding = funding;
+			r.grossTotal.funding = Costs.gross(project, funding);
+			bonus += funding;
 		}
 		if (bonus <= 0)
 			return;
@@ -177,7 +185,8 @@ class CostCalculator {
 				+ r.netTotal.consumptionCosts
 				+ r.netTotal.operationCosts
 				+ r.netTotal.otherCosts
-				- r.netTotal.revenues;
+				- r.netTotal.revenuesElectricity
+				- r.netTotal.revenuesHeat;
 
 		// Note that there can be different VAT rates in the cost categories
 		// so we have to calculate each sum separately
@@ -185,7 +194,8 @@ class CostCalculator {
 				+ r.grossTotal.consumptionCosts
 				+ r.grossTotal.operationCosts
 				+ r.grossTotal.otherCosts
-				- r.grossTotal.revenues;
+				- r.grossTotal.revenuesElectricity
+				- r.grossTotal.revenuesHeat;
 
 		double Q = usedHeat();
 		if (Q == 0) {

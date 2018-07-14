@@ -73,7 +73,7 @@ class CostSheet {
 	}
 
 	private void resultHead(Sheet sheet, CellStyle style, int row) {
-
+		// TODO: fundings; revenues from heat ...
 		Excel.cell(sheet, row + 1, 1, "Netto").setCellStyle(style);
 		Excel.cell(sheet, row + 1, 2, "Brutto").setCellStyle(style);
 		Excel.cell(sheet, row + 2, 0, "Investitionskosten in EUR");
@@ -109,8 +109,8 @@ class CostSheet {
 		Excel.cell(sheet, row + 5, 2, Math.round(cr.grossTotal.operationCosts));
 		Excel.cell(sheet, row + 6, 1, Math.round(cr.netTotal.otherCosts));
 		Excel.cell(sheet, row + 6, 2, Math.round(cr.grossTotal.otherCosts));
-		Excel.cell(sheet, row + 7, 1, Math.round(cr.netTotal.revenues));
-		Excel.cell(sheet, row + 7, 2, Math.round(cr.grossTotal.revenues));
+		Excel.cell(sheet, row + 7, 1, Math.round(cr.netTotal.revenuesElectricity));
+		Excel.cell(sheet, row + 7, 2, Math.round(cr.grossTotal.revenuesElectricity));
 		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualCosts));
 		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualCosts));
 		Excel.cell(sheet, row + 9, 1,

@@ -1,5 +1,8 @@
 package sophena.rcp.editors.results.single;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -12,7 +15,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.CostResult;
 import sophena.calc.ProjectResult;
-import sophena.model.Project;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -20,12 +22,10 @@ import sophena.utils.Num;
 class CostResultPage extends FormPage {
 
 	private ProjectResult result;
-	private Project project;
 
 	public CostResultPage(ResultEditor editor) {
 		super(editor, "sophena.CostResultPage", "Wirtschaftlichkeit");
 		this.result = editor.result;
-		this.project = editor.project;
 	}
 
 	@Override
@@ -33,62 +33,62 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		// TODO: check for total funding
-		boolean withFunding = project.costSettings != null
-				&& project.costSettings.funding > 0;
+		boolean withFunding = result.costResultFunding.netTotal.funding > 0;
 		if (withFunding) {
-			fillSection(
-					UI.formSection(body, tk,
-							"Wirtschaftlichkeit - mit Förderung"),
-					result.costResultFunding);
+			fillSection(UI.formSection(body, tk,
+					"Wirtschaftlichkeit - mit Förderung"),
+					result.costResultFunding, true);
 			CostDetailsTable.create(result.costResultFunding,
 					UI.formSection(body, tk, "Kostendetails - mit Förderung"));
 		}
 		fillSection(
 				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
-				result.costResult);
+				result.costResult, false);
 		CostDetailsTable.create(result.costResult,
 				UI.formSection(body, tk, "Kostendetails - ohne Förderung"));
 		form.reflow(true);
 	}
 
-	private void fillSection(Composite c, CostResult result) {
+	private void fillSection(Composite c, CostResult result,
+			boolean withFunding) {
 		TableViewer table = Tables.createViewer(c, "", "netto", "brutto");
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
-		table.setInput(getItems(result));
+		table.setInput(getItems(result, withFunding));
 		Tables.rightAlignColumns(table, 1, 2);
 	}
 
-	private Item[] getItems(CostResult result) {
+	private List<Item> getItems(CostResult result, boolean withFunding) {
 		CostResult.FieldSet netto = result.netTotal;
 		CostResult.FieldSet brutto = result.grossTotal;
-		return new Item[] {
-				new Item("Investitionskosten", "EUR",
-						netto.investments,
-						brutto.investments),
-				new Item("Kapitalgebundene Kosten", "EUR/a",
-						netto.capitalCosts,
-						brutto.capitalCosts),
-				new Item("Bedarfsgebundene Kosten", "EUR/a",
-						netto.consumptionCosts,
-						brutto.consumptionCosts),
-				new Item("Betriebsgebundene Kosten", "EUR/a",
-						netto.operationCosts,
-						brutto.operationCosts),
-				new Item("Sonstige Kosten", "EUR/a",
-						netto.otherCosts,
-						brutto.otherCosts),
-				new Item("Stromerlöse", "EUR/a",
-						netto.revenues,
-						brutto.revenues),
-				new Item("Kosten - Erlöse", "EUR/a",
-						netto.annualCosts,
-						brutto.annualCosts),
-				new Item("Wärmegestehungskosten", "EUR/MWh",
-						netto.heatGenerationCosts,
-						brutto.heatGenerationCosts)
-		};
+		List<Item> items = new ArrayList<>();
+		items.add(new Item("Investitionskosten", "EUR",
+				netto.investments, brutto.investments));
+		if (withFunding) {
+			items.add(new Item("Investitionsförderung", "EUR",
+					netto.funding, brutto.funding));
+		}
+		items.add(new Item("Kapitalgebundene Kosten", "EUR/a",
+				netto.capitalCosts, brutto.capitalCosts));
+		items.add(new Item("Bedarfsgebundene Kosten", "EUR/a",
+				netto.consumptionCosts, brutto.consumptionCosts));
+		items.add(new Item("Betriebsgebundene Kosten", "EUR/a",
+				netto.operationCosts, brutto.operationCosts));
+		items.add(new Item("Sonstige Kosten", "EUR/a",
+				netto.otherCosts, brutto.otherCosts));
+		items.add(new Item("Wärmeerlöse", "EUR/a",
+				netto.revenuesHeat, brutto.revenuesHeat));
+		if (netto.revenuesElectricity > 0) {
+			items.add(new Item("Stromerlöse", "EUR/a",
+					netto.revenuesElectricity, brutto.revenuesElectricity));
+		}
+		items.add(new Item("Kosten - Erlöse", "EUR/a",
+				netto.annualCosts,
+				brutto.annualCosts));
+		items.add(new Item("Wärmegestehungskosten", "EUR/MWh",
+				netto.heatGenerationCosts,
+				brutto.heatGenerationCosts));
+		return items;
 	}
 
 	private class Item {

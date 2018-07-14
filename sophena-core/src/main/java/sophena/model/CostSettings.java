@@ -62,7 +62,7 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "funding_heat_net")
 	public double fundingHeatNet;
 
-	/** Funding for transfer stations in EUR */
+	/** Funding for transfer stations in EUR/piece */
 	@Column(name = "funding_transfer_stations")
 	public double fundingTransferStations;
 
@@ -82,7 +82,7 @@ public class CostSettings extends AbstractEntity {
 
 	@ElementCollection
 	@CollectionTable(name = "tbl_annual_costs",
-			joinColumns = @JoinColumn(name = "f_project"))
+		joinColumns = @JoinColumn(name = "f_project"))
 	public List<AnnualCostEntry> annualCosts = new ArrayList<>();
 
 	// prices change factors

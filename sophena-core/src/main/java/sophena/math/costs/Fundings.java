@@ -1,8 +1,9 @@
 package sophena.math.costs;
 
-import sophena.model.CostSettings;
-import sophena.model.FuelGroup;
+import sophena.model.Consumer;
 import sophena.model.Producer;
+import sophena.model.ProductCosts;
+import sophena.model.ProductType;
 import sophena.model.Project;
 
 public class Fundings {
@@ -10,9 +11,8 @@ public class Fundings {
 	public static double get(Project project) {
 		if (project == null || project.costSettings == null)
 			return 0;
-		CostSettings settings = project.costSettings;
-		return settings.funding +
-				settings.fundingTransferStations
+		return project.costSettings.funding
+				+ getForTransferStations(project)
 				+ getForBiomassBoilers(project)
 				+ getForHeatNet(project);
 	}
@@ -25,29 +25,12 @@ public class Fundings {
 		for (Producer p : project.producers) {
 			if (p.disabled || p.productGroup == null)
 				continue;
-			if (!isBiomass(p.productGroup.fuelGroup))
-				continue;
-			if (p.boiler != null) {
+			ProductType type = p.productGroup.type;
+			if (p.boiler != null && type == ProductType.BIOMASS_BOILER) {
 				sum += f * p.boiler.maxPower;
-			} else if (p.hasProfile) {
-				sum += f * p.profileMaxPower;
 			}
 		}
 		return sum;
-	}
-
-	private static boolean isBiomass(FuelGroup g) {
-		if (g == null)
-			return false;
-		switch (g) {
-		case BIOGAS:
-		case PELLETS:
-		case PLANTS_OIL:
-		case WOOD:
-			return true;
-		default:
-			return false;
-		}
 	}
 
 	private static double getForHeatNet(Project project) {
@@ -57,4 +40,24 @@ public class Fundings {
 		return project.heatNet.length * f;
 	}
 
+	private static double getForTransferStations(Project project) {
+		double f = project.costSettings.fundingTransferStations;
+		if (f <= 0)
+			return 0;
+		double count = 0;
+		for (Consumer c : project.consumers) {
+			if (c.disabled)
+				continue;
+			if (c.transferStation != null) {
+				count += 1.0;
+				continue;
+			}
+			ProductCosts cost = c.transferStationCosts;
+			if (cost != null && cost.investment > 0) {
+				count += 1.0;
+				continue;
+			}
+		}
+		return f * count;
+	}
 }
