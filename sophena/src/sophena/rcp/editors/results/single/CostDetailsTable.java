@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Composite;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
 import sophena.rcp.Labels;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 class CostDetailsTable {
 
@@ -29,7 +29,8 @@ class CostDetailsTable {
 	}
 
 	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Produktbereich", "Produkt",
+		TableViewer table = Tables.createViewer(comp, "Produktbereich",
+				"Produkt",
 				"Investitionskosten", "Kapitalgebundene Kosten",
 				"Bedarfsgebundene Kosten", "Betriebsgebundene Kosten");
 		table.setLabelProvider(new Label());

@@ -1,4 +1,4 @@
-package sophena.db;
+package sophena.rcp;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
+import sophena.db.Database;
 import sophena.io.datapack.Import;
 
 /**

@@ -12,6 +12,8 @@ import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.utils.Strings;
+
 /**
  * Managed SWT colors: the colors are created on demand and disposed when the
  * application is closed.

@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.Fuel;
 import sophena.rcp.M;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 class FuelWizard extends Wizard {
 

@@ -21,10 +21,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.RootEntityDao;
 import sophena.model.RootEntity;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Strings;
 
 public class SearchDialog<T extends RootEntity> extends FormDialog {
 
@@ -143,7 +143,8 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 			String label = labelFn.apply((T) obj);
 			if (Strings.nullOrEmpty(label))
 				return false;
-			String[] parts = filterText.getText().trim().toLowerCase().split(" ");
+			String[] parts = filterText.getText().trim().toLowerCase()
+					.split(" ");
 			String n = label.toLowerCase();
 			for (String part : parts) {
 				if (!n.contains(part))

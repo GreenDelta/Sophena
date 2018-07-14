@@ -37,10 +37,10 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Log;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 public class ProducerProfileWizard extends Wizard {
 

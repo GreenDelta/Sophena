@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
 import sophena.rcp.Icon;
+import sophena.utils.Strings;
 
 public class Popup {
 

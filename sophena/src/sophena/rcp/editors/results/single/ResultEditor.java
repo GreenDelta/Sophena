@@ -17,7 +17,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Rcp;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 public class ResultEditor extends Editor {
 

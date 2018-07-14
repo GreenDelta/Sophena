@@ -23,8 +23,8 @@ import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 class OverviewPage extends FormPage {
 

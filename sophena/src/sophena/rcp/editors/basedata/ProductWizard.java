@@ -23,9 +23,9 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 public class ProductWizard extends Wizard {
 

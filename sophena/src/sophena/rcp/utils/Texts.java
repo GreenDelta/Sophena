@@ -11,6 +11,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Text;
 
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 public final class Texts {
 
@@ -179,7 +180,7 @@ public final class Texts {
 			});
 			return this;
 		}
-		
+
 		public TextDispatch validate(Runnable fn) {
 			if (text == null || fn == null)
 				return this;

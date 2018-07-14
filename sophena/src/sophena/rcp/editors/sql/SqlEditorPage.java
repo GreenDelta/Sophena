@@ -23,8 +23,8 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 public class SqlEditorPage extends FormPage {
 

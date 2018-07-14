@@ -28,13 +28,13 @@ import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Lists;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 class PipeSection {
 

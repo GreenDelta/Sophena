@@ -21,10 +21,10 @@ import sophena.calc.ConsumerResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 class ConsumerResultPage extends FormPage {
 
@@ -68,7 +68,8 @@ class ConsumerResultPage extends FormPage {
 			totalDemand += cr.heatDemand;
 			totalLoad += item.heatingLoad;
 		}
-		Collections.sort(items, (i1, i2) -> Strings.compare(i1.label, i2.label));
+		Collections.sort(items,
+				(i1, i2) -> Strings.compare(i1.label, i2.label));
 		Item netItem = addNetItem(items);
 		Item totalItem = new Item();
 		totalItem.isTotal = true;

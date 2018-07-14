@@ -22,10 +22,10 @@ import sophena.rcp.M;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Strings;
 
 class EntrySection {
 
@@ -51,7 +51,8 @@ class EntrySection {
 		fillEntries();
 		Action info = Actions.create("Information",
 				Icon.INFO_16.des(), this::info);
-		Action addGlobal = Actions.create("Product aus Produktdatenbank hinzufügen",
+		Action addGlobal = Actions.create(
+				"Product aus Produktdatenbank hinzufügen",
 				Icon.SEARCH_16.des(), this::addGlobal);
 		Action addPrivate = Actions.create("Neues Produkt erstellen",
 				Icon.ADD_16.des(), this::addPrivate);
@@ -65,7 +66,8 @@ class EntrySection {
 
 	private TableViewer createTable(Composite comp) {
 		TableViewer table = Tables.createViewer(comp, Labels.get(type),
-				"Anzahl", "Investitionskosten", "Nutzungsdauer", "Instandsetzung",
+				"Anzahl", "Investitionskosten", "Nutzungsdauer",
+				"Instandsetzung",
 				"Wartung und Inspektion", "Aufwand für Bedienen");
 		double w = 1d / 7d;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);

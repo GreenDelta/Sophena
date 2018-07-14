@@ -19,9 +19,9 @@ import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 class StateWizard extends Wizard {
 
@@ -153,7 +153,8 @@ class StateWizard extends Wizard {
 				state.index = Texts.getInt(indexText);
 				state.isDefault = isDefaultCheck.getSelection();
 				state.heatingLimit = Texts.getDouble(heatingLimitText);
-				state.antifreezingTemperature = Texts.getDouble(antifreezingText);
+				state.antifreezingTemperature = Texts
+						.getDouble(antifreezingText);
 				state.waterFraction = Texts.getDouble(waterFractionText);
 				state.loadHours = Texts.getInt(loadHoursText);
 			}
@@ -166,7 +167,8 @@ class StateWizard extends Wizard {
 					if (type != other.type || Objects.equals(state, other))
 						continue;
 					if (idx == other.index)
-						return err("Der Index " + idx + " ist bereits vergeben.");
+						return err(
+								"Der Index " + idx + " ist bereits vergeben.");
 					if (isDefault && other.isDefault)
 						return err("Ein anderer Gebäudezustand ist bereits als "
 								+ "Voreinstellung ausgewählt.");

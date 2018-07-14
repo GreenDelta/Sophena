@@ -4,6 +4,8 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
+import sophena.utils.Strings;
+
 public class TableColumnSorter<T> extends ViewerSorter {
 	private Class<T> contentType;
 	private int column;

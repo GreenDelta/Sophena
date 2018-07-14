@@ -14,6 +14,7 @@ import sophena.model.PipeType;
 import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
+import sophena.utils.Strings;
 
 public class Sorters {
 
@@ -40,7 +41,8 @@ public class Sorters {
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
 			if (p1.isCoGenPlant) {
-				if (Math.abs(p1.maxPowerElectric - p2.maxPowerElectric) > 1e-6) {
+				if (Math.abs(
+						p1.maxPowerElectric - p2.maxPowerElectric) > 1e-6) {
 					return Double.compare(p1.maxPowerElectric,
 							p2.maxPowerElectric);
 				}

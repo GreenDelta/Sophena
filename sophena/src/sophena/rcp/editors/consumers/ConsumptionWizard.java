@@ -27,10 +27,10 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 class ConsumptionWizard extends Wizard {
 

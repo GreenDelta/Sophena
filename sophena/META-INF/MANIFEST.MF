@@ -48,4 +48,5 @@ Bundle-ClassPath: .,
  libs/slf4j-api-1.7.25.jar,
  libs/slf4j-log4j12-1.7.25.jar,
  libs/xmlbeans-2.6.0.jar,
- libs/zt-zip-1.13.jar
+ libs/zt-zip-1.13.jar,
+ libs/sophena-core-2.0.0.jar

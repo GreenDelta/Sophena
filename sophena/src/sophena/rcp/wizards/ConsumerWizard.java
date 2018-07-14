@@ -34,9 +34,9 @@ import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Strings;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 public class ConsumerWizard extends Wizard {
 

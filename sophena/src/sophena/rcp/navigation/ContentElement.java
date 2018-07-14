@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import sophena.model.ModelType;
 import sophena.model.descriptors.Descriptor;
-import sophena.rcp.utils.Strings;
+import sophena.utils.Strings;
 
 abstract class ContentElement<T extends Descriptor> implements
 		NavigationElement {
