@@ -110,7 +110,7 @@ class OverviewPage extends FormPage {
 		s.content = () -> {
 			List<Consumer> list = new ArrayList<>();
 			for (Consumer c : project().consumers) {
-				if (c.transferStation != null) {
+				if (!c.disabled && c.transferStation != null) {
 					list.add(c);
 				}
 			}

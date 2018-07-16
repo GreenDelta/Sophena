@@ -1,5 +1,8 @@
 package sophena.calc;
 
+import java.util.List;
+import java.util.function.Function;
+
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
@@ -8,8 +11,6 @@ import sophena.math.costs.Fundings;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
-import sophena.model.HeatNet;
-import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductEntry;
 import sophena.model.Project;
@@ -74,29 +75,23 @@ class CostCalculator {
 			CostResultItem item = CostResultItem.create(entry);
 			handleItem(r, item);
 		}
-		for (CostResultItem item : CostResultItem
-				.forTransferStations(project)) {
+		handleItems(r, CostResultItem::forTransferStations);
+		handleItems(r, CostResultItem::forHeatRecoveries);
+		handleItems(r, CostResultItem::forFlueGasCleanings);
+		handleItem(r, CostResultItem.forBuffer(project));
+		handleItems(r, CostResultItem::forPipes);
+	}
+
+	private void handleItems(CostResult r,
+			Function<Project, List<CostResultItem>> generator) {
+		for (CostResultItem item : generator.apply(project)) {
 			handleItem(r, item);
-		}
-		for (CostResultItem item : CostResultItem.forHeatRecoveries(project)) {
-			handleItem(r, item);
-		}
-		for (CostResultItem item : CostResultItem
-				.forFlueGasCleanings(project)) {
-			handleItem(r, item);
-		}
-		HeatNet net = project.heatNet;
-		if (net == null)
-			return;
-		CostResultItem item = CostResultItem.createForBuffer(net);
-		handleItem(r, item);
-		for (HeatNetPipe pipe : net.pipes) {
-			CostResultItem pipeItem = CostResultItem.create(pipe);
-			handleItem(r, pipeItem);
 		}
 	}
 
 	private void handleItem(CostResult r, CostResultItem item) {
+		if (item == null)
+			return;
 		r.items.add(item);
 		r.netTotal.investments += item.costs.investment;
 		r.grossTotal.investments += Costs.gross(project, item.costs.investment);

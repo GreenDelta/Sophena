@@ -3,15 +3,19 @@ package sophena.rcp.editors.results.single;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
 import sophena.rcp.Labels;
+import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.utils.Num;
 import sophena.utils.Strings;
@@ -29,10 +33,13 @@ class CostDetailsTable {
 	}
 
 	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Produktbereich",
+		TableViewer table = Tables.createViewer(comp,
+				"Produktbereich",
 				"Produkt",
-				"Investitionskosten", "Kapitalgebundene Kosten",
-				"Bedarfsgebundene Kosten", "Betriebsgebundene Kosten");
+				"Investitionskosten",
+				"Kapitalgebundene Kosten",
+				"Bedarfsgebundene Kosten",
+				"Betriebsgebundene Kosten");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 2, 3, 4, 5);
@@ -46,7 +53,7 @@ class CostDetailsTable {
 			Item item = new Item();
 			item.category = Labels.get(r.productType);
 			item.product = r.label;
-			item.investment = s(r.costs.investment, "EUR");
+			item.investment = r.costs.investment;
 			item.capitalCosts = s(r.netCapitalCosts, "EUR/a");
 			item.consumptionCosts = s(r.netConsumtionCosts, "EUR/a");
 			item.operationCosts = s(r.netOperationCosts, "EUR/a");
@@ -79,17 +86,33 @@ class CostDetailsTable {
 	private class Item {
 		String category;
 		String product;
-		String investment;
+		double investment;
 		String capitalCosts;
 		String consumptionCosts;
 		String operationCosts;
 		boolean displayCategory = true;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends LabelProvider
+			implements ITableLabelProvider, ITableColorProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
+			return null;
+		}
+
+		@Override
+		public Color getBackground(Object obj, int col) {
+			return null;
+		}
+
+		@Override
+		public Color getForeground(Object obj, int col) {
+			if (!(obj instanceof Item))
+				return null;
+			Item item = (Item) obj;
+			if (col == 2 && item.investment == 0.0)
+				return Colors.getSystemColor(SWT.COLOR_RED);
 			return null;
 		}
 
@@ -104,7 +127,7 @@ class CostDetailsTable {
 			case 1:
 				return item.product;
 			case 2:
-				return item.investment;
+				return s(item.investment, "EUR");
 			case 3:
 				return item.capitalCosts;
 			case 4:

@@ -53,37 +53,41 @@ public class CostResultItem {
 		return copy(producer.costs, item);
 	}
 
-	static CostResultItem createForBuffer(HeatNet net) {
-		if (net == null)
+	static CostResultItem forBuffer(Project project) {
+		if (project == null || project.heatNet == null)
 			return new CostResultItem();
-		CostResultItem item = init(net.bufferTank,
-				ProductType.BUFFER_TANK,
-				"Pufferspeicher");
-		return copy(net.bufferTankCosts, item);
+		CostResultItem item = init(project.heatNet.bufferTank,
+				ProductType.BUFFER_TANK, "Pufferspeicher");
+		return copy(project.heatNet.bufferTankCosts, item);
 	}
 
-	static CostResultItem create(HeatNetPipe pipe) {
-		if (pipe == null)
-			return new CostResultItem();
-		CostResultItem item = init(pipe.pipe,
-				ProductType.PIPE,
-				"Wärmeleitung");
-		return copy(pipe.costs, item);
+	static List<CostResultItem> forPipes(Project project) {
+		if (project == null || project.heatNet == null)
+			return Collections.emptyList();
+		List<CostResultItem> items = new ArrayList<>();
+		for (HeatNetPipe pipe : project.heatNet.pipes) {
+			if (!shouldAdd(pipe.pipe, pipe.costs))
+				continue;
+			CostResultItem item = init(pipe.pipe, ProductType.PIPE, "Wärmeleitung");
+			copy(pipe.costs, item);
+			items.add(item);
+		}
+		return items;
 	}
 
 	static List<CostResultItem> forTransferStations(Project project) {
 		if (project == null)
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
-		for (Consumer consumer : project.consumers) {
-			if (consumer.disabled)
+		for (Consumer c : project.consumers) {
+			if (c.disabled)
 				continue;
-			if (ProductCosts.isEmpty(consumer.transferStationCosts))
+			if (!shouldAdd(c.transferStation, c.transferStationCosts))
 				continue;
-			CostResultItem item = init(consumer.transferStation,
+			CostResultItem item = init(c.transferStation,
 					ProductType.TRANSFER_STATION,
-					consumer.name + " - Hausübergabestation");
-			items.add(copy(consumer.transferStationCosts, item));
+					c.name + " - Hausübergabestation");
+			items.add(copy(c.transferStationCosts, item));
 		}
 		return items;
 	}
@@ -92,15 +96,15 @@ public class CostResultItem {
 		if (project == null)
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
-		for (Producer producer : project.producers) {
-			if (producer.disabled)
+		for (Producer p : project.producers) {
+			if (p.disabled)
 				continue;
-			if (ProductCosts.isEmpty(producer.heatRecoveryCosts))
+			if (!shouldAdd(p.heatRecovery, p.heatRecoveryCosts))
 				continue;
-			CostResultItem item = init(producer.heatRecovery,
+			CostResultItem item = init(p.heatRecovery,
 					ProductType.HEAT_RECOVERY,
-					producer.name + "- Wärmerückgewinnung");
-			items.add(copy(producer.heatRecoveryCosts, item));
+					p.name + "- Wärmerückgewinnung");
+			items.add(copy(p.heatRecoveryCosts, item));
 		}
 		return items;
 	}
@@ -110,14 +114,25 @@ public class CostResultItem {
 			return Collections.emptyList();
 		List<CostResultItem> items = new ArrayList<>();
 		for (FlueGasCleaningEntry e : project.flueGasCleaningEntries) {
-			if (ProductCosts.isEmpty(e.costs))
+			if (!shouldAdd(e.product, e.costs))
 				continue;
-			CostResultItem item = init(e.product,
-					ProductType.FLUE_GAS_CLEANING,
+			CostResultItem item = init(e.product, ProductType.FLUE_GAS_CLEANING,
 					"Rauchgasreinigung");
 			items.add(copy(e.costs, item));
 		}
 		return items;
+	}
+
+	/**
+	 * When a cost item is linked to a product it should be always displayed in
+	 * the results even if no costs are provided for that product (because is is
+	 * typically an error that should be shown to the user).
+	 */
+	private static boolean shouldAdd(AbstractProduct product,
+			ProductCosts costs) {
+		if (product != null)
+			return true;
+		return !ProductCosts.isEmpty(costs);
 	}
 
 	private static CostResultItem init(AbstractProduct product,
@@ -128,12 +143,15 @@ public class CostResultItem {
 			item.productType = defaultType;
 		} else {
 			item.label = product.name;
-			item.productType = product.type != null ? product.type : defaultType;
+			item.productType = product.type != null
+					? product.type
+					: defaultType;
 		}
 		return item;
 	}
 
-	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {
+	private static CostResultItem copy(ProductCosts costs,
+			CostResultItem item) {
 		if (costs == null) {
 			item.costs = new ProductCosts();
 		} else {
