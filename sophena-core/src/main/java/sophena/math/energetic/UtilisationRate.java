@@ -12,7 +12,8 @@ import sophena.model.Stats;
 import sophena.model.TimeInterval;
 
 /**
- * Calculates the utilisation rate of a boiler.
+ * Calculates the utilisation rate of a boiler. The calculated utilisation rate
+ * is at least 0.01 (1%).
  */
 public class UtilisationRate {
 

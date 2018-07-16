@@ -31,5 +31,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sophena-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

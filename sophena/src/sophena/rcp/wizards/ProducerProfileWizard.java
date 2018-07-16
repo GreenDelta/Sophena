@@ -79,6 +79,7 @@ public class ProducerProfileWizard extends Wizard {
 		p.id = UUID.randomUUID().toString();
 		p.name = "Erzeugerlastgang " + i;
 		p.hasProfile = true;
+		p.utilisationRate = 0.8;
 		p.rank = Wizards.nextProducerRank(project);
 		return p;
 	}
