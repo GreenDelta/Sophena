@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
@@ -17,6 +19,7 @@ import sophena.calc.CostResultItem;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 import sophena.utils.Strings;
 
@@ -51,7 +54,7 @@ class CostDetailsTable {
 		List<Item> items = new ArrayList<>();
 		for (CostResultItem r : result.items) {
 			Item item = new Item();
-			item.category = Labels.get(r.productType);
+			item.category = Labels.getPlural(r.productType);
 			item.product = r.label;
 			item.investment = r.costs.investment;
 			item.capitalCosts = s(r.netCapitalCosts, "EUR/a");
@@ -70,12 +73,15 @@ class CostDetailsTable {
 				return c;
 			return Strings.compare(a.product, b.product);
 		});
-		// for (int i = 1; i < items.size(); i++) {
-		// Item before = items.get(i - 1);
-		// Item after = items.get(i);
-		// if (Strings.nullOrEqual(before.category, after.category))
-		// after.displayCategory = false;
-		// }
+		String last = "";
+		for (Item item : items) {
+			if (Strings.nullOrEqual(item.category, last)) {
+				item.displayCategory = false;
+			} else {
+				item.displayCategory = true;
+				last = item.category;
+			}
+		}
 	}
 
 	private String s(double value, String unit) {
@@ -83,7 +89,7 @@ class CostDetailsTable {
 		return Num.intStr(v) + " " + unit;
 	}
 
-	private class Item {
+	private static class Item {
 		String category;
 		String product;
 		double investment;
@@ -93,8 +99,8 @@ class CostDetailsTable {
 		boolean displayCategory = true;
 	}
 
-	private class Label extends LabelProvider
-			implements ITableLabelProvider, ITableColorProvider {
+	private class Label extends LabelProvider implements ITableLabelProvider,
+			ITableColorProvider, ITableFontProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
@@ -113,6 +119,18 @@ class CostDetailsTable {
 			Item item = (Item) obj;
 			if (col == 2 && item.investment == 0.0)
 				return Colors.getSystemColor(SWT.COLOR_RED);
+			return null;
+		}
+
+		@Override
+		public Font getFont(Object obj, int col) {
+			if (!(obj instanceof Item))
+				return null;
+			Item item = (Item) obj;
+			if (col == 0 && item.displayCategory)
+				return UI.boldFont();
+			if (col == 2 && item.investment == 0.0)
+				return UI.boldFont();
 			return null;
 		}
 
