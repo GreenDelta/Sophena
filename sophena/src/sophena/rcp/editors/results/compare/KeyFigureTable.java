@@ -73,9 +73,7 @@ class KeyFigureTable {
 	}
 
 	private String emissionSavings(int i) {
-		CO2Emissions co2 = CO2Emissions.calculate(
-				result.projects[i],
-				result.results[i]);
+		CO2Emissions co2 = CO2Emissions.calculate(result.results[i]);
 		double savings = co2.variantNaturalGas - co2.total;
 		return Num.intStr(savings) + " kg CO2 eq./a";
 	}

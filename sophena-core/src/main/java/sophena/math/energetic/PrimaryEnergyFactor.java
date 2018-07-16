@@ -5,15 +5,15 @@ import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
 import sophena.model.Fuel;
 import sophena.model.Producer;
-import sophena.model.Project;
 
 public class PrimaryEnergyFactor {
 
 	private PrimaryEnergyFactor() {
 	}
 
-	public static double get(Project project, ProjectResult result) {
-		if (project == null || result == null || result.energyResult == null)
+	public static double get(ProjectResult result) {
+		if (result == null || result.project == null
+				|| result.energyResult == null)
 			return 0;
 		double usedHeat = UsedHeat.get(result);
 		if (usedHeat == 0)
@@ -22,10 +22,10 @@ public class PrimaryEnergyFactor {
 		EnergyResult r = result.energyResult;
 		for (Producer p : r.producers) {
 			double producedHeat = r.totalHeat(p);
-			double fuelEnergy = FuelDemand.getKWh(p, r);
+			double fuelEnergy = FuelDemand.getKWh(result.project, p, r);
 			double fuelFactor = getFuelFactor(p);
 			double usedElectricity = UsedElectricity.get(producedHeat,
-					project.costSettings);
+					result.project.costSettings);
 			double generatedElectricity = GeneratedElectricity.get(p,
 					producedHeat);
 			sum += ((fuelEnergy * fuelFactor)

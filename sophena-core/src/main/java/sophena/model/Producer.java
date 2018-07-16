@@ -89,7 +89,7 @@ public class Producer extends RootEntity {
 
 	/**
 	 * The utlisation rate is normally calculated (field is null) but if the
-	 * export knows better it can be directly entered by the expert (field
+	 * expert knows better it can be directly entered by the expert (field
 	 * contains a value).
 	 */
 	@Column(name = "utilisation_rate")

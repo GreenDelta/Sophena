@@ -79,7 +79,7 @@ class BoilerTableSection {
 			item.pos = i;
 			double heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
-					+ Num.intStr(FuelDemand.getAmount(p, result))
+					+ Num.intStr(FuelDemand.getAmount(project, p, result))
 					+ " " + Labels.getFuelUnit(p);
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			if (result.totalLoad > 0) {
@@ -88,7 +88,7 @@ class BoilerTableSection {
 				item.share = Num.str(share) + " %";
 			}
 			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
-			item.utilisationRate = UtilisationRate.get(p, result);
+			item.utilisationRate = UtilisationRate.get(project, p, result);
 			item.clocks = getClocks(i);
 			items.add(item);
 		}

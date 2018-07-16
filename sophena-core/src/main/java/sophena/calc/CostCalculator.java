@@ -120,8 +120,8 @@ class CostCalculator {
 		double producedHeat = energyResult.totalHeat(p);
 
 		// add fuel costs
-		double netCosts = FuelCosts.net(p, energyResult);
-		double grossCosts = FuelCosts.gross(p, energyResult);
+		double netCosts = FuelCosts.net(project, p, energyResult);
+		double grossCosts = FuelCosts.gross(project, p, energyResult);
 
 		// add costs for electricity demand
 		double netElectricityCosts = ElectricityCosts.net(producedHeat,
@@ -130,7 +130,7 @@ class CostCalculator {
 		grossCosts += Costs.gross(project, netElectricityCosts);
 
 		// add ash costs
-		double netAshCosts = FuelCosts.netAshCosts(p, energyResult);
+		double netAshCosts = FuelCosts.netAshCosts(project, p, energyResult);
 		netCosts += netAshCosts;
 		grossCosts += Costs.gross(project, netAshCosts);
 

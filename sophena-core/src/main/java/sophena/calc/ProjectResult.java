@@ -10,17 +10,19 @@ import sophena.model.Stats;
 
 public class ProjectResult {
 
+	public final Project project;
 	public EnergyResult energyResult;
 	public CostResult costResult;
 	public CostResult costResultFunding;
 
 	public final List<ConsumerResult> consumerResults = new ArrayList<>();
 
-	ProjectResult() {
+	ProjectResult(Project project) {
+		this.project = project;
 	}
 
 	public static ProjectResult calculate(Project project) {
-		ProjectResult r = new ProjectResult();
+		ProjectResult r = new ProjectResult(project);
 		if (project == null)
 			return r;
 		r.energyResult = EnergyCalculator.calculate(project);

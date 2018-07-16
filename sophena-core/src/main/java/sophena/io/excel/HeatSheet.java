@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import sophena.Labels;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.FuelDemand;
@@ -15,7 +16,6 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.Labels;
 
 class HeatSheet {
 
@@ -49,9 +49,11 @@ class HeatSheet {
 			double share = Math.round(100 * result.energyResult.totalHeat(pr)
 					/ load);
 			Excel.cell(sheet, row, 5, Math.round(share > 100 ? 100 : share));
-			Excel.cell(sheet, row, 6, Math.round(Producers.fullLoadHours(pr, heat)));
-			Excel.cell(sheet, row, 7, Math.round(UtilisationRate.get(pr,
-					result.energyResult) * 100));
+			Excel.cell(sheet, row, 6,
+					Math.round(Producers.fullLoadHours(pr, heat)));
+			Excel.cell(sheet, row, 7,
+					Math.round(UtilisationRate.get(project, pr,
+							result.energyResult) * 100));
 			row++;
 		}
 		powerDiffRow(sheet, row, result.energyResult.producers);
@@ -60,7 +62,7 @@ class HeatSheet {
 
 	private String getFuelUse(Producer pr, double heat) {
 		return Labels.getFuel(pr) + ": "
-				+ (int) FuelDemand.getAmount(pr, result.energyResult)
+				+ (int) FuelDemand.getAmount(project, pr, result.energyResult)
 				+ " " + Labels.getFuelUnit(pr);
 	}
 
@@ -73,7 +75,8 @@ class HeatSheet {
 			Excel.cell(sheet, row, 4, Math.round(diff));
 			double shareDiff = Math.round(100 * diff
 					/ result.energyResult.totalLoad);
-			Excel.cell(sheet, row, 5, Math.round((shareDiff > 100 ? 100 : shareDiff)));
+			Excel.cell(sheet, row, 5,
+					Math.round((shareDiff > 100 ? 100 : shareDiff)));
 			row++;
 		}
 		Excel.cell(sheet, row, 0, "Pufferspeicher");
@@ -82,7 +85,8 @@ class HeatSheet {
 		double shareBuff = Math.round(100
 				* result.energyResult.totalBufferedHeat
 				/ result.energyResult.totalLoad);
-		Excel.cell(sheet, row, 5, Math.round((shareBuff > 100 ? 100 : shareBuff)));
+		Excel.cell(sheet, row, 5,
+				Math.round((shareBuff > 100 ? 100 : shareBuff)));
 	}
 
 	private double calculateDiff(Producer[] producers) {
@@ -113,7 +117,8 @@ class HeatSheet {
 		CellStyle style = Excel.headerStyle(wb);
 		Excel.cell(sheet, 0, 0, "Wärmeerzeuger").setCellStyle(style);
 		Excel.cell(sheet, 0, 1, "Rang").setCellStyle(style);
-		Excel.cell(sheet, 0, 2, "Brennstoffverbrauch in m3").setCellStyle(style);
+		Excel.cell(sheet, 0, 2, "Brennstoffverbrauch in m3")
+				.setCellStyle(style);
 		Excel.cell(sheet, 0, 3, "Nennleistung in kW").setCellStyle(style);
 		Excel.cell(sheet, 0, 4, "Erzeugte Wärme in kWh").setCellStyle(style);
 		Excel.cell(sheet, 0, 5, "Anteil in %").setCellStyle(style);

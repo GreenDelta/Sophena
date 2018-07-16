@@ -20,8 +20,8 @@ public class CO2Emissions {
 	public double variantNaturalGas;
 	public final Map<Producer, Double> producerEmissions = new HashMap<>();
 
-	public static CO2Emissions calculate(Project project, ProjectResult result) {
-		return new Calculator(project, result).calculate();
+	public static CO2Emissions calculate(ProjectResult result) {
+		return new Calculator(result).calculate();
 	}
 
 	private CO2Emissions() {
@@ -32,8 +32,8 @@ public class CO2Emissions {
 		final Project project;
 		final ProjectResult result;
 
-		Calculator(Project project, ProjectResult result) {
-			this.project = project;
+		Calculator(ProjectResult result) {
+			this.project = result.project;
 			this.result = result;
 		}
 
@@ -47,29 +47,33 @@ public class CO2Emissions {
 			addElectrivityCredits(co2, eResult);
 			addEmissions(co2, eResult);
 			double heatDemand = getTotalHeatDemand();
-			co2.variantNaturalGas = (heatDemand / 0.95) * Defaults.EMISSION_FACTOR_NATURAL_GAS;
+			co2.variantNaturalGas = (heatDemand / 0.95)
+					* Defaults.EMISSION_FACTOR_NATURAL_GAS;
 			co2.variantOil = (heatDemand / 0.92) * Defaults.EMISSION_FACTOR_OIL;
 			return co2;
 		}
 
-		private void addElectrivityCredits(CO2Emissions co2, EnergyResult eResult) {
+		private void addElectrivityCredits(CO2Emissions co2,
+				EnergyResult eResult) {
 			double e = GeneratedElectricity.getTotal(eResult);
 			co2.electricityCredits = e * Defaults.EMISSION_FACTOR_ELECTRICITY;
 		}
 
 		private void addElectricityEmissions(CO2Emissions co2) {
-			if (result == null || result.energyResult == null || project == null)
+			if (result == null || result.energyResult == null
+					|| project == null)
 				return;
 			EnergyResult eResult = result.energyResult;
 			double used = UsedElectricity.get(eResult.totalProducedHeat,
 					project.costSettings);
-			co2.electricityEmissions = used * Defaults.EMISSION_FACTOR_ELECTRICITY;
+			co2.electricityEmissions = used
+					* Defaults.EMISSION_FACTOR_ELECTRICITY;
 		}
 
 		private void addEmissions(CO2Emissions co2, EnergyResult eResult) {
 			co2.total = co2.electricityEmissions - co2.electricityCredits;
 			for (Producer p : eResult.producers) {
-				double demand = FuelDemand.getKWh(p, eResult);
+				double demand = FuelDemand.getKWh(project, p, eResult);
 				double kg = demand * getEmissionFactor(p) / 1000;
 				co2.producerEmissions.put(p, kg);
 				co2.total += kg;

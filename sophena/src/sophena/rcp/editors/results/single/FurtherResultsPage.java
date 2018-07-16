@@ -35,8 +35,9 @@ class FurtherResultsPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, M.FurtherResults);
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		Function<String, Composite> s = title -> UI.formSection(body, tk, title);
-		CO2Emissions co2 = CO2Emissions.calculate(editor.project, editor.result);
+		Function<String, Composite> s = title -> UI.formSection(body, tk,
+				title);
+		CO2Emissions co2 = CO2Emissions.calculate(editor.result);
 		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(co2, body, tk);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
@@ -57,22 +58,27 @@ class FurtherResultsPage extends FormPage {
 			double length = editor.project.heatNet.length;
 			Label lengthLabel = UI.formLabel(comp, tk, Num.intStr(length));
 			lengthLabel.setAlignment(SWT.RIGHT);
-			lengthLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+			lengthLabel.setLayoutData(
+					new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			UI.formLabel(comp, tk, "m");
 
 			UI.formLabel(comp, tk, "Wärmebelegungsdichte");
-			double hl = length == 0 ? 0 : UsedHeat.get(editor.result) / (1000 * length);
+			double hl = length == 0 ? 0
+					: UsedHeat.get(editor.result) / (1000 * length);
 			Label hlLabel = UI.formLabel(comp, tk, Num.str(hl, 2));
 			hlLabel.setAlignment(SWT.RIGHT);
-			hlLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+			hlLabel.setLayoutData(
+					new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			UI.formLabel(comp, tk, "MWh/(m*a)");
 
 			UI.formLabel(comp, tk, "Primärenergiefaktor");
-			double pef = PrimaryEnergyFactor.get(editor.project, editor.result);
+			double pef = PrimaryEnergyFactor.get(editor.result);
 			Label pefLabel = UI.formLabel(comp, tk, Num.str(pef, 2));
 			pefLabel.setAlignment(SWT.RIGHT);
-			pefLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-			HelpLink.create(comp, tk, "Primärenergiefaktor", H.PrimaryEnergyFactor);
+			pefLabel.setLayoutData(
+					new GridData(SWT.RIGHT, SWT.TOP, false, false));
+			HelpLink.create(comp, tk, "Primärenergiefaktor",
+					H.PrimaryEnergyFactor);
 			UI.formLabel(comp, tk, "");
 		}
 	}

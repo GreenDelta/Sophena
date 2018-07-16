@@ -37,13 +37,15 @@ public class EfficiencyResult {
 				return res;
 			for (Producer p : pr.energyResult.producers) {
 				double genHeat = pr.energyResult.totalHeat(p);
-				double fuelDemand = FuelDemand.getKWh(p, pr.energyResult);
+				double fuelDemand = FuelDemand.getKWh(pr.project, p,
+						pr.energyResult);
 				res.fuelEnergy += fuelDemand;
 				double ur;
 				if (p.boiler == null || !p.boiler.isCoGenPlant)
-					ur = UtilisationRate.get(p, pr.energyResult);
+					ur = UtilisationRate.get(pr.project, p, pr.energyResult);
 				else
-					ur = (p.boiler.efficiencyRate + p.boiler.efficiencyRateElectric);
+					ur = (p.boiler.efficiencyRate
+							+ p.boiler.efficiencyRateElectric);
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
 				res.producedElectrictiy += GeneratedElectricity.get(p, genHeat);
@@ -51,8 +53,10 @@ public class EfficiencyResult {
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.energyResult.heatNetLoss;
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
-			res.usedHeat = res.producedHeat - res.distributionLoss - res.bufferLoss;
-			res.totalLoss = res.conversionLoss + res.distributionLoss + res.bufferLoss;
+			res.usedHeat = res.producedHeat - res.distributionLoss
+					- res.bufferLoss;
+			res.totalLoss = res.conversionLoss + res.distributionLoss
+					+ res.bufferLoss;
 			return res;
 		}
 	}

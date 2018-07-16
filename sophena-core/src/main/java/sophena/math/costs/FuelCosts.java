@@ -7,6 +7,7 @@ import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
+import sophena.model.Project;
 import sophena.model.WoodAmountType;
 
 /**
@@ -17,18 +18,20 @@ public class FuelCosts {
 	private FuelCosts() {
 	}
 
-	public static double gross(Producer p, EnergyResult result) {
-		double net = net(p, result);
+	public static double gross(Project project, Producer p,
+			EnergyResult result) {
+		double net = net(project, p, result);
 		if (net == 0 || p.fuelSpec == null)
 			return 0;
 		double vat = 1 + p.fuelSpec.taxRate / 100;
 		return net * vat;
 	}
 
-	public static double net(Producer producer, EnergyResult result) {
+	public static double net(Project project, Producer producer,
+			EnergyResult result) {
 		if (result == null || producer == null || producer.fuelSpec == null)
 			return 0;
-		double amount = FuelDemand.getAmount(producer, result);
+		double amount = FuelDemand.getAmount(project, producer, result);
 		return amount * producer.fuelSpec.pricePerUnit;
 	}
 
@@ -52,14 +55,15 @@ public class FuelCosts {
 		}
 	}
 
-	public static double netAshCosts(Producer p, EnergyResult result) {
+	public static double netAshCosts(Project project, Producer p,
+			EnergyResult result) {
 		if (p == null)
 			return 0d;
 		FuelSpec spec = p.fuelSpec;
 		if (spec == null || spec.fuel == null
 				|| spec.ashCosts <= 0 || spec.fuel.ashContent <= 0)
 			return 0d;
-		double fuelAmount = FuelDemand.getAmount(p, result);
+		double fuelAmount = FuelDemand.getAmount(project, p, result);
 		if (fuelAmount == 0)
 			return 0d;
 		double ashContent = spec.fuel.ashContent / 100;

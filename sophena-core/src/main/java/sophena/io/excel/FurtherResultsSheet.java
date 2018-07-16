@@ -30,7 +30,7 @@ class FurtherResultsSheet {
 
 	void write() {
 
-		CO2Emissions co2 = CO2Emissions.calculate(project, result);
+		CO2Emissions co2 = CO2Emissions.calculate(result);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(result);
 		Sheet sheet = wb.createSheet("Weitere Ergebnisse");
 		CellStyle style = Excel.headerStyle(wb);
@@ -42,11 +42,13 @@ class FurtherResultsSheet {
 		Excel.autoSize(sheet, 0, 1);
 	}
 
-	public void createEmissions(Sheet sheet, CellStyle style, CO2Emissions co2) {
+	public void createEmissions(Sheet sheet, CellStyle style,
+			CO2Emissions co2) {
 
 		Excel.cell(sheet, row, 0, "Treibhausgasemissionen").setCellStyle(style);
 		row++;
-		Excel.cell(sheet, row, 1, "Emissionen in kg CO2 eq.").setCellStyle(style);
+		Excel.cell(sheet, row, 1, "Emissionen in kg CO2 eq.")
+				.setCellStyle(style);
 		row++;
 		Map<Producer, Double> m = co2.producerEmissions;
 		for (Producer p : m.keySet()) {
@@ -96,7 +98,8 @@ class FurtherResultsSheet {
 		if (efficiency.producedElectrictiy > 0) {
 			row++;
 			Excel.cell(sheet, row, 0, "Erzeugter Strom");
-			Excel.cell(sheet, row, 1, Math.round(efficiency.producedElectrictiy));
+			Excel.cell(sheet, row, 1,
+					Math.round(efficiency.producedElectrictiy));
 		}
 		row++;
 		Excel.cell(sheet, row, 0, "Pufferspeicherverluste");
@@ -113,7 +116,8 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 1, Math.round(efficiency.usedHeat));
 		row += 2;
 		Excel.cell(sheet, row, 0, "Gesamtverluste").setCellStyle(style);
-		Excel.cell(sheet, row, 1, Math.round(efficiency.totalLoss)).setCellStyle(style);
+		Excel.cell(sheet, row, 1, Math.round(efficiency.totalLoss))
+				.setCellStyle(style);
 
 		Excel.cell(sheet, row, 2, Math.round(((efficiency.totalLoss
 				/ efficiency.fuelEnergy) * 100))).setCellStyle(style);
@@ -134,7 +138,7 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 1, UsedHeat.get(result) / (1000 * length));
 		row++;
 		Excel.cell(sheet, row, 0, "Primärenergiefaktor");
-		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(project, result));
+		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(result));
 	}
 
 }

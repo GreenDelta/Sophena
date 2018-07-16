@@ -80,7 +80,7 @@ public class Producers {
 
 	public static double efficiencyRate(Producer p) {
 		// TODO: producer profiles ...
-		if (p == null)
+		if (p == null || p.boiler == null)
 			return 0;
 		return p.boiler.efficiencyRate * heatRecoveryFactor(p);
 	}
