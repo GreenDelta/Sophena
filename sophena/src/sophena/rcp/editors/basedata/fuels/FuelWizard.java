@@ -31,7 +31,6 @@ class FuelWizard extends Wizard {
 		wiz.setWindowTitle(M.Fuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 350);
 		return dialog.open();
 	}
 
@@ -75,6 +74,7 @@ class FuelWizard extends Wizard {
 
 		private Page() {
 			super("FuelWizardPage", M.Fuel, null);
+			setMessage(" ");
 		}
 
 		@Override

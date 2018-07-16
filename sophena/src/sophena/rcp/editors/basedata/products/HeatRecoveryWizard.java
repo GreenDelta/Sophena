@@ -34,7 +34,6 @@ public class HeatRecoveryWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Wärmerückgewinnung");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 410);
 		return d.open();
 	}
 

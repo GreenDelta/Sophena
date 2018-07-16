@@ -24,7 +24,6 @@ class ManufacturerWizard extends Wizard {
 		w.setWindowTitle("Hersteller");
 		w.manufacturer = manufacturer;
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(150, 330);
 		return d.open();
 	}
 
@@ -51,6 +50,7 @@ class ManufacturerWizard extends Wizard {
 
 		Page() {
 			super("ManufacturerWizardPage", "Hersteller", null);
+			setMessage(" ");
 		}
 
 		@Override

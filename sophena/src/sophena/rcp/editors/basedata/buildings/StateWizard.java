@@ -37,7 +37,6 @@ class StateWizard extends Wizard {
 		wiz.state = state;
 		wiz.states = states;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -74,6 +73,7 @@ class StateWizard extends Wizard {
 
 		Page() {
 			super("BuildingStatePage", "Gebäudezustand", null);
+			setMessage(" ");
 		}
 
 		@Override

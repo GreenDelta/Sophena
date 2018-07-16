@@ -25,7 +25,6 @@ class WoodFuelWizard extends Wizard {
 		wiz.setWindowTitle(M.WoodFuel);
 		wiz.fuel = fuel;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 350);
 		return dialog.open();
 	}
 
@@ -56,6 +55,7 @@ class WoodFuelWizard extends Wizard {
 
 		private Page() {
 			super("FuelWizardPage", M.WoodFuel, null);
+			setMessage(" ");
 		}
 
 		@Override
@@ -145,7 +145,8 @@ class WoodFuelWizard extends Wizard {
 				fuel.density = Texts.getDouble(densityText);
 				fuel.calorificValue = Texts.getDouble(calText);
 				fuel.co2Emissions = Texts.getDouble(co2Text);
-				fuel.primaryEnergyFactor = Texts.getDouble(page.energyFactorText);
+				fuel.primaryEnergyFactor = Texts
+						.getDouble(page.energyFactorText);
 				fuel.ashContent = Texts.getDouble(page.ashContentText);
 			}
 

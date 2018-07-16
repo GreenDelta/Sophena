@@ -33,7 +33,6 @@ class LoadProfileWizard extends Wizard {
 		wiz.setWindowTitle(M.LoadProfile);
 		wiz.profile = profile;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -59,6 +58,7 @@ class LoadProfileWizard extends Wizard {
 
 		private Page() {
 			super("LoadProfileWizardPage", M.LoadProfile, null);
+			setMessage(" ");
 		}
 
 		@Override

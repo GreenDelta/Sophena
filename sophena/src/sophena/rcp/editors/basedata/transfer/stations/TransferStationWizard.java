@@ -37,7 +37,6 @@ public class TransferStationWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Wärmeübergabestation");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(180, 600);
 		return d.open();
 	}
 

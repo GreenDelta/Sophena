@@ -49,7 +49,6 @@ public class ProjectWizard extends Wizard {
 			ProjectWizard wizard = new ProjectWizard();
 			wizard.setWindowTitle(M.CreateNewProject);
 			WizardDialog dialog = new WizardDialog(UI.shell(), wizard);
-			dialog.setPageSize(150, 350);
 			if (dialog.open() == Window.OK)
 				Navigator.refresh();
 		} catch (Exception e) {
@@ -118,6 +117,7 @@ public class ProjectWizard extends Wizard {
 
 		protected Page() {
 			super("ProjectWizardPage", M.CreateNewProject, null);
+			setMessage(" ");
 		}
 
 		@Override

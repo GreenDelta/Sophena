@@ -38,10 +38,6 @@ class BoilerWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle(Labels.get(boiler.type));
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
-		if (boiler.isCoGenPlant)
-			dialog.setPageSize(150, 500);
-		else
-			dialog.setPageSize(150, 410);
 		return dialog.open();
 	}
 
@@ -109,7 +105,8 @@ class BoilerWizard implements IContent {
 		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
-		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText) / 100d;
+		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText)
+				/ 100d;
 	}
 
 	@Override

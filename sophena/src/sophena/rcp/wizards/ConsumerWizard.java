@@ -58,7 +58,6 @@ public class ConsumerWizard extends Wizard {
 		wiz.setWindowTitle(M.CreateNewConsumer);
 		wiz.project = project;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		if (dialog.open() == Window.OK)
 			Navigator.refresh();
 	}
@@ -107,6 +106,7 @@ public class ConsumerWizard extends Wizard {
 
 		private Page() {
 			super("ConsumerWizardPage", M.CreateNewConsumer, null);
+			setMessage(" ");
 			consumer = new Consumer();
 			consumer.id = UUID.randomUUID().toString();
 			consumer.name = M.NewConsumer;

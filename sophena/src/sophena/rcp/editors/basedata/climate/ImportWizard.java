@@ -33,7 +33,6 @@ class ImportWizard extends Wizard {
 		wiz.setWindowTitle(M.ClimateData);
 		wiz.setNeedsProgressMonitor(true);
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		dialog.open();
 	}
 
@@ -78,6 +77,7 @@ class ImportWizard extends Wizard {
 
 		private Page() {
 			super("ClimateDataImportWizardPage", M.ClimateData, null);
+			setMessage(" ");
 		}
 
 		@Override

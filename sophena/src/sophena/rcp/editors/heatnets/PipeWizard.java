@@ -36,7 +36,6 @@ class PipeWizard extends Wizard {
 		if (pipe.costs == null)
 			pipe.costs = new ProductCosts();
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -60,6 +59,7 @@ class PipeWizard extends Wizard {
 
 		Page() {
 			super("HeatNetPipePage", "Wärmeleitung", null);
+			setMessage(" ");
 		}
 
 		@Override

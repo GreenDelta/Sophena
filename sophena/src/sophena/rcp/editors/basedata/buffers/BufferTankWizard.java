@@ -34,7 +34,6 @@ class BufferTankWizard implements IContent {
 		content.wizard = w;
 		w.setWindowTitle("Pufferspeicher");
 		WizardDialog d = new WizardDialog(UI.shell(), w);
-		d.setPageSize(150, 410);
 		return d.open();
 	}
 

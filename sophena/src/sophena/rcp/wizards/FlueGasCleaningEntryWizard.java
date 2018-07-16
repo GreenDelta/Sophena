@@ -32,7 +32,6 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 		w.entry = entry;
 		w.setWindowTitle("Rauchgasreinigung");
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -69,6 +68,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 
 		Page() {
 			super("OverviewPage", "Rauchgasreinigung", null);
+			setMessage(" ");
 			selectedProduct = entry.product;
 			costs = entry.costs != null
 					? entry.costs.clone()

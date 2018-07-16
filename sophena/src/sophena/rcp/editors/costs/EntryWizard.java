@@ -54,7 +54,6 @@ class EntryWizard extends Wizard {
 		w.type = type;
 		w.projectDuration = projectDuration;
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -88,6 +87,7 @@ class EntryWizard extends Wizard {
 
 		Page() {
 			super("OverviewPage", Labels.get(type), null);
+			setMessage(" ");
 		}
 
 		@Override

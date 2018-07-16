@@ -68,6 +68,7 @@ public class ProductWizard extends Wizard {
 
 		Page() {
 			super("WizardPage", content.getPageName(), null);
+			setMessage(" ");
 		}
 
 		@Override
@@ -88,7 +89,6 @@ public class ProductWizard extends Wizard {
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.formLabel(c, "");
 			data.bindToUI();
-			parent.pack();
 		}
 
 		private void createPriceText(Composite c) {

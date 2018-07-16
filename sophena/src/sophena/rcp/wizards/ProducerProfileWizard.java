@@ -65,7 +65,6 @@ public class ProducerProfileWizard extends Wizard {
 		wiz.project = project;
 		wiz.producer = initProducer(project);
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		if (dialog.open() == Window.OK)
 			Navigator.refresh();
 	}
@@ -124,6 +123,7 @@ public class ProducerProfileWizard extends Wizard {
 
 		private Page() {
 			super("ProducerProfilePage", "Erzeugerlastgang integrieren", null);
+			setMessage(" ");
 		}
 
 		@Override

@@ -47,7 +47,6 @@ class ConsumptionWizard extends Wizard {
 		wiz.consumption = consumption;
 		wiz.loadHours = loadHours;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -84,6 +83,7 @@ class ConsumptionWizard extends Wizard {
 
 		private Page() {
 			super("ConsumptionDataWizardPage", M.CollectConsumptionData, null);
+			setMessage(" ");
 		}
 
 		@Override

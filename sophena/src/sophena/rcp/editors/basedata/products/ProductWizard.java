@@ -35,7 +35,6 @@ class ProductWizard extends Wizard {
 		wiz.setWindowTitle(Labels.get(product.type));
 		wiz.product = product;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
 		return dialog.open();
 	}
 
@@ -67,6 +66,7 @@ class ProductWizard extends Wizard {
 
 		private Page() {
 			super("FuelWizardPage", Labels.get(product.type), null);
+			setMessage(" ");
 		}
 
 		@Override
