@@ -7,7 +7,6 @@ import java.util.List;
 import sophena.model.AbstractProduct;
 import sophena.model.Consumer;
 import sophena.model.FlueGasCleaningEntry;
-import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
