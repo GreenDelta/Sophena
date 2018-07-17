@@ -63,7 +63,7 @@ public class FuelUsage {
 		}
 	}
 
-	public static double calcAmount(ProjectResult r, Producer producer,
+	private static double calcAmount(ProjectResult r, Producer producer,
 			double inKWh) {
 		FuelSpec spec = producer.fuelSpec;
 		double cv = CalorificValue.get(spec);

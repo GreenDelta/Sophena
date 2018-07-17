@@ -18,20 +18,19 @@ import sophena.model.Stats;
 
 class CostCalculator {
 
-	private Project project;
-	private EnergyResult energyResult;
+	private final ProjectResult result;
+	private final Project project;
 
 	private CostSettings settings;
 	private boolean withFunding;
 
-	public CostCalculator(Project project, EnergyResult energyResult) {
-		this.project = project;
-		this.energyResult = energyResult;
-		if (project == null)
-			project = new Project();
+	public CostCalculator(ProjectResult result) {
+		this.result = result;
+		this.project = result.project;
 		settings = project.costSettings;
-		if (settings == null)
+		if (settings == null) {
 			settings = new CostSettings();
+		}
 	}
 
 	public void withFunding(boolean withFunding) {
@@ -39,6 +38,13 @@ class CostCalculator {
 	}
 
 	public CostResult calculate() {
+
+		if (withFunding) {
+			result.calcLog.h2("Wirtschaftlichkeitsberechnung - mit Förderung");
+		} else {
+			result.calcLog.h2("Wirtschaftlichkeitsberechnung - ohne Förderung");
+		}
+
 		CostResult r = new CostResult();
 		createItems(r);
 		finishCapitalCosts(r);
@@ -46,7 +52,7 @@ class CostCalculator {
 
 		// add revenues
 		double revenuesElectricity = settings.electricityRevenues
-				* GeneratedElectricity.getTotal(energyResult);
+				* GeneratedElectricity.getTotal(result.energyResult);
 		r.netTotal.revenuesElectricity = Costs.annuity(project,
 				revenuesElectricity, ir(),
 				settings.electricityRevenuesFactor);
@@ -117,11 +123,14 @@ class CostCalculator {
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
+		result.calcLog.h3("Bedarfsgebundene Kosten: " + p.name);
+
+		EnergyResult energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
 
 		// add fuel costs
-		double netCosts = FuelCosts.net(project, p, energyResult);
-		double grossCosts = FuelCosts.gross(project, p, energyResult);
+		double netCosts = FuelCosts.net(result, p);
+		double grossCosts = FuelCosts.gross(result, p);
 
 		// add costs for electricity demand
 		double netElectricityCosts = ElectricityCosts.net(producedHeat,
@@ -130,7 +139,7 @@ class CostCalculator {
 		grossCosts += Costs.gross(project, netElectricityCosts);
 
 		// add ash costs
-		double netAshCosts = FuelCosts.netAshCosts(project, p, energyResult);
+		double netAshCosts = FuelCosts.netAshCosts(result, p);
 		netCosts += netAshCosts;
 		grossCosts += Costs.gross(project, netAshCosts);
 
@@ -211,6 +220,7 @@ class CostCalculator {
 
 	/** The used heat in MWh */
 	private double usedHeat() {
+		EnergyResult energyResult = result.energyResult;
 		double bufferLoss = Stats.sum(energyResult.bufferLoss);
 		return (energyResult.totalProducedHeat
 				- energyResult.heatNetLoss

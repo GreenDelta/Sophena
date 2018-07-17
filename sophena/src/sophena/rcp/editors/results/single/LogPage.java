@@ -31,7 +31,6 @@ public class LogPage extends FormPage {
 		UI.gridData(text, true, true);
 		text.setFont(JFaceResources.getTextFont());
 		text.setText(result.calcLog.toString());
-		form.reflow(true);
 	}
 
 }

@@ -73,7 +73,7 @@ public class CO2Emissions {
 		private void addEmissions(CO2Emissions co2, EnergyResult eResult) {
 			co2.total = co2.electricityEmissions - co2.electricityCredits;
 			for (Producer p : eResult.producers) {
-				double demand = FuelDemand.getKWh(project, p, eResult);
+				double demand = result.fuelUsage.getInKWh(p);
 				double kg = demand * getEmissionFactor(p) / 1000;
 				co2.producerEmissions.put(p, kg);
 				co2.total += kg;

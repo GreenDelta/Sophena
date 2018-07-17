@@ -13,7 +13,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
-import sophena.math.energetic.FuelDemand;
+import sophena.calc.ProjectResult;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
@@ -29,11 +29,13 @@ import sophena.utils.Num;
 
 class BoilerTableSection {
 
+	private final ProjectResult projectResult;
 	private final EnergyResult result;
 	private final Project project;
 	private final double maxLoad;
 
 	BoilerTableSection(ResultEditor editor, double maxLoad) {
+		this.projectResult = editor.result;
 		this.result = editor.result.energyResult;
 		this.project = editor.project;
 		this.maxLoad = maxLoad;
@@ -79,7 +81,7 @@ class BoilerTableSection {
 			item.pos = i;
 			double heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
-					+ Num.intStr(FuelDemand.getAmount(project, p, result))
+					+ Num.intStr(projectResult.fuelUsage.getInFuelUnits(p))
 					+ " " + Labels.getFuelUnit(p);
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			if (result.totalLoad > 0) {

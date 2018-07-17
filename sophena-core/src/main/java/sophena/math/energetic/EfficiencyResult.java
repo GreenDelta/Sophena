@@ -37,8 +37,7 @@ public class EfficiencyResult {
 				return res;
 			for (Producer p : pr.energyResult.producers) {
 				double genHeat = pr.energyResult.totalHeat(p);
-				double fuelDemand = FuelDemand.getKWh(pr.project, p,
-						pr.energyResult);
+				double fuelDemand = pr.fuelUsage.getInKWh(p);
 				res.fuelEnergy += fuelDemand;
 				double ur;
 				if (p.boiler == null || !p.boiler.isCoGenPlant)

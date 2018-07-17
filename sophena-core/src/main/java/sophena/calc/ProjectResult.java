@@ -32,7 +32,7 @@ public class ProjectResult {
 			return r;
 		r.energyResult = EnergyCalculator.calculate(project);
 		r.fuelUsage = FuelUsage.calculate(r);
-		CostCalculator costCalc = new CostCalculator(project, r.energyResult);
+		CostCalculator costCalc = new CostCalculator(r);
 		costCalc.withFunding(false);
 		r.costResult = costCalc.calculate();
 		costCalc.withFunding(true);

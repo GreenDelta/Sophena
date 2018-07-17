@@ -22,7 +22,7 @@ public class PrimaryEnergyFactor {
 		EnergyResult r = result.energyResult;
 		for (Producer p : r.producers) {
 			double producedHeat = r.totalHeat(p);
-			double fuelEnergy = FuelDemand.getKWh(result.project, p, r);
+			double fuelEnergy = result.fuelUsage.getInKWh(p);
 			double fuelFactor = getFuelFactor(p);
 			double usedElectricity = UsedElectricity.get(producedHeat,
 					result.project.costSettings);

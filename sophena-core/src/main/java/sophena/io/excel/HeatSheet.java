@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import sophena.Labels;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.FuelDemand;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
@@ -62,7 +61,7 @@ class HeatSheet {
 
 	private String getFuelUse(Producer pr, double heat) {
 		return Labels.getFuel(pr) + ": "
-				+ (int) FuelDemand.getAmount(project, pr, result.energyResult)
+				+ (int) result.fuelUsage.getInFuelUnits(pr)
 				+ " " + Labels.getFuelUnit(pr);
 	}
 
