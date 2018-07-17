@@ -24,7 +24,7 @@ public class FuelUsage {
 			return usage;
 		}
 		for (Producer p : r.project.producers) {
-			r.calcLog.println("Erzeuger: " + p.name);
+			r.calcLog.println("=> Erzeuger: " + p.name);
 			double inKWh = calcKWh(r, p);
 			double amount = calcAmount(r, p, inKWh);
 			usage.inKWh.put(p.id, inKWh);

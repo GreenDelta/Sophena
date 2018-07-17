@@ -16,15 +16,14 @@ public class FuelCosts {
 	private FuelCosts() {
 	}
 
-	public static double gross(ProjectResult r, Producer p) {
-		double net = net(r, p);
+	public static double gross(ProjectResult r, Producer p, double netCosts) {
 		if (p.fuelSpec == null)
 			return 0;
 		r.calcLog.println("=> Brennstoffkosten (brutto): " + p.name);
-		r.calcLog.value("Cn: Brennstoffkosten (netto)", net, "EUR");
+		r.calcLog.value("Cn: Brennstoffkosten (netto)", netCosts, "EUR");
 		double vat = p.fuelSpec.taxRate / 100;
-		r.calcLog.value("vat: Mehrwertsteuer", net, "EUR");
-		double gross = net * (1 + vat);
+		r.calcLog.value("vat: Mehrwertsteuer", vat, "EUR");
+		double gross = netCosts * (1 + vat);
 		r.calcLog.value("Cb: Brennstoffkosten (brutto): Cb = Cn * (1 + vat)",
 				gross, "EUR");
 		return gross;

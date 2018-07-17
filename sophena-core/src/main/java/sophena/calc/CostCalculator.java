@@ -130,7 +130,7 @@ class CostCalculator {
 
 		// add fuel costs
 		double netCosts = FuelCosts.net(result, p);
-		double grossCosts = FuelCosts.gross(result, p);
+		double grossCosts = FuelCosts.gross(result, p, netCosts);
 
 		// add costs for electricity demand
 		double netElectricityCosts = ElectricityCosts.net(producedHeat,

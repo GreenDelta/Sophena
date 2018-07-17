@@ -50,8 +50,8 @@ class InfoPage extends FormPage {
 		}
 		new FuelSection(editor).render(body, tk);
 		new CostSection(editor).create(body, tk);
-		new InterruptionSection(editor).create(body, tk);
 		if (!producer().hasProfile) {
+			new InterruptionSection(editor).create(body, tk);
 			new HeatRecoverySection(editor).create(body, tk);
 		}
 		form.reflow(true);
