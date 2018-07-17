@@ -49,22 +49,7 @@ class CostCalculator {
 		createItems(r);
 		finishCapitalCosts(r);
 		addOtherCosts(r);
-
-		// add revenues
-		double revenuesElectricity = settings.electricityRevenues
-				* GeneratedElectricity.getTotal(result.energyResult);
-		r.netTotal.revenuesElectricity = Costs.annuity(project,
-				revenuesElectricity, ir(),
-				settings.electricityRevenuesFactor);
-		r.grossTotal.revenuesElectricity = Costs.gross(project,
-				r.netTotal.revenuesElectricity);
-
-		double revenuesHeat = settings.heatRevenues * usedHeat();
-		r.netTotal.revenuesHeat = Costs.annuity(project, revenuesHeat, ir(),
-				settings.heatRevenuesFactor);
-		r.grossTotal.revenuesHeat = Costs.gross(project,
-				r.netTotal.revenuesHeat);
-
+		addRevenues(r);
 		calcTotals(r);
 		return r;
 	}
@@ -109,13 +94,19 @@ class CostCalculator {
 		r.grossTotal.capitalCosts += item.grossCapitalCosts;
 
 		// add operation costs = operation + maintenance
+		result.calcLog.println("=> Betriebskosten: " + item.label);
 		double operationCosts = item.costs.operation * settings.hourlyWage;
+		double annuityOperations = Costs.annuity(result, operationCosts,
+				ir(), settings.operationFactor);
+		result.calcLog.println();
+
+		result.calcLog.println("=> Instandhaltungskosten: " + item.label);
 		double maintenanceCosts = item.costs.investment
 				* (item.costs.repair / 100 + item.costs.maintenance / 100);
-		double annuityOperations = Costs.annuity(project, operationCosts,
-				ir(), settings.operationFactor);
-		double annuityMaintenance = Costs.annuity(project, maintenanceCosts,
+		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
+		result.calcLog.println();
+
 		item.netOperationCosts = annuityOperations + annuityMaintenance;
 		item.grossOperationCosts = Costs.gross(project, item.netOperationCosts);
 		r.netTotal.operationCosts += item.netOperationCosts;
@@ -179,9 +170,42 @@ class CostCalculator {
 		for (AnnualCostEntry e : settings.annualCosts) {
 			otherCosts += e.value;
 		}
-		r.netTotal.otherCosts = Costs.annuity(project, otherCosts, ir(),
+		result.calcLog.h3("Sonstige Kosten");
+		r.netTotal.otherCosts = Costs.annuity(result, otherCosts, ir(),
 				settings.operationFactor);
 		r.grossTotal.otherCosts = Costs.gross(project, r.netTotal.otherCosts);
+		result.calcLog.println();
+	}
+
+	private void addRevenues(CostResult r) {
+		result.calcLog.h3("Stromerlöse");
+		double pe = settings.electricityRevenues;
+		result.calcLog.value("pe: Mittlere Stromperlöse", pe, "EUR/kWh");
+		double Egen = GeneratedElectricity.getTotal(result.energyResult);
+		result.calcLog.value("Egen: Erzeugte Strommenge", Egen, "kWh");
+		double revenuesElectricity = pe * Egen;
+		result.calcLog.value("A: Erlöse im ersten Jahr: A = pe * Egen",
+				revenuesElectricity, "kWh");
+		r.netTotal.revenuesElectricity = Costs.annuity(result,
+				revenuesElectricity, ir(),
+				settings.electricityRevenuesFactor);
+		r.grossTotal.revenuesElectricity = Costs.gross(project,
+				r.netTotal.revenuesElectricity);
+		result.calcLog.println();
+
+		result.calcLog.h3("Wärmeerlöse");
+		double ph = settings.heatRevenues;
+		result.calcLog.value("ph: Mittlere Wärmeerlöse", ph, "EUR/kWh");
+		double Qu = usedHeat();
+		result.calcLog.value("Qu: Genutzte Wärme", Qu, "MWh");
+		double revenuesHeat = ph * Qu;
+		result.calcLog.value("A: Erlöse im ersten Jahr: A = ph * Qu",
+				revenuesHeat, "kWh");
+		r.netTotal.revenuesHeat = Costs.annuity(result, revenuesHeat, ir(),
+				settings.heatRevenuesFactor);
+		r.grossTotal.revenuesHeat = Costs.gross(project,
+				r.netTotal.revenuesHeat);
+		result.calcLog.println();
 	}
 
 	private void calcTotals(CostResult r) {

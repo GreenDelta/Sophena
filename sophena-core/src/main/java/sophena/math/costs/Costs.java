@@ -1,5 +1,6 @@
 package sophena.math.costs;
 
+import sophena.calc.ProjectResult;
 import sophena.model.Project;
 
 public class Costs {
@@ -7,11 +8,21 @@ public class Costs {
 	private Costs() {
 	}
 
-	public static double annuity(Project project, double firstYearValue,
+	public static double annuity(ProjectResult r, double firstYearValue,
 			double interestRate, double priceChangeFactor) {
-		double a = annuityFactor(project, interestRate);
-		double b = cashValueFactor(project, interestRate, priceChangeFactor);
-		return firstYearValue * a * b;
+		r.calcLog.value("A: Wert im ersten Jahr", firstYearValue, "EUR");
+		r.calcLog.value("q: Zinsfaktor", 1 + interestRate / 100, "");
+		r.calcLog.value("r: Preisänderungsfaktor", priceChangeFactor, "");
+		r.calcLog.value("T: Projektlaufzeit", r.project.duration, "Jahre");
+		double a = annuityFactor(r.project, interestRate);
+		r.calcLog.value("a: Annuitätenfaktor: a = (q - 1) / (1 - q^(-T))", a,
+				"");
+		double b = cashValueFactor(r.project, interestRate, priceChangeFactor);
+		r.calcLog.value("b: Barwertfaktor: b = T/q wenn r = q, sonst"
+				+ " b = (1 - (r/q)^T) / (q - r)", b, "");
+		double annuity = firstYearValue * a * b;
+		r.calcLog.value("An: Annuität: An = A * a * b", annuity, "EUR");
+		return annuity;
 	}
 
 	/**
