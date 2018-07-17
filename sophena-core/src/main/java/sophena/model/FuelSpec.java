@@ -50,4 +50,12 @@ public class FuelSpec {
 		clone.ashCosts = ashCosts;
 		return clone;
 	}
+
+	public String getUnit() {
+		if (woodAmountType != null)
+			return woodAmountType.getUnit();
+		if (fuel != null)
+			return fuel.unit;
+		return "?";
+	}
 }

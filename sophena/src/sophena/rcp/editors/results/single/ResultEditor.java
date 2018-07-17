@@ -71,6 +71,7 @@ public class ResultEditor extends Editor {
 			addPage(new FurtherResultsPage(this));
 			addPage(new ConsumerResultPage(this));
 			addPage(new LocationResultPage(this));
+			addPage(new LogPage(this));
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);

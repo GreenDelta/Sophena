@@ -5,6 +5,8 @@ import java.nio.CharBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sophena.utils.Num;
+
 public class CalcLog {
 
 	private static final int PAGE_WIDTH = 80;
@@ -39,6 +41,11 @@ public class CalcLog {
 		println();
 	}
 
+	public void value(String label, double value, String unit) {
+		String v = Num.str(value) + " " + strip(unit);
+		println(right(label, v));
+	}
+
 	private String center(String s) {
 		String text = strip(s);
 		int padding = (PAGE_WIDTH - text.length()) / 2;
@@ -51,6 +58,13 @@ public class CalcLog {
 		String text = strip(s);
 		int offset = PAGE_WIDTH - text.length();
 		return repeat(' ', offset) + text;
+	}
+
+	private String right(String prefix, String s) {
+		String pref = strip(prefix);
+		String text = strip(s);
+		int offset = PAGE_WIDTH - pref.length() - text.length();
+		return pref + repeat(' ', offset) + text;
 	}
 
 	public void println() {

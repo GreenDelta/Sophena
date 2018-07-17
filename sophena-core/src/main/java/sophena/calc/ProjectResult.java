@@ -14,6 +14,7 @@ public class ProjectResult {
 	public final CalcLog calcLog;
 
 	public EnergyResult energyResult;
+	public FuelUsage fuelUsage;
 	public CostResult costResult;
 	public CostResult costResultFunding;
 
@@ -30,6 +31,7 @@ public class ProjectResult {
 		if (project == null)
 			return r;
 		r.energyResult = EnergyCalculator.calculate(project);
+		r.fuelUsage = FuelUsage.calculate(r);
 		CostCalculator costCalc = new CostCalculator(project, r.energyResult);
 		costCalc.withFunding(false);
 		r.costResult = costCalc.calculate();
