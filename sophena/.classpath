@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="libs/sophena-core-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/sophena-core-2.0.0.jar" sourcepath="/sophena-core"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-collections4-4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.6.jar"/>

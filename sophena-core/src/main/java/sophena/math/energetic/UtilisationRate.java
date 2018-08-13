@@ -69,7 +69,7 @@ public class UtilisationRate {
 			interruptions.add(netInterruption);
 		}
 		for (TimeInterval interval : producer.interruptions) {
-			int[] interruption = HoursTrace.getDayInterval(interval);
+			int[] interruption = HoursTrace.getHourInterval(interval);
 			if (interruption != null) {
 				interruptions.add(interruption);
 			}
