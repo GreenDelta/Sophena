@@ -47,7 +47,7 @@ class BoilerTableSection {
 		Composite comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
-				"Nennleistung/Volumen", "Brennstoffverbrauch", M.GeneratedHeat,
+				"Nennleistung", "Brennstoffverbrauch", M.GeneratedHeat,
 				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts");
 		table.setLabelProvider(new Label());
 		double w = 1.0 / 9.0;
@@ -150,7 +150,9 @@ class BoilerTableSection {
 		item.powerOrVolume = powerDiff < 0
 				? Num.intStr(powerDiff) + " kW"
 				: null;
-		item.producedHeat = "-" + Num.intStr(diff) + " kWh";
+		if (diff != 0) {
+			item.producedHeat = "-" + Num.intStr(diff) + " kWh";
+		}
 		items.add(item);
 	}
 
