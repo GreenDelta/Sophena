@@ -37,9 +37,14 @@ class HeatDemandSection {
 	void updateBuildingState(BuildingState state) {
 		if (state == null)
 			return;
+		Consumer c = consumer();
+		c.heatingLimit = state.heatingLimit;
+		c.waterFraction = state.waterFraction;
+		c.loadHours = state.loadHours;
 		Texts.set(heatingLimitText, state.heatingLimit);
 		Texts.set(waterFractionText, state.waterFraction);
 		Texts.set(loadHoursText, state.loadHours);
+		editor.setDirty();
 	}
 
 	HeatDemandSection create(Composite body, FormToolkit tk) {
