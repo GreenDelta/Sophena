@@ -97,7 +97,9 @@ public enum Icon {
 
 	SORTING_16("sorting_16.png"),
 
-	WARNING_16("warning_16.png");
+	WARNING_16("warning_16.png"),
+
+	WEBLINK_16("weblink_16.png");
 
 	private final String fileName;
 

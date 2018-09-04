@@ -7,10 +7,17 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.Manufacturer;
+import sophena.rcp.Icon;
+import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 class ManufacturerWizard extends Wizard {
 
@@ -66,8 +73,7 @@ class ManufacturerWizard extends Wizard {
 			addressText = UI.formMultiText(c, "Adresse");
 			UI.formLabel(c, "");
 
-			urlText = UI.formText(c, "Web-Link");
-			UI.formLabel(c, "");
+			createWebLink(c);
 
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.filler(c);
@@ -75,12 +81,38 @@ class ManufacturerWizard extends Wizard {
 			data.bindToUI();
 		}
 
+		private void createWebLink(Composite c) {
+			if (!manufacturer.isProtected) {
+				urlText = UI.formText(c, "Web-Link");
+				ImageHyperlink link = new ImageHyperlink(c, SWT.NONE);
+				link.setImage(Icon.WEBLINK_16.img());
+				Controls.onClick(link,
+						e -> Desktop.browse(urlText.getText()));
+				return;
+			}
+			UI.formLabel(c, "Web-Link");
+			Hyperlink link = new Hyperlink(c, SWT.NONE);
+			link.setForeground(Colors.getLinkBlue());
+			if (manufacturer.url == null) {
+				link.setText(""); // SWT throws a NullPointer otherwise
+			} else {
+				link.setText(Strings.cut(manufacturer.url, 60));
+				link.setToolTipText(manufacturer.url);
+			}
+			UI.filler(c);
+			Controls.onClick(link, e -> {
+				Desktop.browse(manufacturer.url);
+			});
+		}
+
 		private class DataBinding {
 
 			void bindToUI() {
 				Texts.set(nameText, manufacturer.name);
 				Texts.set(addressText, manufacturer.address);
-				Texts.set(urlText, manufacturer.url);
+				if (urlText != null) {
+					Texts.set(urlText, manufacturer.url);
+				}
 				Texts.set(descriptionText, manufacturer.description);
 
 			}
@@ -89,8 +121,9 @@ class ManufacturerWizard extends Wizard {
 				manufacturer.name = nameText.getText();
 				manufacturer.address = addressText.getText();
 				manufacturer.description = descriptionText.getText();
-				manufacturer.url = urlText.getText();
-
+				if (urlText != null) {
+					manufacturer.url = urlText.getText();
+				}
 			}
 
 			boolean validate() {

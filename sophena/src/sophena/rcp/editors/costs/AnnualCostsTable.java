@@ -44,7 +44,7 @@ public class AnnualCostsTable {
 	}
 
 	public void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Andere jährliche Kosten");
+		Section section = UI.section(body, tk, "Weitere sonstige Kosten");
 		Composite comp = UI.sectionClient(section, tk);
 		table = Tables.createViewer(comp, "Bezeichnung", "Jährliche Kosten");
 		table.setLabelProvider(new EntryLabel());

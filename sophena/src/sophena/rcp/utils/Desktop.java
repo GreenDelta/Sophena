@@ -6,9 +6,13 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.utils.Strings;
+
 public class Desktop {
 
 	public static void browse(String uri) {
+		if (Strings.nullOrEmpty(uri))
+			return;
 		try {
 			if (java.awt.Desktop.isDesktopSupported()) {
 				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();

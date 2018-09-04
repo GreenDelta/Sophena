@@ -77,9 +77,11 @@ public class CostSettingsPage extends FormPage {
 		HelpLink.create(c, toolkit, "Eigenstrombedarf",
 				H.ElectricityDemandShare);
 		if (forProject) {
-			t(c, "Mittlere Wärmeerlöse", "EUR/MWh",
-					Num.str(costs.heatRevenues, 4)).onChanged(
-							s -> costs.heatRevenues = Num.read(s));
+			String heatRevenues = costs.heatRevenues == 0
+					? "0"
+					: Num.str(costs.heatRevenues, 2);
+			t(c, "Mittlere Wärmeerlöse", "EUR/MWh", heatRevenues).onChanged(
+					s -> costs.heatRevenues = Num.read(s));
 			UI.filler(c);
 			t(c, "Mittlere Stromerlöse", "EUR/kWh",
 					Num.str(costs.electricityRevenues, 4)).onChanged(

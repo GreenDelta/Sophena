@@ -9,6 +9,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,10 @@ import sophena.db.daos.ProductGroupDao;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
 import sophena.rcp.Labels;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -96,7 +100,10 @@ class ProductWizard extends Wizard {
 
 		private void createLinkAndPrice(Composite c) {
 			linkText = UI.formText(c, "Web-Link");
-			UI.formLabel(c, "");
+			ImageHyperlink link = new ImageHyperlink(c, SWT.NONE);
+			link.setImage(Icon.WEBLINK_16.img());
+			Controls.onClick(link,
+					e -> Desktop.browse(linkText.getText()));
 			priceText = UI.formText(c, "Preis");
 			Texts.on(priceText).decimal();
 			UI.formLabel(c, "EUR");

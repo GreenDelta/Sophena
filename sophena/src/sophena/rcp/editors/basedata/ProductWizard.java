@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.db.daos.Dao;
 import sophena.db.daos.ProductGroupDao;
@@ -17,6 +18,7 @@ import sophena.model.Pipe;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -104,7 +106,10 @@ public class ProductWizard extends Wizard {
 			if (!product.isProtected) {
 				urlText = UI.formText(c, "Web-Link");
 				Texts.on(urlText).required();
-				UI.filler(c);
+				ImageHyperlink link = new ImageHyperlink(c, SWT.NONE);
+				link.setImage(Icon.WEBLINK_16.img());
+				Controls.onClick(link,
+						e -> Desktop.browse(urlText.getText()));
 				return;
 			}
 			UI.formLabel(c, "Web-Link");
