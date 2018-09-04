@@ -28,8 +28,8 @@ class CostTable {
 
 	void render(Composite body, FormToolkit tk) {
 		String title = withFunding
-				? "Übersicht (mit Förderung)"
-				: "Übersicht (ohne Förderung)";
+				? "Wirtschaftlichkeit - mit Förderung"
+				: "Wirtschaftlichkeit - ohne Förderung";
 		Composite comp = UI.formSection(body, tk, title);
 		Table table = new Table(result);
 		createItems(table);

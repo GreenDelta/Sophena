@@ -28,7 +28,7 @@ class CostDetailsTable {
 
 	void render(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk,
-				"Aufschlüsselung der Investitionen");
+				"Investitionskosten");
 		Table table = new Table(result);
 		createItems(table);
 		table.render(comp);

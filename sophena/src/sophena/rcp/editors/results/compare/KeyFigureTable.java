@@ -27,7 +27,7 @@ class KeyFigureTable {
 
 	void render(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk,
-				"Weitere Kennzahlen");
+				"Energetische Kennzahlen");
 		Table table = new Table(result);
 		createItems(table);
 		table.render(comp);
@@ -40,7 +40,7 @@ class KeyFigureTable {
 		table.row("Trassenlänge",
 				i -> Num.intStr(result.projects[i].heatNet.length) + " m");
 		table.row("Wärmebelegungsdichte", this::heatOccupancyDensity);
-		table.row("Netzverluste", this::totalLoss);
+		table.row("Netzverluste", this::distributionLoss);
 		table.row("CO2-Einsparung (gegen Erdgas dezentral)",
 				this::emissionSavings);
 	}
@@ -63,11 +63,11 @@ class KeyFigureTable {
 		return Num.str(hl, 2) + " MWh/(m*a)";
 	}
 
-	private String totalLoss(int i) {
+	private String distributionLoss(int i) {
 		EfficiencyResult er = EfficiencyResult.calculate(result.results[i]);
 		double loss = 0;
 		if (er.fuelEnergy > 0) {
-			loss = 100 * er.totalLoss / er.fuelEnergy;
+			loss = 100 * er.distributionLoss / er.fuelEnergy;
 		}
 		return Num.intStr(loss) + " %";
 	}
