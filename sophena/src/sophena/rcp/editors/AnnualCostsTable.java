@@ -1,4 +1,4 @@
-package sophena.rcp.editors.costs;
+package sophena.rcp.editors;
 
 import java.util.function.Supplier;
 
@@ -17,7 +17,6 @@ import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
-import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
@@ -27,7 +26,7 @@ import sophena.rcp.wizards.SimpleWizard;
 import sophena.utils.Num;
 import sophena.utils.Strings;
 
-public class AnnualCostsTable {
+class AnnualCostsTable {
 
 	private final Editor editor;
 	private TableViewer table;

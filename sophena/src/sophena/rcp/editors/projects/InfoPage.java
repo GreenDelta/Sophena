@@ -19,6 +19,7 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.Workspace;
+import sophena.rcp.editors.CostSettingsPanel;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
@@ -46,6 +47,10 @@ class InfoPage extends FormPage {
 		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
+		CostSettingsPanel panel = new CostSettingsPanel(
+				editor, project().costSettings);
+		panel.isForProject = true;
+		panel.render(toolkit, body);
 		form.reflow(true);
 	}
 
