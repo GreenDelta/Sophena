@@ -1,14 +1,11 @@
 package sophena.rcp.editors.results.compare;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
-import sophena.calc.CostResultItem;
+import sophena.calc.ProductAreaResult;
 import sophena.model.ProductArea;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
@@ -35,41 +32,40 @@ class CostDetailsTable {
 	}
 
 	private void createItems(Table table) {
-		Map<ProductArea, double[]> details = calculate();
+		ProductAreaResult[] details = results();
 		double[] totals = new double[result.projects.length];
 		for (ProductArea area : ProductArea.values()) {
-			double[] values = details.get(area);
-			if (values == null)
+			if (allZero(details, area))
 				continue;
 			for (int i = 0; i < totals.length; i++) {
-				totals[i] += values[i];
+				totals[i] += details[i].investmentCosts(area);
 			}
-			table.row(Labels.get(area),
-					i -> Num.intStr(values[i]) + " EUR");
+			table.row(Labels.get(area), i -> {
+				double val = details[i].investmentCosts(area);
+				return Num.intStr(val) + " EUR";
+			});
 		}
 		table.emptyRow();
 		table.boldRow("Investitionssumme",
 				i -> Num.intStr(totals[i]) + " EUR");
 	}
 
-	private Map<ProductArea, double[]> calculate() {
+	private ProductAreaResult[] results() {
 		int length = result.projects.length;
-		Map<ProductArea, double[]> r = new HashMap<>();
-		for (ProductArea pa : ProductArea.values()) {
-			r.put(pa, new double[length]);
-		}
+		ProductAreaResult[] r = new ProductAreaResult[length];
 		for (int i = 0; i < length; i++) {
 			CostResult cr = result.results[i].costResult;
-			for (CostResultItem item : cr.items) {
-				if (item.productType == null
-						|| item.costs == null
-						|| item.costs.investment == 0d)
-					continue;
-				double[] values = r.get(item.productType.productArea);
-				values[i] += item.costs.investment;
-			}
+			r[i] = ProductAreaResult.calculate(cr);
 		}
 		return r;
+	}
+
+	private boolean allZero(ProductAreaResult[] r, ProductArea area) {
+		for (ProductAreaResult par : r) {
+			if (par.investmentCosts(area) != 0)
+				return false;
+		}
+		return true;
 	}
 
 }
