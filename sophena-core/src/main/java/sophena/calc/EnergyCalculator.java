@@ -119,6 +119,7 @@ class EnergyCalculator {
 			r.totalProducedHeat += total;
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
+		r.totalBufferLoss = Stats.sum(r.bufferLoss);
 	}
 
 	private boolean[][] interruptions(EnergyResult r) {

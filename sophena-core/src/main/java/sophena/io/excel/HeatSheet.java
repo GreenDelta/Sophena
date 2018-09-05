@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import sophena.Labels;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
+import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
@@ -36,7 +37,6 @@ class HeatSheet {
 				(r1, r2) -> Integer.compare(r1.rank, r2.rank));
 		for (Producer pr : result.energyResult.producers) {
 			double heat = result.energyResult.totalHeat(pr);
-			double load = result.energyResult.totalLoad;
 			Excel.cell(sheet, row, 0, pr.name);
 			if (pr.function == ProducerFunction.BASE_LOAD)
 				Excel.cell(sheet, row, 1, pr.rank + " - Grundlast");
@@ -45,9 +45,8 @@ class HeatSheet {
 			Excel.cell(sheet, row, 2, getFuelUse(pr, heat));
 			Excel.cell(sheet, row, 3, Math.round(pr.boiler.maxPower));
 			Excel.cell(sheet, row, 4, Math.round(heat));
-			double share = Math.round(100 * result.energyResult.totalHeat(pr)
-					/ load);
-			Excel.cell(sheet, row, 5, Math.round(share > 100 ? 100 : share));
+			int share = GeneratedHeat.share(heat, result.energyResult);
+			Excel.cell(sheet, row, 5, share);
 			Excel.cell(sheet, row, 6,
 					Math.round(Producers.fullLoadHours(pr, heat)));
 			Excel.cell(sheet, row, 7,
@@ -72,20 +71,16 @@ class HeatSheet {
 			Excel.cell(sheet, row, 0, "Ungedeckte Leistung");
 			Excel.cell(sheet, row, 3, Math.round(powerDiff));
 			Excel.cell(sheet, row, 4, Math.round(diff));
-			double shareDiff = Math.round(100 * diff
-					/ result.energyResult.totalLoad);
-			Excel.cell(sheet, row, 5,
-					Math.round((shareDiff > 100 ? 100 : shareDiff)));
+			int shareDiff = GeneratedHeat.share(diff, result.energyResult);
+			Excel.cell(sheet, row, 5, shareDiff);
 			row++;
 		}
 		Excel.cell(sheet, row, 0, "Pufferspeicher");
 		Excel.cell(sheet, row, 4,
 				Math.round(result.energyResult.totalBufferedHeat));
-		double shareBuff = Math.round(100
-				* result.energyResult.totalBufferedHeat
-				/ result.energyResult.totalLoad);
-		Excel.cell(sheet, row, 5,
-				Math.round((shareBuff > 100 ? 100 : shareBuff)));
+		int bufferShare = GeneratedHeat.share(
+				result.energyResult.totalBufferedHeat, result.energyResult);
+		Excel.cell(sheet, row, 5, bufferShare);
 	}
 
 	private double calculateDiff(Producer[] producers) {

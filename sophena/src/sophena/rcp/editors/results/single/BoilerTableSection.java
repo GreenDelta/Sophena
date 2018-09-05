@@ -14,6 +14,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
+import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
@@ -84,11 +85,7 @@ class BoilerTableSection {
 					+ Num.intStr(projectResult.fuelUsage.getInFuelUnits(p))
 					+ " " + Labels.getFuelUnit(p);
 			item.producedHeat = Num.intStr(heat) + " kWh";
-			if (result.totalLoad > 0) {
-				double share = Math.round(100 * heat / result.totalLoad);
-				share = share > 100 ? 100 : share;
-				item.share = Num.str(share) + " %";
-			}
+			item.share = GeneratedHeat.share(heat, result) + " %";
 			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
 			item.utilisationRate = UtilisationRate.get(project, p, result);
 			item.clocks = getClocks(i);
@@ -121,13 +118,9 @@ class BoilerTableSection {
 		item.pos = producers.length;
 		item.name = "Pufferspeicher";
 		items.add(item);
-		item.producedHeat = Num.intStr(result.totalBufferedHeat) + " kWh";
-		if (result.totalLoad > 0) {
-			double share = Math
-					.round(100 * result.totalBufferedHeat / result.totalLoad);
-			share = share > 100 ? 100 : share;
-			item.share = Num.str(share) + " %";
-		}
+		double heat = result.totalBufferedHeat;
+		item.producedHeat = Num.intStr(heat) + " kWh";
+		item.share = GeneratedHeat.share(heat, result) + " %";
 		if (project.heatNet != null) {
 			double volume = project.heatNet.bufferTankVolume;
 			item.powerOrVolume = Num.intStr(volume) + " L";
