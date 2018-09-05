@@ -35,33 +35,28 @@ class CostResultPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		boolean withFunding = result.costResultFunding.netTotal.funding > 0;
 		if (withFunding) {
-			fillSection(UI.formSection(body, tk,
-					"Wirtschaftlichkeit - mit Förderung"),
-					result.costResultFunding, true);
-			ProductAreaTable.create(result.costResultFunding,
-					UI.formSection(body, tk,
-							"Kostenübersicht - mit Förderung"));
-			CostDetailsTable.create(result.costResultFunding,
-					UI.formSection(body, tk, "Kostendetails - mit Förderung"));
+			sections(body, tk, true);
 		}
-		fillSection(
-				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
-				result.costResult, false);
-		ProductAreaTable.create(result.costResult,
-				UI.formSection(body, tk,
-						"Kostenübersicht - ohne Förderung"));
-		CostDetailsTable.create(result.costResult,
-				UI.formSection(body, tk, "Kostendetails - ohne Förderung"));
+		sections(body, tk, false);
 		form.reflow(true);
 	}
 
-	private void fillSection(Composite c, CostResult result,
-			boolean withFunding) {
-		TableViewer table = Tables.createViewer(c, "", "netto", "brutto");
+	private void sections(Composite body, FormToolkit tk, boolean withFunding) {
+		String suffix = withFunding ? " - mit Förderung" : " - ohne Förderung";
+		CostResult r = withFunding
+				? result.costResultFunding
+				: result.costResult;
+		Composite comp = UI.formSection(body, tk,
+				"Wirtschaftlichkeit" + suffix);
+		TableViewer table = Tables.createViewer(comp, "", "netto", "brutto");
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
-		table.setInput(getItems(result, withFunding));
+		table.setInput(getItems(r, withFunding));
 		Tables.rightAlignColumns(table, 1, 2);
+		ProductAreaTable.create(r,
+				UI.formSection(body, tk, "Kostenübersicht" + suffix));
+		CostDetailsTable.create(r,
+				UI.formSection(body, tk, "Kostendetails" + suffix));
 	}
 
 	private List<Item> getItems(CostResult result, boolean withFunding) {

@@ -19,6 +19,7 @@ import sophena.model.Stats;
 class CostCalculator {
 
 	private final ProjectResult result;
+	private final CalcLog log;
 	private final Project project;
 
 	private CostSettings settings;
@@ -26,6 +27,7 @@ class CostCalculator {
 
 	public CostCalculator(ProjectResult result) {
 		this.result = result;
+		this.log = result.calcLog;
 		this.project = result.project;
 		settings = project.costSettings;
 		if (settings == null) {
@@ -40,9 +42,9 @@ class CostCalculator {
 	public CostResult calculate() {
 
 		if (withFunding) {
-			result.calcLog.h2("Wirtschaftlichkeitsberechnung - mit Förderung");
+			log.h2("Wirtschaftlichkeitsberechnung - mit Förderung");
 		} else {
-			result.calcLog.h2("Wirtschaftlichkeitsberechnung - ohne Förderung");
+			log.h2("Wirtschaftlichkeitsberechnung - ohne Förderung");
 		}
 
 		CostResult r = new CostResult();
@@ -94,18 +96,18 @@ class CostCalculator {
 		r.grossTotal.capitalCosts += item.grossCapitalCosts;
 
 		// add operation costs = operation + maintenance
-		result.calcLog.println("=> Betriebskosten: " + item.label);
+		log.println("=> Betriebskosten: " + item.label);
 		double operationCosts = item.costs.operation * settings.hourlyWage;
 		double annuityOperations = Costs.annuity(result, operationCosts,
 				ir(), settings.operationFactor);
-		result.calcLog.println();
+		log.println();
 
-		result.calcLog.println("=> Instandhaltungskosten: " + item.label);
+		log.println("=> Instandhaltungskosten: " + item.label);
 		double maintenanceCosts = item.costs.investment
 				* (item.costs.repair / 100 + item.costs.maintenance / 100);
 		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
-		result.calcLog.println();
+		log.println();
 
 		item.netOperationCosts = annuityOperations + annuityMaintenance;
 		item.grossOperationCosts = Costs.gross(project, item.netOperationCosts);
@@ -114,7 +116,7 @@ class CostCalculator {
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
-		result.calcLog.h3("Bedarfsgebundene Kosten: " + p.name);
+		log.h3("Bedarfsgebundene Kosten: " + p.name);
 
 		EnergyResult energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
@@ -170,69 +172,86 @@ class CostCalculator {
 		for (AnnualCostEntry e : settings.annualCosts) {
 			otherCosts += e.value;
 		}
-		result.calcLog.h3("Sonstige Kosten");
+		log.h3("Sonstige Kosten");
 		r.netTotal.otherCosts = Costs.annuity(result, otherCosts, ir(),
 				settings.operationFactor);
 		r.grossTotal.otherCosts = Costs.gross(project, r.netTotal.otherCosts);
-		result.calcLog.println();
+		log.println();
 	}
 
 	private void addRevenues(CostResult r) {
-		result.calcLog.h3("Stromerlöse");
+		log.h3("Stromerlöse");
 		double pe = settings.electricityRevenues;
-		result.calcLog.value("pe: Mittlere Stromperlöse", pe, "EUR/kWh");
+		log.value("pe: Mittlere Stromperlöse", pe, "EUR/kWh");
 		double Egen = GeneratedElectricity.getTotal(result.energyResult);
-		result.calcLog.value("Egen: Erzeugte Strommenge", Egen, "kWh");
+		log.value("Egen: Erzeugte Strommenge", Egen, "kWh");
 		double revenuesElectricity = pe * Egen;
-		result.calcLog.value("A: Erlöse im ersten Jahr: A = pe * Egen",
+		log.value("A: Erlöse im ersten Jahr: A = pe * Egen",
 				revenuesElectricity, "kWh");
 		r.netTotal.revenuesElectricity = Costs.annuity(result,
 				revenuesElectricity, ir(),
 				settings.electricityRevenuesFactor);
 		r.grossTotal.revenuesElectricity = Costs.gross(project,
 				r.netTotal.revenuesElectricity);
-		result.calcLog.println();
+		log.println();
 
-		result.calcLog.h3("Wärmeerlöse");
+		log.h3("Wärmeerlöse");
 		double ph = settings.heatRevenues;
-		result.calcLog.value("ph: Mittlere Wärmeerlöse", ph, "EUR/kWh");
+		log.value("ph: Mittlere Wärmeerlöse", ph, "EUR/kWh");
 		double Qu = usedHeat();
-		result.calcLog.value("Qu: Genutzte Wärme", Qu, "MWh");
+		log.value("Qu: Genutzte Wärme", Qu, "MWh");
 		double revenuesHeat = ph * Qu;
-		result.calcLog.value("A: Erlöse im ersten Jahr: A = ph * Qu",
+		log.value("A: Erlöse im ersten Jahr: A = ph * Qu",
 				revenuesHeat, "kWh");
 		r.netTotal.revenuesHeat = Costs.annuity(result, revenuesHeat, ir(),
 				settings.heatRevenuesFactor);
 		r.grossTotal.revenuesHeat = Costs.gross(project,
 				r.netTotal.revenuesHeat);
-		result.calcLog.println();
+		log.println();
 	}
 
 	private void calcTotals(CostResult r) {
-		r.netTotal.annualCosts = r.netTotal.capitalCosts
+		log.h3("Jahresüberschuss (Erlöse - Kosten)");
+		log.value("Wärmeerlöse",
+				r.netTotal.revenuesHeat, "EUR/a");
+		log.value("Stromerlöse", r.netTotal.revenuesElectricity, "EUR/a");
+		double netCosts = r.netTotal.capitalCosts
 				+ r.netTotal.consumptionCosts
 				+ r.netTotal.operationCosts
-				+ r.netTotal.otherCosts
-				- r.netTotal.revenuesElectricity
-				- r.netTotal.revenuesHeat;
+				+ r.netTotal.otherCosts;
+		log.value("Kosten", netCosts, "EUR/a");
+		r.netTotal.annualSurplus = r.netTotal.revenuesHeat
+				+ r.netTotal.revenuesElectricity - netCosts;
+		log.value("Jahresüberschuss", r.netTotal.annualSurplus, "EUR/a");
+		log.println();
 
 		// Note that there can be different VAT rates in the cost categories
 		// so we have to calculate each sum separately
-		r.grossTotal.annualCosts = r.grossTotal.capitalCosts
+		double grossCosts = r.grossTotal.capitalCosts
 				+ r.grossTotal.consumptionCosts
 				+ r.grossTotal.operationCosts
-				+ r.grossTotal.otherCosts
-				- r.grossTotal.revenuesElectricity
-				- r.grossTotal.revenuesHeat;
+				+ r.grossTotal.otherCosts;
+		r.grossTotal.annualSurplus = r.grossTotal.revenuesHeat
+				+ r.grossTotal.revenuesElectricity - grossCosts;
 
+		log.h3("Wärmegestehungskosten");
 		double Q = usedHeat();
+		log.value("Q: Genutzte Wärme", Q, "MWh/a");
+		log.value("C: Jährliche Kosten", netCosts, "EUR/a");
+		log.value("E: Jährliche Stromerlöse",
+				r.netTotal.revenuesElectricity, "EUR/a");
 		if (Q == 0) {
 			r.netTotal.heatGenerationCosts = 0;
 			r.grossTotal.heatGenerationCosts = 0;
 		} else {
-			r.netTotal.heatGenerationCosts = r.netTotal.annualCosts / Q;
-			r.grossTotal.heatGenerationCosts = r.grossTotal.annualCosts / Q;
+			r.netTotal.heatGenerationCosts = (netCosts
+					- r.netTotal.revenuesElectricity) / Q;
+			r.grossTotal.heatGenerationCosts = (grossCosts
+					- r.grossTotal.revenuesElectricity) / Q;
 		}
+		log.value("Wärmegestehungskosten: (C - E) / Q",
+				r.netTotal.heatGenerationCosts, "EUR/MWh");
+		log.println();
 	}
 
 	/** Returns the interest rate that is used for the calculation. */

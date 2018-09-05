@@ -127,7 +127,7 @@ class ComparisonSheet {
 	private double getAnnualCosts(CostResult res) {
 		if (res == null || res.netTotal == null)
 			return 0;
-		return Math.round(res.netTotal.annualCosts);
+		return Math.round(res.netTotal.annualSurplus);
 	}
 
 	private double getAnnualRevenues(CostResult res) {

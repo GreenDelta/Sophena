@@ -25,7 +25,8 @@ public class CostResult {
 		/** Revenues from generated heat. */
 		public double revenuesHeat;
 
-		public double annualCosts;
+		/** The annual surplus in EUR: = revenues - costs */
+		public double annualSurplus;
 
 		/** The heat generation costs in EUR/MWh */
 		public double heatGenerationCosts;

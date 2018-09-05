@@ -33,7 +33,7 @@ public class ProductCostTest {
 	@Test
 	public void testNoCosts() {
 		ProjectResult result = ProjectResult.calculate(project);
-		double annualCosts = result.costResult.grossTotal.annualCosts;
+		double annualCosts = result.costResult.grossTotal.annualSurplus;
 		Assert.assertEquals(0, annualCosts, 1e-16);
 	}
 
@@ -97,9 +97,9 @@ public class ProductCostTest {
 		costs.investment = 10_000;
 		CostSettings settings = project.costSettings;
 		double af = Costs.annuityFactor(project, settings.interestRate);
-		double expected = af * 10_000;
+		double expected = -af * 10_000;
 		ProjectResult result = ProjectResult.calculate(project);
-		double annualCosts = result.costResult.grossTotal.annualCosts;
-		Assert.assertEquals(expected, annualCosts, 1e-5);
+		double annualSurplus = result.costResult.grossTotal.annualSurplus;
+		Assert.assertEquals(expected, annualSurplus, 1e-5);
 	}
 }

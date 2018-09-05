@@ -7,10 +7,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import sophena.Labels;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
 import sophena.calc.ProjectResult;
-import sophena.Labels;
 import sophena.utils.Strings;
 
 class CostSheet {
@@ -82,7 +82,7 @@ class CostSheet {
 		Excel.cell(sheet, row + 5, 0, "Betriebsgebundene Kosten in EUR/a");
 		Excel.cell(sheet, row + 6, 0, "Sonstige Kosten in EUR/a");
 		Excel.cell(sheet, row + 7, 0, "Stromerlöse in EUR/a");
-		Excel.cell(sheet, row + 8, 0, "Kosten - Erlöse in EUR/a");
+		Excel.cell(sheet, row + 8, 0, "Jahresüberschuss in EUR/a");
 		Excel.cell(sheet, row + 9, 0, "Wärmegestehungskosten in EUR/MWh");
 	}
 
@@ -109,10 +109,12 @@ class CostSheet {
 		Excel.cell(sheet, row + 5, 2, Math.round(cr.grossTotal.operationCosts));
 		Excel.cell(sheet, row + 6, 1, Math.round(cr.netTotal.otherCosts));
 		Excel.cell(sheet, row + 6, 2, Math.round(cr.grossTotal.otherCosts));
-		Excel.cell(sheet, row + 7, 1, Math.round(cr.netTotal.revenuesElectricity));
-		Excel.cell(sheet, row + 7, 2, Math.round(cr.grossTotal.revenuesElectricity));
-		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualCosts));
-		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualCosts));
+		Excel.cell(sheet, row + 7, 1,
+				Math.round(cr.netTotal.revenuesElectricity));
+		Excel.cell(sheet, row + 7, 2,
+				Math.round(cr.grossTotal.revenuesElectricity));
+		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualSurplus));
+		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualSurplus));
 		Excel.cell(sheet, row + 9, 1,
 				Math.round((cr.netTotal.heatGenerationCosts)));
 		Excel.cell(sheet, row + 9, 2,
