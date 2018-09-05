@@ -211,7 +211,7 @@ class CostCalculator {
 	}
 
 	private void calcTotals(CostResult r) {
-		log.h3("Jahresüberschuss (Erlöse - Kosten)");
+		log.h3("Jahresüberschuss");
 		log.value("Wärmeerlöse",
 				r.netTotal.revenuesHeat, "EUR/a");
 		log.value("Stromerlöse", r.netTotal.revenuesElectricity, "EUR/a");
@@ -222,7 +222,8 @@ class CostCalculator {
 		log.value("Kosten", netCosts, "EUR/a");
 		r.netTotal.annualSurplus = r.netTotal.revenuesHeat
 				+ r.netTotal.revenuesElectricity - netCosts;
-		log.value("Jahresüberschuss", r.netTotal.annualSurplus, "EUR/a");
+		log.value("Jahresüberschuss: Erlöse - Kosten",
+				r.netTotal.annualSurplus, "EUR/a");
 		log.println();
 
 		// Note that there can be different VAT rates in the cost categories

@@ -83,9 +83,9 @@ class CostResultPage extends FormPage {
 			items.add(new Item("Stromerlöse", "EUR/a",
 					netto.revenuesElectricity, brutto.revenuesElectricity));
 		}
-		items.add(new Item("Kosten - Erlöse", "EUR/a",
-				netto.annualCosts,
-				brutto.annualCosts));
+		items.add(new Item("Jahresüberschuss", "EUR/a",
+				netto.annualSurplus,
+				brutto.annualSurplus));
 		items.add(new Item("Wärmegestehungskosten", "EUR/MWh",
 				netto.heatGenerationCosts,
 				brutto.heatGenerationCosts));

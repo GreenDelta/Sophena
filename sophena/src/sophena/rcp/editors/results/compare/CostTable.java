@@ -55,8 +55,8 @@ class CostTable {
 				idx -> Num.intStr(costs(idx).revenuesHeat) + " EUR/a");
 		table.row("Stromerlöse",
 				idx -> Num.intStr(costs(idx).revenuesElectricity) + " EUR/a");
-		table.row("Kosten - Erlöse",
-				idx -> Num.intStr(costs(idx).annualCosts) + " EUR/a");
+		table.row("Jahresüberschuss",
+				idx -> Num.intStr(costs(idx).annualSurplus) + " EUR/a");
 		table.emptyRow();
 		table.boldRow("Wärmegestehungskosten",
 				idx -> Num.intStr(costs(idx).heatGenerationCosts) + " EUR/MWh");

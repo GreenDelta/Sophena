@@ -54,7 +54,7 @@ class Page extends FormPage {
 			simpleCostsChart("Stromerlöse", "EUR", v -> v.revenuesElectricity);
 		}
 
-		simpleCostsChart("Jährliche Kosten", "EUR", v -> v.annualCosts);
+		simpleCostsChart("Jahresüberschuss", "EUR", v -> v.annualSurplus);
 		heatCostsChart(withFunding);
 		form.reflow(true);
 	}
