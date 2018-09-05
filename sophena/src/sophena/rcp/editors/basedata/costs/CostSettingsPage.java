@@ -1,4 +1,4 @@
-package sophena.rcp.editors;
+package sophena.rcp.editors.basedata.costs;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -7,24 +7,20 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.CostSettings;
+import sophena.rcp.editors.CostSettingsPanel;
+import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.UI;
 
-public class CostSettingsPage extends FormPage {
+class CostSettingsPage extends FormPage {
 
 	private Editor editor;
 	private CostSettings costs;
 	private FormToolkit toolkit;
-	private boolean forProject;
 
-	public CostSettingsPage(Editor editor, CostSettings costs) {
+	CostSettingsPage(Editor editor, CostSettings costs) {
 		super(editor, "CostSettingsPage", "Basis-Kosteneinstellungen");
 		this.editor = editor;
 		this.costs = costs;
-	}
-
-	public void setForProject(boolean forProject) {
-		this.forProject = forProject;
-		setPartName("Projekt-Kosteneinstellungen");
 	}
 
 	public CostSettings getCosts() {
@@ -33,13 +29,12 @@ public class CostSettingsPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		String title = forProject ? "Projekt-" : "Basis-";
-		title += "Kosteneinstellungen";
+		String title = "Basis-Kosteneinstellungen";
 		ScrolledForm form = UI.formHeader(mform, title);
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		CostSettingsPanel panel = new CostSettingsPanel(editor, costs);
-		panel.isForProject = forProject;
+		CostSettingsPanel panel = new CostSettingsPanel(editor, () -> costs);
+		panel.isForProject = false;
 		panel.render(toolkit, body);
 		form.reflow(true);
 	}

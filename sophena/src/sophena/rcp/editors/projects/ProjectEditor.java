@@ -8,11 +8,9 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 import sophena.db.daos.ProjectDao;
-import sophena.model.CostSettings;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.editors.CostSettingsPage;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
@@ -21,18 +19,13 @@ import sophena.rcp.utils.UI;
 
 public class ProjectEditor extends Editor {
 
-	private Project project;
-	private CostSettingsPage settingsPage;
+	Project project;
 
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
 		KeyEditorInput input = new KeyEditorInput(d.id, d.name);
 		Editors.open(input, "sophena.ProjectEditor");
-	}
-
-	public Project getProject() {
-		return project;
 	}
 
 	@Override
@@ -49,12 +42,6 @@ public class ProjectEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new InfoPage(this));
-			CostSettings settings = project.costSettings;
-			if (settings != null) {
-				settingsPage = new CostSettingsPage(this, settings);
-				settingsPage.setForProject(true);
-				addPage(settingsPage);
-			}
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}
@@ -70,9 +57,7 @@ public class ProjectEditor extends Editor {
 			dbProject.name = project.name;
 			dbProject.duration = project.duration;
 			dbProject.weatherStation = project.weatherStation;
-			if (settingsPage != null) {
-				dbProject.costSettings = settingsPage.getCosts();
-			}
+			dbProject.costSettings = project.costSettings;
 			project = dao.update(dbProject);
 			setPartName(project.name);
 			Navigator.refresh();

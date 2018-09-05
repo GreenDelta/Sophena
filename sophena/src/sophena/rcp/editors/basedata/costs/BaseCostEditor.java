@@ -8,7 +8,6 @@ import org.eclipse.ui.PartInitException;
 import sophena.db.daos.CostSettingsDao;
 import sophena.model.CostSettings;
 import sophena.rcp.App;
-import sophena.rcp.editors.CostSettingsPage;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;

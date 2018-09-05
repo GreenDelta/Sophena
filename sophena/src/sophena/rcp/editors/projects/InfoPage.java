@@ -38,17 +38,17 @@ class InfoPage extends FormPage {
 	}
 
 	private Project project() {
-		return editor.getProject();
+		return editor.project;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, editor.getProject().name);
+		ScrolledForm form = UI.formHeader(mform, project().name);
 		FormToolkit toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
 		CostSettingsPanel panel = new CostSettingsPanel(
-				editor, project().costSettings);
+				editor, () -> project().costSettings);
 		panel.isForProject = true;
 		panel.render(toolkit, body);
 		form.reflow(true);
