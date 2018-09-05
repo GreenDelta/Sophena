@@ -11,16 +11,16 @@ import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
-class CostDetailsTable {
+class InvestmentsTable {
 
 	private final Comparison result;
 
-	private CostDetailsTable(Comparison result) {
+	private InvestmentsTable(Comparison result) {
 		this.result = result;
 	}
 
-	static CostDetailsTable of(Comparison result) {
-		return new CostDetailsTable(result);
+	static InvestmentsTable of(Comparison result) {
+		return new InvestmentsTable(result);
 	}
 
 	void render(Composite body, FormToolkit tk) {
@@ -33,13 +33,9 @@ class CostDetailsTable {
 
 	private void createItems(Table table) {
 		ProductAreaResult[] details = results();
-		double[] totals = new double[result.projects.length];
 		for (ProductArea area : ProductArea.values()) {
 			if (allZero(details, area))
 				continue;
-			for (int i = 0; i < totals.length; i++) {
-				totals[i] += details[i].investmentCosts(area);
-			}
 			table.row(Labels.get(area), i -> {
 				double val = details[i].investmentCosts(area);
 				return Num.intStr(val) + " EUR";
@@ -47,7 +43,7 @@ class CostDetailsTable {
 		}
 		table.emptyRow();
 		table.boldRow("Investitionssumme",
-				i -> Num.intStr(totals[i]) + " EUR");
+				i -> Num.intStr(details[i].totalInvestmentCosts) + " EUR");
 	}
 
 	private ProductAreaResult[] results() {

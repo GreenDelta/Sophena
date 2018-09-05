@@ -37,7 +37,7 @@ class Page extends FormPage {
 			CostTable.of(comparison).withFunding().render(body, tk);
 		}
 		CostTable.of(comparison).render(body, tk);
-		CostDetailsTable.of(comparison).render(body, tk);
+		InvestmentsTable.of(comparison).render(body, tk);
 		KeyFigureTable.of(comparison).render(body, tk);
 		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
 

@@ -38,12 +38,18 @@ class CostResultPage extends FormPage {
 			fillSection(UI.formSection(body, tk,
 					"Wirtschaftlichkeit - mit Förderung"),
 					result.costResultFunding, true);
+			ProductAreaTable.create(result.costResultFunding,
+					UI.formSection(body, tk,
+							"Kostenübersicht - mit Förderung"));
 			CostDetailsTable.create(result.costResultFunding,
 					UI.formSection(body, tk, "Kostendetails - mit Förderung"));
 		}
 		fillSection(
 				UI.formSection(body, tk, "Wirtschaftlichkeit - ohne Förderung"),
 				result.costResult, false);
+		ProductAreaTable.create(result.costResult,
+				UI.formSection(body, tk,
+						"Kostenübersicht - ohne Förderung"));
 		CostDetailsTable.create(result.costResult,
 				UI.formSection(body, tk, "Kostendetails - ohne Förderung"));
 		form.reflow(true);

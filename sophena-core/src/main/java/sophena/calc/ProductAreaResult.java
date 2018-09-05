@@ -13,6 +13,11 @@ public class ProductAreaResult {
 	private final EnumMap<ProductArea, Entry> data = new EnumMap<>(
 			ProductArea.class);
 
+	public double totalInvestmentCosts = 0.0;
+	public double totalCapitalCosts = 0.0;
+	public double totalDemandRelatedCosts = 0.0;
+	public double totalOperationRelatedCosts = 0.0;
+
 	private ProductAreaResult() {
 	}
 
@@ -39,10 +44,14 @@ public class ProductAreaResult {
 		}
 		if (item.costs != null) {
 			entry.investmentCosts += item.costs.investment;
+			totalInvestmentCosts += item.costs.investment;
 		}
 		entry.capitalCosts += item.netCapitalCosts;
+		totalCapitalCosts += item.netCapitalCosts;
 		entry.demandRelatedCosts += item.netConsumtionCosts;
+		totalDemandRelatedCosts += item.netConsumtionCosts;
 		entry.operationRelatedCosts += item.netOperationCosts;
+		totalOperationRelatedCosts += item.netOperationCosts;
 	}
 
 	public double investmentCosts(ProductArea area) {
