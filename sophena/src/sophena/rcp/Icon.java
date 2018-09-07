@@ -77,6 +77,8 @@ public enum Icon {
 
 	OPEN_16("open_16.png"),
 
+	PASTE_16("paste_16.png"),
+
 	PIPE_16("pipe_16.png"),
 
 	PRODUCT_16("product_16.png"),

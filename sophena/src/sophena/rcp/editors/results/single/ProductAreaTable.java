@@ -3,11 +3,9 @@ package sophena.rcp.editors.results.single;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
@@ -16,7 +14,6 @@ import sophena.calc.CostResult;
 import sophena.calc.ProductAreaResult;
 import sophena.model.ProductArea;
 import sophena.rcp.utils.Tables;
-import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
 class ProductAreaTable {
@@ -63,22 +60,7 @@ class ProductAreaTable {
 					result.operationRelatedCosts(area)) + "EUR/a";
 			items.add(item);
 		}
-		items.add(new Item()); // empty row
-		items.add(createTotal());
 		return items;
-	}
-
-	private Item createTotal() {
-		Item item = new Item();
-		item.investmentCosts = Num.intStr(
-				result.totalInvestmentCosts) + "EUR";
-		item.capitalCosts = Num.intStr(
-				result.totalCapitalCosts) + "EUR/a";
-		item.demandRelatedCosts = Num.intStr(
-				result.totalDemandRelatedCosts) + "EUR/a";
-		item.operationRelatedCosts = Num.intStr(
-				result.totalOperationRelatedCosts) + "EUR/a";
-		return item;
 	}
 
 	private boolean allZero(ProductArea area) {
@@ -96,22 +78,10 @@ class ProductAreaTable {
 		String operationRelatedCosts;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider,
-			ITableFontProvider {
+	private class Label extends LabelProvider implements ITableLabelProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return null;
-		}
-
-		@Override
-		public Font getFont(Object obj, int col) {
-			if (!(obj instanceof Item))
-				return null;
-			Item item = (Item) obj;
-			if (item.productArea == null
-					&& item.investmentCosts != null)
-				return UI.boldFont();
 			return null;
 		}
 

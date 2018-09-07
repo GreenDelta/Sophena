@@ -18,9 +18,11 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.ConsumerResult;
+import sophena.calc.EnergyResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
-import sophena.model.Project;
+import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.TableClipboard;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -29,12 +31,10 @@ import sophena.utils.Strings;
 class ConsumerResultPage extends FormPage {
 
 	private ProjectResult result;
-	private Project project;
 
 	ConsumerResultPage(ResultEditor editor) {
 		super(editor, "sophena.ConsumerResultPage", "Abnehmer");
 		this.result = editor.result;
-		this.project = editor.project;
 	}
 
 	@Override
@@ -51,49 +51,88 @@ class ConsumerResultPage extends FormPage {
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2);
 		Tables.autoSizeColumns(table);
+		Actions.bind(table, TableClipboard.onCopy(table));
 	}
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<Item>();
-		double totalDemand = 0;
-		double totalLoad = 0;
-		for (ConsumerResult cr : result.consumerResults) {
-			if (cr.consumer == null)
-				continue;
-			Item item = new Item();
-			item.label = cr.consumer.name;
-			item.heatingLoad = cr.consumer.heatingLoad;
-			item.heatDemand = cr.heatDemand;
-			items.add(item);
-			totalDemand += cr.heatDemand;
-			totalLoad += item.heatingLoad;
+		for (ConsumerResult r : result.consumerResults) {
+			items.add(Item.of(r));
 		}
 		Collections.sort(items,
 				(i1, i2) -> Strings.compare(i1.label, i2.label));
-		Item netItem = addNetItem(items);
-		Item totalItem = new Item();
-		totalItem.isTotal = true;
-		totalItem.label = "Summe";
-		totalItem.heatDemand = totalDemand + result.energyResult.heatNetLoss;
-		totalItem.heatingLoad = totalLoad + netItem.heatingLoad;
-		items.add(totalItem);
+		items.add(Item.ofNetLoss(result));
+		items.add(Item.ofBufferLoss(result.energyResult));
+		items.add(new Item()); // empty row
+		items.add(Item.sum(result));
 		return items;
 	}
 
-	private Item addNetItem(List<Item> items) {
-		Item netItem = new Item();
-		netItem.label = "Netzverluste";
-		netItem.heatDemand = result.energyResult.heatNetLoss;
-		netItem.heatingLoad = ProjectLoad.getNetLoad(project.heatNet);
-		items.add(netItem);
-		return netItem;
-	}
-
-	private class Item {
+	private static class Item {
 		String label;
-		double heatDemand;
-		double heatingLoad;
+		String demand;
+		String load;
 		boolean isTotal;
+
+		static Item of(ConsumerResult r) {
+			Item item = new Item();
+			if (r == null)
+				return item;
+			if (r.consumer != null) {
+				item.label = r.consumer.name;
+				item.load = f(r.consumer.heatingLoad, "kW");
+			}
+			item.demand = f(r.heatDemand, "kWh");
+			return item;
+		}
+
+		static Item ofBufferLoss(EnergyResult r) {
+			Item item = new Item();
+			item.label = "Pufferspeicherverluste";
+			if (r == null)
+				return item;
+			item.demand = f(r.totalBufferLoss, "kWh");
+			return item;
+		}
+
+		static Item ofNetLoss(ProjectResult r) {
+			Item item = new Item();
+			item.label = "Netzverluste";
+			if (r.energyResult == null || r.project == null)
+				return item;
+			item.demand = f(r.energyResult.heatNetLoss, "kWh");
+			item.load = f(ProjectLoad.getNetLoad(r.project.heatNet), "kW");
+			return item;
+		}
+
+		static Item sum(ProjectResult r) {
+			Item item = new Item();
+			item.label = "Summe";
+			item.isTotal = true;
+			double demand = 0;
+			double load = 0;
+			for (ConsumerResult cr : r.consumerResults) {
+				demand += cr.heatDemand;
+				if (cr.consumer != null) {
+					load += cr.consumer.heatingLoad;
+				}
+			}
+			if (r.energyResult != null) {
+				demand += r.energyResult.heatNetLoss;
+				demand += r.energyResult.totalBufferLoss;
+			}
+			if (r.project != null) {
+				load += ProjectLoad.getNetLoad(r.project.heatNet);
+			}
+			item.demand = f(demand, "kWh");
+			item.load = f(load, "kW");
+			return item;
+		}
+
+		static String f(double value, String unit) {
+			return Num.intStr(value) + " " + unit;
+		}
+
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider,
@@ -123,13 +162,12 @@ class ConsumerResultPage extends FormPage {
 			case 0:
 				return item.label;
 			case 1:
-				return Num.intStr(item.heatingLoad) + " kW";
+				return item.load;
 			case 2:
-				return Num.intStr(item.heatDemand) + " kWh";
+				return item.demand;
 			default:
 				return null;
 			}
 		}
-
 	}
 }
