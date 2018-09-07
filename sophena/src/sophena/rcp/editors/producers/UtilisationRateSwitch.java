@@ -47,7 +47,7 @@ class UtilisationRateSwitch {
 		Composite comp = tk.createComposite(parent);
 		UI.innerGrid(comp, 2);
 		Button r1 = tk.createButton(comp, "Automatische Berechnung", SWT.RADIO);
-		if (producer().hasProfile)
+		if (producer().hasProfile())
 			r1.setEnabled(false);
 		UI.filler(comp);
 		Button r2 = tk.createButton(comp, "Manuelle Eingabe", SWT.RADIO);
@@ -70,7 +70,7 @@ class UtilisationRateSwitch {
 			text.setBackground(Colors.forCalculatedField());
 			text.setEditable(false);
 		} else {
-			if (!producer().hasProfile) {
+			if (!producer().hasProfile()) {
 				text.setBackground(Colors.forModifiedDefault());
 			} else {
 				text.setBackground(Colors.forRequiredField());
@@ -94,7 +94,7 @@ class UtilisationRateSwitch {
 	}
 
 	private void switchToInput() {
-		if (producer().hasProfile)
+		if (producer().hasProfile())
 			return;
 		producer().utilisationRate = 0.8;
 		Texts.set(text, 0.8);

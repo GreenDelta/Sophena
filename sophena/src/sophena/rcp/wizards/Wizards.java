@@ -116,7 +116,7 @@ class Wizards {
 		} else {
 			ProductCosts.copy(p.productGroup, costs);
 		}
-		if (!p.hasProfile) {
+		if (!p.hasProfile()) {
 			p.heatRecoveryCosts = new ProductCosts();
 		}
 	}

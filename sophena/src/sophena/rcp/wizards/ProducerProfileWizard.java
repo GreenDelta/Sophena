@@ -65,20 +65,20 @@ public class ProducerProfileWizard extends Wizard {
 		wiz.project = project;
 		wiz.producer = initProducer(project);
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		if (dialog.open() == Window.OK)
+		if (dialog.open() == Window.OK) {
 			Navigator.refresh();
+		}
 	}
 
 	private static Producer initProducer(Project project) {
 		Producer p = new Producer();
 		int i = 1;
 		for (Producer other : project.producers) {
-			if (other.hasProfile)
+			if (other.hasProfile())
 				i++;
 		}
 		p.id = UUID.randomUUID().toString();
 		p.name = "Erzeugerlastgang " + i;
-		p.hasProfile = true;
 		p.utilisationRate = 0.8;
 		p.rank = Wizards.nextProducerRank(project);
 		return p;

@@ -99,7 +99,6 @@ public class ConsumerEditor extends Editor {
 			addPage(new LocationPage(this,
 					() -> consumer.location,
 					() -> new ProjectDao(App.getDb()).get(projectId)));
-			addPage(new LoadProfilesPage(this));
 		} catch (Exception e) {
 			log.error("failed to add editor pages", e);
 		}

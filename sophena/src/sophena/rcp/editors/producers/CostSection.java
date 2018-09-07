@@ -33,10 +33,10 @@ class CostSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		String label = producer().hasProfile ? "Kosten" : "Heizkessel";
+		String label = producer().hasProfile() ? "Kosten" : "Heizkessel";
 		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
-		if (!producer().hasProfile) {
+		if (!producer().hasProfile()) {
 			boilerCombo(tk, comp);
 			UI.filler(comp);
 		}
