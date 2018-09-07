@@ -48,9 +48,11 @@ class InfoSection {
 		UI.gridLayout(comp, 3);
 		nameText(tk, comp);
 		descriptionText(tk, comp);
-		buildingTypeCombo(comp, tk);
-		buildingStateCombo(comp, tk);
-		floorSpaceText(comp, tk);
+		if (!consumer().hasProfile()) {
+			buildingTypeCombo(comp, tk);
+			buildingStateCombo(comp, tk);
+			floorSpaceText(comp, tk);
+		}
 		return this;
 	}
 

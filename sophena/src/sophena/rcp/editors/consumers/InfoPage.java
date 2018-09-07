@@ -30,15 +30,19 @@ class InfoPage extends FormPage {
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
 		InfoSection infoSection = InfoSection.of(editor).create(body, tk);
-		infoSection.setDemandSection(
-				HeatDemandSection.of(editor).create(body, tk));
-		if (!consumer().demandBased)
-			ConsumptionSection.of(editor).create(body, tk);
-		InterruptionSection.of(editor).create(body, tk);
+		if (!consumer().hasProfile()) {
+			infoSection.setDemandSection(
+					HeatDemandSection.of(editor).create(body, tk));
+			if (!consumer().demandBased) {
+				ConsumptionSection.of(editor).create(body, tk);
+			}
+			InterruptionSection.of(editor).create(body, tk);
+		}
 		LoadCurveSection loadCurve = new LoadCurveSection();
 		loadCurve.render(body, tk);
 		new TransferStationSection(editor).create(body, tk);
-		editor.onCalculated((profile, totals, total) -> loadCurve.setData(profile));
+		editor.onCalculated(
+				(profile, totals, total) -> loadCurve.setData(profile));
 		form.reflow(true);
 		editor.calculate();
 	}

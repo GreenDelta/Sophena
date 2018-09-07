@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.eclipse.jface.window.Window;
@@ -7,19 +8,27 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
+import sophena.io.LoadProfileReader;
 import sophena.model.Consumer;
+import sophena.model.LoadProfile;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.Colors;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Strings;
@@ -66,6 +75,8 @@ public class ConsumerProfileWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		if (!page.isValid())
+			return false;
 		try {
 			project.consumers.add(consumer);
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -89,6 +100,8 @@ public class ConsumerProfileWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
+		private Text fileText;
+
 		private Page() {
 			super("ConsumerProfilePage", "Neuer Lastgang", null);
 			setMessage(" ");
@@ -101,19 +114,85 @@ public class ConsumerProfileWizard extends Wizard {
 			UI.gridLayout(root, 1, 5, 5);
 			Composite comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
-			name(comp);
-
+			Texts.on(UI.formText(comp, M.Name))
+					.init(consumer.name).required()
+					.onChanged(s -> {
+						consumer.name = s;
+						setErrorMessage(null);
+					});
+			Texts.on(UI.formMultiText(comp, M.Description))
+					.onChanged(s -> consumer.description = s);
+			fileFields(comp);
 		}
 
-		private void name(Composite comp) {
-			Text t = UI.formText(comp, M.Name);
-			Texts.on(t).init(consumer.name).required().onChanged(s -> {
-				consumer.name = s;
-				validate();
-			});
+		private void fileFields(Composite comp) {
+			UI.formLabel(comp, "Lastgang");
+			Composite fileComp = new Composite(comp, SWT.NONE);
+			UI.gridData(fileComp, true, false);
+			UI.innerGrid(fileComp, 2);
+			fileText = new Text(fileComp, SWT.BORDER | SWT.READ_ONLY);
+			fileText.setBackground(Colors.getWhite());
+			UI.gridData(fileText, true, false);
+			Button btn = new Button(fileComp, SWT.NONE);
+			btn.setText("Öffnen");
+			Controls.onSelect(btn, e -> onSelectFile());
 		}
 
-		private boolean validate() {
+		private void onSelectFile() {
+			setErrorMessage(null);
+			File f = FileChooser.open("*.csv", "*.txt");
+			if (f == null)
+				return;
+			try {
+				LoadProfileReader reader = new LoadProfileReader();
+				consumer.profile = reader.read(f);
+				consumer.profile.id = UUID.randomUUID().toString();
+				computeStats();
+				fileText.setText(f.getAbsolutePath());
+			} catch (Exception e) {
+				MsgBox.error("Datei konnte nicht gelesen werden",
+						e.getMessage());
+				consumer.profile = null;
+				log.error("Failed to read consumer profile " + f, e);
+			}
+		}
+
+		private void computeStats() {
+			LoadProfile p = consumer.profile;
+			if (p == null)
+				return;
+			double staticHeat = Stats.sum(p.staticData);
+			double dynamicHeat = Stats.sum(p.dynamicData);
+			double totalHeat = staticHeat + dynamicHeat;
+			consumer.heatingLoad = Stats.max(p.calculateTotal());
+			if (totalHeat > 0) {
+				consumer.waterFraction = 100
+						* Math.round(staticHeat / totalHeat);
+				consumer.loadHours = (int) Math
+						.round(totalHeat / consumer.heatingLoad);
+			}
+			if (project.weatherStation == null
+					|| project.weatherStation.data == null)
+				return;
+			double[] tempData = project.weatherStation.data;
+			int minIdx = -1;
+			double limTemp = 0;
+			for (int i = 0; i < Stats.HOURS; i++) {
+				if (p.dynamicData[i] <= 0)
+					continue;
+				double temp = tempData[i];
+				if (minIdx < 0 || temp > limTemp) {
+					minIdx = i;
+					limTemp = temp;
+					continue;
+				}
+			}
+			if (minIdx >= 0) {
+				consumer.heatingLimit = limTemp;
+			}
+		}
+
+		private boolean isValid() {
 			if (Strings.nullOrEmpty(consumer.name)) {
 				return err("Der Name darf nicht leer sein.");
 			}
@@ -121,16 +200,13 @@ public class ConsumerProfileWizard extends Wizard {
 				return err("Es wurde noch kein Lastgang ausgewählt");
 			}
 			setErrorMessage(null);
-			setPageComplete(true);
 			return true;
 		}
 
 		private boolean err(String msg) {
-			setPageComplete(false);
 			setErrorMessage(msg);
 			return false;
 		}
-
 	}
 
 }
