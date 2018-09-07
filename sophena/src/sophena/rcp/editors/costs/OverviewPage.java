@@ -54,15 +54,15 @@ class OverviewPage extends FormPage {
 		boilers(ProductType.FOSSIL_FUEL_BOILER, body, tk);
 		boilers(ProductType.COGENERATION_PLANT, body, tk);
 		entries(ProductType.BOILER_ACCESSORIES, body, tk);
-		buffers(body, tk);
-		pipes(body, tk);
-		transferStations(body, tk);
 		heatRecoveries(body, tk);
 		flueGasCleanings(body, tk);
+		buffers(body, tk);
 		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
 		entries(ProductType.BUILDING, body, tk);
+		pipes(body, tk);
 		entries(ProductType.HEATING_NET_TECHNOLOGY, body, tk);
 		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
+		transferStations(body, tk);
 		entries(ProductType.PLANNING, body, tk);
 		form.reflow(true);
 	}

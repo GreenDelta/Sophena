@@ -16,10 +16,12 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
+import sophena.model.ProductType;
 import sophena.rcp.Labels;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.utils.Enums;
 import sophena.utils.Num;
 import sophena.utils.Strings;
 
@@ -54,6 +56,7 @@ class CostDetailsTable {
 		List<Item> items = new ArrayList<>();
 		for (CostResultItem r : result.items) {
 			Item item = new Item();
+			item.type = r.productType;
 			item.category = Labels.getPlural(r.productType);
 			item.product = r.label;
 			item.investment = r.costs.investment;
@@ -68,7 +71,7 @@ class CostDetailsTable {
 
 	private void sortAndRefine(List<Item> items) {
 		items.sort((a, b) -> {
-			int c = Strings.compare(a.category, b.category);
+			int c = Enums.compare(a.type, b.type);
 			if (c != 0)
 				return c;
 			return Strings.compare(a.product, b.product);
@@ -90,6 +93,7 @@ class CostDetailsTable {
 	}
 
 	private static class Item {
+		ProductType type;
 		String category;
 		String product;
 		double investment;
