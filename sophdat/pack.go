@@ -53,6 +53,7 @@ func Pack() {
 	// write base data
 	baseData := NewPackWriter("gen/base_data.sophena")
 	defer baseData.Close()
+	packMeta(baseData)
 	packJSONFolder("cost_settings", baseData)
 	packJSONFolder("weather_stations", baseData)
 	for _, s := range csvModel.BuildingStates {
@@ -68,6 +69,7 @@ func Pack() {
 	// write poduct data
 	productData := NewPackWriter("gen/product_data.sophena")
 	defer productData.Close()
+	packMeta(productData)
 	for _, m := range csvModel.Manufacturers {
 		productData.Put(m, "manufacturers")
 	}
@@ -101,4 +103,11 @@ func packJSONFolder(folder string, w *PackWriter) {
 		check(err)
 		w.PutBytes(folder+"/"+name, bytes)
 	}
+}
+
+func packMeta(w *PackWriter) {
+	path := "data/json/meta.json"
+	bytes, err := ioutil.ReadFile(path)
+	check(err)
+	w.PutBytes("meta.json", bytes)
 }

@@ -26,6 +26,7 @@ public class FuelCosts {
 		double gross = netCosts * (1 + vat);
 		r.calcLog.value("Cb: Brennstoffkosten (brutto): Cb = Cn * (1 + vat)",
 				gross, "EUR");
+		r.calcLog.println();
 		return gross;
 	}
 
