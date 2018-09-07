@@ -253,6 +253,7 @@ CREATE TABLE tbl_consumers (
     floor_space DOUBLE,
 
     f_project CHAR(36),
+    f_profile CHAR(36),
     f_building_state CHAR(36),
     f_location CHAR(36),
 
@@ -285,12 +286,8 @@ CREATE TABLE tbl_fuel_consumptions (
 CREATE TABLE tbl_load_profiles (
 
     id CHAR(36),
-    name VARCHAR(255),
-    description CLOB(64 K),
-
     dynamic_data BLOB (80 K),
     static_data BLOB (80 K),
-    f_consumer CHAR(36),
 
     PRIMARY KEY (id)
 );
@@ -508,7 +505,6 @@ CREATE TABLE tbl_producers (
     f_project         CHAR(36),
     f_product_group   CHAR(36),
     f_boiler          CHAR(36),
-    has_profile       BOOLEAN,
     f_profile         CHAR(36),
     profile_max_power DOUBLE,
 

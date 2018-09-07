@@ -20,9 +20,7 @@ public class LoadProfileReader {
 			log.error("File is null");
 			return null;
 		}
-		LoadProfile profile = new LoadProfile();
-		profile.dynamicData = new double[Stats.HOURS];
-		profile.staticData = new double[Stats.HOURS];
+		LoadProfile profile = LoadProfile.initEmpty();
 		try {
 			List<String> rows = Files.readAllLines(file.toPath());
 			if (rows.size() != (Stats.HOURS + 1)) {

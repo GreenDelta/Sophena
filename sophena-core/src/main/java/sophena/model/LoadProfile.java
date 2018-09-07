@@ -16,8 +16,9 @@ import org.eclipse.persistence.annotations.Converter;
  */
 @Entity
 @Table(name = "tbl_load_profiles")
-@Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
-public class LoadProfile extends RootEntity {
+@Converter(name = "DoubleArrayConverter",
+		converterClass = DoubleArrayConverter.class)
+public class LoadProfile extends AbstractEntity {
 
 	@Column(name = "dynamic_data")
 	@Convert("DoubleArrayConverter")
@@ -26,6 +27,16 @@ public class LoadProfile extends RootEntity {
 	@Column(name = "static_data")
 	@Convert("DoubleArrayConverter")
 	public double[] staticData;
+
+	/**
+	 * Initializes a new empty load profile.
+	 */
+	public static LoadProfile initEmpty() {
+		LoadProfile p = new LoadProfile();
+		p.dynamicData = new double[Stats.HOURS];
+		p.staticData = new double[Stats.HOURS];
+		return p;
+	}
 
 	/**
 	 * Calculates the sum of the dynamic and static data of the load profile.
@@ -42,8 +53,6 @@ public class LoadProfile extends RootEntity {
 	public LoadProfile clone() {
 		LoadProfile clone = new LoadProfile();
 		clone.id = UUID.randomUUID().toString();
-		clone.name = name;
-		clone.description = description;
 		clone.dynamicData = Stats.copy(dynamicData);
 		clone.staticData = Stats.copy(staticData);
 		return clone;

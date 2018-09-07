@@ -19,15 +19,17 @@ public class ConsumerLoadCurve {
 	public static LoadProfile calculate(Consumer consumer,
 			WeatherStation station) {
 		ConsumerLoadCurve curve = new ConsumerLoadCurve();
+		if (consumer == null)
+			return LoadProfile.initEmpty();
+		if (consumer.profile != null)
+			return consumer.profile.clone();
 		curve.consumer = consumer;
 		curve.station = station;
 		return curve.calc();
 	}
 
 	private LoadProfile calc() {
-		LoadProfile profile = new LoadProfile();
-		profile.dynamicData = new double[Stats.HOURS];
-		profile.staticData = new double[Stats.HOURS];
+		LoadProfile profile = LoadProfile.initEmpty();
 		if (consumer == null || station == null)
 			return profile;
 		if (consumer.demandBased) {
@@ -39,7 +41,6 @@ public class ConsumerLoadCurve {
 				totalHeat += c.getUsedHeat();
 			calcCurve(totalHeat, profile);
 		}
-		addLoadProfiles(profile);
 		return profile;
 	}
 
@@ -98,13 +99,6 @@ public class ConsumerLoadCurve {
 					trace, interval, (old, i) -> true);
 		}
 		return trace;
-	}
-
-	private void addLoadProfiles(LoadProfile profile) {
-		for (LoadProfile p : consumer.loadProfiles) {
-			Stats.add(p.dynamicData, profile.dynamicData);
-			Stats.add(p.staticData, profile.staticData);
-		}
 	}
 
 }

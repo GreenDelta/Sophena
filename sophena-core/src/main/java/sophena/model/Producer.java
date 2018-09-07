@@ -37,12 +37,6 @@ public class Producer extends RootEntity {
 	@JoinColumn(name = "f_boiler")
 	public Boiler boiler;
 
-	/**
-	 * Indicates whether the producer is based on a producer profile or not.
-	 */
-	@Column(name = "has_profile")
-	public boolean hasProfile;
-
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_profile")
 	public ProducerProfile profile;
@@ -95,6 +89,13 @@ public class Producer extends RootEntity {
 	@Column(name = "utilisation_rate")
 	public Double utilisationRate;
 
+	/**
+	 * Indicates whether the producer is based on a producer profile or not.
+	 */
+	public boolean hasProfile() {
+		return profile != null;
+	}
+
 	@Override
 	public Producer clone() {
 		Producer clone = new Producer();
@@ -104,7 +105,6 @@ public class Producer extends RootEntity {
 		clone.disabled = disabled;
 		clone.productGroup = productGroup;
 		clone.boiler = boiler;
-		clone.hasProfile = hasProfile;
 		if (profile != null)
 			clone.profile = profile.clone();
 		clone.function = function;

@@ -29,7 +29,7 @@ public class Producers {
 	public static double minPower(Producer p, int hour) {
 		if (p == null)
 			return 0;
-		if (p.hasProfile) {
+		if (p.hasProfile()) {
 			if (p.profile == null)
 				return 0;
 			return Stats.get(p.profile.minPower, hour);
@@ -46,7 +46,7 @@ public class Producers {
 	public static double maxPower(Producer p, int hour) {
 		if (p == null)
 			return 0;
-		if (p.hasProfile) {
+		if (p.hasProfile()) {
 			if (p.profile == null)
 				return 0;
 			return Stats.get(p.profile.maxPower, hour);
@@ -59,7 +59,7 @@ public class Producers {
 	public static double maxPower(Producer p) {
 		if (p == null)
 			return 0;
-		if (p.hasProfile)
+		if (p.hasProfile())
 			return p.profileMaxPower;
 		if (p.boiler == null)
 			return 0;

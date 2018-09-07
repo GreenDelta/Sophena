@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import sophena.model.Boiler;
 import sophena.model.Producer;
+import sophena.model.ProducerProfile;
 
 public class FullLoadHoursTest {
 
@@ -19,11 +20,11 @@ public class FullLoadHoursTest {
 	}
 
 	@Test
-	public void testWithProfiler() {
+	public void testWithProfile() {
 		Producer p = new Producer();
-		p.hasProfile = true;
 		p.profileMaxPower = 50;
 		double generatedHeat = 500;
+		p.profile = new ProducerProfile();
 		double fullLoadHours = Producers.fullLoadHours(p, generatedHeat);
 		Assert.assertEquals(10, fullLoadHours, 1e-10);
 	}

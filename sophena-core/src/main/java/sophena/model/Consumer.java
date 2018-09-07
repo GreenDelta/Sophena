@@ -21,15 +21,19 @@ import sophena.model.descriptors.ConsumerDescriptor;
 @Table(name = "tbl_consumers")
 public class Consumer extends RootEntity {
 
+	/**
+	 * If a consumer is disabled it is excluded from the calculations of a
+	 * project result.
+	 */
 	@Column(name = "is_disabled")
 	public boolean disabled;
+
+	@Column(name = "demand_based")
+	public boolean demandBased;
 
 	@OneToOne
 	@JoinColumn(name = "f_building_state")
 	public BuildingState buildingState;
-
-	@Column(name = "demand_based")
-	public boolean demandBased;
 
 	@Column(name = "heating_load")
 	public double heatingLoad;
@@ -54,9 +58,13 @@ public class Consumer extends RootEntity {
 	@JoinColumn(name = "f_owner")
 	public final List<TimeInterval> interruptions = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "f_consumer")
-	public final List<LoadProfile> loadProfiles = new ArrayList<>();
+	/**
+	 * The load profile of a consumer. If a consumer is based on a load profile
+	 * it needs to be tagged as `hasProfile`.
+	 */
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_profile")
+	public LoadProfile profile;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_location")
@@ -80,6 +88,13 @@ public class Consumer extends RootEntity {
 					column = @Column(name = "transfer_station_operation")) })
 	public ProductCosts transferStationCosts;
 
+	/**
+	 * Indicates whether the consumer is based on a consumer profile or not.
+	 */
+	public boolean hasProfile() {
+		return profile != null;
+	}
+
 	@Override
 	public Consumer clone() {
 		Consumer clone = new Consumer();
@@ -99,8 +114,9 @@ public class Consumer extends RootEntity {
 		for (TimeInterval i : interruptions) {
 			clone.interruptions.add(i.clone());
 		}
-		for (LoadProfile lp : loadProfiles)
-			clone.loadProfiles.add(lp.clone());
+		if (profile != null) {
+			clone.profile = profile.clone();
+		}
 		if (location != null)
 			clone.location = location.clone();
 		clone.transferStation = transferStation;
