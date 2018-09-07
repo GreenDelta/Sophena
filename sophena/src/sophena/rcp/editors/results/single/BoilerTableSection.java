@@ -87,7 +87,11 @@ class BoilerTableSection {
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			item.share = GeneratedHeat.share(heat, result) + " %";
 			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
-			item.utilisationRate = UtilisationRate.get(project, p, result);
+			if (p.boiler != null && p.boiler.isCoGenPlant) {
+				item.utilisationRate = p.boiler.efficiencyRate;
+			} else {
+				item.utilisationRate = UtilisationRate.get(project, p, result);
+			}
 			item.clocks = getClocks(i);
 			items.add(item);
 		}
