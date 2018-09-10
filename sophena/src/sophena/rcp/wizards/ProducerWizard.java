@@ -58,9 +58,10 @@ public class ProducerWizard extends Wizard {
 		wiz.setWindowTitle(M.CreateNewProducer);
 		wiz.project = project;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.setPageSize(150, 400);
-		if (dialog.open() == Window.OK)
+		dialog.setPageSize(150, 450);
+		if (dialog.open() == Window.OK) {
 			Navigator.refresh();
+		}
 	}
 
 	@Override
@@ -101,8 +102,17 @@ public class ProducerWizard extends Wizard {
 		private Text rankText;
 		private Combo functionCombo;
 
+		private Combo powerCombo;
+		private final int[][] powerRanges = {
+				null,
+				{ 0, 150 },
+				{ 150, 350 },
+				{ 350, 750 },
+				{ 750, Integer.MAX_VALUE } };
+
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
+			setMessage(" ");
 		}
 
 		@Override
@@ -114,6 +124,7 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(comp, true, false);
 			nameField(comp);
 			groupCombo(comp);
+			powerCombo(comp);
 			boilerTable(root);
 			functionFields(root);
 			data.bindToUI();
@@ -141,11 +152,26 @@ public class ProducerWizard extends Wizard {
 			});
 		}
 
+		private void powerCombo(Composite comp) {
+			powerCombo = UI.formCombo(comp, "Größenklasse");
+			powerCombo.setItems(
+					"",
+					"bis 150 kW",
+					"150-350 kW",
+					"350-750 kW",
+					"über 750 kW");
+			powerCombo.select(0);
+			Controls.onSelect(powerCombo, e -> {
+				data.updateBoilers();
+				data.suggestName();
+			});
+		}
+
 		private void boilerTable(Composite root) {
-			Composite composite = new Composite(root, SWT.NONE);
-			UI.gridData(composite, true, true);
-			UI.gridLayout(composite, 1);
-			boilerTable = Tables.createViewer(composite, "Hersteller",
+			Composite comp = new Composite(root, SWT.NONE);
+			UI.gridData(comp, true, true);
+			UI.gridLayout(comp, 1);
+			boilerTable = Tables.createViewer(comp, "Hersteller",
 					"Nennleistung", "Bezeichnung");
 			Tables.bindColumnWidths(boilerTable, 0.3, 0.25, 0.45);
 			boilerTable.setContentProvider(ArrayContentProvider.getInstance());
@@ -194,10 +220,11 @@ public class ProducerWizard extends Wizard {
 				if (nameEdited && !Texts.isEmpty(nameText))
 					return;
 				Boiler b = Viewers.getFirstSelected(boilerTable);
-				if (b == null)
+				if (b == null) {
 					nameText.setText("");
-				else
+				} else {
 					Texts.set(nameText, b.name);
+				}
 			}
 
 			private String[] getGroupItems() {
@@ -224,7 +251,7 @@ public class ProducerWizard extends Wizard {
 				BoilerDao dao = new BoilerDao(App.getDb());
 				ArrayList<Boiler> input = new ArrayList<>();
 				for (Boiler b : dao.getAll()) {
-					if (matchGroup(b)) {
+					if (matchGroup(b) && matchPowerFilter(b)) {
 						input.add(b);
 					}
 				}
@@ -249,6 +276,18 @@ public class ProducerWizard extends Wizard {
 				if (b.group == null || b.group.name == null)
 					return false;
 				return Strings.nullOrEqual(group, b.group.name);
+			}
+
+			private boolean matchPowerFilter(Boiler b) {
+				if (b == null)
+					return false;
+				int idx = powerCombo.getSelectionIndex();
+				if (idx < 0)
+					return true;
+				int[] range = powerRanges[idx];
+				if (range == null)
+					return true;
+				return b.maxPower >= range[0] && b.maxPower <= range[1];
 			}
 
 			private boolean validate() {
