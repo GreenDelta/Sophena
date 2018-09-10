@@ -37,6 +37,19 @@ public class App {
 		return key;
 	}
 
+	/**
+	 * Same as {@link #stash(Object)} but with an explicit key.
+	 */
+	public static void stash(String key, Object value) {
+		if (key == null)
+			return;
+		if (value == null) {
+			cache.remove(key);
+			return;
+		}
+		cache.put(key, value);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> T pop(String key) {
 		if (key == null)

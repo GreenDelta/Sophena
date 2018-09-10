@@ -49,6 +49,11 @@ public class ResultEditor extends Editor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
+		onClosed(() -> {
+			// cache the last opened page when the editor closes
+			int page = getActivePage();
+			App.stash(":last-result-page", project.id + "_@" + page);
+		});
 		try {
 			KeyEditorInput kei = (KeyEditorInput) input;
 			Object[] data = App.pop(kei.getKey());
@@ -72,10 +77,28 @@ public class ResultEditor extends Editor {
 			addPage(new ConsumerResultPage(this));
 			addPage(new LocationResultPage(this));
 			addPage(new LogPage(this));
+			activateLastPage();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);
 		}
+	}
+
+	/**
+	 * Activate the last opened page if the results of the project were already
+	 * shown.
+	 */
+	private void activateLastPage() {
+		String pageDef = App.pop(":last-result-page");
+		if (pageDef == null)
+			return;
+		String[] parts = pageDef.split("_@");
+		if (parts.length < 2)
+			return;
+		if (!Strings.nullOrEqual(parts[0], project.id))
+			return;
+		int page = Integer.parseInt(parts[1]);
+		setActivePage(page);
 	}
 
 	private boolean isWithCoGen() {
@@ -86,6 +109,12 @@ public class ResultEditor extends Editor {
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void close(boolean save) {
+		System.out.println(getActivePage());
+		super.close(save);
 	}
 
 }
