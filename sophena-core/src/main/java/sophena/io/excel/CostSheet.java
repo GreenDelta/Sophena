@@ -74,8 +74,8 @@ class CostSheet {
 
 	private void resultHead(Sheet sheet, CellStyle style, int row) {
 		// TODO: fundings; revenues from heat ...
-		Excel.cell(sheet, row + 1, 1, "Netto").setCellStyle(style);
-		Excel.cell(sheet, row + 1, 2, "Brutto").setCellStyle(style);
+		Excel.cell(sheet, row + 1, 1, "Dynamisch").setCellStyle(style);
+		Excel.cell(sheet, row + 1, 2, "Statisch").setCellStyle(style);
 		Excel.cell(sheet, row + 2, 0, "Investitionskosten in EUR");
 		Excel.cell(sheet, row + 3, 0, "Kapitalgebundene Kosten in EUR/a");
 		Excel.cell(sheet, row + 4, 0, "Bedarfsgebundene Kosten in EUR/a");
@@ -98,27 +98,31 @@ class CostSheet {
 
 	private void resultItems(Sheet sheet, int row, CostResult cr) {
 
-		Excel.cell(sheet, row + 2, 1, Math.round(cr.netTotal.investments));
-		Excel.cell(sheet, row + 2, 2, Math.round(cr.grossTotal.investments));
-		Excel.cell(sheet, row + 3, 1, Math.round(cr.netTotal.capitalCosts));
-		Excel.cell(sheet, row + 3, 2, Math.round(cr.grossTotal.capitalCosts));
-		Excel.cell(sheet, row + 4, 1, Math.round(cr.netTotal.consumptionCosts));
+		Excel.cell(sheet, row + 2, 1, Math.round(cr.dynamicTotal.investments));
+		Excel.cell(sheet, row + 2, 2, Math.round(cr.staticTotal.investments));
+		Excel.cell(sheet, row + 3, 1, Math.round(cr.dynamicTotal.capitalCosts));
+		Excel.cell(sheet, row + 3, 2, Math.round(cr.staticTotal.capitalCosts));
+		Excel.cell(sheet, row + 4, 1,
+				Math.round(cr.dynamicTotal.consumptionCosts));
 		Excel.cell(sheet, row + 4, 2,
-				Math.round(cr.grossTotal.consumptionCosts));
-		Excel.cell(sheet, row + 5, 1, Math.round(cr.netTotal.operationCosts));
-		Excel.cell(sheet, row + 5, 2, Math.round(cr.grossTotal.operationCosts));
-		Excel.cell(sheet, row + 6, 1, Math.round(cr.netTotal.otherCosts));
-		Excel.cell(sheet, row + 6, 2, Math.round(cr.grossTotal.otherCosts));
+				Math.round(cr.staticTotal.consumptionCosts));
+		Excel.cell(sheet, row + 5, 1,
+				Math.round(cr.dynamicTotal.operationCosts));
+		Excel.cell(sheet, row + 5, 2,
+				Math.round(cr.staticTotal.operationCosts));
+		Excel.cell(sheet, row + 6, 1, Math.round(cr.dynamicTotal.otherCosts));
+		Excel.cell(sheet, row + 6, 2, Math.round(cr.staticTotal.otherCosts));
 		Excel.cell(sheet, row + 7, 1,
-				Math.round(cr.netTotal.revenuesElectricity));
+				Math.round(cr.dynamicTotal.revenuesElectricity));
 		Excel.cell(sheet, row + 7, 2,
-				Math.round(cr.grossTotal.revenuesElectricity));
-		Excel.cell(sheet, row + 8, 1, Math.round(cr.netTotal.annualSurplus));
-		Excel.cell(sheet, row + 8, 2, Math.round(cr.grossTotal.annualSurplus));
+				Math.round(cr.staticTotal.revenuesElectricity));
+		Excel.cell(sheet, row + 8, 1,
+				Math.round(cr.dynamicTotal.annualSurplus));
+		Excel.cell(sheet, row + 8, 2, Math.round(cr.staticTotal.annualSurplus));
 		Excel.cell(sheet, row + 9, 1,
-				Math.round((cr.netTotal.heatGenerationCosts)));
+				Math.round((cr.dynamicTotal.heatGenerationCosts)));
 		Excel.cell(sheet, row + 9, 2,
-				Math.round((cr.grossTotal.heatGenerationCosts)));
+				Math.round((cr.staticTotal.heatGenerationCosts)));
 	}
 
 	private class Item {

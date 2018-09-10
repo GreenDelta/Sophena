@@ -33,7 +33,7 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		boolean withFunding = result.costResultFunding.netTotal.funding > 0;
+		boolean withFunding = result.costResultFunding.dynamicTotal.funding > 0;
 		if (withFunding) {
 			sections(body, tk, true);
 		}
@@ -48,7 +48,8 @@ class CostResultPage extends FormPage {
 				: result.costResult;
 		Composite comp = UI.formSection(body, tk,
 				"Wirtschaftlichkeit" + suffix);
-		TableViewer table = Tables.createViewer(comp, "", "netto", "brutto");
+		TableViewer table = Tables.createViewer(comp, "", "Dynamisch",
+				"Statisch");
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
 		table.setInput(getItems(r, withFunding));
@@ -60,35 +61,35 @@ class CostResultPage extends FormPage {
 	}
 
 	private List<Item> getItems(CostResult result, boolean withFunding) {
-		CostResult.FieldSet netto = result.netTotal;
-		CostResult.FieldSet brutto = result.grossTotal;
+		CostResult.FieldSet dyn = result.dynamicTotal;
+		CostResult.FieldSet stat = result.staticTotal;
 		List<Item> items = new ArrayList<>();
 		items.add(new Item("Investitionskosten", "EUR",
-				netto.investments, brutto.investments));
+				dyn.investments, stat.investments));
 		if (withFunding) {
 			items.add(new Item("Investitionsförderung", "EUR",
-					netto.funding, brutto.funding));
+					dyn.funding, stat.funding));
 		}
 		items.add(new Item("Kapitalgebundene Kosten", "EUR/a",
-				netto.capitalCosts, brutto.capitalCosts));
+				dyn.capitalCosts, stat.capitalCosts));
 		items.add(new Item("Bedarfsgebundene Kosten", "EUR/a",
-				netto.consumptionCosts, brutto.consumptionCosts));
+				dyn.consumptionCosts, stat.consumptionCosts));
 		items.add(new Item("Betriebsgebundene Kosten", "EUR/a",
-				netto.operationCosts, brutto.operationCosts));
+				dyn.operationCosts, stat.operationCosts));
 		items.add(new Item("Sonstige Kosten", "EUR/a",
-				netto.otherCosts, brutto.otherCosts));
+				dyn.otherCosts, stat.otherCosts));
 		items.add(new Item("Wärmeerlöse", "EUR/a",
-				netto.revenuesHeat, brutto.revenuesHeat));
-		if (netto.revenuesElectricity > 0) {
+				dyn.revenuesHeat, stat.revenuesHeat));
+		if (dyn.revenuesElectricity > 0) {
 			items.add(new Item("Stromerlöse", "EUR/a",
-					netto.revenuesElectricity, brutto.revenuesElectricity));
+					dyn.revenuesElectricity, stat.revenuesElectricity));
 		}
 		items.add(new Item("Jahresüberschuss", "EUR/a",
-				netto.annualSurplus,
-				brutto.annualSurplus));
+				dyn.annualSurplus,
+				stat.annualSurplus));
 		items.add(new Item("Wärmegestehungskosten", "EUR/MWh",
-				netto.heatGenerationCosts,
-				brutto.heatGenerationCosts));
+				dyn.heatGenerationCosts,
+				stat.heatGenerationCosts));
 		return items;
 	}
 

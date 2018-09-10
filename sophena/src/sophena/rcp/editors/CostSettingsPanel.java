@@ -51,9 +51,6 @@ public class CostSettingsPanel {
 	private void generalSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Allgemein");
 		UI.gridLayout(c, 4);
-		t(c, "Mehrwertsteuersatz", "%", costs().vatRate)
-				.onChanged(s -> costs().vatRate = Num.read(s));
-		UI.filler(c);
 		t(c, "Mittlerer Stundenlohn", "EUR", costs().hourlyWage)
 				.onChanged(s -> costs().hourlyWage = Num.read(s));
 		UI.filler(c);

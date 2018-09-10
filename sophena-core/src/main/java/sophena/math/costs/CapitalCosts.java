@@ -21,14 +21,16 @@ public class CapitalCosts {
 	 * @param interestRate
 	 *            The percentage value of the interest rate that should be used
 	 *            in the calculation (e.g. 2)
+	 * @param priceChangeFactor
+	 *            The price change factor that should be used in the calculation
+	 *            (e.g. 1.02).
 	 */
 	public static double get(CostResultItem item, Project project,
-			double interestRate) {
+			double interestRate, double priceChangeFactor) {
 		if (item == null || item.costs == null
 				|| project == null || project.costSettings == null)
 			return 0;
 		double interestFactor = 1 + interestRate / 100;
-		double priceChangeFactor = project.costSettings.investmentFactor;
 		return calculate(
 				item.costs.investment,
 				item.costs.duration,

@@ -21,13 +21,8 @@ public class CostResultItem {
 	public ProductCosts costs;
 
 	public double netCapitalCosts;
-	public double grossCapitalCosts;
-
 	public double netConsumtionCosts;
-	public double grossConsumptionCosts;
-
 	public double netOperationCosts;
-	public double grossOperationCosts;
 
 	static CostResultItem create(ProductEntry entry) {
 		CostResultItem item = new CostResultItem();
@@ -67,7 +62,8 @@ public class CostResultItem {
 		for (HeatNetPipe pipe : project.heatNet.pipes) {
 			if (!shouldAdd(pipe.pipe, pipe.costs))
 				continue;
-			CostResultItem item = init(pipe.pipe, ProductType.PIPE, "Wärmeleitung");
+			CostResultItem item = init(pipe.pipe, ProductType.PIPE,
+					"Wärmeleitung");
 			copy(pipe.costs, item);
 			items.add(item);
 		}

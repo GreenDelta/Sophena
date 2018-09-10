@@ -20,6 +20,12 @@ Zinssatz übergeben, z.B. 2%):
 double anf = Costs.annuitiyFactor(project, interestRate);
 ```
 
+```clojure
+(annuity-factor [duration interest-rate]
+  (let [q (+ 1 (/ interest-rate 100))]
+    (/ (- q 1) (- 1 (Math/pow q (- duration))))))
+```
+
 ## Preisänderungsfaktoren
 Ein Preisänderungsfaktor `pcf` beschreibt die jährliche Änderung des Preises für
 ein Produkt. Steigt der Preis zum Beispiel um 2% pro Jahr, so ist der

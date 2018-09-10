@@ -22,9 +22,6 @@ public class CostSettings extends AbstractEntity {
 
 	// general costs
 
-	@Column(name = "vat_rate")
-	public double vatRate;
-
 	@Column(name = "hourly_wage")
 	public double hourlyWage;
 
@@ -82,7 +79,7 @@ public class CostSettings extends AbstractEntity {
 
 	@ElementCollection
 	@CollectionTable(name = "tbl_annual_costs",
-		joinColumns = @JoinColumn(name = "f_project"))
+			joinColumns = @JoinColumn(name = "f_project"))
 	public List<AnnualCostEntry> annualCosts = new ArrayList<>();
 
 	// prices change factors
@@ -142,7 +139,6 @@ public class CostSettings extends AbstractEntity {
 		clone.heatRevenuesFactor = heatRevenuesFactor;
 		clone.electricityRevenuesFactor = electricityRevenuesFactor;
 
-		clone.vatRate = vatRate;
 		clone.insuranceShare = insuranceShare;
 		clone.otherShare = otherShare;
 		clone.administrationShare = administrationShare;

@@ -66,8 +66,8 @@ class CostTable {
 		if (idx >= result.results.length)
 			return new CostResult.FieldSet();
 		return withFunding
-				? result.results[idx].costResultFunding.netTotal
-				: result.results[idx].costResult.netTotal;
+				? result.results[idx].costResultFunding.dynamicTotal
+				: result.results[idx].costResult.dynamicTotal;
 	}
 
 }

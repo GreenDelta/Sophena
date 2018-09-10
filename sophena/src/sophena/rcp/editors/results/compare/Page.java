@@ -45,7 +45,7 @@ class Page extends FormPage {
 		simpleCostsChart("Wärmeerlöse", "EUR", v -> v.revenuesHeat);
 		boolean withElectricityRevenues = false;
 		for (ProjectResult r : comparison.results) {
-			if (r.costResult.netTotal.revenuesElectricity > 0) {
+			if (r.costResult.dynamicTotal.revenuesElectricity > 0) {
 				withElectricityRevenues = true;
 				break;
 			}
@@ -61,7 +61,7 @@ class Page extends FormPage {
 
 	private boolean withFunding() {
 		for (ProjectResult r : comparison.results) {
-			if (r.costResultFunding.netTotal.funding > 0)
+			if (r.costResultFunding.dynamicTotal.funding > 0)
 				return true;
 		}
 		return false;
@@ -74,7 +74,7 @@ class Page extends FormPage {
 			Color color = Colors.getForChart(i);
 			Project project = comparison.projects[i];
 			CostResult r = comparison.results[i].costResult;
-			double value = fn.applyAsDouble(r.netTotal);
+			double value = fn.applyAsDouble(r.dynamicTotal);
 			chart.addBar(project.name, value, color);
 		}
 		chart.render(body, tk);
@@ -89,13 +89,13 @@ class Page extends FormPage {
 			ProjectResult result = comparison.results[i];
 			if (withFunding) {
 				chart.addBar(project.name + " - mit Förderung",
-						result.costResult.netTotal.heatGenerationCosts,
+						result.costResult.dynamicTotal.heatGenerationCosts,
 						Colors.darker(color, 40));
 			}
 			String name = withFunding ? project.name + " - ohne Förderung"
 					: project.name;
 			chart.addBar(name,
-					result.costResultFunding.netTotal.heatGenerationCosts,
+					result.costResultFunding.dynamicTotal.heatGenerationCosts,
 					color);
 		}
 		chart.render(body, tk);

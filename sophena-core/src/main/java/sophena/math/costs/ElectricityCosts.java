@@ -15,6 +15,7 @@ public class ElectricityCosts {
 	public static double net(double producedHeat, CostSettings settings) {
 		if (producedHeat == 0 || settings == null)
 			return 0;
+		// TODO: log calculation
 		double amount = UsedElectricity.get(producedHeat, settings);
 		double net = amount * settings.electricityPrice;
 		return net;

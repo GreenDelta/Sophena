@@ -19,7 +19,8 @@ public class CapitalCostsTest {
 		item.costs = new ProductCosts();
 		item.costs.investment = 10_000;
 		double interestRate = project.costSettings.interestRate;
-		DoubleSupplier fn = () -> CapitalCosts.get(item, project, interestRate);
+		DoubleSupplier fn = () -> CapitalCosts.get(item, project, interestRate,
+				project.costSettings.investmentFactor);
 
 		item.costs.duration = 15;
 		Assert.assertEquals(836.640588139219, fn.getAsDouble(), 1E-10);
@@ -47,7 +48,8 @@ public class CapitalCostsTest {
 		item.costs.investment = 10_000;
 		item.costs.duration = 8;
 
-		double capitalCosts = CapitalCosts.get(item, project, 2);
+		double capitalCosts = CapitalCosts.get(item, project, 2,
+				project.costSettings.investmentFactor);
 		Assert.assertEquals(1657.4431, capitalCosts, 1e-3);
 	}
 
@@ -64,7 +66,8 @@ public class CapitalCostsTest {
 		item.costs.investment = 10_000;
 		item.costs.duration = 5;
 
-		double capitalCosts = CapitalCosts.get(item, project, 2);
+		double capitalCosts = CapitalCosts.get(item, project, 2,
+				project.costSettings.investmentFactor);
 		Assert.assertEquals(2635.8927, capitalCosts, 1e-3);
 	}
 
@@ -81,7 +84,8 @@ public class CapitalCostsTest {
 		item.costs.investment = 10_000;
 		item.costs.duration = 30;
 
-		double capitalCosts = CapitalCosts.get(item, project, 2);
+		double capitalCosts = CapitalCosts.get(item, project, 2,
+				project.costSettings.investmentFactor);
 		Assert.assertEquals(474.3781, capitalCosts, 1e-3);
 	}
 
@@ -98,7 +102,8 @@ public class CapitalCostsTest {
 		item.costs.investment = 10_000;
 		item.costs.duration = 20;
 
-		double capitalCosts = CapitalCosts.get(item, project, 2);
+		double capitalCosts = CapitalCosts.get(item, project, 2,
+				project.costSettings.investmentFactor);
 		Assert.assertEquals(611.5671, capitalCosts, 1e-3);
 	}
 

@@ -7,8 +7,8 @@ public class CostResult {
 
 	public final List<CostResultItem> items = new ArrayList<>();
 
-	public final FieldSet netTotal = new FieldSet();
-	public final FieldSet grossTotal = new FieldSet();
+	public final FieldSet dynamicTotal = new FieldSet();
+	public final FieldSet staticTotal = new FieldSet();
 
 	public static class FieldSet {
 

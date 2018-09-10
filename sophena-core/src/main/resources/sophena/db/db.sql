@@ -114,7 +114,6 @@ CREATE TABLE tbl_cost_settings (
     id CHAR(36),
     f_project CHAR(36),
 
-    vat_rate DOUBLE,
     hourly_wage DOUBLE,
     electricity_price DOUBLE,
     electricity_demand_share DOUBLE,
@@ -518,7 +517,6 @@ CREATE TABLE tbl_producers (
     wood_amount_type VARCHAR(255),
     water_content DOUBLE,
     price_per_unit DOUBLE,
-    tax_rate DOUBLE,
     ash_costs DOUBLE,
     
     f_heat_recovery CHAR(36),

@@ -84,7 +84,6 @@ class Wizards {
 	static void initFuelSpec(Producer p) {
 		FuelSpec spec = new FuelSpec();
 		p.fuelSpec = spec;
-		spec.taxRate = 19d;
 		if (p.productGroup == null)
 			return;
 		FuelGroup group = p.productGroup.fuelGroup;

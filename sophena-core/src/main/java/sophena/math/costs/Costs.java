@@ -26,21 +26,6 @@ public class Costs {
 	}
 
 	/**
-	 * Calculates the gross costs for the given net costs.
-	 * 
-	 * @param project
-	 *            The project with the calculation settings.
-	 * @param netCosts
-	 *            The net costs that should be converted into gross costs.
-	 */
-	public static double gross(Project project, double netCosts) {
-		if (netCosts == 0 || project == null || project.costSettings == null)
-			return 0;
-		double vat = 1 + project.costSettings.vatRate / 100;
-		return netCosts * vat;
-	}
-
-	/**
 	 * Calculate the annuity factor for the given project and interest rate.
 	 * 
 	 * @param project
@@ -72,7 +57,7 @@ public class Costs {
 			double priceChangeFactor) {
 		if (project == null)
 			return 0;
-
+		// TODO: log
 		double q = 1 + interestRate / 100;
 		double r = priceChangeFactor;
 		double T = project.duration;

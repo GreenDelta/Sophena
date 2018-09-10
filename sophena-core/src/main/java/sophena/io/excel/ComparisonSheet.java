@@ -51,10 +51,10 @@ class ComparisonSheet {
 
 	private void annualRevenues(Sheet sheet, CellStyle style) {
 		ToDoubleFunction<CostResult> fn = result -> {
-			if (result == null || result.netTotal == null)
+			if (result == null || result.dynamicTotal == null)
 				return 0;
-			return result.netTotal.revenuesElectricity
-					+ result.netTotal.revenuesHeat;
+			return result.dynamicTotal.revenuesElectricity
+					+ result.dynamicTotal.revenuesHeat;
 		};
 		double max = 0;
 		for (ProjectResult result : comparison.results) {
@@ -119,27 +119,28 @@ class ComparisonSheet {
 	}
 
 	private double getHeatCosts(CostResult res) {
-		if (res == null || res.netTotal == null)
+		if (res == null || res.dynamicTotal == null)
 			return 0;
-		return Math.round(res.netTotal.heatGenerationCosts);
+		return Math.round(res.dynamicTotal.heatGenerationCosts);
 	}
 
 	private double getAnnualCosts(CostResult res) {
-		if (res == null || res.netTotal == null)
+		if (res == null || res.dynamicTotal == null)
 			return 0;
-		return Math.round(res.netTotal.annualSurplus);
+		return Math.round(res.dynamicTotal.annualSurplus);
 	}
 
 	private double getAnnualRevenues(CostResult res) {
-		if (res == null || res.netTotal == null)
+		if (res == null || res.dynamicTotal == null)
 			return 0;
 		return Math.round(
-				res.netTotal.revenuesElectricity + res.netTotal.revenuesHeat);
+				res.dynamicTotal.revenuesElectricity
+						+ res.dynamicTotal.revenuesHeat);
 	}
 
 	private double getInvestment(CostResult res) {
-		if (res == null || res.netTotal == null)
+		if (res == null || res.dynamicTotal == null)
 			return 0;
-		return Math.round(res.netTotal.investments);
+		return Math.round(res.dynamicTotal.investments);
 	}
 }

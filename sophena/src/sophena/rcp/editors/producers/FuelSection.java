@@ -62,7 +62,6 @@ class FuelSection {
 		}
 		createCalorificValueRow(tk, comp);
 		createCostRow(tk, comp);
-		createVatRow(tk, comp);
 		createAshCostRow(tk, comp);
 	}
 
@@ -153,18 +152,6 @@ class FuelSection {
 				.onChanged((s) -> {
 					double val = Texts.getDouble(t);
 					producer().fuelSpec.pricePerUnit = val;
-					editor.setDirty();
-				});
-	}
-
-	private void createVatRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, tk, "Mehrwertsteuersatz");
-		UI.formLabel(comp, tk, "%");
-		Texts.on(t).decimal().required()
-				.init(producer().fuelSpec.taxRate)
-				.onChanged((s) -> {
-					double val = Texts.getDouble(t);
-					producer().fuelSpec.taxRate = val;
 					editor.setDirty();
 				});
 	}

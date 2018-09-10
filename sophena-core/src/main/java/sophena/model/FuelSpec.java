@@ -30,9 +30,6 @@ public class FuelSpec {
 	@Column(name = "price_per_unit")
 	public double pricePerUnit;
 
-	@Column(name = "tax_rate")
-	public double taxRate;
-
 	/**
 	 * Costs for the disposal of ashes in EUR/t.
 	 */
@@ -46,7 +43,6 @@ public class FuelSpec {
 		clone.woodAmountType = woodAmountType;
 		clone.waterContent = waterContent;
 		clone.pricePerUnit = pricePerUnit;
-		clone.taxRate = taxRate;
 		clone.ashCosts = ashCosts;
 		return clone;
 	}

@@ -3,6 +3,7 @@ package sophena.calc;
 import java.util.List;
 import java.util.function.Function;
 
+import sophena.calc.CostResult.FieldSet;
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
@@ -52,7 +53,8 @@ class CostCalculator {
 		finishCapitalCosts(r);
 		addOtherCosts(r);
 		addRevenues(r);
-		calcTotals(r);
+		calcTotals(r.dynamicTotal, true);
+		calcTotals(r.staticTotal, false);
 		return r;
 	}
 
@@ -86,33 +88,48 @@ class CostCalculator {
 		if (item == null)
 			return;
 		r.items.add(item);
-		r.netTotal.investments += item.costs.investment;
-		r.grossTotal.investments += Costs.gross(project, item.costs.investment);
+		r.dynamicTotal.investments += item.costs.investment;
+		r.staticTotal.investments += item.costs.investment;
 
 		// add capital costs
-		item.netCapitalCosts = CapitalCosts.get(item, project, ir());
-		item.grossCapitalCosts = Costs.gross(project, item.netCapitalCosts);
-		r.netTotal.capitalCosts += item.netCapitalCosts;
-		r.grossTotal.capitalCosts += item.grossCapitalCosts;
+		log.println("=> Kapitalkosten: " + item.label);
+		item.netCapitalCosts = CapitalCosts.get(item, project, ir(),
+				project.costSettings.investmentFactor);
+		log.value("Dynamisch", item.netCapitalCosts, "EUR/a");
+		r.dynamicTotal.capitalCosts += item.netCapitalCosts;
+		double staticCapitalCosts = CapitalCosts.get(
+				item, project, ir(), 1.0);
+		log.value("Statisch", staticCapitalCosts, "EUR/a");
+		r.staticTotal.capitalCosts += staticCapitalCosts;
+		log.println();
 
 		// add operation costs = operation + maintenance
 		log.println("=> Betriebskosten: " + item.label);
 		double operationCosts = item.costs.operation * settings.hourlyWage;
+		log.println("dynamisch:");
 		double annuityOperations = Costs.annuity(result, operationCosts,
 				ir(), settings.operationFactor);
+		log.println("statisch:");
+		double staticAnnuityOperations = Costs.annuity(result, operationCosts,
+				ir(), 1.0);
 		log.println();
 
 		log.println("=> Instandhaltungskosten: " + item.label);
 		double maintenanceCosts = item.costs.investment
 				* (item.costs.repair / 100 + item.costs.maintenance / 100);
+		log.println("dynamisch:");
 		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
+		log.println("statisch:");
+		double staticAnnuityMaintenance = Costs.annuity(result,
+				maintenanceCosts, ir(), 1.0);
 		log.println();
 
 		item.netOperationCosts = annuityOperations + annuityMaintenance;
-		item.grossOperationCosts = Costs.gross(project, item.netOperationCosts);
-		r.netTotal.operationCosts += item.netOperationCosts;
-		r.grossTotal.operationCosts += item.grossOperationCosts;
+		r.dynamicTotal.operationCosts += item.netOperationCosts;
+
+		r.staticTotal.operationCosts += staticAnnuityOperations
+				+ staticAnnuityMaintenance;
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
@@ -121,30 +138,20 @@ class CostCalculator {
 		EnergyResult energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
 
-		// add fuel costs
-		double netCosts = FuelCosts.net(result, p);
-		double grossCosts = FuelCosts.gross(result, p, netCosts);
-
-		// add costs for electricity demand
-		double netElectricityCosts = ElectricityCosts.net(producedHeat,
-				settings);
-		netCosts += netElectricityCosts;
-		grossCosts += Costs.gross(project, netElectricityCosts);
-
-		// add ash costs
-		double netAshCosts = FuelCosts.netAshCosts(result, p);
-		netCosts += netAshCosts;
-		grossCosts += Costs.gross(project, netAshCosts);
-
-		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
+		double fuelCosts = FuelCosts.net(result, p);
+		double electricityCosts = ElectricityCosts.net(producedHeat, settings);
+		double ashCosts = FuelCosts.netAshCosts(result, p);
+		double costs = fuelCosts + electricityCosts + ashCosts;
 
 		double a = Costs.annuityFactor(project, ir());
-		double b = Costs.cashValueFactor(project, ir(), priceChangeFactor);
+		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
+		double bDynamic = Costs.cashValueFactor(project, ir(),
+				priceChangeFactor);
+		double bStatic = Costs.cashValueFactor(project, ir(), 1.0);
 
-		item.netConsumtionCosts = netCosts * a * b;
-		item.grossConsumptionCosts = grossCosts * a * b;
-		r.netTotal.consumptionCosts += item.netConsumtionCosts;
-		r.grossTotal.consumptionCosts += item.grossConsumptionCosts;
+		item.netConsumtionCosts = costs * a * bDynamic;
+		r.dynamicTotal.consumptionCosts += item.netConsumtionCosts;
+		r.staticTotal.consumptionCosts += costs * a * bStatic;
 	}
 
 	/** Reduce capital costs by fundings and connection fees. */
@@ -152,30 +159,34 @@ class CostCalculator {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
 			double funding = Fundings.get(project);
-			r.netTotal.funding = funding;
-			r.grossTotal.funding = Costs.gross(project, funding);
+			r.dynamicTotal.funding = funding;
+			r.staticTotal.funding = funding;
 			bonus += funding;
 		}
 		if (bonus <= 0)
 			return;
 		double a = Costs.annuityFactor(project, ir());
-		r.netTotal.capitalCosts -= (bonus * a);
-		r.grossTotal.capitalCosts = Costs.gross(project,
-				r.netTotal.capitalCosts);
+		r.dynamicTotal.capitalCosts -= (bonus * a);
+		r.staticTotal.capitalCosts -= (bonus * a);
 	}
 
 	private void addOtherCosts(CostResult r) {
 		double investmentShare = (settings.insuranceShare
 				+ settings.otherShare
 				+ settings.administrationShare) / 100;
-		double otherCosts = investmentShare * r.netTotal.investments;
+		double staticCosts = investmentShare * r.staticTotal.investments;
+		double dynamicCosts = investmentShare * r.dynamicTotal.investments;
 		for (AnnualCostEntry e : settings.annualCosts) {
-			otherCosts += e.value;
+			staticCosts += e.value;
+			dynamicCosts += e.value;
 		}
 		log.h3("Sonstige Kosten");
-		r.netTotal.otherCosts = Costs.annuity(result, otherCosts, ir(),
-				settings.operationFactor);
-		r.grossTotal.otherCosts = Costs.gross(project, r.netTotal.otherCosts);
+		log.println("dynamisch:");
+		r.dynamicTotal.otherCosts = Costs.annuity(
+				result, dynamicCosts, ir(), settings.operationFactor);
+		log.println("statisch:");
+		r.staticTotal.otherCosts = Costs.annuity(
+				result, staticCosts, ir(), 1.0);
 		log.println();
 	}
 
@@ -188,11 +199,14 @@ class CostCalculator {
 		double revenuesElectricity = pe * Egen;
 		log.value("A: Erlöse im ersten Jahr: A = pe * Egen",
 				revenuesElectricity, "kWh");
-		r.netTotal.revenuesElectricity = Costs.annuity(result,
+
+		log.println("dynamisch:");
+		r.dynamicTotal.revenuesElectricity = Costs.annuity(result,
 				revenuesElectricity, ir(),
 				settings.electricityRevenuesFactor);
-		r.grossTotal.revenuesElectricity = Costs.gross(project,
-				r.netTotal.revenuesElectricity);
+		log.println("statisch:");
+		r.staticTotal.revenuesElectricity = Costs.annuity(result,
+				revenuesElectricity, ir(), 1.0);
 		log.println();
 
 		log.h3("Wärmeerlöse");
@@ -203,55 +217,47 @@ class CostCalculator {
 		double revenuesHeat = ph * Qu;
 		log.value("A: Erlöse im ersten Jahr: A = ph * Qu",
 				revenuesHeat, "kWh");
-		r.netTotal.revenuesHeat = Costs.annuity(result, revenuesHeat, ir(),
-				settings.heatRevenuesFactor);
-		r.grossTotal.revenuesHeat = Costs.gross(project,
-				r.netTotal.revenuesHeat);
+		log.println("dynamisch:");
+		r.dynamicTotal.revenuesHeat = Costs.annuity(
+				result, revenuesHeat, ir(), settings.heatRevenuesFactor);
+		log.println("statisch:");
+		r.staticTotal.revenuesHeat = Costs.annuity(
+				result, revenuesHeat, ir(), 1.0);
+
 		log.println();
 	}
 
-	private void calcTotals(CostResult r) {
-		log.h3("Jahresüberschuss");
-		log.value("Wärmeerlöse",
-				r.netTotal.revenuesHeat, "EUR/a");
-		log.value("Stromerlöse", r.netTotal.revenuesElectricity, "EUR/a");
-		double netCosts = r.netTotal.capitalCosts
-				+ r.netTotal.consumptionCosts
-				+ r.netTotal.operationCosts
-				+ r.netTotal.otherCosts;
-		log.value("Kosten", netCosts, "EUR/a");
-		r.netTotal.annualSurplus = r.netTotal.revenuesHeat
-				+ r.netTotal.revenuesElectricity - netCosts;
+	private void calcTotals(FieldSet costs, boolean dynamic) {
+		log.h3("Jahresüberschuss - " + (dynamic ? "dynamisch" : "statisch"));
+		log.value("Wärmeerlöse", costs.revenuesHeat, "EUR/a");
+		log.value("Stromerlöse", costs.revenuesElectricity, "EUR/a");
+		double totalCostst = costs.capitalCosts
+				+ costs.consumptionCosts
+				+ costs.operationCosts
+				+ costs.otherCosts;
+		log.value("Kosten", totalCostst, "EUR/a");
+		costs.annualSurplus = costs.revenuesHeat
+				+ costs.revenuesElectricity - totalCostst;
 		log.value("Jahresüberschuss: Erlöse - Kosten",
-				r.netTotal.annualSurplus, "EUR/a");
+				costs.annualSurplus, "EUR/a");
 		log.println();
 
-		// Note that there can be different VAT rates in the cost categories
-		// so we have to calculate each sum separately
-		double grossCosts = r.grossTotal.capitalCosts
-				+ r.grossTotal.consumptionCosts
-				+ r.grossTotal.operationCosts
-				+ r.grossTotal.otherCosts;
-		r.grossTotal.annualSurplus = r.grossTotal.revenuesHeat
-				+ r.grossTotal.revenuesElectricity - grossCosts;
-
-		log.h3("Wärmegestehungskosten");
+		log.h3("Wärmegestehungskosten - "
+				+ (dynamic ? "dynamisch" : "statisch"));
 		double Q = usedHeat();
 		log.value("Q: Genutzte Wärme", Q, "MWh/a");
-		log.value("C: Jährliche Kosten", netCosts, "EUR/a");
+		log.value("C: Jährliche Kosten", totalCostst, "EUR/a");
 		log.value("E: Jährliche Stromerlöse",
-				r.netTotal.revenuesElectricity, "EUR/a");
+				costs.revenuesElectricity, "EUR/a");
 		if (Q == 0) {
-			r.netTotal.heatGenerationCosts = 0;
-			r.grossTotal.heatGenerationCosts = 0;
+			costs.heatGenerationCosts = 0;
+			costs.heatGenerationCosts = 0;
 		} else {
-			r.netTotal.heatGenerationCosts = (netCosts
-					- r.netTotal.revenuesElectricity) / Q;
-			r.grossTotal.heatGenerationCosts = (grossCosts
-					- r.grossTotal.revenuesElectricity) / Q;
+			costs.heatGenerationCosts = (totalCostst
+					- costs.revenuesElectricity) / Q;
 		}
 		log.value("Wärmegestehungskosten: (C - E) / Q",
-				r.netTotal.heatGenerationCosts, "EUR/MWh");
+				costs.heatGenerationCosts, "EUR/MWh");
 		log.println();
 	}
 
