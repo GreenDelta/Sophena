@@ -141,6 +141,22 @@ when generating the data packages.
 8. ash content
 ```
 
+### `heat_pumps`
+```
+0. id
+1. product type
+2. product group
+3. manufacturer
+4. name
+5. url
+6. price
+7. max_power
+8. min_power
+9. eff. rate
+10. description
+11. key
+```
+
 ### `heat_recoveries.csv`
 
 ```

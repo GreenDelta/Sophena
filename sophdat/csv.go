@@ -131,6 +131,7 @@ func (model *CsvModel) readBoilers() {
 	}
 	eachCsvRow("data/csv/boilers_cogen_plants.csv", fn)
 	eachCsvRow("data/csv/boilers.csv", fn)
+	eachCsvRow("data/csv/heat_pumps.csv", fn)
 }
 
 func (model *CsvModel) readBufferTanks() {
