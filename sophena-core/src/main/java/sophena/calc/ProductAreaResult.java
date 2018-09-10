@@ -46,12 +46,12 @@ public class ProductAreaResult {
 			entry.investmentCosts += item.costs.investment;
 			totalInvestmentCosts += item.costs.investment;
 		}
-		entry.capitalCosts += item.netCapitalCosts;
-		totalCapitalCosts += item.netCapitalCosts;
-		entry.demandRelatedCosts += item.netConsumtionCosts;
-		totalDemandRelatedCosts += item.netConsumtionCosts;
-		entry.operationRelatedCosts += item.netOperationCosts;
-		totalOperationRelatedCosts += item.netOperationCosts;
+		entry.capitalCosts += item.capitalCosts;
+		totalCapitalCosts += item.capitalCosts;
+		entry.demandRelatedCosts += item.demandRelatedCosts;
+		totalDemandRelatedCosts += item.demandRelatedCosts;
+		entry.operationRelatedCosts += item.operationRelatedCosts;
+		totalOperationRelatedCosts += item.operationRelatedCosts;
 	}
 
 	public double investmentCosts(ProductArea area) {

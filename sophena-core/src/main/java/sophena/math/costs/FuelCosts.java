@@ -16,7 +16,7 @@ public class FuelCosts {
 	private FuelCosts() {
 	}
 
-	public static double net(ProjectResult r, Producer p) {
+	public static double get(ProjectResult r, Producer p) {
 		if (r == null || p == null || p.fuelSpec == null)
 			return 0;
 		FuelSpec spec = p.fuelSpec;
@@ -51,7 +51,7 @@ public class FuelCosts {
 		}
 	}
 
-	public static double netAshCosts(ProjectResult r, Producer p) {
+	public static double getAshCosts(ProjectResult r, Producer p) {
 		if (p == null)
 			return 0d;
 		FuelSpec spec = p.fuelSpec;

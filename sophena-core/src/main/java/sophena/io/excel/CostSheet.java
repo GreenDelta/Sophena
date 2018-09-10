@@ -148,9 +148,9 @@ class CostSheet {
 			item.category = Labels.get(r.productType);
 			item.product = r.label;
 			item.investment = r.costs.investment;
-			item.capitalCosts = r.netCapitalCosts;
-			item.consumptionCosts = r.netConsumtionCosts;
-			item.operationCosts = r.netOperationCosts;
+			item.capitalCosts = r.capitalCosts;
+			item.consumptionCosts = r.demandRelatedCosts;
+			item.operationCosts = r.operationRelatedCosts;
 			items.add(item);
 		}
 		sortAndRefine(items);

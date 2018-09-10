@@ -93,10 +93,10 @@ class CostCalculator {
 
 		// add capital costs
 		log.println("=> Kapitalkosten: " + item.label);
-		item.netCapitalCosts = CapitalCosts.get(item, project, ir(),
+		item.capitalCosts = CapitalCosts.get(item, project, ir(),
 				project.costSettings.investmentFactor);
-		log.value("Dynamisch", item.netCapitalCosts, "EUR/a");
-		r.dynamicTotal.capitalCosts += item.netCapitalCosts;
+		log.value("Dynamisch", item.capitalCosts, "EUR/a");
+		r.dynamicTotal.capitalCosts += item.capitalCosts;
 		double staticCapitalCosts = CapitalCosts.get(
 				item, project, ir(), 1.0);
 		log.value("Statisch", staticCapitalCosts, "EUR/a");
@@ -125,8 +125,8 @@ class CostCalculator {
 				maintenanceCosts, ir(), 1.0);
 		log.println();
 
-		item.netOperationCosts = annuityOperations + annuityMaintenance;
-		r.dynamicTotal.operationCosts += item.netOperationCosts;
+		item.operationRelatedCosts = annuityOperations + annuityMaintenance;
+		r.dynamicTotal.operationCosts += item.operationRelatedCosts;
 
 		r.staticTotal.operationCosts += staticAnnuityOperations
 				+ staticAnnuityMaintenance;
@@ -138,9 +138,9 @@ class CostCalculator {
 		EnergyResult energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
 
-		double fuelCosts = FuelCosts.net(result, p);
+		double fuelCosts = FuelCosts.get(result, p);
 		double electricityCosts = ElectricityCosts.net(producedHeat, settings);
-		double ashCosts = FuelCosts.netAshCosts(result, p);
+		double ashCosts = FuelCosts.getAshCosts(result, p);
 		double costs = fuelCosts + electricityCosts + ashCosts;
 
 		double a = Costs.annuityFactor(project, ir());
@@ -149,8 +149,8 @@ class CostCalculator {
 				priceChangeFactor);
 		double bStatic = Costs.cashValueFactor(project, ir(), 1.0);
 
-		item.netConsumtionCosts = costs * a * bDynamic;
-		r.dynamicTotal.consumptionCosts += item.netConsumtionCosts;
+		item.demandRelatedCosts = costs * a * bDynamic;
+		r.dynamicTotal.consumptionCosts += item.demandRelatedCosts;
 		r.staticTotal.consumptionCosts += costs * a * bStatic;
 	}
 

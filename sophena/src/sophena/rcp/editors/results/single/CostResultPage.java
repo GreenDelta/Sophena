@@ -48,8 +48,8 @@ class CostResultPage extends FormPage {
 				: result.costResult;
 		Composite comp = UI.formSection(body, tk,
 				"Wirtschaftlichkeit" + suffix);
-		TableViewer table = Tables.createViewer(comp, "", "Dynamisch",
-				"Statisch");
+		TableViewer table = Tables.createViewer(comp, "", "dynamisch",
+				"statisch");
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		table.setLabelProvider(new Label());
 		table.setInput(getItems(r, withFunding));

@@ -60,9 +60,9 @@ class CostDetailsTable {
 			item.category = Labels.getPlural(r.productType);
 			item.product = r.label;
 			item.investment = r.costs.investment;
-			item.capitalCosts = s(r.netCapitalCosts, "EUR/a");
-			item.consumptionCosts = s(r.netConsumtionCosts, "EUR/a");
-			item.operationCosts = s(r.netOperationCosts, "EUR/a");
+			item.capitalCosts = s(r.capitalCosts, "EUR/a");
+			item.consumptionCosts = s(r.demandRelatedCosts, "EUR/a");
+			item.operationCosts = s(r.operationRelatedCosts, "EUR/a");
 			items.add(item);
 		}
 		sortAndRefine(items);

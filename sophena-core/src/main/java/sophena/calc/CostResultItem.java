@@ -20,9 +20,9 @@ public class CostResultItem {
 	public ProductType productType;
 	public ProductCosts costs;
 
-	public double netCapitalCosts;
-	public double netConsumtionCosts;
-	public double netOperationCosts;
+	public double capitalCosts;
+	public double demandRelatedCosts;
+	public double operationRelatedCosts;
 
 	static CostResultItem create(ProductEntry entry) {
 		CostResultItem item = new CostResultItem();
