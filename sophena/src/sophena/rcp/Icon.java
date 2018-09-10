@@ -59,6 +59,8 @@ public enum Icon {
 
 	FUEL_16("fuel_16.png"),
 
+	HEAT_PUMP_16("heat_pump_16.png"),
+
 	HEAT_RECOVERY_16("heat_recovery_16.png"),
 
 	IMPORT_16("import_16.png"),

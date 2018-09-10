@@ -26,8 +26,9 @@ public class BoilerEditor extends Editor {
 			return false;
 		switch (type) {
 		case BIOMASS_BOILER:
-		case COGENERATION_PLANT:
 		case FOSSIL_FUEL_BOILER:
+		case HEAT_PUMP:
+		case COGENERATION_PLANT:
 			return true;
 		default:
 			Logs.error(BoilerEditor.class, "invalid product type {}", type);
@@ -36,7 +37,8 @@ public class BoilerEditor extends Editor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
 		super.init(site, input);
 		Input in = (Input) input;
 		type = in.type;

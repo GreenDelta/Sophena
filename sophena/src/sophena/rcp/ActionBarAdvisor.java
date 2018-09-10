@@ -119,6 +119,8 @@ public class ActionBarAdvisor extends
 				() -> BoilerEditor.open(ProductType.BIOMASS_BOILER)));
 		m.add(Actions.create("Fossile Kessel", Icon.BOILER_16.des(),
 				() -> BoilerEditor.open(ProductType.FOSSIL_FUEL_BOILER)));
+		m.add(Actions.create("Wärmepumpen", Icon.HEAT_PUMP_16.des(),
+				() -> BoilerEditor.open(ProductType.HEAT_PUMP)));
 		m.add(Actions.create("KWK-Anlagen", Icon.CO_GEN_16.des(),
 				() -> BoilerEditor.open(ProductType.COGENERATION_PLANT)));
 		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
@@ -178,7 +180,8 @@ public class ActionBarAdvisor extends
 		MenuManager menu = new MenuManager("Datenverzeichnis wechseln");
 		parent.add(menu);
 		for (String dir : conf.lastDataDirs) {
-			Action a = Actions.create(dir, () -> Workspace.switchWorkspace(dir));
+			Action a = Actions.create(dir,
+					() -> Workspace.switchWorkspace(dir));
 			menu.add(a);
 		}
 		menu.add(Actions.create("Anderes ...", Workspace::switchWorkspace));
