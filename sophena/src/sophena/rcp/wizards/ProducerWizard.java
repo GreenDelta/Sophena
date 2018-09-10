@@ -236,6 +236,7 @@ public class ProducerWizard extends Wizard {
 				EnumSet<ProductType> types = EnumSet.of(
 						ProductType.BIOMASS_BOILER,
 						ProductType.FOSSIL_FUEL_BOILER,
+						ProductType.HEAT_PUMP,
 						ProductType.COGENERATION_PLANT);
 				for (ProductGroup g : groups) {
 					if (g.name == null || g.type == null)
