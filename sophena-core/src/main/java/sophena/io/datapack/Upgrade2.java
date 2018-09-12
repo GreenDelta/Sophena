@@ -1,21 +1,28 @@
 package sophena.io.datapack;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import sophena.Labels;
 import sophena.db.Database;
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
+import sophena.model.LoadProfile;
 import sophena.model.ModelType;
-import sophena.Labels;
+import sophena.model.Stats;
 
 class Upgrade2 implements Upgrade {
 
@@ -85,6 +92,10 @@ class Upgrade2 implements Upgrade {
 			costSettings.addProperty("heatRevenuesFactor", 1.02);
 			costSettings.addProperty("electricityRevenuesFactor", 1.00);
 		}
+		JsonArray consumers = obj.getAsJsonArray("consumers");
+		for (JsonObject profile : pullConsumerLoadProfiles(consumers)) {
+			consumers.add(profile);
+		}
 	}
 
 	private void upgradeHeatNet(JsonObject obj) {
@@ -101,6 +112,48 @@ class Upgrade2 implements Upgrade {
 			obj.remove("interruptionStart");
 			obj.remove("interruptionEnd");
 		}
+	}
+
+	private List<JsonObject> pullConsumerLoadProfiles(JsonArray consumers) {
+		if (consumers == null || consumers.size() == 0)
+			return Collections.emptyList();
+		List<JsonObject> profiles = new ArrayList<>();
+		for (JsonElement e : consumers) {
+			if (!e.isJsonObject())
+				continue;
+			JsonObject consumer = e.getAsJsonObject();
+			JsonArray array = consumer.getAsJsonArray("loadProfiles");
+			if (array == null || array.size() == 0)
+				continue;
+			consumer.remove("loadProfiles");
+			for (JsonElement p : array) {
+				if (!p.isJsonObject())
+					continue;
+				JsonObject profile = p.getAsJsonObject();
+				upgradeConsumerLoadProfile(profile);
+				profiles.add(profile);
+			}
+		}
+		return profiles;
+	}
+
+	private void upgradeConsumerLoadProfile(JsonObject obj) {
+		if (obj == null)
+			return;
+		LoadProfile profile = new Gson().fromJson(obj, LoadProfile.class);
+		if (profile.dynamicData == null) {
+			profile.dynamicData = new double[Stats.HOURS];
+		}
+		if (profile.staticData == null) {
+			profile.staticData = new double[Stats.HOURS];
+		}
+		profile.id = UUID.randomUUID().toString();
+		obj.add("profile", new Gson().toJsonTree(profile));
+		obj.remove("dynamicData");
+		obj.remove("staticData");
+		double[] loadCurve = profile.calculateTotal();
+		double maxLoad = Stats.max(loadCurve);
+		obj.addProperty("heatingLoad", maxLoad);
 	}
 
 	private void upgradeProducer(JsonObject obj) {
