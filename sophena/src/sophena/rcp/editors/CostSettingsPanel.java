@@ -96,7 +96,7 @@ public class CostSettingsPanel {
 			t(c, "Förderung Wärmenetz", "EUR/m",
 					costs().fundingHeatNet).onChanged(
 							s -> costs().fundingHeatNet = Num.read(s));
-			t(c, "Förderung Hausübergabestationen", "EUR",
+			t(c, "Förderung Hausübergabestationen", "EUR/Stk.",
 					costs().fundingTransferStations).onChanged(
 							s -> costs().fundingTransferStations = Num.read(s));
 			t(c, "Einmalige Anschlusskosten", "EUR", costs().connectionFees)
