@@ -19,7 +19,6 @@ import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
-import sophena.utils.Num;
 
 class BarCharts {
 
@@ -71,6 +70,6 @@ class BarCharts {
 		y.getTitle().setText(unit);
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTick().setForeground(Colors.getBlack());
-		y.getTick().setFormat(Num.getIntFormat());
+		// y.getTick().setFormat(Num.getIntFormat());
 	}
 }
