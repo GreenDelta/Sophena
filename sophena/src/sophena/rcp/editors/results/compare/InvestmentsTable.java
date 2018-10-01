@@ -50,7 +50,7 @@ class InvestmentsTable {
 		int length = result.projects.length;
 		ProductAreaResult[] r = new ProductAreaResult[length];
 		for (int i = 0; i < length; i++) {
-			CostResult cr = result.results[i].costResult;
+			CostResult cr = result.results[i].costResultFunding;
 			r[i] = ProductAreaResult.calculate(cr);
 		}
 		return r;

@@ -32,10 +32,6 @@ class Page extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Ergebnisvergleich");
 		tk = mform.getToolkit();
 		body = UI.formBody(form, tk);
-		boolean withFunding = withFunding();
-		if (withFunding) {
-			CostTable.of(comparison).withFunding().render(body, tk);
-		}
 		CostTable.of(comparison).render(body, tk);
 		InvestmentsTable.of(comparison).render(body, tk);
 		KeyFigureTable.of(comparison).render(body, tk);
@@ -45,7 +41,7 @@ class Page extends FormPage {
 		simpleCostsChart("Wärmeerlöse", "EUR", v -> v.revenuesHeat);
 		boolean withElectricityRevenues = false;
 		for (ProjectResult r : comparison.results) {
-			if (r.costResult.dynamicTotal.revenuesElectricity > 0) {
+			if (r.costResultFunding.dynamicTotal.revenuesElectricity > 0) {
 				withElectricityRevenues = true;
 				break;
 			}
@@ -55,16 +51,8 @@ class Page extends FormPage {
 		}
 
 		simpleCostsChart("Jahresüberschuss", "EUR", v -> v.annualSurplus);
-		heatCostsChart(withFunding);
+		heatCostsChart();
 		form.reflow(true);
-	}
-
-	private boolean withFunding() {
-		for (ProjectResult r : comparison.results) {
-			if (r.costResultFunding.dynamicTotal.funding > 0)
-				return true;
-		}
-		return false;
 	}
 
 	private void simpleCostsChart(String title, String unit,
@@ -73,28 +61,21 @@ class Page extends FormPage {
 		for (int i = 0; i < comparison.projects.length; i++) {
 			Color color = Colors.getForChart(i);
 			Project project = comparison.projects[i];
-			CostResult r = comparison.results[i].costResult;
+			CostResult r = comparison.results[i].costResultFunding;
 			double value = fn.applyAsDouble(r.dynamicTotal);
 			chart.addBar(project.name, value, color);
 		}
 		chart.render(body, tk);
 	}
 
-	private void heatCostsChart(boolean withFunding) {
+	private void heatCostsChart() {
 		BarChart chart = BarChart.of("Wärmegestehungskosten")
 				.unit("EUR/MWh");
 		for (int i = 0; i < comparison.projects.length; i++) {
 			Color color = Colors.getForChart(i);
 			Project project = comparison.projects[i];
 			ProjectResult result = comparison.results[i];
-			if (withFunding) {
-				chart.addBar(project.name + " - mit Förderung",
-						result.costResult.dynamicTotal.heatGenerationCosts,
-						Colors.darker(color, 40));
-			}
-			String name = withFunding ? project.name + " - ohne Förderung"
-					: project.name;
-			chart.addBar(name,
+			chart.addBar(project.name,
 					result.costResultFunding.dynamicTotal.heatGenerationCosts,
 					color);
 		}

@@ -11,7 +11,6 @@ import sophena.utils.Num;
 class CostTable {
 
 	private final Comparison result;
-	private boolean withFunding;
 
 	private CostTable(Comparison result) {
 		this.result = result;
@@ -21,16 +20,8 @@ class CostTable {
 		return new CostTable(result);
 	}
 
-	CostTable withFunding() {
-		this.withFunding = true;
-		return this;
-	}
-
 	void render(Composite body, FormToolkit tk) {
-		String title = withFunding
-				? "Wirtschaftlichkeit - mit Förderung"
-				: "Wirtschaftlichkeit - ohne Förderung";
-		Composite comp = UI.formSection(body, tk, title);
+		Composite comp = UI.formSection(body, tk, "Wirtschaftlichkeit");
 		Table table = new Table(result);
 		createItems(table);
 		table.render(comp);
@@ -39,10 +30,8 @@ class CostTable {
 	private void createItems(Table table) {
 		table.row("Investitionskosten",
 				idx -> Num.intStr(costs(idx).investments) + " EUR");
-		if (withFunding) {
-			table.row("Investitionsförderung",
-					idx -> Num.intStr(costs(idx).funding) + " EUR");
-		}
+		table.row("Investitionsförderung",
+				idx -> Num.intStr(costs(idx).funding) + " EUR");
 		table.row("Kapitalgebundene Kosten",
 				idx -> Num.intStr(costs(idx).capitalCosts) + " EUR/a");
 		table.row("Bedarfsgebundene Kosten",
@@ -65,9 +54,7 @@ class CostTable {
 	private CostResult.FieldSet costs(int idx) {
 		if (idx >= result.results.length)
 			return new CostResult.FieldSet();
-		return withFunding
-				? result.results[idx].costResultFunding.dynamicTotal
-				: result.results[idx].costResult.dynamicTotal;
+		return result.results[idx].costResultFunding.dynamicTotal;
 	}
 
 }
