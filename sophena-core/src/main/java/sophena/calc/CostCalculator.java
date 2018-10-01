@@ -182,10 +182,10 @@ class CostCalculator {
 		}
 		log.h3("Sonstige Kosten");
 		log.println("dynamisch:");
-		r.dynamicTotal.otherCosts = Costs.annuity(
+		r.dynamicTotal.otherAnnualCosts = Costs.annuity(
 				result, dynamicCosts, ir(), settings.operationFactor);
 		log.println("statisch:");
-		r.staticTotal.otherCosts = Costs.annuity(
+		r.staticTotal.otherAnnualCosts = Costs.annuity(
 				result, staticCosts, ir(), 1.0);
 		log.println();
 	}
@@ -231,13 +231,13 @@ class CostCalculator {
 		log.h3("Jahresüberschuss - " + (dynamic ? "dynamisch" : "statisch"));
 		log.value("Wärmeerlöse", costs.revenuesHeat, "EUR/a");
 		log.value("Stromerlöse", costs.revenuesElectricity, "EUR/a");
-		double totalCostst = costs.capitalCosts
+		costs.totalAnnualCosts = costs.capitalCosts
 				+ costs.consumptionCosts
 				+ costs.operationCosts
-				+ costs.otherCosts;
-		log.value("Kosten", totalCostst, "EUR/a");
+				+ costs.otherAnnualCosts;
+		log.value("Kosten", costs.totalAnnualCosts, "EUR/a");
 		costs.annualSurplus = costs.revenuesHeat
-				+ costs.revenuesElectricity - totalCostst;
+				+ costs.revenuesElectricity - costs.totalAnnualCosts;
 		log.value("Jahresüberschuss: Erlöse - Kosten",
 				costs.annualSurplus, "EUR/a");
 		log.println();
@@ -246,14 +246,14 @@ class CostCalculator {
 				+ (dynamic ? "dynamisch" : "statisch"));
 		double Q = usedHeat();
 		log.value("Q: Genutzte Wärme", Q, "MWh/a");
-		log.value("C: Jährliche Kosten", totalCostst, "EUR/a");
+		log.value("C: Jährliche Kosten", costs.totalAnnualCosts, "EUR/a");
 		log.value("E: Jährliche Stromerlöse",
 				costs.revenuesElectricity, "EUR/a");
 		if (Q == 0) {
 			costs.heatGenerationCosts = 0;
 			costs.heatGenerationCosts = 0;
 		} else {
-			costs.heatGenerationCosts = (totalCostst
+			costs.heatGenerationCosts = (costs.totalAnnualCosts
 					- costs.revenuesElectricity) / Q;
 		}
 		log.value("Wärmegestehungskosten: (C - E) / Q",

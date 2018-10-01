@@ -50,7 +50,7 @@ class CostTable {
 		table.row("Betriebsgebundene Kosten",
 				idx -> Num.intStr(costs(idx).operationCosts) + " EUR/a");
 		table.row("Sonstige Kosten",
-				idx -> Num.intStr(costs(idx).otherCosts) + " EUR/a");
+				idx -> Num.intStr(costs(idx).otherAnnualCosts) + " EUR/a");
 		table.row("Wärmeerlöse",
 				idx -> Num.intStr(costs(idx).revenuesHeat) + " EUR/a");
 		table.row("Stromerlöse",

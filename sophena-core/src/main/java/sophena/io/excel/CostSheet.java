@@ -110,8 +110,10 @@ class CostSheet {
 				Math.round(cr.dynamicTotal.operationCosts));
 		Excel.cell(sheet, row + 5, 2,
 				Math.round(cr.staticTotal.operationCosts));
-		Excel.cell(sheet, row + 6, 1, Math.round(cr.dynamicTotal.otherCosts));
-		Excel.cell(sheet, row + 6, 2, Math.round(cr.staticTotal.otherCosts));
+		Excel.cell(sheet, row + 6, 1,
+				Math.round(cr.dynamicTotal.otherAnnualCosts));
+		Excel.cell(sheet, row + 6, 2,
+				Math.round(cr.staticTotal.otherAnnualCosts));
 		Excel.cell(sheet, row + 7, 1,
 				Math.round(cr.dynamicTotal.revenuesElectricity));
 		Excel.cell(sheet, row + 7, 2,

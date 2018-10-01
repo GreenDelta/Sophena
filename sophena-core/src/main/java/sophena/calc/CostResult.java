@@ -14,10 +14,17 @@ public class CostResult {
 
 		public double investments;
 		public double funding;
+
 		public double capitalCosts;
 		public double consumptionCosts;
 		public double operationCosts;
-		public double otherCosts;
+		public double otherAnnualCosts;
+
+		/**
+		 * The total annual costs which is just the sum of the capital costs,
+		 * consumption costs, operation costs, and other annual costs.
+		 */
+		public double totalAnnualCosts;
 
 		/** Revenues from generated electricity. */
 		public double revenuesElectricity;

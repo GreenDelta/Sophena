@@ -3,9 +3,11 @@ package sophena.rcp.editors.results.single;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -60,16 +62,28 @@ class CostResultPage extends FormPage {
 				UI.formSection(body, tk, "Kostendetails" + suffix));
 	}
 
-	private List<Item> getItems(CostResult result, boolean withFunding) {
-		CostResult.FieldSet dyn = result.dynamicTotal;
-		CostResult.FieldSet stat = result.staticTotal;
+	private List<Item> getItems(CostResult r, boolean withFunding) {
+		CostResult.FieldSet dyn = r.dynamicTotal;
+		CostResult.FieldSet stat = r.staticTotal;
 		List<Item> items = new ArrayList<>();
+
+		// investment costs
 		items.add(new Item("Investitionskosten", "EUR",
 				dyn.investments, stat.investments));
 		if (withFunding) {
 			items.add(new Item("Investitionsförderung", "EUR",
 					dyn.funding, stat.funding));
 		}
+		double conFees = result.project.costSettings.connectionFees;
+		items.add(new Item("Anschlusskostenbeiträge", "EUR", conFees, conFees));
+		Item invSum = new Item("Finanzierungsbedarf", "EUR",
+				dyn.investments - dyn.funding - conFees,
+				stat.investments - stat.funding - conFees);
+		invSum.bold = true;
+		items.add(invSum);
+		items.add(new Item());
+
+		// annual costs
 		items.add(new Item("Kapitalgebundene Kosten", "EUR/a",
 				dyn.capitalCosts, stat.capitalCosts));
 		items.add(new Item("Bedarfsgebundene Kosten", "EUR/a",
@@ -77,27 +91,41 @@ class CostResultPage extends FormPage {
 		items.add(new Item("Betriebsgebundene Kosten", "EUR/a",
 				dyn.operationCosts, stat.operationCosts));
 		items.add(new Item("Sonstige Kosten", "EUR/a",
-				dyn.otherCosts, stat.otherCosts));
+				dyn.otherAnnualCosts, stat.otherAnnualCosts));
+		Item acSum = new Item("Gesamtkosten", "EUR/a",
+				dyn.totalAnnualCosts, stat.totalAnnualCosts);
+		items.add(acSum.bold());
+		items.add(new Item());
+
+		// revenues
 		items.add(new Item("Wärmeerlöse", "EUR/a",
 				dyn.revenuesHeat, stat.revenuesHeat));
-		if (dyn.revenuesElectricity > 0) {
-			items.add(new Item("Stromerlöse", "EUR/a",
-					dyn.revenuesElectricity, stat.revenuesElectricity));
-		}
+		items.add(new Item("Stromerlöse", "EUR/a",
+				dyn.revenuesElectricity, stat.revenuesElectricity));
+		Item revSum = new Item("Gesamterlöse", "EUR/a",
+				dyn.revenuesHeat + dyn.revenuesElectricity,
+				stat.revenuesHeat + stat.revenuesElectricity);
+		items.add(revSum.bold());
+		items.add(new Item());
+
 		items.add(new Item("Jahresüberschuss", "EUR/a",
 				dyn.annualSurplus,
-				stat.annualSurplus));
+				stat.annualSurplus).bold());
 		items.add(new Item("Wärmegestehungskosten", "EUR/MWh",
 				dyn.heatGenerationCosts,
-				stat.heatGenerationCosts));
+				stat.heatGenerationCosts).bold());
 		return items;
 	}
 
-	private class Item {
+	private static class Item {
 
-		final String label;
-		final String netto;
-		final String brutto;
+		String label;
+		String netto;
+		String brutto;
+		boolean bold;
+
+		Item() {
+		}
 
 		Item(String label, String unit, double netto, double brutto) {
 			this.label = label;
@@ -105,9 +133,25 @@ class CostResultPage extends FormPage {
 			this.brutto = Num.intStr(Math.round(brutto)) + " " + unit;
 		}
 
+		Item bold() {
+			bold = true;
+			return this;
+		}
+
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends LabelProvider
+			implements ITableLabelProvider, ITableFontProvider {
+
+		@Override
+		public Font getFont(Object obj, int col) {
+			if (!(obj instanceof Item))
+				return null;
+			Item i = (Item) obj;
+			if (i.bold)
+				return UI.boldFont();
+			return null;
+		}
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
