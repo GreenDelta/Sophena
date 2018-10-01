@@ -5,7 +5,7 @@ id                                   ; name                       ; group       
 d0233ba5-e913-48d8-a61a-5af90c03bda2 ; Pellets                    ; PELLETS      ; t       ; 5000            ;          ; 71             ; 0.2              ; 0.7          
 905c55bc-00ab-4fd1-8993-94e1ad83ba0f ; Strom                      ; ELECTRICITY  ; kWh     ; 1               ;          ; 614.8          ; 2.8              ; 0            
 031987ab-4a0d-43b3-b3e5-8f50d8e5df1e ; Warmwasser                 ; HOT_WATER    ; kWh     ; 1               ;          ; 0              ; 0                ; 0            
-8c669381-b3ec-4ec4-b145-97db4adf7545 ; Planzenöl                  ; PLANTS_OIL   ; L       ; 9.7             ;          ; 129.6          ; 0.5              ; 0            
+8c669381-b3ec-4ec4-b145-97db4adf7545 ; Pflanzenöl                 ; PLANTS_OIL   ; L       ; 9.7             ;          ; 129.6          ; 0.5              ; 0            
 d3e5b634-cb98-4436-afdc-675b4e36dbce ; Biogas                     ; BIOGAS       ; m3      ; 5.5             ;          ; 64.0           ; 0.5              ; 0            
 88a2c45b-843a-408d-a6b4-43a3ac68ea10 ; Biomethan                  ; NATURAL_GAS  ; m3      ; 9.6             ;          ; 170            ; 0.5              ; 0            
 fe2e05f4-9ec0-4ffc-9cba-83fc8ef16c99 ; Buche                      ; WOOD         ; t atro  ; 5000            ; 558      ; 33.2           ; 0.2              ; 1.0          
