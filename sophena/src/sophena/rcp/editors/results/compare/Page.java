@@ -37,19 +37,7 @@ class Page extends FormPage {
 		KeyFigureTable.of(comparison).render(body, tk);
 		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
 
-		// revenues charts
-		simpleCostsChart("Wärmeerlöse", "EUR", v -> v.revenuesHeat);
-		boolean withElectricityRevenues = false;
-		for (ProjectResult r : comparison.results) {
-			if (r.costResultFunding.dynamicTotal.revenuesElectricity > 0) {
-				withElectricityRevenues = true;
-				break;
-			}
-		}
-		if (withElectricityRevenues) {
-			simpleCostsChart("Stromerlöse", "EUR", v -> v.revenuesElectricity);
-		}
-
+		new RevenuesChart(comparison).render(body, tk);
 		simpleCostsChart("Jahresüberschuss", "EUR", v -> v.annualSurplus);
 		heatCostsChart();
 		form.reflow(true);

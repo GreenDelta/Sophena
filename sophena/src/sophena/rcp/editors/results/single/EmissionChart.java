@@ -79,7 +79,7 @@ class EmissionChart {
 		y.getTick().setForeground(Colors.getBlack());
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText("kg CO2 eq.");
-		y.getTitle().setFont(UI.defautlFont());
+		y.getTitle().setFont(UI.defaultFont());
 		y.setRange(getYRange());
 	}
 

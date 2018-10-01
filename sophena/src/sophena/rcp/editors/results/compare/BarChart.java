@@ -61,17 +61,7 @@ class BarChart {
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, title);
-		Actions.bind(section, ImageExport.forChart(
-				title + ".jpg", () -> chart));
-		Composite comp = UI.sectionClient(section, tk);
-		chart = new Chart(comp, SWT.NONE);
-		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
-		data.minimumHeight = 275;
-		data.minimumWidth = 750;
-		chart.setOrientation(SWT.HORIZONTAL);
-		chart.setLayoutData(data);
-		setTitle(chart);
+		chart = initChart(body, tk, title);
 		ISeriesSet set = chart.getSeriesSet();
 		for (int i = 0; i < labels.size(); i++) {
 			IBarSeries s = (IBarSeries) set.createSeries(
@@ -85,13 +75,25 @@ class BarChart {
 		formatY(chart);
 	}
 
-	private void setTitle(Chart chart) {
+	static Chart initChart(Composite body, FormToolkit tk, String title) {
+		Section section = UI.section(body, tk, title);
+		Composite comp = UI.sectionClient(section, tk);
+		Chart chart = new Chart(comp, SWT.NONE);
+		Actions.bind(section, ImageExport.forChart(
+				title + ".jpg", () -> chart));
+		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
+		data.minimumHeight = 275;
+		data.minimumWidth = 750;
+		chart.setOrientation(SWT.HORIZONTAL);
+		chart.setLayoutData(data);
+
 		// we set a white title just to fix the problem that the y-axis is cut
 		// sometimes
 		chart.getTitle().setText(".");
-		chart.getTitle().setFont(UI.defautlFont());
+		chart.getTitle().setFont(UI.defaultFont());
 		chart.getTitle().setForeground(Colors.getWhite());
 		chart.getTitle().setVisible(true);
+		return chart;
 	}
 
 	private void formatX(Chart chart) {
@@ -116,7 +118,7 @@ class BarChart {
 		tick.setVisible(true);
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText(unit);
-		y.getTitle().setFont(UI.defautlFont());
+		y.getTitle().setFont(UI.defaultFont());
 		y.setRange(getYRange());
 	}
 

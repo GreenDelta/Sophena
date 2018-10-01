@@ -83,7 +83,7 @@ class EfficiencyChart {
 		y.getTick().setForeground(Colors.getBlack());
 		y.getTitle().setForeground(Colors.getBlack());
 		y.getTitle().setText("kWh");
-		y.getTitle().setFont(UI.defautlFont());
+		y.getTitle().setFont(UI.defaultFont());
 		double max = result.usedHeat
 				+ result.producedElectrictiy
 				+ result.conversionLoss

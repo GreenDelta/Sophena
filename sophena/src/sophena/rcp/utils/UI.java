@@ -53,7 +53,7 @@ public class UI {
 				JFaceResources.DEFAULT_FONT);
 	}
 
-	public static Font defautlFont() {
+	public static Font defaultFont() {
 		return JFaceResources.getFontRegistry().defaultFont();
 	}
 
