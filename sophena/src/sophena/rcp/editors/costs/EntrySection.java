@@ -45,10 +45,16 @@ class EntrySection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, Labels.getPlural(type));
+		fillEntries(); // to collapse the section if necessary
+		Section section;
+		if (entries.isEmpty()) {
+			section = UI.collapsedSection(body, tk, Labels.getPlural(type));
+		} else {
+			section = UI.section(body, tk, Labels.getPlural(type));
+		}
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
-		fillEntries();
+		fillEntries(); // to fill the table
 		Action info = Actions.create("Information",
 				Icon.INFO_16.des(), this::info);
 		Action addGlobal = Actions.create(
@@ -188,11 +194,13 @@ class EntrySection {
 	private void fillEntries() {
 		entries.clear();
 		for (ProductEntry e : project().productEntries) {
-			if (e.product != null && e.product.type == type)
+			if (e.product != null && e.product.type == type) {
 				entries.add(e);
+			}
 		}
-		if (table != null)
+		if (table != null) {
 			table.setInput(entries);
+		}
 	}
 
 	private ProductEntry getJpaManaged(String id) {

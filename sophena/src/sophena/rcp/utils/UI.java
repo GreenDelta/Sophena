@@ -103,7 +103,8 @@ public class UI {
 	}
 
 	/** Creates a nice form header with the given title and returns the form. */
-	public static ScrolledForm formHeader(IManagedForm managedForm, String title) {
+	public static ScrolledForm formHeader(IManagedForm managedForm,
+			String title) {
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(
@@ -123,8 +124,21 @@ public class UI {
 	public static Section section(Composite parent, FormToolkit toolkit,
 			String label) {
 		Section section = toolkit.createSection(parent,
-				ExpandableComposite.TITLE_BAR | ExpandableComposite.FOCUS_TITLE
+				ExpandableComposite.TITLE_BAR
+						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
+						| ExpandableComposite.TWISTIE);
+		gridData(section, true, false);
+		section.setText(label);
+		return section;
+	}
+
+	public static Section collapsedSection(Composite parent,
+			FormToolkit toolkit, String label) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.TITLE_BAR
+						| ExpandableComposite.FOCUS_TITLE
+						| ExpandableComposite.COMPACT
 						| ExpandableComposite.TWISTIE);
 		gridData(section, true, false);
 		section.setText(label);
@@ -135,7 +149,8 @@ public class UI {
 	 * Creates a composite and sets it as section client of the given section.
 	 * The created composite gets a 2-column grid-layout.
 	 */
-	public static Composite sectionClient(Section section, FormToolkit toolkit) {
+	public static Composite sectionClient(Section section,
+			FormToolkit toolkit) {
 		Composite composite = toolkit.createComposite(section);
 		section.setClient(composite);
 		gridLayout(composite, 2);
@@ -183,7 +198,8 @@ public class UI {
 		return composite;
 	}
 
-	public static Composite formComposite(Composite parent, FormToolkit toolkit) {
+	public static Composite formComposite(Composite parent,
+			FormToolkit toolkit) {
 		Composite composite = toolkit.createComposite(parent);
 		gridLayout(composite, 2);
 		return composite;

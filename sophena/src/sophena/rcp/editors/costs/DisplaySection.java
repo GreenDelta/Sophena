@@ -24,6 +24,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Lists;
 import sophena.utils.Num;
 
 /** Cost section where the cost entries are only displayed but not edited. */
@@ -43,7 +44,12 @@ class DisplaySection<T> {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, Labels.getPlural(type));
+		Section section;
+		if (content != null && Lists.nullOrEmpty(content.get())) {
+			section = UI.collapsedSection(body, tk, Labels.getPlural(type));
+		} else {
+			section = UI.section(body, tk, Labels.getPlural(type));
+		}
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		table.setLabelProvider(new Label());
@@ -61,8 +67,9 @@ class DisplaySection<T> {
 
 	private void doOpen(TableViewer table) {
 		T elem = Viewers.getFirstSelected(table);
-		if (elem != null && onOpen != null)
+		if (elem != null && onOpen != null) {
 			onOpen.accept(elem);
+		}
 	}
 
 	private TableViewer createTable(Composite comp) {
@@ -74,9 +81,12 @@ class DisplaySection<T> {
 	}
 
 	void refresh() {
-		if (content != null) {
-			table.setInput(content.get());
-		}
+		if (content == null)
+			return;
+		List<T> list = content.get();
+		if (list == null)
+			return;
+		table.setInput(content.get());
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
