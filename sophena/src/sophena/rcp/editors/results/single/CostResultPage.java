@@ -44,7 +44,7 @@ class CostResultPage extends FormPage {
 	}
 
 	private void sections(Composite body, FormToolkit tk, boolean withFunding) {
-		String suffix = withFunding ? " - mit Förderung" : " - ohne Förderung";
+		String suffix = withFunding ? "" : " - ohne Förderung";
 		CostResult r = withFunding
 				? result.costResultFunding
 				: result.costResult;
@@ -56,10 +56,12 @@ class CostResultPage extends FormPage {
 		table.setLabelProvider(new Label());
 		table.setInput(getItems(r, withFunding));
 		Tables.rightAlignColumns(table, 1, 2);
-		ProductAreaTable.create(r,
-				UI.formSection(body, tk, "Kostenübersicht" + suffix));
-		CostDetailsTable.create(r,
-				UI.formSection(body, tk, "Kostendetails" + suffix));
+		if (withFunding) {
+			ProductAreaTable.create(r,
+					UI.formSection(body, tk, "Kostenübersicht" + suffix));
+			CostDetailsTable.create(r,
+					UI.formSection(body, tk, "Kostendetails" + suffix));
+		}
 	}
 
 	private List<Item> getItems(CostResult r, boolean withFunding) {

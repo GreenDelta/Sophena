@@ -98,7 +98,8 @@ public class ResultEditor extends Editor {
 		if (!Strings.nullOrEqual(parts[0], project.id))
 			return;
 		int page = Integer.parseInt(parts[1]);
-		setActivePage(page);
+		if (pages != null && pages.size() > page)
+			setActivePage(page);
 	}
 
 	private boolean isWithCoGen() {

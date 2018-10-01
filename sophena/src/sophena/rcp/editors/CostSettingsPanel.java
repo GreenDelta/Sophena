@@ -99,7 +99,7 @@ public class CostSettingsPanel {
 			t(c, "Förderung Hausübergabestationen", "EUR/Stk.",
 					costs().fundingTransferStations).onChanged(
 							s -> costs().fundingTransferStations = Num.read(s));
-			t(c, "Einmalige Anschlusskosten", "EUR", costs().connectionFees)
+			t(c, "Anschlusskostenbeiträge", "EUR", costs().connectionFees)
 					.onChanged(s -> costs().connectionFees = Num.read(s));
 		}
 	}
