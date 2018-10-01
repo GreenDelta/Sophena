@@ -53,11 +53,11 @@ class ProductAreaTable {
 			item.investmentCosts = Num.intStr(
 					result.investmentCosts(area)) + " EUR";
 			item.capitalCosts = Num.intStr(
-					result.capitalCosts(area)) + "EUR/a";
+					result.capitalCosts(area)) + " EUR/a";
 			item.demandRelatedCosts = Num.intStr(
-					result.demandRelatedCosts(area)) + "EUR/a";
+					result.demandRelatedCosts(area)) + " EUR/a";
 			item.operationRelatedCosts = Num.intStr(
-					result.operationRelatedCosts(area)) + "EUR/a";
+					result.operationRelatedCosts(area)) + " EUR/a";
 			items.add(item);
 		}
 		return items;
