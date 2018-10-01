@@ -105,8 +105,6 @@ public class ActionBarAdvisor extends
 				FuelEditor::open));
 		m.add(Actions.create("Produktgruppen", Icon.PRODUCT_16.des(),
 				ProductGroupEditor::open));
-		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
-				ManufacturerEditor::open));
 		m.add(Actions.create("Kosteneinstellungen", Icon.COSTS_16.des(),
 				BaseCostEditor::open));
 		menu.add(m);
@@ -142,6 +140,8 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Wärmeübergabestationen", Icon.CONSUMER_16.des(),
 				TransferStationEditor::open));
 		m.add(Actions.create("Planung", PlanningEditor::open));
+		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
+				ManufacturerEditor::open));
 	}
 
 	private void fillHelpMenu(IMenuManager menu) {
