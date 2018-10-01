@@ -21,12 +21,12 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import sophena.io.datapack.Import;
 import sophena.model.ProductType;
+import sophena.rcp.editors.basedata.BaseCostEditor;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.buildings.BuildingStateEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
-import sophena.rcp.editors.basedata.costs.BaseCostEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
 import sophena.rcp.editors.basedata.pipes.PipeEditor;

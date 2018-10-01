@@ -55,7 +55,7 @@ class InfoPage extends FormPage {
 	}
 
 	private void createInfoSection(Composite body, FormToolkit tk) {
-		Composite comp = UI.formSection(body, tk, M.ProjectInformation);
+		Composite comp = UI.formSection(body, tk, M.Project);
 		createNameText(tk, comp);
 		createDescriptionText(tk, comp);
 		createDurationText(tk, comp);
