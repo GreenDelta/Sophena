@@ -1,13 +1,19 @@
 package sophena.rcp.editors.consumers;
 
+import java.io.File;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BuildingStateDao;
+import sophena.io.ConsumerProfiles;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
@@ -16,6 +22,8 @@ import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -48,7 +56,12 @@ class InfoSection {
 		UI.gridLayout(comp, 3);
 		nameText(tk, comp);
 		descriptionText(tk, comp);
-		if (!consumer().hasProfile()) {
+		if (consumer().hasProfile()) {
+			UI.filler(comp);
+			Button btn = tk.createButton(
+					comp, "Neuen Lastgang importieren", SWT.NONE);
+			Controls.onSelect(btn, e -> updateProfile());
+		} else {
 			buildingTypeCombo(comp, tk);
 			buildingStateCombo(comp, tk);
 			floorSpaceText(comp, tk);
@@ -141,4 +154,19 @@ class InfoSection {
 		UI.formLabel(comp, tk, "m2");
 	}
 
+	private void updateProfile() {
+		File f = FileChooser.open("*.csv", "*.txt");
+		if (f == null)
+			return;
+		try {
+			ConsumerProfiles.read(f, consumer());
+			editor.calculate();
+			editor.setDirty();
+		} catch (Exception e) {
+			MsgBox.error("Datei konnte nicht gelesen werden",
+					e.getMessage());
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("Failed to read consumer profile " + f, e);
+		}
+	}
 }

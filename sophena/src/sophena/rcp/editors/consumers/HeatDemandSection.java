@@ -51,9 +51,11 @@ class HeatDemandSection {
 		Composite composite = UI.formSection(body, tk, M.HeatDemand);
 		UI.gridLayout(composite, 7);
 		createHeatingLoadText(composite, tk);
-		createWaterText(composite, tk);
-		createHeatLimitText(composite, tk);
-		createLoadHoursText(composite, tk);
+		if (!consumer().hasProfile()) {
+			createWaterText(composite, tk);
+			createHeatLimitText(composite, tk);
+			createLoadHoursText(composite, tk);
+		}
 		createHeatDemandText(composite, tk);
 		return this;
 	}

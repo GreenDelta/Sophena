@@ -15,11 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
-import sophena.io.LoadProfileReader;
+import sophena.io.ConsumerProfiles;
 import sophena.model.Consumer;
-import sophena.model.LoadProfile;
 import sophena.model.Project;
-import sophena.model.Stats;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
@@ -144,51 +142,13 @@ public class ConsumerProfileWizard extends Wizard {
 			if (f == null)
 				return;
 			try {
-				LoadProfileReader reader = new LoadProfileReader();
-				consumer.profile = reader.read(f);
-				consumer.profile.id = UUID.randomUUID().toString();
-				computeStats();
+				ConsumerProfiles.read(f, consumer);
 				fileText.setText(f.getAbsolutePath());
 			} catch (Exception e) {
 				MsgBox.error("Datei konnte nicht gelesen werden",
 						e.getMessage());
 				consumer.profile = null;
 				log.error("Failed to read consumer profile " + f, e);
-			}
-		}
-
-		private void computeStats() {
-			LoadProfile p = consumer.profile;
-			if (p == null)
-				return;
-			double staticHeat = Stats.sum(p.staticData);
-			double dynamicHeat = Stats.sum(p.dynamicData);
-			double totalHeat = staticHeat + dynamicHeat;
-			consumer.heatingLoad = Stats.max(p.calculateTotal());
-			if (totalHeat > 0) {
-				consumer.waterFraction = 100
-						* Math.round(staticHeat / totalHeat);
-				consumer.loadHours = (int) Math
-						.round(totalHeat / consumer.heatingLoad);
-			}
-			if (project.weatherStation == null
-					|| project.weatherStation.data == null)
-				return;
-			double[] tempData = project.weatherStation.data;
-			int minIdx = -1;
-			double limTemp = 0;
-			for (int i = 0; i < Stats.HOURS; i++) {
-				if (p.dynamicData[i] <= 0)
-					continue;
-				double temp = tempData[i];
-				if (minIdx < 0 || temp > limTemp) {
-					minIdx = i;
-					limTemp = temp;
-					continue;
-				}
-			}
-			if (minIdx >= 0) {
-				consumer.heatingLimit = limTemp;
 			}
 		}
 
