@@ -29,7 +29,8 @@ class EfficiencyTable {
 	}
 
 	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "", "Absolut", "Prozentual");
+		TableViewer table = Tables.createViewer(comp, "", "Absolut",
+				"Prozentual");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2);
@@ -39,12 +40,16 @@ class EfficiencyTable {
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
 		items.add(new Item("Brennstoffenergie", r.fuelEnergy));
-		items.add(new Item("Konversionsverluste", r.conversionLoss, r.fuelEnergy));
-		items.add(new Item("Erzeugte Wärme", r.producedHeat));
-		if (r.producedElectrictiy > 0)
+		items.add(new Item("Konversionsverluste", r.conversionLoss,
+				r.fuelEnergy));
+		if (r.producedElectrictiy > 0) {
 			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
-		items.add(new Item("Pufferspeicherverluste", r.bufferLoss, r.producedHeat));
-		items.add(new Item("Verteilungsverluste", r.distributionLoss, r.producedHeat));
+		}
+		items.add(new Item("Erzeugte Wärme", r.producedHeat));
+		items.add(new Item("Pufferspeicherverluste", r.bufferLoss,
+				r.producedHeat));
+		items.add(new Item("Verteilungsverluste", r.distributionLoss,
+				r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
 		Item total = new Item("Gesamtverluste", r.totalLoss, r.fuelEnergy);

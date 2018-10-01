@@ -298,6 +298,8 @@ public final class Labels {
 			return Icon.PRODUCER_16.img();
 		case FOSSIL_FUEL_BOILER:
 			return Icon.PRODUCER_16.img();
+		case HEAT_PUMP:
+			return Icon.HEAT_PUMP_16.img();
 		case COGENERATION_PLANT:
 			return Icon.CO_GEN_16.img();
 		case BOILER_ACCESSORIES:

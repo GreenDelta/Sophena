@@ -52,6 +52,7 @@ class OverviewPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		boilers(ProductType.BIOMASS_BOILER, body, tk);
 		boilers(ProductType.FOSSIL_FUEL_BOILER, body, tk);
+		boilers(ProductType.HEAT_PUMP, body, tk);
 		boilers(ProductType.COGENERATION_PLANT, body, tk);
 		entries(ProductType.BOILER_ACCESSORIES, body, tk);
 		heatRecoveries(body, tk);
