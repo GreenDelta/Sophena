@@ -36,7 +36,7 @@ class Page extends FormPage {
 		InvestmentsTable.of(comparison).render(body, tk);
 		KeyFigureTable.of(comparison).render(body, tk);
 		simpleCostsChart("Investitionskosten", "EUR", v -> v.investments);
-
+		new CostsChart(comparison).render(body, tk);
 		new RevenuesChart(comparison).render(body, tk);
 		simpleCostsChart("Jahresüberschuss", "EUR", v -> v.annualSurplus);
 		heatCostsChart();

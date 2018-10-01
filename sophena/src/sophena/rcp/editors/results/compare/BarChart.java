@@ -3,12 +3,9 @@ package sophena.rcp.editors.results.compare;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
 import org.swtchart.IAxisTick;
@@ -19,8 +16,6 @@ import org.swtchart.ISeriesSet;
 import org.swtchart.Range;
 
 import sophena.model.Stats;
-import sophena.rcp.charts.ImageExport;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -61,7 +56,7 @@ class BarChart {
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		chart = initChart(body, tk, title);
+		chart = BarCharts.init(body, tk, title);
 		ISeriesSet set = chart.getSeriesSet();
 		for (int i = 0; i < labels.size(); i++) {
 			IBarSeries s = (IBarSeries) set.createSeries(
@@ -73,27 +68,6 @@ class BarChart {
 		}
 		formatX(chart);
 		formatY(chart);
-	}
-
-	static Chart initChart(Composite body, FormToolkit tk, String title) {
-		Section section = UI.section(body, tk, title);
-		Composite comp = UI.sectionClient(section, tk);
-		Chart chart = new Chart(comp, SWT.NONE);
-		Actions.bind(section, ImageExport.forChart(
-				title + ".jpg", () -> chart));
-		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
-		data.minimumHeight = 275;
-		data.minimumWidth = 750;
-		chart.setOrientation(SWT.HORIZONTAL);
-		chart.setLayoutData(data);
-
-		// we set a white title just to fix the problem that the y-axis is cut
-		// sometimes
-		chart.getTitle().setText(".");
-		chart.getTitle().setFont(UI.defaultFont());
-		chart.getTitle().setForeground(Colors.getWhite());
-		chart.getTitle().setVisible(true);
-		return chart;
 	}
 
 	private void formatX(Chart chart) {
