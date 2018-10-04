@@ -1,6 +1,6 @@
 package sophena.calc;
 
-import sophena.math.energetic.BufferCapacity;
+import sophena.math.energetic.Buffers;
 import sophena.math.energetic.Producers;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
@@ -25,7 +25,7 @@ class EnergyCalculator {
 
 	private EnergyResult doIt() {
 
-		maxBufferCapacity = BufferCapacity.of(project.heatNet);
+		maxBufferCapacity = Buffers.maxCapacity(project.heatNet);
 		double bufferLossFactor = project.heatNet.bufferLoss / 100d;
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
