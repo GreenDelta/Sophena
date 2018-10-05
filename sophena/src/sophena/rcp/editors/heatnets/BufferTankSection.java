@@ -89,12 +89,13 @@ class BufferTankSection {
 	}
 
 	private void createHeatLossText(Composite comp, FormToolkit tk) {
-		Text t = UI.formText(comp, tk, "Wärmeverluste");
-		Texts.on(t).init(net().bufferLoss).decimal().required().onChanged(s -> {
-			net().bufferLoss = Texts.getDouble(t);
-			editor.setDirty();
-		});
-		UI.formLabel(comp, tk, "%");
+		Text t = UI.formText(comp, tk, "\u03BB-Wert der Dämmung");
+		Texts.on(t).init(net().bufferLambda)
+				.decimal().required().onChanged(s -> {
+					net().bufferLambda = Texts.getDouble(t);
+					editor.setDirty();
+				});
+		UI.formLabel(comp, tk, "W/m*K");
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {

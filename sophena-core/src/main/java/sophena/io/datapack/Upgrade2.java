@@ -101,7 +101,7 @@ class Upgrade2 implements Upgrade {
 	private void upgradeHeatNet(JsonObject obj) {
 		if (obj == null)
 			return;
-		obj.addProperty("bufferLoss", 0.15);
+		obj.addProperty("bufferLambda", 0.04);
 		if (Json.getBool(obj, "withInterruption", false)) {
 			obj.remove("withInterruption");
 			JsonObject time = new JsonObject();
