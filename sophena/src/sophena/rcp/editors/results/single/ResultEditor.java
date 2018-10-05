@@ -89,6 +89,8 @@ public class ResultEditor extends Editor {
 	 * shown.
 	 */
 	private void activateLastPage() {
+		if (pages == null)
+			return;
 		String pageDef = App.pop(":last-result-page");
 		if (pageDef == null)
 			return;
@@ -97,9 +99,15 @@ public class ResultEditor extends Editor {
 			return;
 		if (!Strings.nullOrEqual(parts[0], project.id))
 			return;
-		int page = Integer.parseInt(parts[1]);
-		if (pages != null && pages.size() > page)
+		try {
+			int page = Integer.parseInt(parts[1]);
+			if (page < 0 || page >= pages.size())
+				return; // the page is -1 if there was no active page
 			setActivePage(page);
+		} catch (Exception e) {
+			// this is a very optional feature; so if
+			// something went wrong, we just ignore it
+		}
 	}
 
 	private boolean isWithCoGen() {
@@ -110,12 +118,6 @@ public class ResultEditor extends Editor {
 				return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void close(boolean save) {
-		System.out.println(getActivePage());
-		super.close(save);
 	}
 
 }
