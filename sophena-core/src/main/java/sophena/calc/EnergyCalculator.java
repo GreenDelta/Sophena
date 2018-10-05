@@ -26,7 +26,7 @@ class EnergyCalculator {
 	private EnergyResult doIt() {
 
 		maxBufferCapacity = Buffers.maxCapacity(project.heatNet);
-		double bufferLossFactor = project.heatNet.bufferLoss / 100d;
+		double bufferLossFactor = Buffers.lossFactor(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
 		r.bufferCapacity[0] = maxBufferCapacity;
 		boolean[][] interruptions = interruptions(r);
@@ -86,7 +86,8 @@ class EnergyCalculator {
 			// buffer capacity with buffer loss
 			bufferPotential = maxBufferCapacity - bufferCapacity;
 			if (bufferPotential > 0) {
-				double bufferLoss = bufferPotential * bufferLossFactor;
+				double bufferLoss = Buffers.loss(project.heatNet,
+						bufferLossFactor, bufferPotential / maxBufferCapacity);
 				r.bufferLoss[hour] = bufferLoss;
 				bufferCapacity = bufferCapacity + bufferLoss;
 			}

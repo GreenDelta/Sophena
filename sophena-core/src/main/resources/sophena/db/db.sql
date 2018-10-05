@@ -204,7 +204,7 @@ CREATE TABLE tbl_heat_nets (
     buffer_tank_volume DOUBLE,
     max_buffer_load_temperature DOUBLE,
     lower_buffer_load_temperature DOUBLE,
-    buffer_loss DOUBLE,
+    buffer_lambda DOUBLE,
     
     f_buffer_tank CHAR(36),
     investment DOUBLE,

@@ -14,14 +14,17 @@ public class BufferTank extends AbstractProduct {
 	@Column(name = "volume")
 	public double volume;
 
+	/** The diameter of the buffer tank in mm. */
 	@Column(name = "diameter")
-	public Double diameter;
+	public double diameter;
 
+	/** The height of the buffer tank in mm. */
 	@Column(name = "height")
-	public Double height;
+	public double height;
 
+	/** The insulation thickness of the buffer tank in mm. */
 	@Column(name = "insulation_thickness")
-	public Double insulationThickness;
+	public double insulationThickness;
 
 	@Override
 	public BufferTank clone() {
