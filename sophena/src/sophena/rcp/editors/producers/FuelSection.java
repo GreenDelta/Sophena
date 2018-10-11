@@ -16,6 +16,8 @@ import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
+import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 import sophena.rcp.Labels;
@@ -63,6 +65,10 @@ class FuelSection {
 		createCalorificValueRow(tk, comp);
 		createCostRow(tk, comp);
 		createAshCostRow(tk, comp);
+		ProductGroup pg = producer().productGroup;
+		if (pg != null && pg.type == ProductType.COGENERATION_PLANT) {
+			createUsedElectricityRow(tk, comp);
+		}
 	}
 
 	private void createFuelRows(FormToolkit tk, Composite comp) {
@@ -72,12 +78,12 @@ class FuelSection {
 		FuelDao dao = new FuelDao(App.getDb());
 		List<Fuel> fuels = dao.getAll().stream()
 				.filter((f) -> f.group == fuel.group)
+				.sorted(Sorters.byName())
 				.collect(Collectors.toList());
-		Sorters.byName(fuels);
 		combo.setInput(fuels);
 		combo.select(fuel);
 		combo.onSelect(this::onFuelChange);
-		UI.formLabel(comp, "");
+		UI.filler(comp);
 	}
 
 	private void onFuelChange(Fuel f) {
@@ -174,4 +180,23 @@ class FuelSection {
 					editor.setDirty();
 				});
 	}
+
+	private void createUsedElectricityRow(FormToolkit tk, Composite comp) {
+		Fuel el = producer().producedElectricity;
+		EntityCombo<Fuel> combo = new EntityCombo<>();
+		combo.create("Erzeugter Strom", comp, tk);
+		List<Fuel> fuels = new FuelDao(App.getDb())
+				.getAll().stream()
+				.filter((f) -> f.group == FuelGroup.ELECTRICITY)
+				.sorted(Sorters.byName())
+				.collect(Collectors.toList());
+		combo.setInput(fuels);
+		combo.select(el);
+		combo.onSelect(e -> {
+			producer().producedElectricity = e;
+			editor.setDirty();
+		});
+		UI.filler(comp);
+	}
+
 }
