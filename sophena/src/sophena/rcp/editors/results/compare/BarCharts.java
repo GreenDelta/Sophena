@@ -29,7 +29,7 @@ class BarCharts {
 		Actions.bind(section, ImageExport.forChart(
 				title + ".jpg", () -> chart));
 		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
-		data.minimumHeight = 275;
+		data.minimumHeight = 350;
 		data.minimumWidth = 750;
 		chart.setOrientation(SWT.HORIZONTAL);
 		chart.setLayoutData(data);
@@ -40,6 +40,7 @@ class BarCharts {
 		chart.getTitle().setFont(UI.defaultFont());
 		chart.getTitle().setForeground(Colors.getWhite());
 		chart.getTitle().setVisible(true);
+		chart.getLegend().setPosition(SWT.BOTTOM);
 		return chart;
 	}
 

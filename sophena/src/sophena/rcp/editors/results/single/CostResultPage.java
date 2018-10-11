@@ -35,10 +35,7 @@ class CostResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		boolean withFunding = result.costResultFunding.dynamicTotal.funding > 0;
-		if (withFunding) {
-			sections(body, tk, true);
-		}
+		sections(body, tk, true);
 		sections(body, tk, false);
 		form.reflow(true);
 	}
