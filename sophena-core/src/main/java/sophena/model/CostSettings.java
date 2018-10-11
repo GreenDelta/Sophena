@@ -133,9 +133,7 @@ public class CostSettings extends AbstractEntity {
 		clone.heatRevenues = heatRevenues;
 
 		clone.electricityDemandShare = electricityDemandShare;
-		if (usedElectricity != null) {
-			clone.usedElectricity = usedElectricity.clone();
-		}
+		clone.usedElectricity = usedElectricity;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;
