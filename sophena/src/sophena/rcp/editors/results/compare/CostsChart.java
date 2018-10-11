@@ -72,13 +72,13 @@ class CostsChart {
 	private Color color(int type) {
 		switch (type) {
 		case CAPITAL_COSTS:
-			return Colors.get("#90A4AE");
+			return Colors.get("#81c784");
 		case CONSUMPTION_COSTS:
-			return Colors.get("#607D8B");
+			return Colors.get("#4caf50");
 		case OPERATIONS_COSTS:
-			return Colors.get("#455A64");
+			return Colors.get("#388e3c");
 		case OTHER_COSTS:
-			return Colors.get("#263238");
+			return Colors.get("#1b5e20");
 		default:
 			return Colors.getErrorColor();
 		}

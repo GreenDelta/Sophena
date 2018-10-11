@@ -34,7 +34,7 @@ class RevenuesChart {
 				}).toArray();
 		BarCharts.stackSeries(chart,
 				"Wärmeerlöse",
-				Colors.get("#455A64"),
+				Colors.get("#388e3c"),
 				data);
 	}
 
@@ -46,7 +46,7 @@ class RevenuesChart {
 				}).toArray();
 		BarCharts.stackSeries(chart,
 				"Stromerlöse",
-				Colors.get("#90A4AE"),
+				Colors.get("#81c784"),
 				data);
 	}
 }
