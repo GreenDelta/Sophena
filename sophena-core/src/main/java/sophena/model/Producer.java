@@ -59,6 +59,14 @@ public class Producer extends RootEntity {
 	@Embedded
 	public FuelSpec fuelSpec;
 
+	/**
+	 * This field is only applicable for co-generation plants and contains the
+	 * electricity that is produced.
+	 */
+	@OneToOne
+	@JoinColumn(name = "f_produced_electricity")
+	public Fuel producedElectricity;
+
 	@OneToOne
 	@JoinColumn(name = "f_heat_recovery")
 	public HeatRecovery heatRecovery;
@@ -69,16 +77,11 @@ public class Producer extends RootEntity {
 
 	@Embedded
 	@AttributeOverrides({
-			@AttributeOverride(name = "investment",
-					column = @Column(name = "heat_recovery_investment")),
-			@AttributeOverride(name = "duration",
-					column = @Column(name = "heat_recovery_duration")),
-			@AttributeOverride(name = "repair",
-					column = @Column(name = "heat_recovery_repair")),
-			@AttributeOverride(name = "maintenance",
-					column = @Column(name = "heat_recovery_maintenance")),
-			@AttributeOverride(name = "operation",
-					column = @Column(name = "heat_recovery_operation")) })
+			@AttributeOverride(name = "investment", column = @Column(name = "heat_recovery_investment")),
+			@AttributeOverride(name = "duration", column = @Column(name = "heat_recovery_duration")),
+			@AttributeOverride(name = "repair", column = @Column(name = "heat_recovery_repair")),
+			@AttributeOverride(name = "maintenance", column = @Column(name = "heat_recovery_maintenance")),
+			@AttributeOverride(name = "operation", column = @Column(name = "heat_recovery_operation")) })
 	public ProductCosts heatRecoveryCosts;
 
 	/**
@@ -111,8 +114,10 @@ public class Producer extends RootEntity {
 		clone.rank = rank;
 		if (costs != null)
 			clone.costs = costs.clone();
-		if (fuelSpec != null)
+		if (fuelSpec != null) {
 			clone.fuelSpec = fuelSpec.clone();
+		}
+		clone.producedElectricity = producedElectricity;
 		clone.heatRecovery = heatRecovery;
 		if (heatRecoveryCosts != null) {
 			clone.heatRecoveryCosts = heatRecoveryCosts.clone();

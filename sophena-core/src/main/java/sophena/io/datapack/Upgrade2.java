@@ -171,6 +171,12 @@ class Upgrade2 implements Upgrade {
 			return;
 		}
 		Json.putRef(obj, "productGroup", boiler.group);
+		if (boiler.isCoGenPlant) {
+			JsonObject pe = new JsonObject();
+			pe.addProperty("id", "905c55bc-00ab-4fd1-8993-94e1ad83ba0f");
+			pe.addProperty("name", "Strom (Verdrängungsstrommix)");
+			obj.add("producedElectricity", pe);
+		}
 		upgradeFuelSpec(boiler, obj.getAsJsonObject("fuelSpec"));
 	}
 

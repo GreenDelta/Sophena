@@ -6,16 +6,16 @@ INSERT INTO sophena_version (version) VALUES (1);
 
 CREATE TABLE tbl_weather_stations (
 
-    id CHAR(36),
-    name VARCHAR(255),
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
 
     is_protected BOOLEAN,
 
-    longitude DOUBLE,
-    latitude DOUBLE,
-    altitude DOUBLE,
-    data BLOB (80 K),
+    longitude   DOUBLE,
+    latitude    DOUBLE,
+    altitude    DOUBLE,
+    data        BLOB (80 K),
 
     PRIMARY KEY (id)
 );
@@ -23,39 +23,39 @@ CREATE TABLE tbl_weather_stations (
 
 CREATE TABLE tbl_fuels (
 
-    id CHAR(36),
-    name VARCHAR(255),
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
 
     is_protected BOOLEAN,
 
-    unit VARCHAR(255),
-    calorific_value DOUBLE,
-    density DOUBLE,
-    fuel_group VARCHAR(50),
-    co2_emissions DOUBLE,
+    unit                  VARCHAR(255),
+    calorific_value       DOUBLE,
+    density               DOUBLE,
+    fuel_group            VARCHAR(50),
+    co2_emissions         DOUBLE,
     primary_energy_factor DOUBLE,
-    ash_content DOUBLE,
+    ash_content           DOUBLE,
 
     PRIMARY KEY (id)
 );
 
 
 CREATE TABLE tbl_building_states (
-    
-    id CHAR(36),
-    name VARCHAR(255),
+
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
-    
+
     is_protected BOOLEAN,
-    
-    idx INTEGER,
-    is_default BOOLEAN,
-    building_type VARCHAR(50),
-    heating_limit DOUBLE,
+
+    idx                      INTEGER,
+    is_default               BOOLEAN,
+    building_type            VARCHAR(50),
+    heating_limit            DOUBLE,
     antifreezing_temperature DOUBLE,
-    water_fraction DOUBLE,
-    load_hours INTEGER,
+    water_fraction           DOUBLE,
+    load_hours               INTEGER,
 
     PRIMARY KEY (id)
 );
@@ -63,19 +63,19 @@ CREATE TABLE tbl_building_states (
 
 CREATE TABLE tbl_product_groups (
 
-    id CHAR(36),
-    name VARCHAR(255),
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
 
     is_protected BOOLEAN,
 
-    idx INTEGER,
+    idx          INTEGER,
     product_type VARCHAR(50),
-    fuel_group VARCHAR(50),
-    duration INTEGER,
-    repair DOUBLE,
-    maintenance DOUBLE,
-    operation DOUBLE, 
+    fuel_group   VARCHAR(50),
+    duration     INTEGER,
+    repair       DOUBLE,
+    maintenance  DOUBLE,
+    operation    DOUBLE, 
 
     PRIMARY KEY (id)
 );
@@ -85,11 +85,11 @@ CREATE TABLE tbl_locations (
 
     id CHAR(36),
 
-    name VARCHAR(255),
-    street VARCHAR(255),
-    zip_code VARCHAR(255),
-    city VARCHAR(255),
-    latitude DOUBLE,
+    name      VARCHAR(255),
+    street    VARCHAR(255),
+    zip_code  VARCHAR(255),
+    city      VARCHAR(255),
+    latitude  DOUBLE,
     longitude DOUBLE,
 
     PRIMARY KEY (id)
@@ -98,11 +98,11 @@ CREATE TABLE tbl_locations (
 
 CREATE TABLE tbl_time_intervals (
     
-    id CHAR(36),
+    id      CHAR(36),
     f_owner CHAR(36),
     
-    start_time VARCHAR(255),
-    end_time VARCHAR(255),
+    start_time  VARCHAR(255),
+    end_time    VARCHAR(255),
     description VARCHAR(255),
     
     PRIMARY KEY (id)
@@ -178,7 +178,7 @@ CREATE TABLE tbl_product_entries (
     
     price_per_piece DOUBLE,
     number_of_items DOUBLE,
-    
+
     investment DOUBLE,
     duration INTEGER,
     repair DOUBLE,
@@ -192,7 +192,7 @@ CREATE TABLE tbl_product_entries (
 CREATE TABLE tbl_heat_nets (
 
     id CHAR(36),
-    
+
     net_length DOUBLE,
     supply_temperature DOUBLE,
     return_temperature DOUBLE,
@@ -201,39 +201,39 @@ CREATE TABLE tbl_heat_nets (
     max_load DOUBLE,
     power_loss DOUBLE,
     f_interruption CHAR(36),
-    
+
     buffer_tank_volume DOUBLE,
     max_buffer_load_temperature DOUBLE,
     lower_buffer_load_temperature DOUBLE,
     buffer_lambda DOUBLE,
-    
+
     f_buffer_tank CHAR(36),
     investment DOUBLE,
     duration INTEGER,
     repair DOUBLE,
     maintenance DOUBLE,
-    operation DOUBLE, 
-    
+    operation DOUBLE,
+
     PRIMARY KEY (id)
 );
 
 
 CREATE TABLE tbl_heat_net_pipes (
-    
+
     id CHAR(36),
-    
+
     f_heat_net CHAR(36),
     f_pipe CHAR(36),
     name VARCHAR(255),
     length DOUBLE,
     price_per_meter DOUBLE,
-    
+
     investment DOUBLE,
     duration INTEGER,
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE, 
-    
+
     PRIMARY KEY (id)
 );
 
@@ -317,9 +317,9 @@ CREATE TABLE tbl_products (
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
-    
+
     f_project CHAR(36),
-    
+
     PRIMARY KEY (id)
 );
 
@@ -330,18 +330,18 @@ CREATE TABLE tbl_boilers (
     name VARCHAR(255),
     description CLOB(64 K),
 
-    is_protected BOOLEAN,    
-    
+    is_protected BOOLEAN,
+
     purchase_price DOUBLE,
     url VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
-    
+
     max_power DOUBLE,
     min_power DOUBLE,
     efficiency_rate DOUBLE,
-    
+
     is_co_gen_plant BOOLEAN,
     max_power_electric DOUBLE,
     min_power_electric DOUBLE,
@@ -368,8 +368,8 @@ CREATE TABLE tbl_pipes (
     u_value DOUBLE,
     diameter DOUBLE,
     material VARCHAR(255),
-    pipe_type VARCHAR(255),    
-    inner_diameter DOUBLE,    
+    pipe_type VARCHAR(255),
+    inner_diameter DOUBLE,
     outer_diameter DOUBLE,
     total_diameter DOUBLE,
     delivery_type VARCHAR(255),
@@ -486,7 +486,7 @@ CREATE TABLE tbl_heat_recovery (
     heat_recovery_type VARCHAR(255),
     fuel VARCHAR(255),
     producer_power DOUBLE,
-        
+
     PRIMARY KEY (id)
 );
 
@@ -496,7 +496,7 @@ CREATE TABLE tbl_producers (
     id          CHAR(36),
     name        VARCHAR(255),
     description CLOB(64 K),
-    
+
     is_disabled       BOOLEAN,
     rank              INTEGER,
     producer_function VARCHAR(255),
@@ -514,18 +514,19 @@ CREATE TABLE tbl_producers (
     maintenance DOUBLE,
     operation   DOUBLE,
 
-    f_fuel CHAR(36),
+    f_fuel           CHAR(36),
     wood_amount_type VARCHAR(255),
-    water_content DOUBLE,
-    price_per_unit DOUBLE,
-    ash_costs DOUBLE,
-    
-    f_heat_recovery CHAR(36),
-    heat_recovery_investment DOUBLE,
-    heat_recovery_duration INTEGER,
-    heat_recovery_repair DOUBLE,
+    water_content    DOUBLE,
+    price_per_unit   DOUBLE,
+    ash_costs        DOUBLE,
+
+    f_produced_electricity    CHAR(36),
+    f_heat_recovery           CHAR(36),
+    heat_recovery_investment  DOUBLE,
+    heat_recovery_duration    INTEGER,
+    heat_recovery_repair      DOUBLE,
     heat_recovery_maintenance DOUBLE,
-    heat_recovery_operation DOUBLE,
+    heat_recovery_operation   DOUBLE,
     
     PRIMARY KEY (id)
 );
