@@ -49,9 +49,21 @@ class BarCharts {
 				.createSeries(SeriesType.BAR, name);
 		bars.setYSeries(data);
 		bars.setBarColor(color);
-		bars.enableStack(true);
 		bars.setBarWidthStyle(BarWidthStyle.FIXED);
 		bars.setBarWidth(65);
+		return bars;
+	}
+
+	static IBarSeries stackSeries(Chart chart, String name, Color color,
+			double[] data) {
+		// values < 0 are not allowed for stacked bar charts
+		for (int i = 0; i < data.length; i++) {
+			if (data[i] < 0) {
+				data[i] = 0;
+			}
+		}
+		IBarSeries bars = series(chart, name, color, data);
+		bars.enableStack(true);
 		return bars;
 	}
 

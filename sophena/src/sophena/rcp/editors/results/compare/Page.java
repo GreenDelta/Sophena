@@ -2,7 +2,6 @@ package sophena.rcp.editors.results.compare;
 
 import java.util.function.ToDoubleFunction;
 
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -11,9 +10,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
-import sophena.calc.ProjectResult;
-import sophena.model.Project;
-import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
 
 class Page extends FormPage {
@@ -45,29 +41,17 @@ class Page extends FormPage {
 
 	private void simpleCostsChart(String title, String unit,
 			ToDoubleFunction<CostResult.FieldSet> fn) {
-		BarChart chart = BarChart.of(title).unit(unit);
-		for (int i = 0; i < comparison.projects.length; i++) {
-			Color color = Colors.getForChart(i);
-			Project project = comparison.projects[i];
-			CostResult r = comparison.results[i].costResultFunding;
-			double value = fn.applyAsDouble(r.dynamicTotal);
-			chart.addBar(project.name, value, color);
-		}
-		chart.render(body, tk);
+		SimpleBarChart.of(title, comparison)
+				.unit(unit)
+				.data(r -> fn.applyAsDouble(r.costResultFunding.dynamicTotal))
+				.render(body, tk);
 	}
 
 	private void heatCostsChart() {
-		BarChart chart = BarChart.of("Wärmegestehungskosten")
-				.unit("EUR/MWh");
-		for (int i = 0; i < comparison.projects.length; i++) {
-			Color color = Colors.getForChart(i);
-			Project project = comparison.projects[i];
-			ProjectResult result = comparison.results[i];
-			chart.addBar(project.name,
-					result.costResultFunding.dynamicTotal.heatGenerationCosts,
-					color);
-		}
-		chart.render(body, tk);
+		SimpleBarChart.of("Wärmegestehungskosten", comparison)
+				.unit("EUR/MWh")
+				.data(r -> r.costResultFunding.dynamicTotal.heatGenerationCosts)
+				.render(body, tk);
 	}
 
 }

@@ -51,7 +51,7 @@ class CostsChart {
 						return 0d;
 					}
 				}).toArray();
-		BarCharts.series(chart, label(type), color(type), data);
+		BarCharts.stackSeries(chart, label(type), color(type), data);
 	}
 
 	private String label(int type) {

@@ -32,7 +32,10 @@ class RevenuesChart {
 					FieldSet costs = r.costResultFunding.dynamicTotal;
 					return costs.revenuesHeat;
 				}).toArray();
-		BarCharts.series(chart, "Wärmeerlöse", Colors.get("#455A64"), data);
+		BarCharts.stackSeries(chart,
+				"Wärmeerlöse",
+				Colors.get("#455A64"),
+				data);
 	}
 
 	private void electricityRevenues(Chart chart) {
@@ -41,6 +44,9 @@ class RevenuesChart {
 					FieldSet costs = r.costResultFunding.dynamicTotal;
 					return costs.revenuesElectricity;
 				}).toArray();
-		BarCharts.series(chart, "Stromerlöse", Colors.get("#90A4AE"), data);
+		BarCharts.stackSeries(chart,
+				"Stromerlöse",
+				Colors.get("#90A4AE"),
+				data);
 	}
 }
