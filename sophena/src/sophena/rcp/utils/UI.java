@@ -110,6 +110,7 @@ public class UI {
 		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
+		form.getForm().setForeground(Colors.get("#002171"));
 		toolkit.decorateFormHeading(form.getForm());
 		return form;
 	}
@@ -123,26 +124,30 @@ public class UI {
 
 	public static Section section(Composite parent, FormToolkit toolkit,
 			String label) {
-		Section section = toolkit.createSection(parent,
+		Section s = toolkit.createSection(parent,
 				ExpandableComposite.TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
 						| ExpandableComposite.TWISTIE);
-		gridData(section, true, false);
-		section.setText(label);
-		return section;
+		s.setTitleBarForeground(Colors.get("#002171"));
+		s.setToggleColor(Colors.get("#002171"));
+		gridData(s, true, false);
+		s.setText(label);
+		return s;
 	}
 
 	public static Section collapsedSection(Composite parent,
 			FormToolkit toolkit, String label) {
-		Section section = toolkit.createSection(parent,
+		Section s = toolkit.createSection(parent,
 				ExpandableComposite.TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.COMPACT
 						| ExpandableComposite.TWISTIE);
-		gridData(section, true, false);
-		section.setText(label);
-		return section;
+		s.setTitleBarForeground(Colors.get("#002171"));
+		s.setToggleColor(Colors.get("#002171"));
+		gridData(s, true, false);
+		s.setText(label);
+		return s;
 	}
 
 	/**
