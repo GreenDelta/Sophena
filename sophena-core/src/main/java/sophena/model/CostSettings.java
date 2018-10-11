@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -28,8 +29,17 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_price")
 	public double electricityPrice;
 
+	/**
+	 * This value is used to calculate the amount of electricity that is
+	 * required for an amount of produced heat. It is a percentage value, 1.5%.
+	 */
 	@Column(name = "electricity_demand_share")
 	public double electricityDemandShare;
+
+	/** The electricity that is used for the heat producers in a heating net. */
+	@OneToOne
+	@JoinColumn(name = "f_used_electricity")
+	public Fuel usedElectricity;
 
 	/** Average revenues from generated electricity in EUR/kWh */
 	@Column(name = "electricity_revenues")
@@ -78,11 +88,10 @@ public class CostSettings extends AbstractEntity {
 	public double administrationShare;
 
 	@ElementCollection
-	@CollectionTable(name = "tbl_annual_costs",
-			joinColumns = @JoinColumn(name = "f_project"))
+	@CollectionTable(name = "tbl_annual_costs", joinColumns = @JoinColumn(name = "f_project"))
 	public List<AnnualCostEntry> annualCosts = new ArrayList<>();
 
-	// prices change factors
+	// price change factors
 
 	@Column(name = "investment_factor")
 	public double investmentFactor;
@@ -124,6 +133,9 @@ public class CostSettings extends AbstractEntity {
 		clone.heatRevenues = heatRevenues;
 
 		clone.electricityDemandShare = electricityDemandShare;
+		if (usedElectricity != null) {
+			clone.usedElectricity = usedElectricity.clone();
+		}
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;

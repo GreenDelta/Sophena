@@ -117,6 +117,7 @@ CREATE TABLE tbl_cost_settings (
     hourly_wage DOUBLE,
     electricity_price DOUBLE,
     electricity_demand_share DOUBLE,
+    f_used_electricity CHAR(36),
     electricity_revenues DOUBLE,
     heat_revenues DOUBLE,
     

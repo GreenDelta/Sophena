@@ -33,6 +33,7 @@ class Upgrade2 implements Upgrade {
 		this.db = db;
 	}
 
+	@Override
 	public void on(ModelType type, JsonObject obj) {
 		if (type == null || obj == null)
 			return;
@@ -91,6 +92,10 @@ class Upgrade2 implements Upgrade {
 		if (costSettings != null) {
 			costSettings.addProperty("heatRevenuesFactor", 1.02);
 			costSettings.addProperty("electricityRevenuesFactor", 1.00);
+			JsonObject ue = new JsonObject();
+			ue.addProperty("id", "97032c3b-aba3-4f2e-9f15-73370d394735");
+			ue.addProperty("name", "Strom (Strommix)"); // just for info
+			costSettings.add("usedElectricity", ue);
 		}
 		JsonArray consumers = obj.getAsJsonArray("consumers");
 		for (JsonObject profile : pullConsumerLoadProfiles(consumers)) {

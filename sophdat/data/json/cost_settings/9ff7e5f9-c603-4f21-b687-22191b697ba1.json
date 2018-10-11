@@ -4,6 +4,10 @@
     "hourlyWage": 25,
     "electricityPrice": 0.3,
     "electricityDemandShare": 1.5,
+    "usedElectricity": {
+    	"id": "97032c3b-aba3-4f2e-9f15-73370d394735",
+    	"name": "Strom (Strommix)"
+    },
     "electricityRevenues": 0,
 
     "interestRate": 2,
