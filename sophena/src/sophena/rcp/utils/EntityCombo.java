@@ -60,6 +60,10 @@ public class EntityCombo<T extends RootEntity> {
 		return Viewers.getFirstSelected(viewer);
 	}
 
+	public Combo getControl() {
+		return viewer != null ? viewer.getCombo() : null;
+	}
+
 	private class Label extends LabelProvider {
 		@Override
 		@SuppressWarnings("unchecked")

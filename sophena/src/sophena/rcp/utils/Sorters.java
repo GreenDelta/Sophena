@@ -1,6 +1,7 @@
 package sophena.rcp.utils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import sophena.model.AbstractProduct;
@@ -21,16 +22,23 @@ public class Sorters {
 	private Sorters() {
 	}
 
+	public static <T extends RootEntity> Comparator<T> byName() {
+		return new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				if (o1 == null && o2 == null)
+					return 0;
+				if (o1 == null || o2 == null)
+					return o1 == null ? -1 : 1;
+				return Strings.compare(o1.name, o2.name);
+			}
+		};
+	}
+
 	public static <T extends RootEntity> void byName(List<T> list) {
 		if (list == null)
 			return;
-		Collections.sort(list, (o1, o2) -> {
-			if (o1 == null && o2 == null)
-				return 0;
-			if (o1 == null || o2 == null)
-				return o1 == null ? -1 : 1;
-			return Strings.compare(o1.name, o2.name);
-		});
+		Collections.sort(list, byName());
 	}
 
 	public static void boilers(List<Boiler> boilers) {

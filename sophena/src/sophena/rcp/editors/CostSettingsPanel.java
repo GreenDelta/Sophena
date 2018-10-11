@@ -1,6 +1,8 @@
 package sophena.rcp.editors;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -8,9 +10,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.db.daos.FuelDao;
 import sophena.model.CostSettings;
+import sophena.model.Fuel;
+import sophena.model.FuelGroup;
+import sophena.rcp.App;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
+import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.Texts.TextDispatch;
 import sophena.rcp.utils.UI;
@@ -51,16 +59,36 @@ public class CostSettingsPanel {
 	private void generalSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Allgemein");
 		UI.gridLayout(c, 4);
+
 		t(c, "Mittlerer Stundenlohn", "EUR", costs().hourlyWage)
 				.onChanged(s -> costs().hourlyWage = Num.read(s));
 		UI.filler(c);
+
 		t(c, "Strompreis", "EUR/kWh", costs().electricityPrice)
 				.onChanged(s -> costs().electricityPrice = Num.read(s));
 		UI.filler(c);
+
 		t(c, "Eigenstrombedarf", "%", costs().electricityDemandShare)
 				.onChanged(s -> costs().electricityDemandShare = Num.read(s));
 		HelpLink.create(c, tk, "Eigenstrombedarf",
 				H.ElectricityDemandShare);
+		EntityCombo<Fuel> combo = new EntityCombo<>();
+		combo.create("Verbrauchter Strom", c, tk);
+		UI.gridData(combo.getControl(), false, false).widthHint = 235;
+		List<Fuel> fuels = new FuelDao(App.getDb())
+				.getAll().stream()
+				.filter(f -> f.group == FuelGroup.ELECTRICITY)
+				.sorted(Sorters.byName())
+				.collect(Collectors.toList());
+		combo.setInput(fuels);
+		combo.select(costs().usedElectricity);
+		combo.onSelect(e -> {
+			costs().usedElectricity = e;
+			editor.setDirty();
+		});
+		UI.filler(c);
+		UI.filler(c);
+
 		if (isForProject) {
 			String heatRevenues = costs().heatRevenues == 0
 					? "0"

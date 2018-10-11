@@ -67,7 +67,7 @@ class FuelSection {
 
 	private void createFuelRows(FormToolkit tk, Composite comp) {
 		Fuel fuel = producer().fuelSpec.fuel;
-		EntityCombo<Fuel> combo = new EntityCombo<Fuel>();
+		EntityCombo<Fuel> combo = new EntityCombo<>();
 		combo.create(M.Fuel, comp, tk);
 		FuelDao dao = new FuelDao(App.getDb());
 		List<Fuel> fuels = dao.getAll().stream()
