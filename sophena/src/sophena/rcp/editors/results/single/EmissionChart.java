@@ -13,7 +13,7 @@ import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.Range;
 
-import sophena.math.energetic.CO2Result;
+import sophena.calc.CO2Result;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;

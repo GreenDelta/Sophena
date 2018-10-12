@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.math.energetic.CO2Result;
+import sophena.calc.CO2Result;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;

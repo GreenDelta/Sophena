@@ -3,8 +3,8 @@ package sophena.rcp.editors.results.compare;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.CO2Result;
 import sophena.calc.Comparison;
-import sophena.math.energetic.CO2Result;
 import sophena.math.energetic.EfficiencyResult;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UsedHeat;
@@ -73,7 +73,7 @@ class KeyFigureTable {
 	}
 
 	private String emissionSavings(int i) {
-		CO2Result co2 = CO2Result.calculate(result.results[i]);
+		CO2Result co2 = result.results[i].co2Result;
 		double savings = co2.variantNaturalGas - co2.total;
 		return Num.intStr(savings) + " kg CO2 eq./a";
 	}

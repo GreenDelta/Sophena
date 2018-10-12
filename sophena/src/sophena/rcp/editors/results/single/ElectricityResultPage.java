@@ -15,6 +15,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.EnergyResult;
+import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
@@ -28,11 +29,11 @@ import sophena.utils.Ref;
 
 class ElectricityResultPage extends FormPage {
 
-	private EnergyResult result;
+	private ProjectResult result;
 
 	ElectricityResultPage(ResultEditor editor) {
 		super(editor, "sophena.ElectricityResultPage", M.Electricity);
-		this.result = editor.result.energyResult;
+		this.result = editor.result;
 	}
 
 	@Override
@@ -52,15 +53,16 @@ class ElectricityResultPage extends FormPage {
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		Tables.rightAlignColumns(table, 2, 3, 4, 5, 6);
 		table.setInput(getItems());
-		new ElectricityChart(result).render(body, tk);
+		new ElectricityChart(result.energyResult).render(body, tk);
 		form.reflow(true);
 	}
 
 	private List<Item> getItems() {
+		EnergyResult r = result.energyResult;
 		List<Item> list = new ArrayList<>();
 		Ref<Double> total = Ref.of(0d);
-		for (int i = 0; i < result.producers.length; i++) {
-			Producer p = result.producers[i];
+		for (int i = 0; i < r.producers.length; i++) {
+			Producer p = r.producers[i];
 			if (p.boiler == null || !p.boiler.isCoGenPlant)
 				continue;
 			Item item = new Item();
@@ -73,9 +75,9 @@ class ElectricityResultPage extends FormPage {
 				item.rank = p.rank + " - Spitzenlast";
 			item.maxPower = p.boiler.maxPowerElectric;
 			item.efficiencyRate = p.boiler.efficiencyRateElectric;
-			double heat = result.totalHeat(p);
+			double heat = r.totalHeat(p);
 			item.fullLoadHours = Producers.fullLoadHours(p, heat);
-			item.value = GeneratedElectricity.get(p, heat);
+			item.value = GeneratedElectricity.get(p, result);
 			total.set(total.get() + item.value);
 		}
 		if (total.get() != 0)

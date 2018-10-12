@@ -1,12 +1,11 @@
-package sophena.math.energetic;
+package sophena.calc;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import sophena.Defaults;
-import sophena.calc.ConsumerResult;
-import sophena.calc.EnergyResult;
-import sophena.calc.ProjectResult;
+import sophena.math.energetic.GeneratedElectricity;
+import sophena.math.energetic.UsedElectricity;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.Producer;
@@ -29,7 +28,7 @@ public class CO2Result {
 	public double variantNaturalGas;
 	public final Map<Producer, Double> producerEmissions = new HashMap<>();
 
-	public static CO2Result calculate(ProjectResult result) {
+	static CO2Result calculate(ProjectResult result) {
 		return new Calculator(result).calculate();
 	}
 
