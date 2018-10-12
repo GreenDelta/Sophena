@@ -33,13 +33,15 @@ public class ProjectResult {
 			return r;
 		r.energyResult = EnergyCalculator.calculate(project);
 		r.fuelUsage = FuelUsage.calculate(r);
-		r.co2Result = CO2Result.calculate(r);
 		CostCalculator costCalc = new CostCalculator(r);
 		costCalc.withFunding(false);
 		r.costResult = costCalc.calculate();
 		costCalc.withFunding(true);
 		r.costResultFunding = costCalc.calculate();
 		consumers(project, r);
+
+		// needs to be done after calculating the consumer results
+		r.co2Result = CO2Result.calculate(r);
 		return r;
 	}
 
