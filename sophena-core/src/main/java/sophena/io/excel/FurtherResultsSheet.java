@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.CO2Emissions;
+import sophena.math.energetic.CO2Result;
 import sophena.math.energetic.EfficiencyResult;
 import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.UsedHeat;
@@ -30,7 +30,7 @@ class FurtherResultsSheet {
 
 	void write() {
 
-		CO2Emissions co2 = CO2Emissions.calculate(result);
+		CO2Result co2 = CO2Result.calculate(result);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(result);
 		Sheet sheet = wb.createSheet("Weitere Ergebnisse");
 		CellStyle style = Excel.headerStyle(wb);
@@ -43,7 +43,7 @@ class FurtherResultsSheet {
 	}
 
 	public void createEmissions(Sheet sheet, CellStyle style,
-			CO2Emissions co2) {
+			CO2Result co2) {
 
 		Excel.cell(sheet, row, 0, "Treibhausgasemissionen").setCellStyle(style);
 		row++;

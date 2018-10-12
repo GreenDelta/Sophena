@@ -85,7 +85,7 @@ class CostCalculator {
 	}
 
 	private void handleItem(CostResult r, CostResultItem item) {
-		if (item == null)
+		if (item == null || item.costs == null)
 			return;
 		r.items.add(item);
 		r.dynamicTotal.investments += item.costs.investment;
@@ -94,7 +94,7 @@ class CostCalculator {
 		// add capital costs
 		log.println("=> Kapitalkosten: " + item.label);
 		item.capitalCosts = CapitalCosts.get(item, project, ir(),
-				project.costSettings.investmentFactor);
+				settings.investmentFactor);
 		log.value("Dynamisch", item.capitalCosts, "EUR/a");
 		r.dynamicTotal.capitalCosts += item.capitalCosts;
 		double staticCapitalCosts = CapitalCosts.get(
@@ -194,7 +194,7 @@ class CostCalculator {
 		log.h3("Stromerlöse");
 		double pe = settings.electricityRevenues;
 		log.value("pe: Mittlere Stromperlöse", pe, "EUR/kWh");
-		double Egen = GeneratedElectricity.getTotal(result.energyResult);
+		double Egen = GeneratedElectricity.getTotal(result);
 		log.value("Egen: Erzeugte Strommenge", Egen, "kWh");
 		double revenuesElectricity = pe * Egen;
 		log.value("A: Erlöse im ersten Jahr: A = pe * Egen",

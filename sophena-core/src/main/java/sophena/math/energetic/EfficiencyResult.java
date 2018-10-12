@@ -36,7 +36,6 @@ public class EfficiencyResult {
 			if (pr == null || pr.energyResult == null)
 				return res;
 			for (Producer p : pr.energyResult.producers) {
-				double genHeat = pr.energyResult.totalHeat(p);
 				double fuelDemand = pr.fuelUsage.getInKWh(p);
 				res.fuelEnergy += fuelDemand;
 				double ur;
@@ -47,7 +46,7 @@ public class EfficiencyResult {
 							+ p.boiler.efficiencyRateElectric);
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
-				res.producedElectrictiy += GeneratedElectricity.get(p, genHeat);
+				res.producedElectrictiy += GeneratedElectricity.get(p, pr);
 			}
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.energyResult.heatNetLoss;

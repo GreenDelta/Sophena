@@ -33,7 +33,7 @@ class ElectricitySheet {
 			if (p.boiler == null || !p.boiler.isCoGenPlant)
 				continue;
 			double heat = result.energyResult.totalHeat(p);
-			double value = GeneratedElectricity.get(p, heat);
+			double value = GeneratedElectricity.get(p, result);
 			Excel.cell(sheet, row, 0, p.name);
 			if (p.function == ProducerFunction.BASE_LOAD) {
 				Excel.cell(sheet, row, 1, p.rank + " - Grundlast");
@@ -43,8 +43,10 @@ class ElectricitySheet {
 			Excel.cell(sheet, row, 2, Math.round(p.boiler.maxPowerElectric));
 			Excel.cell(sheet, row, 3, Math.round(value));
 			Excel.cell(sheet, row, 4, Math.round(((value / total) * 100)));
-			Excel.cell(sheet, row, 5, Math.round(Producers.fullLoadHours(p, heat)));
-			Excel.cell(sheet, row, 6, Math.round(p.boiler.efficiencyRateElectric * 100d));
+			Excel.cell(sheet, row, 5,
+					Math.round(Producers.fullLoadHours(p, heat)));
+			Excel.cell(sheet, row, 6,
+					Math.round(p.boiler.efficiencyRateElectric * 100d));
 			row++;
 		}
 		Excel.autoSize(sheet, 0, 1);
@@ -53,8 +55,7 @@ class ElectricitySheet {
 	private double calculateTotal(Producer[] producers) {
 		double total = 0d;
 		for (Producer pr : producers) {
-			double heat = result.energyResult.totalHeat(pr);
-			total += GeneratedElectricity.get(pr, heat);
+			total += GeneratedElectricity.get(pr, result);
 		}
 		return total;
 	}

@@ -26,8 +26,7 @@ public class PrimaryEnergyFactor {
 			double fuelFactor = getFuelFactor(p);
 			double usedElectricity = UsedElectricity.get(producedHeat,
 					result.project.costSettings);
-			double generatedElectricity = GeneratedElectricity.get(p,
-					producedHeat);
+			double generatedElectricity = GeneratedElectricity.get(p, result);
 			sum += ((fuelEnergy * fuelFactor)
 					+ (usedElectricity - generatedElectricity)
 							* Defaults.PRIMARY_ENERGY_FACTOR_ELECTRICITY);

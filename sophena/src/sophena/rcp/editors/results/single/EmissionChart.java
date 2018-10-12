@@ -13,7 +13,7 @@ import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.Range;
 
-import sophena.math.energetic.CO2Emissions;
+import sophena.math.energetic.CO2Result;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
@@ -22,14 +22,14 @@ import sophena.rcp.utils.UI;
 
 class EmissionChart {
 
-	private CO2Emissions result;
+	private CO2Result result;
 	private Chart chart;
 
-	private EmissionChart(CO2Emissions result) {
+	private EmissionChart(CO2Result result) {
 		this.result = result;
 	}
 
-	public static void create(CO2Emissions result, Composite body,
+	public static void create(CO2Result result, Composite body,
 			FormToolkit tk) {
 		new EmissionChart(result).render(body, tk);
 	}
