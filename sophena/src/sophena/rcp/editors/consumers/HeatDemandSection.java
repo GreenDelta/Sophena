@@ -65,20 +65,22 @@ class HeatDemandSection {
 		Texts.set(t, Num.intStr(consumer().heatingLoad));
 		UI.formLabel(composite, tk, "kW");
 		HelpLink.create(composite, tk, "Heizlast", H.HeatingLoad);
-		if (!consumer().demandBased) {
-			Texts.on(t).calculated();
-			editor.onCalculated((profile, totals, total) -> {
-				double heatingLoad = total / consumer().loadHours;
-				consumer().heatingLoad = heatingLoad;
-				Texts.set(t, Num.intStr(heatingLoad));
-			});
-		} else {
+		if (consumer().demandBased) {
 			Texts.on(t).required().decimal().onChanged(text -> {
 				consumer().heatingLoad = Num.read(text);
 				editor.calculate();
 				editor.setDirty();
 			});
+			return;
 		}
+		Texts.on(t).calculated();
+		if (consumer().hasProfile())
+			return;
+		editor.onCalculated((profile, totals, total) -> {
+			double heatingLoad = total / consumer().loadHours;
+			consumer().heatingLoad = heatingLoad;
+			Texts.set(t, Num.intStr(heatingLoad));
+		});
 	}
 
 	private void createWaterText(Composite composite, FormToolkit tk) {
