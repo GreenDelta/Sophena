@@ -5,7 +5,7 @@ Als Alternative zur Auswahl eines Kessels mit einer minimalen und maximalen
 Leistung können für Erzeuger auch Leistungsprofile (Erzeugerlastgänge)
 hinterlegt werden. Erzeuger (`Producer`) mit solchen Profilen werden über das
 Attribut `hasProfile` markiert. Bei diesen Leistungsprofilen wird für jede
-Stunde eine minimale und maximale Leistung angegeben. Das Script 
+Stunde eine minimale und maximale Leistung angegeben. Das Script
 [generate_producer_profile.py](../examples/generate_producer_profile.py)
 generiert ein Beispielprofil, welches als Erzeugerlastgang importiert werden
 kann. Für Erzeugerlastgänge können weder Wärmerückgewinnungen noch
@@ -31,7 +31,7 @@ mit diesem Faktor multipliziert und erhöhen sich entsprechend:
 ```julia
 P_max = P_bmax * f_r
 P_min = P_bmin * f_r
-eta   = eta_b  * f_r 
+eta   = eta_b  * f_r
 ```
 
 **Beispiel:**
@@ -60,7 +60,7 @@ eta   = eta_b  * f_r   # 0.49
 ## Minimale und maximale Leistung
 Die minimale und maximale Leistung eines Wärmeerzeugers ergibt sich aus den
 Produktdaten des jeweiligen Heizkessels, der dem Wärmeerzeuger zugeordnet ist.
-Die Leistung erhöht sich entsprechend, wenn der Erzeuger über eine 
+Die Leistung erhöht sich entsprechend, wenn der Erzeuger über eine
 Wärmerückgewinnung verfügt (siehe oben). Bei Erzeugerlastgängen wird die
 minimale und maximale Leistung für die Simulationsrechnung für die jeweiligen
 Stunden aus dem Lastgang gelesen. Zusätzlich wird bei Erzeugerlastgängen die
@@ -81,10 +81,9 @@ t_full = Q_gen / P_max  # h
 ```
 
 ## Stromerzeugung
-Wärmeerzeuger mit Kraft-Wärme-Kopplung (KWK-Anlagen,
-`Boiler.isCoGenPlant = true`) können zusätzlich zu Wärme auch Strom erzeugen.
-Die erzeugte Menge an Strom wird dabei wie folgt aus der erzeugten Wärmemenge
-berechnet:
+Wärmeerzeuger mit Kraft-Wärme-Kopplung (KWK-Anlagen) können zusätzlich zur Wärme
+auch Strom erzeugen. Die erzeugte Menge an Strom wird dabei wie folgt aus der
+erzeugten Wärmemenge berechnet:
 
 ```
 Volllaststunden [h] = Erzeugte Wärme [kWh] / thermische Nennleistung des Kessels [kW]
