@@ -75,7 +75,7 @@ CREATE TABLE tbl_product_groups (
     duration     INTEGER,
     repair       DOUBLE,
     maintenance  DOUBLE,
-    operation    DOUBLE, 
+    operation    DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -97,14 +97,14 @@ CREATE TABLE tbl_locations (
 
 
 CREATE TABLE tbl_time_intervals (
-    
+
     id      CHAR(36),
     f_owner CHAR(36),
-    
+
     start_time  VARCHAR(255),
     end_time    VARCHAR(255),
     description VARCHAR(255),
-    
+
     PRIMARY KEY (id)
 );
 
@@ -120,16 +120,16 @@ CREATE TABLE tbl_cost_settings (
     f_used_electricity CHAR(36),
     electricity_revenues DOUBLE,
     heat_revenues DOUBLE,
-    
+
     funding DOUBLE,
     funding_biomass_boilers DOUBLE,
     funding_heat_net DOUBLE,
     funding_transfer_stations DOUBLE,
     connection_fees DOUBLE,
-    
+
     interest_rate DOUBLE,
     interest_rate_funding DOUBLE,
-    
+
     investment_factor DOUBLE,
     operation_factor DOUBLE,
     bio_fuel_factor DOUBLE,
@@ -175,7 +175,7 @@ CREATE TABLE tbl_product_entries (
 
     f_project CHAR(36),
     f_product CHAR(36),
-    
+
     price_per_piece DOUBLE,
     number_of_items DOUBLE,
 
@@ -232,7 +232,7 @@ CREATE TABLE tbl_heat_net_pipes (
     duration INTEGER,
     repair DOUBLE,
     maintenance DOUBLE,
-    operation DOUBLE, 
+    operation DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -392,12 +392,12 @@ CREATE TABLE tbl_buffer_tanks (
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
-    
-    volume DOUBLE,        
-    diameter DOUBLE,    
-    height DOUBLE,    
+
+    volume DOUBLE,
+    diameter DOUBLE,
+    height DOUBLE,
     insulation_thickness DOUBLE,
-    
+
     PRIMARY KEY (id)
 );
 
@@ -422,7 +422,7 @@ CREATE TABLE tbl_transfer_stations (
     material VARCHAR(255),
     water_heating VARCHAR(255),
     control VARCHAR(255),
-        
+
     PRIMARY KEY (id)
 );
 
@@ -449,7 +449,7 @@ CREATE TABLE tbl_flue_gas_cleaning (
     cleaning_method VARCHAR(255),
     cleaning_type VARCHAR(255),
     separation_efficiency DOUBLE,
-        
+
     PRIMARY KEY (id)
 );
 
@@ -459,7 +459,7 @@ CREATE TABLE tbl_flue_gas_cleaning_entries (
     id CHAR(36),
     f_project CHAR(36),
     f_flue_gas_cleaning CHAR(36),
-        
+
     investment DOUBLE,
     duration INTEGER,
     repair DOUBLE,
@@ -502,11 +502,12 @@ CREATE TABLE tbl_producers (
     producer_function VARCHAR(255),
     utilisation_rate  DOUBLE,
 
-    f_project         CHAR(36),
-    f_product_group   CHAR(36),
-    f_boiler          CHAR(36),
-    f_profile         CHAR(36),
-    profile_max_power DOUBLE,
+    f_project                  CHAR(36),
+    f_product_group            CHAR(36),
+    f_boiler                   CHAR(36),
+    f_profile                  CHAR(36),
+    profile_max_power          DOUBLE,
+    profile_max_power_electric DOUBLE,
 
     investment  DOUBLE,
     duration    INTEGER,
@@ -527,7 +528,7 @@ CREATE TABLE tbl_producers (
     heat_recovery_repair      DOUBLE,
     heat_recovery_maintenance DOUBLE,
     heat_recovery_operation   DOUBLE,
-    
+
     PRIMARY KEY (id)
 );
 
@@ -540,7 +541,7 @@ CREATE TABLE tbl_manufacturer (
     is_protected BOOLEAN,
 
     address VARCHAR(255),
-    url VARCHAR(255),    
+    url VARCHAR(255),
 
     PRIMARY KEY (id)
 );
