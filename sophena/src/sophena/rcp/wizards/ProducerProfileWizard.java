@@ -74,8 +74,9 @@ public class ProducerProfileWizard extends Wizard {
 		Producer p = new Producer();
 		int i = 1;
 		for (Producer other : project.producers) {
-			if (other.hasProfile())
+			if (other.hasProfile()) {
 				i++;
+			}
 		}
 		p.id = UUID.randomUUID().toString();
 		p.name = "Erzeugerlastgang " + i;
@@ -93,6 +94,7 @@ public class ProducerProfileWizard extends Wizard {
 				producer.productGroup = groups[groupIdx];
 				Wizards.initFuelSpec(producer);
 				Wizards.initCosts(producer);
+				Wizards.initElectricity(producer);
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());

@@ -21,11 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
-import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.FuelGroup;
 import sophena.model.Producer;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
@@ -77,13 +75,7 @@ public class ProducerWizard extends Wizard {
 			page.bindToModel(producer);
 			Wizards.initFuelSpec(producer);
 			Wizards.initCosts(producer);
-			ProductGroup pg = producer.productGroup;
-			if (pg != null && pg.type == ProductType.COGENERATION_PLANT) {
-				producer.producedElectricity = new FuelDao(App.getDb())
-						.getAll().stream()
-						.filter(e -> e.group == FuelGroup.ELECTRICITY)
-						.findFirst().orElse(null);
-			}
+			Wizards.initElectricity(producer);
 
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
