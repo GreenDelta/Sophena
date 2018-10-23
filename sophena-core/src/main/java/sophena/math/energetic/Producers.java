@@ -2,6 +2,7 @@ package sophena.math.energetic;
 
 import sophena.model.HeatRecovery;
 import sophena.model.Producer;
+import sophena.model.ProductType;
 import sophena.model.Stats;
 
 public class Producers {
@@ -90,5 +91,21 @@ public class Producers {
 			return 1;
 		HeatRecovery hr = p.heatRecovery;
 		return 1 + (hr.power / hr.producerPower);
+	}
+
+	/**
+	 * Returns the electric power of the given producer if it is a co-generation
+	 * plant. Otherwise, returns 0.
+	 */
+	public static double electricPower(Producer p) {
+		if (p == null || p.productGroup == null)
+			return 0;
+		if (p.productGroup.type != ProductType.COGENERATION_PLANT)
+			return 0;
+		if (p.boiler != null && p.boiler.isCoGenPlant)
+			return p.boiler.maxPowerElectric;
+		if (p.hasProfile())
+			return p.profileMaxPowerElectric;
+		return 0;
 	}
 }

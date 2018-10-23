@@ -2,7 +2,6 @@ package sophena.math.energetic;
 
 import sophena.calc.ProjectResult;
 import sophena.model.Producer;
-import sophena.model.ProductType;
 
 public class GeneratedElectricity {
 
@@ -13,15 +12,7 @@ public class GeneratedElectricity {
 	public static double get(Producer p, ProjectResult r) {
 		if (p == null || r == null || r.energyResult == null)
 			return 0;
-		if (p.productGroup == null
-				|| p.productGroup.type != ProductType.COGENERATION_PLANT)
-			return 0;
-		double maxPower = 0;
-		if (p.boiler != null && p.boiler.isCoGenPlant) {
-			maxPower = p.boiler.maxPowerElectric;
-		} else if (p.hasProfile()) {
-			maxPower = p.profileMaxPowerElectric;
-		}
+		double maxPower = Producers.electricPower(p);
 		if (maxPower <= 0)
 			return 0;
 		double genHeat = r.energyResult.totalHeat(p);

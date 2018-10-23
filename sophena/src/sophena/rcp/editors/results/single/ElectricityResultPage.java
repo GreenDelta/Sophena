@@ -63,18 +63,22 @@ class ElectricityResultPage extends FormPage {
 		Ref<Double> total = Ref.of(0d);
 		for (int i = 0; i < r.producers.length; i++) {
 			Producer p = r.producers[i];
-			if (p.boiler == null || !p.boiler.isCoGenPlant)
+			double elPower = Producers.electricPower(p);
+			if (elPower <= 0)
 				continue;
 			Item item = new Item();
 			item.pos = i;
 			list.add(item);
 			item.name = p.name;
-			if (p.function == ProducerFunction.BASE_LOAD)
+			if (p.function == ProducerFunction.BASE_LOAD) {
 				item.rank = p.rank + " - Grundlast";
-			else
+			} else {
 				item.rank = p.rank + " - Spitzenlast";
-			item.maxPower = p.boiler.maxPowerElectric;
-			item.efficiencyRate = p.boiler.efficiencyRateElectric;
+			}
+			item.maxPower = elPower;
+			if (p.boiler != null) {
+				item.efficiencyRate = p.boiler.efficiencyRateElectric;
+			}
 			double heat = r.totalHeat(p);
 			item.fullLoadHours = Producers.fullLoadHours(p, heat);
 			item.value = GeneratedElectricity.get(p, result);
@@ -92,7 +96,7 @@ class ElectricityResultPage extends FormPage {
 		double maxPower;
 		double fullLoadHours;
 		double value;
-		double efficiencyRate;
+		Double efficiencyRate;
 		double share;
 	}
 
@@ -127,7 +131,8 @@ class ElectricityResultPage extends FormPage {
 			case 5:
 				return Num.intStr(item.fullLoadHours) + " h";
 			case 6:
-				return Num.intStr(item.efficiencyRate * 100d) + " %";
+				if (item.efficiencyRate != null)
+					return Num.intStr(item.efficiencyRate * 100d) + " %";
 			default:
 				return null;
 			}
