@@ -43,11 +43,18 @@ public class Producer extends RootEntity {
 
 	/**
 	 * This field is only relevant for producers with a producer profile (so
-	 * without a boiler) and contains the maximum power of the producer for
-	 * calculating full load hours etc.
+	 * without a boiler) and contains the maximum power of the producer. It is
+	 * used for calculating the full load hours etc.
 	 */
 	@Column(name = "profile_max_power")
 	public double profileMaxPower;
+
+	/**
+	 * If the product type of a producer is co-generation plant it is possible
+	 * to include the generated electricity of that producer in the calculation.
+	 */
+	@Column(name = "profile_max_power_electric")
+	public double profileMaxPowerElectric;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")

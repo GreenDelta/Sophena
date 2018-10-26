@@ -64,6 +64,7 @@ class ElectricityChart {
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
 		y.setMinorTicksVisible(false);
+		y.setFormatPattern("###,###,###,###");
 		return g;
 	}
 
@@ -98,7 +99,8 @@ class ElectricityChart {
 		List<Plant> list = new ArrayList<>();
 		for (int i = 0; i < result.producers.length; i++) {
 			Producer p = result.producers[i];
-			if (p.boiler == null || !p.boiler.isCoGenPlant)
+			double power = Producers.electricPower(p);
+			if (power <= 0)
 				continue;
 			Plant plant = new Plant();
 			list.add(plant);
@@ -106,7 +108,6 @@ class ElectricityChart {
 			plant.name = p.name;
 			double heat = result.totalHeat(p);
 			int hours = (int) Producers.fullLoadHours(p, heat);
-			double power = p.boiler.maxPowerElectric;
 			if (hours <= 0)
 				continue;
 			for (int h = 0; h < hours; h++) {

@@ -1,7 +1,6 @@
 package sophena.math.energetic;
 
 import sophena.calc.ProjectResult;
-import sophena.model.Boiler;
 import sophena.model.Producer;
 
 public class GeneratedElectricity {
@@ -11,15 +10,14 @@ public class GeneratedElectricity {
 	 * generated heat [kWh].
 	 */
 	public static double get(Producer p, ProjectResult r) {
-		if (p == null || p.boiler == null
-				|| r == null || r.energyResult == null)
+		if (p == null || r == null || r.energyResult == null)
 			return 0;
-		Boiler boiler = p.boiler;
-		if (!boiler.isCoGenPlant || boiler.maxPowerElectric == 0)
+		double maxPower = Producers.electricPower(p);
+		if (maxPower <= 0)
 			return 0;
 		double genHeat = r.energyResult.totalHeat(p);
 		double hours = Producers.fullLoadHours(p, genHeat);
-		return hours * boiler.maxPowerElectric;
+		return hours * maxPower;
 	}
 
 	/**

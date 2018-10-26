@@ -13,6 +13,7 @@ import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
+import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
@@ -102,6 +103,21 @@ class Wizards {
 			spec.waterContent = 20d;
 			spec.woodAmountType = WoodAmountType.CHIPS;
 		}
+	}
+
+	/**
+	 * Set the type of produced electricity for producers that are co-generation
+	 * plants.
+	 */
+	static void initElectricity(Producer p) {
+		if (p == null || p.productGroup == null)
+			return;
+		if (p.productGroup.type != ProductType.COGENERATION_PLANT)
+			return;
+		p.producedElectricity = new FuelDao(App.getDb())
+				.getAll().stream()
+				.filter(e -> e.group == FuelGroup.ELECTRICITY)
+				.findFirst().orElse(null);
 	}
 
 	static void initCosts(Producer p) {
