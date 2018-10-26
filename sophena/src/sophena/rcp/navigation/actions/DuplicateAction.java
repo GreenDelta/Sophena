@@ -84,6 +84,12 @@ public class DuplicateAction extends NavigationAction {
 		String name = getCopyName(producer.name, project.producers);
 		Producer clone = producer.clone();
 		clone.name = name;
+		clone.rank = 1;
+		for (Producer other : project.producers) {
+			if (other.rank >= clone.rank) {
+				clone.rank = other.rank + 1;
+			}
+		}
 		project.producers.add(clone);
 		projDao.update(project);
 		Navigator.refresh();
