@@ -20,6 +20,7 @@ public class ComparisonView extends Editor {
 			return;
 		String key = App.stash(comparison);
 		KeyEditorInput input = new KeyEditorInput(key, "Ergebnisvergleich");
+		Editors.closeIf(editor -> editor instanceof ComparisonView);
 		Editors.open(input, "sophena.ComparisonView");
 	}
 
