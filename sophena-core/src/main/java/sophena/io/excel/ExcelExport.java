@@ -34,7 +34,7 @@ public class ExcelExport implements Runnable {
 			log.info("Export results to file {}", file);
 			Workbook wb = new XSSFWorkbook();
 			log.trace("Write heat results");
-			new HeatSheet(wb, result, project).write();
+			new HeatSheet(wb, result).write();
 			log.trace("Write electricity results");
 			new ElectricitySheet(wb, result).write();
 			log.trace("Write cost results");

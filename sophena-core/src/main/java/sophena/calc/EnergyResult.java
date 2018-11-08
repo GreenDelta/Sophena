@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -49,6 +50,33 @@ public class EnergyResult {
 		return d == null ? 0 : d;
 	}
 
+	public int numberOfStarts(Producer p) {
+		if (p == null)
+			return 0;
+		double[] vec = null;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				vec = producerResults[i];
+				break;
+			}
+		}
+		if (vec == null)
+			return 0;
+		boolean off = true;
+		int starts = 0;
+		for (int i = 0; i < vec.length; i++) {
+			if (vec[i] == 0) {
+				off = true;
+				continue;
+			}
+			if (off) {
+				starts++;
+				off = false;
+			}
+		}
+		return starts;
+	}
+
 	private void initProducerData(Project project) {
 		List<Producer> list = new ArrayList<>();
 		for (Producer p : project.producers) {
@@ -71,6 +99,7 @@ public class EnergyResult {
 		return EnergyResultSorter.sort(this);
 	}
 
+	@Override
 	public EnergyResult clone() {
 		EnergyResult clone = new EnergyResult();
 		clone.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);

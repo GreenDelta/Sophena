@@ -92,26 +92,9 @@ class BoilerTableSection {
 			} else {
 				item.utilisationRate = UtilisationRate.get(project, p, result);
 			}
-			item.clocks = getClocks(i);
+			item.clocks = result.numberOfStarts(p);
 			items.add(item);
 		}
-	}
-
-	private int getClocks(int producerIndex) {
-		double[] results = result.producerResults[producerIndex];
-		boolean off = true;
-		int clocks = 0;
-		for (int i = 0; i < results.length; i++) {
-			if (results[i] == 0) {
-				off = true;
-				continue;
-			}
-			if (off) {
-				clocks++;
-				off = false;
-			}
-		}
-		return clocks;
 	}
 
 	private void addBufferItem(List<Item> items, Producer[] producers) {

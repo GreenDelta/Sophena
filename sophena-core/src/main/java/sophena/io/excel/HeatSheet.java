@@ -2,7 +2,6 @@ package sophena.io.excel;
 
 import java.util.Arrays;
 
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -19,43 +18,51 @@ import sophena.model.Stats;
 
 class HeatSheet {
 
-	private Workbook wb;
-	private ProjectResult result;
-	private Project project;
+	private final Workbook wb;
+	private final ProjectResult result;
+	private final SheetWriter w;
 
-	HeatSheet(Workbook wb, ProjectResult result, Project project) {
+	HeatSheet(Workbook wb, ProjectResult result) {
 		this.wb = wb;
 		this.result = result;
-		this.project = project;
+		w = new SheetWriter(wb, "Wärme");
 	}
 
 	void write() {
-		Sheet sheet = wb.createSheet("Wärme");
-		header(sheet);
+		header();
 		int row = 1;
 		Arrays.sort(result.energyResult.producers,
 				(r1, r2) -> Integer.compare(r1.rank, r2.rank));
-		for (Producer pr : result.energyResult.producers) {
-			double heat = result.energyResult.totalHeat(pr);
-			Excel.cell(sheet, row, 0, pr.name);
-			if (pr.function == ProducerFunction.BASE_LOAD)
-				Excel.cell(sheet, row, 1, pr.rank + " - Grundlast");
-			else
-				Excel.cell(sheet, row, 1, pr.rank + " - Spitzenlast");
-			Excel.cell(sheet, row, 2, getFuelUse(pr, heat));
-			Excel.cell(sheet, row, 3, Math.round(pr.boiler.maxPower));
-			Excel.cell(sheet, row, 4, Math.round(heat));
-			int share = GeneratedHeat.share(heat, result.energyResult);
-			Excel.cell(sheet, row, 5, share);
-			Excel.cell(sheet, row, 6,
-					Math.round(Producers.fullLoadHours(pr, heat)));
-			Excel.cell(sheet, row, 7,
-					Math.round(UtilisationRate.get(project, pr,
-							result.energyResult) * 100));
+		for (Producer p : result.energyResult.producers) {
+			double heat = result.energyResult.totalHeat(p);
+			w.str(row, 0, p.name);
+			w.str(p.function == ProducerFunction.BASE_LOAD
+					? p.rank + " - Grundlast"
+					: p.rank + " - Spitzenlast");
+			w.rint(p.boiler.maxPower);
+			w.str(getFuelUse(p, heat));
+			w.rint(heat);
+			w.rint(GeneratedHeat.share(heat, result.energyResult));
+			w.rint(Producers.fullLoadHours(p, heat));
+			w.rint(UtilisationRate.get(
+					result.project, p, result.energyResult) * 100);
+			w.num(result.energyResult.numberOfStarts(p));
 			row++;
 		}
-		powerDiffRow(sheet, row, result.energyResult.producers);
-		Excel.autoSize(sheet, 0, 7);
+		powerDiffRow(row, result.energyResult.producers);
+		Excel.autoSize(w.sheet, 0, 7);
+	}
+
+	private void header() {
+		w.boldStr(0, 0, "Wärmeerzeuger");
+		w.boldStr("Rang");
+		w.boldStr("Nennleistung [kW]");
+		w.boldStr("Brennstoffverbrauch");
+		w.boldStr("Erzeugte Wärme [kWh]");
+		w.boldStr("Anteil [%]");
+		w.boldStr("Volllaststunden [h]");
+		w.boldStr("Nutzungsgrad [%]");
+		w.boldStr("Starts");
 	}
 
 	private String getFuelUse(Producer pr, double heat) {
@@ -64,23 +71,21 @@ class HeatSheet {
 				+ " " + Labels.getFuelUnit(pr);
 	}
 
-	private void powerDiffRow(Sheet sheet, int row, Producer[] producers) {
+	private void powerDiffRow(int row, Producer[] producers) {
 		double diff = calculateDiff(producers);
-		double powerDiff = calculatePowerDiff(producers, project);
+		double powerDiff = calculatePowerDiff(producers, result.project);
 		if (diff != 0 || powerDiff < 0) {
-			Excel.cell(sheet, row, 0, "Ungedeckte Leistung");
-			Excel.cell(sheet, row, 3, Math.round(powerDiff));
-			Excel.cell(sheet, row, 4, Math.round(diff));
-			int shareDiff = GeneratedHeat.share(diff, result.energyResult);
-			Excel.cell(sheet, row, 5, shareDiff);
+			w.str(row, 0, "Ungedeckte Leistung");
+			w.rint(2, -powerDiff);
+			w.rint(4, -diff);
+			w.rint(5, GeneratedHeat.share(diff, result.energyResult));
 			row++;
 		}
-		Excel.cell(sheet, row, 0, "Pufferspeicher");
-		Excel.cell(sheet, row, 4,
-				Math.round(result.energyResult.totalBufferedHeat));
-		int bufferShare = GeneratedHeat.share(
-				result.energyResult.totalBufferedHeat, result.energyResult);
-		Excel.cell(sheet, row, 5, bufferShare);
+		row++;
+		w.str(row, 0, "Pufferspeicher");
+		w.rint(4, result.energyResult.totalBufferedHeat);
+		w.rint(5, GeneratedHeat.share(
+				result.energyResult.totalBufferedHeat, result.energyResult));
 	}
 
 	private double calculateDiff(Producer[] producers) {
@@ -107,16 +112,4 @@ class HeatSheet {
 		return power - maxLoad;
 	}
 
-	private void header(Sheet sheet) {
-		CellStyle style = Excel.headerStyle(wb);
-		Excel.cell(sheet, 0, 0, "Wärmeerzeuger").setCellStyle(style);
-		Excel.cell(sheet, 0, 1, "Rang").setCellStyle(style);
-		Excel.cell(sheet, 0, 2, "Brennstoffverbrauch in m3")
-				.setCellStyle(style);
-		Excel.cell(sheet, 0, 3, "Nennleistung in kW").setCellStyle(style);
-		Excel.cell(sheet, 0, 4, "Erzeugte Wärme in kWh").setCellStyle(style);
-		Excel.cell(sheet, 0, 5, "Anteil in %").setCellStyle(style);
-		Excel.cell(sheet, 0, 6, "Volllaststunden in h").setCellStyle(style);
-		Excel.cell(sheet, 0, 7, "Nutzungsgrad in %").setCellStyle(style);
-	}
 }
