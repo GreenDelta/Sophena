@@ -281,13 +281,7 @@ public class ProducerWizard extends Wizard {
 					continue;
 				input.add(b);
 			}
-			input.sort((b1, b2) -> {
-				if (Math.abs(b1.minPower - b2.minPower) > 0.1)
-					return Double.compare(b1.minPower, b2.minPower);
-				if (Math.abs(b1.maxPower - b2.maxPower) > 0.1)
-					return Double.compare(b1.maxPower, b2.maxPower);
-				return Strings.compare(b1.name, b2.name);
-			});
+			Sorters.boilers(input);
 			boilerTable.setInput(input);
 			setPageComplete(false);
 		}
