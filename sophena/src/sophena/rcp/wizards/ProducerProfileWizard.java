@@ -80,7 +80,7 @@ public class ProducerProfileWizard extends Wizard {
 		}
 		p.id = UUID.randomUUID().toString();
 		p.name = "Erzeugerlastgang " + i;
-		p.utilisationRate = 0.8;
+		p.utilisationRate = 1.0;
 		p.rank = Wizards.nextProducerRank(project);
 		return p;
 	}
@@ -127,6 +127,7 @@ public class ProducerProfileWizard extends Wizard {
 		private Page() {
 			super("ProducerProfilePage", "Erzeugerlastgang integrieren", null);
 			setMessage(" ");
+			setPageComplete(false);
 		}
 
 		@Override
@@ -241,6 +242,7 @@ public class ProducerProfileWizard extends Wizard {
 					producer.profileMaxPower = max;
 					Texts.set(maxPowerText, max);
 				}
+				setPageComplete(true);
 			} catch (Exception e) {
 				MsgBox.error("Datei konnte nicht gelesen werden",
 						e.getMessage());
