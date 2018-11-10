@@ -6,6 +6,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.calc.CO2Result;
 import sophena.calc.Comparison;
 import sophena.math.energetic.EfficiencyResult;
+import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UsedHeat;
 import sophena.model.Producer;
@@ -43,6 +44,8 @@ class KeyFigureTable {
 		table.row("Netzverluste", this::distributionLoss);
 		table.row("CO2-Einsparung (gegen Erdgas dezentral)",
 				this::emissionSavings);
+		table.row("Primärenergiefaktor",
+				i -> Num.str(PrimaryEnergyFactor.get(result.results[i]), 2));
 	}
 
 	private String installedPower(int i) {
