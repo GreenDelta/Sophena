@@ -83,7 +83,7 @@ public class CO2Result {
 			EnergyResult eResult = result.energyResult;
 			double used = UsedElectricity.get(
 					eResult.totalProducedHeat, settings);
-			double factor = factor(settings.usedElectricity,
+			double factor = factor(settings.projectElectricityMix,
 					Defaults.EMISSION_FACTOR_ELECTRICITY);
 			co2.electricityEmissions = used * factor;
 		}

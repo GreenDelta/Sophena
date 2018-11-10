@@ -30,7 +30,7 @@ public class PrimaryEnergyFactor {
 			double usedElectricity = UsedElectricity.get(
 					genHeat, r.project.costSettings);
 			sum += (usedElectricity * factor(
-					r.project.costSettings.usedElectricity,
+					r.project.costSettings.projectElectricityMix,
 					Defaults.PRIMARY_ENERGY_FACTOR_ELECTRICITY));
 
 			// for generated electricity

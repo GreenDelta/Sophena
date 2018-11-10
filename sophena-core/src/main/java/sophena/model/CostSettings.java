@@ -36,10 +36,28 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_demand_share")
 	public double electricityDemandShare;
 
-	/** The electricity that is used for the heat producers in a heating net. */
+	/**
+	 * The electricity that is used for the electricity consumption of the heat
+	 * producers in a project.
+	 */
 	@OneToOne
-	@JoinColumn(name = "f_used_electricity")
-	public Fuel usedElectricity;
+	@JoinColumn(name = "f_project_electricity_mix")
+	public Fuel projectElectricityMix;
+
+	/**
+	 * The default setting of the general electricity mix..
+	 */
+	@OneToOne
+	@JoinColumn(name = "f_electricity_mix")
+	public Fuel electricityMix;
+
+	/**
+	 * The default setting of the (fossil fuel based) electricity mix that is
+	 * replaced by electricity from renewable energy sources.
+	 */
+	@OneToOne
+	@JoinColumn(name = "f_replaced_electricity_mix")
+	public Fuel replacedElectricityMix;
 
 	/** Average revenues from generated electricity in EUR/kWh */
 	@Column(name = "electricity_revenues")
@@ -133,7 +151,9 @@ public class CostSettings extends AbstractEntity {
 		clone.heatRevenues = heatRevenues;
 
 		clone.electricityDemandShare = electricityDemandShare;
-		clone.usedElectricity = usedElectricity;
+		clone.projectElectricityMix = projectElectricityMix;
+		clone.electricityMix = electricityMix;
+		clone.replacedElectricityMix = replacedElectricityMix;
 		clone.interestRate = interestRate;
 		clone.interestRateFunding = interestRateFunding;
 		clone.investmentFactor = investmentFactor;

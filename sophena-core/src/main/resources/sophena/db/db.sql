@@ -111,15 +111,17 @@ CREATE TABLE tbl_time_intervals (
 
 CREATE TABLE tbl_cost_settings (
 
-    id CHAR(36),
-    f_project CHAR(36),
+    id          CHAR(36),
+    f_project   CHAR(36),
 
-    hourly_wage DOUBLE,
-    electricity_price DOUBLE,
-    electricity_demand_share DOUBLE,
-    f_used_electricity CHAR(36),
-    electricity_revenues DOUBLE,
-    heat_revenues DOUBLE,
+    hourly_wage                 DOUBLE,
+    electricity_price           DOUBLE,
+    electricity_demand_share    DOUBLE,
+    f_project_electricity_mix   CHAR(36),
+    f_electricity_mix           CHAR(36),
+    f_replaced_electricity_mix  CHAR(36),
+    electricity_revenues        DOUBLE,
+    heat_revenues               DOUBLE,
 
     funding DOUBLE,
     funding_biomass_boilers DOUBLE,

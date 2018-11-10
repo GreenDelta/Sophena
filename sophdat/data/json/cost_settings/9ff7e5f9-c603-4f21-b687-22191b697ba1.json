@@ -4,9 +4,17 @@
     "hourlyWage": 25,
     "electricityPrice": 0.3,
     "electricityDemandShare": 1.5,
-    "usedElectricity": {
+    "projectElectricityMix": {
+    	"id": "905c55bc-00ab-4fd1-8993-94e1ad83ba0f",
+    	"name": "Strom (Verdrängungsstrommix)"
+    },
+    "electricityMix": {
     	"id": "97032c3b-aba3-4f2e-9f15-73370d394735",
     	"name": "Strom (Strommix)"
+    },
+    "replacedElectricityMix": {
+    	"id": "905c55bc-00ab-4fd1-8993-94e1ad83ba0f",
+    	"name": "Strom (Verdrängungsstrommix)"
     },
     "electricityRevenues": 0,
 
