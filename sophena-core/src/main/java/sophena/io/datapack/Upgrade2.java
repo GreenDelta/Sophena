@@ -92,10 +92,17 @@ class Upgrade2 implements Upgrade {
 		if (costSettings != null) {
 			costSettings.addProperty("heatRevenuesFactor", 1.02);
 			costSettings.addProperty("electricityRevenuesFactor", 1.00);
-			JsonObject ue = new JsonObject();
-			ue.addProperty("id", "97032c3b-aba3-4f2e-9f15-73370d394735");
-			ue.addProperty("name", "Strom (Strommix)"); // just for info
-			costSettings.add("usedElectricity", ue);
+
+			// default settings for electricity
+			JsonObject projectEl = new JsonObject();
+			projectEl.addProperty("id", "905c55bc-00ab-4fd1-8993-94e1ad83ba0f");
+			costSettings.add("projectElectricityMix", projectEl);
+			JsonObject elMix = new JsonObject();
+			elMix.addProperty("id", "97032c3b-aba3-4f2e-9f15-73370d394735");
+			costSettings.add("electricityMix", elMix);
+			JsonObject relMix = new JsonObject();
+			relMix.addProperty("id", "905c55bc-00ab-4fd1-8993-94e1ad83ba0f");
+			costSettings.add("replacedElectricityMix", relMix);
 		}
 		JsonArray consumers = obj.getAsJsonArray("consumers");
 		for (JsonObject profile : pullConsumerLoadProfiles(consumers)) {

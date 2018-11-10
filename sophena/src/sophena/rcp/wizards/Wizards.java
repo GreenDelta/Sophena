@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Combo;
 
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
+import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
@@ -82,7 +83,7 @@ class Wizards {
 	 * Initializes the fuel specification of the producer (or producer profile)
 	 * based on the fuel group in the product group of the producer.
 	 */
-	static void initFuelSpec(Producer p) {
+	static void initFuelSpec(Producer p, Project project) {
 		FuelSpec spec = new FuelSpec();
 		p.fuelSpec = spec;
 		if (p.productGroup == null)
@@ -90,8 +91,18 @@ class Wizards {
 		FuelGroup group = p.productGroup.fuelGroup;
 		if (group == null)
 			return;
-		FuelDao dao = new FuelDao(App.getDb());
+
+		// set the electricity mix from project settings if applicable
+		if (group == FuelGroup.ELECTRICITY && project != null) {
+			CostSettings settings = project.costSettings;
+			if (settings != null && settings.electricityMix != null) {
+				spec.fuel = settings.electricityMix;
+				return;
+			}
+		}
+
 		// find a matching fuel from the base data
+		FuelDao dao = new FuelDao(App.getDb());
 		for (Fuel fuel : dao.getAll()) {
 			if (fuel.group != group)
 				continue;
@@ -109,11 +120,21 @@ class Wizards {
 	 * Set the type of produced electricity for producers that are co-generation
 	 * plants.
 	 */
-	static void initElectricity(Producer p) {
+	static void initElectricity(Producer p, Project project) {
 		if (p == null || p.productGroup == null)
 			return;
 		if (p.productGroup.type != ProductType.COGENERATION_PLANT)
 			return;
+
+		// take replaced electricity mix from settings if available
+		if (project != null) {
+			CostSettings settings = project.costSettings;
+			if (settings != null && settings.replacedElectricityMix != null) {
+				p.producedElectricity = settings.replacedElectricityMix;
+				return;
+			}
+		}
+
 		p.producedElectricity = new FuelDao(App.getDb())
 				.getAll().stream()
 				.filter(e -> e.group == FuelGroup.ELECTRICITY)

@@ -81,9 +81,9 @@ public class CostSettingsPanel {
 				.sorted(Sorters.byName())
 				.collect(Collectors.toList());
 		combo.setInput(fuels);
-		combo.select(costs().usedElectricity);
+		combo.select(costs().projectElectricityMix);
 		combo.onSelect(e -> {
-			costs().usedElectricity = e;
+			costs().projectElectricityMix = e;
 			editor.setDirty();
 		});
 		UI.filler(c);

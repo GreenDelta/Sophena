@@ -73,9 +73,9 @@ public class ProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer);
-			Wizards.initFuelSpec(producer);
+			Wizards.initFuelSpec(producer, project);
 			Wizards.initCosts(producer);
-			Wizards.initElectricity(producer);
+			Wizards.initElectricity(producer, project);
 
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());

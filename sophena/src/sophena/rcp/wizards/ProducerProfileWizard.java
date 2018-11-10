@@ -92,9 +92,9 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
 				producer.productGroup = groups[groupIdx];
-				Wizards.initFuelSpec(producer);
+				Wizards.initFuelSpec(producer, project);
 				Wizards.initCosts(producer);
-				Wizards.initElectricity(producer);
+				Wizards.initElectricity(producer, project);
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
