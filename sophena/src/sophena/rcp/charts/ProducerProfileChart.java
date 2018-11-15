@@ -40,9 +40,17 @@ public class ProducerProfileChart {
 			min = new double[Stats.HOURS];
 		minData.setCurrentYDataArray(min);
 		maxData.setCurrentYDataArray(max);
-		double top = Stats.nextStep(Stats.max(max), 5);
-		Axis y = graph.getPrimaryYAxis();
-		y.setRange(0, top);
+
+		// format the y-axis range
+		double minMax = Stats.max(min);
+		double maxMax = Stats.max(max);
+		double top;
+		if (minMax > 0) {
+			top = Stats.nextStep(maxMax + minMax);
+		} else {
+			top = Stats.nextStep(Stats.max(max));
+		}
+		graph.getPrimaryYAxis().setRange(0, top);
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
@@ -81,7 +89,7 @@ public class ProducerProfileChart {
 				g.getPrimaryYAxis(), minData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.get("#feca57"));
+		t.setTraceColor(Colors.getWhite());
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}

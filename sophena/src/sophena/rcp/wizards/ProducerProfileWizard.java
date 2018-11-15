@@ -122,7 +122,6 @@ public class ProducerProfileWizard extends Wizard {
 		private ProductGroup[] productGroups;
 		private Combo groupCombo;
 		private Text fileText;
-		private Text maxPowerText;
 
 		private Page() {
 			super("ProducerProfilePage", "Erzeugerlastgang integrieren", null);
@@ -142,10 +141,6 @@ public class ProducerProfileWizard extends Wizard {
 			groupCombo = UI.formCombo(comp, "Produktgruppe");
 			updateGroupCombo();
 			fileFields(comp);
-			maxPowerText = UI.formText(comp, "Maximale thermische Leistung");
-			Texts.on(maxPowerText).required().decimal().init(0).onChanged(s -> {
-				producer.profileMaxPower = Num.read(s);
-			});
 			functionFields(root);
 		}
 
@@ -240,7 +235,6 @@ public class ProducerProfileWizard extends Wizard {
 				if (producer.profileMaxPower == 0) {
 					double max = Stats.max(producer.profile.maxPower);
 					producer.profileMaxPower = max;
-					Texts.set(maxPowerText, max);
 				}
 				setPageComplete(true);
 			} catch (Exception e) {
