@@ -17,6 +17,7 @@ import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Rcp;
 import sophena.utils.Strings;
 
@@ -35,15 +36,34 @@ public class ResultEditor extends Editor {
 			ResultEditor e = (ResultEditor) editor;
 			return Strings.nullOrEqual(d.id, e.project.id);
 		});
+		Project p = new ProjectDao(App.getDb()).get(d.id);
+		if (!valid(p))
+			return;
 		Rcp.run("Berechne...", () -> {
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(d.id);
 			ProjectResult result = ProjectResult.calculate(p);
 			Object[] data = new Object[] { p, result };
 			String key = App.stash(data);
 			KeyEditorInput input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");
 		});
+	}
+
+	private static boolean valid(Project p) {
+		if (p == null)
+			return false;
+		for (Producer producer : p.producers) {
+			if (producer.disabled)
+				continue;
+			Double ur = producer.utilisationRate;
+			if (ur != null && ur <= 0) {
+				MsgBox.error("Plausibilitätsfehler",
+						"Der Nutzungsgrad bzw. die Jahresarbeitszahl eines"
+								+ " Wärmeerzeugers (" + producer.name
+								+ ") ist \u2264 0.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

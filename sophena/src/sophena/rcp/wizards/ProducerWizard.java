@@ -76,6 +76,10 @@ public class ProducerWizard extends Wizard {
 			Wizards.initFuelSpec(producer, project);
 			Wizards.initCosts(producer);
 			Wizards.initElectricity(producer, project);
+			if (producer.productGroup != null
+					&& producer.productGroup.type == ProductType.HEAT_PUMP) {
+				producer.utilisationRate = 0.0;
+			}
 
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());

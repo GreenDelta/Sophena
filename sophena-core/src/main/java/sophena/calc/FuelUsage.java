@@ -42,7 +42,7 @@ public class FuelUsage {
 			double ur = UtilisationRate.get(r.project, producer,
 					r.energyResult);
 			r.calcLog.value("ur: Nutzungsgrad", ur, "");
-			double val = Qgen / ur;
+			double val = ur == 0 ? 0 : Qgen / ur;
 			r.calcLog.value("E: Benötigte Brennstoffenergie: E = Qgen / ur",
 					val, "kWh");
 			return val;
@@ -53,7 +53,7 @@ public class FuelUsage {
 			r.calcLog.value("er: elektrischer Wirkungsgrad", er, "");
 			r.calcLog.value("Pe: elektrische Leistung",
 					boiler.maxPowerElectric, "kW");
-			double Pf = boiler.maxPowerElectric / er;
+			double Pf = er == 0 ? 0 : boiler.maxPowerElectric / er;
 			r.calcLog.value("Pf: Feuerungswärmeleistung: Pf = Pe / er",
 					Pf, "kW");
 			double val = Pf * tf;
