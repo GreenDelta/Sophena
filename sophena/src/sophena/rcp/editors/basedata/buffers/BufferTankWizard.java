@@ -44,15 +44,15 @@ class BufferTankWizard implements IContent {
 		UI.formLabel(c, "L");
 
 		diameterText = UI.formText(c, "Durchmesser");
-		Texts.on(diameterText).decimal();
+		Texts.on(diameterText).decimal().required();
 		UI.formLabel(c, "mm");
 
 		heightText = UI.formText(c, "Höhe");
-		Texts.on(diameterText).decimal();
+		Texts.on(heightText).decimal().required();
 		UI.formLabel(c, "mm");
 
 		insulationText = UI.formText(c, "Isolierung");
-		Texts.on(insulationText).decimal();
+		Texts.on(insulationText).decimal().required();
 		UI.formLabel(c, "mm");
 	}
 

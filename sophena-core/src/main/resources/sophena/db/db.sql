@@ -204,7 +204,6 @@ CREATE TABLE tbl_heat_nets (
     power_loss DOUBLE,
     f_interruption CHAR(36),
 
-    buffer_tank_volume DOUBLE,
     max_buffer_load_temperature DOUBLE,
     lower_buffer_load_temperature DOUBLE,
     buffer_lambda DOUBLE,

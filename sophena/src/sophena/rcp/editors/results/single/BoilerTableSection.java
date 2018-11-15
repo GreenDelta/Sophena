@@ -108,8 +108,8 @@ class BoilerTableSection {
 		double heat = result.totalBufferedHeat;
 		item.producedHeat = Num.intStr(heat) + " kWh";
 		item.share = GeneratedHeat.share(heat, result) + " %";
-		if (project.heatNet != null) {
-			double volume = project.heatNet.bufferTankVolume;
+		if (project.heatNet != null && project.heatNet.bufferTank != null) {
+			double volume = project.heatNet.bufferTank.volume;
 			item.powerOrVolume = Num.intStr(volume) + " L";
 		}
 	}

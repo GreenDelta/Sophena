@@ -13,9 +13,9 @@ public class Buffers {
 	 * specification, in kWh.
 	 */
 	public static double maxCapacity(HeatNet net) {
-		if (net == null)
+		if (net == null || net.bufferTank == null)
 			return 0;
-		double volume = net.bufferTankVolume; // liters
+		double volume = net.bufferTank.volume; // liters
 		double maxTemp = net.maxBufferLoadTemperature;
 		double minTemp = net.lowerBufferLoadTemperature != null
 				? net.lowerBufferLoadTemperature

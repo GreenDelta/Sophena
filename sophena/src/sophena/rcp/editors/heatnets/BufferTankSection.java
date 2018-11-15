@@ -18,6 +18,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.DeleteLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class BufferTankSection {
 
@@ -51,11 +52,12 @@ class BufferTankSection {
 
 	private void createVolText(Composite comp, FormToolkit tk) {
 		volText = UI.formText(comp, tk, "Volumen");
-		Texts.on(volText).init(net().bufferTankVolume)
-				.decimal().required().onChanged((s) -> {
-					net().bufferTankVolume = Texts.getDouble(volText);
-					editor.setDirty();
-				});
+		double initial = 0;
+		if (net().bufferTank != null) {
+			initial = net().bufferTank.volume;
+		}
+		Texts.on(volText).init(Num.intStr(initial))
+				.decimal().calculated();
 		UI.formLabel(comp, tk, "L");
 	}
 
@@ -122,8 +124,7 @@ class BufferTankSection {
 			net().bufferTank = null;
 			link.setText("(kein Pufferspeicher ausgewählt)");
 			link.getParent().pack();
-			net().bufferTankVolume = 0;
-			Texts.set(volText, 0.0);
+			Texts.set(volText, "0");
 			ProductCosts.clear(net().bufferTankCosts);
 			costSection.refresh();
 			editor.setDirty();
@@ -135,9 +136,8 @@ class BufferTankSection {
 				BufferTank.class, SearchLabel::forBufferTank);
 		if (b == null)
 			return;
-		net().bufferTankVolume = b.volume;
 		net().bufferTank = b;
-		Texts.set(volText, b.volume);
+		Texts.set(volText, Num.intStr(b.volume));
 		link.setText(b.name);
 		link.getParent().pack();
 		ProductCosts costs = net().bufferTankCosts;
