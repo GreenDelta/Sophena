@@ -31,7 +31,7 @@ using DelimitedFiles
 open("example_consumer_profile.csv", "w") do stream
   writedlm(stream, [["hour", "dynamic", "static"]], ";")
   for i = 1:8760
-    writedlm(stream, [[i, 15000, 15000]], ";")
+    writedlm(stream, [(i, rand()*15000, rand()*15000)], ";")
   end
 end
 ```

@@ -74,13 +74,18 @@ class HeatDemandSection {
 			return;
 		}
 		Texts.on(t).calculated();
-		if (consumer().hasProfile())
-			return;
-		editor.onCalculated((profile, totals, total) -> {
-			double heatingLoad = total / consumer().loadHours;
-			consumer().heatingLoad = heatingLoad;
-			Texts.set(t, Num.intStr(heatingLoad));
-		});
+		if (consumer().hasProfile()) {
+			// when a new profile was loaded we just need to update the text
+			editor.onCalculated((profile, totals, total) -> {
+				Texts.set(t, Num.intStr(consumer().heatingLoad));
+			});
+		} else {
+			editor.onCalculated((profile, totals, total) -> {
+				double heatingLoad = total / consumer().loadHours;
+				consumer().heatingLoad = heatingLoad;
+				Texts.set(t, Num.intStr(heatingLoad));
+			});
+		}
 	}
 
 	private void createWaterText(Composite composite, FormToolkit tk) {
