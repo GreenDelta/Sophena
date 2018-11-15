@@ -85,11 +85,12 @@ class EnergyCalculator {
 
 			// buffer capacity with buffer loss
 			bufferPotential = maxBufferCapacity - bufferCapacity;
-			if (bufferPotential > 0) {
-				double bufferLoss = Buffers.loss(project.heatNet,
-						bufferLossFactor, bufferPotential / maxBufferCapacity);
-				r.bufferLoss[hour] = bufferLoss;
-				bufferCapacity = bufferCapacity + bufferLoss;
+			double bufferLoss = Buffers.loss(project.heatNet,
+					bufferLossFactor, bufferPotential / maxBufferCapacity);
+			r.bufferLoss[hour] = bufferLoss;
+			bufferCapacity = bufferCapacity + bufferLoss;
+			if (bufferCapacity > maxBufferCapacity) {
+				bufferCapacity = maxBufferCapacity;
 			}
 			if ((hour + 1) < Stats.HOURS) {
 				r.bufferCapacity[hour + 1] = bufferCapacity;
