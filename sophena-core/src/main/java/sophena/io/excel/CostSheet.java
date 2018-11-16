@@ -16,7 +16,7 @@ import sophena.utils.Strings;
 
 class CostSheet {
 
-	private ProjectResult result;
+	private final ProjectResult result;
 	private final SheetWriter w;
 
 	CostSheet(Workbook wb, ProjectResult result) {
