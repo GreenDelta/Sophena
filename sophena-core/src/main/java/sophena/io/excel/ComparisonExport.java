@@ -10,10 +10,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
+import sophena.calc.CO2Result;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.CostResult.FieldSet;
+import sophena.calc.ProductAreaResult;
 import sophena.calc.ProjectResult;
+import sophena.math.energetic.EfficiencyResult;
+import sophena.math.energetic.PrimaryEnergyFactor;
+import sophena.math.energetic.Producers;
+import sophena.math.energetic.UsedHeat;
+import sophena.model.Producer;
+import sophena.model.ProductArea;
 
 public class ComparisonExport implements Runnable {
 
@@ -36,6 +45,11 @@ public class ComparisonExport implements Runnable {
 			w = new SheetWriter(wb, "Ergebnisvergleich");
 			overview();
 			w.nextRow().nextRow();
+			investments();
+			w.nextRow().nextRow();
+			keyFigures();
+			Excel.autoSize(w.sheet, 0, comp.projects.length);
+
 			try (FileOutputStream fos = new FileOutputStream(file);
 					BufferedOutputStream buffer = new BufferedOutputStream(
 							fos)) {
@@ -118,6 +132,95 @@ public class ComparisonExport implements Runnable {
 		w.nextRow();
 	}
 
+	private void investments() {
+		ProductAreaResult[] pars = new ProductAreaResult[comp.results.length];
+		for (int i = 0; i < comp.results.length; i++) {
+			pars[i] = ProductAreaResult.calculate(
+					comp.results[i].costResultFunding);
+		}
+
+		w.boldStr("Investitionskosten");
+		w.nextRow().nextCol();
+		each(r -> w.boldStr(r.project.name));
+		w.nextRow();
+
+		for (ProductArea area : ProductArea.values()) {
+			if (allZero(pars, area))
+				continue;
+			w.str(Labels.get(area) + " [EUR]");
+			for (ProductAreaResult par : pars) {
+				w.rint(par.investmentCosts(area));
+			}
+			w.nextRow();
+		}
+
+		w.boldStr("Investitionssumme [EUR]");
+		for (ProductAreaResult par : pars) {
+			w.rint(par.totalInvestmentCosts);
+		}
+		w.nextRow();
+	}
+
+	private void keyFigures() {
+
+		w.boldStr("Energetische Kennzahlen");
+		w.nextRow().nextCol();
+		each(r -> w.boldStr(r.project.name));
+		w.nextRow();
+
+		w.str("Erzeugte Wärmemenge [kWh]");
+		each(r -> w.rint(r.energyResult.totalProducedHeat));
+		w.nextRow();
+
+		w.str("Installierte Leistung [kW]");
+		each(r -> {
+			double power = 0.0;
+			for (Producer p : r.project.producers) {
+				if (p.disabled)
+					continue;
+				power += Producers.maxPower(p);
+			}
+			w.rint(power);
+		});
+		w.nextRow();
+
+		w.str("Trassenlänge [m]");
+		each(r -> w.rint(r.project.heatNet.length));
+		w.nextRow();
+
+		w.str("Wärmebelegungsdichte [MWh/(m*a)]");
+		each(r -> {
+			double length = r.project.heatNet.length;
+			double hl = length == 0
+					? 0
+					: UsedHeat.get(r) / (1000 * length);
+			w.num(hl);
+		});
+		w.nextRow();
+
+		w.str("Netzverluste [%]");
+		each(r -> {
+			EfficiencyResult er = EfficiencyResult.calculate(r);
+			double loss = 0;
+			if (er.fuelEnergy > 0) {
+				loss = 100 * er.distributionLoss / er.fuelEnergy;
+			}
+			w.rint(loss);
+		});
+		w.nextRow();
+
+		w.str("CO2-Einsparung (gegen Erdgas dezentral) [kg CO2 eq./a]");
+		each(r -> {
+			CO2Result co2 = r.co2Result;
+			w.rint(co2.variantNaturalGas - co2.total);
+		});
+		w.nextRow();
+
+		w.str("Primärenergiefaktor");
+		each(r -> w.num(PrimaryEnergyFactor.get(r)));
+		w.nextRow();
+	}
+
 	private void each(Consumer<ProjectResult> fn) {
 		for (ProjectResult r : comp.results) {
 			fn.accept(r);
@@ -126,5 +229,13 @@ public class ComparisonExport implements Runnable {
 
 	private CostResult.FieldSet costs(ProjectResult r) {
 		return r.costResultFunding.dynamicTotal;
+	}
+
+	private boolean allZero(ProductAreaResult[] r, ProductArea area) {
+		for (ProductAreaResult par : r) {
+			if (par.investmentCosts(area) != 0)
+				return false;
+		}
+		return true;
 	}
 }
