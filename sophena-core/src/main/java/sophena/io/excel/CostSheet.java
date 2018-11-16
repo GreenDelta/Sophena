@@ -3,14 +3,15 @@ package sophena.io.excel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
+import sophena.calc.ProductAreaResult;
 import sophena.calc.ProjectResult;
+import sophena.model.ProductArea;
+import sophena.utils.Enums;
 import sophena.utils.Strings;
 
 class CostSheet {
@@ -24,20 +25,22 @@ class CostSheet {
 	}
 
 	void write() {
-
-		resultFunding(sheet, style, row);
-		costResultFunding(sheet, style, row);
-		result(sheet, style, row);
-		costResult(sheet, style, row);
-
-		Excel.autoSize(sheet, 0, 1);
+		overview(result.costResultFunding, true);
+		w.nextRow().nextRow();
+		productAreas(result.costResultFunding);
+		w.nextRow().nextRow();
+		details(result.costResultFunding);
+		w.nextRow().nextRow();
+		overview(result.costResult, false);
+		Excel.autoSize(w.sheet, 0, 5);
 	}
 
 	private void overview(CostResult r, boolean withFunding) {
 		CostResult.FieldSet dyn = r.dynamicTotal;
 		CostResult.FieldSet stat = r.staticTotal;
 
-		w.boldStr("Wirtschaftlichkeit")
+		String suffix = withFunding ? "" : " - ohne Förderung";
+		w.boldStr("Wirtschaftlichkeit" + suffix)
 				.nextRow()
 				.nextCol()
 				.boldStr("Dynamisch")
@@ -68,155 +71,131 @@ class CostSheet {
 				.nextRow()
 				.nextRow();
 
-		w.str("Kapitalgebundene Kosten [EUR]")
+		w.str("Kapitalgebundene Kosten [EUR/a]")
 				.rint(dyn.capitalCosts)
 				.rint(stat.capitalCosts)
 				.nextRow();
 
+		w.str("Bedarfsgebundene Kosten [EUR/a]")
+				.rint(dyn.consumptionCosts)
+				.rint(stat.consumptionCosts)
+				.nextRow();
+
+		w.str("Betriebsgebundene Kosten [EUR/a]")
+				.rint(dyn.operationCosts)
+				.rint(stat.operationCosts)
+				.nextRow();
+
+		w.str("Sonstige Kosten [EUR/a]")
+				.rint(dyn.otherAnnualCosts)
+				.rint(stat.otherAnnualCosts)
+				.nextRow();
+
+		w.boldStr("Gesamtkosten [EUR/a]")
+				.boldRint(dyn.totalAnnualCosts)
+				.boldRint(stat.totalAnnualCosts)
+				.nextRow()
+				.nextRow();
+
+		w.str("Wärmeerlöse [EUR/a]")
+				.rint(dyn.revenuesHeat)
+				.rint(stat.revenuesHeat)
+				.nextRow();
+
+		w.str("Stromerlöse [EUR/a]")
+				.rint(dyn.revenuesElectricity)
+				.rint(stat.revenuesElectricity)
+				.nextRow();
+
+		w.boldStr("Gesamterlöse [EUR/a]")
+				.boldRint(dyn.revenuesHeat + dyn.revenuesElectricity)
+				.boldRint(stat.revenuesHeat + stat.revenuesElectricity)
+				.nextRow()
+				.nextRow();
+
+		w.boldStr("Jahresüberschuss [EUR/a]")
+				.boldRint(dyn.annualSurplus)
+				.boldRint(stat.annualSurplus)
+				.nextRow();
+		w.boldStr("Wärmegestehungskosten [EUR/MWh]")
+				.boldRint(dyn.heatGenerationCosts)
+				.boldRint(stat.heatGenerationCosts)
+				.nextRow();
 	}
 
-	private void resultFunding(Sheet sheet, CellStyle style, int row) {
-		Excel.cell(sheet, row + 0, 0,
-				"Wirtschaftlichkeit - mit Förderung").setCellStyle(style);
-		resultHead(sheet, style, row);
-		resultItems(sheet, row, result.costResultFunding);
-		this.row = 11;
-	}
+	private void productAreas(CostResult r) {
+		ProductAreaResult par = ProductAreaResult.calculate(r);
 
-	private void costResultFunding(Sheet sheet, CellStyle style, int row) {
-
-		Excel.cell(sheet, row, 0, "Kosten - mit Förderung").setCellStyle(style);
-		row++;
-		costResultHead(sheet, style, row);
-		row++;
-		createItems(sheet, style, row, true);
-	}
-
-	private void result(Sheet sheet, CellStyle style, int row) {
-
-		Excel.cell(sheet, row, 0,
-				"Wirtschaftlichkeit - ohne Förderung").setCellStyle(style);
-		resultHead(sheet, style, row);
-		resultItems(sheet, row, result.costResult);
-		this.row = row + 11;
-	}
-
-	private void costResult(Sheet sheet, CellStyle style, int row) {
-
-		Excel.cell(sheet, row, 0,
-				"Kosten - ohne Förderung").setCellStyle(style);
-		row++;
-		costResultHead(sheet, style, row);
-		row++;
-		createItems(sheet, style, row, false);
-	}
-
-	private void resultHead(Sheet sheet, CellStyle style, int row) {
-		// TODO: fundings; revenues from heat ...
-		Excel.cell(sheet, row + 1, 1, "Dynamisch").setCellStyle(style);
-		Excel.cell(sheet, row + 1, 2, "Statisch").setCellStyle(style);
-		Excel.cell(sheet, row + 2, 0, "Investitionskosten in EUR");
-		Excel.cell(sheet, row + 3, 0, "Kapitalgebundene Kosten in EUR/a");
-		Excel.cell(sheet, row + 4, 0, "Bedarfsgebundene Kosten in EUR/a");
-		Excel.cell(sheet, row + 5, 0, "Betriebsgebundene Kosten in EUR/a");
-		Excel.cell(sheet, row + 6, 0, "Sonstige Kosten in EUR/a");
-		Excel.cell(sheet, row + 7, 0, "Stromerlöse in EUR/a");
-		Excel.cell(sheet, row + 8, 0, "Jahresüberschuss in EUR/a");
-		Excel.cell(sheet, row + 9, 0, "Wärmegestehungskosten in EUR/MWh");
-	}
-
-	private void costResultHead(Sheet sheet, CellStyle style, int row) {
-
-		Excel.cell(sheet, row, 0, "Produktbereich");
-		Excel.cell(sheet, row, 1, "Produkt");
-		Excel.cell(sheet, row, 2, "Investitionskosten in EUR");
-		Excel.cell(sheet, row, 3, "Kapitalgebundene Kosten in EUR/a");
-		Excel.cell(sheet, row, 4, "Bedarfsgebundene Kosten in EUR/a");
-		Excel.cell(sheet, row, 5, "Betriebsgebundene Kosten in EUR/a");
-	}
-
-	private void resultItems(Sheet sheet, int row, CostResult cr) {
-
-		Excel.cell(sheet, row + 2, 1, Math.round(cr.dynamicTotal.investments));
-		Excel.cell(sheet, row + 2, 2, Math.round(cr.staticTotal.investments));
-		Excel.cell(sheet, row + 3, 1, Math.round(cr.dynamicTotal.capitalCosts));
-		Excel.cell(sheet, row + 3, 2, Math.round(cr.staticTotal.capitalCosts));
-		Excel.cell(sheet, row + 4, 1,
-				Math.round(cr.dynamicTotal.consumptionCosts));
-		Excel.cell(sheet, row + 4, 2,
-				Math.round(cr.staticTotal.consumptionCosts));
-		Excel.cell(sheet, row + 5, 1,
-				Math.round(cr.dynamicTotal.operationCosts));
-		Excel.cell(sheet, row + 5, 2,
-				Math.round(cr.staticTotal.operationCosts));
-		Excel.cell(sheet, row + 6, 1,
-				Math.round(cr.dynamicTotal.otherAnnualCosts));
-		Excel.cell(sheet, row + 6, 2,
-				Math.round(cr.staticTotal.otherAnnualCosts));
-		Excel.cell(sheet, row + 7, 1,
-				Math.round(cr.dynamicTotal.revenuesElectricity));
-		Excel.cell(sheet, row + 7, 2,
-				Math.round(cr.staticTotal.revenuesElectricity));
-		Excel.cell(sheet, row + 8, 1,
-				Math.round(cr.dynamicTotal.annualSurplus));
-		Excel.cell(sheet, row + 8, 2, Math.round(cr.staticTotal.annualSurplus));
-		Excel.cell(sheet, row + 9, 1,
-				Math.round((cr.dynamicTotal.heatGenerationCosts)));
-		Excel.cell(sheet, row + 9, 2,
-				Math.round((cr.staticTotal.heatGenerationCosts)));
-	}
-
-	private class Item {
-		String category;
-		String product;
-		double investment;
-		double capitalCosts;
-		double consumptionCosts;
-		double operationCosts;
-	}
-
-	private void createItems(Sheet sheet, CellStyle style, int row,
-			boolean isFunded) {
-		List<Item> items = new ArrayList<>();
-		List<CostResultItem> cri;
-		if (isFunded) {
-			cri = result.costResultFunding.items;
-		} else {
-			cri = result.costResult.items;
+		// select only the product areas that have a result
+		List<ProductArea> selected = new ArrayList<>();
+		for (ProductArea area : ProductArea.values()) {
+			if (par.investmentCosts(area) == 0.0
+					&& par.capitalCosts(area) == 0.0
+					&& par.demandRelatedCosts(area) == 0.0
+					&& par.operationRelatedCosts(area) == 0.0)
+				continue;
+			selected.add(area);
 		}
-		for (CostResultItem r : cri) {
-			Item item = new Item();
-			item.category = Labels.get(r.productType);
-			item.product = r.label;
-			item.investment = r.costs.investment;
-			item.capitalCosts = r.capitalCosts;
-			item.consumptionCosts = r.demandRelatedCosts;
-			item.operationCosts = r.operationRelatedCosts;
-			items.add(item);
-		}
-		sortAndRefine(items);
 
-		for (int i = 0; i < items.size(); i++) {
-			Excel.cell(sheet, row, 0, items.get(i).category);
-			Excel.cell(sheet, row, 1, items.get(i).product);
-			Excel.cell(sheet, row, 2, Math.round(items.get(i).investment));
-			Excel.cell(sheet, row, 3, Math.round(items.get(i).capitalCosts));
-			Excel.cell(sheet, row, 4,
-					Math.round(items.get(i).consumptionCosts));
-			Excel.cell(sheet, row, 5, Math.round(items.get(i).operationCosts));
-			row++;
+		w.boldStr("Kostenübersicht")
+				.nextRow()
+				.boldStr("Produktgebiet")
+				.boldStr("Investitionskosten [EUR]")
+				.boldStr("Kapitalgebundene Kosten [EUR/a]")
+				.boldStr("Bedarfsgebundene Kosten [EUR/a]")
+				.boldStr("Betriebsgebundene Kosten [EUR/a]")
+				.nextRow();
+
+		for (ProductArea a : selected) {
+			w.str(Labels.get(a))
+					.rint(par.investmentCosts(a))
+					.rint(par.capitalCosts(a))
+					.rint(par.demandRelatedCosts(a))
+					.rint(par.operationRelatedCosts(a))
+					.nextRow();
 		}
-		row++;
-		this.row = row;
 	}
 
-	private void sortAndRefine(List<Item> items) {
-		items.sort((a, b) -> {
-			int c = Strings.compare(a.category, b.category);
+	private void details(CostResult r) {
+		w.boldStr("Kostendetails")
+				.nextRow()
+				.boldStr("Produktbereich")
+				.boldStr("Produkt")
+				.boldStr("Investitionskosten [EUR]")
+				.boldStr("Kapitalgebundene Kosten [EUR/a]")
+				.boldStr("Bedarfsgebundene Kosten [EUR/a]")
+				.boldStr("Betriebsgebundene Kosten [EUR/a]")
+				.nextRow();
+
+		// sort the result items first by product type
+		// then by product name
+		r.items.sort((i1, i2) -> {
+			int c = Enums.compare(i1.productType, i2.productType);
 			if (c != 0)
 				return c;
-			return Strings.compare(a.product, b.product);
+			return Strings.compare(i1.label, i2.label);
 		});
+
+		String category = "";
+		for (CostResultItem i : r.items) {
+
+			// write the product type only if when
+			// previous was different
+			String c = Labels.getPlural(i.productType);
+			if (Strings.nullOrEqual(c, category)) {
+				w.nextCol();
+			} else {
+				category = c;
+				w.boldStr(category);
+			}
+
+			w.str(i.label)
+					.rint(i.costs.investment)
+					.rint(i.capitalCosts)
+					.rint(i.demandRelatedCosts)
+					.rint(i.operationRelatedCosts)
+					.nextRow();
+		}
 	}
 
 }
