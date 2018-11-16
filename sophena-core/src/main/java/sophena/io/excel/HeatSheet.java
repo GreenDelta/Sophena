@@ -2,7 +2,6 @@ package sophena.io.excel;
 
 import java.util.Arrays;
 
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
@@ -11,19 +10,19 @@ import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
+import sophena.model.BufferTank;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.utils.Num;
 
 class HeatSheet {
 
-	private final Workbook wb;
 	private final ProjectResult result;
 	private final SheetWriter w;
 
 	HeatSheet(Workbook wb, ProjectResult result) {
-		this.wb = wb;
 		this.result = result;
 		w = new SheetWriter(wb, "Wärme");
 	}
@@ -49,7 +48,7 @@ class HeatSheet {
 			w.num(result.energyResult.numberOfStarts(p));
 			row++;
 		}
-		powerDiffRow(row, result.energyResult.producers);
+		diffAndBuffer(row, result.energyResult.producers);
 		Excel.autoSize(w.sheet, 0, 7);
 	}
 
@@ -71,7 +70,7 @@ class HeatSheet {
 				+ " " + Labels.getFuelUnit(pr);
 	}
 
-	private void powerDiffRow(int row, Producer[] producers) {
+	private void diffAndBuffer(int row, Producer[] producers) {
 		double diff = calculateDiff(producers);
 		double powerDiff = calculatePowerDiff(producers, result.project);
 		if (diff != 0 || powerDiff < 0) {
@@ -81,8 +80,15 @@ class HeatSheet {
 			w.rint(5, GeneratedHeat.share(diff, result.energyResult));
 			row++;
 		}
+
+		if (result.project.heatNet == null)
+			return;
+		BufferTank buffer = result.project.heatNet.bufferTank;
+		if (buffer == null)
+			return;
 		row++;
 		w.str(row, 0, "Pufferspeicher");
+		w.str(2, Num.intStr(buffer.volume) + " L");
 		w.rint(4, result.energyResult.totalBufferedHeat);
 		w.rint(5, GeneratedHeat.share(
 				result.energyResult.totalBufferedHeat, result.energyResult));

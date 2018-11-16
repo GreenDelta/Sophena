@@ -49,7 +49,7 @@ class ElectricitySheet {
 					Math.round(p.boiler.efficiencyRateElectric * 100d));
 			row++;
 		}
-		Excel.autoSize(sheet, 0, 1);
+		Excel.autoSize(sheet, 0, 6);
 	}
 
 	private double calculateTotal(Producer[] producers) {

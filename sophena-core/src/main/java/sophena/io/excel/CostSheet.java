@@ -15,18 +15,15 @@ import sophena.utils.Strings;
 
 class CostSheet {
 
-	private Workbook wb;
 	private ProjectResult result;
-	public int row = 0;
+	private final SheetWriter w;
 
 	CostSheet(Workbook wb, ProjectResult result) {
-		this.wb = wb;
 		this.result = result;
+		w = new SheetWriter(wb, "Wirtschaftlichkeit");
 	}
 
 	void write() {
-		Sheet sheet = wb.createSheet("Wirtschaftlichkeit");
-		CellStyle style = Excel.headerStyle(wb);
 
 		resultFunding(sheet, style, row);
 		costResultFunding(sheet, style, row);
@@ -34,6 +31,48 @@ class CostSheet {
 		costResult(sheet, style, row);
 
 		Excel.autoSize(sheet, 0, 1);
+	}
+
+	private void overview(CostResult r, boolean withFunding) {
+		CostResult.FieldSet dyn = r.dynamicTotal;
+		CostResult.FieldSet stat = r.staticTotal;
+
+		w.boldStr("Wirtschaftlichkeit")
+				.nextRow()
+				.nextCol()
+				.boldStr("Dynamisch")
+				.boldStr("Statisch")
+				.nextRow();
+
+		w.str("Investitionskosten [EUR]")
+				.rint(dyn.investments)
+				.rint(stat.investments)
+				.nextRow();
+
+		if (withFunding) {
+			w.str("Investitionsförderung [EUR]")
+					.rint(dyn.funding)
+					.rint(stat.funding)
+					.nextRow();
+		}
+
+		double conFees = result.project.costSettings.connectionFees;
+		w.str("Anschlusskostenbeiträge [EUR]")
+				.rint(conFees)
+				.rint(conFees)
+				.nextRow();
+
+		w.boldStr("Finanzierungsbedarf [EUR]")
+				.boldRint(dyn.investments - dyn.funding - conFees)
+				.boldRint(stat.investments - stat.funding - conFees)
+				.nextRow()
+				.nextRow();
+
+		w.str("Kapitalgebundene Kosten [EUR]")
+				.rint(dyn.capitalCosts)
+				.rint(stat.capitalCosts)
+				.nextRow();
+
 	}
 
 	private void resultFunding(Sheet sheet, CellStyle style, int row) {
