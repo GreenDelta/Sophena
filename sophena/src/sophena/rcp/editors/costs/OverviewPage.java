@@ -50,27 +50,34 @@ class OverviewPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, "Investitionen");
 		FormToolkit tk = mform.getToolkit();
 		Composite body = UI.formBody(form, tk);
-		boilers(ProductType.BIOMASS_BOILER, body, tk);
-		boilers(ProductType.FOSSIL_FUEL_BOILER, body, tk);
-		boilers(ProductType.HEAT_PUMP, body, tk);
-		boilers(ProductType.COGENERATION_PLANT, body, tk);
-		entries(ProductType.BOILER_ACCESSORIES, body, tk);
-		heatRecoveries(body, tk);
-		flueGasCleanings(body, tk);
-		buffers(body, tk);
-		entries(ProductType.BOILER_HOUSE_TECHNOLOGY, body, tk);
-		entries(ProductType.BUILDING, body, tk);
-		pipes(body, tk);
-		entries(ProductType.HEATING_NET_TECHNOLOGY, body, tk);
-		entries(ProductType.HEATING_NET_CONSTRUCTION, body, tk);
-		transferStations(body, tk);
-		entries(ProductType.PLANNING, body, tk);
+		for (ProductType type : ProductType.values()) {
+			switch (type) {
+			case BIOMASS_BOILER:
+			case FOSSIL_FUEL_BOILER:
+			case HEAT_PUMP:
+			case COGENERATION_PLANT:
+				boilers(type, body, tk);
+				break;
+			case HEAT_RECOVERY:
+				heatRecoveries(body, tk);
+				break;
+			case FLUE_GAS_CLEANING:
+				flueGasCleanings(body, tk);
+				break;
+			case BUFFER_TANK:
+				buffers(body, tk);
+				break;
+			case PIPE:
+				pipes(body, tk);
+				break;
+			case TRANSFER_STATION:
+				transferStations(body, tk);
+				break;
+			default:
+				new EntrySection(editor, type).create(body, tk);
+			}
+		}
 		form.reflow(true);
-	}
-
-	private void entries(ProductType t, Composite body, FormToolkit tk) {
-		EntrySection s = new EntrySection(editor, t);
-		s.create(body, tk);
 	}
 
 	private void buffers(Composite body, FormToolkit tk) {
