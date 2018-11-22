@@ -14,7 +14,7 @@ open("example_producer_profile.csv", "w") do stream
   for i = 1:8760
 		day = round(Int, i / 24) % 7 + 1
 		val = 15000 * day / 10 + 10000
-    writedlm(stream, [[i, val, 0.1 * val]], ";")
+    writedlm(stream, [(i, val, 0.1 * val)], ";")
   end
 end
 ```

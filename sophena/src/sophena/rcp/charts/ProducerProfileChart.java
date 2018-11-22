@@ -58,8 +58,9 @@ public class ProducerProfileChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
-		addMaxTrace(g);
-		addMinTrace(g);
+		addMaxArea(g);
+		addMinArea(g);
+		addMaxLine(g);
 		Axis x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setTitle("");
@@ -74,7 +75,7 @@ public class ProducerProfileChart {
 		return g;
 	}
 
-	private void addMaxTrace(XYGraph g) {
+	private void addMaxArea(XYGraph g) {
 		Trace t = new Trace("Max", g.getPrimaryXAxis(),
 				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
@@ -84,7 +85,7 @@ public class ProducerProfileChart {
 		g.addTrace(t);
 	}
 
-	private void addMinTrace(XYGraph g) {
+	private void addMinArea(XYGraph g) {
 		Trace t = new Trace("Min", g.getPrimaryXAxis(),
 				g.getPrimaryYAxis(), minData);
 		t.setPointStyle(Trace.PointStyle.NONE);
@@ -93,4 +94,15 @@ public class ProducerProfileChart {
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}
+
+	private void addMaxLine(XYGraph g) {
+		Trace t = new Trace("MaxLine", g.getPrimaryXAxis(),
+				g.getPrimaryYAxis(), maxData);
+		t.setPointStyle(Trace.PointStyle.NONE);
+		t.setTraceType(Trace.TraceType.SOLID_LINE);
+		t.setTraceColor(Colors.get("#ff6b6b"));
+		t.setAreaAlpha(255);
+		g.addTrace(t);
+	}
+
 }
