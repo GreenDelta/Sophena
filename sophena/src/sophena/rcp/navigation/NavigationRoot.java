@@ -5,9 +5,8 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 
-import sophena.db.daos.ProjectDao;
+import sophena.db.daos.ProjectFolderDao;
 import sophena.model.ModelType;
-import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 
 public class NavigationRoot implements NavigationElement {
@@ -27,9 +26,10 @@ public class NavigationRoot implements NavigationElement {
 	public void update() {
 		if (childs == null)
 			return;
-		ProjectDao dao = new ProjectDao(App.getDb());
-		List<ProjectDescriptor> dbContent = dao.getDescriptors();
-		ChildSync.sync(childs, dbContent, ModelType.PROJECT,
+		ProjectFolderDao dao = new ProjectFolderDao(App.getDb());
+		ChildSync.sync(childs, dao.getAll(), ModelType.PROJECT_FOLDER,
+				d -> new FolderElement(this, d));
+		ChildSync.sync(childs, dao.rootProjects(), ModelType.PROJECT,
 				d -> new ProjectElement(this, d));
 	}
 

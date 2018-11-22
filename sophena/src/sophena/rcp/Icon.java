@@ -73,6 +73,8 @@ public enum Icon {
 
 	MANUFACTURER_16("manufacturer_16.png"),
 
+	NAVIGATION_16("navigation_16.png"),
+
 	NEW_16("new_16.png"),
 
 	NEW_PROJECT_16("new_project_16.png"),
