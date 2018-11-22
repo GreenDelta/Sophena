@@ -38,7 +38,8 @@ public class FuelUsage {
 		double Qgen = r.energyResult.totalHeat(producer);
 		r.calcLog.value("Qgen: erzeugte Wärme", Qgen, "KWh");
 		Boiler boiler = producer.boiler;
-		if (boiler == null || !boiler.isCoGenPlant) {
+		double electricalEfficiency = Producers.electricalEfficiency(producer);
+		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer,
 					r.energyResult);
 			r.calcLog.value("ur: Nutzungsgrad", ur, "");
@@ -49,11 +50,11 @@ public class FuelUsage {
 		} else {
 			double tf = Producers.fullLoadHours(producer, Qgen);
 			r.calcLog.value("tf: Volllaststunden", tf, "h");
-			double er = boiler.efficiencyRateElectric;
-			r.calcLog.value("er: elektrischer Wirkungsgrad", er, "");
-			r.calcLog.value("Pe: elektrische Leistung",
-					boiler.maxPowerElectric, "kW");
-			double Pf = er == 0 ? 0 : boiler.maxPowerElectric / er;
+			r.calcLog.value("er: elektrischer Wirkungsgrad",
+					electricalEfficiency, "");
+			double powerEl = Producers.electricPower(producer);
+			r.calcLog.value("Pe: elektrische Leistung", powerEl, "kW");
+			double Pf = powerEl / electricalEfficiency;
 			r.calcLog.value("Pf: Feuerungswärmeleistung: Pf = Pe / er",
 					Pf, "kW");
 			double val = Pf * tf;

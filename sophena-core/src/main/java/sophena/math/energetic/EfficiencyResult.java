@@ -38,12 +38,17 @@ public class EfficiencyResult {
 			for (Producer p : pr.energyResult.producers) {
 				double fuelDemand = pr.fuelUsage.getInKWh(p);
 				res.fuelEnergy += fuelDemand;
-				double ur;
-				if (p.boiler == null || !p.boiler.isCoGenPlant)
+				double ur = 0;
+				double er = Producers.electricalEfficiency(p);
+				if (er <= 0) {
 					ur = UtilisationRate.get(pr.project, p, pr.energyResult);
-				else
-					ur = (p.boiler.efficiencyRate
-							+ p.boiler.efficiencyRateElectric);
+				} else if (p.boiler != null) {
+					ur = (p.boiler.efficiencyRate + er);
+				} else if (p.hasProfile()) {
+					// TODO need feedback to issue #19
+					// how to get the thermal efficiency for producer profiles
+					ur = UtilisationRate.get(pr.project, p, pr.energyResult);
+				}
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
 				res.producedElectrictiy += GeneratedElectricity.get(p, pr);

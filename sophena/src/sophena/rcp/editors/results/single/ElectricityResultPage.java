@@ -76,9 +76,7 @@ class ElectricityResultPage extends FormPage {
 				item.rank = p.rank + " - Spitzenlast";
 			}
 			item.maxPower = elPower;
-			if (p.boiler != null) {
-				item.efficiencyRate = p.boiler.efficiencyRateElectric;
-			}
+			item.efficiencyRate = Producers.electricalEfficiency(p);
 			double heat = r.totalHeat(p);
 			item.fullLoadHours = Producers.fullLoadHours(p, heat);
 			item.value = GeneratedElectricity.get(p, result);

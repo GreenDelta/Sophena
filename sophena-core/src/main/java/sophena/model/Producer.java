@@ -56,6 +56,15 @@ public class Producer extends RootEntity {
 	@Column(name = "profile_max_power_electric")
 	public double profileMaxPowerElectric;
 
+	/**
+	 * For producer profiles of co-generation plants, this field contains the
+	 * electrical efficiency of the producer. In all other cases this field has
+	 * no meaning. While this field may be displayed as percentage value it
+	 * should be stored as plain number, e.g. 0.35.
+	 */
+	@Column(name = "profile_electrical_efficiency")
+	public double profileElectricalEfficiency;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	public ProducerFunction function;
@@ -115,8 +124,6 @@ public class Producer extends RootEntity {
 		clone.disabled = disabled;
 		clone.productGroup = productGroup;
 		clone.boiler = boiler;
-		if (profile != null)
-			clone.profile = profile.clone();
 		clone.function = function;
 		clone.rank = rank;
 		if (costs != null)
@@ -132,6 +139,12 @@ public class Producer extends RootEntity {
 		clone.utilisationRate = utilisationRate;
 		for (TimeInterval t : interruptions) {
 			clone.interruptions.add(t.clone());
+		}
+		if (profile != null) {
+			clone.profile = profile.clone();
+			clone.profileElectricalEfficiency = profileElectricalEfficiency;
+			clone.profileMaxPower = profileMaxPower;
+			clone.profileMaxPowerElectric = profileMaxPowerElectric;
 		}
 		return clone;
 	}

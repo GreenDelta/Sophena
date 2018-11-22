@@ -58,9 +58,9 @@ public class ProfileSection {
 	private void createPowerTexts(Composite parent, FormToolkit tk) {
 		Producer p = producer();
 		Composite c = tk.createComposite(parent);
-		UI.innerGrid(c, 7).horizontalSpacing = 10;
+		UI.gridLayout(c, 7);
 		Text thermT = UI.formText(c, tk, "Thermische Nennleistung");
-		UI.gridData(thermT, false, false).widthHint = 80;
+		UI.gridData(thermT, false, false).widthHint = 120;
 		UI.formLabel(c, "kW");
 		Texts.on(thermT).init(Num.intStr(p.profileMaxPower))
 				.required().decimal().onChanged(s -> {
@@ -70,14 +70,23 @@ public class ProfileSection {
 		if (p.productGroup == null
 				|| p.productGroup.type != ProductType.COGENERATION_PLANT)
 			return;
-		UI.gridData(UI.filler(c), false, false).widthHint = 40;
+		UI.gridData(UI.filler(c), false, false).widthHint = 25;
 		Text electT = UI.formText(c, tk, "Elektrische Nennleistung");
-		UI.gridData(electT, false, false).widthHint = 80;
+		UI.gridData(electT, false, false).widthHint = 120;
 		UI.formLabel(c, "kW");
 		Texts.on(electT).init(Num.intStr(p.profileMaxPowerElectric))
 				.required().decimal().onChanged(s -> {
 					producer().profileMaxPowerElectric = Texts
 							.getDouble(electT);
+					editor.setDirty();
+				});
+		Text electE = UI.formText(c, tk, "Elektrischer Wirkungsgrad");
+		UI.gridData(electE, false, false).widthHint = 120;
+		UI.formLabel(c, "%");
+		Texts.on(electE).init(Num.str(p.profileElectricalEfficiency * 100, 1))
+				.required().decimal().onChanged(s -> {
+					producer().profileElectricalEfficiency = Texts
+							.getDouble(electE) / 100d;
 					editor.setDirty();
 				});
 	}

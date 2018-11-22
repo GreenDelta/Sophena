@@ -108,4 +108,25 @@ public class Producers {
 			return p.profileMaxPowerElectric;
 		return 0;
 	}
+
+	public static boolean isCoGenPlant(Producer p) {
+		if (p == null)
+			return false;
+		if (p.boiler != null && p.boiler.isCoGenPlant)
+			return true;
+		if (p.productGroup == null ||
+				p.productGroup.type != ProductType.COGENERATION_PLANT)
+			return false;
+		return p.hasProfile();
+	}
+
+	public static double electricalEfficiency(Producer p) {
+		if (p == null || !isCoGenPlant(p))
+			return 0.0;
+		if (p.boiler != null)
+			return p.boiler.efficiencyRateElectric;
+		if (p.hasProfile())
+			return p.profileElectricalEfficiency;
+		return 0.0;
+	}
 }
