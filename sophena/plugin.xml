@@ -233,14 +233,10 @@
 			name="SQL" />
 			
 		<editor
-			class="sophena.rcp.editors.basedata.products.BoilerAccessoriesEditor"
-			id="sophena.products.BoilerAccessoriesEditor"
-			name="Kesselzubehör" />
-
-		<editor
 			class="sophena.rcp.editors.basedata.products.ProductEditor"
 			id="sophena.products.ProductEditor"
-			name="Products" />
+			name="Products" 
+			icon="icons/product_16.png"/>
 
 		<editor
 			class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
@@ -255,35 +251,10 @@
 			icon="icons/flue_gas_16.png" />
 
 		<editor
-			class="sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor"
-			id="sophena.products.BoilerHouseTechnologyEditor"
-			name="Heizhaus-Technik" />
-
-		<editor
-			class="sophena.rcp.editors.basedata.products.BuildingProductEditor"
-			id="sophena.products.BuildingProductEditor"
-			name="Gebäude" />
-
-		<editor
-			class="sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor"
-			id="sophena.products.HeatingNetConstructionEditor"
-			name="Wärmenetz-Bau" />
-			
-		<editor
-			class="sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor"
-			id="sophena.products.HeatingNetTechnologyEditor"
-			name="Wärmenetz-Technik" />
-
-		<editor
-			class="sophena.rcp.editors.basedata.products.PlanningEditor"
-			id="sophena.products.PlanningEditor"
-			name="Planung" />
-  <editor
-        class="sophena.rcp.editors.StartPage"
-        default="false"
-        icon="icons/home.png"
-        id="sophena.StartPage"
-        name="Start page">
-  </editor>
+        	class="sophena.rcp.editors.StartPage"
+        	default="false"
+        	icon="icons/home.png"
+        	id="sophena.StartPage"
+        	name="Start page" />
 	</extension>
 </plugin>

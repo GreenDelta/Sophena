@@ -64,6 +64,7 @@ public class ProductEditor extends Editor {
 			KeyEditorInput kei = (KeyEditorInput) input;
 			try {
 				type = ProductType.valueOf(kei.getKey());
+				setPartName(Labels.getPlural(type));
 			} catch (Exception e) {
 				throw new PartInitException(
 						"Could not parse product type: " + kei.getKey());
