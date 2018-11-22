@@ -32,7 +32,7 @@ public class SubFolderElement implements NavigationElement {
 
 	public ProjectDescriptor getProject() {
 		if (parent != null)
-			return parent.getDescriptor();
+			return parent.content;
 		else
 			return null;
 	}

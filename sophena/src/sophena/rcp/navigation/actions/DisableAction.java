@@ -24,13 +24,13 @@ public class DisableAction extends NavigationAction {
 	public boolean accept(NavigationElement element) {
 		if (element instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) element;
-			updateUI(e.getDescriptor().disabled);
+			updateUI(e.content.disabled);
 			elem = e;
 			return true;
 		}
 		if (element instanceof ProducerElement) {
 			ProducerElement e = (ProducerElement) element;
-			updateUI(e.getDescriptor().disabled);
+			updateUI(e.content.disabled);
 			elem = e;
 			return true;
 		}
@@ -58,7 +58,7 @@ public class DisableAction extends NavigationAction {
 	private void updateConsumer(ConsumerElement e) {
 		try {
 			ConsumerDao dao = new ConsumerDao(App.getDb());
-			Consumer c = dao.get(e.getDescriptor().id);
+			Consumer c = dao.get(e.content.id);
 			c.disabled = !c.disabled;
 			dao.update(c);
 			Navigator.refresh();
@@ -70,7 +70,7 @@ public class DisableAction extends NavigationAction {
 	private void updateProducer(ProducerElement e) {
 		try {
 			ProducerDao dao = new ProducerDao(App.getDb());
-			Producer p = dao.get(e.getDescriptor().id);
+			Producer p = dao.get(e.content.id);
 			p.disabled = !p.disabled;
 			dao.update(p);
 			Navigator.refresh();

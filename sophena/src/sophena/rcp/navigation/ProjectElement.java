@@ -29,7 +29,7 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 	}
 
 	private SubFolderType[] getChildTypes() {
-		ProjectDescriptor p = getDescriptor();
+		ProjectDescriptor p = content;
 		if (p == null)
 			return new SubFolderType[0];
 		SubFolderType[] types = new SubFolderType[5];
@@ -41,6 +41,7 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 		return types;
 	}
 
+	@Override
 	public void update() {
 		if (childs == null)
 			return;

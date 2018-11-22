@@ -35,9 +35,9 @@ public class ExportAction extends NavigationAction {
 
 	@Override
 	public void run() {
-		if (elem == null || elem.getDescriptor() == null)
+		if (elem == null || elem.content == null)
 			return;
-		ProjectDescriptor d = elem.getDescriptor();
+		ProjectDescriptor d = elem.content;
 		File file = FileChooser.save(d.name + ".sophena", "*.sophena");
 		if (file == null)
 			return;

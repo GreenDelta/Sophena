@@ -38,13 +38,13 @@ class ChildSync {
 		if (naviContent == null || dbContent == null || factory == null)
 			return;
 		List<NavigationElement> synced = new ArrayList<>();
-		for (T descriptor : dbContent) {
-			ContentElement<T> e = findExistingElement(naviContent, descriptor);
+		for (T c : dbContent) {
+			ContentElement<T> e = findExistingElement(naviContent, c);
 			if (e == null) {
-				e = factory.apply(descriptor);
+				e = factory.apply(c);
 				naviContent.add(e);
 			} else {
-				e.setDescriptor(descriptor);
+				e.content = c;
 				e.update();
 			}
 			synced.add(e);
@@ -63,7 +63,7 @@ class ChildSync {
 		for (NavigationElement e : naviContent) {
 			if (!(e instanceof ContentElement))
 				continue;
-			Object d = ((ContentElement<?>) e).getDescriptor();
+			Object d = ((ContentElement<?>) e).content;
 			if (!(d instanceof Descriptor))
 				continue;
 			ModelType eType = ((Descriptor) d).getType();
@@ -84,7 +84,7 @@ class ChildSync {
 			if (!(e instanceof ContentElement))
 				continue;
 			ContentElement<T> ce = ContentElement.class.cast(e);
-			if (Objects.equals(ce.getDescriptor(), descriptor))
+			if (Objects.equals(ce.content, descriptor))
 				return ce;
 		}
 		return null;

@@ -14,11 +14,11 @@ import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.SubFolderElement;
-import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 
 public class DoubleClick extends Action {
 
@@ -45,53 +45,43 @@ public class DoubleClick extends Action {
 		}
 	}
 
-	@Handler(type = ProjectElement.class,
-			title = "Open project")
+	@Handler(type = ProjectElement.class, title = "Open project")
 	private void openProject() {
 		ProjectElement e = (ProjectElement) elem;
-		ProjectEditor.open(e.getDescriptor());
+		ProjectEditor.open(e.content);
 	}
 
-	@Handler(type = ConsumerElement.class,
-			title = "Open consumer")
+	@Handler(type = ConsumerElement.class, title = "Open consumer")
 	private void openConsumer() {
 		ConsumerElement e = (ConsumerElement) elem;
-		ConsumerEditor.open(e.getProject(), e.getDescriptor());
+		ConsumerEditor.open(e.getProject(), e.content);
 	}
 
-	@Handler(type = ProducerElement.class,
-			title = "Open producer")
+	@Handler(type = ProducerElement.class, title = "Open producer")
 	private void openProducer() {
 		ProducerElement e = (ProducerElement) elem;
-		ProducerEditor.open(e.getProject(), e.getDescriptor());
+		ProducerEditor.open(e.getProject(), e.content);
 	}
 
-	@Handler(type = CleaningElement.class,
-			title = "Open cleaning")
+	@Handler(type = CleaningElement.class, title = "Open cleaning")
 	private void openCleaning() {
 		CleaningElement e = (CleaningElement) elem;
 		Cleanings.open(e);
 	}
 
-	@Handler(type = SubFolderElement.class,
-			title = "Open heat distribution",
-			folderType = SubFolderType.DISTRIBUTION)
+	@Handler(type = SubFolderElement.class, title = "Open heat distribution", folderType = SubFolderType.DISTRIBUTION)
 	private void openDistribution() {
 		SubFolderElement e = (SubFolderElement) elem;
 		HeatNetEditor.open(e.getProject());
 	}
 
-	@Handler(type = SubFolderElement.class,
-			title = "Open energy results",
-			folderType = SubFolderType.RESULTS)
+	@Handler(type = SubFolderElement.class, title = "Open energy results", folderType = SubFolderType.RESULTS)
 	private void openEnergyResults() {
 		SubFolderElement e = (SubFolderElement) elem;
 		ResultEditor.open(e.getProject());
 	}
 
-	@Handler(type = SubFolderElement.class,
-			title = "Öffne Kosten",
-			folderType = SubFolderType.COSTS)
+	@Handler(type = SubFolderElement.class, title = "Öffne Kosten", folderType = SubFolderType.COSTS)
 	private void openCostEditor() {
 		SubFolderElement e = (SubFolderElement) elem;
 		CostEditor.open(e.getProject());

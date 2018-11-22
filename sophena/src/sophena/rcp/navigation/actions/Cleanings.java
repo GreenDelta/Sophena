@@ -83,7 +83,7 @@ class Cleanings {
 		static Data load(CleaningElement e) {
 			if (e == null)
 				return null;
-			CleaningDescriptor d = e.getDescriptor();
+			CleaningDescriptor d = e.content;
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(e.getProject().id);
 			if (p == null || d == null)

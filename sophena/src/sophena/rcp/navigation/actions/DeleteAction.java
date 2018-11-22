@@ -64,7 +64,7 @@ public class DeleteAction extends NavigationAction {
 		try {
 			ProjectElement e = (ProjectElement) elem;
 			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(e.getDescriptor().id);
+			Project p = dao.get(e.content.id);
 			dao.delete(p);
 			Editors.close(p.id);
 			Navigator.refresh();
@@ -86,7 +86,7 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Consumer c = Util.find(p.consumers, e.getDescriptor());
+			Consumer c = Util.find(p.consumers, e.content);
 			if (c == null)
 				return;
 			p.consumers.remove(c);
@@ -111,7 +111,7 @@ public class DeleteAction extends NavigationAction {
 			Project p = dao.get(e.getProject().id);
 			if (p == null)
 				return;
-			Producer prod = Util.find(p.producers, e.getDescriptor());
+			Producer prod = Util.find(p.producers, e.content);
 			if (prod == null)
 				return;
 			p.producers.remove(prod);

@@ -19,7 +19,7 @@ public class CompareAction extends NavigationAction {
 		if (!(e instanceof ProjectElement))
 			return false;
 		elem = (ProjectElement) e;
-		return elem.getDescriptor() != null;
+		return elem.content != null;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class CompareAction extends NavigationAction {
 	public void run() {
 		if (elem == null)
 			return;
-		ProjectDescriptor d = elem.getDescriptor();
+		ProjectDescriptor d = elem.content;
 		ComparisonDialog.open(Optional.of(d));
 	}
 

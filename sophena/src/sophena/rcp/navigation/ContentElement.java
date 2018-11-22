@@ -3,17 +3,18 @@ package sophena.rcp.navigation;
 import java.util.Objects;
 
 import sophena.model.ModelType;
+import sophena.model.RootEntity;
 import sophena.model.descriptors.Descriptor;
 import sophena.utils.Strings;
 
-abstract class ContentElement<T extends Descriptor> implements
+abstract class ContentElement<T extends RootEntity> implements
 		NavigationElement {
 
-	private T descriptor;
+	public T content;
 	private NavigationElement parent;
 
 	public ContentElement(NavigationElement parent, T descriptor) {
-		this.descriptor = descriptor;
+		this.content = descriptor;
 		this.parent = parent;
 	}
 
@@ -22,21 +23,9 @@ abstract class ContentElement<T extends Descriptor> implements
 		return parent;
 	}
 
-	public T getDescriptor() {
-		return descriptor;
-	}
-
-	public void setDescriptor(T descriptor) {
-		this.descriptor = descriptor;
-	}
-
 	@Override
 	public String getLabel() {
-		T descriptor = getDescriptor();
-		if (descriptor == null)
-			return null;
-		else
-			return descriptor.name;
+		return content == null ? null : content.name;
 	}
 
 	@Override
@@ -46,15 +35,24 @@ abstract class ContentElement<T extends Descriptor> implements
 		if (!(other instanceof ContentElement))
 			return 1;
 		ContentElement<?> otherElem = ContentElement.class.cast(other);
-		Descriptor otherDes = otherElem.descriptor;
-		if (this.descriptor == null || otherDes == null)
+		RootEntity otherDes = otherElem.content;
+		if (this.content == null || otherDes == null)
 			return 0;
-		ModelType type = this.descriptor.getType();
-		ModelType otherType = otherDes.getType();
+		ModelType type = modelType(this);
+		ModelType otherType = modelType(otherElem);
 		// sort producers and flue gas cleanings by type
 		if (type != null && otherType != null && type != otherType)
 			return otherType.ordinal() - type.ordinal();
 		return Strings.compare(this.getLabel(), otherElem.getLabel());
+	}
+
+	private ModelType modelType(ContentElement<?> elem) {
+		if (elem == null || elem.content == null)
+			return null;
+		RootEntity content = elem.content;
+		if (content instanceof Descriptor)
+			return ((Descriptor) content).getType();
+		return ModelType.forModelClass(content.getClass());
 	}
 
 	@Override
@@ -66,12 +64,12 @@ abstract class ContentElement<T extends Descriptor> implements
 		if (!obj.getClass().equals(this.getClass()))
 			return false;
 		ContentElement<?> other = ContentElement.class.cast(obj);
-		return Objects.equals(this.getDescriptor(), other.getDescriptor());
+		return Objects.equals(this.content, other.content);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(getDescriptor());
+		return Objects.hashCode(content);
 	}
 
 }

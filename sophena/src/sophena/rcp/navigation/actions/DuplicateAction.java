@@ -61,7 +61,7 @@ public class DuplicateAction extends NavigationAction {
 		ProjectDao pDao = new ProjectDao(App.getDb());
 		Project project = pDao.get(e.getProject().id);
 		ConsumerDao cDao = new ConsumerDao(App.getDb());
-		Consumer consumer = cDao.get(e.getDescriptor().id);
+		Consumer consumer = cDao.get(e.content.id);
 		if (project == null || consumer == null)
 			return;
 		String name = getCopyName(consumer.name, project.consumers);
@@ -78,7 +78,7 @@ public class DuplicateAction extends NavigationAction {
 		ProjectDao projDao = new ProjectDao(App.getDb());
 		Project project = projDao.get(e.getProject().id);
 		ProducerDao prodDao = new ProducerDao(App.getDb());
-		Producer producer = prodDao.get(e.getDescriptor().id);
+		Producer producer = prodDao.get(e.content.id);
 		if (project == null || producer == null)
 			return;
 		String name = getCopyName(producer.name, project.producers);

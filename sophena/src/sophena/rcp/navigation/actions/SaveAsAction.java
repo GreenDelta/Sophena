@@ -29,7 +29,7 @@ public class SaveAsAction extends NavigationAction {
 		if (!(element instanceof ProjectElement))
 			return false;
 		ProjectElement e = (ProjectElement) element;
-		descriptor = e.getDescriptor();
+		descriptor = e.content;
 		return descriptor != null;
 	}
 
@@ -38,7 +38,8 @@ public class SaveAsAction extends NavigationAction {
 		if (descriptor == null)
 			return;
 		InputDialog dialog = new InputDialog(UI.shell(), "Speichern unter...",
-				"Name des Projekts", descriptor.name + " - Kopie", this::checkName);
+				"Name des Projekts", descriptor.name + " - Kopie",
+				this::checkName);
 		if (dialog.open() == Window.OK) {
 			String val = dialog.getValue();
 			if (val == null)
