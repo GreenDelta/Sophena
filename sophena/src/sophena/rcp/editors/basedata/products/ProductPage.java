@@ -36,7 +36,10 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 
-class EditorPage extends FormPage {
+/**
+ * The editor page for generic products.
+ */
+class ProductPage extends FormPage {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -44,7 +47,7 @@ class EditorPage extends FormPage {
 	private ProductDao dao;
 	private List<Product> products;
 
-	public EditorPage(Editor editor, ProductType type) {
+	public ProductPage(Editor editor, ProductType type) {
 		super(editor, "ProductEditorPage", Labels.get(type));
 		this.type = type;
 		dao = new ProductDao(App.getDb());

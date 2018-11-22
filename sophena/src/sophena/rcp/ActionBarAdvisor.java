@@ -11,6 +11,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -19,26 +20,16 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
+import sophena.Labels;
 import sophena.io.datapack.Import;
 import sophena.model.ProductType;
 import sophena.rcp.editors.basedata.BaseCostEditor;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
-import sophena.rcp.editors.basedata.boilers.BoilerEditor;
-import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
 import sophena.rcp.editors.basedata.buildings.BuildingStateEditor;
 import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
-import sophena.rcp.editors.basedata.pipes.PipeEditor;
-import sophena.rcp.editors.basedata.products.BoilerAccessoriesEditor;
-import sophena.rcp.editors.basedata.products.BoilerHouseTechnologyEditor;
-import sophena.rcp.editors.basedata.products.BuildingProductEditor;
-import sophena.rcp.editors.basedata.products.FlueGasCleaningEditor;
-import sophena.rcp.editors.basedata.products.HeatRecoveryEditor;
-import sophena.rcp.editors.basedata.products.HeatingNetConstructionEditor;
-import sophena.rcp.editors.basedata.products.HeatingNetTechnologyEditor;
-import sophena.rcp.editors.basedata.products.PlanningEditor;
-import sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor;
+import sophena.rcp.editors.basedata.products.ProductEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.navigation.Navigator;
@@ -113,35 +104,40 @@ public class ActionBarAdvisor extends
 	private void fillProductMenu(IMenuManager menu) {
 		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
-		m.add(Actions.create("Biomassekessel", Icon.BOILER_16.des(),
-				() -> BoilerEditor.open(ProductType.BIOMASS_BOILER)));
-		m.add(Actions.create("Fossile Kessel", Icon.BOILER_16.des(),
-				() -> BoilerEditor.open(ProductType.FOSSIL_FUEL_BOILER)));
-		m.add(Actions.create("Wärmepumpen", Icon.HEAT_PUMP_16.des(),
-				() -> BoilerEditor.open(ProductType.HEAT_PUMP)));
-		m.add(Actions.create("KWK-Anlagen", Icon.CO_GEN_16.des(),
-				() -> BoilerEditor.open(ProductType.COGENERATION_PLANT)));
-		m.add(Actions.create("Kesselzubehör", BoilerAccessoriesEditor::open));
-		m.add(Actions.create("Wärmerückgewinnung", Icon.HEAT_RECOVERY_16.des(),
-				HeatRecoveryEditor::open));
-		m.add(Actions.create("Rauchgasreinigung", Icon.FLUE_GAS_16.des(),
-				FlueGasCleaningEditor::open));
-		m.add(Actions.create("Pufferspeicher", Icon.BUFFER_16.des(),
-				BufferTankEditor::open));
-		m.add(Actions.create("Heizhaus-Technik",
-				BoilerHouseTechnologyEditor::open));
-		m.add(Actions.create("Gebäude", BuildingProductEditor::open));
-		m.add(Actions.create("Wärmeleitungen", Icon.PIPE_16.des(),
-				PipeEditor::open));
-		m.add(Actions.create("Wärmenetz-Technik",
-				HeatingNetTechnologyEditor::open));
-		m.add(Actions.create("Wärmenetz-Bau",
-				HeatingNetConstructionEditor::open));
-		m.add(Actions.create("Wärmeübergabestationen", Icon.CONSUMER_16.des(),
-				TransferStationEditor::open));
-		m.add(Actions.create("Planung", PlanningEditor::open));
+		for (ProductType type : ProductType.values()) {
+			m.add(Actions.create(
+					Labels.getPlural(type),
+					img(type),
+					() -> ProductEditor.open(type)));
+		}
 		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
 				ManufacturerEditor::open));
+	}
+
+	private ImageDescriptor img(ProductType type) {
+		if (type == null)
+			return null;
+		switch (type) {
+		case BIOMASS_BOILER:
+		case FOSSIL_FUEL_BOILER:
+			return Icon.BOILER_16.des();
+		case HEAT_PUMP:
+			return Icon.HEAT_PUMP_16.des();
+		case COGENERATION_PLANT:
+			return Icon.CO_GEN_16.des();
+		case HEAT_RECOVERY:
+			return Icon.HEAT_RECOVERY_16.des();
+		case FLUE_GAS_CLEANING:
+			return Icon.FLUE_GAS_16.des();
+		case BUFFER_TANK:
+			return Icon.BUFFER_16.des();
+		case PIPE:
+			return Icon.PIPE_16.des();
+		case TRANSFER_STATION:
+			return Icon.CONSUMER_16.des();
+		default:
+			return null;
+		}
 	}
 
 	private void fillHelpMenu(IMenuManager menu) {

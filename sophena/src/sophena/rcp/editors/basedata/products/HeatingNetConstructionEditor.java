@@ -5,6 +5,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
+@Deprecated
 public class HeatingNetConstructionEditor extends Editor {
 
 	public static void open() {
@@ -16,7 +17,8 @@ public class HeatingNetConstructionEditor extends Editor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new EditorPage(this, ProductType.HEATING_NET_CONSTRUCTION));
+			addPage(new ProductPage(this,
+					ProductType.HEATING_NET_CONSTRUCTION));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}

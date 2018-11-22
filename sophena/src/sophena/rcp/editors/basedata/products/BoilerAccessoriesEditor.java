@@ -5,6 +5,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 
+@Deprecated
 public class BoilerAccessoriesEditor extends Editor {
 
 	public static void open() {
@@ -16,7 +17,7 @@ public class BoilerAccessoriesEditor extends Editor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new EditorPage(this, ProductType.BOILER_ACCESSORIES));
+			addPage(new ProductPage(this, ProductType.BOILER_ACCESSORIES));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}

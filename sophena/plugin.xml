@@ -238,6 +238,11 @@
 			name="Kesselzubehör" />
 
 		<editor
+			class="sophena.rcp.editors.basedata.products.ProductEditor"
+			id="sophena.products.ProductEditor"
+			name="Products" />
+
+		<editor
 			class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
 			id="sophena.products.HeatRecoveryEditor"
 			icon="icons/heat_recovery_16.png"

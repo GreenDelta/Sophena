@@ -14,34 +14,28 @@ public class Actions {
 	private Actions() {
 	}
 
-	public static Action create(final String title, final Runnable fn) {
-		return new Action() {
-			{
-				setText(title);
-				setToolTipText(title);
-			}
-
-			@Override
-			public void run() {
-				if (fn != null)
-					fn.run();
-			}
-		};
+	public static Action create(String title, Runnable fn) {
+		return create(title, null, fn);
 	}
 
-	public static Action create(final String title,
-			final ImageDescriptor image, final Runnable fn) {
+	public static Action create(String title,
+			ImageDescriptor image, Runnable fn) {
 		return new Action() {
 			{
-				setText(title);
-				setToolTipText(title);
-				setImageDescriptor(image);
+				if (title != null) {
+					setText(title);
+					setToolTipText(title);
+				}
+				if (image != null) {
+					setImageDescriptor(image);
+				}
 			}
 
 			@Override
 			public void run() {
-				if (fn != null)
+				if (fn != null) {
 					fn.run();
+				}
 			}
 		};
 	}
