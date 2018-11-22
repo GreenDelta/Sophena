@@ -73,8 +73,7 @@ class BoilerTableSection {
 			Producer p = producers[i];
 			Item item = new Item();
 			item.name = p.name;
-			double power = Producers.maxPower(p);
-			item.powerOrVolume = Num.str(power) + " kW";
+			item.powerOrVolume = Num.str(Producers.maxPower(p)) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
 			else

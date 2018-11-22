@@ -38,7 +38,7 @@ class HeatSheet {
 			w.str(p.function == ProducerFunction.BASE_LOAD
 					? p.rank + " - Grundlast"
 					: p.rank + " - Spitzenlast");
-			w.rint(p.boiler.maxPower);
+			w.rint(Producers.maxPower(p));
 			w.str(getFuelUse(p, heat));
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
