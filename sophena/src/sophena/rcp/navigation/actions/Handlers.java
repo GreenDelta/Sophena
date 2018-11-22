@@ -6,7 +6,7 @@ import org.eclipse.jface.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.navigation.FolderElement;
+import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.NavigationElement;
 
 class Handlers {
@@ -40,9 +40,9 @@ class Handlers {
 		Class<?> c = h.type();
 		if (!c.equals(e.getClass()))
 			return false;
-		if (!(e instanceof FolderElement))
+		if (!(e instanceof SubFolderElement))
 			return true;
-		FolderElement fe = (FolderElement) e;
+		SubFolderElement fe = (SubFolderElement) e;
 		return fe.getType() == h.folderType();
 	}
 

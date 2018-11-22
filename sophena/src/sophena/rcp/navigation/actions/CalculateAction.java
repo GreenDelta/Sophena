@@ -4,20 +4,20 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.rcp.Icon;
 import sophena.rcp.editors.results.single.ResultEditor;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 
 public class CalculateAction extends NavigationAction {
 
-	private FolderElement elem;
+	private SubFolderElement elem;
 
 	@Override
 	public boolean accept(NavigationElement element) {
-		if (!(element instanceof FolderElement))
+		if (!(element instanceof SubFolderElement))
 			return false;
-		FolderElement e = (FolderElement) element;
-		if (e.getType() != FolderType.RESULTS)
+		SubFolderElement e = (SubFolderElement) element;
+		if (e.getType() != SubFolderType.RESULTS)
 			return false;
 		elem = e;
 		return true;

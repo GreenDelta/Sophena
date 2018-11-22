@@ -14,8 +14,8 @@ import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
@@ -82,19 +82,19 @@ public class OpenAction extends NavigationAction {
 		Cleanings.open(e);
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Öffne Wärmenetzinformationen",
-			folderType = FolderType.DISTRIBUTION)
+			folderType = SubFolderType.DISTRIBUTION)
 	private void openDistributionInfo() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		HeatNetEditor.open(e.getProject());
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Öffne Investitionen",
-			folderType = FolderType.COSTS)
+			folderType = SubFolderType.COSTS)
 	private void openCostEditor() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		CostEditor.open(e.getProject());
 	}
 

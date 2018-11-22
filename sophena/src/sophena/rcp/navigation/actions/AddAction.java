@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.wizards.ConsumerWizard;
@@ -50,11 +50,11 @@ public class AddAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Neuer Wärmeerzeuger",
-			folderType = FolderType.PRODUCTION)
+			folderType = SubFolderType.PRODUCTION)
 	private void producerOnFolder() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		ProducerWizard.open(e.getProject());
 	}
 
@@ -65,11 +65,11 @@ public class AddAction extends NavigationAction {
 		ProducerWizard.open(e.getProject());
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Neuer Wärmeabnehmer",
-			folderType = FolderType.CONSUMPTION)
+			folderType = SubFolderType.CONSUMPTION)
 	private void consumerOnFolder() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		ConsumerWizard.open(e.getProject());
 	}
 

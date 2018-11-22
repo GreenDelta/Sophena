@@ -2,8 +2,8 @@ package sophena.rcp.navigation.actions;
 
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 
@@ -23,9 +23,9 @@ public class AddFlueGasCleaning extends NavigationAction {
 			project = pe.getProject();
 			return true;
 		}
-		if (elem instanceof FolderElement) {
-			FolderElement fe = (FolderElement) elem;
-			if (fe.getType() != FolderType.PRODUCTION)
+		if (elem instanceof SubFolderElement) {
+			SubFolderElement fe = (SubFolderElement) elem;
+			if (fe.getType() != SubFolderType.PRODUCTION)
 				return false;
 			project = fe.getProject();
 			return true;

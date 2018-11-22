@@ -3,8 +3,8 @@ package sophena.rcp.navigation.actions;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.wizards.ConsumerProfileWizard;
 
@@ -23,9 +23,9 @@ public class AddConsumerProfileAction extends NavigationAction {
 			project = ((ConsumerElement) elem).getProject();
 			return true;
 		}
-		if (elem instanceof FolderElement) {
-			FolderElement fe = (FolderElement) elem;
-			if (fe.getType() == FolderType.CONSUMPTION) {
+		if (elem instanceof SubFolderElement) {
+			SubFolderElement fe = (SubFolderElement) elem;
+			if (fe.getType() == SubFolderType.CONSUMPTION) {
 				project = fe.getProject();
 				return true;
 			}

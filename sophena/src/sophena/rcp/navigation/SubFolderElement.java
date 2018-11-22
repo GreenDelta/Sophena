@@ -15,18 +15,18 @@ import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 
-public class FolderElement implements NavigationElement {
+public class SubFolderElement implements NavigationElement {
 
-	private final FolderType type;
+	private final SubFolderType type;
 	private final ProjectElement parent;
 	private List<NavigationElement> childs;
 
-	public FolderElement(FolderType type, ProjectElement parent) {
+	public SubFolderElement(SubFolderType type, ProjectElement parent) {
 		this.type = type;
 		this.parent = parent;
 	}
 
-	public FolderType getType() {
+	public SubFolderType getType() {
 		return type;
 	}
 
@@ -112,9 +112,9 @@ public class FolderElement implements NavigationElement {
 
 	@Override
 	public int compareTo(NavigationElement obj) {
-		if (!(obj instanceof FolderElement))
+		if (!(obj instanceof SubFolderElement))
 			return 0;
-		FolderElement other = (FolderElement) obj;
+		SubFolderElement other = (SubFolderElement) obj;
 		if (this.type == null || other.type == null)
 			return 0;
 		return this.type.ordinal() - other.type.ordinal();
@@ -144,9 +144,9 @@ public class FolderElement implements NavigationElement {
 			return false;
 		if (obj == this)
 			return true;
-		if (!(obj instanceof FolderElement))
+		if (!(obj instanceof SubFolderElement))
 			return false;
-		FolderElement other = (FolderElement) obj;
+		SubFolderElement other = (SubFolderElement) obj;
 		return Objects.equals(this.getProject(), other.getProject())
 				&& this.type == other.type;
 	}

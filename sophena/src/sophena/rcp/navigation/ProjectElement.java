@@ -21,23 +21,23 @@ public class ProjectElement extends ContentElement<ProjectDescriptor> {
 		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
-		for (FolderType type : getChildTypes()) {
-			FolderElement se = new FolderElement(type, this);
+		for (SubFolderType type : getChildTypes()) {
+			SubFolderElement se = new SubFolderElement(type, this);
 			childs.add(se);
 		}
 		return childs;
 	}
 
-	private FolderType[] getChildTypes() {
+	private SubFolderType[] getChildTypes() {
 		ProjectDescriptor p = getDescriptor();
 		if (p == null)
-			return new FolderType[0];
-		FolderType[] types = new FolderType[5];
-		types[0] = FolderType.CONSUMPTION;
-		types[1] = FolderType.PRODUCTION;
-		types[2] = FolderType.DISTRIBUTION;
-		types[3] = FolderType.COSTS;
-		types[4] = FolderType.RESULTS;
+			return new SubFolderType[0];
+		SubFolderType[] types = new SubFolderType[5];
+		types[0] = SubFolderType.CONSUMPTION;
+		types[1] = SubFolderType.PRODUCTION;
+		types[2] = SubFolderType.DISTRIBUTION;
+		types[3] = SubFolderType.COSTS;
+		types[4] = SubFolderType.RESULTS;
 		return types;
 	}
 

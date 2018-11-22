@@ -14,8 +14,8 @@ import sophena.rcp.editors.projects.ProjectEditor;
 import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.FolderElement;
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.ProjectElement;
@@ -73,27 +73,27 @@ public class DoubleClick extends Action {
 		Cleanings.open(e);
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Open heat distribution",
-			folderType = FolderType.DISTRIBUTION)
+			folderType = SubFolderType.DISTRIBUTION)
 	private void openDistribution() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		HeatNetEditor.open(e.getProject());
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Open energy results",
-			folderType = FolderType.RESULTS)
+			folderType = SubFolderType.RESULTS)
 	private void openEnergyResults() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		ResultEditor.open(e.getProject());
 	}
 
-	@Handler(type = FolderElement.class,
+	@Handler(type = SubFolderElement.class,
 			title = "Öffne Kosten",
-			folderType = FolderType.COSTS)
+			folderType = SubFolderType.COSTS)
 	private void openCostEditor() {
-		FolderElement e = (FolderElement) elem;
+		SubFolderElement e = (SubFolderElement) elem;
 		CostEditor.open(e.getProject());
 	}
 }

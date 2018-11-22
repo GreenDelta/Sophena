@@ -1,6 +1,6 @@
 package sophena.rcp.navigation;
 
-public enum FolderType {
+public enum SubFolderType {
 
 	CONSUMPTION,
 

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import sophena.rcp.navigation.FolderType;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -25,6 +25,6 @@ import sophena.rcp.navigation.NavigationElement;
 	/**
 	 * Only relevant if the type of the navigation element is a folder element.
 	 */
-	FolderType folderType() default FolderType.NONE;
+	SubFolderType folderType() default SubFolderType.NONE;
 
 }

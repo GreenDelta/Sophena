@@ -17,8 +17,8 @@ public class CleaningElement extends ContentElement<CleaningDescriptor> {
 
 	public ProjectDescriptor getProject() {
 		NavigationElement parent = getParent();
-		if (parent instanceof FolderElement)
-			return ((FolderElement) parent).getProject();
+		if (parent instanceof SubFolderElement)
+			return ((SubFolderElement) parent).getProject();
 		else
 			return null;
 	}

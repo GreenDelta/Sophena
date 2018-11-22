@@ -17,8 +17,8 @@ public class ProducerElement extends ContentElement<ProducerDescriptor> {
 
 	public ProjectDescriptor getProject() {
 		NavigationElement parent = getParent();
-		if (parent instanceof FolderElement)
-			return ((FolderElement) parent).getProject();
+		if (parent instanceof SubFolderElement)
+			return ((SubFolderElement) parent).getProject();
 		else
 			return null;
 	}
