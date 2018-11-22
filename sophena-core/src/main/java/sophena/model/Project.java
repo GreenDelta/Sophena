@@ -20,6 +20,10 @@ import sophena.model.descriptors.ProjectDescriptor;
 @Table(name = "tbl_projects")
 public class Project extends RootEntity {
 
+	@OneToOne
+	@JoinColumn(name = "f_project_folder")
+	public ProjectFolder folder;
+
 	@Column(name = "project_duration")
 	public int duration;
 
@@ -61,6 +65,7 @@ public class Project extends RootEntity {
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
+		clone.folder = folder;
 		clone.duration = duration;
 		clone.weatherStation = weatherStation;
 		for (Consumer consumer : consumers)

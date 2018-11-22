@@ -158,14 +158,24 @@ CREATE TABLE tbl_annual_costs (
 
 CREATE TABLE tbl_projects (
 
-    id CHAR(36),
-    name VARCHAR(255),
-    description CLOB(64 K),
+    id                  CHAR(36),
+    name                VARCHAR(255),
+    description         CLOB(64 K),
+    f_project_folder    CHAR(36),
 
-    project_duration INTEGER,
-    f_cost_settings CHAR(36),
-    f_weather_station CHAR(36),
-    f_heat_net CHAR(36),
+    project_duration    INTEGER,
+    f_cost_settings     CHAR(36),
+    f_weather_station   CHAR(36),
+    f_heat_net          CHAR(36),
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_project_folders (
+    id              CHAR(36),
+    name            VARCHAR(255),
+    description     CLOB(64 K),
 
     PRIMARY KEY (id)
 );

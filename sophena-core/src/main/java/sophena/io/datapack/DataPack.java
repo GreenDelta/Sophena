@@ -182,6 +182,8 @@ public class DataPack implements Closeable {
 			return "product_groups";
 		case PROJECT:
 			return "projects";
+		case PROJECT_FOLDER:
+			return "project_folders";
 		case TRANSFER_STATION:
 			return "transfer_stations";
 		case WEATHER_STATION:

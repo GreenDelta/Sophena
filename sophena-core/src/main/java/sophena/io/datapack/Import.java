@@ -33,6 +33,7 @@ import sophena.model.Pipe;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
+import sophena.model.ProjectFolder;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
@@ -75,6 +76,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
+			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
 			importEntities(ModelType.PROJECT, Project.class);
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
@@ -117,7 +119,7 @@ public class Import implements Runnable {
 				Boiler.class, BufferTank.class, BuildingState.class,
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
 				WeatherStation.class, TransferStation.class,
-				FlueGasCleaning.class,
+				FlueGasCleaning.class, ProjectFolder.class,
 				HeatRecovery.class, Manufacturer.class
 		};
 		for (Class<?> refType : refTypes) {

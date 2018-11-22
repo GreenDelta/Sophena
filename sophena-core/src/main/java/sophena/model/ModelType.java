@@ -36,6 +36,8 @@ public enum ModelType {
 
 	PROJECT(Project.class),
 
+	PROJECT_FOLDER(ProjectFolder.class),
+
 	TRANSFER_STATION(TransferStation.class),
 
 	WEATHER_STATION(WeatherStation.class);

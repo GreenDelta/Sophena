@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 
 	<persistence-unit name="sophena">
-	
+
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
 		<class>sophena.model.Boiler</class>
@@ -30,6 +30,7 @@
 		<class>sophena.model.ProductEntry</class>
 		<class>sophena.model.ProductGroup</class>
 		<class>sophena.model.Project</class>
+		<class>sophena.model.ProjectFolder</class>
 		<class>sophena.model.TimeInterval</class>
 		<class>sophena.model.TransferStation</class>
 		<class>sophena.model.WeatherStation</class>
@@ -40,6 +41,6 @@
 			<property name="eclipselink.jdbc.cache-statements" value="true" />
 			<property name="eclipselink.logging.level" value="WARNING" />
 		</properties>
-		
+
 	</persistence-unit>
 </persistence>
