@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.Labels;
 import sophena.db.daos.FuelDao;
 import sophena.math.energetic.CalorificValue;
 import sophena.model.Fuel;
@@ -20,7 +21,6 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;

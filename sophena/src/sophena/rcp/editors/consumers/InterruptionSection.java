@@ -15,11 +15,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.Labels;
 import sophena.model.Consumer;
 import sophena.model.HoursTrace;
 import sophena.model.TimeInterval;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Log;

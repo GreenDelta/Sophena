@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.Labels;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedHeat;
@@ -21,7 +22,6 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;

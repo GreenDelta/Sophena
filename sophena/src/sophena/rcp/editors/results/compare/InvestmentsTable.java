@@ -3,11 +3,11 @@ package sophena.rcp.editors.results.compare;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.Labels;
 import sophena.calc.Comparison;
 import sophena.calc.CostResult;
 import sophena.calc.ProductAreaResult;
 import sophena.model.ProductArea;
-import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 

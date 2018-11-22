@@ -16,6 +16,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.db.daos.BoilerDao;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
@@ -23,7 +24,6 @@ import sophena.model.Boiler;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
@@ -84,7 +84,8 @@ class EditorPage extends FormPage {
 	private String[] getColumns() {
 		if (type == ProductType.COGENERATION_PLANT)
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
-					"Max. Leistung el.", "Wirkungsgrad el.", "Max. Leistung th.",
+					"Max. Leistung el.", "Wirkungsgrad el.",
+					"Max. Leistung th.",
 					"Wirkungsgrad th." };
 		else
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",

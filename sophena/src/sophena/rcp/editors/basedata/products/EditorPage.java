@@ -18,6 +18,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.db.daos.ProductDao;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
@@ -25,7 +26,6 @@ import sophena.model.Product;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.UsageError;

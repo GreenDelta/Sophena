@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
-import sophena.rcp.Labels;
+import sophena.rcp.Images;
 import sophena.utils.Num;
 
 class EntryLabel extends LabelProvider implements ITableLabelProvider {
@@ -20,7 +20,7 @@ class EntryLabel extends LabelProvider implements ITableLabelProvider {
 
 	@Override
 	public Image getColumnImage(Object obj, int col) {
-		return col == 0 ? Labels.getImage(type) : null;
+		return col == 0 ? Images.getImage(type) : null;
 	}
 
 	@Override

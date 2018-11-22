@@ -10,9 +10,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import sophena.Labels;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.utils.Colors;

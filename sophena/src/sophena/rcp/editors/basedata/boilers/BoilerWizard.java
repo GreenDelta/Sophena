@@ -5,9 +5,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.Labels;
 import sophena.model.Boiler;
 import sophena.model.ProductType;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;

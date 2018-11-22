@@ -13,12 +13,12 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.db.daos.ProductGroupDao;
 import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;

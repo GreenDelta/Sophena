@@ -3,12 +3,12 @@ package sophena.rcp.editors.basedata.fuels;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
+import sophena.Labels;
 import sophena.db.daos.ProducerDao;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.Producer;
 import sophena.rcp.App;
-import sophena.rcp.Labels;
 import sophena.rcp.utils.UI;
 
 class FuelGroupCombo {

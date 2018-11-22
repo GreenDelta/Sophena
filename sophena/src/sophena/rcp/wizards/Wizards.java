@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Combo;
 
+import sophena.Labels;
 import sophena.db.daos.FuelDao;
 import sophena.model.Boiler;
 import sophena.model.CostSettings;
@@ -18,7 +19,6 @@ import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
-import sophena.rcp.Labels;
 
 /**
  * Some utility functions for the wizards.

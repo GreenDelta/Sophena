@@ -12,13 +12,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.db.daos.BuildingStateDao;
 import sophena.io.ConsumerProfiles;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
 import sophena.model.Consumer;
 import sophena.rcp.App;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;

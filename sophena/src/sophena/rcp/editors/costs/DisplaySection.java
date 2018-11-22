@@ -14,10 +14,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.Labels;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
+import sophena.rcp.Images;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
@@ -93,7 +94,7 @@ class DisplaySection<T> {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Labels.getImage(type) : null;
+			return col == 0 ? Images.getImage(type) : null;
 		}
 
 		@Override

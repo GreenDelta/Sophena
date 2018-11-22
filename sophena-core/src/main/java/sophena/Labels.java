@@ -260,7 +260,7 @@ public final class Labels {
 		case ELECTRIC_HEAT_GENERATOR:
 			return "Elektrische Wärmeerzeuger";
 		case OTHER_HEAT_SOURCE:
-			return "Andere Wärmequellen";
+			return "Sonstige Wärmequellen";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
 		case BUFFER_TANK:

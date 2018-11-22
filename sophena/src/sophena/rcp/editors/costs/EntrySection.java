@@ -11,13 +11,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.Labels;
 import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpBox;

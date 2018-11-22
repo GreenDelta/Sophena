@@ -15,9 +15,9 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
-import sophena.rcp.Labels;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

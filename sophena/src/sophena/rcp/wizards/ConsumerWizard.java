@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.Labels;
 import sophena.db.daos.BuildingStateDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BuildingState;
@@ -25,7 +26,6 @@ import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
-import sophena.rcp.Labels;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.help.H;

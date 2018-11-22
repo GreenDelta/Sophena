@@ -111,7 +111,7 @@ public enum Icon {
 		this.fileName = fileName;
 	}
 
-	public String getFileName() {
+	String getFileName() {
 		return fileName;
 	}
 

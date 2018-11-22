@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
+import sophena.Labels;
 import sophena.db.daos.ProductDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.model.Product;
@@ -20,7 +21,6 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.Labels;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
