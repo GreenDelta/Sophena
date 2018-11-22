@@ -43,6 +43,8 @@ public class CostResultItem {
 		if (producer.boiler != null) {
 			item.productType = producer.boiler.type;
 			item.label = producer.boiler.name;
+		} else if (producer.productGroup != null) {
+			item.productType = producer.productGroup.type;
 		}
 		return copy(producer.costs, item);
 	}
