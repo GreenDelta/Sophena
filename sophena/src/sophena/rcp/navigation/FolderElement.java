@@ -27,7 +27,7 @@ public class FolderElement extends ContentElement<ProjectFolder> {
 
 	@Override
 	public Image getImage() {
-		return Icon.NAVIGATION_16.img();
+		return Icon.FOLDER_16.img();
 	}
 
 	@Override

@@ -55,6 +55,8 @@ public enum Icon {
 
 	FILE_16("file_16.png"),
 
+	FOLDER_16("folder_16.png"),
+
 	FLUE_GAS_16("flue_gas_16.png"),
 
 	FUEL_16("fuel_16.png"),
@@ -94,6 +96,8 @@ public enum Icon {
 	PUMP_16("pump_16.png"),
 
 	REFRESH_16("refresh_16.png"),
+
+	RENAME_16("rename_16.png"),
 
 	REQUIRED_LOAD_16("required_load_16.png"),
 

@@ -18,7 +18,7 @@ public class NewFolderAction extends Action {
 
 	public NewFolderAction() {
 		setText("Neuer Ordner");
-		setImageDescriptor(Icon.NAVIGATION_16.des());
+		setImageDescriptor(Icon.FOLDER_16.des());
 	}
 
 	@Override

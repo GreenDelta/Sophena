@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
+import sophena.db.daos.ProjectFolderDao;
 import sophena.model.Consumer;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -14,6 +15,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
+import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.ProducerElement;
@@ -55,7 +57,8 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ProjectElement.class, title = "Lösche Projekt")
+	@Handler(type = ProjectElement.class,
+			title = "Lösche Projekt")
 	private void deleteProject() {
 		boolean del = MsgBox.ask("Projekt löschen?",
 				"Soll das ausgewählte Projekt wirklich gelöscht werden?");
@@ -74,7 +77,28 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ConsumerElement.class, title = "Lösche Wärmeabnehmer")
+	@Handler(type = FolderElement.class,
+			title = "Lösche Ordner")
+	private void deleteFolder() {
+		try {
+			FolderElement e = (FolderElement) elem;
+			ProjectFolderDao dao = new ProjectFolderDao(App.getDb());
+			if (!dao.getProjects(e.content).isEmpty()) {
+				MsgBox.error("Ordner ist nicht leer",
+						"Der ausgewählte Ordner ist nicht leer "
+								+ "und kann daher nicht gelöscht werden.");
+				return;
+			}
+			dao.delete(e.content);
+			Navigator.refresh();
+		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(getClass());
+			log.error("failed to delete folder", e);
+		}
+	}
+
+	@Handler(type = ConsumerElement.class,
+			title = "Lösche Wärmeabnehmer")
 	private void deleteConsumer() {
 		boolean del = MsgBox.ask("Abnehmer löschen?",
 				"Soll der ausgewählte Abnehmer wirklich gelöscht werden?");
@@ -99,7 +123,8 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = ProducerElement.class, title = "Lösche Wärmeerzeuger")
+	@Handler(type = ProducerElement.class,
+			title = "Lösche Wärmeerzeuger")
 	private void deleteProducer() {
 		boolean del = MsgBox.ask("Erzeuger löschen?",
 				"Soll der ausgewählte Erzeuger wirklich gelöscht werden?");
@@ -124,7 +149,8 @@ public class DeleteAction extends NavigationAction {
 		}
 	}
 
-	@Handler(type = CleaningElement.class, title = "Lösche Rauchgasreinigung")
+	@Handler(type = CleaningElement.class,
+			title = "Lösche Rauchgasreinigung")
 	private void deleteCleaning() {
 		CleaningElement e = (CleaningElement) elem;
 		Cleanings.delete(e);

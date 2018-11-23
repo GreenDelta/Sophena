@@ -20,6 +20,7 @@ import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewFolderAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
 import sophena.rcp.navigation.actions.OpenAction;
+import sophena.rcp.navigation.actions.RenameAction;
 import sophena.rcp.navigation.actions.SaveAsAction;
 import sophena.rcp.utils.Viewers;
 
@@ -34,6 +35,7 @@ public class NavigationMenu extends CommonActionProvider {
 					new AddProducerProfileAction(),
 					new AddFlueGasCleaning(),
 					new DuplicateAction(),
+					new RenameAction(),
 					new DisableAction(),
 					new SaveAsAction(),
 					new DeleteAction(),
