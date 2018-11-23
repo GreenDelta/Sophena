@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 
+import sophena.db.daos.ProjectFolderDao;
+import sophena.model.ModelType;
 import sophena.model.ProjectFolder;
+import sophena.rcp.App;
 import sophena.rcp.Icon;
 
 public class FolderElement extends ContentElement<ProjectFolder> {
@@ -21,7 +24,7 @@ public class FolderElement extends ContentElement<ProjectFolder> {
 		if (childs != null)
 			return childs;
 		childs = new ArrayList<>();
-		// TODO: collect project descriptors in this folder
+		update();
 		return childs;
 	}
 
@@ -34,9 +37,12 @@ public class FolderElement extends ContentElement<ProjectFolder> {
 	public void update() {
 		if (childs == null)
 			return;
-		for (NavigationElement child : childs) {
-			child.update();
-		}
+		ProjectFolderDao dao = new ProjectFolderDao(App.getDb());
+		ChildSync.sync(
+				childs,
+				dao.getProjects(content),
+				ModelType.PROJECT,
+				d -> new ProjectElement(this, d));
 	}
 
 }

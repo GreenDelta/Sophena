@@ -83,6 +83,10 @@
 				<actionExtension pattern="sophena.NavigationMenu"/>
 			</includes>
 		</viewerActionBinding>
+		<dragAssistant
+			viewerId="sophena.Navigator"
+        	class="sophena.rcp.navigation.Dragger">
+		</dragAssistant>
 	</extension>
 	
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
@@ -101,6 +105,13 @@
 			<possibleChildren>
 				<instanceof value="sophena.rcp.navigation.NavigationElement"/>
 			</possibleChildren>
+			<dropAssistant
+				id="sophena.navi.drop"
+				class="sophena.rcp.navigation.Dropper">
+      			<possibleDropTargets >
+      				<instanceof value="sophena.rcp.navigation.NavigationElement" />
+      			</possibleDropTargets>
+			</dropAssistant>
 		</navigatorContent>
 		
 		<actionProvider 
