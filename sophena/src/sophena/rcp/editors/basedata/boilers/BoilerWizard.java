@@ -74,10 +74,18 @@ class BoilerWizard implements IContent {
 	}
 
 	private void createEfficiencyText(Composite c) {
-		efficiencyText = UI.formText(c, M.EfficiencyRate + " th.");
+		String label, unit;
+		if (getProductType() == ProductType.HEAT_PUMP) {
+			label = "COP";
+			unit = "";
+		} else {
+			label = M.EfficiencyRate + " th.";
+			unit = "%";
+		}
+		efficiencyText = UI.formText(c, label);
 		Texts.on(efficiencyText).decimal().required()
 				.validate(wizard::validate);
-		UI.formLabel(c, "%");
+		UI.formLabel(c, unit);
 	}
 
 	private void createEfficiencyElText(Composite c) {
@@ -92,7 +100,11 @@ class BoilerWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(maxText, boiler.maxPower);
 		Texts.set(minText, boiler.minPower);
-		Texts.set(efficiencyText, boiler.efficiencyRate * 100d);
+		if (getProductType() == ProductType.HEAT_PUMP) {
+			Texts.set(efficiencyText, boiler.efficiencyRate);
+		} else {
+			Texts.set(efficiencyText, boiler.efficiencyRate * 100d);
+		}
 		Texts.set(maxElText, boiler.maxPowerElectric);
 		Texts.set(minElText, boiler.minPowerElectric);
 		Texts.set(efficiencyElText, boiler.efficiencyRateElectric * 100d);
@@ -102,9 +114,13 @@ class BoilerWizard implements IContent {
 	public void bindToModel() {
 		boiler.maxPower = Texts.getDouble(maxText);
 		boiler.minPower = Texts.getDouble(minText);
-		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
+		if (getProductType() == ProductType.HEAT_PUMP) {
+			boiler.efficiencyRate = Texts.getDouble(efficiencyText);
+		} else {
+			boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
+		}
 		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText)
 				/ 100d;
 	}

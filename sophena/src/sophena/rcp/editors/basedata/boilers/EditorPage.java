@@ -82,6 +82,9 @@ class EditorPage extends FormPage {
 	}
 
 	private String[] getColumns() {
+		String erLabel = type == ProductType.HEAT_PUMP
+				? "COP"
+				: "Wirkungsgrad";
 		if (type == ProductType.COGENERATION_PLANT)
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
 					"Max. Leistung el.", "Wirkungsgrad el.",
@@ -89,7 +92,7 @@ class EditorPage extends FormPage {
 					"Wirkungsgrad th." };
 		else
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
-					"Maximale Leistung", "Wirkungsgrad" };
+					"Maximale Leistung", erLabel };
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
@@ -187,8 +190,11 @@ class EditorPage extends FormPage {
 				return coGen ? s(boiler.maxPowerElectric, "kW")
 						: s(boiler.maxPower, "kW");
 			case 4:
-				return coGen ? s(boiler.efficiencyRateElectric * 100d, "%")
-						: s(boiler.efficiencyRate * 100d, "%");
+				if (coGen)
+					return s(boiler.efficiencyRateElectric * 100d, "%");
+				if (type == ProductType.HEAT_PUMP)
+					return Num.str(boiler.efficiencyRate);
+				return s(boiler.efficiencyRate * 100d, "%");
 			case 5:
 				return coGen ? s(boiler.maxPower, "kW") : null;
 			case 6:

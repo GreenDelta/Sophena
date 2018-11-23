@@ -33,7 +33,7 @@ class CostSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		String label = producer().hasProfile() ? "Kosten" : "Heizkessel";
+		String label = producer().hasProfile() ? "Kosten" : "Produkt";
 		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
 		if (!producer().hasProfile()) {
