@@ -33,8 +33,9 @@ public class Buffers {
 			return 0;
 		BufferTank buffer = net.bufferTank;
 		double ins = buffer.insulationThickness / 1000;
-		if (ins == 0)
-			return 0;
+		if (ins <= 0) {
+			ins = 0.001;
+		}
 		double r = (buffer.diameter / 1000 - (2 * ins)) / 2;
 		double h = buffer.height / 1000 - (2 * ins);
 		double area = 2 * Math.PI * r * (r + h);
