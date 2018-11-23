@@ -46,7 +46,7 @@ abstract class ContentElement<T extends RootEntity> implements
 		return Strings.compare(this.getLabel(), otherElem.getLabel());
 	}
 
-	private ModelType modelType(ContentElement<?> elem) {
+	static ModelType modelType(ContentElement<?> elem) {
 		if (elem == null || elem.content == null)
 			return null;
 		RootEntity content = elem.content;

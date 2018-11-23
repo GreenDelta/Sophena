@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import sophena.model.ModelType;
-import sophena.model.descriptors.Descriptor;
+import sophena.model.RootEntity;
 
 class ChildSync {
 
@@ -30,7 +30,7 @@ class ChildSync {
 	 * @param <T>
 	 *            The descriptor type of the elements.
 	 */
-	public static <T extends Descriptor> void sync(
+	public static <T extends RootEntity> void sync(
 			List<NavigationElement> naviContent,
 			List<T> dbContent,
 			ModelType type,
@@ -39,7 +39,7 @@ class ChildSync {
 			return;
 		List<NavigationElement> synced = new ArrayList<>();
 		for (T c : dbContent) {
-			ContentElement<T> e = findExistingElement(naviContent, c);
+			ContentElement<T> e = findExisting(naviContent, c);
 			if (e == null) {
 				e = factory.apply(c);
 				naviContent.add(e);
@@ -53,20 +53,16 @@ class ChildSync {
 	}
 
 	/**
-	 * Remove elemtens from the navigation content that have the same model type
+	 * Remove elements from the navigation content that have the same model type
 	 * but are not available in the database anymore.
 	 */
 	private static void removeUnsynced(List<NavigationElement> naviContent,
-			ModelType type,
-			List<NavigationElement> synced) {
+			ModelType type, List<NavigationElement> synced) {
 		List<NavigationElement> removals = new ArrayList<>();
 		for (NavigationElement e : naviContent) {
 			if (!(e instanceof ContentElement))
 				continue;
-			Object d = ((ContentElement<?>) e).content;
-			if (!(d instanceof Descriptor))
-				continue;
-			ModelType eType = ((Descriptor) d).getType();
+			ModelType eType = ContentElement.modelType((ContentElement<?>) e);
 			if (eType != type)
 				continue;
 			if (!synced.contains(e))
@@ -76,15 +72,15 @@ class ChildSync {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends Descriptor> ContentElement<T> findExistingElement(
-			List<NavigationElement> naviContent, T descriptor) {
-		if (naviContent == null || descriptor == null)
+	private static <T extends RootEntity> ContentElement<T> findExisting(
+			List<NavigationElement> elems, T content) {
+		if (elems == null || content == null)
 			return null;
-		for (NavigationElement e : naviContent) {
+		for (NavigationElement e : elems) {
 			if (!(e instanceof ContentElement))
 				continue;
 			ContentElement<T> ce = ContentElement.class.cast(e);
-			if (Objects.equals(ce.content, descriptor))
+			if (Objects.equals(ce.content, content))
 				return ce;
 		}
 		return null;

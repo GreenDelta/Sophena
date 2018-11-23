@@ -17,6 +17,7 @@ import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
 import sophena.rcp.navigation.actions.ExportAction;
 import sophena.rcp.navigation.actions.NavigationAction;
+import sophena.rcp.navigation.actions.NewFolderAction;
 import sophena.rcp.navigation.actions.NewProjectAction;
 import sophena.rcp.navigation.actions.OpenAction;
 import sophena.rcp.navigation.actions.SaveAsAction;
@@ -50,6 +51,7 @@ public class NavigationMenu extends CommonActionProvider {
 				.getSelection();
 		if (selection == null || selection.isEmpty()) {
 			menu.add(new NewProjectAction());
+			menu.add(new NewFolderAction());
 			return;
 		}
 		NavigationElement element = Viewers.getFirst(selection);
@@ -65,6 +67,7 @@ public class NavigationMenu extends CommonActionProvider {
 				menu.add(new Separator());
 		}
 		menu.add(new NewProjectAction());
+		menu.add(new NewFolderAction());
 	}
 
 }
