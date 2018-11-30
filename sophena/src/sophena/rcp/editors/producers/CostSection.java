@@ -47,7 +47,7 @@ class CostSection {
 
 	private void boilerCombo(FormToolkit tk, Composite comp) {
 		EntityCombo<Boiler> combo = new EntityCombo<>();
-		combo.create("Produkt", comp, tk);
+		combo.create("Bezeichnung", comp, tk);
 		combo.setLabelProvider(b -> b.name + " ("
 				+ Num.str(b.minPower) + " kW - "
 				+ Num.str(b.maxPower) + " kW, \u03B7 = "
