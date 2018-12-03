@@ -1,6 +1,7 @@
 package sophena.rcp.editors.producers;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -23,6 +24,7 @@ import sophena.rcp.utils.UI;
 class InfoPage extends FormPage {
 
 	private ProducerEditor editor;
+	private ProfileSection profileSection;
 
 	public InfoPage(ProducerEditor editor) {
 		super(editor, "sophena.ProducerInfoPage", "Wärmeerzeuger");
@@ -45,8 +47,11 @@ class InfoPage extends FormPage {
 		functionCombo(tk, comp);
 		rankText(tk, comp);
 		UtilisationRateSwitch.checkCreate(editor, comp, tk);
+		importButton(tk, comp);
 		if (producer().hasProfile()) {
-			ProfileSection.of(editor).create(body, tk);
+			profileSection = ProfileSection
+					.of(editor)
+					.create(body, tk);
 		}
 		new FuelSection(editor).render(body, tk);
 		new CostSection(editor).create(body, tk);
@@ -113,6 +118,19 @@ class InfoPage extends FormPage {
 		Texts.on(t).required().integer().onChanged((s) -> {
 			producer().rank = Texts.getInt(t);
 			editor.setDirty();
+		});
+	}
+
+	private void importButton(FormToolkit tk, Composite comp) {
+		if (!producer().hasProfile())
+			return;
+		UI.filler(comp);
+		Button btn = tk.createButton(comp,
+				"Neuen Lastgang importieren", SWT.NONE);
+		Controls.onSelect(btn, e -> {
+			if (profileSection != null) {
+				profileSection.importProfile();
+			}
 		});
 	}
 
