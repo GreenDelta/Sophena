@@ -125,8 +125,18 @@ public class Producers {
 			return 0.0;
 		if (p.boiler != null)
 			return p.boiler.efficiencyRateElectric;
-		if (p.hasProfile())
-			return p.profileElectricalEfficiency;
+		if (p.hasProfile()) {
+			// for load profiles we assume that the
+			// thermal efficiency rate is equals to
+			// the utilization rate; see #19
+			Double ur = p.utilisationRate;
+			if (ur == null)
+				return 0.0;
+			if (p.profileMaxPower == 0.0
+					|| p.profileMaxPowerElectric == 0.0)
+				return 0.0;
+			return ur * p.profileMaxPowerElectric / p.profileMaxPower;
+		}
 		return 0.0;
 	}
 }

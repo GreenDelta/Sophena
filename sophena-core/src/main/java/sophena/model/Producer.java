@@ -56,15 +56,6 @@ public class Producer extends RootEntity {
 	@Column(name = "profile_max_power_electric")
 	public double profileMaxPowerElectric;
 
-	/**
-	 * For producer profiles of co-generation plants, this field contains the
-	 * electrical efficiency of the producer. In all other cases this field has
-	 * no meaning. While this field may be displayed as percentage value it
-	 * should be stored as plain number, e.g. 0.35.
-	 */
-	@Column(name = "profile_electrical_efficiency")
-	public double profileElectricalEfficiency;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	public ProducerFunction function;
@@ -93,11 +84,16 @@ public class Producer extends RootEntity {
 
 	@Embedded
 	@AttributeOverrides({
-			@AttributeOverride(name = "investment", column = @Column(name = "heat_recovery_investment")),
-			@AttributeOverride(name = "duration", column = @Column(name = "heat_recovery_duration")),
-			@AttributeOverride(name = "repair", column = @Column(name = "heat_recovery_repair")),
-			@AttributeOverride(name = "maintenance", column = @Column(name = "heat_recovery_maintenance")),
-			@AttributeOverride(name = "operation", column = @Column(name = "heat_recovery_operation")) })
+			@AttributeOverride(name = "investment",
+					column = @Column(name = "heat_recovery_investment")),
+			@AttributeOverride(name = "duration",
+					column = @Column(name = "heat_recovery_duration")),
+			@AttributeOverride(name = "repair",
+					column = @Column(name = "heat_recovery_repair")),
+			@AttributeOverride(name = "maintenance",
+					column = @Column(name = "heat_recovery_maintenance")),
+			@AttributeOverride(name = "operation",
+					column = @Column(name = "heat_recovery_operation")) })
 	public ProductCosts heatRecoveryCosts;
 
 	/**
@@ -142,7 +138,6 @@ public class Producer extends RootEntity {
 		}
 		if (profile != null) {
 			clone.profile = profile.clone();
-			clone.profileElectricalEfficiency = profileElectricalEfficiency;
 			clone.profileMaxPower = profileMaxPower;
 			clone.profileMaxPowerElectric = profileMaxPowerElectric;
 		}

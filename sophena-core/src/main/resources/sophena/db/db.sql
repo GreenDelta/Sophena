@@ -519,7 +519,6 @@ CREATE TABLE tbl_producers (
     f_profile                     CHAR(36),
     profile_max_power             DOUBLE,
     profile_max_power_electric    DOUBLE,
-    profile_electrical_efficiency DOUBLE,
 
     investment  DOUBLE,
     duration    INTEGER,
