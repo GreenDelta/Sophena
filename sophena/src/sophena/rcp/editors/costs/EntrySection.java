@@ -58,7 +58,7 @@ class EntrySection {
 		Action info = Actions.create("Information",
 				Icon.INFO_16.des(), this::info);
 		Action addGlobal = Actions.create(
-				"Product aus Produktdatenbank hinzufügen",
+				"Produkt aus Produktdatenbank hinzufügen",
 				Icon.SEARCH_16.des(), this::addGlobal);
 		Action addPrivate = Actions.create("Neues Produkt erstellen",
 				Icon.ADD_16.des(), this::addPrivate);

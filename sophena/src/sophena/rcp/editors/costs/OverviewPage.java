@@ -56,6 +56,9 @@ class OverviewPage extends FormPage {
 			case FOSSIL_FUEL_BOILER:
 			case HEAT_PUMP:
 			case COGENERATION_PLANT:
+			case SOLAR_THERMAL_PLANT:
+			case ELECTRIC_HEAT_GENERATOR:
+			case OTHER_HEAT_SOURCE:
 				boilers(type, body, tk);
 				break;
 			case HEAT_RECOVERY:
@@ -177,7 +180,7 @@ class OverviewPage extends FormPage {
 		DisplaySection<Producer> s = new DisplaySection<>(type);
 		s.content = () -> getProducers(type);
 		s.costs = p -> p.costs;
-		s.label = p -> p.boiler == null ? null : p.boiler.name;
+		s.label = p -> p.boiler == null ? p.name : p.boiler.name;
 		s.onOpen = p -> {
 			ProjectDescriptor project = project().toDescriptor();
 			ProducerDescriptor producer = p.toDescriptor();
@@ -192,11 +195,29 @@ class OverviewPage extends FormPage {
 			if (p.disabled)
 				continue;
 			Boiler b = p.boiler;
-			if (b != null && b.type == type)
-				list.add(p);
+			if (b != null) {
+				if (b.type == type) {
+					list.add(p);
+				}
+				continue;
+			}
+			if (!p.hasProfile())
+				continue;
+			// producer profiles
+			if (p.productGroup == null
+					|| p.productGroup.type != type)
+				continue;
+			list.add(p);
 		}
-		Collections.sort(list,
-				(p1, p2) -> Strings.compare(p1.boiler.name, p2.boiler.name));
+		Collections.sort(list, (p1, p2) -> {
+			String s1 = p1.boiler != null
+					? p1.boiler.name
+					: p1.name;
+			String s2 = p2.boiler != null
+					? p2.boiler.name
+					: p2.name;
+			return Strings.compare(s1, s2);
+		});
 		return list;
 	}
 }
