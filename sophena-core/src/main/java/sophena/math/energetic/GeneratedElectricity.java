@@ -15,8 +15,7 @@ public class GeneratedElectricity {
 		double maxPower = Producers.electricPower(p);
 		if (maxPower <= 0)
 			return 0;
-		double genHeat = r.energyResult.totalHeat(p);
-		double hours = Producers.fullLoadHours(p, genHeat);
+		double hours = Producers.fullLoadHours(p, r);
 		return hours * maxPower;
 	}
 

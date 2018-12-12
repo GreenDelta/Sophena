@@ -77,8 +77,7 @@ class ElectricityResultPage extends FormPage {
 			}
 			item.maxPower = elPower;
 			item.efficiencyRate = Producers.electricalEfficiency(p);
-			double heat = r.totalHeat(p);
-			item.fullLoadHours = Producers.fullLoadHours(p, heat);
+			item.fullLoadHours = Producers.fullLoadHours(p, result);
 			item.value = GeneratedElectricity.get(p, result);
 			total.set(total.get() + item.value);
 		}

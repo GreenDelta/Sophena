@@ -1,5 +1,6 @@
 package sophena.math.energetic;
 
+import sophena.calc.ProjectResult;
 import sophena.model.HeatRecovery;
 import sophena.model.Producer;
 import sophena.model.ProductType;
@@ -8,6 +9,16 @@ import sophena.model.Stats;
 public class Producers {
 
 	private Producers() {
+	}
+
+	/**
+	 * Get the full load hours [h] for the given producer in the given result.
+	 */
+	public static double fullLoadHours(Producer p, ProjectResult r) {
+		if (p == null || r == null || r.energyResult == null)
+			return 0;
+		double genHeat = r.energyResult.totalHeat(p);
+		return fullLoadHours(p, genHeat);
 	}
 
 	/**
