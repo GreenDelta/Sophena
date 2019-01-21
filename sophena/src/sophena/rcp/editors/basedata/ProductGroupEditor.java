@@ -79,6 +79,7 @@ public class ProductGroupEditor extends Editor {
 			table.setInput(groups);
 			double x = 1 / 6f;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
+			Tables.rightAlignColumns(table, 2, 3, 4, 5);
 		}
 
 		private class ProductGroupLabel extends LabelProvider
