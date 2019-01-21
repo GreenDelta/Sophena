@@ -100,26 +100,34 @@ public class ProductGroupEditor extends Editor {
 				if (!(obj instanceof ProductGroup))
 					return null;
 				ProductGroup p = (ProductGroup) obj;
+				boolean isOther = p.name != null
+						&& p.name.toLowerCase().contains("sonstig");
 				switch (col) {
 				case 0:
 					return p.index == 0 ? Labels.getPlural(p.type) : null;
 				case 1:
 					return p.name;
 				case 2:
-					return p.duration == 0 ? "-"
-							: Num.intStr(p.duration) + " Jahre";
+					return p.duration != 0
+							? Num.intStr(p.duration) + " Jahre"
+							: isOther ? "-" : "Projektlaufzeit";
 				case 3:
-					return p.repair == 0 ? "-" : Num.str(p.repair, 1) + " %";
+					return p.repair != 0
+							? Num.str(p.repair, 1) + " %"
+							: isOther ? "-" : "0 %";
 				case 4:
-					return p.maintenance == 0 ? "-"
-							: Num.str(p.maintenance, 1) + " %";
+					return p.maintenance != 0
+							? Num.str(p.maintenance, 1) + " %"
+							: isOther ? "-" : "0 %";
 				case 5:
-					return p.operation == 0 ? "-"
-							: Num.intStr(p.operation) + " Stunden/Jahr";
+					return p.operation != 0
+							? Num.intStr(p.operation) + " Stunden/Jahr"
+							: isOther ? "-" : "0 Stunden/Jahr";
 				default:
 					return null;
 				}
 			}
+
 		}
 	}
 }
