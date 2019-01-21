@@ -135,15 +135,20 @@ class BoilerWizard implements IContent {
 
 	private String validBoiler() {
 		if (!Texts.hasNumber(maxText))
-			return ("Es wurde keine maximale Leistung angegeben.");
+			return "Es wurde keine maximale Leistung angegeben.";
 		if (!Texts.hasNumber(minText))
-			return ("Es wurde keine minimale Leistung angegeben");
-		if (!Texts.hasPercentage(efficiencyText))
-			return ("Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.");
+			return "Es wurde keine minimale Leistung angegeben";
+		if (getProductType() == ProductType.HEAT_PUMP) {
+			if (!Texts.inRange(efficiencyText, 1, 6)) {
+				return "Es muss ein COP zwischen 1 und 6 angegeben werden.";
+			}
+		} else if (!Texts.inRange(efficiencyText, 0, 120)) {
+			return "Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.";
+		}
 		double max = Texts.getDouble(maxText);
 		double min = Texts.getDouble(minText);
 		if (min > max)
-			return ("Die minimale Leistung ist größer als die maximale.");
+			return "Die minimale Leistung ist größer als die maximale.";
 		return null;
 	}
 
@@ -151,16 +156,18 @@ class BoilerWizard implements IContent {
 		String message = validBoiler();
 		if (message != null)
 			return message;
-		if (!Texts.hasPercentage(efficiencyElText))
-			return ("Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.");
+		if (!Texts.inRange(efficiencyText, 0, 100))
+			return "Es muss ein Wirkungsgrad zwischen 0% und 100% angegeben werden.";
+		if (!Texts.inRange(efficiencyElText, 0, 100))
+			return "Es muss ein Wirkungsgrad zwischen 0% und 100% angegeben werden.";
 		if (!Texts.hasNumber(maxElText))
-			return ("Es wurde keine maximale elektrische Leistung angegeben.");
+			return "Es wurde keine maximale elektrische Leistung angegeben.";
 		if (!Texts.hasNumber(minElText))
-			return ("Es wurde keine minimale elektrische Leistung angegeben");
+			return "Es wurde keine minimale elektrische Leistung angegeben";
 		double maxEl = Texts.getDouble(maxElText);
 		double minEl = Texts.getDouble(minElText);
 		if (minEl > maxEl)
-			return ("Die minimale elektrische Leistung ist größer als die maximale.");
+			return "Die minimale elektrische Leistung ist größer als die maximale.";
 		return null;
 	}
 

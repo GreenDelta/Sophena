@@ -291,10 +291,10 @@ class ConsumptionWizard extends Wizard {
 					return error("Es wurde kein Brennstoff ausgewählt.");
 				if (!Texts.hasNumber(amountText))
 					return error("Es wurde keine gültige Menge eingetragen.");
-				if (fuel.isWood() && !Texts.hasPercentage(waterText))
+				if (fuel.isWood() && !Texts.inRange(waterText, 0, 60))
 					return error(
 							"Es wurde kein gültiger Wassergehalt eingetragen.");
-				if (!Texts.hasPercentage(utilText))
+				if (!Texts.inRange(utilText, 0, 100))
 					return error(
 							"Es wurde kein gültiger Wirkungsgrad oder Nutzungsgrad eingetragen");
 				else {

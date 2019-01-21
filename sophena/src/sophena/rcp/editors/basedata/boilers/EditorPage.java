@@ -115,7 +115,7 @@ class EditorPage extends FormPage {
 		boiler.type = type;
 		boiler.id = UUID.randomUUID().toString();
 		boiler.name = Labels.get(type) + " - neu";
-		boiler.efficiencyRate = .8;
+		boiler.efficiencyRate = type == ProductType.HEAT_PUMP ? 1.0 : 0.8;
 		if (BoilerWizard.open(boiler) != Window.OK)
 			return;
 		dao.insert(boiler);

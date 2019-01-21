@@ -100,14 +100,18 @@ public final class Texts {
 			return Num.readInt(text.getText());
 	}
 
-	public static boolean hasPercentage(Text text) {
+	/**
+	 * Returns true when the value of the given text is a number in the given
+	 * range.
+	 */
+	public static boolean inRange(Text text, double min, double max) {
 		if (text == null)
 			return false;
 		Number n = Num.readNumber(text.getText());
 		if (n == null)
 			return false;
 		double d = n.doubleValue();
-		return 0 <= d && d <= 120;
+		return min <= d && d <= max;
 	}
 
 	public static TextDispatch on(Text text) {
