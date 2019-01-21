@@ -114,6 +114,21 @@ public class ProducerEditor extends Editor {
 					"Der Rang des Erzeugers ist bereits vergeben.");
 			return false;
 		}
+		if (producer.heatRecovery != null
+				&& producer.boiler != null) {
+			double recoveryPower = producer.heatRecovery.producerPower;
+			double boilerPower = producer.boiler.maxPower;
+			if (Math.abs(recoveryPower - boilerPower) > 1) {
+				MsgBox.warn("Plausibilitätswarnung",
+						"Die Leistung des Wärmeerzeugers stimmt nicht mit"
+								+ " der von der Wärmerückgewinnungsanlage benötigten"
+								+ " Leistung überein. Als Folge können fehlerhafte"
+								+ " Ergebnisse bei den energetischen Berechnungen"
+								+ " auftreten.");
+				return true;
+			}
+		}
+
 		return true;
 	}
 
