@@ -162,6 +162,8 @@ public final class Labels {
 			return "Sonstige Wärmequelle";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
+		case OTHER_EQUIPMENT:
+			return "Sonstiges Zubehör";
 		case BUFFER_TANK:
 			return "Pufferspeicher";
 		case HEAT_RECOVERY:
@@ -181,7 +183,7 @@ public final class Labels {
 		case PLANNING:
 			return "Planung";
 		case TRANSFER_STATION:
-			return "Wärmeübergabestation";
+			return "Wärmeübergabe";
 		default:
 			return null;
 		}
@@ -263,6 +265,8 @@ public final class Labels {
 			return "Sonstige Wärmequellen";
 		case BOILER_ACCESSORIES:
 			return "Kesselzubehör";
+		case OTHER_EQUIPMENT:
+			return "Sonstiges Zubehör";
 		case BUFFER_TANK:
 			return "Pufferspeicher";
 		case HEAT_RECOVERY:
@@ -282,7 +286,7 @@ public final class Labels {
 		case PLANNING:
 			return "Planung";
 		case TRANSFER_STATION:
-			return "Wärmeübergabestationen";
+			return "Wärmeübergabe";
 		default:
 			return get(t);
 		}

@@ -71,7 +71,7 @@ class EntrySection {
 	}
 
 	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, Labels.get(type),
+		TableViewer table = Tables.createViewer(comp, "Produkt",
 				"Anzahl", "Investitionskosten", "Nutzungsdauer",
 				"Instandsetzung",
 				"Wartung und Inspektion", "Aufwand für Bedienen");

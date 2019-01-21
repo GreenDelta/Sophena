@@ -74,7 +74,7 @@ class DisplaySection<T> {
 	}
 
 	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, Labels.get(type),
+		TableViewer table = Tables.createViewer(comp, "Produkt",
 				"Investitionskosten", "Nutzungsdauer", "Instandsetzung",
 				"Wartung und Inspektion", "Aufwand für Bedienen");
 		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
