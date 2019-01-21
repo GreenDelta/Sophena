@@ -4,6 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class H extends NLS {
 
+	public static String AnnualCOP;
 	public static String BoilerAccessories;
 	public static String BoilerHouseTechnology;
 	public static String BufferLambda;
@@ -18,6 +19,7 @@ public class H extends NLS {
 	public static String PrimaryEnergyFactor;
 	public static String SimultaneityFactor;
 	public static String SmoothingFactor;
+	public static String UtilisationRate;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);

@@ -6,8 +6,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.ProductType;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
@@ -49,15 +52,16 @@ class UtilisationRateSwitch {
 	}
 
 	private void render(Composite parent, FormToolkit tk) {
-		UI.formLabel(parent, tk,
-				isHeatPump() ? "Jahresarbeitszahl" : "Nutzungsgrad");
+		String title = isHeatPump() ? "Jahresarbeitszahl" : "Nutzungsgrad";
+		UI.formLabel(parent, tk, title);
 		Composite comp = tk.createComposite(parent);
-		UI.innerGrid(comp, 2);
+		UI.innerGrid(comp, 3);
 		Button r1 = tk.createButton(comp, "Automatische Berechnung", SWT.RADIO);
 		if (producer().hasProfile() || isHeatPump()) {
 			r1.setEnabled(false);
 		}
-		UI.filler(comp);
+		UI.filler(comp, tk);
+		UI.filler(comp, tk);
 		Button r2 = tk.createButton(comp, "Manuelle Eingabe", SWT.RADIO);
 		text = tk.createText(comp, "");
 		UI.gridData(text, false, false).widthHint = 80;
@@ -66,6 +70,13 @@ class UtilisationRateSwitch {
 			r1.setSelection(true);
 		} else {
 			r2.setSelection(true);
+		}
+		if (isHeatPump()) {
+			HelpLink.create(comp, title, H.AnnualCOP);
+		} else if (Producers.isCoGenPlant(producer())) {
+			HelpLink.create(comp, title, H.UtilisationRate);
+		} else {
+			UI.filler(comp, tk);
 		}
 		Controls.onSelect(r1, e -> switchToCalculation());
 		Controls.onSelect(r2, e -> switchToInput());
