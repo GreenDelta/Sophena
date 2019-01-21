@@ -2,7 +2,9 @@ package sophena.rcp.editors;
 
 import java.util.function.Supplier;
 
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -45,13 +47,12 @@ public class ProductCostSection {
 		return createFields(composite, tk);
 	}
 
-	public ProductCostSection createFields(Composite composite) {
-		return createFields(composite, null);
+	public ProductCostSection createFields(Composite comp) {
+		return createFields(comp, null);
 	}
 
-	public ProductCostSection createFields(Composite composite,
-			FormToolkit tk) {
-		this.composite = composite;
+	public ProductCostSection createFields(Composite comp, FormToolkit tk) {
+		this.composite = comp;
 		this.toolkit = tk;
 
 		investmentText = t("Investitionskosten", "EUR", costs().investment)
@@ -75,8 +76,10 @@ public class ProductCostSection {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
 		TextDispatch disp = Texts.on(t).init(initial).decimal();
-		if (editor != null)
-			disp.onChanged((s) -> editor.setDirty());
+		if (editor != null) {
+			disp.onChanged(s -> editor.setDirty());
+		}
+		fillers();
 		return disp;
 	}
 
@@ -84,9 +87,23 @@ public class ProductCostSection {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
 		TextDispatch disp = Texts.on(t).init(initial).integer();
-		if (editor != null)
-			disp.onChanged((s) -> editor.setDirty());
+		if (editor != null) {
+			disp.onChanged(s -> editor.setDirty());
+		}
+		fillers();
 		return disp;
+	}
+
+	private void fillers() {
+		Layout layout = composite.getLayout();
+		if (!(layout instanceof GridLayout))
+			return;
+		GridLayout grid = (GridLayout) layout;
+		if (grid.numColumns <= 3)
+			return;
+		for (int i = 3; i < grid.numColumns; i++) {
+			UI.filler(composite, toolkit);
+		}
 	}
 
 	public void refresh() {

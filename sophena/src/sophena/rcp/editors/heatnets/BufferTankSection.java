@@ -13,6 +13,8 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.DeleteLink;
@@ -37,12 +39,12 @@ class BufferTankSection {
 
 	void create(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk, "Pufferspeicher");
-		UI.gridLayout(comp, 3);
+		UI.gridLayout(comp, 4);
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
 		createMaxTempText(comp, tk);
 		createLowerTempText(comp, tk);
-		createHeatLossText(comp, tk);
+		createLamdaText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ProductCosts();
 		costSection = new ProductCostSection(() -> net().bufferTankCosts)
@@ -59,6 +61,7 @@ class BufferTankSection {
 		Texts.on(volText).init(Num.intStr(initial))
 				.decimal().calculated();
 		UI.formLabel(comp, tk, "L");
+		UI.filler(comp, tk);
 	}
 
 	private void createMaxTempText(Composite comp, FormToolkit tk) {
@@ -69,6 +72,7 @@ class BufferTankSection {
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "°C");
+		UI.filler(comp, tk);
 	}
 
 	private void createLowerTempText(Composite comp, FormToolkit tk) {
@@ -88,9 +92,10 @@ class BufferTankSection {
 			}
 		});
 		UI.formLabel(comp, tk, "°C");
+		UI.filler(comp, tk);
 	}
 
-	private void createHeatLossText(Composite comp, FormToolkit tk) {
+	private void createLamdaText(Composite comp, FormToolkit tk) {
 		Text t = UI.formText(comp, tk, "\u03BB-Wert der Dämmung");
 		Texts.on(t).init(net().bufferLambda)
 				.decimal().required().onChanged(s -> {
@@ -98,6 +103,7 @@ class BufferTankSection {
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "W/m*K");
+		HelpLink.create(comp, tk, "\u03BB-Wert der Dämmung", H.BufferLambda);
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
@@ -113,12 +119,7 @@ class BufferTankSection {
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
 		Controls.onClick(link, e -> selectBufferTank(link));
-		createDeleteLink(inner, link);
-		UI.formLabel(comp, tk, "");
-	}
-
-	private void createDeleteLink(Composite comp, ImageHyperlink link) {
-		DeleteLink.on(comp, () -> {
+		DeleteLink.on(inner, () -> {
 			if (net().bufferTank == null)
 				return;
 			net().bufferTank = null;
@@ -129,6 +130,8 @@ class BufferTankSection {
 			costSection.refresh();
 			editor.setDirty();
 		});
+		UI.filler(comp, tk);
+		UI.filler(comp, tk);
 	}
 
 	private void selectBufferTank(ImageHyperlink link) {
