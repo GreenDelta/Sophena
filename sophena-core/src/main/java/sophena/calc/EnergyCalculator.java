@@ -31,6 +31,8 @@ class EnergyCalculator {
 		r.bufferCapacity[0] = maxBufferCapacity;
 		boolean[][] interruptions = interruptions(r);
 
+		boolean loadBuffer = false; // a flag for the summer mode
+
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
 			double requiredLoad = r.loadCurve[hour];
@@ -39,17 +41,37 @@ class EnergyCalculator {
 			double bufferPotential = maxBufferCapacity - bufferCapacity;
 
 			double suppliedPower = 0;
+
+			boolean isSummerMode = r.producers.length > 0
+					&& requiredLoad < Producers.minPower(r.producers[0], hour);
+			if (isSummerMode && (bufferPotential / maxBufferCapacity) > 0.9) {
+				// set the load `loadBuffer` flag to false when the buffer is
+				// full; because of buffer loss it may is never really full so
+				// we set some arbitrary cutoff for now.
+				loadBuffer = false;
+			}
+
 			for (int k = 0; k < r.producers.length; k++) {
 				if (requiredLoad <= 0)
 					break;
 
 				Producer producer = r.producers[k];
-				if (producer.function == ProducerFunction.PEAK_LOAD
-						&& (bufferPotential >= requiredLoad)) {
-					// prefer buffer heat instead of heat from peak load boilers
-					break;
+
+				if (bufferPotential >= requiredLoad) {
+					// the required load can be fully taken from the buffer.
+					// we do not take any producer when we are in summer mode.
+					// and no peak load producer in this case
+					if (isSummerMode && !loadBuffer)
+						break;
+					if (producer.function == ProducerFunction.PEAK_LOAD)
+						continue;
 				}
 
+				if (isSummerMode) {
+					loadBuffer = true;
+				}
+
+				// check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
 				if (maxLoad < Producers.minPower(producer, hour))
@@ -69,7 +91,7 @@ class EnergyCalculator {
 					// take rest from buffer
 					break;
 				}
-			}
+			} // end producer loop
 
 			if (requiredLoad >= 0 && bufferPotential > 0) {
 				double bufferPower = requiredLoad;
@@ -95,7 +117,8 @@ class EnergyCalculator {
 			if ((hour + 1) < Stats.HOURS) {
 				r.bufferCapacity[hour + 1] = bufferCapacity;
 			}
-		}
+
+		} // end hour loop
 
 		calcTotals(r);
 
