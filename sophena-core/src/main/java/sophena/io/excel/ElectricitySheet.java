@@ -36,7 +36,7 @@ class ElectricitySheet {
 		double total = calculateTotal(result.energyResult.producers);
 
 		for (Producer p : result.energyResult.producers) {
-			if (p.boiler == null || !p.boiler.isCoGenPlant)
+			if (!Producers.isCoGenPlant(p))
 				continue;
 			double heat = result.energyResult.totalHeat(p);
 			double value = GeneratedElectricity.get(p, result);
@@ -47,11 +47,11 @@ class ElectricitySheet {
 				w.str(p.rank + " - Spitzenlast");
 			}
 
-			w.rint(p.boiler.maxPowerElectric)
+			w.rint(Producers.electricPower(p))
 					.rint(value)
 					.rint((value / total) * 100)
 					.rint(Producers.fullLoadHours(p, heat))
-					.rint(p.boiler.efficiencyRateElectric * 100d)
+					.rint(Producers.electricalEfficiency(p) * 100d)
 					.nextRow();
 		}
 
