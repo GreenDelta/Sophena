@@ -91,10 +91,15 @@ public class Producers {
 	}
 
 	public static double efficiencyRate(Producer p) {
-		// TODO: producer profiles ...
-		if (p == null || p.boiler == null)
+		if (p == null)
 			return 0;
-		return p.boiler.efficiencyRate * heatRecoveryFactor(p);
+		if (p.boiler != null)
+			return p.boiler.efficiencyRate * heatRecoveryFactor(p);
+		// for producer profiles we assume that the utilization rate
+		// is the same as thermal efficiency rate
+		return p.utilisationRate != null
+				? p.utilisationRate
+				: 0.0;
 	}
 
 	private static double heatRecoveryFactor(Producer p) {

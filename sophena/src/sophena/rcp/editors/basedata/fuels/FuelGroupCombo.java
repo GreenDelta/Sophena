@@ -1,5 +1,7 @@
 package sophena.rcp.editors.basedata.fuels;
 
+import java.util.Objects;
+
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
@@ -83,7 +85,8 @@ class FuelGroupCombo {
 		for (Producer p : dao.getAll()) {
 			if (p.fuelSpec == null)
 				continue;
-			// TODO: if (Objects.equals(p.fuelSpec.fuel, fuel) -> false
+			if (Objects.equals(p.fuelSpec.fuel, fuel))
+				return false;
 		}
 		return true;
 	}

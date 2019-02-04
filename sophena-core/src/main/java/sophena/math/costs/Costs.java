@@ -57,14 +57,11 @@ public class Costs {
 			double priceChangeFactor) {
 		if (project == null)
 			return 0;
-		// TODO: log
 		double q = 1 + interestRate / 100;
 		double r = priceChangeFactor;
 		double T = project.duration;
-
 		if (Math.abs(q - r) < 1e-6)
 			return T / q;
-
 		return (1 - Math.pow(r / q, T)) / (q - r);
 	}
 

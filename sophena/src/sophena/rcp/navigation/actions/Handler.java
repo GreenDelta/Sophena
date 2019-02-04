@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
+import sophena.rcp.navigation.SubFolderType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -15,9 +15,7 @@ import sophena.rcp.navigation.NavigationElement;
 	Class<? extends NavigationElement> type();
 
 	/**
-	 * TODO: when the titles should be translated we can use the message keys
-	 * here:
-	 * 
+	 * When the titles should be translated we can use the message keys here:
 	 * M.getMap().get([the message key]).
 	 */
 	String title();

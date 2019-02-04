@@ -59,7 +59,7 @@ class EfficiencyChart {
 	private void addSeries(ISeriesSet set, String label, double value,
 			int colorId) {
 		IBarSeries s = (IBarSeries) set.createSeries(SeriesType.BAR, label);
-		s.setYSeries(new double[] { (double) Math.abs(Math.round(value)) }); // TODO
+		s.setYSeries(new double[] { (double) Math.abs(Math.round(value)) });
 		s.setBarColor(Colors.getForChart(colorId));
 		s.setBarWidthStyle(BarWidthStyle.FIXED);
 		s.setBarWidth(80);

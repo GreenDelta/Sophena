@@ -45,18 +45,15 @@ class ImportWizard extends Wizard {
 			station.id = UUID.randomUUID().toString();
 			ClimateFileReader reader = new ClimateFileReader(page.file,
 					page.settings);
-			getContainer().run(false,
-					false,
-					(m) -> {
-						m.beginTask("#Importiere", IProgressMonitor.UNKNOWN);
-						reader.run();
-						station.data = reader.getResult().getData();
-						// TODO: add error handling
-						Dao<WeatherStation> dao = new Dao<>(
-								WeatherStation.class,
-								App.getDb());
-						dao.insert(station);
-					});
+			getContainer().run(false, false, (m) -> {
+				m.beginTask("Importiere", IProgressMonitor.UNKNOWN);
+				reader.run();
+				station.data = reader.getResult().getData();
+				Dao<WeatherStation> dao = new Dao<>(
+						WeatherStation.class,
+						App.getDb());
+				dao.insert(station);
+			});
 			return true;
 		} catch (Exception e) {
 			return false;

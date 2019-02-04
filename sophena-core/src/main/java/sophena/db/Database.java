@@ -107,7 +107,7 @@ public class Database implements Closeable {
 			pool.close();
 		try {
 			DriverManager.getConnection(url + ";shutdown=true");
-			// TODO: single database shutdown throws unexpected
+			// single database shutdown throws unexpected
 			// error in eclipse APP - close all connections here
 			// DriverManager.getConnection("jdbc:derby:;shutdown=true");
 			System.gc(); // unload embedded driver for possible restarts
