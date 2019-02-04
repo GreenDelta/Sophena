@@ -43,11 +43,14 @@ public class EfficiencyResult {
 				if (er <= 0) {
 					ur = UtilisationRate.get(pr.project, p, pr.energyResult);
 				} else if (p.boiler != null) {
-					ur = (p.boiler.efficiencyRate + er);
+					ur = p.boiler.efficiencyRate + er;
 				} else if (p.hasProfile()) {
-					// TODO need feedback to issue #19
-					// how to get the thermal efficiency for producer profiles
-					ur = UtilisationRate.get(pr.project, p, pr.energyResult);
+					// see comments to issue #19; we assume that the
+					// utilization rate is the same as the thermal
+					// efficiency rate
+					ur = p.utilisationRate == null
+							? er
+							: p.utilisationRate + er;
 				}
 				double loss = fuelDemand * (1 - ur);
 				res.conversionLoss += loss;
