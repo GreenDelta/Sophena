@@ -52,6 +52,15 @@ class Upgrade2 implements Upgrade {
 	private void upgradeFuel(JsonObject obj) {
 		if (obj == null)
 			return;
+
+		// pellets update
+		if ("d0233ba5-e913-48d8-a61a-5af90c03bda2".equals(
+				Json.getString(obj, "id"))) {
+			obj.addProperty("unit", "t");
+			obj.addProperty("calorificValue", 5000.0);
+		}
+
+		// add a fuel group etc.
 		if (Json.getBool(obj, "wood", false)) {
 			obj.remove("wood");
 			obj.addProperty("calorificValue",
@@ -104,9 +113,16 @@ class Upgrade2 implements Upgrade {
 			relMix.addProperty("id", "905c55bc-00ab-4fd1-8993-94e1ad83ba0f");
 			costSettings.add("replacedElectricityMix", relMix);
 		}
+
+		// apdate consumers
 		JsonArray consumers = obj.getAsJsonArray("consumers");
 		for (JsonObject profile : pullConsumerLoadProfiles(consumers)) {
 			consumers.add(profile);
+		}
+		for (JsonElement e : consumers) {
+			if (!e.isJsonObject())
+				continue;
+			upgradeConsumer(e.getAsJsonObject());
 		}
 	}
 
@@ -206,6 +222,12 @@ class Upgrade2 implements Upgrade {
 		if (fuel.isWood()) {
 			obj.addProperty("woodAmountType", "CHIPS");
 		}
+
+		// update pellets price
+		if ("d0233ba5-e913-48d8-a61a-5af90c03bda2".equals(fuel.id)) {
+			double price = Json.getDouble(obj, "pricePerUnit", 0.0);
+			obj.addProperty("pricePerUnit", price * 1000);
+		}
 	}
 
 	private Fuel getDefaultFuel(Boiler boiler) {
@@ -221,6 +243,30 @@ class Upgrade2 implements Upgrade {
 			candidate = fuel;
 		}
 		return candidate;
+	}
+
+	private void upgradeConsumer(JsonObject obj) {
+		if (obj == null)
+			return;
+
+		// pellets update
+		JsonElement e = obj.get("fuelConsumptions");
+		if (e == null || !e.isJsonArray())
+			return;
+		for (JsonElement ee : e.getAsJsonArray()) {
+			if (!ee.isJsonObject())
+				continue;
+			JsonObject c = ee.getAsJsonObject();
+			JsonElement eee = c.get("fuel");
+			if (eee == null || !eee.isJsonObject())
+				continue;
+			if ("d0233ba5-e913-48d8-a61a-5af90c03bda2".equals(
+					Json.getString(eee.getAsJsonObject(), "id"))) {
+				double amount = Json.getDouble(c, "amount", 0.0);
+				c.addProperty("amount", amount / 1000.0);
+			}
+		}
+
 	}
 
 }
