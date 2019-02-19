@@ -42,8 +42,12 @@ class HeatSheet {
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
 			w.rint(Producers.fullLoadHours(p, heat));
-			w.rint(UtilisationRate.get(
-					result.project, p, result.energyResult) * 100);
+			if (p.boiler != null && p.boiler.isCoGenPlant) {
+				w.rint(100 * p.boiler.efficiencyRate);
+			} else {
+				w.rint(100 * UtilisationRate.get(
+						result.project, p, result.energyResult));
+			}
 			w.num(result.energyResult.numberOfStarts(p));
 			row++;
 		}
