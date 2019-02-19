@@ -43,7 +43,8 @@ class EnergyCalculator {
 			double suppliedPower = 0;
 
 			boolean isSummerMode = r.producers.length > 0
-					&& requiredLoad < Producers.minPower(r.producers[0], hour);
+					&& requiredLoad < Producers.minPower(r.producers[0], hour)
+					&& !r.producers[0].hasProfile();
 			if (isSummerMode && (bufferPotential / maxBufferCapacity) > 0.9) {
 				// set the load `loadBuffer` flag to false when the buffer is
 				// full; because of buffer loss it may is never really full so
@@ -69,6 +70,14 @@ class EnergyCalculator {
 
 				if (isSummerMode) {
 					loadBuffer = true;
+					if (bufferCapacity < Producers.minPower(
+							r.producers[0], hour)) {
+						// set buffer loading to false when the minimal power of
+						// the producer with rank=1 is lower than the capacity
+						// of the buffer; this also avoids buffer loading with
+						// secondary producers in the summer mode
+						loadBuffer = false;
+					}
 				}
 
 				// check whether the producer can be taken
