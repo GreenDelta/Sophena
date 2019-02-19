@@ -73,7 +73,7 @@ class BoilerTableSection {
 			Producer p = producers[i];
 			Item item = new Item();
 			item.name = p.name;
-			item.powerOrVolume = Num.str(Producers.maxPower(p)) + " kW";
+			item.powerOrVolume = Num.intStr(Producers.maxPower(p)) + " kW";
 			if (p.function == ProducerFunction.BASE_LOAD)
 				item.rank = p.rank + " - Grundlast";
 			else
@@ -129,7 +129,7 @@ class BoilerTableSection {
 		item.powerOrVolume = powerDiff < 0
 				? Num.intStr(powerDiff) + " kW"
 				: null;
-		if (diff != 0) {
+		if (diff >= 0.5) {
 			item.producedHeat = "-" + Num.intStr(diff) + " kWh";
 		}
 		items.add(item);

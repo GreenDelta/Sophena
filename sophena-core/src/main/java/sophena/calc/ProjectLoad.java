@@ -34,6 +34,19 @@ public class ProjectLoad {
 		return Math.ceil(load);
 	}
 
+	/**
+	 * Get the maximum load of the project taking a possible simultaneous factor
+	 * into account.
+	 */
+	public static double getSimultaneousMax(Project project) {
+		if (project == null)
+			return 0;
+		double max = ProjectLoad.getMax(project);
+		if (project.heatNet == null)
+			return max;
+		return Math.ceil(max * project.heatNet.simultaneityFactor);
+	}
+
 	public static double[] getCurve(Project project) {
 		double[] dynamicData = new double[Stats.HOURS];
 		double[] staticData = new double[Stats.HOURS];

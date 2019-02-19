@@ -13,7 +13,6 @@ import sophena.math.energetic.UtilisationRate;
 import sophena.model.BufferTank;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.utils.Num;
 
@@ -72,8 +71,9 @@ class HeatSheet {
 
 	private void diffAndBuffer(int row, Producer[] producers) {
 		double diff = calculateDiff(producers);
-		double powerDiff = calculatePowerDiff(producers, result.project);
-		if (diff != 0 || powerDiff < 0) {
+		double powerDiff = Producers.powerDifference(
+				producers, ProjectLoad.getSimultaneousMax(result.project));
+		if (diff >= 0.5 || powerDiff < 0) {
 			w.str(row, 0, "Ungedeckte Leistung");
 			w.rint(2, -powerDiff);
 			w.rint(4, -diff);
@@ -103,19 +103,6 @@ class HeatSheet {
 				diff += (load - supplied);
 		}
 		return diff;
-	}
-
-	private double calculatePowerDiff(Producer[] producers, Project p) {
-		double maxLoad;
-		maxLoad = ProjectLoad.getMax(p);
-		if (p.heatNet != null)
-			maxLoad = Math.ceil(maxLoad * p.heatNet.simultaneityFactor);
-
-		double power = 0;
-		for (Producer producer : producers) {
-			power += Producers.maxPower(producer);
-		}
-		return power - maxLoad;
 	}
 
 }

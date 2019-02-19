@@ -26,10 +26,7 @@ class EnergyResultPage extends FormPage {
 		this.editor = editor;
 		this.result = editor.result.energyResult;
 		Project p = editor.project;
-		maxLoad = ProjectLoad.getMax(p);
-		if (p.heatNet != null) {
-			maxLoad = Math.ceil(maxLoad * p.heatNet.simultaneityFactor);
-		}
+		maxLoad = ProjectLoad.getSimultaneousMax(p);
 	}
 
 	@Override
