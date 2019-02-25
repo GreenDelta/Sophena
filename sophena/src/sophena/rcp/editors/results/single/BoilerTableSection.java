@@ -121,7 +121,7 @@ class BoilerTableSection {
 			if (supplied < load)
 				diff += (load - supplied);
 		}
-		if (diff == 0 && powerDiff >= 0)
+		if (diff < 0.5 && powerDiff >= 0)
 			return;
 		Item item = new Item();
 		item.pos = -1;
