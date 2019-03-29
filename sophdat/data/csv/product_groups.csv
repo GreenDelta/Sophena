@@ -38,7 +38,7 @@ f463dae5-6415-4d9d-9622-2d51bb51d32d ; 9      ; BOILER_ACCESSORIES        ; Einb
 cd99a709-65ca-45d2-ac78-04de5ee0c81b ; 1      ; OTHER_EQUIPMENT           ; Solarthermie-Aufständerung                                     ;              ; 20        ; 0.5     ; 0.5          ; 0          
 4ed57594-aa5c-4395-9f3a-be707a8c1c5d ; 2      ; OTHER_EQUIPMENT           ; Sonstiges                                                      ;              ;           ;         ;              ;            
 8eede5b6-a6c4-4b32-a4b1-28ba1f8db4a4 ; 0      ; HEAT_RECOVERY             ; Rauchgaskondensation                                           ;              ; 15        ; 2       ; 1            ; 10         
-3b4c76f8-d3dc-43b1-ae42-e3a99c709625 ; 1      ; HEAT_RECOVERY             ; Abgaswärmetauscher / Economiser                                                     ;              ; 15        ; 2       ; 1            ; 5          
+3b4c76f8-d3dc-43b1-ae42-e3a99c709625 ; 1      ; HEAT_RECOVERY             ; Abgaswärmetauscher / Economiser                                ;              ; 15        ; 2       ; 1            ; 5          
 7e8d37f2-de71-4a73-86d0-cdf3b8241cc0 ; 0      ; FLUE_GAS_CLEANING         ; Zyklon                                                         ;              ; 20        ; 2       ; 2            ; 2          
 5ccf30a4-edca-4472-b192-ca5675239d7f ; 1      ; FLUE_GAS_CLEANING         ; Elektrofilter                                                  ;              ; 20        ; 2       ; 2            ; 2          
 be3c07b6-4a91-4838-870f-13df68d862ba ; 2      ; FLUE_GAS_CLEANING         ; Gewebefilter                                                   ;              ; 20        ; 2       ; 2            ; 2          
