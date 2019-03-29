@@ -109,8 +109,14 @@ public class ActionBarAdvisor extends
 					img(type),
 					() -> ProductEditor.open(type)));
 		}
-		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
+		m.add(Actions.create(
+				M.Manufacturers,
+				Icon.MANUFACTURER_16.des(),
 				ManufacturerEditor::open));
+		m.add(Actions.create(
+				"Produkte löschen ...",
+				Icon.DELETE_16.des(),
+				new ProductCleanup()));
 	}
 
 	private ImageDescriptor img(ProductType type) {
