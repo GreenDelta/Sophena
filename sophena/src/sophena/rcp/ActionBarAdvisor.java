@@ -114,7 +114,7 @@ public class ActionBarAdvisor extends
 				Icon.MANUFACTURER_16.des(),
 				ManufacturerEditor::open));
 		m.add(Actions.create(
-				"Produkte löschen ...",
+				"Produktdatenbank zurücksetzen",
 				Icon.DELETE_16.des(),
 				new ProductCleanup()));
 	}

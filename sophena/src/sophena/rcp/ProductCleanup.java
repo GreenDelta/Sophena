@@ -22,10 +22,10 @@ class ProductCleanup implements Runnable {
 
 	@Override
 	public void run() {
-		boolean doIt = MsgBox.ask("Wirklich löschen?",
+		boolean doIt = MsgBox.ask("Produktdatenbank zurücksetzen?",
 				"Diese Aktion löscht alle Produkte der "
-						+ "Produktdatenbank, die nicht verwendet "
-						+ "werden. Soll dies ausgeführt werden?");
+						+ "Produktdatenbank, die nicht selbst "
+						+ "erfasst wurden. Soll dies ausgeführt werden?");
 		if (!doIt)
 			return;
 
