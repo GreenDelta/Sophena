@@ -44,12 +44,7 @@ public class ProducerProfileChart {
 		// format the y-axis range
 		double minMax = Stats.max(min);
 		double maxMax = Stats.max(max);
-		double top;
-		if (minMax > 0) {
-			top = Stats.nextStep(maxMax + minMax);
-		} else {
-			top = Stats.nextStep(Stats.max(max));
-		}
+		double top = Stats.nextStep(Math.max(maxMax, minMax));
 		graph.getPrimaryYAxis().setRange(0, top);
 	}
 
