@@ -69,8 +69,8 @@ class KeyFigureTable {
 	private String distributionLoss(int i) {
 		EfficiencyResult er = EfficiencyResult.calculate(result.results[i]);
 		double loss = 0;
-		if (er.fuelEnergy > 0) {
-			loss = 100 * er.distributionLoss / er.fuelEnergy;
+		if (er.producedHeat > 0) {
+			loss = 100 * er.distributionLoss / er.producedHeat;
 		}
 		return Num.intStr(loss) + " %";
 	}

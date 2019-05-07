@@ -202,8 +202,8 @@ public class ComparisonExport implements Runnable {
 		each(r -> {
 			EfficiencyResult er = EfficiencyResult.calculate(r);
 			double loss = 0;
-			if (er.fuelEnergy > 0) {
-				loss = 100 * er.distributionLoss / er.fuelEnergy;
+			if (er.producedHeat > 0) {
+				loss = 100 * er.distributionLoss / er.producedHeat;
 			}
 			w.rint(loss);
 		});
