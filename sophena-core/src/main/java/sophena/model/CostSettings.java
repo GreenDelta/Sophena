@@ -172,6 +172,7 @@ public class CostSettings extends AbstractEntity {
 		clone.insuranceShare = insuranceShare;
 		clone.otherShare = otherShare;
 		clone.administrationShare = administrationShare;
+		clone.connectionFees = connectionFees;
 		for (AnnualCostEntry ace : annualCosts) {
 			if (ace != null) {
 				clone.annualCosts.add(ace.clone());
