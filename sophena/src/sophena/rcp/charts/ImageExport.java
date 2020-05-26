@@ -90,9 +90,9 @@ public class ImageExport extends Action {
 
 	private void showMessage(Ref<Throwable> err) {
 		if (err.get() == null) {
-			Popup.showInfo("Bild wurde gespeichert");
+			Popup.info("Bild wurde gespeichert");
 		} else {
-			Popup.showError("Bild konnte nicht gespeichert werden");
+			Popup.error("Bild konnte nicht gespeichert werden");
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Failed to export image", err.get());
 		}

@@ -44,7 +44,7 @@ public class PopupAppender extends AppenderSkeleton {
 			try {
 				openPopupCount.incrementAndGet();
 				new PopupTokenWatch().start();
-				Popup.showError(message);
+				Popup.error(message);
 			} catch (Exception e) {
 				handlePopupError(e);
 			}

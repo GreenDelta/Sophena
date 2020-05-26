@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.function.ToDoubleFunction;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swtchart.Chart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.swtchart.Chart;
 
 import sophena.calc.Comparison;
 import sophena.calc.ProjectResult;

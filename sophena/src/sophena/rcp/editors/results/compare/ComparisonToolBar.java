@@ -32,7 +32,7 @@ public class ComparisonToolBar extends EditorActionBarContributor {
 			return;
 		ComparisonExport export = new ComparisonExport(editor.comparison, file);
 		Rcp.run("Exportiere Ergebnisse ...", export, () -> {
-			Popup.showInfo("Ergebnisse wurden exportiert");
+			Popup.info("Ergebnisse wurden exportiert");
 		});
 	}
 }

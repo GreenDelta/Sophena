@@ -3,120 +3,70 @@ package sophena.rcp.utils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.ui.dialogs.AbstractNotificationPopup;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.nebula.widgets.opal.notifier.Notifier;
+import org.eclipse.nebula.widgets.opal.notifier.NotifierColorsFactory.NotifierTheme;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
 import sophena.rcp.Icon;
-import sophena.utils.Strings;
 
 public class Popup {
 
-	private String message;
-	private String title;
-	private Icon imageType;
+	private final String text;
+	private final String title;
+	private final Icon icon;
 
-	public static void showInfo(String message) {
-		showInfo("Information", message);
-	}
-
-	public static void showInfo(String title, String message) {
-		Popup p = new Popup(title, message);
-		p.setImageType(Icon.INFO_16);
-		p.show();
-	}
-
-	public static void showWarning(String message) {
-		showWarning("Warnung", message);
-	}
-
-	public static void showWarning(String title, String message) {
-		Popup p = new Popup(title, message);
-		p.setImageType(Icon.WARNING_16);
-		p.show();
-	}
-
-	public static void showError(String message) {
-		showError("Unerwarteter Fehler", message);
-	}
-
-	public static void showError(String title, String message) {
-		Popup p = new Popup(title, message);
-		p.setImageType(Icon.ERROR_16);
-		p.show();
-	}
-
-	public Popup(String title, String message) {
+	private Popup(String title, String message, Icon icon) {
 		this.title = title;
-		this.message = message;
+		this.text = message;
+		this.icon = icon;
 	}
 
-	public void setImageType(Icon imageType) {
-		this.imageType = imageType;
+	public static void info(String message) {
+		info("Information", message);
+	}
+
+	public static void info(String title, String message) {
+		Popup p = new Popup(title, message, Icon.INFO_16);
+		p.show();
+	}
+
+	public static void warning(String message) {
+		warning("Warnung", message);
+	}
+
+	public static void warning(String title, String message) {
+		Popup p = new Popup(title, message, Icon.WARNING_16);
+		p.show();
+	}
+
+	public static void error(String message) {
+		error("Unerwarteter Fehler", message);
+	}
+
+	public static void error(String title, String message) {
+		Popup p = new Popup(title, message, Icon.ERROR_16);
+		p.show();
 	}
 
 	public void show() {
 		UIJob job = new UIJob("Open popup") {
+
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				Display display = getDisplay();
 				if (display == null || display.isDisposed())
 					return Status.CANCEL_STATUS;
-				new PopupImpl(display).open();
+
+				Notifier.notify(
+						icon.img(),
+						title != null ? title : "?",
+						text != null ? text : "?",
+						NotifierTheme.YELLOW_THEME);
 				return Status.OK_STATUS;
 			}
 		};
 		job.schedule();
 	}
 
-	public class PopupImpl extends AbstractNotificationPopup {
-
-		public PopupImpl(Display display) {
-			super(display);
-		}
-
-		@Override
-		protected String getPopupShellTitle() {
-			return title;
-		}
-
-		@Override
-		protected void initializeBounds() {
-			// Georg: Workaround for a sizing bug in the extended implementation
-			super.initializeBounds();
-			Point currentSize = getShell().getSize();
-			Point currentLoc = getShell().getLocation();
-			Point newSize = getShell().computeSize(400, SWT.DEFAULT);
-			int widthDiff = newSize.x - currentSize.x;
-			int heightDiff = newSize.y - currentSize.y;
-			Point newLoc = new Point(currentLoc.x - widthDiff, //
-					currentLoc.y - heightDiff);
-			getShell().setLocation(newLoc);
-			getShell().setSize(newSize);
-		}
-
-		@Override
-		protected Image getPopupShellImage(int maximumHeight) {
-			if (imageType == null)
-				return Icon.INFO_16.img();
-			else
-				return imageType.img();
-		}
-
-		@Override
-		protected void createContentArea(Composite composite) {
-			composite.setLayout(new GridLayout(1, true));
-			Label label = new Label(composite, SWT.WRAP);
-			label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			label.setText(Strings.cut(message, 500));
-			label.setBackground(composite.getBackground());
-		}
-	}
 }

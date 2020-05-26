@@ -33,7 +33,7 @@ public class ResultToolBar extends EditorActionBarContributor {
 		ExcelExport export = new ExcelExport(editor.project, editor.result,
 				file);
 		Rcp.run("Exportiere Ergebnisse ...", export, () -> {
-			Popup.showInfo("Ergebnisse wurden exportiert");
+			Popup.info("Ergebnisse wurden exportiert");
 		});
 	}
 

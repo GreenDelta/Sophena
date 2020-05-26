@@ -8,11 +8,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.swtchart.Chart;
-import org.swtchart.IAxis;
-import org.swtchart.IBarSeries;
-import org.swtchart.IBarSeries.BarWidthStyle;
-import org.swtchart.ISeries.SeriesType;
+import org.eclipse.swtchart.Chart;
+import org.eclipse.swtchart.IAxis;
+import org.eclipse.swtchart.IBarSeries;
+import org.eclipse.swtchart.IBarSeries.BarWidthStyle;
+import org.eclipse.swtchart.ISeries.SeriesType;
 
 import sophena.calc.Comparison;
 import sophena.rcp.charts.ImageExport;

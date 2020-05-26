@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.swtchart,
  org.eclipse.swtchart.extensions,
- org.eclipse.draw2d
+ org.eclipse.draw2d,
+ org.eclipse.nebula.widgets.opal.notifier
 Eclipse-BundleShape: dir
 Bundle-ClassPath: .,
  libs/commons-codec-1.10.jar,
