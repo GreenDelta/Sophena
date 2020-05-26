@@ -55,41 +55,45 @@ public class LocationPage extends FormPage {
 	}
 
 	private void createAddressSection(Composite body) {
-		Composite c = UI.formSection(body, toolkit, M.Location);
-		Location init = loc.get();
-		t(c, M.Name, init.name, s -> loc.get().name = s);
-		t(c, M.Street, init.street, s -> loc.get().street = s);
-		t(c, M.ZipCode, init.zipCode, s -> loc.get().zipCode = s);
-		t(c, M.City, init.city, s -> loc.get().city = s);
-		latText = d(c, "Breitengrad", init.latitude,
+		var comp = UI.formSection(body, toolkit, M.Location);
+		var init = loc.get();
+		text(comp, M.Name, init.name,
+				s -> loc.get().name = s);
+		text(comp, M.Street, init.street,
+				s -> loc.get().street = s);
+		text(comp, M.ZipCode, init.zipCode,
+				s -> loc.get().zipCode = s);
+		text(comp, M.City, init.city,
+				s -> loc.get().city = s);
+		latText = number(comp, "Breitengrad", init.latitude,
 				d -> loc.get().latitude = d);
-		lngText = d(c, "Längengrad", init.longitude,
+		lngText = number(comp, "Längengrad", init.longitude,
 				d -> loc.get().longitude = d);
 	}
 
-	private void t(Composite comp, String label, String initial,
+	private void text(Composite comp, String label, String initial,
 			Consumer<String> fn) {
-		Text t = UI.formText(comp, toolkit, label);
-		Texts.on(t).init(initial).onChanged(s -> {
+		var text = UI.formText(comp, toolkit, label);
+		Texts.on(text).init(initial).onChanged(s -> {
 			fn.accept(s);
 			editor.setDirty();
 		});
 	}
 
-	private Text d(Composite comp, String label, Double initial,
+	private Text number(Composite comp, String label, Double initial,
 			Consumer<Double> fn) {
-		Text t = UI.formText(comp, toolkit, label);
-		Texts.on(t).init(initial).onChanged(s -> {
-			if (Texts.isEmpty(t)) {
+		var text = UI.formText(comp, toolkit, label);
+		Texts.on(text).init(initial).onChanged(s -> {
+			if (Texts.isEmpty(text)) {
 				fn.accept(null);
 				updateMarker();
 			} else {
-				fn.accept(Texts.getDouble(t));
+				fn.accept(Texts.getDouble(text));
 				updateMarker();
 			}
 			editor.setDirty();
 		});
-		return t;
+		return text;
 	}
 
 	private void createBrowserSection(Composite body) {
@@ -97,30 +101,56 @@ public class LocationPage extends FormPage {
 		UI.gridData(section, true, true);
 		var comp = UI.sectionClient(section, toolkit);
 		browser = new Browser(comp, SWT.NONE);
+		browser.setJavascriptEnabled(true);
+		UI.gridData(browser, true, true);
+
+		// bind location-changed handler
+		UI.bindFunction(browser, "locationChanged", objs -> {
+			if (objs == null || objs.length == 0)
+				return null;
+			Rcp.runInUI("update texts", () -> {
+				try {
+					var gson = new Gson();
+					var json = objs[0].toString();
+					var latlng = gson.fromJson(json, LatLng.class);
+					Texts.set(latText, Num.str(latlng.lat, 6));
+					Texts.set(lngText, Num.str(latlng.lng, 6));
+					loc.get().latitude = latlng.lat;
+					loc.get().longitude = latlng.lng;
+					editor.setDirty();
+				} catch (Exception e) {
+					var log = LoggerFactory.getLogger(getClass());
+					log.error("failed to parse location: " + objs[0], e);
+				}
+			});
+			return null;
+		});
+
+		// open the browser and initialize the url
 		var url = Workspace.html(
 				"LocationPage",
 				() -> getClass().getResourceAsStream("LocationPage.html"));
 		UI.onLoaded(browser, url, () -> {
-			InitData initData = getInitialLocation();
-			String json = new Gson().toJson(initData);
+			var initData = getInitialLocation();
+			var json = new Gson().toJson(initData);
 			browser.execute("init(" + json + ")");
 		});
 	}
 
 	private InitData getInitialLocation() {
-		InitData initData = new InitData();
-		Location location = loc.get();
+		var init = new InitData();
+		var location = loc.get();
 		if (location.latitude != null && location.longitude != null) {
-			initData.latlng.lat = location.latitude;
-			initData.latlng.lng = location.longitude;
-			initData.withMarker = true;
+			init.latlng.lat = location.latitude;
+			init.latlng.lng = location.longitude;
+			init.withMarker = true;
 		} else {
 			LatLng initLoc = findInitialLocation();
-			initData.latlng.lat = initLoc.lat;
-			initData.latlng.lng = initLoc.lng;
-			initData.withMarker = false;
+			init.latlng.lat = initLoc.lat;
+			init.latlng.lng = initLoc.lng;
+			init.withMarker = false;
 		}
-		return initData;
+		return init;
 	}
 
 	private LatLng findInitialLocation() {
