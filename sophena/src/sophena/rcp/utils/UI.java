@@ -1,7 +1,13 @@
 package sophena.rcp.utils;
 
+import java.util.function.Function;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -22,6 +28,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.slf4j.LoggerFactory;
 
 public class UI {
 
@@ -43,6 +50,58 @@ public class UI {
 		return shell;
 	}
 
+	/**
+	 * Calls the given function when the browser has loaded the given URL. No
+	 * threads are spawned here. You have to make sure that the given function
+	 * accesses the browser in the UI thread.
+	 */
+	public static void onLoaded(Browser browser, String url, Runnable fn) {
+		if (browser == null || url == null)
+			return;
+		browser.addProgressListener(new ProgressListener() {
+
+			@Override
+			public void completed(ProgressEvent event) {
+				if (fn != null) {
+					fn.run();
+					browser.removeProgressListener(this);
+				}
+			}
+
+			@Override
+			public void changed(ProgressEvent event) {
+			}
+		});
+		browser.setUrl(url);
+	}
+
+	/**
+	 * Bind the given function with the given name to the `window` object of the
+	 * given browser.
+	 */
+	public static void bindFunction(Browser browser, String name,
+			Function<Object[], Object> fn) {
+		if (browser == null || name == null || fn == null)
+			return;
+		var func = new BrowserFunction(browser, name) {
+			@Override
+			public Object function(Object[] args) {
+				try {
+					return fn.apply(args);
+				} catch (Exception e) {
+					var log = LoggerFactory.getLogger(UI.class);
+					log.error("failed to execute browser function " + name, e);
+					return null;
+				}
+			}
+		};
+		browser.addDisposeListener(e -> {
+			if (!func.isDisposed()) {
+				func.dispose();
+			}
+		});
+	}
+
 	public static Font boldFont() {
 		return JFaceResources.getFontRegistry().getBold(
 				JFaceResources.DEFAULT_FONT);
@@ -58,8 +117,8 @@ public class UI {
 	}
 
 	/**
-	 * Creates an italic font using the font data of the given control. The
-	 * returned font must be disposed by the respective caller.
+	 * Creates an italic font using the font data of the given control. The returned
+	 * font must be disposed by the respective caller.
 	 */
 	public static Font italicFont(Control control) {
 		if (control == null)
@@ -151,8 +210,8 @@ public class UI {
 	}
 
 	/**
-	 * Creates a composite and sets it as section client of the given section.
-	 * The created composite gets a 2-column grid-layout.
+	 * Creates a composite and sets it as section client of the given section. The
+	 * created composite gets a 2-column grid-layout.
 	 */
 	public static Composite sectionClient(Section section,
 			FormToolkit toolkit) {

@@ -24,13 +24,12 @@
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-log4j12-1.7.25.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-2.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/zt-zip-1.13.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<accessrules>
-			<accessrule kind="accessible" pattern="javafx/**"/>
-			<accessrule kind="accessible" pattern="netscape/**"/>
-		</accessrules>
-	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/sophena-core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-13">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
