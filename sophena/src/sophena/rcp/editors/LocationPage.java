@@ -7,25 +7,18 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import javafx.concurrent.Worker.State;
-import javafx.embed.swt.FXCanvas;
-import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import netscape.javascript.JSObject;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.rcp.M;
@@ -44,7 +37,7 @@ public class LocationPage extends FormPage {
 
 	private Text latText;
 	private Text lngText;
-	private WebEngine webkit;
+	private Browser browser;
 
 	public LocationPage(Editor editor, Supplier<Location> location,
 			Supplier<Project> proj) {
@@ -103,21 +96,14 @@ public class LocationPage extends FormPage {
 	}
 
 	private void createBrowserSection(Composite body) {
-		Section s = UI.section(body, toolkit, "Karte");
-		UI.gridData(s, true, true);
-		Composite c = UI.sectionClient(s, toolkit);
-		c.setLayout(new FillLayout());
-		FXCanvas fxCanvas = new FXCanvas(c, SWT.NONE);
-		fxCanvas.setLayout(new FillLayout());
-		WebView view = new WebView();
-		Scene scene = new Scene(view);
-		fxCanvas.setScene(scene);
-		webkit = view.getEngine();
-		webkit.load(getUrl());
-		webkit.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
-			if (newState == State.SUCCEEDED) {
-				initBrowser();
-			}
+		var section = UI.section(body, toolkit, "Karte");
+		UI.gridData(section, true, true);
+		var comp = UI.sectionClient(section, toolkit);
+		browser = new Browser(comp, SWT.NONE);
+		UI.onLoaded(browser, getUrl(), () -> {
+			InitData initData = getInitialLocation();
+			String json = new Gson().toJson(initData);
+			browser.execute("init(" + json + ")");
 		});
 	}
 
@@ -134,19 +120,6 @@ public class LocationPage extends FormPage {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("Could not get URL to location page", e);
 			return "";
-		}
-	}
-
-	private void initBrowser() {
-		InitData initData = getInitialLocation();
-		String json = new Gson().toJson(initData);
-		try {
-			JSObject win = (JSObject) webkit.executeScript("window");
-			win.setMember("java", new JSHandler());
-			webkit.executeScript("init(" + json + ")");
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to initialize browser " + json, e);
 		}
 	}
 
@@ -193,13 +166,13 @@ public class LocationPage extends FormPage {
 		Rcp.runInUI("update marker", () -> {
 			try {
 				if (l == null || l.latitude == null || l.longitude == null)
-					webkit.executeScript("removeMarker()");
+					browser.execute("removeMarker()");
 				else {
 					LatLng latlng = new LatLng();
 					latlng.lat = l.latitude;
 					latlng.lng = l.longitude;
 					String json = new Gson().toJson(latlng);
-					webkit.executeScript("setLocation(" + json + ")");
+					browser.execute("setLocation(" + json + ")");
 				}
 			} catch (Exception e) {
 				Logger log = LoggerFactory.getLogger(getClass());

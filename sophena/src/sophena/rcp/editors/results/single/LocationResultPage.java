@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -18,11 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import javafx.concurrent.Worker.State;
-import javafx.embed.swt.FXCanvas;
-import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import sophena.model.Consumer;
 import sophena.model.Location;
 import sophena.rcp.M;
@@ -33,7 +29,6 @@ public class LocationResultPage extends FormPage {
 
 	private ResultEditor editor;
 	private FormToolkit toolkit;
-	private WebEngine webkit;
 
 	public LocationResultPage(ResultEditor editor) {
 		super(editor, "sophena.LocationResultPage.html", M.Locations);
@@ -45,26 +40,13 @@ public class LocationResultPage extends FormPage {
 		ScrolledForm form = UI.formHeader(mform, M.Locations);
 		toolkit = mform.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
-		createBrowser(body);
-		form.reflow(true);
-	}
-
-	private void createBrowser(Composite body) {
 		body.setLayout(new FillLayout());
-		FXCanvas fxCanvas = new FXCanvas(body, SWT.NONE);
-		fxCanvas.setLayout(new FillLayout());
-		WebView view = new WebView();
-		Scene scene = new Scene(view);
-		fxCanvas.setScene(scene);
-		webkit = view.getEngine();
-		webkit.load(getUrl());
-		webkit.getLoadWorker().stateProperty().addListener((v, old, newState) -> {
-			if (newState != State.SUCCEEDED)
-				return;
+		var browser = new Browser(body, SWT.NONE);
+		UI.onLoaded(browser, getUrl(), () -> {
 			String json = createModel();
-			webkit.executeScript("setData(" + json + ")");
+			browser.execute("setData(" + json + ")");
 		});
-
+		form.reflow(true);
 	}
 
 	private String getUrl() {

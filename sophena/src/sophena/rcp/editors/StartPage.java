@@ -2,23 +2,17 @@ package sophena.rcp.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javafx.embed.swt.FXCanvas;
-import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import sophena.rcp.M;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -65,32 +59,25 @@ public class StartPage extends FormEditor {
 
 	private class Page extends FormPage {
 
-		private FormToolkit toolkit;
-		private WebEngine webkit;
-
 		public Page() {
 			super(StartPage.this, "sophena.StartPage", M.Welcome);
 		}
 
 		@Override
 		protected void createFormContent(IManagedForm mform) {
-			ScrolledForm form = UI.formHeader(mform, M.HomePage);
-			toolkit = mform.getToolkit();
-			Composite body = UI.formBody(form, toolkit);
-			createBrowserSection(body);
+			var form = UI.formHeader(mform, M.HomePage);
+			var tk = mform.getToolkit();
+			var body = UI.formBody(form, tk);
+			body.setLayout(new FillLayout());
+			var browser = new Browser(body, SWT.NONE);
+			browser.setJavascriptEnabled(true);
+			var url = getClass()
+					.getResource("Start.html")
+					.toExternalForm();
+			browser.setUrl(url);
 			form.reflow(true);
 		}
 
-		private void createBrowserSection(Composite body) {
-			body.setLayout(new FillLayout());
-			FXCanvas fxCanvas = new FXCanvas(body, SWT.NONE);
-			fxCanvas.setLayout(new FillLayout());
-			WebView view = new WebView();
-			Scene scene = new Scene(view);
-			fxCanvas.setScene(scene);
-			webkit = view.getEngine();
-			webkit.load(getClass().getResource("Start.html").toExternalForm());
-		}
 	}
 
 }
