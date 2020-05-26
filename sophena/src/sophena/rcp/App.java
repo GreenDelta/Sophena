@@ -16,6 +16,19 @@ public class App {
 	private App() {
 	}
 
+	public static String version() {
+		var context = Activator.getContext();
+		if (context == null || context.getBundle() == null)
+			return "2";
+		var v = context.getBundle().getVersion();
+		if (v == null)
+			return "2";
+		String s = v.toString();
+		return s.endsWith(".0")
+				? s.substring(0, s.length() - 2)
+				: s;
+	}
+
 	public static void init(Database db) {
 		App.db = db;
 	}
@@ -25,9 +38,9 @@ public class App {
 	}
 
 	/**
-	 * Used for temporary caching objects for the communication between editors
-	 * as editor inputs should be lightweight. The returned key can be used to
-	 * retrieve the object later (see {@link #pop(String)}).
+	 * Used for temporary caching objects for the communication between editors as
+	 * editor inputs should be lightweight. The returned key can be used to retrieve
+	 * the object later (see {@link #pop(String)}).
 	 */
 	public static String stash(Object obj) {
 		if (obj == null)

@@ -1,11 +1,15 @@
 package sophena.rcp;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.LoggerFactory;
 
 import sophena.rcp.utils.UI;
 
@@ -20,6 +24,25 @@ public class Workspace {
 
 	static void switchWorkspace() {
 		switchWorkspace(null);
+	}
+
+	/**
+	 * Returns the URL for the given HTML page in the workspace. If the
+	 * corresponding file does not exist it is created from the given stream.
+	 */
+	public static String html(String page, Supplier<InputStream> stream) {
+		var name = page + App.version() + ".html";
+		var file = new File(Workspace.dir(), name);
+		try {
+			if (!file.exists()) {
+				Files.copy(stream.get(), file.toPath());
+			}
+			return file.toURI().toURL().toString();
+		} catch (Exception e) {
+			var log = LoggerFactory.getLogger(Workspace.class);
+			log.error("Could not get URL to page " + page, e);
+			return "";
+		}
 	}
 
 	static void switchWorkspace(String toDir) {

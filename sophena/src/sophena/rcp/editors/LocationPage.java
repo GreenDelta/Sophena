@@ -1,8 +1,5 @@
 package sophena.rcp.editors;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -100,27 +97,14 @@ public class LocationPage extends FormPage {
 		UI.gridData(section, true, true);
 		var comp = UI.sectionClient(section, toolkit);
 		browser = new Browser(comp, SWT.NONE);
-		UI.onLoaded(browser, getUrl(), () -> {
+		var url = Workspace.html(
+				"LocationPage",
+				() -> getClass().getResourceAsStream("LocationPage.html"));
+		UI.onLoaded(browser, url, () -> {
 			InitData initData = getInitialLocation();
 			String json = new Gson().toJson(initData);
 			browser.execute("init(" + json + ")");
 		});
-	}
-
-	private String getUrl() {
-		String pageName = "LocationPage.html";
-		File f = new File(Workspace.dir(), pageName);
-		try {
-			if (!f.exists()) {
-				InputStream is = getClass().getResourceAsStream(pageName);
-				Files.copy(is, f.toPath());
-			}
-			return f.toURI().toURL().toString();
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("Could not get URL to location page", e);
-			return "";
-		}
 	}
 
 	private InitData getInitialLocation() {

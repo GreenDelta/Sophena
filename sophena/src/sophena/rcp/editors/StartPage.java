@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.rcp.M;
+import sophena.rcp.Workspace;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.UI;
@@ -71,13 +72,11 @@ public class StartPage extends FormEditor {
 			body.setLayout(new FillLayout());
 			var browser = new Browser(body, SWT.NONE);
 			browser.setJavascriptEnabled(true);
-			var url = getClass()
-					.getResource("Start.html")
-					.toExternalForm();
+			var url = Workspace.html(
+					"Home",
+					() -> getClass().getResourceAsStream("Start.html"));
 			browser.setUrl(url);
 			form.reflow(true);
 		}
-
 	}
-
 }
