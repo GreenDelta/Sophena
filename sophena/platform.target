@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Running Platform" sequenceNumber="25">
+<?pde version="3.8"?>
+<target name="Running Platform" sequenceNumber="25">
     <locations>
-        <location path="${eclipse_home}" type="Profile"/>
-        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.4.v20180322-2228"/>
-            <unit id="org.eclipse.rcp.feature.group" version="4.7.3.v20180330-0640"/>
-            <repository location="http://download.eclipse.org/eclipse/updates/4.7"/>
-        </location>
-        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.7.0.v20171231020002"/>
-            <repository location="http://download.eclipse.org/technology/babel/update-site/R0.15.1/oxygen"/>
-        </location>
-        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.eclipse.nebula.visualization.feature.feature.group" version="2.1.0.201804281520"/>
-            <repository location="http://download.eclipse.org/nebula/releases/latest"/>
-        </location>
-        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.swtchart" version="0.10.0.v20160212"/>
-            <unit id="org.swtchart.ext" version="0.10.0.v20160212"/>
-            <repository location="https://msrocka.github.io/swtcharts-update-site/target/repository"/>
-        </location>
-        <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.eclipse.fx.ide.basic.feature.feature.group" version="3.3.0.201805280700"/>
-            <unit id="org.eclipse.fx.ide.pde.feature.feature.group" version="3.3.0.201805280700"/>
-            <repository location="http://download.eclipse.org/efxclipse/updates-released/3.3.0/site"/>
-        </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/eclipse/updates/4.15/"/>
+		    <unit id="org.eclipse.emf.common.feature.group" version="2.18.0.v20191225-1014"/>
+		    <unit id="org.eclipse.emf.common.source.feature.group" version="2.18.0.v20191225-1014"/>
+		    <unit id="org.eclipse.emf.ecore.feature.group" version="2.21.0.v20200127-1342"/>
+		    <unit id="org.eclipse.emf.ecore.source.feature.group" version="2.21.0.v20200127-1342"/>
+		    <unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.100.v20200303-1901"/>
+		    <unit id="org.eclipse.platform.sdk" version="4.15.0.I20200305-0155"/>
+		    <unit id="org.eclipse.rcp.feature.group" version="4.15.0.v20200305-0155"/>
+		    <unit id="org.eclipse.rcp.source.feature.group" version="4.15.0.v20200305-0155"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/swtchart/releases/0.12.0/repository/"/>
+		    <unit id="org.eclipse.swtchart.feature.feature.group" version="0.12.0.202003130409"/>
+		    <unit id="org.eclipse.swtchart.feature.source.feature.group" version="0.12.0.202003130409"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="http://download.eclipse.org/nebula/releases/latest"/>
+		    <unit id="org.eclipse.nebula.feature.feature.group" version="2.3.0.201912241810"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="http://download.eclipse.org/tools/gef/updates/legacy/releases/"/>
+		    <unit id="org.eclipse.draw2d.feature.group" version="3.10.100.201606061308"/>
+		    <unit id="org.eclipse.draw2d.source.feature.group" version="3.10.100.201606061308"/>
+	    </location>
     </locations>
 </target>

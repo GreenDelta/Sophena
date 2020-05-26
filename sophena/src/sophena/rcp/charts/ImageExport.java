@@ -11,9 +11,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swtchart.Chart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.swtchart.Chart;
 
 import sophena.rcp.Icon;
 import sophena.rcp.utils.FileChooser;

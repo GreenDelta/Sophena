@@ -17,14 +17,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.ui.workbench.addons.swt,
  org.eclipse.equinox.ds,
  org.eclipse.equinox.event,
- org.eclipse.equinox.util,
  org.eclipse.ui.navigator,
  org.eclipse.nebula.visualization.xygraph,
- org.eclipse.mylyn.commons.ui,
- org.eclipse.fx.ui.workbench3,
- org.eclipse.draw2d,
- org.swtchart,
- org.swtchart.ext
+ org.eclipse.swtchart,
+ org.eclipse.swtchart.extensions,
+ org.eclipse.draw2d
 Eclipse-BundleShape: dir
 Bundle-ClassPath: .,
  libs/commons-codec-1.10.jar,
