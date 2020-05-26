@@ -3,7 +3,7 @@ sophdat generates the database packages for Sophena. It takes data from CSV
 and JSON files in the `data` folder and creates zip files that can be then
 imported into Sophena. There are also scripts in this repository that prepare
 the CSV files for this conversion from an Excel file (i.e. `xls2csv.py`).
-sophdate is a simple command line tool written in [Go](https://golang.org/).
+sophdat is a simple command line tool written in [Go](https://golang.org/).
 If you have Go installed, just switch to the `sophdat` folder and compile the
 tool:
 
@@ -34,7 +34,7 @@ All CSV files should be encoded in `UTF-8` and the column separator should be a
 semicolon, otherwise the conversion will not correctly work. Also, the first row
 is expected to contain the column headers and is ignored. The entries can
 have leading and trailing space characters in order to align the entries in a
-colum so that they are easier to read in plain text editors (see the
+column so that they are easier to read in plain text editors (see the
 `csvfmt.py` script). These leading and trailing space characters are removed
 when generating the data packages.
 
