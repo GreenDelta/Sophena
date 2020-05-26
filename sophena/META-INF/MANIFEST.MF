@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sophena
 Bundle-SymbolicName: sophena;singleton:=true
+Automatic-Module-Name: sophena
 Bundle-Version: 2.0.0
 Bundle-Activator: sophena.rcp.Activator
 Bundle-Vendor: GreenDelta
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-13
 Import-Package: org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
