@@ -1,5 +1,10 @@
 package sophena.rcp.editors;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -13,11 +18,14 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.db.daos.Dao;
+import sophena.model.Manufacturer;
+import sophena.rcp.App;
 import sophena.rcp.M;
-import sophena.rcp.Workspace;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.UI;
+import sophena.utils.Strings;
 
 public class StartPage extends FormEditor {
 
@@ -71,12 +79,51 @@ public class StartPage extends FormEditor {
 			var body = UI.formBody(form, tk);
 			body.setLayout(new FillLayout());
 			var browser = new Browser(body, SWT.NONE);
-			browser.setJavascriptEnabled(true);
+			// browser.setJavascriptEnabled(true);
+			/*
 			var url = Workspace.html(
 					"Home",
 					() -> getClass().getResourceAsStream("Start.html"));
 			browser.setUrl(url);
+
+			 */
+			browser.setText(createHtml());
 			form.reflow(true);
+		}
+
+		private String createHtml() {
+
+			// read the template
+			String template;
+			try (var stream = getClass().getResourceAsStream("StartPage.html");
+					var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+					var buff = new BufferedReader(reader))  {
+				template = buff.lines()
+						.collect(Collectors.joining("\n"));
+			} catch (Exception e) {
+				return "";
+			}
+
+			// create the logo rows
+			int i = 0;
+			var logos = new StringBuilder("<tr>");
+			var dao = new Dao<>(Manufacturer.class, App.getDb());
+			for (var m : dao.getAll()) {
+				if (Strings.nullOrEmpty(m.logo))
+					continue;
+				if (i > 0 && i % 4 == 0) {
+					logos.append("</tr><tr>");
+				}
+				logos.append("<td><img src=\"")
+						.append(m.logo)
+						.append("\" alt=\"")
+						.append(m.name)
+						.append("\" width=\"130\" /></td>");
+				i++;
+			}
+			logos.append("</tr>");
+
+			return template.replace("${logos}", logos);
 		}
 	}
 }
