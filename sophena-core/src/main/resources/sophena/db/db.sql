@@ -548,7 +548,7 @@ CREATE TABLE tbl_manufacturer (
     id          CHAR(36),
     name        VARCHAR(255),
     description CLOB(64 K),
-    logo        CLOB(64 K),
+    logo        CLOB(1024 K),
 
     is_protected BOOLEAN,
 

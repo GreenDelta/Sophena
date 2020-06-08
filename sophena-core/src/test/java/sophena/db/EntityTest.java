@@ -18,6 +18,7 @@ import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.LoadProfile;
 import sophena.model.Location;
+import sophena.model.Manufacturer;
 import sophena.model.Pipe;
 import sophena.model.Producer;
 import sophena.model.ProducerProfile;
@@ -41,6 +42,7 @@ public class EntityTest {
 			FuelConsumption.class,
 			LoadProfile.class,
 			Location.class,
+			Manufacturer.class,
 			Pipe.class,
 			Producer.class,
 			ProducerProfile.class,
