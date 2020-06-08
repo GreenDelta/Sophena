@@ -242,7 +242,8 @@ func eachCsvRow(filePath string, fn func([]string)) {
 	reader := csv.NewReader(file)
 	reader.Comma = ';'
 	i := 0
-	for r, err := reader.Read(); r != nil && err == nil; r, err = reader.Read() {
+	for r, err := reader.Read(); r != nil; r, err = reader.Read() {
+		check(err)
 		i++
 		if i == 1 {
 			continue
