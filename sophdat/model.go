@@ -91,6 +91,7 @@ type Manufacturer struct {
 	BaseDataEntity
 	Address string `json:"address,omitempty"`
 	URL     string `json:"url,omitempty"`
+	Logo    string `json:"logo,omitempty"`
 }
 
 // A Boiler stores data of a boiler product that can be used in

@@ -103,6 +103,7 @@ func (model *CsvModel) readManufacturers() {
 		m.Address = cStr(row, 2)
 		m.URL = cStr(row, 3)
 		m.Description = cStr(row, 4)
+		m.Logo = cStr(row, 5)
 		model.Manufacturers = append(model.Manufacturers, &m)
 	}
 	eachCsvRow("data/csv/manufacturers.csv", fn)
