@@ -21,13 +21,13 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class Database implements Closeable {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-	private EntityManagerFactory entityFactory;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final File folder;
+	private final String url;
 
-	private boolean closed = false;
-	private File folder;
-	private String url;
+	private EntityManagerFactory entityFactory;
 	private HikariDataSource pool;
+	private boolean closed = false;
 
 	public Database(File folder) {
 		this.folder = folder;
@@ -55,9 +55,7 @@ public class Database implements Closeable {
 		if (!log.exists())
 			return true;
 		File seg0 = new File(folder, "seg0");
-		if (!seg0.exists())
-			return true;
-		return false;
+		return !seg0.exists();
 	}
 
 	private void createNew(String url) {
@@ -133,8 +131,7 @@ public class Database implements Closeable {
 		log.trace("create connection: {}", url);
 		try {
 			if (pool != null) {
-				Connection con = pool.getConnection();
-				return con;
+				return pool.getConnection();
 			} else {
 				log.warn("no connection pool set up for {}", url);
 				return DriverManager.getConnection(url);

@@ -1,7 +1,7 @@
 CREATE TABLE sophena_version (
     version SMALLINT
 );
-INSERT INTO sophena_version (version) VALUES (1);
+INSERT INTO sophena_version (version) VALUES (2);
 
 
 CREATE TABLE tbl_weather_stations (
@@ -545,9 +545,10 @@ CREATE TABLE tbl_producers (
 
 CREATE TABLE tbl_manufacturer (
 
-    id CHAR(36),
-    name VARCHAR(255),
+    id          CHAR(36),
+    name        VARCHAR(255),
     description CLOB(64 K),
+    logo        CLOB(64 K),
 
     is_protected BOOLEAN,
 

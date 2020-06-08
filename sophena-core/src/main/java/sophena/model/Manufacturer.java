@@ -14,4 +14,6 @@ public class Manufacturer extends BaseDataEntity {
 	@Column(name = "url")
 	public String url;
 
+	@Column(name = "logo")
+	public String logo;
 }
