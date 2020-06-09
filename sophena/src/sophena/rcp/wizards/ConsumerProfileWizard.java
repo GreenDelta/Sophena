@@ -141,19 +141,19 @@ public class ConsumerProfileWizard extends Wizard {
 				return;
 
 			var r = ConsumerProfiles.read(f, consumer);
-			var message = r.message();
 
 			// check error
 			if (r.isError()) {
 				consumer.profile = null;
-				MsgBox.error(message.orElse(
+				MsgBox.error(r.message().orElse(
 						"Fehler beim Lesen der Datei"));
 				return;
 			}
 
-			// display warnings
-			if (r.isWarning() && message.isPresent()) {
-				MsgBox.warn(message.get());
+			// show warnings
+			if (r.isWarning()) {
+				MsgBox.warn(r.message().orElse(
+						"Die Datei enthält Formatfehler"));
 			}
 			fileText.setText(f.getAbsolutePath());
 		}

@@ -58,7 +58,7 @@ public final class LoadProfiles {
 							? Double.parseDouble(parts[2].replace(',', '.'))
 							: 0.0;
 
-					if (idx < 0 || idx > Stats.HOURS)
+					if (idx < 0 || idx >= Stats.HOURS)
 						return Result.error("Ungültige Stunde in Zeile "
 								+ (row + 1) + ": " + (idx + 1));
 					profile.dynamicData[idx] = dyn;

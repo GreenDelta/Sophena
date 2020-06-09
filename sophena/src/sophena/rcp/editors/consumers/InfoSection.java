@@ -9,8 +9,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sophena.Labels;
 import sophena.db.daos.BuildingStateDao;
@@ -158,15 +156,17 @@ class InfoSection {
 		File f = FileChooser.open("*.csv", "*.txt");
 		if (f == null)
 			return;
-		try {
-			ConsumerProfiles.read(f, consumer());
-			editor.calculate();
-			editor.setDirty();
-		} catch (Exception e) {
-			MsgBox.error("Datei konnte nicht gelesen werden",
-					e.getMessage());
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("Failed to read consumer profile " + f, e);
+		var r = ConsumerProfiles.read(f, consumer());
+		if (r.isError()) {
+			MsgBox.error(r.message().orElse(
+					"Datei konnte nicht gelesen werden"));
+			return;
 		}
+		if (r.isWarning()) {
+			MsgBox.warn(r.message().orElse(
+					"Die Datei enthält Formatfehler"));
+		}
+		editor.calculate();
+		editor.setDirty();
 	}
 }
