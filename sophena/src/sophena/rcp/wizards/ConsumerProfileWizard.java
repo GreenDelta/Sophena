@@ -11,7 +11,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
@@ -32,8 +31,6 @@ import sophena.rcp.utils.UI;
 import sophena.utils.Strings;
 
 public class ConsumerProfileWizard extends Wizard {
-
-	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private Project project;
 	private Consumer consumer;
@@ -85,6 +82,7 @@ public class ConsumerProfileWizard extends Wizard {
 					consumer.toDescriptor());
 			return true;
 		} catch (Exception e) {
+			var log = LoggerFactory.getLogger(getClass());
 			log.error("failed to update project with new consumer", e);
 			return false;
 		}
@@ -141,15 +139,23 @@ public class ConsumerProfileWizard extends Wizard {
 			File f = FileChooser.open("*.csv", "*.txt");
 			if (f == null)
 				return;
-			try {
-				ConsumerProfiles.read(f, consumer);
-				fileText.setText(f.getAbsolutePath());
-			} catch (Exception e) {
-				MsgBox.error("Datei konnte nicht gelesen werden",
-						e.getMessage());
+
+			var r = ConsumerProfiles.read(f, consumer);
+			var message = r.message();
+
+			// check error
+			if (r.isError()) {
 				consumer.profile = null;
-				log.error("Failed to read consumer profile " + f, e);
+				MsgBox.error(message.orElse(
+						"Fehler beim Lesen der Datei"));
+				return;
 			}
+
+			// display warnings
+			if (r.isWarning() && message.isPresent()) {
+				MsgBox.warn(message.get());
+			}
+			fileText.setText(f.getAbsolutePath());
 		}
 
 		private boolean isValid() {

@@ -9,9 +9,12 @@ import sophena.model.Stats;
 import sophena.utils.Result;
 import sophena.utils.Strings;
 
-public class LoadProfileReader {
+public final class LoadProfiles {
 
-	public Result<LoadProfile> read(File file) {
+	private LoadProfiles() {
+	}
+
+	public static Result<LoadProfile> read(File file) {
 		try {
 			// read all lines
 			var rows = Files.readAllLines(file.toPath());
@@ -79,7 +82,7 @@ public class LoadProfileReader {
 	/**
 	 * Identify the column separator from the content of the file.
 	 */
-	private String getSeparator(List<String> rows) {
+	private static String getSeparator(List<String> rows) {
 		var header = rows.get(0);
 		boolean inQuotes = false;
 		boolean hasSemicolon = false;
@@ -92,14 +95,14 @@ public class LoadProfileReader {
 			if (inQuotes)
 				continue;
 			switch (c) {
-				case ';':
-					hasSemicolon = true;
-					break;
-				case ',':
-					hasComma = true;
-					break;
-				default:
-					break;
+			case ';':
+				hasSemicolon = true;
+				break;
+			case ',':
+				hasComma = true;
+				break;
+			default:
+				break;
 			}
 		}
 		return hasSemicolon

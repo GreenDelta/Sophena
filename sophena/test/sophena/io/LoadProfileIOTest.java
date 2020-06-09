@@ -37,12 +37,10 @@ public class LoadProfileIOTest {
 	public void testIO() {
 		LoadProfileWriter writer = new LoadProfileWriter();
 		writer.write(profile, testFile);
-		LoadProfileReader reader = new LoadProfileReader();
-		LoadProfile copy = reader.read(testFile);
+		var copy = LoadProfiles.read(testFile).get();
 		for (int i = 0; i < Stats.HOURS; i++) {
 			Assert.assertEquals(profile.dynamicData[i], copy.dynamicData[i], 1e-2);
 			Assert.assertEquals(profile.staticData[i], copy.staticData[i], 1e-2);
 		}
 	}
-
 }
