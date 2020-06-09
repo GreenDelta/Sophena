@@ -34,7 +34,7 @@ public class BuildDb {
 
 			File zip = new File("../sophena/resources/database.zip");
 			if (zip.exists()) {
-				System.out.println("Delete old databse: " + zip);
+				System.out.println("Delete old database: " + zip);
 				FileUtils.forceDelete(zip);
 			}
 			System.out.println("Package new database");

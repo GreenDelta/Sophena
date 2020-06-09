@@ -104,13 +104,19 @@ public class StartPage extends FormEditor {
 				return "";
 			}
 
+			var manufs = new Dao<>(Manufacturer.class, App.getDb())
+					.getAll()
+					.stream()
+					.filter(m -> Strings.notEmpty(m.logo))
+					.collect(Collectors.toList());
+			if (manufs.isEmpty())
+				return template.replace("${logos}", "");
+
 			// create the logo rows
 			int i = 0;
-			var logos = new StringBuilder("<tr>");
-			var dao = new Dao<>(Manufacturer.class, App.getDb());
-			for (var m : dao.getAll()) {
-				if (Strings.nullOrEmpty(m.logo))
-					continue;
+			var logos = new StringBuilder("<h2>Mit Produkten von:</h2>")
+					.append("<table><tbody><tr>");
+			for (var m : manufs) {
 				if (i > 0 && i % 4 == 0) {
 					logos.append("</tr><tr>");
 				}
@@ -121,8 +127,7 @@ public class StartPage extends FormEditor {
 						.append("\" width=\"130\" /></td>");
 				i++;
 			}
-			logos.append("</tr>");
-
+			logos.append("</tr></tbody></table>");
 			return template.replace("${logos}", logos);
 		}
 	}
