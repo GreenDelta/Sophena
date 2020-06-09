@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+
+	<persistence-unit name="sophena">
+
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+		<class>sophena.model.Boiler</class>
+		<class>sophena.model.BufferTank</class>
+        <class>sophena.model.BuildingState</class>
+        <class>sophena.model.Consumer</class>
+        <class>sophena.model.CostSettings</class>
+		<class>sophena.model.FlueGasCleaning</class>
+		<class>sophena.model.FlueGasCleaningEntry</class>
+        <class>sophena.model.FuelConsumption</class>
+        <class>sophena.model.Fuel</class>
+        <class>sophena.model.HeatNet</class>
+        <class>sophena.model.HeatNetPipe</class>
+		<class>sophena.model.HeatRecovery</class>
+        <class>sophena.model.LoadProfile</class>
+		<class>sophena.model.Location</class>
+		<class>sophena.model.Manufacturer</class>
+		<class>sophena.model.Pipe</class>
+		<class>sophena.model.Producer</class>
+		<class>sophena.model.ProducerProfile</class>
+		<class>sophena.model.Product</class>
+		<class>sophena.model.ProductEntry</class>
+		<class>sophena.model.ProductGroup</class>
+		<class>sophena.model.Project</class>
+		<class>sophena.model.ProjectFolder</class>
+		<class>sophena.model.TimeInterval</class>
+		<class>sophena.model.TransferStation</class>
+		<class>sophena.model.WeatherStation</class>
+
+		<properties>
+			<property name="eclipselink.connection-pool.default.max"
+				value="10" />
+			<property name="eclipselink.jdbc.cache-statements" value="true" />
+			<property name="eclipselink.logging.level" value="WARNING" />
+		</properties>
+
+	</persistence-unit>
+</persistence>

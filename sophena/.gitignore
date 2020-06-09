@@ -2,6 +2,6 @@
 *iml
 /.idea/
 /libs/
-/testlibs/
+/libs-test/
 derby.log
 /.settings/
