@@ -4,97 +4,106 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
+import sophena.utils.Result;
 import sophena.utils.Strings;
 
 public class LoadProfileReader {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-
-	public LoadProfile read(File file) {
-		if (file == null) {
-			log.error("File is null");
-			return null;
-		}
-		LoadProfile profile = LoadProfile.initEmpty();
+	public Result<LoadProfile> read(File file) {
 		try {
-			List<String> rows = Files.readAllLines(file.toPath());
+			// read all lines
+			var rows = Files.readAllLines(file.toPath());
+			if (rows.size() < 2)
+				return Result.error("Die Datei hat weniger als zwei Zeilen.");
+
+			// determine the column separator
+			var sep = getSeparator(rows);
+			if ("?".equals(sep))
+				return Result.error(
+						"Das Spaltentrennzeichen konnte nicht ermittelt werden");
+
+			// check the number of rows
+			String warning = null;
 			if (rows.size() != (Stats.HOURS + 1)) {
-				log.warn("file contains {} rows but should contain {}",
-						rows.size(), Stats.HOURS);
+				warning = "Die Datei enthält weniger als "
+						+ (Stats.HOURS + 1) + "Zeilen";
 			}
-			readRows(rows, profile);
+
+			// parse the rows
+			var profile = LoadProfile.initEmpty();
+			for (int row = 1; row < rows.size(); row++) {
+				var line = rows.get(row);
+				if (Strings.nullOrEmpty(line))
+					continue;
+
+				// split the row and check the format
+				var parts = line.split(sep);
+				if (parts.length < 2)
+					return Result.error("Ungültiges Dateiformat: Die Zeile "
+							+ (row + 1) + " hat weniger als 2 Spalten");
+				if (parts.length < 3) {
+					warning = "Es fehlen Werte in der dritten Spalte";
+				}
+
+				// parse the numbers
+				try {
+					int idx = Integer.parseInt(parts[0], 10) - 1;
+					double dyn = Double.parseDouble(parts[1].replace(',', '.'));
+					double stat = parts.length > 2
+							? Double.parseDouble(parts[2].replace(',', '.'))
+							: 0.0;
+
+					if (idx < 0 || idx > Stats.HOURS)
+						return Result.error("Ungültige Stunde in Zeile "
+								+ (row + 1) + ": " + (idx + 1));
+					profile.dynamicData[idx] = dyn;
+					profile.staticData[idx] = stat;
+				} catch (Exception e) {
+					return Result.error("Die Zahlen in Zeile "
+							+ (row + 1) + " konnten nicht gelesen werden.");
+				}
+			} // for
+
+			return warning != null
+					? Result.warning(profile, warning)
+					: Result.ok(profile);
+
 		} catch (Exception e) {
-			log.error("failed to read load profile" + file, e);
+			return Result.error(
+					"Die Datei konnte nicht gelesen werden: " + e.getMessage());
 		}
-		return profile;
 	}
 
-	private void readRows(List<String> rows, LoadProfile profile) {
-		if (rows.size() < 2)
-			return;
-		String sep = getSeparator(rows.get(1));
-		for (int row = 1; row < rows.size(); row++) {
-			String line = rows.get(row);
-			Entry e = Entry.read(rows.get(row), sep);
-			if (e == null || !e.isValid()) {
-				log.warn("invalid entry {} at row {}", line, row);
+	/**
+	 * Identify the column separator from the content of the file.
+	 */
+	private String getSeparator(List<String> rows) {
+		var header = rows.get(0);
+		boolean inQuotes = false;
+		boolean hasSemicolon = false;
+		boolean hasComma = false;
+		for (char c : header.toCharArray()) {
+			if (c == '"') {
+				inQuotes = !inQuotes;
 				continue;
 			}
-			profile.dynamicData[e.index] = e.dynamicValue;
-			profile.staticData[e.index] = e.staticValue;
-		}
-	}
-
-	private String getSeparator(String row) {
-		if (row == null)
-			return ";";
-		for (char c : row.trim().toCharArray()) {
-			if (Character.isDigit(c) || ' ' == c)
+			if (inQuotes)
 				continue;
-			return Character.toString(c);
-		}
-		return ";";
-	}
-
-	private static class Entry {
-
-		int index;
-		double dynamicValue;
-		double staticValue;
-
-		Entry(int index, double dynamicValue, double staticValue) {
-			this.index = index;
-			this.dynamicValue = dynamicValue;
-			this.staticValue = staticValue;
-		}
-
-		boolean isValid() {
-			return 0 <= index && index < Stats.HOURS;
-		}
-
-		static Entry read(String row, String separator) {
-			if (Strings.nullOrEmpty(row))
-				return new Entry(-1, 0, 0);
-			String[] parts = row.split(separator);
-			if (parts.length < 3)
-				return new Entry(-1, 0, 0);
-			return make(parts[0], parts[1], parts[2]);
-		}
-
-		static Entry make(String i, String dynVal, String statVal) {
-			try {
-				int index = Integer.parseInt(i, 10);
-				double dyn = Double.parseDouble(dynVal.replace(',', '.'));
-				double stat = Double.parseDouble(statVal.replace(',', '.'));
-				return new Entry(index - 1, dyn, stat);
-			} catch (Exception e) {
-				return new Entry(-1, 0, 0);
+			switch (c) {
+				case ';':
+					hasSemicolon = true;
+					break;
+				case ',':
+					hasComma = true;
+					break;
+				default:
+					break;
 			}
 		}
+		return hasSemicolon
+				? ";"
+				: hasComma ? "," : "?";
 	}
 }

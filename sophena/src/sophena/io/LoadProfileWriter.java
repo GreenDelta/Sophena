@@ -14,9 +14,8 @@ import sophena.utils.Num;
 
 public class LoadProfileWriter {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-
-	char decimalSeparator;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final char decimalSeparator;
 
 	public LoadProfileWriter() {
 		decimalSeparator = Num.getFormat()
@@ -26,19 +25,19 @@ public class LoadProfileWriter {
 
 	public void write(LoadProfile profile, File file) {
 		if (profile == null || file == null) {
-			log.error("file ({}) or profile ({})is null", file, profile);
+			log.error("file ({}) or profile ({}) is null", file, profile);
 			return;
 		}
 		try {
-			List<String> rows = new ArrayList<>();
-			makeRows(profile, rows);
+			var rows = makeRows(profile);
 			Files.write(file.toPath(), rows);
 		} catch (Exception e) {
 			log.error("failed to write profile to file " + file, e);
 		}
 	}
 
-	private void makeRows(LoadProfile p, List<String> rows) {
+	private List<String> makeRows(LoadProfile p) {
+		var rows = new ArrayList<String>();
 		rows.add("Stunde;Heizwaerme;Warmwasser;Gesamt");
 		StringBuilder row = new StringBuilder();
 		double[] totals = p.calculateTotal();
@@ -50,6 +49,7 @@ public class LoadProfileWriter {
 			rows.add(row.toString());
 			row = new StringBuilder();
 		}
+		return rows;
 	}
 
 	private String str(double[] array, int i) {
