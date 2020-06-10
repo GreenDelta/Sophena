@@ -9,13 +9,14 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import org.eclipse.swt.widgets.Shell;
 import sophena.rcp.Icon;
 import sophena.rcp.utils.UI;
 
 public class HelpBox extends Dialog {
 
-	private String title;
-	private String text;
+	private final String title;
+	private final String text;
 
 	private HelpBox(String title, String text) {
 		super(UI.shell());
@@ -31,11 +32,6 @@ public class HelpBox extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		var comp = (Composite) super.createDialogArea(parent);
-		var shell = getShell();
-		if (shell != null && title != null) {
-			shell.setText(title);
-			shell.setImage(Icon.INFO_16.img());
-		}
 		comp.setLayout(new FillLayout());
 		var browser = new Browser(comp, SWT.NONE);
 		browser.setText(
@@ -53,6 +49,18 @@ public class HelpBox extends Dialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(450, 300);
+		return new Point(600, 400);
+	}
+
+	@Override
+	protected void configureShell(Shell shell) {
+		super.configureShell(shell);
+		shell.setText(title);
+		shell.setImage(Icon.INFO_16.img());
+	}
+
+	@Override
+	protected boolean isResizable() {
+		return true;
 	}
 }
