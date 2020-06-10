@@ -1,5 +1,6 @@
 package sophena.math;
 
+import sophena.Defaults;
 import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.model.Project;
@@ -24,7 +25,8 @@ public class Smoothing {
 		if (rawMax == 0)
 			return 0;
 		var fsiEstimated = 0.9 * maxLoad * fsi / rawMax;
-		var countEstimated = Math.round(20 * 10 * (1 - fsiEstimated)
+		var countEstimated = Math.round(20
+				* Defaults.SMOOTHING_FACTOR * (1 - fsiEstimated)
 				* Math.pow(2, (10 * (1 - fsiEstimated))));
 		return countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
 	}

@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.Defaults;
 import sophena.calc.ProjectLoad;
 import sophena.db.daos.ProjectDao;
+import sophena.math.Smoothing;
 import sophena.math.energetic.HeatNets;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
@@ -217,17 +217,30 @@ class HeatNetSection {
 
 	private void smoothingFactorRow() {
 		smoothingFactorText = UI.formText(comp, tk, "Glättungsfaktor");
-		Texts.set(smoothingFactorText, net().smoothingFactor);
+
+		// set the initial value
+		var initial = net().smoothingFactor;
+		if (initial != null) {
+			Texts.set(smoothingFactorText, Num.str(initial, 2));
+		} else {
+			var fsm = Smoothing.getFactor(this.editor.project);
+			Texts.set(smoothingFactorText, Num.str(fsm, 2));
+		}
+
 		Texts.on(smoothingFactorText).decimal().required().onChanged(s -> {
 			net().smoothingFactor = Num.read(s);
 			textsUpdated();
 		});
+
 		HelpLink.create(comp, tk, "Glättungsfaktor", H.SmoothingFactor);
-		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
+		var reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
 		Controls.onSelect(reset, e -> {
-			net().smoothingFactor = Defaults.SMOOTHING_FACTOR;
-			Texts.set(smoothingFactorText, Defaults.SMOOTHING_FACTOR);
+			// it is important to first set it to null so that
+			// the default factor is calculated in the getFactor method
+			net().smoothingFactor = null;
+			var fsm = Smoothing.getFactor(this.editor.project);
+			Texts.set(smoothingFactorText, Num.str(fsm, 2));
 			textsUpdated();
 		});
 	}

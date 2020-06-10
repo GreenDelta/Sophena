@@ -40,19 +40,19 @@ import sophena.rcp.utils.UI;
 
 public class ProjectWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private Page page;
 
 	public static void open() {
 		try {
-			ProjectWizard wizard = new ProjectWizard();
+			var wizard = new ProjectWizard();
 			wizard.setWindowTitle(M.CreateNewProject);
-			WizardDialog dialog = new WizardDialog(UI.shell(), wizard);
+			var dialog = new WizardDialog(UI.shell(), wizard);
 			if (dialog.open() == Window.OK)
 				Navigator.refresh();
 		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(ProjectWizard.class);
+			var log = LoggerFactory.getLogger(ProjectWizard.class);
 			log.error("failed to create project", e);
 		}
 	}
@@ -60,15 +60,15 @@ public class ProjectWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			Project p = new Project();
-			p.id = UUID.randomUUID().toString();
-			page.data.bindToModel(p);
-			addHeatNet(p);
-			addCostSettings(p);
+			var project = new Project();
+			project.id = UUID.randomUUID().toString();
+			page.data.bindToModel(project);
+			addHeatNet(project);
+			addCostSettings(project);
 			ProjectDao dao = new ProjectDao(App.getDb());
-			dao.insert(p);
+			dao.insert(project);
 			Navigator.refresh();
-			ProjectEditor.open(p.toDescriptor());
+			ProjectEditor.open(project.toDescriptor());
 			return true;
 		} catch (Exception e) {
 			log.error("failed to create project", e);
@@ -89,15 +89,14 @@ public class ProjectWizard extends Wizard {
 	}
 
 	private void addHeatNet(Project p) {
-		HeatNet n = (p.heatNet = new HeatNet());
-		n.id = UUID.randomUUID().toString();
-		n.simultaneityFactor = 1;
-		n.smoothingFactor = Defaults.SMOOTHING_FACTOR;
-		n.powerLoss = 20;
-		n.maxBufferLoadTemperature = 95;
-		n.bufferLambda = 0.04;
-		n.supplyTemperature = 80;
-		n.returnTemperature = 50;
+		var net = (p.heatNet = new HeatNet());
+		net.id = UUID.randomUUID().toString();
+		net.simultaneityFactor = 1;
+		net.powerLoss = 20;
+		net.maxBufferLoadTemperature = 95;
+		net.bufferLambda = 0.04;
+		net.supplyTemperature = 80;
+		net.returnTemperature = 50;
 	}
 
 	@Override
@@ -106,9 +105,9 @@ public class ProjectWizard extends Wizard {
 		addPage(page);
 	}
 
-	private class Page extends WizardPage {
+	private static class Page extends WizardPage {
 
-		private DataBinding data = new DataBinding();
+		private final DataBinding data = new DataBinding();
 
 		private Text nameText;
 		private Text descriptionText;
@@ -193,25 +192,28 @@ public class ProjectWizard extends Wizard {
 					setPageComplete(false);
 			}
 
-			private boolean validate() {
-				if (Texts.isEmpty(nameText))
-					return error("Es muss ein Name angegeben werden.");
+			private void validate() {
+				if (Texts.isEmpty(nameText)) {
+					error("Es muss ein Name angegeben werden.");
+					return;
+				}
 				int time = Texts.getInt(timeText);
-				if (time < 1 || time > 1000)
-					return error(
-							"Die Projektlaufzeit enthält keinen gültigen Wert.");
+				if (time < 1 || time > 1000) {
+					error("Die Projektlaufzeit enthält keinen gültigen Wert.");
+					return;
+				}
 				WeatherStationDescriptor d = stationCombo.getSelected();
-				if (d == null)
-					return error("Es wurde keine Wetterstation ausgewählt.");
+				if (d == null) {
+					error("Es wurde keine Wetterstation ausgewählt.");
+					return;
+				}
 				setErrorMessage(null);
 				setPageComplete(true);
-				return true;
 			}
 
-			private boolean error(String message) {
+			private void error(String message) {
 				setErrorMessage(message);
 				setPageComplete(false);
-				return false;
 			}
 		}
 	}
