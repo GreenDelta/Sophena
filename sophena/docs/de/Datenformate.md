@@ -12,8 +12,8 @@ using DelimitedFiles
 open("example_producer_profile.csv", "w") do stream
   writedlm(stream, [["hour", "max", "min"]], ";")
   for i = 1:8760
-		day = round(Int, i / 24) % 7 + 1
-		val = 15000 * day / 10 + 10000
+    day = round(Int, i / 24) % 7 + 1
+    val = 15000 * day / 10 + 10000
     writedlm(stream, [(i, val, 0.1 * val)], ";")
   end
 end
@@ -45,17 +45,17 @@ nl := (Character cr asString), (Character lf asString).
 text := 'Jahresstunde;Heizlast;Warmwasser', nl.
 rand := Random new.
 1 to: (365 * 24) do: [ :i |
-	|dynamic static|
-	dynamic := (rand nextInt: 500) * 1000.
-	static := (rand nextInt: 500) * 1000.
-	text := text,
-		(i asString), ';',
-		dynamic asString, ';',
-		static asString,
-		nl.
+  |dynamic static|
+  dynamic := (rand nextInt: 500) * 1000.
+  static := (rand nextInt: 500) * 1000.
+  text := text,
+    (i asString), ';',
+    dynamic asString, ';',
+    static asString,
+    nl.
 ].
 
 'out.txt' asFileReference writeStreamDo: [ :stream |
-	stream nextPutAll: text.
+  stream nextPutAll: text.
 ].
 ```

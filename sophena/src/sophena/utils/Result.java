@@ -4,8 +4,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * Similar to the result type in Rust: https://doc.rust-lang.org/std/result/
- * but with plain strings as errors and an additional warning state. `ok` and
+ * Similar to the result type in Rust: https://doc.rust-lang.org/std/result/ but
+ * with plain strings as errors and an additional warning state. `ok` and
  * `warning` mean that a result is present. `error` indicates an error instead
  * of a result. Messages are optional.
  */
@@ -50,7 +50,7 @@ public class Result<T> {
 		if (result == null)
 			throw new IllegalArgumentException(
 					"warning cannot be called with null");
-		return new Result<>(WARNING, result, null);
+		return new Result<>(WARNING, result, message);
 	}
 
 	public static <T> Result<T> error() {

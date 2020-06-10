@@ -1,1 +1,0 @@
-The fuel specification of a heat producer.
