@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="2.0" useFeatures="false" includeLaunchers="true">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="2.1" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
@@ -26,7 +26,6 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       </programArgs>
       <vmArgs>-Xmx2048m
 -Djava.net.useSystemProxies=true
--Dosgi.framework.extensions=org.eclipse.fx.osgi
 --add-modules=ALL-SYSTEM
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts

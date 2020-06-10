@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
@@ -56,7 +55,7 @@ public class ActionBarAdvisor extends
 
 	@Override
 	protected void fillCoolBar(ICoolBarManager coolBar) {
-		IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.LEFT);
+		var toolbar = new ToolBarManager(SWT.FLAT | SWT.LEFT);
 		coolBar.add(new ToolBarContributionItem(toolbar, "main"));
 		toolbar.add(saveAction);
 		toolbar.add(saveAsAction);
@@ -191,12 +190,19 @@ public class ActionBarAdvisor extends
 	@Override
 	protected void makeActions(final IWorkbenchWindow window) {
 		saveAction = ActionFactory.SAVE.create(window);
+		saveAction.setText("Speichern");
 		saveAsAction = ActionFactory.SAVE_AS.create(window);
+		saveAsAction.setText("Speichern unter...");
 		saveAllAction = ActionFactory.SAVE_ALL.create(window);
+		saveAllAction.setText("Alles speichern");
 		closeAction = ActionFactory.CLOSE.create(window);
+		closeAction.setText("Schließen");
 		closeAllAction = ActionFactory.CLOSE_ALL.create(window);
+		closeAllAction.setText("Alles schließen");
 		exitAction = ActionFactory.QUIT.create(window);
+		exitAction.setText("Sophena beenden");
 		aboutAction = ActionFactory.ABOUT.create(window);
+		aboutAction.setText("Über Sophena");
 	}
 
 	private void importFile() {
