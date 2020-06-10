@@ -34,7 +34,7 @@ public class EnergyResult {
 	}
 
 	EnergyResult(Project project) {
-		loadCurve = ProjectLoad.getCurve(project);
+		loadCurve = ProjectLoad.getSmoothedCurve(project);
 		suppliedPower = new double[Stats.HOURS];
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];

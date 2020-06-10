@@ -6,7 +6,6 @@ import sophena.math.Smoothing;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
-import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -16,8 +15,8 @@ public class ProjectLoad {
 	}
 
 	/**
-	 * The maximum load of the project can be entered by the user. If no value
-	 * is entered the value is calculated from the heat net and consumer data.
+	 * The maximum load of the project can be entered by the user. If no value is
+	 * entered the value is calculated from the heat net and consumer data.
 	 */
 	public static double getMax(Project project) {
 		if (project == null)
@@ -47,20 +46,25 @@ public class ProjectLoad {
 		return Math.ceil(max * project.heatNet.simultaneityFactor);
 	}
 
-	public static double[] getCurve(Project project) {
+	/**
+	 * Calculates the load curve of the project and applies smoothing based on the
+	 * simultaneity and smoothing factors of the project on the dynamic part of the
+	 * load.
+	 */
+	public static double[] getSmoothedCurve(Project project) {
 		double[] dynamicData = new double[Stats.HOURS];
 		double[] staticData = new double[Stats.HOURS];
 		if (project == null)
 			return dynamicData;
-		for (Consumer consumer : project.consumers) {
+		for (var consumer : project.consumers) {
 			if (consumer.disabled)
 				continue;
-			LoadProfile p = ConsumerLoadCurve.calculate(consumer,
-					project.weatherStation);
-			Stats.add(p.dynamicData, dynamicData);
-			Stats.add(p.staticData, staticData);
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.dynamicData, dynamicData);
+			Stats.add(profile.staticData, staticData);
 		}
-		double[] data = Smoothing.means(dynamicData,
+		double[] data = Smoothing.on(dynamicData,
 				Smoothing.getCount(project));
 		Stats.add(staticData, data);
 		double netLoad = getNetLoad(project.heatNet);
@@ -69,11 +73,32 @@ public class ProjectLoad {
 		return data;
 	}
 
+	/**
+	 * Calculates the load curve of the project without applying smoothing on the
+	 * dynamic part of the data.
+	 */
+	public static double[] getRawCurve(Project project) {
+		var data = new double[Stats.HOURS];
+		if (project == null)
+			return data;
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.dynamicData, data);
+			Stats.add(profile.staticData, data);
+		}
+		double netLoad = getNetLoad(project.heatNet);
+		Arrays.setAll(data, i -> data[i] + netLoad);
+		applyInterruption(data, project.heatNet);
+		return data;
+	}
+
 	public static double getNetLoad(HeatNet net) {
-		if (net == null)
-			return 0;
-		double netLoad = (net.powerLoss * net.length) / 1000;
-		return netLoad;
+		return net == null
+				? 0
+				: net.powerLoss * net.length / 1000.0;
 	}
 
 	public static double[] getNetLoadCurve(HeatNet net) {
@@ -81,7 +106,7 @@ public class ProjectLoad {
 		if (net == null)
 			return curve;
 		double load = getNetLoad(net);
-		Arrays.setAll(curve, (i) -> load);
+		Arrays.fill(curve, load);
 		applyInterruption(curve, net);
 		return curve;
 	}

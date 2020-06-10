@@ -237,7 +237,7 @@ public final class Texts {
 
 		private final Text text;
 		private final Consumer<String> fn;
-		private AtomicBoolean hasFocus = new AtomicBoolean(false);
+		private final AtomicBoolean hasFocus = new AtomicBoolean(false);
 
 		private ChangeListener(Text text, Consumer<String> fn) {
 			this.fn = fn;

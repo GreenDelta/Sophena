@@ -6,6 +6,19 @@ import sophena.model.Project;
 public class Smoothing {
 
 	/**
+	 * Get the smoothing factor of the project. A default factor is calculated
+	 * based on the project data.
+	 */
+	public static double getFactor(Project project) {
+		if (project == null)
+			return 0;
+		var net = project.heatNet;
+		if (net != null && net.smoothingFactor != null)
+			return net.smoothingFactor;
+		return 0; // TODO
+	}
+
+	/**
 	 * Returns the number of items that should be included in the moving average
 	 * calculation based on the projects' simultaneity factor.
 	 */
@@ -13,17 +26,17 @@ public class Smoothing {
 		if (project == null || project.heatNet == null)
 			return 0;
 		HeatNet net = project.heatNet;
-		double sm = net.smoothingFactor;
+		double sm = getFactor(project);
 		double si = net.simultaneityFactor;
 		return (int) Math.round(20 * sm * (1 - si) * Math.pow(2, (10 * (1 - si))));
 	}
 
 	/**
 	 * Smoothes the given curve (from a load profile) by calculating the moving
-	 * average with the given number of elements for each element in the curve
-	 * (see also https://en.wikipedia.org/wiki/Moving_average).
+	 * average with the given number of elements for each element in the curve (see
+	 * also https://en.wikipedia.org/wiki/Moving_average).
 	 */
-	public static double[] means(double[] curve, int n) {
+	public static double[] on(double[] curve, int n) {
 		if (curve == null)
 			return null;
 		int band = n / 2;
@@ -46,7 +59,7 @@ public class Smoothing {
 	public static int circularIndex(int value, int length) {
 		if (value < 0)
 			return circularIndex(length + value, length);
-		if (value >= 0 && value < length)
+		if (value < length)
 			return value;
 		return circularIndex(value % length, length);
 	}

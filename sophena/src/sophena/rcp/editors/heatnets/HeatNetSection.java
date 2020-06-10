@@ -159,7 +159,7 @@ class HeatNetSection {
 		}
 
 		// smoothing factor
-		if (Num.equal(net.smoothingFactor, Defaults.SMOOTHING_FACTOR)) {
+		if (net.smoothingFactor == null) {
 			smoothingFactorText.setBackground(Colors.forRequiredField());
 		} else {
 			smoothingFactorText.setBackground(Colors.forModifiedDefault());
@@ -169,8 +169,11 @@ class HeatNetSection {
 	private void maxLoadRow() {
 		maxLoadText = UI.formText(comp, tk,
 				"Maximal benötigte Leistung (ohne Gleichzeitigkeitsfaktor)");
-		Texts.on(maxLoadText).init(ProjectLoad.getMax(editor.project)).decimal()
-				.required().onChanged(s -> {
+		Texts.on(maxLoadText)
+				.init(ProjectLoad.getMax(editor.project))
+				.decimal()
+				.required()
+				.onChanged(s -> {
 					double val = Num.read(s);
 					if (Num.equal(val, calculateMaxLoad())) {
 						net().maxLoad = null;
@@ -216,8 +219,7 @@ class HeatNetSection {
 		smoothingFactorText = UI.formText(comp, tk, "Glättungsfaktor");
 		Texts.set(smoothingFactorText, net().smoothingFactor);
 		Texts.on(smoothingFactorText).decimal().required().onChanged(s -> {
-			double val = Num.read(s);
-			net().smoothingFactor = val;
+			net().smoothingFactor = Num.read(s);
 			textsUpdated();
 		});
 		HelpLink.create(comp, tk, "Glättungsfaktor", H.SmoothingFactor);
