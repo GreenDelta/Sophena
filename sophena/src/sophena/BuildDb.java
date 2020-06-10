@@ -32,7 +32,7 @@ public class BuildDb {
 			dataImport.run();
 			db.close();
 
-			File zip = new File("../sophena/resources/database.zip");
+			File zip = new File("./resources/database.zip");
 			if (zip.exists()) {
 				System.out.println("Delete old database: " + zip);
 				FileUtils.forceDelete(zip);
