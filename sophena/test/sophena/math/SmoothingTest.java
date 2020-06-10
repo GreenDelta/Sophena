@@ -7,7 +7,9 @@ import static sophena.math.Smoothing.on;
 
 import org.junit.Test;
 
+import sophena.model.Consumer;
 import sophena.model.HeatNet;
+import sophena.model.LoadProfile;
 import sophena.model.Project;
 
 public class SmoothingTest {
@@ -15,11 +17,28 @@ public class SmoothingTest {
 	@Test
 	public void testSmoothingLength() {
 		var project = new Project();
-		var heatnet = new HeatNet();
-		project.heatNet = heatnet;
-		heatnet.simultaneityFactor = 0.5;
-		heatnet.smoothingFactor = 20.0;
+		var net = new HeatNet();
+		project.heatNet = net;
+		net.simultaneityFactor = 0.5;
+		net.smoothingFactor = 20.0;
 		assertEquals(6400.0, Smoothing.getCount(project), 1e-10);
+	}
+
+	@Test
+	public void testCalculateFactor() {
+		var project = new Project();
+		project.heatNet = new HeatNet();
+		project.heatNet.maxLoad = 524.0;
+		project.heatNet.simultaneityFactor = 0.8;
+
+		// add a customer so that the max. load
+		// of the un-smoothed curve is 430
+		var consumer = new Consumer();
+		consumer.profile = LoadProfile.initEmpty();
+		consumer.profile.dynamicData[0] = 430;
+		project.consumers.add(consumer);
+
+		assertEquals(3.5625, Smoothing.getFactor(project), 1e-4);
 	}
 
 	@Test

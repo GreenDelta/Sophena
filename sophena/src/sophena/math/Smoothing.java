@@ -1,7 +1,9 @@
 package sophena.math;
 
+import sophena.calc.ProjectLoad;
 import sophena.model.HeatNet;
 import sophena.model.Project;
+import sophena.model.Stats;
 
 public class Smoothing {
 
@@ -10,12 +12,21 @@ public class Smoothing {
 	 * based on the project data.
 	 */
 	public static double getFactor(Project project) {
-		if (project == null)
+		if (project == null || project.heatNet == null)
 			return 0;
 		var net = project.heatNet;
-		if (net != null && net.smoothingFactor != null)
+		if (net.smoothingFactor != null)
 			return net.smoothingFactor;
-		return 0; // TODO
+		var maxLoad = ProjectLoad.getMax(project);
+		var fsi = net.simultaneityFactor;
+		var rawCurve = ProjectLoad.getRawCurve(project);
+		var rawMax = Stats.max(rawCurve);
+		if (rawMax == 0)
+			return 0;
+		var fsiEstimated = 0.9 * maxLoad * fsi / rawMax;
+		var countEstimated = Math.round(20 * 10 * (1 - fsiEstimated)
+				* Math.pow(2, (10 * (1 - fsiEstimated))));
+		return countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
 	}
 
 	/**

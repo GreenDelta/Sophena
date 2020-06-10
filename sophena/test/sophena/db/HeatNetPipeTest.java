@@ -14,11 +14,11 @@ import sophena.model.Project;
 
 public class HeatNetPipeTest {
 
-	private ProjectDao dao = new ProjectDao(Tests.getDb());
-	private Dao<HeatNetPipe> pDao = new Dao<>(HeatNetPipe.class, Tests.getDb());
+	private final ProjectDao dao = new ProjectDao(Tests.getDb());
+	private final Dao<HeatNetPipe> pDao = new Dao<>(HeatNetPipe.class, Tests.getDb());
 
 	@Test
-	public void testCrud() throws Exception {
+	public void testCrud() {
 		Project p = insertProject();
 		HeatNetPipe clone = pDao.get(p.id);
 		Assert.assertEquals(42, clone.length, 1e-16);
@@ -28,7 +28,7 @@ public class HeatNetPipeTest {
 	}
 
 	@Test
-	public void testDeletePipe() throws Exception {
+	public void testDeletePipe() {
 		Project p = insertProject();
 		Assert.assertEquals(42, p.heatNet.pipes.get(0).length, 1e-16);
 		p.heatNet.pipes.remove(0);
