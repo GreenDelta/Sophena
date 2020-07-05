@@ -12,6 +12,8 @@ public class M extends NLS {
 	public static String BoilerEfficiency;
 	public static String BuildingState;
 	public static String BuildingType;
+
+	public static String Cancel;
 	public static String City;
 	public static String ClimateData;
 	public static String CollectConsumptionData;
@@ -26,6 +28,7 @@ public class M extends NLS {
 	public static String CreateNewConsumer;
 	public static String CreateNewProducer;
 	public static String CreateNewProject;
+
 	public static String DeliveredHeat;
 	public static String DemandBasedCalculation;
 	public static String Description;
@@ -75,6 +78,7 @@ public class M extends NLS {
 	public static String Window;
 	public static String ZipCode;
 
+	public static String OK;
 	public static String Open;
 	public static String Delete;
 	public static String Variants;

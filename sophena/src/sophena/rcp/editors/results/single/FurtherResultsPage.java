@@ -23,7 +23,7 @@ import sophena.utils.Num;
 
 class FurtherResultsPage extends FormPage {
 
-	private ResultEditor editor;
+	private final ResultEditor editor;
 
 	FurtherResultsPage(ResultEditor editor) {
 		super(editor, "sophena.EmissionsPage", M.FurtherResults);

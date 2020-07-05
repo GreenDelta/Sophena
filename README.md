@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/GreenDelta/Sophena.svg?branch=master)](https://travis-ci.org/GreenDelta/Sophena)
-
 # Sophena
 Sophena is a quick planning tool for local heating networks. See the 
 [C.A.R.M.E.N. e.V. website](https://www.carmen-ev.de/infothek/downloads/sophena/1989-sophena-die-software)
