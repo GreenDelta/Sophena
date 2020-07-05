@@ -114,6 +114,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.nl_de" fragment="true"/>
       <plugin id="org.eclipse.nebula.visualization.xygraph"/>
       <plugin id="org.eclipse.nebula.widgets.opal.commons"/>
       <plugin id="org.eclipse.nebula.widgets.opal.notifier"/>
