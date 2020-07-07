@@ -9,8 +9,8 @@ import sophena.model.Stats;
 public class Smoothing {
 
 	/**
-	 * Get the smoothing factor of the project. A default factor is calculated
-	 * based on the project data.
+	 * Get the smoothing factor of the project. A default factor is calculated based
+	 * on the project data.
 	 */
 	public static double getFactor(Project project) {
 		if (project == null || project.heatNet == null)
@@ -28,7 +28,8 @@ public class Smoothing {
 		var countEstimated = Math.round(20
 				* Defaults.SMOOTHING_FACTOR * (1 - fsiEstimated)
 				* Math.pow(2, (10 * (1 - fsiEstimated))));
-		return countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
+		double factor = countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
+		return factor < 0 ? 0 : factor;
 	}
 
 	/**

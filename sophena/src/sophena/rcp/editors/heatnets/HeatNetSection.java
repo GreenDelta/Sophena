@@ -183,7 +183,7 @@ class HeatNetSection {
 					textsUpdated();
 				});
 		UI.formLabel(comp, tk, "kW");
-		Button reset = tk.createButton(comp, "Standardwert", SWT.NONE);
+		var reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
 		Controls.onSelect(reset, e -> {
 			net().maxLoad = null;
@@ -196,9 +196,16 @@ class HeatNetSection {
 		Text t = UI.formText(comp, tk, "Gleichzeitigkeitsfaktor");
 		Texts.set(t, net().simultaneityFactor);
 		Texts.on(t).decimal().required().onChanged(s -> {
+
+			if (net().smoothingFactor == null) {
+				// fix the old calculated smoothing factor
+				net().smoothingFactor = Smoothing.getFactor(editor.project);
+			}
+
 			net().simultaneityFactor = Texts.getDouble(t);
 			Texts.set(maxSimLoadText, calculateMaxSimLoad());
 			editor.setDirty();
+			textsUpdated();
 		});
 		HelpLink.create(comp, tk, "Gleichzeitigkeitsfaktor",
 				H.SimultaneityFactor);
@@ -221,10 +228,10 @@ class HeatNetSection {
 		// set the initial value
 		var initial = net().smoothingFactor;
 		if (initial != null) {
-			Texts.set(smoothingFactorText, Num.str(initial, 2));
+			Texts.set(smoothingFactorText, Num.str(initial, 1));
 		} else {
 			var fsm = Smoothing.getFactor(this.editor.project);
-			Texts.set(smoothingFactorText, Num.str(fsm, 2));
+			Texts.set(smoothingFactorText, Num.str(fsm, 1));
 		}
 
 		Texts.on(smoothingFactorText).decimal().required().onChanged(s -> {
@@ -240,7 +247,7 @@ class HeatNetSection {
 			// the default factor is calculated in the getFactor method
 			net().smoothingFactor = null;
 			var fsm = Smoothing.getFactor(this.editor.project);
-			Texts.set(smoothingFactorText, Num.str(fsm, 2));
+			Texts.set(smoothingFactorText, Num.str(fsm, 1));
 			textsUpdated();
 		});
 	}
