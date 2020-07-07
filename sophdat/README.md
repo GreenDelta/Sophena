@@ -183,6 +183,8 @@ when generating the data packages.
 2. address
 3. url
 4. description
+5. sponsor order
+6. logo (as image URL)
 ```
 
 ### `pipes.csv`

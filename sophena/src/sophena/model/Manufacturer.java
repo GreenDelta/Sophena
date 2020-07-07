@@ -16,4 +16,7 @@ public class Manufacturer extends BaseDataEntity {
 
 	@Column(name = "logo")
 	public String logo;
+
+	@Column(name = "sponsor_order")
+	public int sponsorOrder;
 }

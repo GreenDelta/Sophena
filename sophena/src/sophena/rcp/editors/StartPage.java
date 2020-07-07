@@ -79,14 +79,6 @@ public class StartPage extends FormEditor {
 			var body = UI.formBody(form, tk);
 			body.setLayout(new FillLayout());
 			var browser = new Browser(body, SWT.NONE);
-			// browser.setJavascriptEnabled(true);
-			/*
-			var url = Workspace.html(
-					"Home",
-					() -> getClass().getResourceAsStream("Start.html"));
-			browser.setUrl(url);
-
-			 */
 			browser.setText(createHtml());
 			form.reflow(true);
 		}
@@ -97,7 +89,7 @@ public class StartPage extends FormEditor {
 			String template;
 			try (var stream = getClass().getResourceAsStream("StartPage.html");
 					var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-					var buff = new BufferedReader(reader))  {
+					var buff = new BufferedReader(reader)) {
 				template = buff.lines()
 						.collect(Collectors.joining("\n"));
 			} catch (Exception e) {
@@ -108,6 +100,8 @@ public class StartPage extends FormEditor {
 					.getAll()
 					.stream()
 					.filter(m -> Strings.notEmpty(m.logo))
+					.sorted((m1, m2) -> Integer.compare(
+							m1.sponsorOrder, m2.sponsorOrder))
 					.collect(Collectors.toList());
 			if (manufs.isEmpty())
 				return template.replace("${logos}", "");

@@ -545,10 +545,11 @@ CREATE TABLE tbl_producers (
 
 CREATE TABLE tbl_manufacturer (
 
-    id          CHAR(36),
-    name        VARCHAR(255),
-    description CLOB(64 K),
-    logo        CLOB(1024 K),
+    id            CHAR(36),
+    name          VARCHAR(255),
+    description   CLOB(64 K),
+    logo          CLOB(1024 K),
+    sponsor_order INTEGER,
 
     is_protected BOOLEAN,
 
