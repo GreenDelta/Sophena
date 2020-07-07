@@ -1,10 +1,7 @@
 package sophena.rcp.editors.consumers;
 
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.model.Consumer;
 import sophena.rcp.M;
@@ -26,10 +23,10 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, consumer().name);
-		FormToolkit tk = mform.getToolkit();
-		Composite body = UI.formBody(form, tk);
-		InfoSection infoSection = InfoSection.of(editor).create(body, tk);
+		var form = UI.formHeader(mform, consumer().name);
+		var tk = mform.getToolkit();
+		var body = UI.formBody(form, tk);
+		var infoSection = InfoSection.of(editor).create(body, tk);
 		infoSection.setDemandSection(
 				HeatDemandSection.of(editor).create(body, tk));
 		if (!consumer().hasProfile()) {
@@ -38,7 +35,8 @@ class InfoPage extends FormPage {
 			}
 			InterruptionSection.of(editor).create(body, tk);
 		}
-		LoadCurveSection loadCurve = new LoadCurveSection();
+		var loadCurve = new LoadCurveSection();
+		loadCurve.setSorted(!consumer().hasProfile());
 		loadCurve.render(body, tk);
 		new TransferStationSection(editor).create(body, tk);
 		editor.onCalculated(
