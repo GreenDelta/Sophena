@@ -9,12 +9,8 @@ import (
 
 func main() {
 	fmt.Println("Package data from `data` to `gen` folder ...")
-	prepareOutputDir()
-	Pack()
-	fmt.Println("All done")
-}
 
-func prepareOutputDir() {
+	// prepare the output folder
 	if _, err := os.Stat("gen"); os.IsNotExist(err) {
 		check(os.Mkdir("gen", os.ModePerm))
 	} else {
@@ -26,6 +22,9 @@ func prepareOutputDir() {
 			check(os.Remove(filepath.Join("gen", file.Name())))
 		}
 	}
+
+	pack()
+	fmt.Println("All done")
 }
 
 func check(err error) {

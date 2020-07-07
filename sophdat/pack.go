@@ -46,7 +46,7 @@ func (w *PackWriter) PutBytes(path string, bytes []byte) {
 }
 
 // Pack creates the base data package.
-func Pack() {
+func pack() {
 	os.Mkdir("gen", os.ModePerm)
 	csvModel := ReadCsvModel()
 
