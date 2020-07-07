@@ -43,7 +43,7 @@ import sophena.utils.Strings;
 
 public class ProducerWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Project project;
 
@@ -111,7 +111,7 @@ public class ProducerWizard extends Wizard {
 
 		private Combo powerCombo;
 		private PowerFilter powerFilter;
-		private ProductGroup[] groupFilter;
+		private final ProductGroup[] groupFilter;
 
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
@@ -137,7 +137,7 @@ public class ProducerWizard extends Wizard {
 					list.add(g);
 				}
 			}
-			return list.toArray(new ProductGroup[list.size()]);
+			return list.toArray(new ProductGroup[0]);
 		}
 
 		@Override
@@ -187,7 +187,7 @@ public class ProducerWizard extends Wizard {
 			PowerFilter filter = PowerFilter.get(getGroup());
 			if (filter == null && this.powerFilter == null)
 				return;
-			if (filter == null && this.powerFilter != null) {
+			if (filter == null) {
 				this.powerFilter = null;
 				powerCombo.setItems();
 				powerCombo.setEnabled(false);

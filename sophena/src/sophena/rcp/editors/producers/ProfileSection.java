@@ -1,6 +1,5 @@
 package sophena.rcp.editors.producers;
 
-import java.io.File;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
@@ -8,9 +7,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.io.ProducerProfiles;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
-import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.charts.ImageExport;
@@ -93,12 +92,23 @@ public class ProfileSection {
 	}
 
 	void importProfile() {
-		File f = FileChooser.open("*.csv", ".txt");
-		if (f == null)
+		var file = FileChooser.open("*.csv", "*.txt");
+		if (file == null)
 			return;
 		try {
+			var r = ProducerProfiles.read(file);
+			if (r.isError()) {
+				MsgBox.error(r.message().orElse(
+						"Datei konnte nicht gelesen werden"));
+				return;
+			}
+			if (r.isWarning()) {
+				MsgBox.warn(r.message().orElse(
+						"Die Datei enthält Formatfehler"));
+			}
+
 			Producer p = producer();
-			p.profile = ProducerProfile.read(f);
+			p.profile = r.get();
 			p.profileMaxPower = Stats.max(p.profile.maxPower);
 			if (thermPowerText != null) {
 				thermPowerText.setText(Num.intStr(p.profileMaxPower));
@@ -108,7 +118,7 @@ public class ProfileSection {
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden",
 					e.getMessage());
-			Log.error(this, "Failed to read producer profile " + f, e);
+			Log.error(this, "Failed to read producer profile " + file, e);
 		}
 	}
 

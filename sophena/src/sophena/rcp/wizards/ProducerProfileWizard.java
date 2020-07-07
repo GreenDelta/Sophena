@@ -1,6 +1,5 @@
 package sophena.rcp.wizards;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,9 +18,9 @@ import org.slf4j.LoggerFactory;
 import sophena.Labels;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
+import sophena.io.ProducerProfiles;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.ProducerProfile;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
@@ -44,7 +43,7 @@ import sophena.utils.Strings;
 
 public class ProducerProfileWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private Project project;
 	private Producer producer;
@@ -180,7 +179,7 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
 			List<ProductGroup> groups = dao.getAll(productType);
 			Sorters.productGroups(groups);
-			productGroups = groups.toArray(new ProductGroup[groups.size()]);
+			productGroups = groups.toArray(new ProductGroup[0]);
 			String[] items = new String[productGroups.length];
 			for (int i = 0; i < items.length; i++) {
 				if (productGroups[i] == null)
@@ -226,21 +225,38 @@ public class ProducerProfileWizard extends Wizard {
 		}
 
 		private void onSelectFile() {
-			File f = FileChooser.open("*.csv", "*.txt");
-			if (f == null)
+			var file = FileChooser.open("*.csv", "*.txt");
+			if (file == null)
 				return;
 			try {
-				producer.profile = ProducerProfile.read(f);
-				fileText.setText(f.getAbsolutePath());
+
+				var r = ProducerProfiles.read(file);
+
+				// check error
+				if (r.isError()) {
+					producer.profile = null;
+					MsgBox.error(r.message().orElse(
+							"Fehler beim Lesen der Datei"));
+					return;
+				}
+
+				// show warnings
+				if (r.isWarning()) {
+					MsgBox.warn(r.message().orElse(
+							"Die Datei enthält Formatfehler"));
+				}
+
+				producer.profile = r.get();
+				fileText.setText(file.getAbsolutePath());
 				if (producer.profileMaxPower == 0) {
-					double max = Stats.max(producer.profile.maxPower);
-					producer.profileMaxPower = max;
+					producer.profileMaxPower = Stats.max(
+							producer.profile.maxPower);
 				}
 				setPageComplete(true);
 			} catch (Exception e) {
 				MsgBox.error("Datei konnte nicht gelesen werden",
 						e.getMessage());
-				Log.error(this, "Failed to read producer profile " + f, e);
+				Log.error(this, "Failed to read producer profile " + file, e);
 			}
 		}
 
