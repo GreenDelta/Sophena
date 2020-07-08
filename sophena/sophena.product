@@ -6,10 +6,9 @@
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
       <text>
-         Sophena - Version 2.0
+         Sophena - Version 2.1
 
-Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License zur Verfügung gestellt.
-_____________________________________________________________________________
+Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.
 
 C.A.R.M.E.N. e.V.
 Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.
@@ -47,6 +46,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
             winExtraLargeHigh="icons/App/256x256bmp.bmp"/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
