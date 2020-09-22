@@ -42,26 +42,6 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	private ListViewer viewer;
 
 	/**
-	 * Opens a search dialog for all entities of the given type
-	 * in the database. The entities are sorted by the given
-	 * label function. For specific types, please see the other
-	 * factory methods of this class.
-	 */
-	public static <T extends RootEntity> T open(
-			String title,
-			Class<T> clazz,
-			Function<T, String> labelFn) {
-		var all = new RootEntityDao<>(clazz, App.getDb())
-				.getAll();
-		all.sort((e1, e2) -> {
-			var l1 = labelFn.apply(e1);
-			var l2 = labelFn.apply(e2);
-			return Strings.compare(l1, l2);
-		});
-		return open(title, all, labelFn);
-	}
-
-	/**
 	 * Creates a search dialog for the given list of entities.
 	 * Note that you should sort the list before passing it
 	 * into this dialog. See also the other factory methods
