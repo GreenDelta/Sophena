@@ -11,7 +11,6 @@ import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
@@ -135,8 +134,7 @@ class BufferTankSection {
 	}
 
 	private void selectBufferTank(ImageHyperlink link) {
-		BufferTank b = SearchDialog.open("Pufferspeicher",
-				BufferTank.class, SearchLabel::forBufferTank);
+		BufferTank b = SearchDialog.forBuffers();
 		if (b == null)
 			return;
 		net().bufferTank = b;

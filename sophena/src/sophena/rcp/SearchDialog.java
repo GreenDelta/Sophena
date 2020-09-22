@@ -9,7 +9,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
@@ -20,7 +19,9 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.RootEntityDao;
+import sophena.model.BufferTank;
 import sophena.model.RootEntity;
+import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
@@ -36,25 +37,55 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	private Text filterText;
 	private ListViewer viewer;
 
-	public static <T extends RootEntity> T open(String title, Class<T> clazz,
+	/**
+	 * Opens a search dialog for all entities of the given type
+	 * in the database. The entities are sorted by the given
+	 * label function. For specific types, please see the other
+	 * factory methods of this class.
+	 */
+	public static <T extends RootEntity> T open(
+			String title,
+			Class<T> clazz,
 			Function<T, String> labelFn) {
-		RootEntityDao<T> dao = new RootEntityDao<>(clazz, App.getDb());
-		List<T> all = dao.getAll();
+		var all = new RootEntityDao<>(clazz, App.getDb())
+				.getAll();
+		all.sort((e1, e2) -> {
+			var l1 = labelFn.apply(e1);
+			var l2 = labelFn.apply(e2);
+			return Strings.compare(l1, l2);
+		});
 		return open(title, all, labelFn);
 	}
 
-	public static <T extends RootEntity> T open(String title, List<T> list,
+	/**
+	 * Creates a search dialog for the given list of entities.
+	 * Note that you should sort the list before passing it
+	 * into this dialog. See also the other factory methods
+	 * in this class.
+	 */
+	public static <T extends RootEntity> T open(
+			String title,
+			List<T> list,
 			Function<T, String> labelFn) {
 		if (list == null)
 			return null;
-		SearchDialog<T> d = new SearchDialog<>();
-		d.list = list;
-		d.title = title;
-		d.labelFn = labelFn;
-		if (d.open() == OK)
-			return d.selection;
-		else
-			return null;
+		var dialog = new SearchDialog<T>();
+		dialog.list = list;
+		dialog.title = title;
+		dialog.labelFn = labelFn;
+		return dialog.open() == OK
+				? dialog.selection
+				: null;
+	}
+
+	public static BufferTank forBuffers() {
+		var buffers = new RootEntityDao<>(
+				BufferTank.class, App.getDb()).getAll();
+		Sorters.buffers(buffers);
+		return open(
+				"Pufferspeicher",
+				buffers,
+				SearchLabel::forBufferTank);
 	}
 
 	private SearchDialog() {
@@ -94,8 +125,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		viewer = new ListViewer(c);
 		UI.gridData(viewer.getList(), true, true);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
-		viewer.setFilters(new ViewerFilter[] { new Filter() });
-		viewer.setSorter(new Sorter());
+		viewer.setFilters(new Filter());
 		viewer.setLabelProvider(new LabelProvider() {
 			@Override
 			@SuppressWarnings("unchecked")
@@ -153,18 +183,4 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 			return true;
 		}
 	}
-
-	private class Sorter extends ViewerSorter {
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public int compare(Viewer viewer, Object o1, Object o2) {
-			if (o1 == null || o2 == null)
-				return 0;
-			String label1 = labelFn.apply((T) o1);
-			String label2 = labelFn.apply((T) o1);
-			return Strings.compare(label1, label2);
-		}
-	}
-
 }
