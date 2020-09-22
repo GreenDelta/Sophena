@@ -23,7 +23,7 @@ import sophena.utils.Num;
 
 class BufferTankSection {
 
-	private HeatNetEditor editor;
+	private final HeatNetEditor editor;
 	private Text volText;
 
 	private ProductCostSection costSection;

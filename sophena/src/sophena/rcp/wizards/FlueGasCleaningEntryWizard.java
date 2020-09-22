@@ -13,7 +13,6 @@ import sophena.model.FlueGasCleaningEntry;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -38,7 +37,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		if (page.selectedProduct == null) {
-			noProduct(true);
+			page.setErrorMessage("Es wurde kein Produkt ausgewählt");
 			return false;
 		}
 		entry.costs = page.costs;
@@ -52,19 +51,11 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 		addPage(page);
 	}
 
-	private void noProduct(boolean b) {
-		if (b) {
-			page.setErrorMessage("Es wurde kein Produkt ausgewählt");
-		} else {
-			page.setErrorMessage(null);
-		}
-	}
-
 	private class Page extends WizardPage {
 
 		private ProductCostSection costSection;
 		private FlueGasCleaning selectedProduct;
-		private ProductCosts costs;
+		private final ProductCosts costs;
 
 		Page() {
 			super("OverviewPage", "Rauchgasreinigung", null);
@@ -100,8 +91,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 		}
 
 		private void selectProduct(ImageHyperlink link) {
-			FlueGasCleaning c = SearchDialog.open("Rauchgasreinigung",
-					FlueGasCleaning.class, SearchLabel::forFlueGasCleaning);
+			FlueGasCleaning c = SearchDialog.forFlueGasCleanings();
 			if (c == null)
 				return;
 			selectedProduct = c;

@@ -20,7 +20,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.RootEntityDao;
 import sophena.model.BufferTank;
+import sophena.model.FlueGasCleaning;
+import sophena.model.HeatRecovery;
+import sophena.model.Pipe;
 import sophena.model.RootEntity;
+import sophena.model.TransferStation;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -86,6 +90,46 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 				"Pufferspeicher",
 				buffers,
 				SearchLabel::forBufferTank);
+	}
+
+	public static TransferStation forTransferStations() {
+		var stations = new RootEntityDao<>(
+				TransferStation.class, App.getDb()).getAll();
+		Sorters.transferStations(stations);
+		return open(
+				"Hausübergabestationen",
+				stations,
+				SearchLabel::forTransferStation);
+	}
+
+	public static Pipe forPipes() {
+		var pipes = new RootEntityDao<>(
+				Pipe.class, App.getDb()).getAll();
+		Sorters.pipes(pipes);
+		return open(
+				"Wärmeleitungen",
+				pipes,
+				SearchLabel::forPipe);
+	}
+
+	public static HeatRecovery forHeatRecoveries() {
+		var recoveries = new RootEntityDao<>(
+				HeatRecovery.class, App.getDb()).getAll();
+		Sorters.heatRecoveries(recoveries);
+		return open(
+				"Wärmerückgewinnungen",
+				recoveries,
+				SearchLabel::forHeatRecovery);
+	}
+
+	public static FlueGasCleaning forFlueGasCleanings() {
+		var cleanings = new RootEntityDao<>(
+				FlueGasCleaning.class, App.getDb()).getAll();
+		Sorters.flueGasCleanings(cleanings);
+		return open(
+				"Rauchgasreinigungen",
+				cleanings,
+				SearchLabel::forFlueGasCleaning);
 	}
 
 	private SearchDialog() {
