@@ -126,19 +126,25 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		FormToolkit tk = mform.getToolkit();
+		var tk = mform.getToolkit();
 		UI.formHeader(mform, title);
-		Composite body = UI.formBody(mform.getForm(), tk);
-		Composite c = UI.formComposite(body, tk);
-		UI.gridData(c, true, false);
-		filterText = UI.formText(c, tk, "Suche");
-		Texts.on(filterText).onChanged((s) -> viewer.refresh());
+		var body = UI.formBody(mform.getForm(), tk);
+		var comp = UI.formComposite(body, tk);
+		UI.gridData(comp, true, false);
+		filterText = UI.formText(comp, tk, "Suche");
+		Texts.on(filterText).onChanged(s -> viewer.refresh());
 		createViewer(body, tk);
 		viewer.setInput(list);
 		viewer.addSelectionChangedListener((e) -> {
 			selection = Viewers.getFirst(e.getSelection());
-			Button ok = getButton(IDialogConstants.OK_ID);
+			var ok = getButton(IDialogConstants.OK_ID);
 			ok.setEnabled(selection != null);
+		});
+		viewer.addDoubleClickListener(e -> {
+			selection = Viewers.getFirst(e.getSelection());
+			if (selection != null) {
+				okPressed();
+			}
 		});
 	}
 

@@ -25,19 +25,9 @@ public class SearchLabel {
 		return label;
 	}
 
-	private static String forProduct(AbstractProduct product, String keyFigure) {
-		if (product == null)
-			return "";
-		String label = "";
-		if (product.manufacturer != null) {
-			label += product.manufacturer.name + " \u00B7 ";
-		}
-		label += keyFigure + " \u00B7 " + product.name;
-		return label;
-	}
-
 	public static String forBoiler(Boiler b) {
-		String power = b.isCoGenPlant ? Num.intStr(b.maxPowerElectric)
+		String power = b.isCoGenPlant
+				? Num.intStr(b.maxPowerElectric)
 				: Num.intStr(b.maxPower);
 		return forProduct(b, power + " kW");
 	}
@@ -60,16 +50,27 @@ public class SearchLabel {
 		return forProduct(bt, volume + " l");
 	}
 
-	public static String forPipe(Pipe p) {
-		String type = p.pipeType != null ? p.pipeType.name() : "?";
-		String label = forProduct(p, type);
-		label += " \u00B7 " + Num.intStr(p.outerDiameter) + " mm";
-		return label;
+	public static String forPipe(Pipe pipe) {
+		var type = pipe.pipeType != null
+				? pipe.pipeType.name()
+				: "?";
+		var diameter = Num.intStr(pipe.outerDiameter) + " mm";
+		return type + " \u00B7 " + forProduct(pipe, diameter);
 	}
 
 	public static String forTransferStation(TransferStation ts) {
-		String capacity = Num.intStr(ts.outputCapacity);
+		var capacity = Num.intStr(ts.outputCapacity);
 		return forProduct(ts, capacity + " kW");
 	}
 
+	private static String forProduct(AbstractProduct product, String keyFigure) {
+		if (product == null)
+			return "";
+		String label = keyFigure;
+		if (product.manufacturer != null) {
+			label += " \u00B7 " + product.manufacturer.name;
+		}
+		label += " \u00B7 " + product.name;
+		return label;
+	}
 }
