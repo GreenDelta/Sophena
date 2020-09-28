@@ -123,8 +123,10 @@ class EntryWizard extends Wizard {
 
 		private void searchGlobalProduct(ImageHyperlink link) {
 			ProductDao dao = new ProductDao(App.getDb());
-			Product p = SearchDialog.open(Labels.get(type),
-					dao.getAllGlobal(type), SearchLabel::forProduct);
+			Product p = SearchDialog.open(
+					Labels.get(type),
+					dao.getAllGlobal(type), 
+					SearchLabel::forProduct);
 			if (p == null) {
 				noProduct(true);
 				return;

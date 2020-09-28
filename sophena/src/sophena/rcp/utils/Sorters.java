@@ -1,6 +1,5 @@
 package sophena.rcp.utils;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,28 +22,25 @@ public class Sorters {
 	}
 
 	public static <T extends RootEntity> Comparator<T> byName() {
-		return new Comparator<T>() {
-			@Override
-			public int compare(T o1, T o2) {
-				if (o1 == null && o2 == null)
-					return 0;
-				if (o1 == null || o2 == null)
-					return o1 == null ? -1 : 1;
-				return Strings.compare(o1.name, o2.name);
-			}
+		return (o1, o2) -> {
+			if (o1 == null && o2 == null)
+				return 0;
+			if (o1 == null || o2 == null)
+				return o1 == null ? -1 : 1;
+			return Strings.compare(o1.name, o2.name);
 		};
 	}
 
 	public static <T extends RootEntity> void byName(List<T> list) {
 		if (list == null)
 			return;
-		Collections.sort(list, byName());
+		list.sort(byName());
 	}
 
 	public static void boilers(List<Boiler> boilers) {
 		if (boilers == null)
 			return;
-		Collections.sort(boilers, (p1, p2) -> {
+		boilers.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -66,7 +62,7 @@ public class Sorters {
 	public static void pipes(List<Pipe> pipes) {
 		if (pipes == null)
 			return;
-		Collections.sort(pipes, (p1, p2) -> {
+		pipes.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -88,7 +84,7 @@ public class Sorters {
 	public static void transferStations(List<TransferStation> ts) {
 		if (ts == null)
 			return;
-		Collections.sort(ts, (p1, p2) -> {
+		ts.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -103,7 +99,7 @@ public class Sorters {
 	public static void heatRecoveries(List<HeatRecovery> hr) {
 		if (hr == null)
 			return;
-		Collections.sort(hr, (p1, p2) -> {
+		hr.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -121,7 +117,7 @@ public class Sorters {
 	public static void flueGasCleanings(List<FlueGasCleaning> fgc) {
 		if (fgc == null)
 			return;
-		Collections.sort(fgc, (p1, p2) -> {
+		fgc.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -138,7 +134,7 @@ public class Sorters {
 	public static void buffers(List<BufferTank> buffers) {
 		if (buffers == null)
 			return;
-		Collections.sort(buffers, (p1, p2) -> {
+		buffers.sort((p1, p2) -> {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
@@ -180,7 +176,7 @@ public class Sorters {
 	public static <T extends BaseDataEntity> void sortBaseData(List<T> list) {
 		if (list == null)
 			return;
-		Collections.sort(list, (o1, o2) -> {
+		list.sort((o1, o2) -> {
 			if (o1 == null && o2 == null)
 				return 0;
 			if (o1 == null || o2 == null)
@@ -194,7 +190,7 @@ public class Sorters {
 	public static void productGroups(List<ProductGroup> groups) {
 		if (groups == null)
 			return;
-		Collections.sort(groups, (g1, g2) -> {
+		groups.sort((g1, g2) -> {
 			if (g1.type == null || g2.type == null)
 				return 0;
 			if (g1.type != g2.type)
@@ -204,5 +200,4 @@ public class Sorters {
 			return Strings.compare(g1.name, g2.name);
 		});
 	}
-
 }

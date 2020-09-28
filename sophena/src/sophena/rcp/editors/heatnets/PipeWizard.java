@@ -15,7 +15,6 @@ import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.Controls;
@@ -24,7 +23,6 @@ import sophena.rcp.utils.UI;
 
 class PipeWizard extends Wizard {
 
-	private Page page;
 	private HeatNetPipe pipe;
 
 	static int open(HeatNetPipe pipe) {
@@ -41,14 +39,12 @@ class PipeWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		if (pipe.pipe == null)
-			return false;
-		return true;
+		return pipe.pipe != null;
 	}
 
 	@Override
 	public void addPages() {
-		page = new Page();
+		Page page = new Page();
 		addPage(page);
 	}
 
@@ -78,9 +74,9 @@ class PipeWizard extends Wizard {
 
 		private void createNameText(Composite comp) {
 			Text t = UI.formText(comp, M.Name);
-			Texts.on(t).init(pipe.name).onChanged((s) -> {
-				pipe.name = s;
-			});
+			Texts.on(t)
+					.init(pipe.name)
+					.onChanged((s) -> pipe.name = s);
 			UI.filler(comp);
 		}
 
@@ -99,8 +95,7 @@ class PipeWizard extends Wizard {
 		}
 
 		private void selectPipe(ImageHyperlink link) {
-			Pipe p = SearchDialog.open("Wärmeleitung", Pipe.class,
-					SearchLabel::forPipe);
+			Pipe p = SearchDialog.forPipes();
 			if (p == null)
 				return;
 			pipe.pipe = p;
