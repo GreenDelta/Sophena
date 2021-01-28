@@ -22,14 +22,16 @@ public class Smoothing {
 		var fsi = net.simultaneityFactor;
 		var rawCurve = ProjectLoad.getRawCurve(project);
 		var rawMax = Stats.max(rawCurve);
-		if (rawMax == 0)
+		if (rawMax == 0 || rawMax < (0.9 * maxLoad))
 			return 0;
 		var fsiEstimated = 0.9 * maxLoad * fsi / rawMax;
 		var countEstimated = Math.round(20
 				* Defaults.SMOOTHING_FACTOR * (1 - fsiEstimated)
 				* Math.pow(2, (10 * (1 - fsiEstimated))));
 		double factor = countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
-		return factor < 0 ? 0 : factor;
+		return factor < 0 || Double.isNaN(factor)
+				? 0
+				: factor;
 	}
 
 	/**
