@@ -28,7 +28,7 @@ Eclipse-BundleShape: dir
 Bundle-ClassPath: .,
  libs/commons-codec-1.10.jar,
  libs/commons-collections4-4.1.jar,
- libs/commons-io-2.6.jar,
+ libs/commons-io-2.7.jar,
  libs/curvesapi-1.04.jar,
  libs/derby-10.14.2.0.jar,
  libs/gson-2.8.5.jar,
