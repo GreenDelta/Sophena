@@ -12,7 +12,7 @@ Sophena is an [Eclipse RCP application](https://wiki.eclipse.org/Rich_Client_Pla
 using the Eclipse 3.x API. In order to build it from source you need to have the
 following tools installed:
 
-* a Java Runtime or [JDK >= 13](https://adoptopenjdk.net/)
+* a Java Runtime or [JDK >= 17](https://adoptium.net)
 * [Apache Maven](https://maven.apache.org/)
 * the [Eclipse package for RCP & RAP developers](http://www.eclipse.org/downloads/eclipse-packages/).
 * ([Go](https://golang.org/) for building the data packager)
