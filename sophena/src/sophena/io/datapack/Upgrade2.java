@@ -27,7 +27,7 @@ import sophena.model.Stats;
 class Upgrade2 implements Upgrade {
 
 	private final Database db;
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	Upgrade2(Database db) {
 		this.db = db;
@@ -38,14 +38,10 @@ class Upgrade2 implements Upgrade {
 		if (type == null || obj == null)
 			return;
 		switch (type) {
-		case FUEL:
-			upgradeFuel(obj);
-			break;
-		case PROJECT:
-			upgradeProject(obj);
-			break;
-		default:
-			break;
+			case FUEL -> upgradeFuel(obj);
+			case PROJECT -> upgradeProject(obj);
+			default -> {
+			}
 		}
 	}
 
