@@ -3,13 +3,13 @@ package sophena.db.daos;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Table;
-import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Table;
+import jakarta.persistence.TypedQuery;
 import sophena.db.Database;
 import sophena.model.AbstractEntity;
 

@@ -2,12 +2,12 @@ package sophena.model;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 /**
  * This class represents the concrete use of a pipe in a heat net of a project.
@@ -25,7 +25,7 @@ public class HeatNetPipe extends AbstractEntity {
 
 	@Column(name = "name")
 	public String name;
-	
+
 	@Column(name = "length")
 	public double length;
 

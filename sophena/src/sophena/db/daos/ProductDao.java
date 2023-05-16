@@ -3,8 +3,8 @@ package sophena.db.daos;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 import sophena.db.Database;
 import sophena.model.Product;

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.eclipse.persistence.jpa.PersistenceProvider;
@@ -74,8 +74,8 @@ public class Database implements Closeable {
 	private void connect(String url) {
 		log.trace("connect to database: {}", url);
 		Map<Object, Object> map = new HashMap<>();
-		map.put("javax.persistence.jdbc.url", url);
-		map.put("javax.persistence.jdbc.driver",
+		map.put("jakarta.persistence.jdbc.url", url);
+		map.put("jakarta.persistence.jdbc.driver",
 				"org.apache.derby.jdbc.EmbeddedDriver");
 		map.put("eclipselink.classloader", getClass().getClassLoader());
 		map.put("eclipselink.target-database", "Derby");

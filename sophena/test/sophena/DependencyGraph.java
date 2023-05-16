@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 import sophena.model.AbstractEntity;
 import sophena.model.RootEntity;

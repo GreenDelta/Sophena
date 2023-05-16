@@ -1,7 +1,7 @@
 package sophena.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 
 /**
  * Instances of this class are entities that are located in the base data. Base
