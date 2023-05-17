@@ -38,20 +38,19 @@ public class ConsumerImportAction extends NavigationAction {
 		if (file == null)
 			return;
 		var r = ConsumerReader.of(file, App.getDb()).read();
-		if (r.hasError()) {
-			MsgBox.error("Importfehler", r.error());
+		var err = "Es konnten keine Abnehmer aus der Datei gelesen werden.";
+		if (r.isError()) {
+			MsgBox.error("Importfehler", r.message().orElse(err));
 			return;
 		}
-		if (r.isEmpty()) {
-			MsgBox.info(
-					"Keine Abnehmer",
-					"Es konnten keine Abnehmer aus der Datei gelesen werden.");
+		var consumers = r.get();
+		if (consumers == null || consumers.isEmpty()) {
+			MsgBox.info("Keine Abnehmer", err);
 			return;
 		}
-		var consumers = r.consumers();
 		var prefix = consumers.size() == 1
-			? "Aus der Datei wird ein Abnehmer"
-			: "Aus der Datei werden " + consumers.size() + " Abnehmer";
+				? "Aus der Datei wird ein Abnehmer"
+				: "Aus der Datei werden " + consumers.size() + " Abnehmer";
 		var msg = prefix + " in das ausgewählte Projekt importiert.";
 		if (MsgBox.ask("Importieren", msg)) {
 			runImport(consumers);

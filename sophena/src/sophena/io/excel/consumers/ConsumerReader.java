@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import sophena.db.Database;
 import sophena.model.Consumer;
+import sophena.utils.Result;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ public class ConsumerReader {
 		return new ConsumerReader(file, db);
 	}
 
-	public Result read() {
+	public Result<List<Consumer>> read() {
 		try (var wb = WorkbookFactory.create(file)){
 			var rows = readRowsFrom(wb);
 			if (rows.isEmpty())
-				return Result.empty();
-			return Result.err("not yet implemented");
+				return Result.ok(List.of());
+			return Result.error("not yet implemented");
 		} catch (Exception e) {
-			return Result.err("Die Datei konnte nicht gelesen werden: " + e.getMessage());
+			return Result.error("Die Datei konnte nicht gelesen werden: " + e.getMessage());
 		}
 	}
 
@@ -54,22 +55,5 @@ public class ConsumerReader {
 		return consumers;
 	}
 
-	public record Result(List<Consumer> consumers, String error) {
 
-		static Result empty() {
-			return new Result(List.of(), null);
-		}
-
-		static Result err(String message) {
-			return new Result(List.of(), message);
-		}
-
-		public boolean hasError() {
-			return error != null;
-		}
-
-		public boolean isEmpty() {
-			return consumers == null || consumers.isEmpty();
-		}
-	}
 }
