@@ -21,115 +21,58 @@ public final class Labels {
 	public static String get(FuelGroup fg) {
 		if (fg == null)
 			return null;
-		switch (fg) {
-		case BIOGAS:
-			return "Biogas";
-		case NATURAL_GAS:
-			return "Erdgas";
-		case LIQUID_GAS:
-			return "Flüssiggas";
-		case HEATING_OIL:
-			return "Heizöl";
-		case PELLETS:
-			return "Pellets";
-		case ELECTRICITY:
-			return "Strom";
-		case WOOD:
-			return "Holz";
-		case HOT_WATER:
-			return "Warmwasser";
-		case PLANTS_OIL:
-			return "Pflanzenöl";
-		default:
-			return "";
-		}
+		return switch (fg) {
+			case BIOGAS -> "Biogas";
+			case NATURAL_GAS -> "Erdgas";
+			case LIQUID_GAS -> "Flüssiggas";
+			case HEATING_OIL -> "Heizöl";
+			case PELLETS -> "Pellets";
+			case ELECTRICITY -> "Strom";
+			case WOOD -> "Holz";
+			case HOT_WATER -> "Warmwasser";
+			case PLANTS_OIL -> "Pflanzenöl";
+		};
 	}
 
 	public static String get(WoodAmountType type) {
 		if (type == null)
 			return "";
-		switch (type) {
-		case CHIPS:
-			return "Holzhackschnitzel";
-		case LOGS:
-			return "Holzscheite";
-		case MASS:
-			return "Masse";
-		default:
-			return "?";
-		}
-	}
-
-	public static WoodAmountType getWoodAmountType(String label) {
-		if (label == null)
-			return null;
-		for (WoodAmountType t : WoodAmountType.values()) {
-			if (Strings.nullOrEqual(label, get(t)))
-				return t;
-		}
-		return null;
+		return switch (type) {
+			case CHIPS -> "Holzhackschnitzel";
+			case LOGS -> "Holzscheite";
+			case MASS -> "Masse";
+		};
 	}
 
 	public static String get(ProducerFunction fn) {
 		if (fn == null)
 			return "";
-		switch (fn) {
-		case BASE_LOAD:
-			return "Grundlast";
-		case PEAK_LOAD:
-			return "Spitzenlast";
-		default:
-			return "?";
-		}
-	}
-
-	public static ProducerFunction getProducerFunction(String label) {
-		if (label == null)
-			return null;
-		for (ProducerFunction fn : ProducerFunction.values()) {
-			if (Strings.nullOrEqual(label, get(fn)))
-				return fn;
-		}
-		return null;
+		return switch (fn) {
+			case BASE_LOAD -> "Grundlast";
+			case PEAK_LOAD -> "Spitzenlast";
+		};
 	}
 
 	public static String get(BuildingType t) {
 		if (t == null)
 			return null;
-		switch (t) {
-		case SINGLE_FAMILY_HOUSE:
-			return "Einfamilienhaus";
-		case MULTI_FAMILY_HOUSE:
-			return "Mehrfamilienhaus";
-		case BLOCK_OF_FLATS:
-			return "Wohnblock";
-		case TERRACE_HOUSE:
-			return "Reihenhaus";
-		case TOWER_BLOCK:
-			return "Hochhaus";
-		case SCHOOL:
-			return "Schule";
-		case KINDERGARDEN:
-			return "Kindergarten";
-		case OFFICE_BUILDING:
-			return "Büro/Rathaus";
-		case HOSPITAL:
-			return "Krankenhaus";
-		case NURSING_HOME:
-			return "Alten/-Pflegeheim";
-		case RESTAURANT:
-			return "Gaststätte";
-		case HOTEL:
-			return "Hotel";
-		case COMMERCIAL_BUILDING:
-			return "Gewerbe";
-		case OTHER:
-			return "Sonstiges";
-		case FERMENTER:
-			return "Fermenter";
-		default:
-			return "";
-		}
+		return switch (t) {
+			case SINGLE_FAMILY_HOUSE -> "Einfamilienhaus";
+			case MULTI_FAMILY_HOUSE -> "Mehrfamilienhaus";
+			case BLOCK_OF_FLATS -> "Wohnblock";
+			case TERRACE_HOUSE -> "Reihenhaus";
+			case TOWER_BLOCK -> "Hochhaus";
+			case SCHOOL -> "Schule";
+			case KINDERGARDEN -> "Kindergarten";
+			case OFFICE_BUILDING -> "Büro/Rathaus";
+			case HOSPITAL -> "Krankenhaus";
+			case NURSING_HOME -> "Alten/-Pflegeheim";
+			case RESTAURANT -> "Gaststätte";
+			case HOTEL -> "Hotel";
+			case COMMERCIAL_BUILDING -> "Gewerbe";
+			case OTHER -> "Sonstiges";
+			case FERMENTER -> "Fermenter";
+		};
 	}
 
 	public static BuildingType getBuildingType(String label) {
@@ -145,98 +88,57 @@ public final class Labels {
 	public static String get(ProductType t) {
 		if (t == null)
 			return null;
-		switch (t) {
-		case BIOMASS_BOILER:
-			return "Biomassekessel";
-		case FOSSIL_FUEL_BOILER:
-			return "Fossiler Kessel";
-		case HEAT_PUMP:
-			return "Wärmepumpe";
-		case COGENERATION_PLANT:
-			return "KWK-Anlage";
-		case SOLAR_THERMAL_PLANT:
-			return "Solarthermische Anlage";
-		case ELECTRIC_HEAT_GENERATOR:
-			return "Elektrischer Wärmeerzeuger";
-		case OTHER_HEAT_SOURCE:
-			return "Sonstige Wärmequelle";
-		case BOILER_ACCESSORIES:
-			return "Kesselzubehör";
-		case OTHER_EQUIPMENT:
-			return "Sonstiges Zubehör";
-		case BUFFER_TANK:
-			return "Pufferspeicher";
-		case HEAT_RECOVERY:
-			return "Wärmerückgewinnung";
-		case FLUE_GAS_CLEANING:
-			return "Rauchgasreinigung";
-		case BOILER_HOUSE_TECHNOLOGY:
-			return "Heizhaus-Technik";
-		case BUILDING:
-			return "Gebäude";
-		case PIPE:
-			return "Wärmeleitung";
-		case HEATING_NET_TECHNOLOGY:
-			return "Wärmenetz-Technik";
-		case HEATING_NET_CONSTRUCTION:
-			return "Wärmenetz-Bau";
-		case PLANNING:
-			return "Planung";
-		case TRANSFER_STATION:
-			return "Wärmeübergabe";
-		default:
-			return null;
-		}
+		return switch (t) {
+			case BIOMASS_BOILER -> "Biomassekessel";
+			case FOSSIL_FUEL_BOILER -> "Fossiler Kessel";
+			case HEAT_PUMP -> "Wärmepumpe";
+			case COGENERATION_PLANT -> "KWK-Anlage";
+			case SOLAR_THERMAL_PLANT -> "Solarthermische Anlage";
+			case ELECTRIC_HEAT_GENERATOR -> "Elektrischer Wärmeerzeuger";
+			case OTHER_HEAT_SOURCE -> "Sonstige Wärmequelle";
+			case BOILER_ACCESSORIES -> "Kesselzubehör";
+			case OTHER_EQUIPMENT -> "Sonstiges Zubehör";
+			case BUFFER_TANK -> "Pufferspeicher";
+			case HEAT_RECOVERY -> "Wärmerückgewinnung";
+			case FLUE_GAS_CLEANING -> "Rauchgasreinigung";
+			case BOILER_HOUSE_TECHNOLOGY -> "Heizhaus-Technik";
+			case BUILDING -> "Gebäude";
+			case PIPE -> "Wärmeleitung";
+			case HEATING_NET_TECHNOLOGY -> "Wärmenetz-Technik";
+			case HEATING_NET_CONSTRUCTION -> "Wärmenetz-Bau";
+			case PLANNING -> "Planung";
+			case TRANSFER_STATION -> "Wärmeübergabe";
+		};
 	}
 
 	public static String get(ProductArea area) {
 		if (area == null)
 			return null;
-		switch (area) {
-		case BUILDINGS:
-			return "Gebäude";
-		case HEATING_NET:
-			return "Wärmenetz";
-		case PLANNING:
-			return "Planung";
-		case TECHNOLOGY:
-			return "Anlagentechnik";
-		default:
-			return "?";
-		}
+		return switch (area) {
+			case BUILDINGS -> "Gebäude";
+			case HEATING_NET -> "Wärmenetz";
+			case PLANNING -> "Planung";
+			case TECHNOLOGY -> "Anlagentechnik";
+		};
 	}
 
 	public static String get(Month month) {
 		if (month == null)
 			return "";
-		switch (month) {
-		case JANUARY:
-			return "Januar";
-		case FEBRUARY:
-			return "Februar";
-		case MARCH:
-			return "März";
-		case APRIL:
-			return "April";
-		case MAY:
-			return "Mai";
-		case JUNE:
-			return "Juni";
-		case JULY:
-			return "Juli";
-		case AUGUST:
-			return "August";
-		case SEPTEMBER:
-			return "September";
-		case OCTOBER:
-			return "Oktober";
-		case NOVEMBER:
-			return "November";
-		case DECEMBER:
-			return "Dezember";
-		default:
-			return "";
-		}
+		return switch (month) {
+			case JANUARY -> "Januar";
+			case FEBRUARY -> "Februar";
+			case MARCH -> "März";
+			case APRIL -> "April";
+			case MAY -> "Mai";
+			case JUNE -> "Juni";
+			case JULY -> "Juli";
+			case AUGUST -> "August";
+			case SEPTEMBER -> "September";
+			case OCTOBER -> "Oktober";
+			case NOVEMBER -> "November";
+			case DECEMBER -> "Dezember";
+		};
 	}
 
 	public static String get(MonthDay md) {
@@ -248,58 +150,27 @@ public final class Labels {
 	public static String getPlural(ProductType t) {
 		if (t == null)
 			return null;
-		switch (t) {
-		case BIOMASS_BOILER:
-			return "Biomassekessel";
-		case FOSSIL_FUEL_BOILER:
-			return "Fossile Kessel";
-		case HEAT_PUMP:
-			return "Wärmepumpen";
-		case COGENERATION_PLANT:
-			return "KWK-Anlagen";
-		case SOLAR_THERMAL_PLANT:
-			return "Solarthermische Anlagen";
-		case ELECTRIC_HEAT_GENERATOR:
-			return "Elektrische Wärmeerzeuger";
-		case OTHER_HEAT_SOURCE:
-			return "Sonstige Wärmequellen";
-		case BOILER_ACCESSORIES:
-			return "Kesselzubehör";
-		case OTHER_EQUIPMENT:
-			return "Sonstiges Zubehör";
-		case BUFFER_TANK:
-			return "Pufferspeicher";
-		case HEAT_RECOVERY:
-			return "Wärmerückgewinnung";
-		case FLUE_GAS_CLEANING:
-			return "Rauchgasreinigung";
-		case BOILER_HOUSE_TECHNOLOGY:
-			return "Heizhaus-Technik";
-		case BUILDING:
-			return "Gebäude";
-		case PIPE:
-			return "Wärmeleitungen";
-		case HEATING_NET_TECHNOLOGY:
-			return "Wärmenetz-Technik";
-		case HEATING_NET_CONSTRUCTION:
-			return "Wärmenetz-Bau";
-		case PLANNING:
-			return "Planung";
-		case TRANSFER_STATION:
-			return "Wärmeübergabe";
-		default:
-			return get(t);
-		}
-	}
-
-	public static ProductType getProductType(String label) {
-		if (label == null)
-			return null;
-		for (ProductType t : ProductType.values()) {
-			if (Strings.nullOrEqual(label, get(t)))
-				return t;
-		}
-		return null;
+		return switch (t) {
+			case BIOMASS_BOILER -> "Biomassekessel";
+			case FOSSIL_FUEL_BOILER -> "Fossile Kessel";
+			case HEAT_PUMP -> "Wärmepumpen";
+			case COGENERATION_PLANT -> "KWK-Anlagen";
+			case SOLAR_THERMAL_PLANT -> "Solarthermische Anlagen";
+			case ELECTRIC_HEAT_GENERATOR -> "Elektrische Wärmeerzeuger";
+			case OTHER_HEAT_SOURCE -> "Sonstige Wärmequellen";
+			case BOILER_ACCESSORIES -> "Kesselzubehör";
+			case OTHER_EQUIPMENT -> "Sonstiges Zubehör";
+			case BUFFER_TANK -> "Pufferspeicher";
+			case HEAT_RECOVERY -> "Wärmerückgewinnung";
+			case FLUE_GAS_CLEANING -> "Rauchgasreinigung";
+			case BOILER_HOUSE_TECHNOLOGY -> "Heizhaus-Technik";
+			case BUILDING -> "Gebäude";
+			case PIPE -> "Wärmeleitungen";
+			case HEATING_NET_TECHNOLOGY -> "Wärmenetz-Technik";
+			case HEATING_NET_CONSTRUCTION -> "Wärmenetz-Bau";
+			case PLANNING -> "Planung";
+			case TRANSFER_STATION -> "Wärmeübergabe";
+		};
 	}
 
 	public static String getFuelUnit(Producer producer) {

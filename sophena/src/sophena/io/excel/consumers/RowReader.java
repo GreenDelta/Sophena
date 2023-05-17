@@ -19,6 +19,10 @@ class RowReader {
 				: Optional.empty();
 	}
 
+	int index() {
+		return row.getRowNum();
+	}
+
 	String str(Field field) {
 		return field != null
 				? str(field.column)

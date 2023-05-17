@@ -36,7 +36,7 @@ public class BuildingState extends BaseDataEntity {
 
 	@Override
 	public BuildingState clone() {
-		BuildingState clone = new BuildingState();
+		var clone = new BuildingState();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
