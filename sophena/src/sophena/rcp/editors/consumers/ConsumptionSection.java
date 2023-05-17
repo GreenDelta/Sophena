@@ -112,19 +112,14 @@ class ConsumptionSection {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof FuelConsumption))
+			if (!(obj instanceof FuelConsumption c))
 				return null;
-			FuelConsumption c = (FuelConsumption) obj;
-			switch (col) {
-			case 0:
-				return c.fuel != null ? c.fuel.name : null;
-			case 1:
-				return getAmount(c);
-			case 2:
-				return getUsedHeat(c);
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> c.fuel != null ? c.fuel.name : null;
+				case 1 -> getAmount(c);
+				case 2 -> getUsedHeat(c);
+				default -> null;
+			};
 		}
 
 		private String getAmount(FuelConsumption c) {
@@ -148,7 +143,7 @@ class ConsumptionSection {
 				return null;
 			String heat = Num.intStr(c.getUsedHeat()) + " kWh";
 			double eta = EfficiencyRate.get(c.utilisationRate, consumer().loadHours);
-			return heat + " (\u03B7=" + Num.str(eta) + "%)";
+			return heat + " (η=" + Num.str(eta) + "%)";
 		}
 	}
 }
