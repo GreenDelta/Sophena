@@ -18,13 +18,11 @@ public class AddFlueGasCleaning extends NavigationAction {
 
 	@Override
 	public boolean accept(NavigationElement elem) {
-		if (elem instanceof ProducerElement) {
-			ProducerElement pe = (ProducerElement) elem;
+		if (elem instanceof ProducerElement pe) {
 			project = pe.getProject();
 			return true;
 		}
-		if (elem instanceof SubFolderElement) {
-			SubFolderElement fe = (SubFolderElement) elem;
+		if (elem instanceof SubFolderElement fe) {
 			if (fe.getType() != SubFolderType.PRODUCTION)
 				return false;
 			project = fe.getProject();

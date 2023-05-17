@@ -51,15 +51,13 @@ public class SubFolderElement implements NavigationElement {
 		if (childs == null)
 			return;
 		switch (type) {
-		case CONSUMPTION:
-			syncConsumers();
-			break;
-		case PRODUCTION:
-			syncProducers();
-			syncCleanings();
-			break;
-		default:
-			break;
+			case CONSUMPTION -> syncConsumers();
+			case PRODUCTION -> {
+				syncProducers();
+				syncCleanings();
+			}
+			default -> {
+			}
 		}
 	}
 
@@ -94,27 +92,20 @@ public class SubFolderElement implements NavigationElement {
 
 	@Override
 	public String getLabel() {
-		switch (type) {
-		case PRODUCTION:
-			return M.HeatProduction;
-		case DISTRIBUTION:
-			return M.HeatDistribution;
-		case CONSUMPTION:
-			return M.HeatUsage;
-		case COSTS:
-			return "Investitionen";
-		case RESULTS:
-			return "Ergebnisse";
-		default:
-			return M.Unknown;
-		}
+		return switch (type) {
+			case PRODUCTION -> M.HeatProduction;
+			case DISTRIBUTION -> M.HeatDistribution;
+			case CONSUMPTION -> M.HeatUsage;
+			case COSTS -> "Investitionen";
+			case RESULTS -> "Ergebnisse";
+			default -> M.Unknown;
+		};
 	}
 
 	@Override
 	public int compareTo(NavigationElement obj) {
-		if (!(obj instanceof SubFolderElement))
+		if (!(obj instanceof SubFolderElement other))
 			return 0;
-		SubFolderElement other = (SubFolderElement) obj;
 		if (this.type == null || other.type == null)
 			return 0;
 		return this.type.ordinal() - other.type.ordinal();
@@ -122,20 +113,14 @@ public class SubFolderElement implements NavigationElement {
 
 	@Override
 	public Image getImage() {
-		switch (type) {
-		case CONSUMPTION:
-			return Icon.CONSUMER_16.img();
-		case COSTS:
-			return Icon.COSTS_16.img();
-		case PRODUCTION:
-			return Icon.PRODUCER_16.img();
-		case DISTRIBUTION:
-			return Icon.PUMP_16.img();
-		case RESULTS:
-			return Icon.LOAD_PROFILE_16.img();
-		default:
-			return null;
-		}
+		return switch (type) {
+			case CONSUMPTION -> Icon.CONSUMER_16.img();
+			case COSTS -> Icon.COSTS_16.img();
+			case PRODUCTION -> Icon.PRODUCER_16.img();
+			case DISTRIBUTION -> Icon.PUMP_16.img();
+			case RESULTS -> Icon.LOAD_PROFILE_16.img();
+			default -> null;
+		};
 	}
 
 	@Override
@@ -144,9 +129,8 @@ public class SubFolderElement implements NavigationElement {
 			return false;
 		if (obj == this)
 			return true;
-		if (!(obj instanceof SubFolderElement))
+		if (!(obj instanceof SubFolderElement other))
 			return false;
-		SubFolderElement other = (SubFolderElement) obj;
 		return Objects.equals(this.getProject(), other.getProject())
 				&& this.type == other.type;
 	}

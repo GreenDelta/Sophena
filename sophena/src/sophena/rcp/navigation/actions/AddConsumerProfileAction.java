@@ -19,12 +19,11 @@ public class AddConsumerProfileAction extends NavigationAction {
 
 	@Override
 	public boolean accept(NavigationElement elem) {
-		if (elem instanceof ConsumerElement) {
-			project = ((ConsumerElement) elem).getProject();
+		if (elem instanceof ConsumerElement ce) {
+			project = ce.getProject();
 			return true;
 		}
-		if (elem instanceof SubFolderElement) {
-			SubFolderElement fe = (SubFolderElement) elem;
+		if (elem instanceof SubFolderElement fe) {
 			if (fe.getType() == SubFolderType.CONSUMPTION) {
 				project = fe.getProject();
 				return true;

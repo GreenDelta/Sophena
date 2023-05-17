@@ -18,19 +18,19 @@ import sophena.rcp.wizards.ProducerWizard;
 
 public class AddAction extends NavigationAction {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NavigationElement elem;
 	private Method handler;
 
 	@Override
-	public boolean accept(NavigationElement element) {
-		handler = Handlers.find(element, this);
+	public boolean accept(NavigationElement e) {
+		handler = Handlers.find(e, this);
 		if (handler == null) {
 			elem = null;
 			return false;
 		} else {
-			elem = element;
+			elem = e;
 			return true;
 		}
 	}

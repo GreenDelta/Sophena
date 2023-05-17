@@ -14,7 +14,7 @@ class Handlers {
 	private Handlers() {
 	}
 
-	public static Method find(NavigationElement element, Action action) {
+	static Method find(NavigationElement element, Action action) {
 		if (element == null || action == null)
 			return null;
 		try {
@@ -40,9 +40,8 @@ class Handlers {
 		Class<?> c = h.type();
 		if (!c.equals(e.getClass()))
 			return false;
-		if (!(e instanceof SubFolderElement))
+		if (!(e instanceof SubFolderElement fe))
 			return true;
-		SubFolderElement fe = (SubFolderElement) e;
 		return fe.getType() == h.folderType();
 	}
 
