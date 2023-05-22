@@ -25,19 +25,27 @@ public class ConsumerReader {
 	}
 
 	public Result<List<Consumer>> read() {
-		try (var wb = WorkbookFactory.create(file)){
+		try (var wb = WorkbookFactory.create(file)) {
 			var rows = readRowsFrom(wb);
 			if (rows.isEmpty())
 				return Result.ok(List.of());
-			return Result.error("not yet implemented");
+			var consumers = new ArrayList<Consumer>();
+			for (var row : rows) {
+				var r = row.toConsumer(db);
+				if (r.isError())
+					return Result.error(r.message().orElse("unbekannter Fehler"));
+				consumers.add(r.get());
+			}
+			return Result.ok(consumers);
 		} catch (Exception e) {
-			return Result.error("Die Datei konnte nicht gelesen werden: " + e.getMessage());
+			return Result.error(
+					"Die Datei konnte nicht gelesen werden: " + e.getMessage());
 		}
 	}
 
 	private List<ConsumerRow> readRowsFrom(Workbook wb) {
 		var consumers = new ArrayList<ConsumerRow>();
-		for (var it = wb.sheetIterator(); it.hasNext();) {
+		for (var it = wb.sheetIterator(); it.hasNext(); ) {
 			var sheet = it.next();
 			var head = RowReader.of(sheet.getRow(0)).orElse(null);
 			if (head == null || head.str(0) == null)

@@ -1,11 +1,13 @@
 package sophena.rcp.navigation.actions;
 
+import sophena.db.daos.ProjectDao;
 import sophena.io.excel.consumers.ConsumerReader;
 import sophena.model.Consumer;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.utils.FileChooser;
@@ -58,6 +60,12 @@ public class ConsumerImportAction extends NavigationAction {
 	}
 
 	private void runImport(List<Consumer> consumers) {
-		// TODO: not yet implemented
+		var dao = new ProjectDao(App.getDb());
+		var project = dao.get(this.project.id);
+		if (project == null)
+			return;
+		project.consumers.addAll(consumers);
+		dao.update(project);
+		Navigator.refresh();
 	}
 }

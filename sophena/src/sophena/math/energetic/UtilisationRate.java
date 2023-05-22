@@ -21,16 +21,14 @@ public class UtilisationRate {
 		return get(efficiencyRate, fullLoadHours, Stats.HOURS);
 	}
 
-	public static double get(double efficiencyRate, int fullLoadHours,
-			int usageDuration) {
+	public static double get(
+			double efficiencyRate, int fullLoadHours, int usageDuration) {
 		if (fullLoadHours == 0)
 			return 0.01;
-		double ud = usageDuration;
-		double fh = fullLoadHours;
-		double standbyRate = 1
-				/ ((ud / fh - 1) * Defaults.SPECIFIC_STAND_BY_LOSS + 1);
+		double f = (double) usageDuration / (double) fullLoadHours;
+		double standbyRate = 1/ ((f - 1.0) * Defaults.SPECIFIC_STAND_BY_LOSS + 1);
 		double ur = standbyRate * efficiencyRate;
-		return ur > 0.01 ? ur : 0.01;
+		return Math.max(ur, 0.01);
 	}
 
 	public static double get(Project project, Producer producer,

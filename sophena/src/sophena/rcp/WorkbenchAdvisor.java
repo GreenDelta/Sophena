@@ -1,5 +1,7 @@
 package sophena.rcp;
 
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
@@ -11,7 +13,9 @@ public class WorkbenchAdvisor extends
 
 	@Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-			final IWorkbenchWindowConfigurer configurer) {
+			IWorkbenchWindowConfigurer configurer) {
+		PlatformUI.getPreferenceStore().setValue(
+				IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS, false);
 		return new WindowAdvisor(configurer);
 	}
 
@@ -21,7 +25,7 @@ public class WorkbenchAdvisor extends
 	}
 
 	@Override
-	public void initialize(final IWorkbenchConfigurer configurer) {
+	public void initialize(IWorkbenchConfigurer configurer) {
 		super.initialize(configurer);
 		configurer.setSaveAndRestore(false);
 	}
