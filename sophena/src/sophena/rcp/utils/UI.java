@@ -169,7 +169,7 @@ public class UI {
 		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
-		form.getForm().setForeground(Colors.get("#002171"));
+		form.getForm().setForeground(Colors.of("#002171"));
 		toolkit.decorateFormHeading(form.getForm());
 		return form;
 	}
@@ -188,8 +188,8 @@ public class UI {
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
 						| ExpandableComposite.TWISTIE);
-		s.setTitleBarForeground(Colors.get("#002171"));
-		s.setToggleColor(Colors.get("#002171"));
+		s.setTitleBarForeground(Colors.of("#002171"));
+		s.setToggleColor(Colors.of("#002171"));
 		gridData(s, true, false);
 		s.setText(label);
 		return s;
@@ -202,8 +202,8 @@ public class UI {
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.COMPACT
 						| ExpandableComposite.TWISTIE);
-		s.setTitleBarForeground(Colors.get("#002171"));
-		s.setToggleColor(Colors.get("#002171"));
+		s.setTitleBarForeground(Colors.of("#002171"));
+		s.setToggleColor(Colors.of("#002171"));
 		gridData(s, true, false);
 		s.setText(label);
 		return s;

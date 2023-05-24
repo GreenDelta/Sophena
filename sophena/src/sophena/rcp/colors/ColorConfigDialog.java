@@ -35,7 +35,9 @@ public class ColorConfigDialog extends FormDialog {
 		var body = UI.formBody(form.getForm(), tk);
 
 		var group = new Group(body, SWT.NONE);
+		tk.adapt(group);
 		group.setText("Test");
 		UI.fillHorizontal(group);
+
 	}
 }

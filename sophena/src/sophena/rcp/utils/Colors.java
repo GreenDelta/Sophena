@@ -1,6 +1,7 @@
 package sophena.rcp.utils;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -20,16 +21,16 @@ import sophena.utils.Strings;
  */
 public class Colors {
 
-	private static Logger log = LoggerFactory.getLogger(Colors.class);
-	private static HashMap<RGB, Color> createdColors = new HashMap<>();
-	private static Display display;
+	private static final Logger log = LoggerFactory.getLogger(Colors.class);
+	private static final HashMap<RGB, Color> createdColors = new HashMap<>();
+	private static final Display display;
 
 	static {
 		display = PlatformUI.getWorkbench().getDisplay();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDown());
 	}
 
-	private static RGB[] chartColors = {
+	private static final RGB[] chartColors = {
 			new RGB(41, 111, 196),
 			new RGB(255, 201, 35),
 			new RGB(82, 168, 77),
@@ -51,10 +52,10 @@ public class Colors {
 
 	public static Color getErrorColor() {
 		RGB rgb = new RGB(255, 180, 180);
-		return get(rgb);
+		return of(rgb);
 	}
 
-	public static Color get(RGB rgb) {
+	public static Color of(RGB rgb) {
 		Color color = createdColors.get(rgb);
 		if (color == null || color.isDisposed()) {
 			color = new Color(display, rgb);
@@ -63,21 +64,45 @@ public class Colors {
 		return color;
 	}
 
-	public static Color get(int r, int g, int b) {
+	public static Color of(int r, int g, int b) {
 		RGB rgb = new RGB(r, g, b);
-		return get(rgb);
+		return of(rgb);
 	}
 
-	public static Color get(String hex) {
+	public static Color of(String hex) {
+		var rgb = rgbOf(hex);
+		return of(rgb);
+	}
+
+	public static RGB rgbOf(String hex) {
 		if (Strings.nullOrEmpty(hex))
-			return getWhite();
-		String s = hex.replace("#", "").trim();
+			return new RGB(0, 0, 0);
+		var s = hex.replace("#", "").trim();
 		if (s.length() < 6)
-			return getWhite();
+			return new RGB(0, 0, 0);
 		int r = Integer.valueOf(s.substring(0, 2), 16);
 		int g = Integer.valueOf(s.substring(2, 4), 16);
 		int b = Integer.valueOf(s.substring(4, 6), 16);
-		return get(r, g, b);
+		return new RGB(r, g, b);
+	}
+
+	public static String toHex(RGB rgb) {
+		if (rgb == null)
+			return "#000000";
+		var xs = List.of(
+				Integer.toHexString(rgb.red),
+				Integer.toHexString(rgb.green),
+				Integer.toHexString(rgb.blue));
+		var s = new StringBuilder(7);
+		s.append("#");
+		for (var x : xs) {
+			if (x.length() == 1) {
+				s.append('0').append(x);
+			} else {
+				s.append(x, 0, 2);
+			}
+		}
+		return s.toString();
 	}
 
 	public static Color getWhite() {
@@ -89,7 +114,7 @@ public class Colors {
 	 * of the range of the pre-defined colors, a random color is returned.
 	 */
 	public static Color getForChart(int idx) {
-		return Colors.get(getRgbForChart(idx));
+		return Colors.of(getRgbForChart(idx));
 	}
 
 	/**
@@ -97,10 +122,9 @@ public class Colors {
 	 * of the range of the pre-defined colors, a random color is returned.
 	 */
 	public static RGB getRgbForChart(int idx) {
-		if (idx < 0 || idx >= chartColors.length)
-			return next(idx);
-		RGB rgb = chartColors[idx];
-		return rgb != null ? rgb : next(idx);
+		return idx < 0 || idx >= chartColors.length
+				? next(idx)
+				: chartColors[idx];
 	}
 
 	private static RGB next(int idx) {
@@ -113,11 +137,11 @@ public class Colors {
 	}
 
 	public static Color getChartBlue() {
-		return get(68, 114, 162);
+		return of(68, 114, 162);
 	}
 
 	public static Color getChartRed() {
-		return get(180, 26, 30);
+		return of(180, 26, 30);
 	}
 
 	public static Color getDarkGray() {
@@ -125,11 +149,11 @@ public class Colors {
 	}
 
 	public static Color getLinkBlue() {
-		return get(25, 76, 127);
+		return of(25, 76, 127);
 	}
 
 	public static Color getGray() {
-		return get(128, 128, 128);
+		return of(128, 128, 128);
 	}
 
 	public static Color getBlack() {
@@ -141,22 +165,22 @@ public class Colors {
 	}
 
 	public static Color forRequiredField() {
-		return get(255, 255, 220);
+		return of(255, 255, 220);
 	}
 
 	public static Color forCalculatedField() {
-		return get(230, 230, 233);
+		return of(230, 230, 233);
 	}
 
 	public static Color forModifiedDefault() {
-		return get(225, 213, 232);
+		return of(225, 213, 232);
 	}
 
 	public static Color darker(Color color, int with) {
 		int r = color.getRed() > with ? color.getRed() - with : 0;
 		int g = color.getGreen() > with ? color.getGreen() - with : 0;
 		int b = color.getBlue() > with ? color.getBlue() - with : 0;
-		return get(r, g, b);
+		return of(r, g, b);
 	}
 
 	private static class ShutDown implements IWorkbenchListener {

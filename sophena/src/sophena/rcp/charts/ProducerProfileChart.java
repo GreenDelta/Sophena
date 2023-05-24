@@ -75,7 +75,7 @@ public class ProducerProfileChart {
 				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.get("#ff6b6b"));
+		t.setTraceColor(Colors.of("#ff6b6b"));
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}
@@ -95,7 +95,7 @@ public class ProducerProfileChart {
 				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.SOLID_LINE);
-		t.setTraceColor(Colors.get("#ff6b6b"));
+		t.setTraceColor(Colors.of("#ff6b6b"));
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}

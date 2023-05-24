@@ -43,7 +43,7 @@ class SimpleBarChart {
 	void render(Composite body, FormToolkit tk) {
 		Chart chart = BarCharts.init(body, tk, title);
 		BarCharts.createAxes(chart, comp, unit);
-		BarCharts.series(chart, title, Colors.get("#81c784"), data);
+		BarCharts.series(chart, title, Colors.of("#81c784"), data);
 		chart.getAxisSet().adjustRange();
 	}
 }

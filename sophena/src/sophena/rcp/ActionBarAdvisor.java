@@ -139,7 +139,6 @@ public class ActionBarAdvisor extends
 		var m = new MenuManager(M.Help);
 		m.add(Actions.create("Ergebnisfarben ...", ColorConfigDialog::show));
 		m.add(aboutAction);
-
 		// SQL query editor
 		// m.add(Actions.create("SQL", SqlEditor::open));
 		menu.add(m);
