@@ -22,6 +22,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import sophena.Labels;
 import sophena.io.datapack.Import;
 import sophena.model.ProductType;
+import sophena.rcp.colors.ColorConfigDialog;
 import sophena.rcp.editors.basedata.BaseCostEditor;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.editors.basedata.buildings.BuildingStateEditor;
@@ -49,8 +50,8 @@ public class ActionBarAdvisor extends
 	private IWorkbenchAction saveAllAction;
 	private IWorkbenchAction saveAsAction;
 
-	public ActionBarAdvisor(IActionBarConfigurer configurer) {
-		super(configurer);
+	public ActionBarAdvisor(IActionBarConfigurer config) {
+		super(config);
 	}
 
 	@Override
@@ -121,32 +122,24 @@ public class ActionBarAdvisor extends
 	private ImageDescriptor img(ProductType type) {
 		if (type == null)
 			return null;
-		switch (type) {
-		case BIOMASS_BOILER:
-		case FOSSIL_FUEL_BOILER:
-			return Icon.BOILER_16.des();
-		case HEAT_PUMP:
-			return Icon.HEAT_PUMP_16.des();
-		case COGENERATION_PLANT:
-			return Icon.CO_GEN_16.des();
-		case HEAT_RECOVERY:
-			return Icon.HEAT_RECOVERY_16.des();
-		case FLUE_GAS_CLEANING:
-			return Icon.FLUE_GAS_16.des();
-		case BUFFER_TANK:
-			return Icon.BUFFER_16.des();
-		case PIPE:
-			return Icon.PIPE_16.des();
-		case TRANSFER_STATION:
-			return Icon.CONSUMER_16.des();
-		default:
-			return null;
-		}
+		return switch (type) {
+			case BIOMASS_BOILER, FOSSIL_FUEL_BOILER -> Icon.BOILER_16.des();
+			case HEAT_PUMP -> Icon.HEAT_PUMP_16.des();
+			case COGENERATION_PLANT -> Icon.CO_GEN_16.des();
+			case HEAT_RECOVERY -> Icon.HEAT_RECOVERY_16.des();
+			case FLUE_GAS_CLEANING -> Icon.FLUE_GAS_16.des();
+			case BUFFER_TANK -> Icon.BUFFER_16.des();
+			case PIPE -> Icon.PIPE_16.des();
+			case TRANSFER_STATION -> Icon.CONSUMER_16.des();
+			default -> null;
+		};
 	}
 
 	private void fillHelpMenu(IMenuManager menu) {
-		MenuManager m = new MenuManager(M.Help);
+		var m = new MenuManager(M.Help);
+		m.add(Actions.create("Ergebnisfarben ...", ColorConfigDialog::show));
 		m.add(aboutAction);
+
 		// SQL query editor
 		// m.add(Actions.create("SQL", SqlEditor::open));
 		menu.add(m);
@@ -215,7 +208,7 @@ public class ActionBarAdvisor extends
 		File file = new File(path);
 		try {
 			Import in = new Import(file, App.getDb());
-			Rcp.run("Importiere Daten ...", in, () -> Navigator.refresh());
+			Rcp.run("Importiere Daten ...", in, Navigator::refresh);
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");
 		}

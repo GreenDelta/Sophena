@@ -10,17 +10,17 @@
 
 		<class>sophena.model.Boiler</class>
 		<class>sophena.model.BufferTank</class>
-        <class>sophena.model.BuildingState</class>
-        <class>sophena.model.Consumer</class>
-        <class>sophena.model.CostSettings</class>
+		<class>sophena.model.BuildingState</class>
+		<class>sophena.model.Consumer</class>
+		<class>sophena.model.CostSettings</class>
 		<class>sophena.model.FlueGasCleaning</class>
 		<class>sophena.model.FlueGasCleaningEntry</class>
-        <class>sophena.model.FuelConsumption</class>
-        <class>sophena.model.Fuel</class>
-        <class>sophena.model.HeatNet</class>
-        <class>sophena.model.HeatNetPipe</class>
+		<class>sophena.model.FuelConsumption</class>
+		<class>sophena.model.Fuel</class>
+		<class>sophena.model.HeatNet</class>
+		<class>sophena.model.HeatNetPipe</class>
 		<class>sophena.model.HeatRecovery</class>
-        <class>sophena.model.LoadProfile</class>
+		<class>sophena.model.LoadProfile</class>
 		<class>sophena.model.Location</class>
 		<class>sophena.model.Manufacturer</class>
 		<class>sophena.model.Pipe</class>
@@ -36,8 +36,7 @@
 		<class>sophena.model.WeatherStation</class>
 
 		<properties>
-			<property name="eclipselink.connection-pool.default.max"
-				value="10" />
+			<property name="eclipselink.connection-pool.default.max" value="10" />
 			<property name="eclipselink.jdbc.cache-statements" value="true" />
 			<property name="eclipselink.logging.level" value="WARNING" />
 		</properties>

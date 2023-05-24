@@ -256,6 +256,10 @@ public class UI {
 		return layout;
 	}
 
+	public static GridData fillHorizontal(Control control) {
+		return gridData(control, true, false);
+	}
+
 	public static Composite formComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		gridLayout(composite, 2);
