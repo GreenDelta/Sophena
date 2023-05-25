@@ -1,5 +1,10 @@
 package sophena.model;
 
+import sophena.utils.Strings;
+
+import java.util.Objects;
+import java.util.Optional;
+
 /**
  * All products in Sophena have exactly one of the following types. The order in
  * this enum is equal to the display order in the user interface.
@@ -48,5 +53,15 @@ public enum ProductType {
 
 	ProductType(ProductArea area) {
 		this.productArea = area;
+	}
+
+	public static Optional<ProductType> of(String name) {
+		if (Strings.nullOrEmpty(name))
+			return Optional.empty();
+		for (var type : values()) {
+			if (Objects.equals(type.name(), name))
+				return Optional.of(type);
+		}
+		return Optional.empty();
 	}
 }

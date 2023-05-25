@@ -8,9 +8,10 @@ import com.google.gson.JsonObject;
 import org.eclipse.swt.graphics.RGB;
 import org.slf4j.LoggerFactory;
 import sophena.io.Json;
+import sophena.model.Copyable;
+import sophena.model.ProductType;
 import sophena.rcp.Workspace;
 import sophena.rcp.utils.Colors;
-import sophena.utils.Strings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
-public class ColorConfig {
+public class ColorConfig implements Copyable<ColorConfig> {
 
 	private static final RGB DEFAULT = new RGB(90, 90, 100);
 	private static ColorConfig instance;
@@ -97,38 +99,38 @@ public class ColorConfig {
 		return obj;
 	}
 
-	/**
-	 * Returns the group with the given ID. Creates a new
-	 * group with the given ID and label if it does not
-	 * exist yet.
-	 */
-	public Group groupOf(String id, String label) {
+	public Group groupOf(ProductType type) {
 		for (var group : groups) {
-			if (Objects.equals(id, group.id))
+			if (group.type == type)
 				return group;
 		}
-		var g = new Group(id, label);
+		var g = new Group(type);
 		groups.add(g);
 		return g;
 	}
 
-	public static class Group {
-		private final String id;
-		private final String label;
+	@Override
+	public ColorConfig copy() {
+		var copy = new ColorConfig();
+		for (var g : groups) {
+			var group = copy.groupOf(g.type);
+			group.setBase(g.base);
+
+		}
+		return copy;
+	}
+
+	public static class Group implements Copyable<Group> {
+		private final ProductType type;
 		private RGB base;
 		private final List<RGB> variants = new ArrayList<>();
 
-		private Group(String id, String label) {
-			this.id = id;
-			this.label = label;
+		private Group(ProductType type) {
+			this.type = Objects.requireNonNull(type);
 		}
 
-		public String id() {
-			return id;
-		}
-
-		public String label() {
-			return label;
+		public ProductType type() {
+			return type;
 		}
 
 		public RGB base() {
@@ -159,10 +161,23 @@ public class ColorConfig {
 			variants.set(i, rgb);
 		}
 
+		@Override
+		public Group copy() {
+			Function<RGB, RGB> copyRgb = rgb ->
+					rgb != null
+							? new RGB(rgb.red, rgb.green, rgb.blue)
+							: DEFAULT;
+			var copy = new Group(type);
+			copy.base = copyRgb.apply(base);
+			for (var v : variants) {
+				copy.variants.add(copyRgb.apply(v));
+			}
+			return copy;
+		}
+
 		private JsonObject toJson() {
 			var obj = new JsonObject();
-			obj.addProperty("id", id);
-			obj.addProperty("label", label);
+			obj.addProperty("type", type.name());
 			obj.addProperty("base", Colors.toHex(base()));
 			var array = new JsonArray();
 			for (var v : variants) {
@@ -173,11 +188,11 @@ public class ColorConfig {
 		}
 
 		private static void fromJson(ColorConfig config, JsonObject json) {
-			var id = Json.getString(json, "id");
-			var label = Json.getString(json, "label");
-			if (Strings.nullOrEmpty(id))
+			var type = ProductType.of(Json.getString(json, "type"))
+					.orElse(null);
+			if (type == null)
 				return;
-			var group = config.groupOf(id, label);
+			var group = config.groupOf(type);
 			group.setBase(rgbOf(json.get("base")));
 			var variants = Json.getArray(json, "variants");
 			if (variants == null)
