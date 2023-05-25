@@ -2,6 +2,7 @@ package sophena.rcp.colors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.FormDialog;
@@ -10,14 +11,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Labels;
 import sophena.model.ProductType;
 import sophena.rcp.colors.ColorConfig.Group;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ColorConfigDialog extends FormDialog {
 
+	private final ColorConfig config;
+
 	private ColorConfigDialog() {
 		super(UI.shell());
+		this.config = ColorConfig.get().copy();
 	}
 
 	public static void show() {
@@ -32,14 +38,13 @@ public class ColorConfigDialog extends FormDialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(500, 500);
+		return new Point(650, 600);
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm form) {
 		var tk = form.getToolkit();
 		var body = UI.formBody(form.getForm(), tk);
-		var config = ColorConfig.get().copy();
 
 		// create groups
 		var types = List.of(
@@ -49,8 +54,7 @@ public class ColorConfigDialog extends FormDialog {
 				ProductType.ELECTRIC_HEAT_GENERATOR,
 				ProductType.HEAT_PUMP,
 				ProductType.SOLAR_THERMAL_PLANT,
-				ProductType.OTHER_HEAT_SOURCE,
-				ProductType.BUFFER_TANK);
+				ProductType.OTHER_HEAT_SOURCE);
 		for (var type : types) {
 			var group = config.groupOf(type);
 			render(group, body, tk);
@@ -62,16 +66,60 @@ public class ColorConfigDialog extends FormDialog {
 		tk.adapt(g);
 		g.setText(Labels.getPlural(group.type()));
 		UI.fillHorizontal(g);
-		UI.gridLayout(g, 6).makeColumnsEqualWidth = true;
-		ColorBox.of("Grundfarbe", g)
+		UI.gridLayout(g, 6, 5, 2).makeColumnsEqualWidth = true;
+
+		var variants = new ArrayList<ColorBox>();
+		ColorBox.of("Grundfarbe", g, tk)
 				.setColor(group.base())
-				.onChange(group::setBase);
+				.onChange(rgb -> {
+					group.setBase(rgb);
+					for (int i = 0; i < variants.size(); i++) {
+						var next = next(rgb, i);
+						group.setVariant(i, next);
+						variants.get(i).setColor(next);
+					}
+				});
+
 		for (int i = 0; i < 5; i++) {
 			int idx = i;
-			ColorBox.of("Variante " + (i + 1), g)
+			var box = ColorBox.of("Variante " + (i + 1), g, tk)
 					.setColor(group.variant(i))
 					.onChange(rgb -> group.setVariant(idx, rgb));
+			variants.add(box);
 		}
 	}
 
+	private RGB next(RGB origin, int i) {
+		var hsb = origin.getHSB();
+		float h = hsb[0];
+		float s = hsb[1];
+		float b = hsb[2];
+
+		return switch (i) {
+			case 0 -> new RGB(h, 0.65f, 0.65f);
+			case 1 -> new RGB(h, 0.55f, 0.75f);
+			case 2 -> new RGB(h, 0.45f, 0.85f);
+			case 3 -> new RGB(h, 0.75f, 0.55f);
+			case 4 -> new RGB(h, 0.85f, 0.45f);
+			default -> {
+				float nextH = (float) (h + Math.random() * 360) % 360;
+				yield new RGB(nextH, s, b);
+			}
+		};
+	}
+
+	@Override
+	protected void okPressed() {
+		var origin = ColorConfig.get();
+		if (origin.equals(config)) {
+			super.okPressed();
+			return;
+		}
+		var b = MsgBox.ask("Änderungen speichern",
+				"Sollen die Änderungen gespeichert werden?");
+		if (b) {
+			ColorConfig.save(config);
+		}
+		super.okPressed();
+	}
 }

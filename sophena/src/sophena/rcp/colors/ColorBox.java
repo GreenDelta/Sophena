@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.rcp.utils.UI;
 
 import java.util.function.Consumer;
@@ -24,14 +24,14 @@ class ColorBox {
 	private Color hover;
 	private Consumer<RGB> onChange;
 
-	private ColorBox(String label, Composite parent) {
-		var root = new Composite(parent, SWT.NONE);
+	private ColorBox(String label, Composite parent, FormToolkit tk) {
+		var root = tk.createComposite(parent);
 		UI.fillHorizontal(root);
 		UI.gridLayout(root, 1);
-		var text = new Label(root, SWT.NONE);
-		text.setText(label);
+		var text = tk.createLabel(root, label);
+		UI.gridData(text, false, false).horizontalAlignment = SWT.CENTER;
 
-		comp = new Composite(root, SWT.NONE);
+		comp = tk.createComposite(root);
 		var gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.widthHint = 25;
 		gd.heightHint = 25;
@@ -77,8 +77,8 @@ class ColorBox {
 		setColor(DEFAULT);
 	}
 
-	static ColorBox of(String label, Composite parent) {
-		return new ColorBox(label, parent);
+	static ColorBox of(String label, Composite parent, FormToolkit tk) {
+		return new ColorBox(label, parent, tk);
 	}
 
 	ColorBox onChange(Consumer<RGB> fn) {

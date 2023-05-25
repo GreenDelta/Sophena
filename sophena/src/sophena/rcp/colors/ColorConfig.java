@@ -41,7 +41,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 	}
 
 	public static ColorConfig read(File file) {
-		if (file == null || file.exists())
+		if (file == null || !file.exists())
 			return new ColorConfig();
 		try (var stream = new FileInputStream(file);
 				 var reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
@@ -67,7 +67,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		return config;
 	}
 
-	public void save(ColorConfig config) {
+	public static void save(ColorConfig config) {
 		if (config == null)
 			return;
 		instance = config;
@@ -113,11 +113,28 @@ public class ColorConfig implements Copyable<ColorConfig> {
 	public ColorConfig copy() {
 		var copy = new ColorConfig();
 		for (var g : groups) {
-			var group = copy.groupOf(g.type);
-			group.setBase(g.base);
-
+			copy.groups.add(g.copy());
 		}
 		return copy;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (!(obj instanceof ColorConfig other))
+			return false;
+		if (groups.size() != other.groups.size())
+			return false;
+		for (var group : groups) {
+			var otherGroup = other.groups.stream()
+					.filter(g -> g.type == group.type)
+					.findAny()
+					.orElse(null);
+			if (!group.equals(otherGroup))
+				return false;
+		}
+		return true;
 	}
 
 	public static class Group implements Copyable<Group> {
@@ -173,6 +190,23 @@ public class ColorConfig implements Copyable<ColorConfig> {
 				copy.variants.add(copyRgb.apply(v));
 			}
 			return copy;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this)
+				return true;
+			if (!(obj instanceof Group other))
+				return false;
+			if (type != other.type)
+				return false;
+			if (variants.size() != other.variants.size())
+				return false;
+			for (int i = 0; i < variants.size(); i++) {
+				if(!Objects.equals(variants.get(i), other.variants.get(i)))
+					return false;
+			}
+			return true;
 		}
 
 		private JsonObject toJson() {
