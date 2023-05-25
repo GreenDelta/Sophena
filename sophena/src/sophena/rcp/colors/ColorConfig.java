@@ -3,13 +3,20 @@ package sophena.rcp.colors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.eclipse.swt.graphics.RGB;
 import org.slf4j.LoggerFactory;
+import sophena.io.Json;
 import sophena.rcp.Workspace;
 import sophena.rcp.utils.Colors;
+import sophena.utils.Strings;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +54,14 @@ public class ColorConfig {
 
 	private static ColorConfig read(JsonObject json) {
 		var config = new ColorConfig();
-		// TODO: read
+		var groups = Json.getArray(json, "groups");
+		if (groups != null) {
+			for (var e : groups) {
+				if (!e.isJsonObject())
+					continue;
+				Group.fromJson(config, e.getAsJsonObject());
+			}
+		}
 		return config;
 	}
 
@@ -156,6 +170,34 @@ public class ColorConfig {
 			}
 			obj.add("variants", array);
 			return obj;
+		}
+
+		private static void fromJson(ColorConfig config, JsonObject json) {
+			var id = Json.getString(json, "id");
+			var label = Json.getString(json, "label");
+			if (Strings.nullOrEmpty(id))
+				return;
+			var group = config.groupOf(id, label);
+			group.setBase(rgbOf(json.get("base")));
+			var variants = Json.getArray(json, "variants");
+			if (variants == null)
+				return;
+			for (int i = 0; i < variants.size(); i++) {
+				var e = variants.get(i);
+				group.setVariant(i, rgbOf(e));
+			}
+		}
+
+		private static RGB rgbOf(JsonElement e) {
+			if (e == null || !e.isJsonPrimitive())
+				return DEFAULT;
+			var prim = e.getAsJsonPrimitive();
+			var s = prim.isString()
+					? prim.getAsString()
+					: null;
+			return s != null && s.length() >= 6
+					? Colors.rgbOf(s)
+					: DEFAULT;
 		}
 	}
 }

@@ -17,6 +17,7 @@ import sophena.Labels;
 import sophena.db.Database;
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
+import sophena.io.Json;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
@@ -183,7 +184,7 @@ class Upgrade2 implements Upgrade {
 	private void upgradeProducer(JsonObject obj) {
 		if (obj == null)
 			return;
-		String boilerID = Json.getRefID(obj, "boiler");
+		String boilerID = Json.getRefId(obj, "boiler");
 		Boiler boiler = new BoilerDao(db).get(boilerID);
 		if (boiler == null) {
 			log.warn("Could not find boiler {}", boilerID);
@@ -202,7 +203,7 @@ class Upgrade2 implements Upgrade {
 	private void upgradeFuelSpec(Boiler boiler, JsonObject obj) {
 		if (boiler == null || obj == null)
 			return;
-		String woodFuelID = Json.getRefID(obj, "woodFuel");
+		String woodFuelID = Json.getRefId(obj, "woodFuel");
 		Fuel fuel = null;
 		if (woodFuelID == null) {
 			fuel = getDefaultFuel(boiler);

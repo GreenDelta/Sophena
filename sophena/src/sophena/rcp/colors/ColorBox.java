@@ -67,14 +67,14 @@ class ColorBox {
 				var rgb = dialog.open();
 				if (rgb == null)
 					return;
-				update(rgb);
+				setColor(rgb);
 				if (onChange != null) {
 					onChange.accept(rgb);
 				}
 			}
 		});
 
-		update(DEFAULT);
+		setColor(DEFAULT);
 	}
 
 	static ColorBox of(String label, Composite parent) {
@@ -86,15 +86,16 @@ class ColorBox {
 		return this;
 	}
 
-	void update(RGB rgb) {
+	ColorBox setColor(RGB rgb) {
 		if (rgb == null)
-			return;
+			return this;
 		disposeColors();
 		color = new Color(comp.getDisplay(), rgb);
 		comp.setBackground(color);
 		var hsb = rgb.getHSB();
 		var hoverRGB = new RGB(hsb[0], 0.1f, 0.9f);
 		hover = new Color(comp.getDisplay(), hoverRGB);
+		return this;
 	}
 
 	private void disposeColors() {

@@ -46,8 +46,7 @@ public enum ProductType {
 
 	public final ProductArea productArea;
 
-	private ProductType(ProductArea area) {
+	ProductType(ProductArea area) {
 		this.productArea = area;
 	}
-
 }
