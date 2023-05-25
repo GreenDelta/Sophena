@@ -4,13 +4,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Labels;
 import sophena.model.ProductType;
-import sophena.rcp.colors.ColorConfig.Group;
+import sophena.rcp.colors.ColorConfig.ColorGroup;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
@@ -46,6 +47,11 @@ public class ColorConfigDialog extends FormDialog {
 		var tk = form.getToolkit();
 		var body = UI.formBody(form.getForm(), tk);
 
+		var g = groupWidgetOf("Allgemeine Farben", body, tk);
+		ColorBox.of("Pufferspeicher", g, tk)
+				.setColor(config.forBufferTank())
+				.onChange(config::setForBufferTank);
+
 		// create groups
 		var types = List.of(
 				ProductType.BIOMASS_BOILER,
@@ -57,17 +63,12 @@ public class ColorConfigDialog extends FormDialog {
 				ProductType.OTHER_HEAT_SOURCE);
 		for (var type : types) {
 			var group = config.groupOf(type);
-			render(group, body, tk);
+			renderGroup(group, body, tk);
 		}
 	}
 
-	private void render(Group group, Composite parent, FormToolkit tk) {
-		var g = new org.eclipse.swt.widgets.Group(parent, SWT.NONE);
-		tk.adapt(g);
-		g.setText(Labels.getPlural(group.type()));
-		UI.fillHorizontal(g);
-		UI.gridLayout(g, 6, 5, 2).makeColumnsEqualWidth = true;
-
+	private void renderGroup(ColorGroup group, Composite parent, FormToolkit tk) {
+		var g = groupWidgetOf(Labels.getPlural(group.type()), parent, tk);
 		var variants = new ArrayList<ColorBox>();
 		ColorBox.of("Grundfarbe", g, tk)
 				.setColor(group.base())
@@ -87,6 +88,15 @@ public class ColorConfigDialog extends FormDialog {
 					.onChange(rgb -> group.setVariant(idx, rgb));
 			variants.add(box);
 		}
+	}
+
+	private Group groupWidgetOf(String label, Composite parent, FormToolkit tk) {
+		var g = new Group(parent, SWT.NONE);
+		tk.adapt(g);
+		g.setText(label);
+		UI.fillHorizontal(g);
+		UI.gridLayout(g, 6, 5, 2).makeColumnsEqualWidth = true;
+		return g;
 	}
 
 	private RGB next(RGB origin, int i) {

@@ -29,7 +29,8 @@ public class ColorConfig implements Copyable<ColorConfig> {
 	private static final RGB DEFAULT = new RGB(90, 90, 100);
 	private static ColorConfig instance;
 
-	private final List<Group> groups = new ArrayList<>();
+	private final List<ColorGroup> groups = new ArrayList<>();
+	private RGB bufferTankColor;
 
 	public static ColorConfig get() {
 		if (instance != null)
@@ -56,12 +57,13 @@ public class ColorConfig implements Copyable<ColorConfig> {
 
 	private static ColorConfig read(JsonObject json) {
 		var config = new ColorConfig();
+		config.bufferTankColor = rgbOf(json.get("bufferTankColor"));
 		var groups = Json.getArray(json, "groups");
 		if (groups != null) {
 			for (var e : groups) {
 				if (!e.isJsonObject())
 					continue;
-				Group.fromJson(config, e.getAsJsonObject());
+				ColorGroup.fromJson(config, e.getAsJsonObject());
 			}
 		}
 		return config;
@@ -91,27 +93,39 @@ public class ColorConfig implements Copyable<ColorConfig> {
 
 	private JsonObject toJson() {
 		var obj = new JsonObject();
+		obj.addProperty("bufferTankColor", Colors.toHex(forBufferTank()));
 		var groups = new JsonArray();
 		this.groups.stream()
-				.map(Group::toJson)
+				.map(ColorGroup::toJson)
 				.forEach(groups::add);
 		obj.add("groups", groups);
 		return obj;
 	}
 
-	public Group groupOf(ProductType type) {
+	public ColorGroup groupOf(ProductType type) {
 		for (var group : groups) {
 			if (group.type == type)
 				return group;
 		}
-		var g = new Group(type);
+		var g = new ColorGroup(type);
 		groups.add(g);
 		return g;
+	}
+
+	public void setForBufferTank(RGB color) {
+		bufferTankColor = color;
+	}
+
+	public RGB forBufferTank() {
+		return bufferTankColor != null
+				? bufferTankColor
+				: DEFAULT;
 	}
 
 	@Override
 	public ColorConfig copy() {
 		var copy = new ColorConfig();
+		copy.bufferTankColor = bufferTankColor;
 		for (var g : groups) {
 			copy.groups.add(g.copy());
 		}
@@ -123,6 +137,8 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		if (obj == this)
 			return true;
 		if (!(obj instanceof ColorConfig other))
+			return false;
+		if (!Objects.equals(bufferTankColor, other.bufferTankColor))
 			return false;
 		if (groups.size() != other.groups.size())
 			return false;
@@ -137,12 +153,24 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		return true;
 	}
 
-	public static class Group implements Copyable<Group> {
+	private static RGB rgbOf(JsonElement e) {
+		if (e == null || !e.isJsonPrimitive())
+			return DEFAULT;
+		var prim = e.getAsJsonPrimitive();
+		var s = prim.isString()
+				? prim.getAsString()
+				: null;
+		return s != null && s.length() >= 6
+				? Colors.rgbOf(s)
+				: DEFAULT;
+	}
+
+	public static class ColorGroup implements Copyable<ColorGroup> {
 		private final ProductType type;
 		private RGB base;
 		private final List<RGB> variants = new ArrayList<>();
 
-		private Group(ProductType type) {
+		private ColorGroup(ProductType type) {
 			this.type = Objects.requireNonNull(type);
 		}
 
@@ -179,12 +207,12 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		}
 
 		@Override
-		public Group copy() {
+		public ColorGroup copy() {
 			Function<RGB, RGB> copyRgb = rgb ->
 					rgb != null
 							? new RGB(rgb.red, rgb.green, rgb.blue)
 							: DEFAULT;
-			var copy = new Group(type);
+			var copy = new ColorGroup(type);
 			copy.base = copyRgb.apply(base);
 			for (var v : variants) {
 				copy.variants.add(copyRgb.apply(v));
@@ -196,7 +224,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		public boolean equals(Object obj) {
 			if (obj == this)
 				return true;
-			if (!(obj instanceof Group other))
+			if (!(obj instanceof ColorGroup other))
 				return false;
 			if (type != other.type)
 				return false;
@@ -235,18 +263,6 @@ public class ColorConfig implements Copyable<ColorConfig> {
 				var e = variants.get(i);
 				group.setVariant(i, rgbOf(e));
 			}
-		}
-
-		private static RGB rgbOf(JsonElement e) {
-			if (e == null || !e.isJsonPrimitive())
-				return DEFAULT;
-			var prim = e.getAsJsonPrimitive();
-			var s = prim.isString()
-					? prim.getAsString()
-					: null;
-			return s != null && s.length() >= 6
-					? Colors.rgbOf(s)
-					: DEFAULT;
 		}
 	}
 }
