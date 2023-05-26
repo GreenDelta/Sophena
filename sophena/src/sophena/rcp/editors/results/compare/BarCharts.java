@@ -1,24 +1,23 @@
 package sophena.rcp.editors.results.compare;
 
-import java.util.Arrays;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.swtchart.Chart;
 import org.eclipse.swtchart.IAxis;
 import org.eclipse.swtchart.IBarSeries;
 import org.eclipse.swtchart.IBarSeries.BarWidthStyle;
 import org.eclipse.swtchart.ISeries.SeriesType;
-
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.Comparison;
 import sophena.rcp.charts.ImageExport;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
+
+import java.util.Arrays;
 
 class BarCharts {
 
@@ -26,6 +25,7 @@ class BarCharts {
 		Section section = UI.section(body, tk, title);
 		Composite comp = UI.sectionClient(section, tk);
 		Chart chart = new Chart(comp, SWT.NONE);
+		chart.setBackground(Colors.getWhite());
 		Actions.bind(section, ImageExport.forChart(
 				title + ".jpg", () -> chart));
 		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);

@@ -1,10 +1,5 @@
 package sophena.rcp.editors;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -17,7 +12,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.db.daos.Dao;
 import sophena.model.Manufacturer;
 import sophena.rcp.App;
@@ -26,6 +20,12 @@ import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.UI;
 import sophena.utils.Strings;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class StartPage extends FormEditor {
 
@@ -73,9 +73,10 @@ public class StartPage extends FormEditor {
 		}
 
 		@Override
-		protected void createFormContent(IManagedForm mform) {
-			var form = UI.formHeader(mform, M.HomePage);
-			var tk = mform.getToolkit();
+		protected void createFormContent(IManagedForm mForm) {
+			// var form = UI.formHeader(mForm, M.HomePage);
+			var form = mForm.getForm();
+			var tk = mForm.getToolkit();
 			var body = UI.formBody(form, tk);
 			body.setLayout(new FillLayout());
 			var browser = new Browser(body, SWT.NONE);
@@ -100,9 +101,8 @@ public class StartPage extends FormEditor {
 					.getAll()
 					.stream()
 					.filter(m -> Strings.notEmpty(m.logo))
-					.sorted((m1, m2) -> Integer.compare(
-							m1.sponsorOrder, m2.sponsorOrder))
-					.collect(Collectors.toList());
+					.sorted(Comparator.comparingInt(m -> m.sponsorOrder))
+					.toList();
 			if (manufs.isEmpty())
 				return template.replace("${logos}", "");
 

@@ -21,7 +21,7 @@ import sophena.rcp.utils.UI;
 
 class EfficiencyChart {
 
-	private EfficiencyResult result;
+	private final EfficiencyResult result;
 	private Chart chart;
 
 	private EfficiencyChart(EfficiencyResult result) {
@@ -43,6 +43,7 @@ class EfficiencyChart {
 		data.minimumHeight = 250;
 		data.minimumWidth = 650;
 		chart.setLayoutData(data);
+		chart.setBackground(Colors.getWhite());
 		chart.setOrientation(SWT.VERTICAL);
 		chart.getTitle().setVisible(false);
 		ISeriesSet set = chart.getSeriesSet();

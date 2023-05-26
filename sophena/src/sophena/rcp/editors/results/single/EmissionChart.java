@@ -46,6 +46,7 @@ class EmissionChart {
 		data.minimumWidth = 650;
 		chart.setLayoutData(data);
 		chart.getTitle().setVisible(false);
+		chart.setBackground(Colors.getWhite());
 		ISeriesSet set = chart.getSeriesSet();
 		addSeries(set, "Emissionen Wärmenetz", result.total, 0);
 		addSeries(set, "Emissionen Erdgas", result.variantNaturalGas, 1);

@@ -13,6 +13,7 @@ import sophena.calc.EnergyResult;
 import sophena.math.energetic.Producers;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
@@ -51,6 +52,7 @@ class ElectricityChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
+		g.setBackgroundColor(Colors.getWhite());
 
 		var x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);

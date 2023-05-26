@@ -84,6 +84,7 @@ class BoilerChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
+		g.setBackgroundColor(Colors.getWhite());
 
 		var x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);

@@ -170,8 +170,6 @@ public class UI {
 		tk.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
-		// form.getForm().setForeground(Colors.of("#002171"));
-		// tk.decorateFormHeading(form.getForm());
 		return form;
 	}
 
@@ -188,26 +186,24 @@ public class UI {
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
 						| ExpandableComposite.TWISTIE);
-
-		s.setTitleBarBackground(Colors.getWhite());
-		s.setTitleBarBorderColor(Colors.of(122, 122, 122));
-		s.setTitleBarForeground(Colors.of(38, 38, 38));
-		s.setToggleColor(Colors.of(38, 38, 38));
-
-		gridData(s, true, false);
-		s.setText(label);
-		return s;
+		return styleSection(s, label);
 	}
 
 	public static Section collapsedSection(
 			Composite parent, FormToolkit tk, String label) {
-		Section s = tk.createSection(parent,
-				ExpandableComposite.TITLE_BAR
+		var s = tk.createSection(parent,
+				ExpandableComposite.SHORT_TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.COMPACT
 						| ExpandableComposite.TWISTIE);
-		s.setTitleBarForeground(Colors.of("#002171"));
-		s.setToggleColor(Colors.of("#002171"));
+		return styleSection(s, label);
+	}
+
+	private static Section styleSection(Section s, String label) {
+		s.setTitleBarBackground(Colors.getWhite());
+		s.setTitleBarBorderColor(Colors.of(122, 122, 122));
+		s.setTitleBarForeground(Colors.of(38, 38, 38));
+		s.setToggleColor(Colors.of(38, 38, 38));
 		gridData(s, true, false);
 		s.setText(label);
 		return s;
