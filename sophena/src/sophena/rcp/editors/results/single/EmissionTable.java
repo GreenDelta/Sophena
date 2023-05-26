@@ -1,9 +1,5 @@
 package sophena.rcp.editors.results.single;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -11,16 +7,19 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-
 import sophena.calc.CO2Result;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 class EmissionTable {
 
-	private CO2Result result;
+	private final CO2Result result;
 
 	private EmissionTable(CO2Result result) {
 		this.result = result;
@@ -64,7 +63,7 @@ class EmissionTable {
 		}
 	}
 
-	private class Item {
+	private static class Item {
 		String label;
 		String emissions;
 		boolean total = false;
@@ -82,14 +81,13 @@ class EmissionTable {
 		}
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider,
-			IFontProvider {
+	private static class Label extends LabelProvider
+			implements ITableLabelProvider, IFontProvider {
 
 		@Override
 		public Font getFont(Object obj) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
 			if (item.total)
 				return UI.boldFont();
 			return null;
@@ -102,17 +100,13 @@ class EmissionTable {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.label;
-			case 1:
-				return item.emissions;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.label;
+				case 1 -> item.emissions;
+				default -> null;
+			};
 		}
 	}
 }

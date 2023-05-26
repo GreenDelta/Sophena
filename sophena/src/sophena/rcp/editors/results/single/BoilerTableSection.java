@@ -1,9 +1,5 @@
 package sophena.rcp.editors.results.single;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -11,7 +7,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.Labels;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
@@ -27,6 +22,10 @@ import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class BoilerTableSection {
 
@@ -135,7 +134,7 @@ class BoilerTableSection {
 		items.add(item);
 	}
 
-	private class Item {
+	private static class Item {
 		int pos;
 		String name;
 		String powerOrVolume;
@@ -149,15 +148,14 @@ class BoilerTableSection {
 		boolean separator = false;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private static class Label extends LabelProvider implements ITableLabelProvider {
 
-		private ColorImage img = new ColorImage(UI.shell().getDisplay());
+		private final ColorImage img = new ColorImage(UI.shell().getDisplay());
 
 		@Override
 		public Image getColumnImage(Object element, int col) {
-			if (!(element instanceof Item) || col != 0)
+			if (!(element instanceof Item item) || col != 0)
 				return null;
-			Item item = (Item) element;
 			if (item.separator)
 				return null;
 			return item.pos < 0 ? img.getRed() : img.get(item.pos);
@@ -165,36 +163,28 @@ class BoilerTableSection {
 
 		@Override
 		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Item))
+			if (!(element instanceof Item item))
 				return null;
-			Item item = (Item) element;
 			if (item.separator)
 				return null;
-			switch (col) {
-			case 0:
-				return item.name;
-			case 1:
-				return item.rank;
-			case 2:
-				return item.powerOrVolume;
-			case 3:
-				return item.fuelUse;
-			case 4:
-				return item.producedHeat;
-			case 5:
-				return item.share;
-			case 6:
-				return item.fullLoadHours == null ? null
+			return switch (col) {
+				case 0 -> item.name;
+				case 1 -> item.rank;
+				case 2 -> item.powerOrVolume;
+				case 3 -> item.fuelUse;
+				case 4 -> item.producedHeat;
+				case 5 -> item.share;
+				case 6 -> item.fullLoadHours == null
+						? null
 						: Num.intStr(item.fullLoadHours) + " h";
-			case 7:
-				return item.utilisationRate == null ? null
+				case 7 -> item.utilisationRate == null
+						? null
 						: Num.intStr(item.utilisationRate * 100) + " %";
-			case 8:
-				return item.clocks == null ? null
+				case 8 -> item.clocks == null
+						? null
 						: Num.intStr(item.clocks);
-			default:
-				return null;
-			}
+				default -> null;
+			};
 		}
 
 		@Override
@@ -203,5 +193,4 @@ class BoilerTableSection {
 			super.dispose();
 		}
 	}
-
 }

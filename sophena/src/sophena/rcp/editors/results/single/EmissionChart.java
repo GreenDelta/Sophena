@@ -22,7 +22,7 @@ import sophena.rcp.utils.UI;
 
 class EmissionChart {
 
-	private CO2Result result;
+	private final CO2Result result;
 	private Chart chart;
 
 	private EmissionChart(CO2Result result) {
@@ -55,7 +55,7 @@ class EmissionChart {
 	}
 
 	private void addSeries(ISeriesSet set, String label, double value, int colorId) {
-		IBarSeries s = (IBarSeries) set.createSeries(SeriesType.BAR, label);
+		IBarSeries<?> s = (IBarSeries<?>) set.createSeries(SeriesType.BAR, label);
 		s.setYSeries(new double[] { (double) Math.round(value) });
 		s.setBarColor(Colors.getForChart(colorId));
 		s.setBarWidthStyle(BarWidthStyle.FIXED);

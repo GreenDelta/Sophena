@@ -1,9 +1,5 @@
 package sophena.rcp.editors.results.single;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
@@ -14,20 +10,22 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class ElectricityChart {
 
-	private EnergyResult result;
-
+	private final EnergyResult result;
 	private XYGraph chart;
 
 	ElectricityChart(EnergyResult result) {
@@ -77,7 +75,7 @@ class ElectricityChart {
 		for (Plant p : plants) {
 			Trace t = makeTrace(p, top);
 			chart.addTrace(t);
-			substract(top, p.values);
+			subtract(top, p.values);
 		}
 	}
 
@@ -118,7 +116,7 @@ class ElectricityChart {
 		return list;
 	}
 
-	private void substract(double[] top, double[] result) {
+	private void subtract(double[] top, double[] result) {
 		for (int k = 0; k < Stats.HOURS; k++) {
 			top[k] -= result[k];
 			if (top[k] < 0)
@@ -126,7 +124,7 @@ class ElectricityChart {
 		}
 	}
 
-	private class Plant {
+	private static class Plant {
 		int idx;
 		String name;
 		double[] values = new double[Stats.HOURS];

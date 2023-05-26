@@ -12,7 +12,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
@@ -20,6 +19,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
 
@@ -32,38 +32,42 @@ class BoilerChart {
 	private EnergyResult result;
 	private boolean sorted = false;
 	private final double maxLoad;
+	private final ResultColors colors;
 
 	private XYGraph chart;
 	private Trace loadTrace;
 
-	BoilerChart(EnergyResult result, double maxLoad) {
+	BoilerChart(EnergyResult result, ResultColors colors, double maxLoad) {
 		this.result = result;
+		this.colors = colors;
 		this.maxLoad = maxLoad;
 	}
 
-	void setSorted(boolean sorted) {
+	BoilerChart sorted(boolean sorted) {
 		this.sorted = sorted;
+		return this;
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		String title = sorted ? "Geordnete Jahresdauerlinie"
+		var title = sorted
+				? "Geordnete Jahresdauerlinie"
 				: "Ungeordnete Jahresdauerlinie";
-		Section section = UI.section(body, tk, title);
+		var section = UI.section(body, tk, title);
 		Actions.bind(section, new LoadTraceSwitch(),
 				ImageExport.forXYGraph("Jahresdauerlinie.jpg", () -> chart));
 		UI.gridData(section, true, false);
-		Composite composite = UI.sectionClient(section, tk);
-		UI.gridLayout(composite, 1);
-		Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
+		var comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1);
+		var canvas = new Canvas(comp, SWT.DOUBLE_BUFFERED);
 		UI.gridData(canvas, true, true).minimumHeight = 250;
-		LightweightSystem lws = new LightweightSystem(canvas);
+		var lws = new LightweightSystem(canvas);
 		chart = createGraph(lws);
 		addZoom(canvas);
 		fillData();
 	}
 
 	private void addZoom(Canvas canvas) {
-		CtrlKey ctrlKey = new CtrlKey();
+		var ctrlKey = new CtrlKey();
 		canvas.addKeyListener(ctrlKey);
 		canvas.addMouseWheelListener(e -> {
 			if (!ctrlKey.pressed)
@@ -148,17 +152,16 @@ class BoilerChart {
 		}
 
 		// buffer tank on top
-		int idx = producers.length;
-		Trace bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
-		bufferTrace.setTraceColor(Colors.getForChart(idx));
+		var bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
+		bufferTrace.setTraceColor(colors.ofBufferTank());
 		traces.add(bufferTrace);
 		subtract(supTop, r.suppliedBufferHeat);
 
 		// suppliers
 		for (int i = producers.length - 1; i >= 0; i--) {
-			String label = producers[i].name;
-			Trace boilerTrace = makeSuplierTrace(label, supTop);
-			boilerTrace.setTraceColor(Colors.getForChart(i));
+			var label = producers[i].name;
+			var boilerTrace = makeSuplierTrace(label, supTop);
+			boilerTrace.setTraceColor(colors.of(producers[i]));
 			traces.add(boilerTrace);
 			subtract(supTop, results[i]);
 		}

@@ -10,8 +10,8 @@ import sophena.rcp.colors.Colors;
 
 public class ColorImage {
 
-	private ImageRegistry reg = new ImageRegistry();
-	private Display display;
+	private final ImageRegistry reg = new ImageRegistry();
+	private final Display display;
 
 	public ColorImage(Display display) {
 		this.display = display;
@@ -26,7 +26,7 @@ public class ColorImage {
 	}
 
 	public Image get(int i, int alpha) {
-		String key = Integer.toString(i) + "/" + Integer.toString(alpha);
+		String key = i + "/" + alpha;
 		Image img = reg.get(key);
 		if (img != null)
 			return img;

@@ -14,6 +14,7 @@ import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.colors.ResultColors;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Editors;
@@ -25,15 +26,15 @@ public class ResultEditor extends Editor {
 
 	Project project;
 	ProjectResult result;
+	ResultColors colors;
 
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
 		PlatformUI.getWorkbench().saveAllEditors(true);
 		Editors.closeIf(editor -> {
-			if (!(editor instanceof ResultEditor))
+			if (!(editor instanceof ResultEditor e))
 				return false;
-			ResultEditor e = (ResultEditor) editor;
 			return Strings.nullOrEqual(d.id, e.project.id);
 		});
 		Project p = new ProjectDao(App.getDb()).get(d.id);
@@ -63,6 +64,7 @@ public class ResultEditor extends Editor {
 			project = (Project) data[0];
 			result = (ProjectResult) data[1];
 			setPartName(project.name + " - Ergebnisse");
+			colors = ResultColors.of(result);
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to init energy result editor", e);

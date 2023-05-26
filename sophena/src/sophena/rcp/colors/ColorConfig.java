@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,8 +35,18 @@ public class ColorConfig implements Copyable<ColorConfig> {
 	public static ColorConfig get() {
 		if (instance != null)
 			return instance;
-		// TODO: read from default
 		var file = new File(Workspace.dir(), "colors.json");
+		if (!file.exists()) {
+			var stream = ColorConfig.class.getResourceAsStream("colors.json");
+			if (stream != null) {
+				try (stream) {
+					Files.copy(stream, file.toPath());
+				} catch (Exception e) {
+					LoggerFactory.getLogger(ColorConfig.class)
+							.error("failed to unpack default colors", e);
+				}
+			}
+		}
 		instance = read(file);
 		return instance;
 	}
@@ -48,8 +59,8 @@ public class ColorConfig implements Copyable<ColorConfig> {
 			var json = new Gson().fromJson(reader, JsonObject.class);
 			return read(json);
 		} catch (Exception e) {
-			var logger = LoggerFactory.getLogger(ColorConfig.class);
-			logger.error("failed to read color config. from " + file, e);
+			LoggerFactory.getLogger(ColorConfig.class)
+					.error("failed to read color config. from " + file, e);
 			return new ColorConfig();
 		}
 	}
@@ -230,7 +241,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 			if (variants.size() != other.variants.size())
 				return false;
 			for (int i = 0; i < variants.size(); i++) {
-				if(!Objects.equals(variants.get(i), other.variants.get(i)))
+				if (!Objects.equals(variants.get(i), other.variants.get(i)))
 					return false;
 			}
 			return true;

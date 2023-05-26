@@ -1,8 +1,5 @@
 package sophena.rcp.editors.results.single;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -13,7 +10,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
@@ -27,9 +23,12 @@ import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 import sophena.utils.Ref;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class ElectricityResultPage extends FormPage {
 
-	private ProjectResult result;
+	private final ProjectResult result;
 
 	ElectricityResultPage(ResultEditor editor) {
 		super(editor, "sophena.ElectricityResultPage", M.Electricity);
@@ -86,7 +85,7 @@ class ElectricityResultPage extends FormPage {
 		return list;
 	}
 
-	private class Item {
+	private static class Item {
 		int pos;
 		String name;
 		String rank;
@@ -97,23 +96,21 @@ class ElectricityResultPage extends FormPage {
 		double share;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private static class Label extends LabelProvider implements ITableLabelProvider {
 
-		private ColorImage img = new ColorImage(UI.shell().getDisplay());
+		private final ColorImage img = new ColorImage(UI.shell().getDisplay());
 
 		@Override
 		public Image getColumnImage(Object element, int col) {
-			if (!(element instanceof Item) || col != 0)
+			if (!(element instanceof Item item) || col != 0)
 				return null;
-			Item item = (Item) element;
 			return item.pos < 0 ? img.getRed() : img.get(item.pos);
 		}
 
 		@Override
 		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Item))
+			if (!(element instanceof Item item))
 				return null;
-			Item item = (Item) element;
 			switch (col) {
 			case 0:
 				return item.name;

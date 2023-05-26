@@ -1,0 +1,82 @@
+{
+  "bufferTankColor": "#48BCBC",
+  "groups": [
+    {
+      "type": "BIOMASS_BOILER",
+      "base": "#299150",
+      "variants": [
+        "#45A669",
+        "#71C390",
+        "#15783A",
+        "#409A7A",
+        "#035C24"
+      ]
+    },
+    {
+      "type": "FOSSIL_FUEL_BOILER",
+      "base": "#A65E1D",
+      "variants": [
+        "#C77C39",
+        "#A6681D",
+        "#E59D60",
+        "#7E3D04",
+        "#C76E39"
+      ]
+    },
+    {
+      "type": "COGENERATION_PLANT",
+      "base": "#7135B8",
+      "variants": [
+        "#8855C9",
+        "#6F10AC",
+        "#8332B7",
+        "#9951C7",
+        "#8855C9"
+      ]
+    },
+    {
+      "type": "ELECTRIC_HEAT_GENERATOR",
+      "base": "#FF6709",
+      "variants": [
+        "#FF853A",
+        "#FF6C3A",
+        "#FF8109",
+        "#FFAD5E",
+        "#C44B00"
+      ]
+    },
+    {
+      "type": "HEAT_PUMP",
+      "base": "#3E4ABB",
+      "variants": [
+        "#1842AC",
+        "#5777C8",
+        "#336FB3",
+        "#819BDB",
+        "#0E2F83"
+      ]
+    },
+    {
+      "type": "SOLAR_THERMAL_PLANT",
+      "base": "#FFDC3A",
+      "variants": [
+        "#FFF23A",
+        "#FFE73A",
+        "#FFD309",
+        "#C4AB00",
+        "#FFF08A"
+      ]
+    },
+    {
+      "type": "OTHER_HEAT_SOURCE",
+      "base": "#C3997E",
+      "variants": [
+        "#A47456",
+        "#C39F7E",
+        "#C3997E",
+        "#C3907E",
+        "#834933"
+      ]
+    }
+  ]
+}
