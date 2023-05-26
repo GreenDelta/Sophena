@@ -20,7 +20,7 @@ import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.Workspace;
 import sophena.rcp.editors.CostSettingsPanel;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;

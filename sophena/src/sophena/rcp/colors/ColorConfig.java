@@ -11,7 +11,6 @@ import sophena.io.Json;
 import sophena.model.Copyable;
 import sophena.model.ProductType;
 import sophena.rcp.Workspace;
-import sophena.rcp.utils.Colors;
 
 import java.io.File;
 import java.io.FileInputStream;

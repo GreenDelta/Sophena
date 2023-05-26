@@ -31,7 +31,7 @@ import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.UI;

@@ -14,7 +14,7 @@ import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.DeleteLink;
 import sophena.rcp.utils.Texts;

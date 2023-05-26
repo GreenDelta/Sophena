@@ -11,7 +11,7 @@ import sophena.model.TransferStation;
 import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.DeleteLink;
 import sophena.rcp.utils.UI;

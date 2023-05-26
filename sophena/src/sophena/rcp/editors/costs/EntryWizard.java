@@ -24,7 +24,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.SearchLabel;
 import sophena.rcp.editors.ProductCostSection;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
@@ -125,7 +125,7 @@ class EntryWizard extends Wizard {
 			ProductDao dao = new ProductDao(App.getDb());
 			Product p = SearchDialog.open(
 					Labels.get(type),
-					dao.getAllGlobal(type), 
+					dao.getAllGlobal(type),
 					SearchLabel::forProduct);
 			if (p == null) {
 				noProduct(true);

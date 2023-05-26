@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.BaseDataEntity;
 import sophena.rcp.Icon;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
 public abstract class BaseTableLabel extends LabelProvider

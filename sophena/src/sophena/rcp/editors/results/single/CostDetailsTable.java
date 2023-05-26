@@ -18,7 +18,7 @@ import sophena.Labels;
 import sophena.calc.CostResult;
 import sophena.calc.CostResultItem;
 import sophena.model.ProductType;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Enums;

@@ -16,7 +16,7 @@ import org.eclipse.swtchart.Range;
 import sophena.math.energetic.EfficiencyResult;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
 class EfficiencyChart {

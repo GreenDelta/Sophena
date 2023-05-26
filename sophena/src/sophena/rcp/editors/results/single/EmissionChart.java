@@ -17,7 +17,7 @@ import sophena.calc.CO2Result;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
 class EmissionChart {

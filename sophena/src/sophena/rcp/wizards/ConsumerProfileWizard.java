@@ -22,7 +22,7 @@ import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;

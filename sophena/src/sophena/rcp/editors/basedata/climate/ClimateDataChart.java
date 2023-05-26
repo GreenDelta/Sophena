@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.rcp.M;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 
 class ClimateDataChart extends Dialog {
 

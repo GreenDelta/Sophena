@@ -16,7 +16,7 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

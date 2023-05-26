@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
 import sophena.calc.CostResult.FieldSet;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 
 class CostsChart {
 

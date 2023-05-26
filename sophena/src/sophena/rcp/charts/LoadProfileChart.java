@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
 public class LoadProfileChart {

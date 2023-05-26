@@ -1,7 +1,4 @@
-package sophena.rcp.utils;
-
-import java.util.HashMap;
-import java.util.List;
+package sophena.rcp.colors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -12,8 +9,10 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.utils.Strings;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Managed SWT colors: the colors are created on demand and disposed when the
@@ -176,12 +175,6 @@ public class Colors {
 		return of(225, 213, 232);
 	}
 
-	public static Color darker(Color color, int with) {
-		int r = color.getRed() > with ? color.getRed() - with : 0;
-		int g = color.getGreen() > with ? color.getGreen() - with : 0;
-		int b = color.getBlue() > with ? color.getBlue() - with : 0;
-		return of(r, g, b);
-	}
 
 	private static class ShutDown implements IWorkbenchListener {
 		@Override

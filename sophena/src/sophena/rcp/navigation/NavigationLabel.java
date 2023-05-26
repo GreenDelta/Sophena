@@ -10,7 +10,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 
-import sophena.rcp.utils.Colors;
+import sophena.rcp.colors.Colors;
 
 public class NavigationLabel extends ColumnLabelProvider implements
 		ICommonLabelProvider {

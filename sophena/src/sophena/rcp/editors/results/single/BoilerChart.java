@@ -1,12 +1,7 @@
 package sophena.rcp.editors.results.single;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.action.Action;
-import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Annotation;
 import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -18,22 +13,25 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.charts.ImageExport;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Colors;
 import sophena.rcp.utils.UI;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 class BoilerChart {
 
 	private EnergyResult result;
 	private boolean sorted = false;
-	private double maxLoad;
+	private final double maxLoad;
 
 	private XYGraph chart;
 	private Trace loadTrace;
@@ -70,28 +68,31 @@ class BoilerChart {
 		canvas.addMouseWheelListener(e -> {
 			if (!ctrlKey.pressed)
 				return;
-			Axis xAxis = chart.primaryXAxis;
+			Axis xAxis = chart.getPrimaryXAxis();
 			double valuePos = xAxis.getPositionValue(e.x, false);
 			double factor = e.count < 0 ? -0.1 : 0.1;
-			chart.primaryXAxis.zoomInOut(valuePos, factor);
+			chart.getPrimaryXAxis().zoomInOut(valuePos, factor);
 		});
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
-		XYGraph g = new XYGraph();
+		var g = new XYGraph();
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
-		Axis x = g.primaryXAxis;
+
+		var x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setMajorGridStep(500);
 		x.setMinorTicksVisible(false);
 		x.setTitle("");
-		Axis y = g.primaryYAxis;
+
+		var y = g.getPrimaryYAxis();
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setMinorTicksVisible(false);
 		y.setFormatPattern("###,###,###,###");
+
 		double magnitude = Math.floor(Math.log10(maxLoad));
 		double max = Math.pow(10, magnitude);
 		double step = max / 10;
@@ -102,7 +103,7 @@ class BoilerChart {
 		y.setRange(0, upper);
 
 		// set annotation
-		Annotation a = new Annotation("ML", x, y);
+		var a = new Annotation("ML", x, y);
 		g.addAnnotation(a);
 		a.setValues(5, maxLoad);
 		a.setShowName(false);
@@ -151,7 +152,7 @@ class BoilerChart {
 		Trace bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
 		bufferTrace.setTraceColor(Colors.getForChart(idx));
 		traces.add(bufferTrace);
-		substract(supTop, r.suppliedBufferHeat);
+		subtract(supTop, r.suppliedBufferHeat);
 
 		// suppliers
 		for (int i = producers.length - 1; i >= 0; i--) {
@@ -159,7 +160,7 @@ class BoilerChart {
 			Trace boilerTrace = makeSuplierTrace(label, supTop);
 			boilerTrace.setTraceColor(Colors.getForChart(i));
 			traces.add(boilerTrace);
-			substract(supTop, results[i]);
+			subtract(supTop, results[i]);
 		}
 
 		for (Trace trace : traces) {
@@ -167,7 +168,7 @@ class BoilerChart {
 		}
 	}
 
-	private void substract(double[] top, double[] result) {
+	private void subtract(double[] top, double[] result) {
 		for (int k = 0; k < Stats.HOURS; k++) {
 			top[k] -= result[k];
 			if (top[k] < 0)
@@ -176,8 +177,9 @@ class BoilerChart {
 	}
 
 	private Trace makeSuplierTrace(String label, double[] data) {
-		CircularBufferDataProvider d = Charts.dataProvider(data);
-		Trace t = new Trace(label, chart.primaryXAxis, chart.primaryYAxis, d);
+		var d = Charts.dataProvider(data);
+		var t = new Trace(
+				label, chart.getPrimaryXAxis(), chart.getPrimaryYAxis(), d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
 		t.setAreaAlpha(255);
@@ -185,8 +187,9 @@ class BoilerChart {
 	}
 
 	private Trace makeLoadTrace(double[] load) {
-		CircularBufferDataProvider d = Charts.dataProvider(load);
-		Trace t = new Trace("Req", chart.primaryXAxis, chart.primaryYAxis, d);
+		var d = Charts.dataProvider(load);
+		var t = new Trace(
+				"Req", chart.getPrimaryXAxis(), chart.getPrimaryYAxis(), d);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.SOLID_LINE);
 		t.setTraceColor(Colors.getSystemColor(SWT.COLOR_BLACK));
@@ -217,7 +220,7 @@ class BoilerChart {
 		}
 	}
 
-	private class CtrlKey implements KeyListener {
+	private static class CtrlKey implements KeyListener {
 
 		boolean pressed;
 

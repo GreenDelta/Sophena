@@ -1,12 +1,12 @@
 package sophena.calc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sophena.model.Consumer;
-import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ProjectResult {
 
@@ -22,18 +22,16 @@ public class ProjectResult {
 	public final List<ConsumerResult> consumerResults = new ArrayList<>();
 
 	ProjectResult(Project project) {
-		this.project = project;
+		this.project = Objects.requireNonNull(project);
 		calcLog = new CalcLog(
 				"Berechnungsergebisse für \"" + project.name + "\"");
 	}
 
 	public static ProjectResult calculate(Project project) {
-		ProjectResult r = new ProjectResult(project);
-		if (project == null)
-			return r;
+		var r = new ProjectResult(project);
 		r.energyResult = EnergyCalculator.calculate(project);
 		r.fuelUsage = FuelUsage.calculate(r);
-		CostCalculator costCalc = new CostCalculator(r);
+		var costCalc = new CostCalculator(r);
 		costCalc.withFunding(false);
 		r.costResult = costCalc.calculate();
 		costCalc.withFunding(true);
@@ -49,14 +47,14 @@ public class ProjectResult {
 		for (Consumer consumer : proj.consumers) {
 			if (consumer.disabled)
 				continue;
-			LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
-					proj.weatherStation);
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, proj.weatherStation);
 			double[] curve = profile.calculateTotal();
 			if (proj.heatNet != null && proj.heatNet.interruption != null) {
 				ProjectLoad.applyInterruption(curve, proj.heatNet);
 			}
 			double total = Stats.sum(curve);
-			ConsumerResult result = new ConsumerResult();
+			var result = new ConsumerResult();
 			result.consumer = consumer;
 			result.heatDemand = total;
 			r.consumerResults.add(result);
