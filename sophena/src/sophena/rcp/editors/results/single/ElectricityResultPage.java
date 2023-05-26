@@ -49,7 +49,8 @@ class ElectricityResultPage extends FormPage {
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		Tables.rightAlignColumns(table, 2, 3, 4, 5, 6);
 		table.setInput(getItems());
-		new ElectricityChart(result.energyResult).render(body, tk);
+		new ElectricityChart(result.energyResult, colors)
+				.render(body, tk);
 		form.reflow(true);
 	}
 
