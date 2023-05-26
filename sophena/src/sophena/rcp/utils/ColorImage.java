@@ -21,37 +21,26 @@ public class ColorImage {
 		reg.dispose();
 	}
 
-	public Image get(int i) {
-		return get(i, 255);
-	}
-
-	public Image get(int i, int alpha) {
-		String key = i + "/" + alpha;
-		Image img = reg.get(key);
+	public Image get(Color color) {
+		if (color == null)
+			return get(Colors.getBlack());
+		var key = Colors.toHex(color.getRGB());
+		var img = reg.get(key);
 		if (img != null)
 			return img;
-		Color color = Colors.getForChart(i);
-		img = makeImage(color, alpha);
+		img = makeImage(color);
 		reg.put(key, img);
 		return img;
 	}
 
 	public Image getRed() {
-		Image img = reg.get("red");
-		if (img != null)
-			return img;
-		Color color = Colors.getSystemColor(SWT.COLOR_RED);
-		img = makeImage(color, 255);
-		reg.put("red", img);
-		return img;
+		return get(Colors.getSystemColor(SWT.COLOR_RED));
 	}
 
-	private Image makeImage(Color color, int alpha) {
-		Image img;
-		img = new Image(display, 15, 15);
-		GC gc = new GC(img);
+	private Image makeImage(Color color) {
+		var img = new Image(display, 15, 15);
+		var gc = new GC(img);
 		gc.setBackground(color);
-		gc.setAlpha(alpha);
 		gc.fillRectangle(2, 5, 11, 5);
 		gc.dispose();
 		return img;

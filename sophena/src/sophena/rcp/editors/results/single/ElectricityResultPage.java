@@ -2,21 +2,16 @@ package sophena.rcp.editors.results.single;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
-import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.Producers;
-import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.rcp.M;
+import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -29,22 +24,24 @@ import java.util.List;
 class ElectricityResultPage extends FormPage {
 
 	private final ProjectResult result;
+	private final ResultColors colors;
 
 	ElectricityResultPage(ResultEditor editor) {
 		super(editor, "sophena.ElectricityResultPage", M.Electricity);
 		this.result = editor.result;
+		this.colors = editor.colors;
 	}
 
 	@Override
-	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, M.Electricity);
-		FormToolkit tk = mform.getToolkit();
-		Composite body = UI.formBody(form, tk);
-		Section section = UI.section(body, tk, M.ElectricityProducers);
+	protected void createFormContent(IManagedForm mForm) {
+		var form = UI.formHeader(mForm, M.Electricity);
+		var tk = mForm.getToolkit();
+		var body = UI.formBody(form, tk);
+		var section = UI.section(body, tk, M.ElectricityProducers);
 		UI.gridData(section, true, false);
-		Composite comp = UI.sectionClient(section, tk);
+		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, "KWK-Anlage", "Rang",
+		var table = Tables.createViewer(comp, "KWK-Anlage", "Rang",
 				"Nennleistung", "Erzeugter Strom", "Anteil",
 				"Volllaststunden", M.EfficiencyRate);
 		table.setLabelProvider(new Label());
@@ -57,36 +54,36 @@ class ElectricityResultPage extends FormPage {
 	}
 
 	private List<Item> getItems() {
-		EnergyResult r = result.energyResult;
-		List<Item> list = new ArrayList<>();
+		var r = result.energyResult;
+		var list = new ArrayList<Item>();
 		Ref<Double> total = Ref.of(0d);
 		for (int i = 0; i < r.producers.length; i++) {
-			Producer p = r.producers[i];
+			var p = r.producers[i];
 			double elPower = Producers.electricPower(p);
 			if (elPower <= 0)
 				continue;
-			Item item = new Item();
-			item.pos = i;
+
+			var item = new Item();
+			item.color = colors.of(p);
 			list.add(item);
 			item.name = p.name;
-			if (p.function == ProducerFunction.BASE_LOAD) {
-				item.rank = p.rank + " - Grundlast";
-			} else {
-				item.rank = p.rank + " - Spitzenlast";
-			}
+			item.rank = p.function == ProducerFunction.BASE_LOAD
+					? p.rank + " - Grundlast"
+					: p.rank + " - Spitzenlast";
 			item.maxPower = elPower;
 			item.efficiencyRate = Producers.electricalEfficiency(p);
 			item.fullLoadHours = Producers.fullLoadHours(p, result);
 			item.value = GeneratedElectricity.get(p, result);
 			total.set(total.get() + item.value);
 		}
-		if (total.get() != 0)
+		if (total.get() != 0) {
 			list.forEach(item -> item.share = item.value / total.get());
+		}
 		return list;
 	}
 
 	private static class Item {
-		int pos;
+		Color color;
 		String name;
 		String rank;
 		double maxPower;
@@ -101,35 +98,28 @@ class ElectricityResultPage extends FormPage {
 		private final ColorImage img = new ColorImage(UI.shell().getDisplay());
 
 		@Override
-		public Image getColumnImage(Object element, int col) {
-			if (!(element instanceof Item item) || col != 0)
-				return null;
-			return item.pos < 0 ? img.getRed() : img.get(item.pos);
+		public Image getColumnImage(Object o, int col) {
+			return o instanceof Item item && col == 0
+					? img.get(item.color)
+					: null;
 		}
 
 		@Override
-		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Item item))
+		public String getColumnText(Object o, int col) {
+			if (!(o instanceof Item item))
 				return null;
-			switch (col) {
-			case 0:
-				return item.name;
-			case 1:
-				return item.rank;
-			case 2:
-				return Num.intStr(item.maxPower) + " kW";
-			case 3:
-				return Num.intStr(item.value) + " kWh";
-			case 4:
-				return Num.intStr(item.share * 100d) + " %";
-			case 5:
-				return Num.intStr(item.fullLoadHours) + " h";
-			case 6:
-				if (item.efficiencyRate != null)
-					return Num.intStr(item.efficiencyRate * 100d) + " %";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.name;
+				case 1 -> item.rank;
+				case 2 -> Num.intStr(item.maxPower) + " kW";
+				case 3 -> Num.intStr(item.value) + " kWh";
+				case 4 -> Num.intStr(item.share * 100d) + " %";
+				case 5 -> Num.intStr(item.fullLoadHours) + " h";
+				case 6 -> item.efficiencyRate != null
+						? Num.intStr(item.efficiencyRate * 100d) + " %"
+						: null;
+				default -> null;
+			};
 		}
 
 		@Override

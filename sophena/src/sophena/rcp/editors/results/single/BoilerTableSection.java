@@ -2,11 +2,11 @@ package sophena.rcp.editors.results.single;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import sophena.Labels;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
@@ -18,6 +18,8 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.M;
+import sophena.rcp.colors.Colors;
+import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -31,22 +33,24 @@ class BoilerTableSection {
 
 	private final ProjectResult projectResult;
 	private final EnergyResult result;
+	private final ResultColors colors;
 	private final Project project;
 	private final double maxLoad;
 
 	BoilerTableSection(ResultEditor editor, double maxLoad) {
 		this.projectResult = editor.result;
+		this.colors = editor.colors;
 		this.result = editor.result.energyResult;
 		this.project = editor.project;
 		this.maxLoad = maxLoad;
 	}
 
 	public void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, M.HeatProducers);
+		var section = UI.section(body, tk, M.HeatProducers);
 		UI.gridData(section, true, false);
-		Composite comp = UI.sectionClient(section, tk);
+		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, M.HeatProducer, "Rang",
+		var table = Tables.createViewer(comp, M.HeatProducer, "Rang",
 				"Nennleistung", "Brennstoffverbrauch", M.GeneratedHeat,
 				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts");
 		table.setLabelProvider(new Label());
@@ -57,27 +61,25 @@ class BoilerTableSection {
 	}
 
 	private List<Item> getItems() {
-		List<Item> items = new ArrayList<>();
 		if (result.producers == null)
 			return Collections.emptyList();
+		var items = new ArrayList<Item>();
 		initProducerItems(result.producers, items);
 		double powerDiff = Producers.powerDifference(result.producers, maxLoad);
 		addDiffItem(items, powerDiff);
-		addBufferItem(items, result.producers);
+		addBufferItem(items);
 		return items;
 	}
 
 	private void initProducerItems(Producer[] producers, List<Item> items) {
-		for (int i = 0; i < producers.length; i++) {
-			Producer p = producers[i];
-			Item item = new Item();
+		for (Producer p : producers) {
+			var item = new Item();
 			item.name = p.name;
 			item.powerOrVolume = Num.intStr(Producers.maxPower(p)) + " kW";
-			if (p.function == ProducerFunction.BASE_LOAD)
-				item.rank = p.rank + " - Grundlast";
-			else
-				item.rank = p.rank + " - Spitzenlast";
-			item.pos = i;
+			item.rank = p.function == ProducerFunction.BASE_LOAD
+					? p.rank + " - Grundlast"
+					: p.rank + " - Spitzenlast";
+			item.color = colors.of(p);
 			double heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "
 					+ Num.intStr(projectResult.fuelUsage.getInFuelUnits(p))
@@ -85,22 +87,20 @@ class BoilerTableSection {
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			item.share = GeneratedHeat.share(heat, result) + " %";
 			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
-			if (p.boiler != null && p.boiler.isCoGenPlant) {
-				item.utilisationRate = p.boiler.efficiencyRate;
-			} else {
-				item.utilisationRate = UtilisationRate.get(project, p, result);
-			}
+			item.utilisationRate = p.boiler != null && p.boiler.isCoGenPlant
+					? p.boiler.efficiencyRate
+					: UtilisationRate.get(project, p, result);
 			item.clocks = result.numberOfStarts(p);
 			items.add(item);
 		}
 	}
 
-	private void addBufferItem(List<Item> items, Producer[] producers) {
-		Item sep = new Item();
+	private void addBufferItem(List<Item> items) {
+		var sep = new Item();
 		sep.separator = true;
 		items.add(sep);
-		Item item = new Item();
-		item.pos = producers.length;
+		var item = new Item();
+		item.color = colors.ofBufferTank();
 		item.name = "Pufferspeicher";
 		items.add(item);
 		double heat = result.totalBufferedHeat;
@@ -122,8 +122,9 @@ class BoilerTableSection {
 		}
 		if (diff < 0.5 && powerDiff >= 0)
 			return;
-		Item item = new Item();
-		item.pos = -1;
+
+		var item = new Item();
+		item.color = Colors.getSystemColor(SWT.COLOR_RED);
 		item.name = "Ungedeckte Leistung";
 		item.powerOrVolume = powerDiff < 0
 				? Num.intStr(powerDiff) + " kW"
@@ -135,7 +136,7 @@ class BoilerTableSection {
 	}
 
 	private static class Item {
-		int pos;
+		Color color;
 		String name;
 		String powerOrVolume;
 		String fuelUse;
@@ -148,7 +149,8 @@ class BoilerTableSection {
 		boolean separator = false;
 	}
 
-	private static class Label extends LabelProvider implements ITableLabelProvider {
+	private static class Label extends LabelProvider
+			implements ITableLabelProvider {
 
 		private final ColorImage img = new ColorImage(UI.shell().getDisplay());
 
@@ -156,9 +158,9 @@ class BoilerTableSection {
 		public Image getColumnImage(Object element, int col) {
 			if (!(element instanceof Item item) || col != 0)
 				return null;
-			if (item.separator)
-				return null;
-			return item.pos < 0 ? img.getRed() : img.get(item.pos);
+			return item.separator
+					? null
+					: img.get(item.color);
 		}
 
 		@Override

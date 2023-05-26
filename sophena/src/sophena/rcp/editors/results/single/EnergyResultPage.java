@@ -35,8 +35,8 @@ class EnergyResultPage extends FormPage {
 		var form = UI.formHeader(mform, M.Heat);
 		var tk = mform.getToolkit();
 		var body = UI.formBody(form, tk);
-		var tableSection = new BoilerTableSection(editor, maxLoad);
-		tableSection.render(body, tk);
+		new BoilerTableSection(editor, maxLoad)
+				.render(body, tk);
 		new BoilerChart(result, colors, maxLoad)
 				.sorted(false)
 				.render(body, tk);
