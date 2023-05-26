@@ -1,15 +1,10 @@
 package sophena.rcp.editors.heatnets;
 
-import java.time.MonthDay;
-import java.util.UUID;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sophena.model.HeatNet;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
@@ -18,9 +13,12 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.UI;
 
+import java.time.MonthDay;
+import java.util.UUID;
+
 class InterruptionSection {
 
-	private HeatNetEditor editor;
+	private final HeatNetEditor editor;
 
 	private MonthDayBox startBox;
 	private MonthDayBox endBox;
@@ -47,9 +45,8 @@ class InterruptionSection {
 		createEndBox(toolkit, composite);
 	}
 
-	private void createCheck(FormToolkit toolkit, Composite composite) {
-		Button check = new Button(composite, SWT.CHECK);
-		check.setText("Mit Unterbrechung");
+	private void createCheck(FormToolkit tk, Composite comp) {
+		var check = tk.createButton(comp, "Mit Unterbrechung", SWT.CHECK);
 		check.setSelection(heatNet().interruption != null);
 		Controls.onSelect(check, (e) -> {
 			boolean enabled = check.getSelection();
@@ -63,7 +60,7 @@ class InterruptionSection {
 			updateLoadCurve();
 			editor.setDirty();
 		});
-		UI.formLabel(composite, toolkit, "");
+		UI.formLabel(comp, tk, "");
 	}
 
 	private void initInterruptionValues() {

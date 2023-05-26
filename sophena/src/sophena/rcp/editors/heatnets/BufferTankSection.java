@@ -95,21 +95,21 @@ class BufferTankSection {
 	}
 
 	private void createLamdaText(Composite comp, FormToolkit tk) {
-		Text t = UI.formText(comp, tk, "\u03BB-Wert der Dämmung");
+		Text t = UI.formText(comp, tk, "λ-Wert der Dämmung");
 		Texts.on(t).init(net().bufferLambda)
 				.decimal().required().onChanged(s -> {
 					net().bufferLambda = Texts.getDouble(t);
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "W/m*K");
-		HelpLink.create(comp, tk, "\u03BB-Wert der Dämmung", H.BufferLambda);
+		HelpLink.create(comp, tk, "λ-Wert der Dämmung", H.BufferLambda);
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
 		UI.formLabel(comp, tk, "Produkt");
 		Composite inner = tk.createComposite(comp);
 		UI.innerGrid(inner, 2);
-		ImageHyperlink link = new ImageHyperlink(inner, SWT.TOP);
+		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		if (net().bufferTank != null) {
 			link.setText(net().bufferTank.name);
 		} else {

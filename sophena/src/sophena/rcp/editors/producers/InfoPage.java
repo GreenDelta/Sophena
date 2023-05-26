@@ -8,22 +8,20 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.Labels;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.rcp.M;
-import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class InfoPage extends FormPage {
 
-	private ProducerEditor editor;
+	private final ProducerEditor editor;
 	private ProfileSection profileSection;
 
 	public InfoPage(ProducerEditor editor) {
@@ -73,7 +71,7 @@ class InfoPage extends FormPage {
 
 	private void groupLink(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, "Produktgruppe");
-		ImageHyperlink link = new ImageHyperlink(comp, SWT.NONE);
+		var link = tk.createImageHyperlink(comp, SWT.NONE);
 		if (producer().productGroup != null) {
 			link.setText(producer().productGroup.name);
 		} else {

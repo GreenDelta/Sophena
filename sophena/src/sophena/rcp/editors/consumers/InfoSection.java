@@ -1,15 +1,11 @@
 package sophena.rcp.editors.consumers;
 
-import java.io.File;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
 import sophena.Labels;
 import sophena.db.daos.BuildingStateDao;
 import sophena.io.ConsumerProfiles;
@@ -25,6 +21,9 @@ import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+
+import java.io.File;
+import java.util.List;
 
 class InfoSection {
 
@@ -88,7 +87,7 @@ class InfoSection {
 	}
 
 	private void buildingTypeCombo(Composite comp, FormToolkit tk) {
-		Combo combo = UI.formCombo(comp, M.BuildingType);
+		Combo combo = UI.formCombo(comp, tk, M.BuildingType);
 		BuildingState state = consumer().buildingState;
 		BuildingType[] types = BuildingType.values();
 		String[] items = new String[types.length];

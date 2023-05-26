@@ -345,10 +345,10 @@ public class UI {
 		return formCombo(parent, null, label);
 	}
 
-	public static Combo formCombo(Composite parent, FormToolkit toolkit,
-																String label) {
-		formLabel(parent, toolkit, label);
-		Combo combo = new Combo(parent, SWT.READ_ONLY);
+	public static Combo formCombo(
+			Composite parent, FormToolkit tk, String label) {
+		formLabel(parent, tk, label);
+		var combo = new Combo(parent, SWT.READ_ONLY);
 		gridData(combo, true, false);
 		return combo;
 	}

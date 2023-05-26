@@ -46,7 +46,7 @@ class TransferStationSection {
 		UI.formLabel(comp, tk, "Produkt");
 		Composite inner = tk.createComposite(comp);
 		UI.innerGrid(inner, 2);
-		ImageHyperlink link = new ImageHyperlink(inner, SWT.TOP);
+		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		if (consumer().transferStation != null) {
 			link.setText(consumer().transferStation.name);
 		} else {

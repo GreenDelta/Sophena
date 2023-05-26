@@ -1,17 +1,12 @@
 package sophena.rcp.editors.projects;
 
-import java.io.File;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
@@ -19,8 +14,8 @@ import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.Workspace;
-import sophena.rcp.editors.CostSettingsPanel;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.CostSettingsPanel;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.EntityCombo;
@@ -28,9 +23,12 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
+import java.io.File;
+import java.util.List;
+
 class InfoPage extends FormPage {
 
-	private ProjectEditor editor;
+	private final ProjectEditor editor;
 
 	public InfoPage(ProjectEditor editor) {
 		super(editor, "sophena.ProjectInfoPage", "Projektinformationen");
@@ -60,14 +58,11 @@ class InfoPage extends FormPage {
 		createDescriptionText(tk, comp);
 		createDurationText(tk, comp);
 		createStationCombo(tk, comp);
-		UI.formLabel(comp, "Datenbankpfad");
+		UI.formLabel(comp, tk, "Datenbankpfad");
 		File dbDir = Workspace.dir();
-		Hyperlink link = tk.createHyperlink(comp, dbDir.getAbsolutePath(),
-				SWT.NONE);
+		var link = tk.createHyperlink(comp, dbDir.getAbsolutePath(), SWT.NONE);
 		link.setForeground(Colors.getLinkBlue());
-		Controls.onClick(link, e -> {
-			Desktop.browse(dbDir.toURI().toASCIIString());
-		});
+		Controls.onClick(link, e -> Desktop.browse(dbDir.toURI().toASCIIString()));
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
@@ -118,8 +113,7 @@ class InfoPage extends FormPage {
 			if (d == null) {
 				return;
 			}
-			WeatherStation selected = dao.get(d.id);
-			project().weatherStation = selected;
+			project().weatherStation = dao.get(d.id);
 			editor.setDirty();
 		});
 	}

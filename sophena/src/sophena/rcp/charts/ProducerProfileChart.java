@@ -53,6 +53,7 @@ public class ProducerProfileChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
+		g.setBackgroundColor(Colors.getWhite());
 		addMaxArea(g);
 		addMinArea(g);
 		addMaxLine(g);

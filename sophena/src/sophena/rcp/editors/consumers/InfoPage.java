@@ -10,7 +10,7 @@ import sophena.rcp.utils.UI;
 
 class InfoPage extends FormPage {
 
-	private ConsumerEditor editor;
+	private final ConsumerEditor editor;
 
 	public InfoPage(ConsumerEditor editor) {
 		super(editor, "sophena.ConsumerInfoPage", M.ConsumerInformation);

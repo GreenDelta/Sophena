@@ -48,6 +48,7 @@ public class LoadProfileChart {
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
+		g.setBackgroundColor(Colors.getWhite());
 		addSumTrace(g);
 		addStaticTrace(g);
 		Axis x = g.primaryXAxis;
