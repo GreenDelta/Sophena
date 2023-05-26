@@ -1,7 +1,5 @@
 package sophena.rcp.utils;
 
-import java.util.function.Function;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -30,6 +28,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.LoggerFactory;
 import sophena.rcp.colors.Colors;
+
+import java.util.function.Function;
 
 public class UI {
 
@@ -81,7 +81,7 @@ public class UI {
 	 * given browser.
 	 */
 	public static void bindFunction(Browser browser, String name,
-			Function<Object[], Object> fn) {
+																	Function<Object[], Object> fn) {
 		if (browser == null || name == null || fn == null)
 			return;
 		var func = new BrowserFunction(browser, name) {
@@ -126,8 +126,7 @@ public class UI {
 			return null;
 		FontData fd = control.getFont().getFontData()[0];
 		fd.setStyle(SWT.ITALIC);
-		Font font = new Font(control.getDisplay(), fd);
-		return font;
+		return new Font(control.getDisplay(), fd);
 	}
 
 	public static void applyItalicFont(Control control) {
@@ -147,8 +146,8 @@ public class UI {
 		toolkit.paintBordersFor(composite);
 	}
 
-	public static GridData gridData(Control control, boolean hFill,
-			boolean vFill) {
+	public static GridData gridData(
+			Control control, boolean hFill, boolean vFill) {
 		int hStyle = hFill ? SWT.FILL : SWT.LEFT;
 		int vStyle = vFill ? SWT.FILL : SWT.CENTER;
 		GridData data = new GridData(hStyle, vStyle, hFill, vFill);
@@ -162,43 +161,47 @@ public class UI {
 		return data;
 	}
 
-	/** Creates a nice form header with the given title and returns the form. */
-	public static ScrolledForm formHeader(IManagedForm managedForm,
-			String title) {
-		ScrolledForm form = managedForm.getForm();
-		FormToolkit toolkit = managedForm.getToolkit();
-		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(
+	/**
+	 * Creates a nice form header with the given title and returns the form.
+	 */
+	public static ScrolledForm formHeader(IManagedForm mForm, String title) {
+		var form = mForm.getForm();
+		var tk = mForm.getToolkit();
+		tk.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
-		form.getForm().setForeground(Colors.of("#002171"));
-		toolkit.decorateFormHeading(form.getForm());
+		// form.getForm().setForeground(Colors.of("#002171"));
+		// tk.decorateFormHeading(form.getForm());
 		return form;
 	}
 
-	public static Composite formSection(Composite parent, FormToolkit toolkit,
-			String label) {
-		Section section = section(parent, toolkit, label);
-		Composite client = sectionClient(section, toolkit);
-		return client;
+	public static Composite formSection(
+			Composite parent, FormToolkit tk, String label) {
+		var section = section(parent, tk, label);
+		return sectionClient(section, tk);
 	}
 
-	public static Section section(Composite parent, FormToolkit toolkit,
-			String label) {
-		Section s = toolkit.createSection(parent,
-				ExpandableComposite.TITLE_BAR
+	public static Section section(
+			Composite parent, FormToolkit tk, String label) {
+		var s = tk.createSection(parent,
+				ExpandableComposite.SHORT_TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
 						| ExpandableComposite.TWISTIE);
-		s.setTitleBarForeground(Colors.of("#002171"));
-		s.setToggleColor(Colors.of("#002171"));
+
+		s.setTitleBarBackground(Colors.getWhite());
+		s.setTitleBarBorderColor(Colors.of(122, 122, 122));
+		s.setTitleBarForeground(Colors.of(38, 38, 38));
+		s.setToggleColor(Colors.of(38, 38, 38));
+
 		gridData(s, true, false);
 		s.setText(label);
 		return s;
 	}
 
-	public static Section collapsedSection(Composite parent,
-			FormToolkit toolkit, String label) {
-		Section s = toolkit.createSection(parent,
+	public static Section collapsedSection(
+			Composite parent, FormToolkit tk, String label) {
+		Section s = tk.createSection(parent,
 				ExpandableComposite.TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.COMPACT
@@ -214,9 +217,8 @@ public class UI {
 	 * Creates a composite and sets it as section client of the given section. The
 	 * created composite gets a 2-column grid-layout.
 	 */
-	public static Composite sectionClient(Section section,
-			FormToolkit toolkit) {
-		Composite composite = toolkit.createComposite(section);
+	public static Composite sectionClient(Section section, FormToolkit tk) {
+		var composite = tk.createComposite(section);
 		section.setClient(composite);
 		gridLayout(composite, 2);
 		return composite;
@@ -247,7 +249,7 @@ public class UI {
 	}
 
 	public static GridLayout gridLayout(Composite composite, int columns,
-			int spacing, int margin) {
+																			int spacing, int margin) {
 		final GridLayout layout = new GridLayout(columns, false);
 		layout.verticalSpacing = spacing;
 		layout.marginWidth = margin;
@@ -268,7 +270,7 @@ public class UI {
 	}
 
 	public static Composite formComposite(Composite parent,
-			FormToolkit toolkit) {
+																				FormToolkit toolkit) {
 		Composite composite = toolkit.createComposite(parent);
 		gridLayout(composite, 2);
 		return composite;
@@ -279,7 +281,7 @@ public class UI {
 	}
 
 	public static Button formCheckBox(Composite parent, FormToolkit toolkit,
-			String label) {
+																		String label) {
 		formLabel(parent, label);
 		Button button = null;
 		if (toolkit != null)
@@ -304,12 +306,12 @@ public class UI {
 	}
 
 	public static Text formText(Composite parent, FormToolkit toolkit,
-			String label) {
+															String label) {
 		return formText(parent, toolkit, label, SWT.BORDER);
 	}
 
 	public static Text formText(Composite parent, FormToolkit toolkit,
-			String label, int flags) {
+															String label, int flags) {
 		if (label != null)
 			formLabel(parent, toolkit, label);
 		Text text = null;
@@ -325,17 +327,14 @@ public class UI {
 		return formMultiText(parent, null, label);
 	}
 
-	public static Text formMultiText(Composite parent, FormToolkit toolkit,
-			String label) {
-		formLabel(parent, toolkit, label);
-		Text text = null;
-		if (toolkit != null)
-			text = toolkit.createText(parent, null, SWT.BORDER | SWT.V_SCROLL
-					| SWT.WRAP | SWT.MULTI);
-		else
-			text = new Text(parent, SWT.BORDER | SWT.V_SCROLL | SWT.WRAP
-					| SWT.MULTI);
-		GridData gd = gridData(text, true, false);
+	public static Text formMultiText(
+			Composite parent, FormToolkit tk, String label) {
+		formLabel(parent, tk, label);
+		int style = SWT.BORDER | SWT.V_SCROLL | SWT.WRAP | SWT.MULTI;
+		var text = tk != null
+				? tk.createText(parent, null, style)
+				: new Text(parent, style);
+		var gd = gridData(text, true, false);
 		gd.minimumHeight = 50;
 		gd.heightHint = 50;
 		gd.widthHint = 100;
@@ -347,7 +346,7 @@ public class UI {
 	}
 
 	public static Combo formCombo(Composite parent, FormToolkit toolkit,
-			String label) {
+																String label) {
 		formLabel(parent, toolkit, label);
 		Combo combo = new Combo(parent, SWT.READ_ONLY);
 		gridData(combo, true, false);
@@ -359,7 +358,7 @@ public class UI {
 	}
 
 	public static Label formLabel(Composite parent, FormToolkit toolkit,
-			String label) {
+																String label) {
 		Label labelWidget = null;
 		if (toolkit != null)
 			labelWidget = toolkit.createLabel(parent, label, SWT.NONE);

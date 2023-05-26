@@ -3,32 +3,35 @@
 <target name="Running Platform" sequenceNumber="25">
     <locations>
 	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/eclipse/updates/4.15/"/>
-		    <unit id="org.eclipse.emf.common.feature.group" version="2.18.0.v20191225-1014"/>
-		    <unit id="org.eclipse.emf.common.source.feature.group" version="2.18.0.v20191225-1014"/>
-		    <unit id="org.eclipse.emf.ecore.feature.group" version="2.21.0.v20200127-1342"/>
-		    <unit id="org.eclipse.emf.ecore.source.feature.group" version="2.21.0.v20200127-1342"/>
-		    <unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.100.v20200303-1901"/>
-		    <unit id="org.eclipse.platform.sdk" version="4.15.0.I20200305-0155"/>
-		    <unit id="org.eclipse.rcp.feature.group" version="4.15.0.v20200305-0155"/>
-		    <unit id="org.eclipse.rcp.source.feature.group" version="4.15.0.v20200305-0155"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/swtchart/releases/0.12.0/repository/"/>
-		    <unit id="org.eclipse.swtchart.feature.feature.group" version="0.12.0.202003130409"/>
-		    <unit id="org.eclipse.swtchart.feature.source.feature.group" version="0.12.0.202003130409"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		    <repository location="https://download.eclipse.org/technology/babel/update-site/R0.17.1/2019-12/"/>
 		    <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.14.0.v20200113020001"/>
 	    </location>
 	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/nebula/releases/2.4.0/"/>
-		    <unit id="org.eclipse.nebula.feature.feature.group" version="2.4.0.202006092019"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		    <repository location="https://download.eclipse.org/tools/gef/classic/releases/3.15.0/"/>
 		    <unit id="org.eclipse.draw2d.feature.group" version="3.15.0.202211301913"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/modeling/emf/emf/builds/release/2.33.0"/>
+		    <unit id="org.eclipse.emf.sdk.feature.group" version="2.33.0.v20230226-0921"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/nebula/releases/3.0.0/"/>
+		    <unit id="org.eclipse.nebula.feature.feature.group" version="3.0.0.202303072132"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/swtchart/releases/0.14.0/repository/"/>
+		    <unit id="org.eclipse.swtchart.feature.feature.group" version="0.14.0.202301260747"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
+		    <unit id="org.apache.commons.io" version="2.8.0.v20210415-0900"/>
+		    <unit id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
+	    </location>
+	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		    <repository location="https://download.eclipse.org/eclipse/updates/4.26/"/>
+		    <unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.600.v20221116-1440"/>
+		    <unit id="org.eclipse.platform.sdk" version="4.26.0.I20221123-1800"/>
+		    <unit id="org.eclipse.rcp.feature.group" version="4.26.0.v20221123-2302"/>
 	    </location>
     </locations>
 </target>
