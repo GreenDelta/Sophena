@@ -1,29 +1,15 @@
 package sophena;
 
+import sophena.db.Database;
+
 import java.io.File;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-
-import sophena.db.Database;
 
 public class Tests {
 
 	private static Database db;
-
-	static {
-		Logger log = Logger.getRootLogger();
-		log.setLevel(Level.WARN);
-		log.addAppender(new ConsoleAppender(new PatternLayout(
-				"%-4r %-5p %c %x - %m%n")));
-	}
 
 	public static Database getDb() {
 		if (db != null)
@@ -36,20 +22,23 @@ public class Tests {
 		return db;
 	}
 
-	public static List<Class<?>> getSubTypes(Class<?> superType,
-			String packageName) throws Exception {
-		List<Class<?>> types = new ArrayList<>();
-		Enumeration<URL> urls = Tests.class.getClassLoader().getResources(
-				packageName.replace('.', '/'));
+	public static List<Class<?>> getSubTypes(
+			Class<?> superType, String packageName) throws Exception {
+		var types = new ArrayList<Class<?>>();
+		var urls = Tests.class.getClassLoader()
+				.getResources(packageName.replace('.', '/'));
 		while (urls.hasMoreElements()) {
-			URL url = urls.nextElement();
-			File dir = new File(url.toURI());
-			for (String fileName : dir.list()) {
+			var url = urls.nextElement();
+			var dir = new File(url.toURI());
+			var files = dir.list();
+			if (files == null)
+				continue;
+			for (var fileName : files) {
 				if (!fileName.endsWith(".class"))
 					continue;
-				String shortName = fileName.substring(0, fileName.length() - 6);
-				String fullName = packageName + "." + shortName;
-				Class<?> type = Class.forName(fullName);
+				var shortName = fileName.substring(0, fileName.length() - 6);
+				var fullName = packageName + "." + shortName;
+				var type = Class.forName(fullName);
 				if (!superType.isAssignableFrom(type)
 						|| Modifier.isAbstract(type.getModifiers()))
 					continue;
@@ -58,5 +47,4 @@ public class Tests {
 		}
 		return types;
 	}
-
 }

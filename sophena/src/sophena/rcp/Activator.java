@@ -30,7 +30,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(bundleContext);
 		Activator.context = bundleContext;
 		Workspace.init();
-		LoggerConfig.setUp();
+		LoggerConfig.setup();
 		log.info("Workspace initialized at {}", Workspace.dir());
 		try {
 			File dbDir = new File(Workspace.dir(), "database");

@@ -1,11 +1,9 @@
 package sophena.rcp.logging;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import sophena.rcp.utils.EclipseCommandLine;
 
 /**
@@ -13,42 +11,27 @@ import sophena.rcp.utils.EclipseCommandLine;
  */
 public class LoggerConfig {
 
-	public static void setUp() {
-		Logger logger = Logger.getRootLogger();
-		setLogLevel(logger);
-		HtmlLogFile.create(logger);
-		logger.addAppender(new PopupAppender());
-		addConsoleOutput(logger);
+	public static void setup() {
+		var root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		if (!(root instanceof Logger log))
+			return;
+		log.addAppender(PopupAppender.create());
+		log.addAppender(HtmlLog.create());
+		var arg = EclipseCommandLine.getArg("logLevel");
+		var level = arg != null
+				? levelOf(arg)
+				: Level.INFO;
+		log.setLevel(level);
 	}
 
-	private static void addConsoleOutput(Logger logger) {
-		BasicConfigurator.configure();
-		ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
-		logger.addAppender(appender);
-		appender.setTarget(ConsoleAppender.SYSTEM_OUT);
-		appender.activateOptions();
-	}
-
-	private static void setLogLevel(Logger logger) {
-		String level = EclipseCommandLine.getArg("logLevel");
-		if (level != null) {
-			setLevelFromCommandLine(logger, level);
-		} else {
-			logger.setLevel(Level.INFO);
-		}
-	}
-
-	private static void setLevelFromCommandLine(Logger logger, String level) {
-		if (level.equalsIgnoreCase("all")) {
-			logger.setLevel(Level.ALL);
-		} else if (level.equalsIgnoreCase("error")) {
-			logger.setLevel(Level.ERROR);
-		} else if (level.equalsIgnoreCase("info")) {
-			logger.setLevel(Level.INFO);
-		} else if (level.equalsIgnoreCase("warn")) {
-			logger.setLevel(Level.WARN);
-		} else {
-			logger.setLevel(Level.INFO);
-		}
+	private static Level levelOf(String s) {
+		if (s == null)
+			return Level.INFO;
+		return switch (s.trim().toLowerCase()) {
+			case "all" -> Level.ALL;
+			case "error" -> Level.ERROR;
+			case "warn" -> Level.WARN;
+			default -> Level.INFO;
+		};
 	}
 }
