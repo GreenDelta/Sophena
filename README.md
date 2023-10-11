@@ -1,7 +1,7 @@
 # Sophena
 
 Sophena is a quick planning tool for local heating networks. See the 
-[C.A.R.M.E.N. e.V. website](https://www.carmen-ev.de/infothek/downloads/sophena/1989-sophena-die-software)
+[C.A.R.M.E.N. e.V. website](https://www.carmen-ev.de/service/sophena/)
 for further information.
 
 ![screenshot of Sophena](sophena.png "screenshot of Sophena")
