@@ -1,81 +1,81 @@
 {
-  "bufferTankColor": "#48BCBC",
+  "bufferTankColor": "#b39ddb",
   "groups": [
     {
       "type": "BIOMASS_BOILER",
-      "base": "#299150",
+      "base": "#81c784",
       "variants": [
-        "#45A669",
-        "#71C390",
-        "#15783A",
-        "#409A7A",
-        "#035C24"
+        "#c8e6c9",
+        "#a5d6a7",
+        "#e8f5e9",
+        "#66bb6a",
+        "#4caf50"
       ]
     },
     {
       "type": "FOSSIL_FUEL_BOILER",
-      "base": "#A65E1D",
+      "base": "#9e9e9e",
       "variants": [
-        "#C77C39",
-        "#A6681D",
-        "#E59D60",
-        "#7E3D04",
-        "#C76E39"
+        "#e0e0e0",
+        "#bdbdbd",
+        "#eeeeee",
+        "#757575",
+        "#616161"
       ]
     },
     {
       "type": "COGENERATION_PLANT",
-      "base": "#7135B8",
+      "base": "#ffb74d",
       "variants": [
-        "#8855C9",
-        "#6F10AC",
-        "#8332B7",
-        "#9951C7",
-        "#8855C9"
+        "#ffe0b2",
+        "#ffcc80",
+        "#fff3e0",
+        "#ffa726",
+        "#ff9800"
       ]
     },
     {
       "type": "ELECTRIC_HEAT_GENERATOR",
-      "base": "#FF6709",
+      "base": "#4dd0e1",
       "variants": [
-        "#FF853A",
-        "#FF6C3A",
-        "#FF8109",
-        "#FFAD5E",
-        "#C44B00"
+        "#b2ebf2",
+        "#80deea",
+        "#e0f7fa",
+        "#26c6da",
+        "#00bcd4"
       ]
     },
     {
       "type": "HEAT_PUMP",
-      "base": "#3E4ABB",
+      "base": "#a1887f",
       "variants": [
-        "#1842AC",
-        "#5777C8",
-        "#336FB3",
-        "#819BDB",
-        "#0E2F83"
+        "#d7ccc8",
+        "#bcaaa4",
+        "#efebe9",
+        "#8d6e63",
+        "#795548"
       ]
     },
     {
       "type": "SOLAR_THERMAL_PLANT",
-      "base": "#FFDC3A",
+      "base": "#fff176",
       "variants": [
-        "#FFF23A",
-        "#FFE73A",
-        "#FFD309",
-        "#C4AB00",
-        "#FFF08A"
+        "#fff9c4",
+        "#fff59d",
+        "#fffde7",
+        "#ffee58",
+        "#ffeb3b"
       ]
     },
     {
       "type": "OTHER_HEAT_SOURCE",
-      "base": "#C3997E",
+      "base": "#f06292",
       "variants": [
-        "#A47456",
-        "#C39F7E",
-        "#C3997E",
-        "#C3907E",
-        "#834933"
+        "#f8bbd0",
+        "#f48fb1",
+        "#fce4ec",
+        "#ec407a",
+        "#e91e63"
       ]
     }
   ]
