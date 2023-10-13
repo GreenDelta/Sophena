@@ -22,5 +22,7 @@ public enum FuelGroup {
 
 	PLANTS_OIL,
 
-	WOOD
+	WOOD,
+
+	WASTE
 }

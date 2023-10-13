@@ -31,6 +31,7 @@ public final class Labels {
 			case WOOD -> "Holz";
 			case HOT_WATER -> "Warmwasser";
 			case PLANTS_OIL -> "Pflanzenöl";
+			case WASTE -> "Abfall";
 		};
 	}
 
