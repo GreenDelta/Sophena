@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="2.1" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="2.1" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
