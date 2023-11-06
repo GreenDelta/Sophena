@@ -65,7 +65,7 @@ public class DuplicateAction extends NavigationAction {
 		if (project == null || consumer == null)
 			return;
 		String name = getCopyName(consumer.name, project.consumers);
-		Consumer clone = consumer.clone();
+		Consumer clone = consumer.copy();
 		clone.name = name;
 		project.consumers.add(clone);
 		pDao.update(project);
@@ -82,7 +82,7 @@ public class DuplicateAction extends NavigationAction {
 		if (project == null || producer == null)
 			return;
 		String name = getCopyName(producer.name, project.producers);
-		Producer clone = producer.clone();
+		Producer clone = producer.copy();
 		clone.name = name;
 		clone.rank = 1;
 		for (Producer other : project.producers) {

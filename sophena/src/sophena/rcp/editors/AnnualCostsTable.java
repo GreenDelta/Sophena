@@ -78,7 +78,7 @@ class AnnualCostsTable {
 		AnnualCostEntry e = Viewers.getFirstSelected(table);
 		if (e == null)
 			return;
-		AnnualCostEntry clone = e.clone();
+		AnnualCostEntry clone = e.copy();
 		Wizard wizard = new Wizard(clone);
 		if (wizard.open() != Window.OK)
 			return;

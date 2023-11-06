@@ -135,7 +135,7 @@ public class PipeEditor extends Editor {
 			Pipe p = Viewers.getFirstSelected(table);
 			if (p == null)
 				return;
-			Pipe copy = p.clone();
+			Pipe copy = p.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (PipeWizard.open(copy) != Window.OK)

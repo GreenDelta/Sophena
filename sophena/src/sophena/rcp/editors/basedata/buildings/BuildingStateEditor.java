@@ -144,7 +144,7 @@ public class BuildingStateEditor extends Editor {
 			BuildingState s = Viewers.getFirstSelected(table);
 			if (s == null || s.isProtected)
 				return;
-			BuildingState copy = s.clone();
+			BuildingState copy = s.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			copy.isDefault = false;

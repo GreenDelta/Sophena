@@ -22,7 +22,7 @@ public class ConsumerLoadCurve {
 		if (consumer == null)
 			return LoadProfile.initEmpty();
 		if (consumer.profile != null)
-			return consumer.profile.clone();
+			return consumer.profile.copy();
 		curve.consumer = consumer;
 		curve.station = station;
 		return curve.calc();

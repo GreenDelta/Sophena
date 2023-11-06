@@ -154,7 +154,7 @@ public class FuelEditor extends Editor {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null)
 				return;
-			Fuel copy = f.clone();
+			Fuel copy = f.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			int code = wood ? WoodFuelWizard.open(copy) : FuelWizard.open(copy);

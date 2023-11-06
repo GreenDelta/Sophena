@@ -154,10 +154,10 @@ class EntrySection {
 	}
 
 	private ProductEntry copy(ProductEntry entry) {
-		ProductEntry clone = entry.clone();
+		ProductEntry clone = entry.copy();
 		if (clone.product != null && clone.product.projectId != null) {
 			// clone the private product
-			clone.product = entry.product.clone();
+			clone.product = entry.product.copy();
 			clone.product.id = entry.product.id;
 		}
 		return clone;

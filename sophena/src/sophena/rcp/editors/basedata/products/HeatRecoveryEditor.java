@@ -135,7 +135,7 @@ public class HeatRecoveryEditor extends Editor {
 			HeatRecovery r = Viewers.getFirstSelected(table);
 			if (r == null)
 				return;
-			HeatRecovery copy = r.clone();
+			HeatRecovery copy = r.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (HeatRecoveryWizard.open(copy) != Window.OK)

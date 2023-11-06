@@ -80,7 +80,7 @@ public class ProjectWizard extends Wizard {
 		CostSettingsDao dao = new CostSettingsDao(App.getDb());
 		CostSettings global = dao.getGlobal();
 		if (global != null)
-			p.costSettings = global.clone();
+			p.costSettings = global.copy();
 		else {
 			CostSettings settings = new CostSettings();
 			settings.id = UUID.randomUUID().toString();

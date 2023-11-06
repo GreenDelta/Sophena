@@ -62,7 +62,7 @@ public class FlueGasCleaningEntryWizard extends Wizard {
 			setMessage(" ");
 			selectedProduct = entry.product;
 			costs = entry.costs != null
-					? entry.costs.clone()
+					? entry.costs.copy()
 					: new ProductCosts();
 		}
 

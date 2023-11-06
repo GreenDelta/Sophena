@@ -103,7 +103,7 @@ class PipeSection {
 		pipe = Lists.find(pipe, net().pipes); // JPA
 		if (pipe == null)
 			return;
-		HeatNetPipe clone = pipe.clone();
+		HeatNetPipe clone = pipe.copy();
 		if (PipeWizard.open(clone) != Window.OK)
 			return;
 		pipe.name = clone.name;

@@ -143,7 +143,7 @@ public class ProducerEditor extends Editor {
 				"Name des Erzeugers", producer.name + " - Kopie", null);
 		if (dialog.open() != Window.OK)
 			return;
-		Producer clone = producer.clone();
+		Producer clone = producer.copy();
 		clone.name = dialog.getValue();
 		ProjectDao dao = new ProjectDao(App.getDb());
 		Project project = dao.get(projectId);

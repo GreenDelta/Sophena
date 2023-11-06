@@ -125,7 +125,7 @@ class ProductPage extends FormPage {
 		Product p = Viewers.getFirstSelected(table);
 		if (p == null)
 			return;
-		Product copy = p.clone();
+		Product copy = p.copy();
 		copy.id = UUID.randomUUID().toString();
 		copy.isProtected = false;
 		if (ProductWizard.open(copy) != Window.OK)

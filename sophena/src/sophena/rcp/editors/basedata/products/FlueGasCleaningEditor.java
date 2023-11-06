@@ -135,7 +135,7 @@ public class FlueGasCleaningEditor extends Editor {
 			FlueGasCleaning c = Viewers.getFirstSelected(table);
 			if (c == null)
 				return;
-			FlueGasCleaning copy = c.clone();
+			FlueGasCleaning copy = c.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (FlueGasCleaningWizard.open(copy) != Window.OK)

@@ -52,7 +52,7 @@ public class SaveAsAction extends NavigationAction {
 		try {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(descriptor.id);
-			Project copy = p.clone();
+			Project copy = p.copy();
 			copy.name = val;
 			dao.insert(copy);
 			Navigator.refresh();

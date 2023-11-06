@@ -97,7 +97,7 @@ public class ProductsPackTest {
 
 	@Test
 	public void testClone() {
-		Project clone = project.clone();
+		Project clone = project.copy();
 		projectDao.insert(clone);
 		testModel(clone);
 		Assert.assertNotEquals(project.ownProducts.get(0),

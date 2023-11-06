@@ -15,7 +15,7 @@ public class CostSettingsCloneTest {
 				continue;
 			field.setDouble(cs, 42.0);
 		}
-		cs = cs.clone();
+		cs = cs.copy();
 		for (Field field : CostSettings.class.getDeclaredFields()) {
 			if (!field.getType().equals(double.class))
 				continue;

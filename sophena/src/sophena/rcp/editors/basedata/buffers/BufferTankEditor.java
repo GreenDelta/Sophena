@@ -133,7 +133,7 @@ public class BufferTankEditor extends Editor {
 			BufferTank b = Viewers.getFirstSelected(table);
 			if (b == null)
 				return;
-			BufferTank copy = b.clone();
+			BufferTank copy = b.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (BufferTankWizard.open(copy) != Window.OK)

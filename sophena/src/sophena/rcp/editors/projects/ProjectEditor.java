@@ -79,7 +79,7 @@ public class ProjectEditor extends Editor {
 		if (dialog.open() != Window.OK)
 			return;
 		ProjectDao dao = new ProjectDao(App.getDb());
-		Project copy = project.clone();
+		Project copy = project.copy();
 		copy.name = dialog.getValue();
 		dao.insert(copy);
 		Navigator.refresh();

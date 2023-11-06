@@ -30,8 +30,8 @@ public class ProductEntryTest {
 
 	@Test
 	public void testClonePrivateProduct() {
-		Project project = withPrivateProduct();
-		Project clone = project.clone();
+		var project = withPrivateProduct();
+		var clone = project.copy();
 		Product clonedProduct = clone.ownProducts.get(0);
 		checkFind(clonedProduct, false);
 		projDao.insert(clone);
@@ -80,7 +80,7 @@ public class ProductEntryTest {
 
 	private <T extends AbstractEntity> T mk(Class<T> type) {
 		try {
-			T t = type.newInstance();
+			T t = type.getConstructor().newInstance();
 			t.id = UUID.randomUUID().toString();
 			if (t instanceof RootEntity) {
 				RootEntity re = (RootEntity) t;

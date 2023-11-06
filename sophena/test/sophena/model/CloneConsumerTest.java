@@ -16,7 +16,7 @@ public class CloneConsumerTest {
 			profile.staticData[i] = Math.random();
 			profile.dynamicData[i] = Math.random();
 		}
-		Consumer clone = origin.clone();
+		Consumer clone = origin.copy();
 		Assert.assertTrue(clone.profile != null);
 		LoadProfile clonedProfile = clone.profile;
 		Assert.assertTrue(profile.staticData != clonedProfile.staticData);

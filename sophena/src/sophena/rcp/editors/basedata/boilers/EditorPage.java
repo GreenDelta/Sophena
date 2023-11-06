@@ -143,7 +143,7 @@ class EditorPage extends FormPage {
 		Boiler b = Viewers.getFirstSelected(table);
 		if (b == null)
 			return;
-		Boiler copy = b.clone();
+		Boiler copy = b.copy();
 		copy.id = UUID.randomUUID().toString();
 		copy.isProtected = false;
 		if (BoilerWizard.open(copy) != Window.OK)

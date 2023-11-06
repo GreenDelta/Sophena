@@ -134,7 +134,7 @@ public class ConsumerEditor extends Editor {
 				"Name des Abnehmers", consumer.name + " - Kopie", null);
 		if (dialog.open() != Window.OK)
 			return;
-		Consumer clone = consumer.clone();
+		Consumer clone = consumer.copy();
 		clone.name = dialog.getValue();
 		ProjectDao dao = new ProjectDao(App.getDb());
 		Project project = dao.get(projectId);

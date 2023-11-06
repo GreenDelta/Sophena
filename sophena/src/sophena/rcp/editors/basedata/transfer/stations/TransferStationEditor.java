@@ -134,7 +134,7 @@ public class TransferStationEditor extends Editor {
 			TransferStation s = Viewers.getFirstSelected(table);
 			if (s == null)
 				return;
-			TransferStation copy = s.clone();
+			TransferStation copy = s.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (TransferStationWizard.open(copy) != Window.OK)

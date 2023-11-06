@@ -152,7 +152,7 @@ public class CostResultItem {
 		if (costs == null) {
 			item.costs = new ProductCosts();
 		} else {
-			item.costs = costs.clone();
+			item.costs = costs.copy();
 		}
 		return item;
 	}

@@ -53,12 +53,12 @@ class Cleanings {
 		Data d = Data.load(e);
 		if (d == null)
 			return;
-		FlueGasCleaningEntry clone = d.entry.clone();
+		FlueGasCleaningEntry clone = d.entry.copy();
 		if (FlueGasCleaningEntryWizard.open(clone) != Window.OK)
 			return;
 		d.entry.product = clone.product;
 		if (clone.costs != null) {
-			d.entry.costs = clone.costs.clone();
+			d.entry.costs = clone.costs.copy();
 		} else {
 			d.entry.costs = null;
 		}
