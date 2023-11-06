@@ -11,4 +11,11 @@ public class ConsumerDescriptor extends Descriptor {
 		return ModelType.CONSUMER;
 	}
 
+	@Override
+	public ConsumerDescriptor copy() {
+		var copy = new ConsumerDescriptor();
+		Descriptor.copyFields(this, copy);
+		return copy;
+	}
+
 }

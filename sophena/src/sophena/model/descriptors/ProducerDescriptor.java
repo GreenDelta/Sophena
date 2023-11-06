@@ -12,4 +12,11 @@ public class ProducerDescriptor extends Descriptor {
 		return ModelType.PRODUCER;
 	}
 
+	@Override
+	public ProducerDescriptor copy() {
+		var copy = new ProducerDescriptor();
+		Descriptor.copyFields(this, copy);
+		return copy;
+	}
+
 }

@@ -12,4 +12,11 @@ public class WeatherStationDescriptor extends Descriptor {
 	public ModelType getType() {
 		return ModelType.WEATHER_STATION;
 	}
+
+	@Override
+	public WeatherStationDescriptor copy() {
+		var copy = new WeatherStationDescriptor();
+		Descriptor.copyFields(this, copy);
+		return copy;
+	}
 }

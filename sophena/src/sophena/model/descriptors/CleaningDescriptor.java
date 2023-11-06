@@ -9,4 +9,11 @@ public class CleaningDescriptor extends Descriptor {
 		return ModelType.FLUE_GAS_CLEANING;
 	}
 
+	@Override
+	public CleaningDescriptor copy() {
+		var copy = new CleaningDescriptor();
+		Descriptor.copyFields(this, copy);
+		return copy;
+	}
+
 }
