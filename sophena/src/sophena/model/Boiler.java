@@ -32,8 +32,8 @@ public class Boiler extends AbstractProduct {
 	public double efficiencyRateElectric;
 
 	@Override
-	public Boiler clone() {
-		Boiler clone = new Boiler();
+	public Boiler copy() {
+		var clone = new Boiler();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.maxPower = maxPower;

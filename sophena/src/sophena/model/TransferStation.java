@@ -34,8 +34,8 @@ public class TransferStation extends AbstractProduct {
 	public String control;
 
 	@Override
-	public TransferStation clone() {
-		TransferStation clone = new TransferStation();
+	public TransferStation copy() {
+		var clone = new TransferStation();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.buildingType = buildingType;

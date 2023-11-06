@@ -56,7 +56,7 @@ public class MonthDayHour {
 		String hh = String.format(":%02d", hour);
 		if (mday == null)
 			return "--01-01" + hh;
-		return mday.toString() + hh;
+		return mday + hh;
 	}
 
 }

@@ -35,8 +35,8 @@ public class FlueGasCleaning extends AbstractProduct {
 	public double separationEfficiency;
 
 	@Override
-	public FlueGasCleaning clone() {
-		FlueGasCleaning clone = new FlueGasCleaning();
+	public FlueGasCleaning copy() {
+		var clone = new FlueGasCleaning();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.flueGasCleaningType = flueGasCleaningType;

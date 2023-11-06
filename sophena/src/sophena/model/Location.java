@@ -29,8 +29,8 @@ public class Location extends AbstractEntity {
 	public Double longitude;
 
 	@Override
-	public Location clone() {
-		Location clone = new Location();
+	public Location copy() {
+		var clone = new Location();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.street = street;

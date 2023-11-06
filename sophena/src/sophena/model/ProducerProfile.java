@@ -27,7 +27,7 @@ public class ProducerProfile extends AbstractEntity {
 	public double[] maxPower;
 
 	@Override
-	public ProducerProfile clone() {
+	public ProducerProfile copy() {
 		var clone = new ProducerProfile();
 		clone.id = UUID.randomUUID().toString();
 		clone.minPower = Stats.copy(minPower);

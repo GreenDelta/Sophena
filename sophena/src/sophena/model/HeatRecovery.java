@@ -23,8 +23,8 @@ public class HeatRecovery extends AbstractProduct {
 	public double producerPower;
 
 	@Override
-	public HeatRecovery clone() {
-		HeatRecovery clone = new HeatRecovery();
+	public HeatRecovery copy() {
+		var clone = new HeatRecovery();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.power = power;

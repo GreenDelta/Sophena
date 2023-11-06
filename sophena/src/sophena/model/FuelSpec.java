@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
  * The fuel specification of a heat producer.
  */
 @Embeddable
-public class FuelSpec {
+public class FuelSpec implements Copyable<FuelSpec> {
 
 	@OneToOne
 	@JoinColumn(name = "f_fuel")
@@ -37,8 +37,8 @@ public class FuelSpec {
 	public double ashCosts;
 
 	@Override
-	public FuelSpec clone() {
-		FuelSpec clone = new FuelSpec();
+	public FuelSpec copy() {
+		var clone = new FuelSpec();
 		clone.fuel = fuel;
 		clone.woodAmountType = woodAmountType;
 		clone.waterContent = waterContent;

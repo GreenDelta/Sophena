@@ -96,8 +96,8 @@ public class Consumer extends RootEntity {
 	}
 
 	@Override
-	public Consumer clone() {
-		Consumer clone = new Consumer();
+	public Consumer copy() {
+		var clone = new Consumer();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
@@ -109,25 +109,25 @@ public class Consumer extends RootEntity {
 		clone.waterFraction = waterFraction;
 		clone.loadHours = loadHours;
 		for (FuelConsumption cons : fuelConsumptions) {
-			clone.fuelConsumptions.add(cons.clone());
+			clone.fuelConsumptions.add(cons.copy());
 		}
 		for (TimeInterval i : interruptions) {
-			clone.interruptions.add(i.clone());
+			clone.interruptions.add(i.copy());
 		}
 		if (profile != null) {
-			clone.profile = profile.clone();
+			clone.profile = profile.copy();
 		}
 		if (location != null)
-			clone.location = location.clone();
+			clone.location = location.copy();
 		clone.transferStation = transferStation;
 		if (transferStationCosts != null) {
-			clone.transferStationCosts = transferStationCosts.clone();
+			clone.transferStationCosts = transferStationCosts.copy();
 		}
 		return clone;
 	}
 
 	public ConsumerDescriptor toDescriptor() {
-		ConsumerDescriptor d = new ConsumerDescriptor();
+		var d = new ConsumerDescriptor();
 		d.id = id;
 		d.name = name;
 		d.description = description;

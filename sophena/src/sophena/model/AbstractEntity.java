@@ -8,7 +8,7 @@ import jakarta.persistence.MappedSuperclass;
  * database.
  */
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Copyable<AbstractEntity> {
 
 	@Id
 	public String id;

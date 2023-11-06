@@ -27,8 +27,8 @@ public class BufferTank extends AbstractProduct {
 	public double insulationThickness;
 
 	@Override
-	public BufferTank clone() {
-		BufferTank clone = new BufferTank();
+	public BufferTank copy() {
+		var clone = new BufferTank();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.volume = volume;

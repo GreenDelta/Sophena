@@ -27,12 +27,13 @@ public class ProductEntry extends AbstractEntity {
 	public double count;
 
 	@Override
-	public ProductEntry clone() {
-		ProductEntry clone = new ProductEntry();
+	public ProductEntry copy() {
+		var clone = new ProductEntry();
 		clone.id = UUID.randomUUID().toString();
 		clone.product = product;
-		if (costs != null)
-			clone.costs = costs.clone();
+		if (costs != null) {
+			clone.costs = costs.copy();
+		}
 		clone.pricePerPiece = pricePerPiece;
 		clone.count = count;
 		return clone;

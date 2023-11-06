@@ -136,8 +136,8 @@ public class CostSettings extends AbstractEntity {
 	public double electricityRevenuesFactor;
 
 	@Override
-	public CostSettings clone() {
-		CostSettings clone = new CostSettings();
+	public CostSettings copy() {
+		var clone = new CostSettings();
 		clone.id = UUID.randomUUID().toString();
 
 		// fundings
@@ -175,7 +175,7 @@ public class CostSettings extends AbstractEntity {
 		clone.connectionFees = connectionFees;
 		for (AnnualCostEntry ace : annualCosts) {
 			if (ace != null) {
-				clone.annualCosts.add(ace.clone());
+				clone.annualCosts.add(ace.copy());
 			}
 		}
 		return clone;

@@ -50,8 +50,8 @@ public class LoadProfile extends AbstractEntity {
 	}
 
 	@Override
-	public LoadProfile clone() {
-		LoadProfile clone = new LoadProfile();
+	public LoadProfile copy() {
+		var clone = new LoadProfile();
 		clone.id = UUID.randomUUID().toString();
 		clone.dynamicData = Stats.copy(dynamicData);
 		clone.staticData = Stats.copy(staticData);

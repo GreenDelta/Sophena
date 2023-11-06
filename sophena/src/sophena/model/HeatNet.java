@@ -64,15 +64,16 @@ public class HeatNet extends AbstractEntity {
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
 
 	@Override
-	public HeatNet clone() {
-		HeatNet clone = new HeatNet();
+	public HeatNet copy() {
+		var clone = new HeatNet();
 		clone.id = UUID.randomUUID().toString();
 		clone.maxBufferLoadTemperature = maxBufferLoadTemperature;
 		clone.lowerBufferLoadTemperature = lowerBufferLoadTemperature;
 		clone.bufferLambda = bufferLambda;
 		clone.bufferTank = bufferTank;
-		if (bufferTankCosts != null)
-			clone.bufferTankCosts = bufferTankCosts.clone();
+		if (bufferTankCosts != null) {
+			clone.bufferTankCosts = bufferTankCosts.copy();
+		}
 		clone.length = length;
 		clone.powerLoss = powerLoss;
 		clone.returnTemperature = returnTemperature;
@@ -81,10 +82,11 @@ public class HeatNet extends AbstractEntity {
 		clone.maxLoad = maxLoad;
 		clone.supplyTemperature = supplyTemperature;
 		if (interruption != null) {
-			clone.interruption = interruption.clone();
+			clone.interruption = interruption.copy();
 		}
-		for (HeatNetPipe p : pipes)
-			clone.pipes.add(p.clone());
+		for (var p : pipes) {
+			clone.pipes.add(p.copy());
+		}
 		return clone;
 	}
 }

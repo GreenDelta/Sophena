@@ -4,31 +4,41 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class ProductCosts {
+public class ProductCosts implements Copyable<ProductCosts> {
 
-	/** The purchase price of the product in EUR. */
+	/**
+	 * The purchase price of the product in EUR.
+	 */
 	@Column(name = "investment")
 	public double investment;
 
-	/** The usage duration of the product in years. */
+	/**
+	 * The usage duration of the product in years.
+	 */
 	@Column(name = "duration")
 	public int duration;
 
-	/** Fraction [%] of the investment that is used for repair. */
+	/**
+	 * Fraction [%] of the investment that is used for repair.
+	 */
 	@Column(name = "repair")
 	public double repair;
 
-	/** Fraction [%] of the investment that is used for maintenance . */
+	/**
+	 * Fraction [%] of the investment that is used for maintenance .
+	 */
 	@Column(name = "maintenance")
 	public double maintenance;
 
-	/** Hours per year that are used for operation of the product. */
+	/**
+	 * Hours per year that are used for operation of the product.
+	 */
 	@Column(name = "operation")
 	public double operation;
 
 	@Override
-	public ProductCosts clone() {
-		ProductCosts clone = new ProductCosts();
+	public ProductCosts copy() {
+		var clone = new ProductCosts();
 		clone.investment = investment;
 		clone.duration = duration;
 		clone.repair = repair;
@@ -49,11 +59,9 @@ public class ProductCosts {
 			return;
 		}
 		copy(product.group, toCosts);
-		if (product.purchasePrice != null) {
-			toCosts.investment = product.purchasePrice;
-		} else {
-			toCosts.investment = 0d;
-		}
+		toCosts.investment = product.purchasePrice != null
+				? product.purchasePrice
+				: 0d;
 	}
 
 	/**

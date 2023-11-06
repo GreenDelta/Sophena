@@ -13,9 +13,8 @@ public class DoubleArrayConverter implements Converter {
 
 	@Override
 	public Object convertDataValueToObjectValue(Object byteData, Session session) {
-		if (!(byteData instanceof byte[]))
+		if (!(byteData instanceof byte[] bytes))
 			return null;
-		byte[] bytes = (byte[]) byteData;
 		double[] doubles = new double[bytes.length / 8];
 		for (int i = 0; i < doubles.length; i++) {
 			double d = ByteBuffer.wrap(bytes, i * 8, 8).getDouble();
@@ -27,9 +26,8 @@ public class DoubleArrayConverter implements Converter {
 	@Override
 	public Object convertObjectValueToDataValue(Object doubleData,
 			Session session) {
-		if (!(doubleData instanceof double[]))
+		if (!(doubleData instanceof double[] doubles))
 			return null;
-		double[] doubles = (double[]) doubleData;
 		byte[] bytes = new byte[doubles.length * 8];
 		for (int i = 0; i < doubles.length; i++) {
 			ByteBuffer.wrap(bytes, i * 8, 8).putDouble(doubles[i]);

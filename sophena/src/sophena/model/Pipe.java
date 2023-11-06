@@ -38,8 +38,8 @@ public class Pipe extends AbstractProduct {
 	public Double maxPressure;
 
 	@Override
-	public Pipe clone() {
-		Pipe clone = new Pipe();
+	public Pipe copy() {
+		var clone = new Pipe();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.material = material;

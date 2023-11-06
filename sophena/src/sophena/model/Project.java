@@ -60,25 +60,30 @@ public class Project extends RootEntity {
 	public final List<FlueGasCleaningEntry> flueGasCleaningEntries = new ArrayList<>();
 
 	@Override
-	public Project clone() {
-		Project clone = new Project();
+	public Project copy() {
+		var clone = new Project();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
 		clone.folder = folder;
 		clone.duration = duration;
 		clone.weatherStation = weatherStation;
-		for (Consumer consumer : consumers)
-			clone.consumers.add(consumer.clone());
-		for (Producer producer : producers)
-			clone.producers.add(producer.clone());
-		if (heatNet != null)
-			clone.heatNet = heatNet.clone();
-		if (costSettings != null)
-			clone.costSettings = costSettings.clone();
+
+		for (var consumer : consumers) {
+			clone.consumers.add(consumer.copy());
+		}
+		for (var producer : producers) {
+			clone.producers.add(producer.copy());
+		}
+		if (heatNet != null) {
+			clone.heatNet = heatNet.copy();
+		}
+		if (costSettings != null) {
+			clone.costSettings = costSettings.copy();
+		}
 		cloneProductEntries(clone);
-		for (FlueGasCleaningEntry e : flueGasCleaningEntries) {
-			clone.flueGasCleaningEntries.add(e.clone());
+		for (var e : flueGasCleaningEntries) {
+			clone.flueGasCleaningEntries.add(e.copy());
 		}
 		return clone;
 	}
@@ -86,13 +91,13 @@ public class Project extends RootEntity {
 	private void cloneProductEntries(Project clone) {
 		Map<String, Product> productMap = new HashMap<>();
 		for (Product ownProduct : ownProducts) {
-			Product cp = ownProduct.clone();
+			var cp = ownProduct.copy();
 			cp.projectId = clone.id;
 			clone.ownProducts.add(cp);
 			productMap.put(ownProduct.id, cp);
 		}
-		for (ProductEntry entry : productEntries) {
-			ProductEntry ce = entry.clone();
+		for (var entry : productEntries) {
+			var ce = entry.copy();
 			clone.productEntries.add(ce);
 			if (ce.product == null || ce.product.projectId == null)
 				continue;
@@ -101,7 +106,7 @@ public class Project extends RootEntity {
 	}
 
 	public ProjectDescriptor toDescriptor() {
-		ProjectDescriptor d = new ProjectDescriptor();
+		var d = new ProjectDescriptor();
 		d.id = id;
 		d.name = name;
 		d.description = description;

@@ -18,8 +18,8 @@ public class Product extends AbstractProduct {
 	public String projectId;
 
 	@Override
-	public Product clone() {
-		Product clone = new Product();
+	public Product copy() {
+		var clone = new Product();
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.projectId = projectId;

@@ -45,8 +45,8 @@ public class ProductGroup extends BaseDataEntity {
 	public double operation;
 
 	@Override
-	public ProductGroup clone() {
-		ProductGroup clone = new ProductGroup();
+	public ProductGroup copy() {
+		var clone = new ProductGroup();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;

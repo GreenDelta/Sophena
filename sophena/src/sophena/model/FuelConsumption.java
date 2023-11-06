@@ -48,8 +48,8 @@ public class FuelConsumption extends AbstractEntity {
 	}
 
 	@Override
-	public FuelConsumption clone() {
-		FuelConsumption clone = new FuelConsumption();
+	public FuelConsumption copy() {
+		var clone = new FuelConsumption();
 		clone.id = UUID.randomUUID().toString();
 		clone.amount = this.amount;
 		clone.fuel = this.fuel;

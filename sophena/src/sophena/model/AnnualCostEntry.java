@@ -7,7 +7,7 @@ import jakarta.persistence.Embeddable;
  * A data structure to store other annual costs in the project cost settings.
  */
 @Embeddable
-public class AnnualCostEntry {
+public class AnnualCostEntry implements Copyable<AnnualCostEntry> {
 
 	@Column(name = "label")
 	public String label;
@@ -16,8 +16,8 @@ public class AnnualCostEntry {
 	public double value;
 
 	@Override
-	public AnnualCostEntry clone() {
-		AnnualCostEntry clone = new AnnualCostEntry();
+	public AnnualCostEntry copy() {
+		var clone = new AnnualCostEntry();
 		clone.label = label;
 		clone.value = value;
 		return clone;

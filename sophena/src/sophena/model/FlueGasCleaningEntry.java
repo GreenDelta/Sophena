@@ -20,12 +20,12 @@ public class FlueGasCleaningEntry extends AbstractEntity {
 	public ProductCosts costs;
 
 	@Override
-	public FlueGasCleaningEntry clone() {
-		FlueGasCleaningEntry clone = new FlueGasCleaningEntry();
+	public FlueGasCleaningEntry copy() {
+		var clone = new FlueGasCleaningEntry();
 		clone.id = UUID.randomUUID().toString();
 		clone.product = product;
 		if (costs != null) {
-			clone.costs = costs.clone();
+			clone.costs = costs.copy();
 		}
 		return clone;
 	}

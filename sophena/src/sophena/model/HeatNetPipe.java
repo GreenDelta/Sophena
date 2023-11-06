@@ -33,12 +33,13 @@ public class HeatNetPipe extends AbstractEntity {
 	public double pricePerMeter;
 
 	@Override
-	public HeatNetPipe clone() {
-		HeatNetPipe clone = new HeatNetPipe();
+	public HeatNetPipe copy() {
+		var clone = new HeatNetPipe();
 		clone.id = UUID.randomUUID().toString();
 		clone.pipe = pipe;
-		if (costs != null)
-			clone.costs = costs.clone();
+		if (costs != null) {
+			clone.costs = costs.copy();
+		}
 		clone.name = name;
 		clone.length = length;
 		clone.pricePerMeter = pricePerMeter;

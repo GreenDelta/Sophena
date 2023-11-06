@@ -45,8 +45,8 @@ public class Fuel extends BaseDataEntity {
 	}
 
 	@Override
-	public Fuel clone() {
-		Fuel clone = new Fuel();
+	public Fuel copy() {
+		var clone = new Fuel();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;

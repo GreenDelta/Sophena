@@ -18,7 +18,7 @@ public enum WoodAmountType {
 	// cubic meters
 	private final double factor;
 
-	private WoodAmountType(String unit, double factor) {
+	WoodAmountType(String unit, double factor) {
 		this.unit = unit;
 		this.factor = factor;
 	}

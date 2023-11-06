@@ -112,8 +112,8 @@ public class Producer extends RootEntity {
 	}
 
 	@Override
-	public Producer clone() {
-		Producer clone = new Producer();
+	public Producer copy() {
+		var clone = new Producer();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;
@@ -122,22 +122,23 @@ public class Producer extends RootEntity {
 		clone.boiler = boiler;
 		clone.function = function;
 		clone.rank = rank;
-		if (costs != null)
-			clone.costs = costs.clone();
+		if (costs != null) {
+			clone.costs = costs.copy();
+		}
 		if (fuelSpec != null) {
-			clone.fuelSpec = fuelSpec.clone();
+			clone.fuelSpec = fuelSpec.copy();
 		}
 		clone.producedElectricity = producedElectricity;
 		clone.heatRecovery = heatRecovery;
 		if (heatRecoveryCosts != null) {
-			clone.heatRecoveryCosts = heatRecoveryCosts.clone();
+			clone.heatRecoveryCosts = heatRecoveryCosts.copy();
 		}
 		clone.utilisationRate = utilisationRate;
-		for (TimeInterval t : interruptions) {
-			clone.interruptions.add(t.clone());
+		for (var t : interruptions) {
+			clone.interruptions.add(t.copy());
 		}
 		if (profile != null) {
-			clone.profile = profile.clone();
+			clone.profile = profile.copy();
 			clone.profileMaxPower = profileMaxPower;
 			clone.profileMaxPowerElectric = profileMaxPowerElectric;
 		}
@@ -145,7 +146,7 @@ public class Producer extends RootEntity {
 	}
 
 	public ProducerDescriptor toDescriptor() {
-		ProducerDescriptor d = new ProducerDescriptor();
+		var d = new ProducerDescriptor();
 		d.id = id;
 		d.name = name;
 		d.description = description;

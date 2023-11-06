@@ -35,7 +35,7 @@ public class BuildingState extends BaseDataEntity {
 	public int loadHours;
 
 	@Override
-	public BuildingState clone() {
+	public BuildingState copy() {
 		var clone = new BuildingState();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;

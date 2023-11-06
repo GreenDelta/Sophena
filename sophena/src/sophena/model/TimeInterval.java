@@ -20,8 +20,8 @@ public class TimeInterval extends AbstractEntity {
 	public String description;
 
 	@Override
-	public TimeInterval clone() {
-		TimeInterval clone = new TimeInterval();
+	public TimeInterval copy() {
+		var clone = new TimeInterval();
 		clone.id = UUID.randomUUID().toString();
 		clone.start = start;
 		clone.end = end;

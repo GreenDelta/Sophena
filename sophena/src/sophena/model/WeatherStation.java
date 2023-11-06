@@ -9,6 +9,9 @@ import org.eclipse.persistence.annotations.Converter;
 
 import sophena.model.descriptors.WeatherStationDescriptor;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 @Entity
 @Table(name = "tbl_weather_stations")
 @Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
@@ -27,8 +30,24 @@ public class WeatherStation extends BaseDataEntity {
 	@Convert("DoubleArrayConverter")
 	public double[] data;
 
+	@Override
+	public WeatherStation copy() {
+		var copy = new WeatherStation();
+		copy.id = UUID.randomUUID().toString();
+		copy.name = name;
+		copy.description = description;
+		copy.isProtected = isProtected;
+		copy.longitude = longitude;
+		copy.latitude = latitude;
+		copy.altitude = altitude;
+		copy.data = data != null
+				? Arrays.copyOf(data, data.length)
+				: null;
+		return copy;
+	}
+
 	public WeatherStationDescriptor toDescriptor() {
-		WeatherStationDescriptor d = new WeatherStationDescriptor();
+		var d = new WeatherStationDescriptor();
 		d.id = id;
 		d.name = name;
 		d.description = description;
