@@ -63,6 +63,20 @@ public class HeatNet extends AbstractEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
 
+	public static void addDefaultTo(Project p) {
+		if (p == null)
+			return;
+		var net = new HeatNet();
+		p.heatNet = net;
+		net.id = UUID.randomUUID().toString();
+		net.simultaneityFactor = 1;
+		net.powerLoss = 20;
+		net.maxBufferLoadTemperature = 95;
+		net.bufferLambda = 0.04;
+		net.supplyTemperature = 80;
+		net.returnTemperature = 50;
+	}
+
 	@Override
 	public HeatNet copy() {
 		var clone = new HeatNet();

@@ -19,7 +19,7 @@ import sophena.rcp.utils.MsgBox;
 
 public class HeatNetEditor extends Editor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	protected Project project;
 	protected HeatNet heatNet;
@@ -36,9 +36,12 @@ public class HeatNetEditor extends Editor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		EditorInput i = (EditorInput) input;
-		ProjectDao dao = new ProjectDao(App.getDb());
+		var i = (EditorInput) input;
+		var dao = new ProjectDao(App.getDb());
 		project = dao.get(i.projectId);
+		if (project.heatNet == null) {
+			HeatNet.addDefaultTo(project);
+		}
 		heatNet = project.heatNet;
 		setPartName(project.name + " - Wärmenetz");
 	}
@@ -58,8 +61,8 @@ public class HeatNetEditor extends Editor {
 			return;
 		try {
 			log.info("update heat net in project {}", project);
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(project.id);
+			var dao = new ProjectDao(App.getDb());
+			var p = dao.get(project.id);
 			p.heatNet = heatNet;
 			project = dao.update(p);
 			heatNet = project.heatNet;

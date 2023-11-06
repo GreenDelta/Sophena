@@ -17,7 +17,6 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.Defaults;
 import sophena.db.daos.CostSettingsDao;
 import sophena.db.daos.ProjectDao;
 import sophena.db.daos.WeatherStationDao;
@@ -63,7 +62,7 @@ public class ProjectWizard extends Wizard {
 			var project = new Project();
 			project.id = UUID.randomUUID().toString();
 			page.data.bindToModel(project);
-			addHeatNet(project);
+			HeatNet.addDefaultTo(project);
 			addCostSettings(project);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.insert(project);
@@ -77,26 +76,15 @@ public class ProjectWizard extends Wizard {
 	}
 
 	private void addCostSettings(Project p) {
-		CostSettingsDao dao = new CostSettingsDao(App.getDb());
-		CostSettings global = dao.getGlobal();
+		var dao = new CostSettingsDao(App.getDb());
+		var global = dao.getGlobal();
 		if (global != null)
 			p.costSettings = global.copy();
 		else {
-			CostSettings settings = new CostSettings();
+			var settings = new CostSettings();
 			settings.id = UUID.randomUUID().toString();
 			p.costSettings = settings;
 		}
-	}
-
-	private void addHeatNet(Project p) {
-		var net = (p.heatNet = new HeatNet());
-		net.id = UUID.randomUUID().toString();
-		net.simultaneityFactor = 1;
-		net.powerLoss = 20;
-		net.maxBufferLoadTemperature = 95;
-		net.bufferLambda = 0.04;
-		net.supplyTemperature = 80;
-		net.returnTemperature = 50;
 	}
 
 	@Override
