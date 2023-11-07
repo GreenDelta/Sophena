@@ -11,7 +11,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Labels;
 import sophena.model.ProductType;
-import sophena.rcp.colors.ColorConfig.ColorGroup;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 

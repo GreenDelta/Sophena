@@ -22,11 +22,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 public class ColorConfig implements Copyable<ColorConfig> {
 
-	private static final RGB DEFAULT = new RGB(90, 90, 100);
+	static final RGB DEFAULT = new RGB(90, 90, 100);
 	private static ColorConfig instance;
 
 	private final List<ColorGroup> groups = new ArrayList<>();
@@ -114,7 +113,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 
 	public ColorGroup groupOf(ProductType type) {
 		for (var group : groups) {
-			if (group.type == type)
+			if (group.type() == type)
 				return group;
 		}
 		var g = new ColorGroup(type);
@@ -154,7 +153,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 			return false;
 		for (var group : groups) {
 			var otherGroup = other.groups.stream()
-					.filter(g -> g.type == group.type)
+					.filter(g -> g.type() == group.type())
 					.findAny()
 					.orElse(null);
 			if (!group.equals(otherGroup))
@@ -163,7 +162,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		return true;
 	}
 
-	private static RGB rgbOf(JsonElement e) {
+	static RGB rgbOf(JsonElement e) {
 		if (e == null || !e.isJsonPrimitive())
 			return DEFAULT;
 		var prim = e.getAsJsonPrimitive();
@@ -175,104 +174,4 @@ public class ColorConfig implements Copyable<ColorConfig> {
 				: DEFAULT;
 	}
 
-	public static class ColorGroup implements Copyable<ColorGroup> {
-		private final ProductType type;
-		private RGB base;
-		private final List<RGB> variants = new ArrayList<>();
-
-		private ColorGroup(ProductType type) {
-			this.type = Objects.requireNonNull(type);
-		}
-
-		public ProductType type() {
-			return type;
-		}
-
-		public RGB base() {
-			return base != null ? base : DEFAULT;
-		}
-
-		public void setBase(RGB rgb) {
-			this.base = rgb;
-		}
-
-		/**
-		 * Returns the color variant for the given index. Returns the
-		 * default color, if this variant was not defined yet.
-		 */
-		public RGB variant(int i) {
-			if (i < 0 || i >= variants.size())
-				return DEFAULT;
-			var v = variants.get(i);
-			return v != null ? v : DEFAULT;
-		}
-
-		public void setVariant(int i, RGB rgb) {
-			if (rgb == null)
-				return;
-			while (variants.size() <= i) {
-				variants.add(DEFAULT);
-			}
-			variants.set(i, rgb);
-		}
-
-		@Override
-		public ColorGroup copy() {
-			Function<RGB, RGB> copyRgb = rgb ->
-					rgb != null
-							? new RGB(rgb.red, rgb.green, rgb.blue)
-							: DEFAULT;
-			var copy = new ColorGroup(type);
-			copy.base = copyRgb.apply(base);
-			for (var v : variants) {
-				copy.variants.add(copyRgb.apply(v));
-			}
-			return copy;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == this)
-				return true;
-			if (!(obj instanceof ColorGroup other))
-				return false;
-			if (type != other.type)
-				return false;
-			if (variants.size() != other.variants.size())
-				return false;
-			for (int i = 0; i < variants.size(); i++) {
-				if (!Objects.equals(variants.get(i), other.variants.get(i)))
-					return false;
-			}
-			return true;
-		}
-
-		private JsonObject toJson() {
-			var obj = new JsonObject();
-			obj.addProperty("type", type.name());
-			obj.addProperty("base", Colors.toHex(base()));
-			var array = new JsonArray();
-			for (var v : variants) {
-				array.add(Colors.toHex(v));
-			}
-			obj.add("variants", array);
-			return obj;
-		}
-
-		private static void fromJson(ColorConfig config, JsonObject json) {
-			var type = ProductType.of(Json.getString(json, "type"))
-					.orElse(null);
-			if (type == null)
-				return;
-			var group = config.groupOf(type);
-			group.setBase(rgbOf(json.get("base")));
-			var variants = Json.getArray(json, "variants");
-			if (variants == null)
-				return;
-			for (int i = 0; i < variants.size(); i++) {
-				var e = variants.get(i);
-				group.setVariant(i, rgbOf(e));
-			}
-		}
-	}
 }
