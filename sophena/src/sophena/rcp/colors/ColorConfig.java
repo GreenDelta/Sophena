@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -50,6 +51,20 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		}
 		instance = read(file);
 		return instance;
+	}
+
+	public static void reset() {
+		instance = null;
+		var file = new File(Workspace.dir(), "colors.json");
+		var stream = ColorConfig.class.getResourceAsStream("colors.json");
+		if (stream == null)
+			return;
+		try (stream) {
+			Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			LoggerFactory.getLogger(ColorConfig.class)
+					.error("failed to reset colors", e);
+		}
 	}
 
 	public static ColorConfig read(File file) {
@@ -105,8 +120,8 @@ public class ColorConfig implements Copyable<ColorConfig> {
 					.create()
 					.toJson(json, writer);
 		} catch (Exception e) {
-			var logger = LoggerFactory.getLogger(ColorConfig.class);
-			logger.error("failed to write color config. to: " + file, e);
+			var log = LoggerFactory.getLogger(ColorConfig.class);
+			log.error("failed to write color config. to: " + file, e);
 		}
 	}
 

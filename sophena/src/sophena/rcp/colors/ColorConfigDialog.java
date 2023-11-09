@@ -1,5 +1,6 @@
 package sophena.rcp.colors;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -9,8 +10,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.slf4j.LoggerFactory;
 import sophena.Labels;
 import sophena.model.ProductType;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
@@ -38,7 +41,7 @@ public class ColorConfigDialog extends FormDialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(950, 600);
+		return new Point(1000, 600);
 	}
 
 	@Override
@@ -165,6 +168,25 @@ public class ColorConfigDialog extends FormDialog {
 	}
 
 	@Override
+	protected void createButtonsForButtonBar(Composite comp) {
+		createButton(comp, IDialogConstants.OK_ID, "Speichern", false);
+		createButton(comp, 42, "Zurücksetzen", false);
+		createButton(comp, 43, "Importieren", false);
+		createButton(comp, 44, "Exportieren", false);
+		createButton(comp, IDialogConstants.CANCEL_ID, "Abbrechen", true);
+	}
+
+	@Override
+	protected void buttonPressed(int buttonId) {
+		switch (buttonId) {
+			case 42 -> onReset();
+			case 43 -> onImport();
+			case 44 -> onExport();
+			default -> super.buttonPressed(buttonId);
+		}
+	}
+
+	@Override
 	protected void okPressed() {
 		var origin = ColorConfig.get();
 		if (origin.equals(config)) {
@@ -177,5 +199,46 @@ public class ColorConfigDialog extends FormDialog {
 			ColorConfig.save(config);
 		}
 		super.okPressed();
+	}
+
+	private void onReset() {
+		var b = MsgBox.ask("Zurücksetzen?",
+				"Sollen die Farben auf die Voreinstellungen zurückgesetzt werden?");
+		if (!b)
+			return;
+		ColorConfig.reset();
+		this.close();
+		ColorConfigDialog.show();
+	}
+
+	private void onImport() {
+		var file = FileChooser.open("*.json");
+		if (file == null)
+			return;
+		ColorConfig config = null;
+		try {
+			config = ColorConfig.read(file);
+		} catch (Exception e) {
+			var log = LoggerFactory.getLogger(getClass());
+			log.error("failed to read color configuration", e);
+		}
+
+		if (config == null)
+			return;
+		var b = MsgBox.ask("Importieren?",
+				"Soll die Farbkonfiguration mit der ausgewählten " +
+						"Datei überschrieben werden?");
+		if (!b)
+			return;
+		ColorConfig.save(config);
+		this.close();
+		ColorConfigDialog.show();
+	}
+
+	private void onExport() {
+		var file = FileChooser.save("sophena_colors.json", "*.json");
+		if (file == null)
+			return;
+		ColorConfig.write(config, file);
 	}
 }
