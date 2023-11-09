@@ -48,8 +48,8 @@ public class ColorConfigDialog extends FormDialog {
 
 		var g = groupWidgetOf("Allgemeine Farben", body, tk);
 		ColorBox.of("Pufferspeicher", g, tk)
-				.setColor(config.forBufferTank())
-				.onChange(config::setForBufferTank);
+				.setColor(config.get(ColorKey.BUFFER_TANK))
+				.onChange(rgb -> config.put(ColorKey.BUFFER_TANK, rgb));
 
 		// create groups
 		var types = List.of(

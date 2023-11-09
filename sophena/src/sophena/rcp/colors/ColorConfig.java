@@ -20,7 +20,9 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ColorConfig implements Copyable<ColorConfig> {
@@ -29,7 +31,7 @@ public class ColorConfig implements Copyable<ColorConfig> {
 	private static ColorConfig instance;
 
 	private final List<ColorGroup> groups = new ArrayList<>();
-	private RGB bufferTankColor;
+	private final Map<ColorKey, RGB> keyColors = new EnumMap<>(ColorKey.class);
 
 	public static ColorConfig get() {
 		if (instance != null)
@@ -66,7 +68,15 @@ public class ColorConfig implements Copyable<ColorConfig> {
 
 	private static ColorConfig read(JsonObject json) {
 		var config = new ColorConfig();
-		config.bufferTankColor = rgbOf(json.get("bufferTankColor"));
+
+		// read key-colors
+		for (var key : ColorKey.values()) {
+			var e = json.get(key.toString());
+			var color = rgbOf(e);
+			config.keyColors.put(key, color);
+		}
+
+		// read groups
 		var groups = Json.getArray(json, "groups");
 		if (groups != null) {
 			for (var e : groups) {
@@ -102,7 +112,13 @@ public class ColorConfig implements Copyable<ColorConfig> {
 
 	private JsonObject toJson() {
 		var obj = new JsonObject();
-		obj.addProperty("bufferTankColor", Colors.toHex(forBufferTank()));
+
+		// key colors
+		for (var key : ColorKey.values()) {
+			obj.addProperty(key.toString(), Colors.toHex(get(key)));
+		}
+
+		// groups
 		var groups = new JsonArray();
 		this.groups.stream()
 				.map(ColorGroup::toJson)
@@ -121,20 +137,20 @@ public class ColorConfig implements Copyable<ColorConfig> {
 		return g;
 	}
 
-	public void setForBufferTank(RGB color) {
-		bufferTankColor = color;
+	public void put(ColorKey key, RGB value) {
+		keyColors.put(key, value);
 	}
 
-	public RGB forBufferTank() {
-		return bufferTankColor != null
-				? bufferTankColor
-				: DEFAULT;
+	public RGB get(ColorKey key) {
+		return keyColors.getOrDefault(key, DEFAULT);
 	}
 
 	@Override
 	public ColorConfig copy() {
 		var copy = new ColorConfig();
-		copy.bufferTankColor = bufferTankColor;
+		for (var key : ColorKey.values()) {
+			copy.keyColors.put(key, get(key));
+		}
 		for (var g : groups) {
 			copy.groups.add(g.copy());
 		}
@@ -147,8 +163,16 @@ public class ColorConfig implements Copyable<ColorConfig> {
 			return true;
 		if (!(obj instanceof ColorConfig other))
 			return false;
-		if (!Objects.equals(bufferTankColor, other.bufferTankColor))
-			return false;
+
+		// compare key-colors
+		for (var key : ColorKey.values()) {
+			var thisColor = this.get(key);
+			var otherColor = other.get(key);
+			if (!Objects.equals(thisColor, otherColor))
+				return false;
+		}
+
+		// compare groups
 		if (groups.size() != other.groups.size())
 			return false;
 		for (var group : groups) {

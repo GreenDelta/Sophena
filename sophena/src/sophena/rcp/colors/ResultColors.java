@@ -11,12 +11,11 @@ import java.util.Map;
 
 public class ResultColors {
 
-	private final Color bufferTankColor;
+	private final ColorConfig config;
 	private final Map<Producer, Color> colors = new HashMap<>();
 
 	private ResultColors(ProjectResult result) {
-		var config = ColorConfig.get();
-		bufferTankColor = Colors.of(config.forBufferTank());
+		config = ColorConfig.get();
 
 		var producers = result.energyResult != null
 				? result.energyResult.producers
@@ -49,8 +48,8 @@ public class ResultColors {
 		return new ResultColors(result);
 	}
 
-	public Color ofBufferTank() {
-		return bufferTankColor;
+	public Color of(ColorKey key) {
+		return Colors.of(config.get(key));
 	}
 
 	public Color of(Producer p) {

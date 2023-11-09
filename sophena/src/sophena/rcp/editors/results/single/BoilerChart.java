@@ -18,6 +18,7 @@ import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.charts.ImageExport;
+import sophena.rcp.colors.ColorKey;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.Actions;
@@ -154,7 +155,7 @@ class BoilerChart {
 
 		// buffer tank on top
 		var bufferTrace = makeSuplierTrace("Pufferspeicher", supTop);
-		bufferTrace.setTraceColor(colors.ofBufferTank());
+		bufferTrace.setTraceColor(colors.of(ColorKey.BUFFER_TANK));
 		traces.add(bufferTrace);
 		subtract(supTop, r.suppliedBufferHeat);
 
