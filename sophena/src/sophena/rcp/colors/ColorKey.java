@@ -8,11 +8,25 @@ import java.util.Optional;
  */
 public enum ColorKey {
 
-	BUFFER_TANK("bufferTankColor"),
+	// common colors
+	BUFFER_TANK("bufferTank"),
+	LOAD_DYNAMIC("loadDynamic"),
+	LOAD_STATIC("loadStatic"),
+	PRODUCER_PROFILE("producerProfile"),
+	UNCOVERED_LOAD("uncoveredLoad"),
 
-	HEATING_OIL("heatingOilColor"),
+	// emission charts (CO2eq.)
+	EMISSIONS("emissions"),
+	EMISSIONS_OIL("emissionsOil"),
+	EMISSIONS_GAS("emissionsGas"),
 
-	NATURAL_GAS("naturalGasColor");
+	// energy usage
+	USED_HEAT("usedHeat"),
+	PRODUCED_ELECTRICITY("producedElectricity"),
+	LOSSES_CONVERSION("lossesConversion"),
+	LOSSES_BUFFER("lossesBuffer"),
+	LOSSES_DISTRIBUTION("lossesDistribution")
+	;
 
 	private final String key;
 

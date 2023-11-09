@@ -18,6 +18,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.M;
+import sophena.rcp.colors.ColorKey;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;
@@ -100,7 +101,7 @@ class BoilerTableSection {
 		sep.separator = true;
 		items.add(sep);
 		var item = new Item();
-		item.color = colors.ofBufferTank();
+		item.color = colors.of(ColorKey.BUFFER_TANK);
 		item.name = "Pufferspeicher";
 		items.add(item);
 		double heat = result.totalBufferedHeat;

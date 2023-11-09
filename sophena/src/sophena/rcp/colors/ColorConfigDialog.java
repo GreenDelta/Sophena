@@ -38,7 +38,7 @@ public class ColorConfigDialog extends FormDialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(650, 600);
+		return new Point(950, 600);
 	}
 
 	@Override
@@ -46,10 +46,24 @@ public class ColorConfigDialog extends FormDialog {
 		var tk = form.getToolkit();
 		var body = UI.formBody(form.getForm(), tk);
 
-		var g = groupWidgetOf("Allgemeine Farben", body, tk);
-		ColorBox.of("Pufferspeicher", g, tk)
-				.setColor(config.get(ColorKey.BUFFER_TANK))
-				.onChange(rgb -> config.put(ColorKey.BUFFER_TANK, rgb));
+		keyGroupOf("Allgemeine Farben", body, tk,
+				ColorKey.BUFFER_TANK,
+				ColorKey.LOAD_DYNAMIC,
+				ColorKey.LOAD_STATIC,
+				ColorKey.PRODUCER_PROFILE,
+				ColorKey.UNCOVERED_LOAD);
+
+		keyGroupOf("Wärmenutzung", body, tk,
+				ColorKey.USED_HEAT,
+				ColorKey.PRODUCED_ELECTRICITY,
+				ColorKey.LOSSES_BUFFER,
+				ColorKey.LOSSES_CONVERSION,
+				ColorKey.LOSSES_DISTRIBUTION);
+
+		keyGroupOf("Emissionen", body, tk,
+				ColorKey.EMISSIONS,
+				ColorKey.EMISSIONS_OIL,
+				ColorKey.EMISSIONS_GAS);
 
 		// create groups
 		var types = List.of(
@@ -64,6 +78,39 @@ public class ColorConfigDialog extends FormDialog {
 			var group = config.groupOf(type);
 			renderGroup(group, body, tk);
 		}
+	}
+
+	private void keyGroupOf(
+			String label, Composite body, FormToolkit tk, ColorKey... keys
+	) {
+		var g = groupWidgetOf(label, body, tk);
+		for (var key : keys) {
+			ColorBox.of(labelOf(key), g, tk)
+					.setColor(config.get(key))
+					.onChange(rgb -> config.put(key, rgb));
+		}
+	}
+
+	private String labelOf(ColorKey key) {
+		if (key == null)
+			return "unknown";
+		return switch (key) {
+			case BUFFER_TANK -> "Pufferspeicher";
+			case LOAD_DYNAMIC -> "Dynamische Last";
+			case LOAD_STATIC -> "Statische Last";
+			case PRODUCER_PROFILE -> "Erzeugerprofil";
+			case UNCOVERED_LOAD -> "Ungedeckte Leistung";
+
+			case EMISSIONS -> "Wärmenetz";
+			case EMISSIONS_GAS -> "Erdgas";
+			case EMISSIONS_OIL -> "Heizöl";
+
+			case USED_HEAT -> "Genutzte Wärme";
+			case PRODUCED_ELECTRICITY -> "Erzeugter Strom";
+			case LOSSES_BUFFER -> "Pufferspeicherverluste";
+			case LOSSES_CONVERSION -> "Konversionsverluste";
+			case LOSSES_DISTRIBUTION -> "Verteilungsverluste";
+		};
 	}
 
 	private void renderGroup(ColorGroup group, Composite parent, FormToolkit tk) {
