@@ -4,9 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.swtchart.Chart;
-import org.eclipse.swtchart.IAxis;
 import org.eclipse.swtchart.IBarSeries;
 import org.eclipse.swtchart.IBarSeries.BarWidthStyle;
 import org.eclipse.swtchart.ISeries.SeriesType;
@@ -16,6 +14,8 @@ import org.eclipse.swtchart.Range;
 import sophena.calc.CO2Result;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
+import sophena.rcp.colors.ColorConfig;
+import sophena.rcp.colors.ColorKey;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
@@ -23,58 +23,70 @@ import sophena.rcp.utils.UI;
 class EmissionChart {
 
 	private final CO2Result result;
+	private final ColorConfig colors = ColorConfig.get();
 	private Chart chart;
 
 	private EmissionChart(CO2Result result) {
 		this.result = result;
 	}
 
-	public static void create(CO2Result result, Composite body,
-			FormToolkit tk) {
+	public static void create(CO2Result result, Composite body, FormToolkit tk) {
 		new EmissionChart(result).render(body, tk);
 	}
 
 	private void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk,
-				"Vergleich Treibhausgasemissionen");
+		var section = UI.section(body, tk, "Vergleich Treibhausgasemissionen");
 		Actions.bind(section, ImageExport.forChart(
 				"Treibhausgasemissionen.jpg", () -> chart));
-		Composite comp = UI.sectionClient(section, tk);
+		var comp = UI.sectionClient(section, tk);
 		chart = new Chart(comp, SWT.NONE);
-		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
+		var data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
 		data.minimumHeight = 250;
 		data.minimumWidth = 650;
 		chart.setLayoutData(data);
 		chart.getTitle().setVisible(false);
 		chart.setBackground(Colors.getWhite());
-		ISeriesSet set = chart.getSeriesSet();
-		addSeries(set, "Emissionen Wärmenetz", result.total, 0);
-		addSeries(set, "Emissionen Erdgas", result.variantNaturalGas, 1);
-		addSeries(set, "Emissionen Heizöl", result.variantOil, 2);
+		var set = chart.getSeriesSet();
+		addSeries(set, ColorKey.EMISSIONS);
+		addSeries(set, ColorKey.EMISSIONS_GAS);
+		addSeries(set, ColorKey.EMISSIONS_OIL);
 		formatX(chart);
 		formatY(chart);
 	}
 
-	private void addSeries(ISeriesSet set, String label, double value, int colorId) {
-		IBarSeries<?> s = (IBarSeries<?>) set.createSeries(SeriesType.BAR, label);
-		s.setYSeries(new double[] { (double) Math.round(value) });
-		s.setBarColor(Colors.getForChart(colorId));
+	private void addSeries(ISeriesSet set, ColorKey key) {
+		var label = switch (key) {
+			case EMISSIONS -> "Emissionen Wärmenetz";
+			case EMISSIONS_GAS -> "Emissionen Erdgas";
+			case EMISSIONS_OIL -> "Emissionen Heizöl";
+			default -> "?";
+		};
+		double value = switch (key) {
+			case EMISSIONS -> result.total;
+			case EMISSIONS_GAS -> result.variantNaturalGas;
+			case EMISSIONS_OIL -> result.variantOil;
+			default -> 0;
+		};
+
+		var s = (IBarSeries<?>) set.createSeries(SeriesType.BAR, label);
+		s.setYSeries(new double[]{(double) Math.round(value)});
+		s.setBarColor(Colors.of(colors.get(key)));
 		s.setBarWidthStyle(BarWidthStyle.FIXED);
 		s.setBarWidth(180);
 	}
 
 	private void formatX(Chart chart) {
-		IAxis x = chart.getAxisSet().getXAxis(0);
+		var x = chart.getAxisSet().getXAxis(0);
 		if (x == null)
 			return;
 		x.getTick().setVisible(false);
-		x.setCategorySeries(new String[] { "" });
+		x.setCategorySeries(new String[]{""});
 		x.enableCategory(true);
 		x.getTitle().setVisible(false);
 	}
 
 	private void formatY(Chart chart) {
-		IAxis y = chart.getAxisSet().getYAxis(0);
+		var y = chart.getAxisSet().getYAxis(0);
 		if (y == null)
 			return;
 		y.getTick().setForeground(Colors.getBlack());
@@ -85,7 +97,7 @@ class EmissionChart {
 	}
 
 	private Range getYRange() {
-		double[] vals = { result.total, result.variantNaturalGas, result.variantOil };
+		double[] vals = {result.total, result.variantNaturalGas, result.variantOil};
 		double min = Math.min(Math.min(vals[0], vals[1]), vals[2]);
 		if (min > 0) {
 			min = 0;
