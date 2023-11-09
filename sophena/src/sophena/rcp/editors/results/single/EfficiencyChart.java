@@ -4,7 +4,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.swtchart.Chart;
 import org.eclipse.swtchart.IAxis;
 import org.eclipse.swtchart.IBarSeries;
@@ -15,6 +14,8 @@ import org.eclipse.swtchart.Range;
 
 import sophena.math.energetic.EfficiencyResult;
 import sophena.rcp.charts.ImageExport;
+import sophena.rcp.colors.ColorConfig;
+import sophena.rcp.colors.ColorKey;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
@@ -22,6 +23,7 @@ import sophena.rcp.utils.UI;
 class EfficiencyChart {
 
 	private final EfficiencyResult result;
+	private final ColorConfig colors = ColorConfig.get();
 	private Chart chart;
 
 	private EfficiencyChart(EfficiencyResult result) {
@@ -34,37 +36,63 @@ class EfficiencyChart {
 	}
 
 	private void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Verwendung Brennstoffenergie");
+		var section = UI.section(body, tk, "Verwendung Brennstoffenergie");
 		Actions.bind(section, ImageExport.forChart(
 				"Brennstoffenergie.jpg", () -> chart));
-		Composite comp = UI.sectionClient(section, tk);
+		var comp = UI.sectionClient(section, tk);
 		chart = new Chart(comp, SWT.NONE);
-		GridData data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
+		var data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
 		data.minimumHeight = 250;
 		data.minimumWidth = 650;
 		chart.setLayoutData(data);
 		chart.setBackground(Colors.getWhite());
 		chart.setOrientation(SWT.VERTICAL);
 		chart.getTitle().setVisible(false);
-		ISeriesSet set = chart.getSeriesSet();
-		addSeries(set, "Genutzte Wärme", result.usedHeat, 0);
-		if (result.producedElectrictiy > 0)
-			addSeries(set, "Erzeugter Strom", result.producedElectrictiy, 1);
-		addSeries(set, "Konversionsverluste", result.conversionLoss, 2);
-		addSeries(set, "Pufferspeicherverluste", result.bufferLoss, 3);
-		addSeries(set, "Verteilungsverluste", result.distributionLoss, 4);
+		var set = chart.getSeriesSet();
+
+		addSeries(set, ColorKey.USED_HEAT);
+		if (result.producedElectrictiy > 0) {
+			addSeries(set, ColorKey.PRODUCED_ELECTRICITY);
+		}
+		addSeries(set, ColorKey.LOSSES_CONVERSION);
+		addSeries(set, ColorKey.LOSSES_BUFFER);
+		addSeries(set, ColorKey.LOSSES_DISTRIBUTION);
+
 		formatX(chart);
 		formatY(chart);
 	}
 
-	private void addSeries(ISeriesSet set, String label, double value,
-			int colorId) {
-		IBarSeries s = (IBarSeries) set.createSeries(SeriesType.BAR, label);
-		s.setYSeries(new double[] { (double) Math.abs(Math.round(value)) });
-		s.setBarColor(Colors.getForChart(colorId));
+	private void addSeries(ISeriesSet set, ColorKey key) {
+		var s = (IBarSeries<?>) set.createSeries(SeriesType.BAR, labelOf(key));
+		s.setYSeries(valueOf(key));
+		s.setBarColor(Colors.of(colors.get(key)));
 		s.setBarWidthStyle(BarWidthStyle.FIXED);
 		s.setBarWidth(80);
 		s.enableStack(true);
+	}
+
+	private String labelOf(ColorKey key) {
+		return switch (key) {
+			case USED_HEAT -> "Genutzte Wärme";
+			case PRODUCED_ELECTRICITY -> "Erzeugter Strom";
+			case LOSSES_CONVERSION -> "Konversionsverluste";
+			case LOSSES_BUFFER -> "Pufferspeicherverluste";
+			case LOSSES_DISTRIBUTION -> "Verteilungsverluste";
+			default -> "?";
+		};
+	}
+
+	private double[] valueOf(ColorKey key) {
+		double val = switch (key) {
+			case USED_HEAT -> result.usedHeat;
+			case PRODUCED_ELECTRICITY -> result.producedElectrictiy;
+			case LOSSES_CONVERSION -> result.conversionLoss;
+			case LOSSES_BUFFER -> result.bufferLoss;
+			case LOSSES_DISTRIBUTION -> result.distributionLoss;
+			default -> 0;
+		};
+		double rounded = (double) Math.abs(Math.round(val));
+		return new double[]{rounded};
 	}
 
 	private void formatX(Chart chart) {
@@ -72,7 +100,7 @@ class EfficiencyChart {
 		if (x == null)
 			return;
 		x.getTick().setVisible(false);
-		x.setCategorySeries(new String[] { "" });
+		x.setCategorySeries(new String[]{""});
 		x.enableCategory(true);
 		x.getTitle().setVisible(false);
 	}

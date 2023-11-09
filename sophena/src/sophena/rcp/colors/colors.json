@@ -1,5 +1,17 @@
 {
-  "bufferTankColor": "#b39ddb",
+  "bufferTank": "#99c1f1",
+  "loadDynamic": "#dc8add",
+  "loadStatic": "#c061cb",
+  "producerProfile": "#ffa348",
+  "uncoveredLoad": "#e01b24",
+  "emissions": "#8ff0a4",
+  "emissionsOil": "#b5835a",
+  "emissionsGas": "#5e5c64",
+  "usedHeat": "#8ff0a4",
+  "producedElectricity": "#f9f06b",
+  "lossesConversion": "#f66151",
+  "lossesBuffer": "#ffbe6f",
+  "lossesDistribution": "#dc8add",
   "groups": [
     {
       "type": "BIOMASS_BOILER",
