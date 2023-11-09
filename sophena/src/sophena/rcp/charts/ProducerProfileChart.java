@@ -2,15 +2,17 @@ package sophena.rcp.charts;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
-import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.model.ProducerProfile;
 import sophena.model.Stats;
+import sophena.rcp.colors.ColorConfig;
+import sophena.rcp.colors.ColorKey;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
@@ -23,7 +25,7 @@ public class ProducerProfileChart {
 	public ProducerProfileChart(Composite parent, int height) {
 		minData = Charts.dataProvider();
 		maxData = Charts.dataProvider();
-		Canvas canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
+		var canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
 		UI.gridData(canvas, true, true).minimumHeight = height;
 		LightweightSystem lws = new LightweightSystem(canvas);
 		graph = createGraph(lws);
@@ -49,7 +51,7 @@ public class ProducerProfileChart {
 	}
 
 	private XYGraph createGraph(LightweightSystem lws) {
-		XYGraph g = new XYGraph();
+		var g = new XYGraph();
 		lws.setContents(g);
 		g.setShowTitle(false);
 		g.setShowLegend(false);
@@ -57,12 +59,14 @@ public class ProducerProfileChart {
 		addMaxArea(g);
 		addMinArea(g);
 		addMaxLine(g);
-		Axis x = g.getPrimaryXAxis();
+
+		var x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setTitle("");
 		x.setMajorGridStep(500);
 		x.setMinorTicksVisible(false);
-		Axis y = g.getPrimaryYAxis();
+
+		var y = g.getPrimaryYAxis();
 		y.setTitle("kW");
 		y.setTitleFont(y.getFont());
 		y.setRange(0, 50);
@@ -72,17 +76,17 @@ public class ProducerProfileChart {
 	}
 
 	private void addMaxArea(XYGraph g) {
-		Trace t = new Trace("Max", g.getPrimaryXAxis(),
+		var t = new Trace("Max", g.getPrimaryXAxis(),
 				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
-		t.setTraceColor(Colors.of("#ff6b6b"));
+		t.setTraceColor(color());
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}
 
 	private void addMinArea(XYGraph g) {
-		Trace t = new Trace("Min", g.getPrimaryXAxis(),
+		var t = new Trace("Min", g.getPrimaryXAxis(),
 				g.getPrimaryYAxis(), minData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.AREA);
@@ -92,13 +96,18 @@ public class ProducerProfileChart {
 	}
 
 	private void addMaxLine(XYGraph g) {
-		Trace t = new Trace("MaxLine", g.getPrimaryXAxis(),
+		var t = new Trace("MaxLine", g.getPrimaryXAxis(),
 				g.getPrimaryYAxis(), maxData);
 		t.setPointStyle(Trace.PointStyle.NONE);
 		t.setTraceType(Trace.TraceType.SOLID_LINE);
-		t.setTraceColor(Colors.of("#ff6b6b"));
+		t.setTraceColor(color());
 		t.setAreaAlpha(255);
 		g.addTrace(t);
 	}
 
+	private Color color() {
+		// note that we need to create different color instances, otherwise
+		// strange things happen
+		return Colors.of(ColorConfig.get().get(ColorKey.PRODUCER_PROFILE));
+	}
 }

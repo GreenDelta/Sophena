@@ -10,7 +10,7 @@ public class Charts {
 	}
 
 	public static CircularBufferDataProvider dataProvider(double[] data) {
-		CircularBufferDataProvider d = new CircularBufferDataProvider(true);
+		var d = new CircularBufferDataProvider(true);
 		d.setBufferSize(Stats.HOURS);
 		d.setConcatenate_data(true);
 		d.setCurrentYDataArray(data);
@@ -18,7 +18,7 @@ public class Charts {
 	}
 
 	public static CircularBufferDataProvider dataProvider() {
-		CircularBufferDataProvider b = new CircularBufferDataProvider(true);
+		var b = new CircularBufferDataProvider(true);
 		b.setBufferSize(Stats.HOURS);
 		b.setConcatenate_data(false);
 		return b;
