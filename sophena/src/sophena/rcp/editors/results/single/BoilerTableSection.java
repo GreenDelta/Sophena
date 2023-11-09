@@ -2,7 +2,6 @@ package sophena.rcp.editors.results.single;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -19,7 +18,6 @@ import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.M;
 import sophena.rcp.colors.ColorKey;
-import sophena.rcp.colors.Colors;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;
 import sophena.rcp.utils.Tables;
@@ -125,7 +123,7 @@ class BoilerTableSection {
 			return;
 
 		var item = new Item();
-		item.color = Colors.getSystemColor(SWT.COLOR_RED);
+		item.color = colors.of(ColorKey.UNCOVERED_LOAD);
 		item.name = "Ungedeckte Leistung";
 		item.powerOrVolume = powerDiff < 0
 				? Num.intStr(powerDiff) + " kW"

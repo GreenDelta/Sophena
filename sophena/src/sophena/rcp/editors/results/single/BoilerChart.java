@@ -3,7 +3,6 @@ package sophena.rcp.editors.results.single;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.visualization.xygraph.figures.Annotation;
-import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
@@ -73,7 +72,7 @@ class BoilerChart {
 		canvas.addMouseWheelListener(e -> {
 			if (!ctrlKey.pressed)
 				return;
-			Axis xAxis = chart.getPrimaryXAxis();
+			var xAxis = chart.getPrimaryXAxis();
 			double valuePos = xAxis.getPositionValue(e.x, false);
 			double factor = e.count < 0 ? -0.1 : 0.1;
 			chart.getPrimaryXAxis().zoomInOut(valuePos, factor);
@@ -148,8 +147,8 @@ class BoilerChart {
 			}
 		}
 		if (addUncovered) {
-			Trace u = makeSuplierTrace("Ungedeckte Leistung", uncovered);
-			u.setTraceColor(Colors.getSystemColor(SWT.COLOR_RED));
+			var u = makeSuplierTrace("Ungedeckte Leistung", uncovered);
+			u.setTraceColor(colors.of(ColorKey.UNCOVERED_LOAD));
 			traces.add(u);
 		}
 
