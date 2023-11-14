@@ -1,6 +1,5 @@
 package sophena.calc;
 
-import sophena.model.Consumer;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -44,7 +43,7 @@ public class ProjectResult {
 	}
 
 	private static void consumers(Project proj, ProjectResult r) {
-		for (Consumer consumer : proj.consumers) {
+		for (var consumer : proj.consumers) {
 			if (consumer.disabled)
 				continue;
 			var profile = ConsumerLoadCurve.calculate(

@@ -222,6 +222,9 @@ class ConsumerRow {
 		if (efficiencyRate == null && utilisationRate == null)
 			return err("es wurde kein Wirkungsgrad oder Nutzungsgrad angegeben");
 
+		if (c.loadHours != 0) {
+			c.heatingLoad = cons.getUsedHeat() / c.loadHours;
+		}
 
 		c.fuelConsumptions.add(cons);
 		return Result.ok(c);

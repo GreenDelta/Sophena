@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import sophena.calc.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
-import sophena.model.LoadProfile;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -34,12 +33,12 @@ import sophena.rcp.utils.UI;
 
 public class ConsumerEditor extends Editor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	Consumer consumer;
 	private String projectId;
 	private WeatherStation weatherStation;
 
-	private List<LoadProfileListener> profileListeners = new ArrayList<>();
+	private final List<LoadProfileListener> profileListeners = new ArrayList<>();
 
 	public static void open(ProjectDescriptor p, ConsumerDescriptor c) {
 		if (p == null || c == null)
@@ -79,16 +78,15 @@ public class ConsumerEditor extends Editor {
 	}
 
 	public void calculate() {
-		LoadProfile profile = ConsumerLoadCurve.calculate(consumer,
-				weatherStation);
+		var profile = ConsumerLoadCurve.calculate(consumer, weatherStation);
 		double[] totals = profile.calculateTotal();
 		double total = Stats.sum(totals);
-		for (LoadProfileListener fn : profileListeners) {
-			fn.update(profile, totals, total);
+		for (var listener : profileListeners) {
+			listener.update(profile, totals, total);
 		}
 	}
 
-	public void onCalculated(LoadProfileListener fn) {
+	void onCalculated(LoadProfileListener fn) {
 		profileListeners.add(fn);
 	}
 

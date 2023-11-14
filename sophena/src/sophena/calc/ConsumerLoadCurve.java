@@ -1,7 +1,6 @@
 package sophena.calc;
 
 import sophena.model.Consumer;
-import sophena.model.FuelConsumption;
 import sophena.model.HoursTrace;
 import sophena.model.LoadProfile;
 import sophena.model.Stats;
@@ -10,37 +9,38 @@ import sophena.model.WeatherStation;
 
 public class ConsumerLoadCurve {
 
-	private Consumer consumer;
-	private WeatherStation station;
+	private final Consumer consumer;
+	private final WeatherStation station;
 
-	private ConsumerLoadCurve() {
+	private ConsumerLoadCurve(Consumer consumer, WeatherStation station) {
+		this.consumer = consumer;
+		this.station = station;
 	}
 
-	public static LoadProfile calculate(Consumer consumer,
-			WeatherStation station) {
-		ConsumerLoadCurve curve = new ConsumerLoadCurve();
+	public static LoadProfile calculate(
+			Consumer consumer, WeatherStation station
+	){
 		if (consumer == null)
 			return LoadProfile.initEmpty();
 		if (consumer.profile != null)
 			return consumer.profile.copy();
-		curve.consumer = consumer;
-		curve.station = station;
-		return curve.calc();
+		return new ConsumerLoadCurve(consumer, station).calc();
 	}
 
 	private LoadProfile calc() {
-		LoadProfile profile = LoadProfile.initEmpty();
+		var profile = LoadProfile.initEmpty();
 		if (consumer == null || station == null)
 			return profile;
+		double totalHeat;
 		if (consumer.demandBased) {
-			double totalHeat = consumer.loadHours * consumer.heatingLoad;
-			calcCurve(totalHeat, profile);
+			totalHeat = consumer.loadHours * consumer.heatingLoad;
 		} else {
-			double totalHeat = 0;
-			for (FuelConsumption c : consumer.fuelConsumptions)
+			totalHeat = 0;
+			for (var c : consumer.fuelConsumptions) {
 				totalHeat += c.getUsedHeat();
-			calcCurve(totalHeat, profile);
+			}
 		}
+		calcCurve(totalHeat, profile);
 		return profile;
 	}
 
@@ -95,8 +95,7 @@ public class ConsumerLoadCurve {
 		boolean[] trace = new boolean[Stats.HOURS];
 		for (TimeInterval time : consumer.interruptions) {
 			int[] interval = HoursTrace.getDayInterval(time);
-			HoursTrace.applyInterval(
-					trace, interval, (old, i) -> true);
+			HoursTrace.applyInterval(trace, interval, (old, i) -> true);
 		}
 		return trace;
 	}

@@ -141,7 +141,7 @@ class ConsumptionSection {
 		private String getUsedHeat(FuelConsumption c) {
 			if (c == null)
 				return null;
-			String heat = Num.intStr(c.getUsedHeat()) + " kWh";
+			var heat = Num.intStr(c.getUsedHeat()) + " kWh";
 			double eta = EfficiencyRate.get(c.utilisationRate, consumer().loadHours);
 			return heat + " (η=" + Num.str(eta) + "%)";
 		}
