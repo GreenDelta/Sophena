@@ -19,6 +19,7 @@ import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
 import sophena.model.TransferStation;
+import sophena.model.SolarCollector;
 
 /**
  * Searches for the usage of entities in other entities.
@@ -116,6 +117,14 @@ public class UsageSearch {
 		return all;
 	}
 
+	public List<SearchResult> of(SolarCollector solarCollector) {
+		if (solarCollector == null || solarCollector.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_producers p "
+				+ "where f_solar_collector = '" + solarCollector.id + "'";
+		return query(sql, ModelType.PRODUCER);
+	}
+	
 	private List<SearchResult> query(String sql, ModelType type) {
 		try {
 			List<SearchResult> results = new ArrayList<>();

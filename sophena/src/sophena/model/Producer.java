@@ -55,7 +55,7 @@ public class Producer extends RootEntity {
 	 */
 	@Column(name = "profile_max_power_electric")
 	public double profileMaxPowerElectric;
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	public ProducerFunction function;
@@ -103,7 +103,14 @@ public class Producer extends RootEntity {
 	 */
 	@Column(name = "utilisation_rate")
 	public Double utilisationRate;
-
+	
+	@OneToOne
+	@JoinColumn(name = "f_solar_collector")
+	public SolarCollector solarCollector;
+	
+	@Embedded
+	public SolarCollectorSpec solarCollectorSpec;
+	
 	/**
 	 * Indicates whether the producer is based on a producer profile or not.
 	 */
@@ -122,11 +129,15 @@ public class Producer extends RootEntity {
 		clone.boiler = boiler;
 		clone.function = function;
 		clone.rank = rank;
+		clone.solarCollector = solarCollector;
 		if (costs != null) {
 			clone.costs = costs.copy();
 		}
 		if (fuelSpec != null) {
 			clone.fuelSpec = fuelSpec.copy();
+		}
+		if (solarCollectorSpec != null) {
+			clone.solarCollectorSpec = solarCollectorSpec.copy();
 		}
 		clone.producedElectricity = producedElectricity;
 		clone.heatRecovery = heatRecovery;

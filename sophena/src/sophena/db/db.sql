@@ -540,6 +540,14 @@ CREATE TABLE tbl_producers (
     heat_recovery_maintenance DOUBLE,
     heat_recovery_operation   DOUBLE,
 
+	f_solar_collector						CHAR(36), 						
+	solar_collector_area 					DOUBLE,
+	solar_collector_alignment 				DOUBLE,
+	solar_collector_tilt 					DOUBLE,
+	solar_collector_operating_mode 			VARCHAR(255),
+	solar_collector_temperature_difference  DOUBLE,
+	solar_collector_temperature_increase 	DOUBLE,
+
     PRIMARY KEY (id)
 );
 
@@ -555,6 +563,49 @@ CREATE TABLE tbl_manufacturer (
 
     address VARCHAR(255),
     url VARCHAR(255),
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_solar_collectors (
+
+    id CHAR(36),
+    name VARCHAR(255),
+    description CLOB(64 K),
+
+    is_protected BOOLEAN,
+
+    purchase_price DOUBLE,
+    url VARCHAR(255),
+    product_type VARCHAR(50),
+    f_product_group CHAR(36),
+    f_manufacturer CHAR(36),
+
+    collector_area DOUBLE,
+    efficiency_rate_radiation DOUBLE,
+	correction_factor DOUBLE,
+	heat_transfer_coefficient1 DOUBLE,
+	heat_transfer_coefficient2 DOUBLE,
+	heat_capacity DOUBLE,
+	angle_incidence_EW_10 DOUBLE,
+	angle_incidence_EW_20 DOUBLE,
+	angle_incidence_EW_30 DOUBLE,
+	angle_incidence_EW_40 DOUBLE,
+	angle_incidence_EW_50 DOUBLE,
+	angle_incidence_EW_60 DOUBLE,
+	angle_incidence_EW_70 DOUBLE,
+	angle_incidence_EW_80 DOUBLE,
+	angle_incidence_EW_90 DOUBLE,
+	angle_incidence_NS_10 DOUBLE,
+	angle_incidence_NS_20 DOUBLE,
+	angle_incidence_NS_30 DOUBLE,
+	angle_incidence_NS_40 DOUBLE,
+	angle_incidence_NS_50 DOUBLE,
+	angle_incidence_NS_60 DOUBLE,
+	angle_incidence_NS_70 DOUBLE,
+	angle_incidence_NS_80 DOUBLE,
+	angle_incidence_NS_90 DOUBLE,
 
     PRIMARY KEY (id)
 );

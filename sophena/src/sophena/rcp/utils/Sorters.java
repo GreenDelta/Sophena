@@ -15,6 +15,7 @@ import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
 import sophena.utils.Strings;
+import sophena.model.SolarCollector;
 
 public class Sorters {
 
@@ -96,6 +97,21 @@ public class Sorters {
 		});
 	}
 
+	public static void solarCollectors(List<SolarCollector> sc) {
+		if (sc == null)
+			return;
+		sc.sort((p1, p2) -> {
+			int c = byGroup(p1, p2);
+			if (c != 0 || p1 == null || p2 == null)
+				return c;
+
+			if (Math.abs(p1.collectorArea - p2.collectorArea) > 1e-6) {
+				return Double.compare(p1.collectorArea, p2.collectorArea);
+			}
+			return byManufacturer(p1, p2);
+		});
+	}
+	
 	public static void heatRecoveries(List<HeatRecovery> hr) {
 		if (hr == null)
 			return;

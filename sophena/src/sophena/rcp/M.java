@@ -95,6 +95,8 @@ public class M extends NLS {
 	public static String Electricity;
 	public static String ElectricityProducers;
 	public static String FurtherResults;
+	
+	public static String SolarThermalPlant;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

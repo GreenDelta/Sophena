@@ -267,5 +267,11 @@
         	icon="icons/home.png"
         	id="sophena.StartPage"
         	name="Start page" />
+  <editor
+        class="sophena.rcp.editors.basedata.solarcollectors.SolarCollectorEditor"
+        default="false"
+        id="sophena.SolarCollectorEditor"
+        name="Solarthermische Anlagen">
+  </editor>
 	</extension>
 </plugin>
