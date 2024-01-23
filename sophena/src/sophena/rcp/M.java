@@ -97,6 +97,22 @@ public class M extends NLS {
 	public static String FurtherResults;
 	
 	public static String SolarThermalPlant;
+	public static String Area;
+	public static String Alignment;
+	public static String Tilt;
+	public static String OperatingMode;
+	public static String TemperatureDifference;
+	public static String TemperatureIncrease;
+	public static String ModuleCount;
+	public static String AutoRadiation;
+	public static String AutoSeason;
+	public static String PreheatingMode;
+	public static String TargetTemperatureOperation;
+	
+	public static String PlausibilityErrors;
+	public static String AlignmentError;
+	public static String TiltError;
+	public static String OperatingModeError;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

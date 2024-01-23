@@ -1,5 +1,6 @@
 package sophena.rcp.wizards;
 
+import java.awt.CardLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -14,6 +15,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
+import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 import sophena.model.ProductGroup;
@@ -81,6 +84,9 @@ public class ProducerWizard extends Wizard {
 					&& producer.productGroup.type == ProductType.HEAT_PUMP) {
 				producer.utilisationRate = 0.0;
 			}
+			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
+				Wizards.initSolarCollectorSpec(producer);
+			}
 
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
@@ -114,7 +120,12 @@ public class ProducerWizard extends Wizard {
 		private Combo powerCombo;
 		private PowerFilter powerFilter;
 		private final ProductGroup[] groupFilter;
-
+		
+		private final StackLayout layout = new StackLayout();
+		private Composite compBoiler;
+		private Composite compSolarCollector;
+		private Composite parentTable;
+		
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
 			setMessage(" ");
@@ -153,7 +164,7 @@ public class ProducerWizard extends Wizard {
 			nameField(comp);
 			groupCombo(comp);
 			powerCombo(comp);
-			boilerTable(root);
+			tables(root);			
 			functionFields(root);
 			bindToUI();
 		}
@@ -163,11 +174,21 @@ public class ProducerWizard extends Wizard {
 			nameEdited = false;
 			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged((t) -> {
-				Boiler b = Viewers.getFirstSelected(boilerTable);
-				if (b == null) {
-					nameEdited = true;
+				ProductGroup group = getGroup();
+				if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+					SolarCollector s = Viewers.getFirstSelected(solarCollectorTable);
+					if (s == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, s.name);
+					}
 				} else {
-					nameEdited = !Strings.nullOrEqual(t, b.name);
+					Boiler b = Viewers.getFirstSelected(boilerTable);
+					if (b == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, b.name);
+					}
 				}
 			});
 		}
@@ -181,7 +202,7 @@ public class ProducerWizard extends Wizard {
 			groupCombo.select(items.length > 1 ? 1 : 0);
 			Controls.onSelect(groupCombo, e -> {
 				updatePowerFilter();
-				updateBoilers();
+				updateTables();
 				suggestName();
 			});
 		}
@@ -216,13 +237,27 @@ public class ProducerWizard extends Wizard {
 			powerCombo = UI.formCombo(comp, "Größenklasse");
 			updatePowerFilter();
 			Controls.onSelect(powerCombo, e -> {
-				updateBoilers();
+				updateTables();
 				suggestName();
 			});
 		}
 
-		private void boilerTable(Composite root) {
-			Composite comp = new Composite(root, SWT.NONE);
+		private void tables(Composite root)
+		{
+			parentTable = new Composite(root, SWT.NONE);
+			UI.gridData(parentTable, true, true);
+			UI.gridLayout(parentTable, 1);
+			parentTable.setLayout(layout); 
+			compBoiler = new Composite(parentTable, SWT.NONE);
+			
+			boilerTable(compBoiler);
+			layout.topControl = compBoiler;
+			parentTable.layout();
+			compSolarCollector = new Composite(parentTable, SWT.NONE);
+			solarCollectorTable(compSolarCollector);
+		}
+		
+		private void boilerTable(Composite comp) {			
 			UI.gridData(comp, true, true);
 			UI.gridLayout(comp, 1);
 			boilerTable = Tables.createViewer(comp, "Hersteller",
@@ -236,8 +271,7 @@ public class ProducerWizard extends Wizard {
 			});
 		}
 		
-		private void solarCollectorTable(Composite root) {
-			Composite comp = new Composite(root, SWT.NONE);
+		private void solarCollectorTable(Composite comp) {
 			UI.gridData(comp, true, true);
 			UI.gridLayout(comp, 1);
 			solarCollectorTable = Tables.createViewer(comp, "Hersteller",
@@ -263,10 +297,19 @@ public class ProducerWizard extends Wizard {
 		private void bindToModel(Producer p) {
 			if (p == null)
 				return;
-			Boiler b = Viewers.getFirstSelected(boilerTable);
-			p.boiler = b;
-			if (b != null) {
-				p.productGroup = b.group;
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+				SolarCollector s = Viewers.getFirstSelected(solarCollectorTable);
+				p.solarCollector = s;
+				if (s != null) {
+					p.productGroup = s.group;
+				}
+			} else {
+				Boiler b = Viewers.getFirstSelected(boilerTable);
+				p.boiler = b;
+				if (b != null) {
+					p.productGroup = b.group;
+				}
 			}
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
@@ -275,7 +318,7 @@ public class ProducerWizard extends Wizard {
 
 		private void bindToUI() {
 			Texts.set(rankText, Wizards.nextProducerRank(project));
-			updateBoilers();
+			updateTables();
 			Wizards.fillProducerFunctions(project, functionCombo);
 			setPageComplete(false);
 		}
@@ -302,6 +345,19 @@ public class ProducerWizard extends Wizard {
 			}
 		}
 		
+		private void updateTables() {
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+				layout.topControl = compSolarCollector;
+				parentTable.layout();
+				updateSolarCollectors();
+			} else {
+				layout.topControl = compBoiler;
+				parentTable.layout();				
+				updateBoilers();
+			}
+		}
+		
 		private void updateBoilers() {
 			BoilerDao dao = new BoilerDao(App.getDb());
 			ArrayList<Boiler> input = new ArrayList<>();
@@ -316,6 +372,23 @@ public class ProducerWizard extends Wizard {
 			}
 			Sorters.boilers(input);
 			boilerTable.setInput(input);
+			setPageComplete(false);
+		}
+		
+		private void updateSolarCollectors() {
+			SolarCollectorDao dao = new SolarCollectorDao(App.getDb());
+			ArrayList<SolarCollector> input = new ArrayList<>();
+			ProductGroup group = getGroup();
+			for (SolarCollector s : dao.getAll()) {
+				if (group != null && !Objects.equals(s.group, group))
+					continue;
+				if (!PowerFilter.matches(s, powerFilter,
+						powerCombo.getSelectionIndex()))
+					continue;
+				input.add(s);
+			}
+			Sorters.solarCollectors(input);
+			solarCollectorTable.setInput(input);
 			setPageComplete(false);
 		}
 

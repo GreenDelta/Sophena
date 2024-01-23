@@ -12,6 +12,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import sophena.Labels;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductType;
 import sophena.rcp.M;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
@@ -52,6 +53,8 @@ class InfoPage extends FormPage {
 					.create(body, tk);
 		}
 		new FuelSection(editor).render(body, tk);
+		if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+			new LocationSpecificationSection(editor).create(body, tk);
 		new CostSection(editor).create(body, tk);
 		if (!producer().hasProfile()) {
 			new InterruptionSection(editor).create(body, tk);

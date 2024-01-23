@@ -20,6 +20,11 @@ public class H extends NLS {
 	public static String SimultaneityFactor;
 	public static String SmoothingFactor;
 	public static String UtilisationRate;
+	public static String CollectorArea;
+	public static String CollectorAlignment;
+	public static String CollectorTilt;
+	public static String CollectorTemperatureDifference;
+	public static String CollectorTemperatureIncrease;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);

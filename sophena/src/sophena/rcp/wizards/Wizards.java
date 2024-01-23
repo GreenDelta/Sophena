@@ -17,6 +17,8 @@ import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.model.SolarCollectorOperatingMode;
+import sophena.model.SolarCollectorSpec;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 
@@ -139,6 +141,18 @@ class Wizards {
 				.getAll().stream()
 				.filter(e -> e.group == FuelGroup.ELECTRICITY)
 				.findFirst().orElse(null);
+	}
+	
+	static void initSolarCollectorSpec(Producer p) {
+		if (p == null || p.productGroup == null)
+			return;
+		if (p.productGroup.type != ProductType.SOLAR_THERMAL_PLANT)
+			return;
+		
+		SolarCollectorSpec solarCollectorSpec = new SolarCollectorSpec();
+		solarCollectorSpec.solarCollectorArea = p.solarCollector.collectorArea;
+		solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
+		p.solarCollectorSpec = solarCollectorSpec;
 	}
 
 	static void initCosts(Producer p) {

@@ -13,9 +13,11 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
@@ -127,6 +129,25 @@ public class ProducerEditor extends Editor {
 								+ " auftreten.");
 				return true;
 			}
+		}
+		if (producer.solarCollectorSpec != null)
+		{
+			double alignment = producer.solarCollectorSpec.solarCollectorAlignment;
+			if (alignment < -180 || alignment > 180) {
+				MsgBox.error(M.PlausibilityErrors, M.AlignmentError);
+				return false;
+			}
+			
+			double tilt = producer.solarCollectorSpec.solarCollectorTilt;
+			if (tilt < 0 || tilt > 90) {
+				MsgBox.error(M.PlausibilityErrors, M.TiltError);
+				return false;
+			}
+			
+//			if (producer.solarCollectorSpec.solarCollectorOperatingMode == SolarCollectorOperatingMode.AUTO_SEASON) {
+//				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
+//				return false;
+//			}
 		}
 
 		return true;
