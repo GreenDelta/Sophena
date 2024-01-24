@@ -10,6 +10,7 @@ import sophena.model.BufferTank;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.rcp.Icon;
+import sophena.rcp.M;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.help.H;
@@ -41,6 +42,7 @@ class BufferTankSection {
 		UI.gridLayout(comp, 4);
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
+		createMaxPerfText(comp, tk);
 		createMaxTempText(comp, tk);
 		createLowerTempText(comp, tk);
 		createLamdaText(comp, tk);
@@ -60,6 +62,17 @@ class BufferTankSection {
 		Texts.on(volText).init(Num.intStr(initial))
 				.decimal().calculated();
 		UI.formLabel(comp, tk, "L");
+		UI.filler(comp, tk);
+	}
+	
+	private void createMaxPerfText(Composite comp, FormToolkit tk) {
+		Text t = UI.formText(comp, tk, M.MaxPerformance);
+		Texts.on(t).init(net().maximumPerformance)
+				.decimal().required().onChanged(s -> {
+					net().maximumPerformance = Texts.getDouble(t);
+					editor.setDirty();
+				});
+		UI.formLabel(comp, tk, "kW");
 		UI.filler(comp, tk);
 	}
 

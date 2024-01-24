@@ -224,6 +224,18 @@ CREATE TABLE tbl_heat_nets (
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE,
+    
+    maximum_performance DOUBLE,
+
+	is_seasonal_driving_style BOOLEAN,
+	f_interval_winter CHAR(36),
+	f_interval_summer CHAR(36),
+	target_charge_level_winter DOUBLE,
+	target_charge_level_summer DOUBLE,
+	flow_temperature_winter DOUBLE,
+	flow_temperature_summer DOUBLE,
+	return_temperature_winter DOUBLE,
+	return_temperature_summer DOUBLE,    
 
     PRIMARY KEY (id)
 );

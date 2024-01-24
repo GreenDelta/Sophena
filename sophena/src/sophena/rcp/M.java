@@ -113,6 +113,17 @@ public class M extends NLS {
 	public static String AlignmentError;
 	public static String TiltError;
 	public static String OperatingModeError;
+	
+	public static String MaxPerformance;
+	
+	public static String SeasonalDrivingStyle;
+	public static String Activate;
+	public static String Period;
+	public static String Summer;
+	public static String Winter;
+	public static String TargetChargeLevel;
+	public static String FlowTemperature;
+	public static String ReturnTemperature;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

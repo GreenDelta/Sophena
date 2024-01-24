@@ -144,10 +144,10 @@ public class ProducerEditor extends Editor {
 				return false;
 			}
 			
-//			if (producer.solarCollectorSpec.solarCollectorOperatingMode == SolarCollectorOperatingMode.AUTO_SEASON) {
-//				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
-//				return false;
-//			}
+			if (producer.solarCollectorSpec.solarCollectorOperatingMode == SolarCollectorOperatingMode.AUTO_SEASON && !project.heatNet.isSeasonalDrivingStyle) {
+				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
+				return false;
+			}
 		}
 
 		return true;

@@ -1,6 +1,8 @@
 package sophena.model;
 
+import java.time.MonthDay;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +64,38 @@ public class HeatNet extends AbstractEntity {
 	@JoinColumn(name = "f_heat_net")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
+	
+	@Column(name = "maximum_performance")
+	public double maximumPerformance;
+	
+	@Column(name = "is_seasonal_driving_style")
+	public boolean isSeasonalDrivingStyle;
+	
+	@JoinColumn(name = "f_interval_winter")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public TimeInterval intervalWinter;
+	
+	@JoinColumn(name = "f_interval_summer")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public TimeInterval intervalSummer;
+	
+	@Column(name = "target_charge_level_winter")
+	public double targetChargeLevelWinter;
+	
+	@Column(name = "target_charge_level_summer")
+	public double targetChargeLevelSummer;
+	
+	@Column(name = "flow_temperature_winter")
+	public double flowTemperatureWinter;
+	
+	@Column(name = "flow_temperature_summer")
+	public double flowTemperatureSummer;
+	
+	@Column(name = "return_temperature_winter")
+	public double returnTemperatureWinter;
+	
+	@Column(name = "return_temperature_summer")
+	public double returnTemperatureSummer;
 
 	public static void addDefaultTo(Project p) {
 		if (p == null)
@@ -75,8 +109,28 @@ public class HeatNet extends AbstractEntity {
 		net.bufferLambda = 0.04;
 		net.supplyTemperature = 80;
 		net.returnTemperature = 50;
-	}
 
+		net.isSeasonalDrivingStyle = false;
+		net.targetChargeLevelWinter = 50;
+		net.targetChargeLevelSummer = 0;
+		net.flowTemperatureWinter = 80;
+		net.flowTemperatureSummer = 80;
+		net.returnTemperatureWinter = 60;
+		net.returnTemperatureSummer = 60;
+		TimeInterval intervalWinter = new TimeInterval();
+		intervalWinter.description = "Winter";
+		intervalWinter.id = UUID.randomUUID().toString();
+		intervalWinter.start = MonthDay.of(11, 15).toString();
+		intervalWinter.end = MonthDay.of(3, 15).toString();
+		net.intervalWinter = intervalWinter;
+		TimeInterval intervalSummer = new TimeInterval();
+		intervalSummer.description = "Sommer";
+		intervalSummer.id = UUID.randomUUID().toString();
+		intervalSummer.start = MonthDay.of(5, 15).toString();
+		intervalSummer.end = MonthDay.of(9, 15).toString();
+		net.intervalSummer = intervalSummer;
+	}
+	
 	@Override
 	public HeatNet copy() {
 		var clone = new HeatNet();
@@ -98,6 +152,21 @@ public class HeatNet extends AbstractEntity {
 		if (interruption != null) {
 			clone.interruption = interruption.copy();
 		}
+		clone.maximumPerformance = maximumPerformance;
+		clone.isSeasonalDrivingStyle = isSeasonalDrivingStyle;
+		clone.targetChargeLevelWinter = targetChargeLevelWinter;
+		clone.targetChargeLevelSummer = targetChargeLevelSummer;
+		clone.flowTemperatureWinter = flowTemperatureWinter;
+		clone.flowTemperatureSummer = flowTemperatureSummer;
+		clone.returnTemperatureWinter = returnTemperatureWinter;
+		clone.returnTemperatureSummer = returnTemperatureSummer;
+		if (intervalWinter != null) {
+			clone.intervalWinter = intervalWinter.copy();
+		}
+		if (intervalSummer != null) {
+			clone.intervalSummer = intervalSummer.copy();
+		}
+		
 		for (var p : pipes) {
 			clone.pipes.add(p.copy());
 		}

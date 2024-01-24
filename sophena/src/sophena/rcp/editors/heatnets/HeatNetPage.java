@@ -33,6 +33,8 @@ class HeatNetPage extends FormPage {
 		HeatNetSection netSection = new HeatNetSection(editor);
 		netSection.create(body, tk);
 		new BufferTankSection(editor).create(body, tk);
+		SeasonalDrivingStyleSection seasonalDrivingStyleSection = new SeasonalDrivingStyleSection(editor);
+		seasonalDrivingStyleSection.create(body, tk);
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
 		interruptionSec.create(body, tk);
 		LoadCurveSection loadCurve = createLoadCurve(tk, body);
