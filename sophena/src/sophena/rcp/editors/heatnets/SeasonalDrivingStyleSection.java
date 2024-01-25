@@ -26,6 +26,12 @@ public class SeasonalDrivingStyleSection {
 	private MonthDayBox startBoxSummer;
 	private MonthDayBox endBoxSummer;
 	private Composite inner;
+	private Text tTargetChargeWinter;
+	private Text tTargetChargeSummer;
+	private Text tFlowTemperatureWinter;
+	private Text tFlowTemperatureSummer;
+	private Text tReturnTemperatureWinter;
+	private Text tReturnTemperatureSummer;
 	
 	SeasonalDrivingStyleSection(HeatNetEditor editor) {
 		this.editor = editor;
@@ -46,25 +52,38 @@ public class SeasonalDrivingStyleSection {
 		createTargetChargeLevelRow(toolkit, inner);
 		createFlowTemperatureRow(toolkit, inner);
 		createReturnTemperatureRow(toolkit, inner);
-		inner.setEnabled(heatNet().isSeasonalDrivingStyle);
+		enableControls(heatNet().isSeasonalDrivingStyle);
 	}
 
+	private void enableControls(Boolean enable) {
+		tTargetChargeWinter.setEnabled(enable);
+		tTargetChargeSummer.setEnabled(enable);
+		tFlowTemperatureWinter.setEnabled(enable);
+		tFlowTemperatureSummer.setEnabled(enable);
+		tReturnTemperatureWinter.setEnabled(enable);
+		tReturnTemperatureSummer.setEnabled(enable);
+		startBoxWinter.setEnabled(enable);
+		endBoxWinter.setEnabled(enable);
+		startBoxSummer.setEnabled(enable);
+		endBoxSummer.setEnabled(enable);
+	}
+	
 	private void createCheck(FormToolkit tk, Composite comp) {
 		var check = tk.createButton(comp, M.Activate, SWT.CHECK);
 		check.setSelection(heatNet().isSeasonalDrivingStyle);
 		Controls.onSelect(check, (e) -> {
 			boolean enabled = check.getSelection();
-			inner.setEnabled(enabled);
+			enableControls(enabled);
 			heatNet().isSeasonalDrivingStyle = enabled;
 			editor.setDirty();
 		});
 	}	
 	
 	private void createHeaderRow(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.Period);
-		UI.formLabel(comp, M.Winter);
+		UI.formLabel(comp, tk, M.Period);
+		UI.formLabel(comp, tk, M.Winter);
 		UI.filler(comp);
-		UI.formLabel(comp, M.Summer);
+		UI.formLabel(comp, tk, M.Summer);
 		UI.filler(comp);
 	}	
 	
@@ -81,7 +100,7 @@ public class SeasonalDrivingStyleSection {
 	}
 	
 	private void createBoxRows(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.Start);
+		UI.formLabel(comp, tk, M.Start);
 		startBoxWinter = new MonthDayBox("", comp, tk);
 		TimeInterval intervalWinter = heatNet().intervalWinter;
 		if (intervalWinter != null) {
@@ -117,7 +136,7 @@ public class SeasonalDrivingStyleSection {
 		});
 		UI.filler(comp);
 
-		UI.formLabel(comp, M.End);
+		UI.formLabel(comp, tk, M.End);
 		endBoxWinter = new MonthDayBox("", comp, tk);
 		initBoxValue(endBoxWinter, intervalWinter.end);
 		endBoxWinter.onSelect((monthDay) -> {
@@ -141,62 +160,62 @@ public class SeasonalDrivingStyleSection {
 	}
 	
 	private void createTargetChargeLevelRow(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.TargetChargeLevel);
-		Text t = UI.formText(comp, tk, null);
-		Texts.on(t).decimal().required()
+		UI.formLabel(comp, tk, M.TargetChargeLevel);
+		tTargetChargeWinter = UI.formText(comp, tk, null);
+		Texts.on(tTargetChargeWinter).decimal().required()
 		.init(heatNet().targetChargeLevelWinter)
 		.onChanged((s) -> {
-			heatNet().targetChargeLevelWinter = Texts.getDouble(t);
+			heatNet().targetChargeLevelWinter = Texts.getDouble(tTargetChargeWinter);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "%");
-		Text tSummer = UI.formText(comp, tk, null);
-		Texts.on(tSummer).decimal().required()
+		UI.formLabel(comp, tk, "%");
+		tTargetChargeSummer = UI.formText(comp, tk, null);
+		Texts.on(tTargetChargeSummer).decimal().required()
 		.init(heatNet().targetChargeLevelSummer)
 		.onChanged((s) -> {
-			heatNet().targetChargeLevelSummer = Texts.getDouble(tSummer);
+			heatNet().targetChargeLevelSummer = Texts.getDouble(tTargetChargeSummer);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "%");
+		UI.formLabel(comp, tk, "%");
 	}
 	
 	private void createFlowTemperatureRow(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.FlowTemperature);
-		Text t = UI.formText(comp, tk, null);
-		Texts.on(t).decimal().required()
+		UI.formLabel(comp, tk, M.FlowTemperature);
+		tFlowTemperatureWinter = UI.formText(comp, tk, null);
+		Texts.on(tFlowTemperatureWinter).decimal().required()
 		.init(heatNet().flowTemperatureWinter)
 		.onChanged((s) -> {
-			heatNet().flowTemperatureWinter = Texts.getDouble(t);
+			heatNet().flowTemperatureWinter = Texts.getDouble(tFlowTemperatureWinter);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "°C");
-		Text tSummer = UI.formText(comp, tk, null);
-		Texts.on(tSummer).decimal().required()
+		UI.formLabel(comp, tk, "°C");
+		tFlowTemperatureSummer = UI.formText(comp, tk, null);
+		Texts.on(tFlowTemperatureSummer).decimal().required()
 		.init(heatNet().flowTemperatureSummer)
 		.onChanged((s) -> {
-			heatNet().flowTemperatureSummer = Texts.getDouble(tSummer);
+			heatNet().flowTemperatureSummer = Texts.getDouble(tFlowTemperatureSummer);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "°C");
+		UI.formLabel(comp, tk, "°C");
 	}
 	
 	private void createReturnTemperatureRow(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.ReturnTemperature);
-		Text t = UI.formText(comp, tk, null);
-		Texts.on(t).decimal().required()
+		UI.formLabel(comp, tk, M.ReturnTemperature);
+		tReturnTemperatureWinter = UI.formText(comp, tk, null);
+		Texts.on(tReturnTemperatureWinter).decimal().required()
 		.init(heatNet().returnTemperatureWinter)
 		.onChanged((s) -> {
-			heatNet().returnTemperatureWinter = Texts.getDouble(t);
+			heatNet().returnTemperatureWinter = Texts.getDouble(tReturnTemperatureWinter);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "°C");
-		Text tSummer = UI.formText(comp, tk, null);
-		Texts.on(tSummer).decimal().required()
+		UI.formLabel(comp, tk, "°C");
+		tReturnTemperatureSummer = UI.formText(comp, tk, null);
+		Texts.on(tReturnTemperatureSummer).decimal().required()
 		.init(heatNet().returnTemperatureSummer)
 		.onChanged((s) -> {
-			heatNet().returnTemperatureSummer = Texts.getDouble(tSummer);
+			heatNet().returnTemperatureSummer = Texts.getDouble(tReturnTemperatureSummer);
 			editor.setDirty();
 		});
-		UI.formLabel(comp, "°C");
+		UI.formLabel(comp, tk, "°C");
 	}
 }

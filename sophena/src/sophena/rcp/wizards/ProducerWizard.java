@@ -85,6 +85,7 @@ public class ProducerWizard extends Wizard {
 			}
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
 				Wizards.initSolarCollectorSpec(producer);
+				producer.utilisationRate = 1.0;
 			}
 
 			project.producers.add(producer);

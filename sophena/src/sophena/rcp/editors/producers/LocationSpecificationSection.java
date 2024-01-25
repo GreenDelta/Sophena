@@ -51,8 +51,8 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorAreaRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, M.Area);
-		UI.formLabel(comp, "m2");
+		Text t = UI.formText(comp, tk, M.Area);
+		UI.formLabel(comp, tk,"m2");
 		HelpLink.create(comp, tk, M.Area, H.CollectorArea);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorArea)
@@ -72,8 +72,8 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorAlignmentRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, M.Alignment);
-		UI.formLabel(comp, "°");
+		Text t = UI.formText(comp, tk, M.Alignment);
+		UI.formLabel(comp, tk, "°");
 		HelpLink.create(comp, tk, M.Alignment, H.CollectorAlignment);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorAlignment)
@@ -84,8 +84,8 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorTiltRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, M.Tilt);
-		UI.formLabel(comp, "°");
+		Text t = UI.formText(comp, tk, M.Tilt);
+		UI.formLabel(comp, tk, "°");
 		HelpLink.create(comp, tk, M.Tilt, H.CollectorTilt);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorTilt)
@@ -96,7 +96,7 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorOperatingModeRow(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, M.OperatingMode);
+		UI.formLabel(comp, tk, M.OperatingMode);
 		Composite inner = tk.createComposite(comp);
 		UI.innerGrid(inner, 4);
 		SolarCollectorOperatingMode current = producer().solarCollectorSpec.solarCollectorOperatingMode;
@@ -132,8 +132,8 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorTempDiffernceRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, M.TemperatureDifference);
-		UI.formLabel(comp, "K");
+		Text t = UI.formText(comp, tk, M.TemperatureDifference);
+		UI.formLabel(comp, tk, "K");
 		HelpLink.create(comp, tk, M.TemperatureDifference, H.CollectorTemperatureDifference);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorTemperatureDifference)
@@ -144,8 +144,8 @@ class LocationSpecificationSection {
 	}
 	
 	private void createSolarCollectorTempIncreaseRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, M.TemperatureIncrease);
-		UI.formLabel(comp, "K");
+		Text t = UI.formText(comp, tk, M.TemperatureIncrease);
+		UI.formLabel(comp, tk, "K");
 		HelpLink.create(comp, tk, M.TemperatureIncrease, H.CollectorTemperatureIncrease);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorTemperatureIncrease)
