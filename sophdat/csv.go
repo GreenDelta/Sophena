@@ -20,6 +20,7 @@ type CsvModel struct {
 	HeatRecoveries   []*HeatRecovery
 	FlueGasCleanings []*FlueGasCleaning
 	TransferStations []*TransferStation
+	SolarCollectors  []*SolarCollector
 }
 
 // ReadCsvModel reads all CSV data into memory and links them
@@ -35,6 +36,7 @@ func ReadCsvModel() *CsvModel {
 	model.readHeatRecoveries()
 	model.readFlueGasCleanings()
 	model.readTransferStations()
+	model.readSolarCollectors()
 	return model
 }
 
@@ -219,6 +221,43 @@ func (model *CsvModel) readTransferStations() {
 		model.TransferStations = append(model.TransferStations, &t)
 	}
 	eachCsvRow("data/csv/transfer_stations.csv", fn)
+}
+
+func (model *CsvModel) readSolarCollectors() {
+	model.SolarCollectors = make([]*SolarCollector, 0)
+	fn := func(row []string) {
+		s := SolarCollector{}
+		productType := cStr(row, 1)
+		model.mapProductData(row, &s.Product, productType)
+		s.CollectorArea = cFlo(row, 7)
+		s.EfficiencyRateRadiation = cFlo(row, 8)
+		s.CorrectionFactor = cFlo(row, 9)
+		s.HeatTransferCoefficient1 = cFlo(row, 10)
+		s.HeatTransferCoefficient2 = cFlo(row, 11)
+		s.HeatCapacity = cFlo(row, 12)
+		s.AngleIncidenceEW10 = cFlo(row, 13)
+		s.AngleIncidenceEW20 = cFlo(row, 14)
+		s.AngleIncidenceEW30 = cFlo(row, 15)
+		s.AngleIncidenceEW40 = cFlo(row, 16)
+		s.AngleIncidenceEW50 = cFlo(row, 17)
+		s.AngleIncidenceEW60 = cFlo(row, 18)
+		s.AngleIncidenceEW70 = cFlo(row, 19)
+		s.AngleIncidenceEW80 = cFlo(row, 20)
+		s.AngleIncidenceEW90 = cFlo(row, 21)
+		s.AngleIncidenceNS10 = cFlo(row, 22)
+		s.AngleIncidenceNS20 = cFlo(row, 23)
+		s.AngleIncidenceNS30 = cFlo(row, 24)
+		s.AngleIncidenceNS40 = cFlo(row, 25)
+		s.AngleIncidenceNS50 = cFlo(row, 26)
+		s.AngleIncidenceNS60 = cFlo(row, 27)
+		s.AngleIncidenceNS70 = cFlo(row, 28)
+		s.AngleIncidenceNS80 = cFlo(row, 29)
+		s.AngleIncidenceNS90 = cFlo(row, 30)
+		s.Description = cStr(row, 31)
+
+		model.SolarCollectors = append(model.SolarCollectors, &s)
+	}
+	eachCsvRow("data/csv/solar_collectors.csv", fn)
 }
 
 func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {

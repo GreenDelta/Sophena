@@ -177,3 +177,31 @@ type FlueGasCleaning struct {
 	CleaningType              string  `json:"cleaningType,omitempty"`
 	SeparationEfficiency      float64 `json:"separationEfficiency"`
 }
+
+type SolarCollector struct {
+	Product
+	CollectorArea            float64 `json:"collector_area"`
+	EfficiencyRateRadiation  float64 `json:"efficiency_rate_radiation"`
+	CorrectionFactor         float64 `json:"correction_factor"`
+	HeatTransferCoefficient1 float64 `json:"heat_transfer_coefficient1"`
+	HeatTransferCoefficient2 float64 `json:"heat_transfer_coefficient2"`
+	HeatCapacity             float64 `json:"heat_capacity"`
+	AngleIncidenceEW10       float64 `json:"angle_incidence_EW_10"`
+	AngleIncidenceEW20       float64 `json:"angle_incidence_EW_20"`
+	AngleIncidenceEW30       float64 `json:"angle_incidence_EW_30"`
+	AngleIncidenceEW40       float64 `json:"angle_incidence_EW_40"`
+	AngleIncidenceEW50       float64 `json:"angle_incidence_EW_50"`
+	AngleIncidenceEW60       float64 `json:"angle_incidence_EW_60"`
+	AngleIncidenceEW70       float64 `json:"angle_incidence_EW_70"`
+	AngleIncidenceEW80       float64 `json:"angle_incidence_EW_80"`
+	AngleIncidenceEW90       float64 `json:"angle_incidence_EW_90"`
+	AngleIncidenceNS10       float64 `json:"angle_incidence_NS_10"`
+	AngleIncidenceNS20       float64 `json:"angle_incidence_NS_20"`
+	AngleIncidenceNS30       float64 `json:"angle_incidence_NS_30"`
+	AngleIncidenceNS40       float64 `json:"angle_incidence_NS_40"`
+	AngleIncidenceNS50       float64 `json:"angle_incidence_NS_50"`
+	AngleIncidenceNS60       float64 `json:"angle_incidence_NS_60"`
+	AngleIncidenceNS70       float64 `json:"angle_incidence_NS_70"`
+	AngleIncidenceNS80       float64 `json:"angle_incidence_NS_80"`
+	AngleIncidenceNS90       float64 `json:"angle_incidence_NS_90"`
+}

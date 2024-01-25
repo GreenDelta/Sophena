@@ -91,6 +91,9 @@ func pack() {
 	for _, t := range csvModel.TransferStations {
 		productData.Put(t, "transfer_stations")
 	}
+	for _, t := range csvModel.SolarCollectors {
+		productData.Put(t, "solar_collectors")
+	}
 }
 
 func packJSONFolder(folder string, w *PackWriter) {
