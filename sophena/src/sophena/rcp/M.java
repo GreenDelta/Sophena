@@ -124,6 +124,8 @@ public class M extends NLS {
 	public static String TargetChargeLevel;
 	public static String FlowTemperature;
 	public static String ReturnTemperature;
+	
+	public static String CollectorArea;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

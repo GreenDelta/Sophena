@@ -109,7 +109,7 @@ public class SeasonalDrivingStyleSection {
 			heatNet().intervalSummer = intervalSummer;
 		}
 		startBoxSummer.onSelect((monthDay) -> {
-			TimeInterval i = heatNet().intervalWinter;
+			TimeInterval i = heatNet().intervalSummer;
 			if (i == null || monthDay == null)
 				return;
 			i.start = monthDay.toString();

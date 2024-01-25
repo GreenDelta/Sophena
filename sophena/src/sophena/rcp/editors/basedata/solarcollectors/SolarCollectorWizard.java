@@ -60,7 +60,7 @@ public class SolarCollectorWizard implements IContent{
 
 	@Override
 	public void render(Composite c) {
-		collectorAreaText = UI.formText(c, "Bruttokollektorfläche");
+		collectorAreaText = UI.formText(c, M.CollectorArea);
 		Texts.on(collectorAreaText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "m2");
 		

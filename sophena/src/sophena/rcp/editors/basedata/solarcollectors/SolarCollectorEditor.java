@@ -78,13 +78,11 @@ public class SolarCollectorEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe",
-					"Bezeichnung",
-					"Hersteller");
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller", M.CollectorArea);
 			table.setLabelProvider(new Label());
 			table.setInput(solarCollectors);
 			double x = 1.0 / 6.0;
-			Tables.bindColumnWidths(table, x, x, x);
+			Tables.bindColumnWidths(table, x, x, x, x);
 			bindActions(section, table);
 		}
 
