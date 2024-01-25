@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import sophena.model.AbstractEntity;
-import sophena.utils.Strings;
 
 public class Lists {
 

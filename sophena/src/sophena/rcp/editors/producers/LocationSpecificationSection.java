@@ -1,33 +1,19 @@
 package sophena.rcp.editors.producers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.Labels;
 import sophena.math.CalculateModules;
-import sophena.math.energetic.CalorificValue;
-import sophena.model.Fuel;
-import sophena.model.FuelSpec;
 import sophena.model.Producer;
-import sophena.model.ProductCosts;
-import sophena.model.ProductGroup;
-import sophena.model.ProductType;
 import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.SolarCollectorSpec;
-import sophena.model.WoodAmountType;
-import sophena.rcp.App;
 import sophena.rcp.M;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;

@@ -1,6 +1,5 @@
 package sophena.rcp.editors.basedata.solarcollectors;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
