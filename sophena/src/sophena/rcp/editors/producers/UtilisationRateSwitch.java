@@ -34,7 +34,7 @@ class UtilisationRateSwitch {
 		return producer().boiler != null
 				&& producer().boiler.type == ProductType.HEAT_PUMP;
 	}
-
+	
 	/**
 	 * Create a switch for manuel input of the utilisation rate if appropiate
 	 * for the producer.
@@ -57,7 +57,7 @@ class UtilisationRateSwitch {
 		Composite comp = tk.createComposite(parent);
 		UI.innerGrid(comp, 3);
 		Button r1 = tk.createButton(comp, "Automatische Berechnung", SWT.RADIO);
-		if (producer().hasProfile() || isHeatPump()) {
+		if (producer().hasProfile() || isHeatPump() || (producer().solarCollector != null)) {
 			r1.setEnabled(false);
 		}
 		UI.filler(comp, tk);
@@ -72,9 +72,9 @@ class UtilisationRateSwitch {
 			r2.setSelection(true);
 		}
 		if (isHeatPump()) {
-			HelpLink.create(comp, title, H.AnnualCOP);
+			HelpLink.create(comp, tk, title, H.AnnualCOP);
 		} else if (Producers.isCoGenPlant(producer())) {
-			HelpLink.create(comp, title, H.UtilisationRate);
+			HelpLink.create(comp, tk, title, H.UtilisationRate);
 		} else {
 			UI.filler(comp, tk);
 		}
