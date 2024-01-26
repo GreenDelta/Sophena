@@ -87,7 +87,13 @@ class TablePage extends FormPage {
 		File file = FileChooser.save(name + ".csv", "*.csv");
 		if (file == null)
 			return;
-		HoursProfile.write(station.data, file);
+		HoursProfile.write(
+			file,
+			new String[] { "index","temperature","direct radiation","diffuse radiation" },
+			station.data,
+			station.directRadiation,
+			station.diffuseRadiation
+		);
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
