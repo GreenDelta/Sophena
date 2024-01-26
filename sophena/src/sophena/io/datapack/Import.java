@@ -35,6 +35,7 @@ import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.ProjectFolder;
 import sophena.model.RootEntity;
+import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
 import sophena.utils.Strings;
@@ -70,6 +71,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.FUEL, Fuel.class);
 			importEntities(ModelType.BUFFER, BufferTank.class);
 			importEntities(ModelType.BOILER, Boiler.class);
+			importEntities(ModelType.SOLAR_COLLECTOR, SolarCollector.class);
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
 			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
@@ -77,7 +79,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
 			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
-			importEntities(ModelType.PROJECT, Project.class);
+			importEntities(ModelType.PROJECT, Project.class);			
 		} catch (Exception e) {
 			log.error("failed to import data pack " + pack, e);
 		}
@@ -120,7 +122,7 @@ public class Import implements Runnable {
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
 				WeatherStation.class, TransferStation.class,
 				FlueGasCleaning.class, ProjectFolder.class,
-				HeatRecovery.class, Manufacturer.class
+				HeatRecovery.class, Manufacturer.class, SolarCollector.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))
