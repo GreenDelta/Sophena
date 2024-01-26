@@ -67,10 +67,12 @@ type Product struct {
 // DWD weather station.
 type WeatherStation struct {
 	RootEntity
-	Longitude float64   `json:"longitude"`
-	Latitude  float64   `json:"latitude"`
-	Altitude  float64   `json:"altitude"`
-	Data      []float64 `json:"data"`
+	Longitude        float64   `json:"longitude"`
+	Latitude         float64   `json:"latitude"`
+	Altitude         float64   `json:"altitude"`
+	Data             []float64 `json:"data"`
+	DirectRadiation  []float64 `json:"directionRadiation"`
+	DiffuseRadiation []float64 `json:"diffuseRadiation"`
 }
 
 // Fuel stores fuel data like the unit of measurement of the
