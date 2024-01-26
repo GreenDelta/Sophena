@@ -30,9 +30,9 @@ public class WeatherStation extends BaseDataEntity {
 	@Convert("DoubleArrayConverter")
 	public double[] data;
 	
-	@Column(name = "direction_radiation")
+	@Column(name = "direct_radiation")
 	@Convert("DoubleArrayConverter")
-	public double[] directionRadiation;
+	public double[] directRadiation;
 	
 	@Column(name = "diffuse_radiation")
 	@Convert("DoubleArrayConverter")
@@ -51,8 +51,8 @@ public class WeatherStation extends BaseDataEntity {
 		copy.data = data != null
 				? Arrays.copyOf(data, data.length)
 				: null;
-		copy.directionRadiation = directionRadiation != null
-				? Arrays.copyOf(directionRadiation, directionRadiation.length)
+		copy.directRadiation = directRadiation != null
+				? Arrays.copyOf(directRadiation, directRadiation.length)
 				: null;
 		copy.diffuseRadiation = diffuseRadiation != null
 				? Arrays.copyOf(diffuseRadiation, diffuseRadiation.length)

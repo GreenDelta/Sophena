@@ -71,7 +71,7 @@ type WeatherStation struct {
 	Latitude         float64   `json:"latitude"`
 	Altitude         float64   `json:"altitude"`
 	Data             []float64 `json:"data"`
-	DirectRadiation  []float64 `json:"directionRadiation"`
+	DirectRadiation  []float64 `json:"directRadiation"`
 	DiffuseRadiation []float64 `json:"diffuseRadiation"`
 }
 
