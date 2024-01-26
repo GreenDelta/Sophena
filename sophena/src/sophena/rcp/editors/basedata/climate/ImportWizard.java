@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
@@ -20,40 +21,45 @@ import sophena.model.WeatherStation;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
 class ImportWizard extends Wizard {
 
 	private Page page;
+	private WeatherStation station;
 
-	public static void open() {
+	public static int open(WeatherStation station) {		
+		if (station == null)
+			return Window.CANCEL;
 		ImportWizard wiz = new ImportWizard();
 		wiz.setWindowTitle(M.ClimateData);
 		wiz.setNeedsProgressMonitor(true);
+		wiz.station = station;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
-		dialog.open();
+		return dialog.open();
 	}
 
 	@Override
 	public boolean performFinish() {
-		if (page.file == null)
-			return false;
+		if (!page.valid())
+			return false;		
 		try {
-			WeatherStation station = page.station;
-			station.id = UUID.randomUUID().toString();
 			ClimateFileReader reader = new ClimateFileReader(page.file,
 					page.settings);
 			getContainer().run(false, false, (m) -> {
 				m.beginTask("Importiere", IProgressMonitor.UNKNOWN);
-				reader.run();
-				station.data = reader.getResult().getData();
-				Dao<WeatherStation> dao = new Dao<>(
-						WeatherStation.class,
-						App.getDb());
-				dao.insert(station);
+				reader.run();					
 			});
+			if(!reader.getResult().isWithoutError()) {
+				MsgBox.error(M.PlausibilityErrors, M.FileImportError);
+				return false;
+			}
+			station.data = reader.getResult().getData();
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -68,7 +74,6 @@ class ImportWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private WeatherStation station = new WeatherStation();
 		private ClimateFileSettings settings = ClimateFileSettings.getDefault();
 		private File file;
 
@@ -81,53 +86,67 @@ class ImportWizard extends Wizard {
 		public void createControl(Composite parent) {
 			Composite comp = new Composite(parent, SWT.NONE);
 			setControl(comp);
-			UI.gridLayout(comp, 3);
-			createTextFields(comp);
+			UI.gridLayout(comp, 4);
+			createNameRow(comp);
+			createLongitudeRow(comp);
+			createLatitudeRow(comp);
+			createAltitudeRow(comp);
 			createFileSection(comp);
 		}
 
-		private void createTextFields(Composite comp) {
-			Text t = UI.formText(comp, "#Name");
-			t.setText("Neue Wetterstation");
-			station.name = "Neue Wetterstation";
-			t.addModifyListener((e) -> station.name = t.getText());
-			UI.formLabel(comp, "");
-			createStartText(comp);
-			createEndText(comp);
+		private void createNameRow(Composite comp) {
+			Text t = UI.formText(comp, M.Name);
+			Texts.on(t).required()
+				.init(station.name)
+				.onChanged((s) -> {
+					station.name = t.getText();
+				});
+			UI.filler(comp);
+			UI.filler(comp);		
 		}
 
-		private void createStartText(Composite comp) {
-			Text t = UI.formText(comp, "#Startjahr");
-			t.setText("1994");
-			settings.setStartYear(1994);
-			Texts.onInt(t, (i) -> {
-				if (i != null)
-					settings.setStartYear(i);
-			});
-			UI.formLabel(comp, "");
+		private void createLongitudeRow(Composite comp) {
+			Text t = UI.formText(comp, M.Longitude);
+			Texts.on(t).decimal().required()
+				.init(station.longitude)
+				.onChanged((s) -> {
+					station.longitude = Texts.getDouble(t);
+				});
+			UI.formLabel(comp, "°");
+			HelpLink.create(comp, M.Longitude, H.LongitudeInfo);			
 		}
-
-		private void createEndText(Composite comp) {
-			Text t;
-			t = UI.formText(comp, "#Endjahr");
-			t.setText("2013");
-			settings.setStartYear(2013);
-			Texts.onInt(t, (i) -> {
-				if (i != null)
-					settings.setEndYear(i);
-			});
-			UI.formLabel(comp, "");
+		
+		private void createLatitudeRow(Composite comp) {
+			Text t = UI.formText(comp, M.Latitude);
+			Texts.on(t).decimal().required()
+				.init(station.latitude)
+				.onChanged((s) -> {
+					station.latitude = Texts.getDouble(t);
+				});
+			UI.formLabel(comp, "°");
+			HelpLink.create(comp, M.Latitude, H.LatitudeInfo);			
+		}
+		
+		private void createAltitudeRow(Composite comp) {
+			Text t = UI.formText(comp, M.Altitude);
+			Texts.on(t).decimal().required()
+				.init(station.altitude)
+				.onChanged((s) -> {
+					station.altitude = Texts.getDouble(t);
+				});
+			UI.formLabel(comp, "m");
+			UI.filler(comp);			
 		}
 
 		private void createFileSection(Composite comp) {
-			Text text = UI.formText(comp, "#Datei");
+			Text text = UI.formText(comp, "Datei");
 			text.setEditable(false);
 			Button button = new Button(comp, SWT.NONE);
 			button.setImage(Icon.FILE_16.img());
-			button.setText("#Auswählen");
+			button.setText("Auswählen");
 			Controls.onSelect(button, (e) -> {
 				FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-				dialog.setFilterExtensions(new String[] { "*.txt", "*.csv" });
+				dialog.setFilterExtensions(new String[] { "*.csv" });
 				dialog.setText(M.SelectFile);
 				String path = dialog.open();
 				if (path != null) {
@@ -135,6 +154,30 @@ class ImportWizard extends Wizard {
 					text.setText(file.getName());
 				}
 			});
+		}
+		
+		private boolean valid() {
+			if (station.name.isEmpty()) {
+				MsgBox.error(M.PlausibilityErrors, M.StationNameError);
+				return false;
+			}				
+			if (station.longitude < -180 || station.longitude > 180) {
+				MsgBox.error(M.PlausibilityErrors, M.LongitudeError);
+				return false;
+			}
+			if (station.latitude < -180 || station.latitude > 180) {
+				MsgBox.error(M.PlausibilityErrors, M.LatitudeError);
+				return false;
+			}
+			if (station.altitude < 0 || station.altitude > 5000) {
+				MsgBox.error(M.PlausibilityErrors, M.AltitudeError);
+				return false;
+			}
+			if (file == null) {
+				MsgBox.error(M.PlausibilityErrors, M.NoFileError);
+				return false;
+			}
+			return true;
 		}
 	}
 }

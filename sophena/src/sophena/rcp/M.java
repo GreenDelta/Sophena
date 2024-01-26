@@ -126,6 +126,17 @@ public class M extends NLS {
 	public static String ReturnTemperature;
 	
 	public static String CollectorArea;
+	
+	public static String NewStation;
+	public static String Longitude;
+	public static String Latitude;
+	public static String Altitude;
+	public static String StationNameError;
+    public static String LongitudeError;
+    public static String LatitudeError;
+    public static String AltitudeError;
+    public static String NoFileError;
+    public static String FileImportError;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

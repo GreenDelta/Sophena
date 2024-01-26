@@ -2,11 +2,13 @@ package sophena.rcp.editors.basedata.climate;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -15,8 +17,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import sophena.Labels;
 import sophena.db.daos.WeatherStationDao;
 import sophena.io.HoursProfile;
+import sophena.model.Boiler;
+import sophena.model.ProductType;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
@@ -33,6 +38,7 @@ import sophena.utils.Num;
 class TablePage extends FormPage {
 
 	private WeatherStationDao dao = new WeatherStationDao(App.getDb());
+	private List<WeatherStationDescriptor> weatherStationsList; 
 
 	public TablePage(ClimateDataEditor editor) {
 		super(editor, "ClimateDataEditor.Page",
@@ -51,24 +57,49 @@ class TablePage extends FormPage {
 		TableViewer table = Tables.createViewer(comp, "Wetterstation",
 				"Längengrad", "Breitengrad", "Höhe");
 		table.setLabelProvider(new Label());
-		List<WeatherStationDescriptor> list = dao.getDescriptors();
-		Sorters.byName(list);
-		table.setInput(list);
+		weatherStationsList = dao.getDescriptors();
+		Sorters.byName(weatherStationsList);
+		table.setInput(weatherStationsList);
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
 		bindActions(section, table);
 		form.reflow(true);
 	}
 
 	private void bindActions(Section section, TableViewer table) {
+		Action add = Actions.create(M.Add, Icon.ADD_16.des(),
+				() -> addWeatherStation(table));
+		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
+				() -> editWeatherStation(table));
+		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
+				() -> deleteWeatherStation(table));
 		Action open = Actions.create("Temperaturverlauf anzeigen",
 				Icon.OPEN_16.des(), () -> openClimateCurve(table));
 		Action export = Actions.create("Temperaturverlauf exportieren",
 				Icon.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
-		Actions.bind(section, open, export);
-		Actions.bind(table, open, export);
+		Actions.bind(section, add, open, export);
+		Actions.bind(table, add, open, export);
 		Tables.onDoubleClick(table, e -> openClimateCurve(table));
 	}
 
+	private void addWeatherStation(TableViewer table) {
+		WeatherStation weatherStation = new WeatherStation();
+		weatherStation.id = UUID.randomUUID().toString();
+		weatherStation.name = M.NewStation;
+		if (ImportWizard.open(weatherStation) != Window.OK)
+			return;
+		dao.insert(weatherStation);
+		weatherStationsList.add(weatherStation.toDescriptor());
+		table.setInput(weatherStation.toDescriptor());
+	}
+	
+	private void editWeatherStation(TableViewer table) {
+		
+	}
+	
+	private void deleteWeatherStation(TableViewer table) {
+		
+	}
+	
 	private void openClimateCurve(TableViewer table) {
 		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
 		if (d == null)
