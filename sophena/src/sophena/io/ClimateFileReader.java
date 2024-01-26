@@ -22,6 +22,8 @@ public class ClimateFileReader implements Runnable {
 	private ClimateFileResult result;
 	private Map<String, Integer> index;
 	private double[] data;
+	private double[] directRadiation;
+	private double[] diffuseRadiation;
 	private int[] items;
 
 	public ClimateFileReader(File file) {
@@ -60,6 +62,8 @@ public class ClimateFileReader implements Runnable {
 			if (n == 0)
 				continue;
 			data[i] = data[i] / ((double) n);
+			directRadiation[i] = directRadiation[i] / (double) n;
+			diffuseRadiation[i] = diffuseRadiation[i] / (double) n;
 		}
 		int expected = settings.getEndYear() - settings.getStartYear() + 1;
 		int min = Stats.min(items);
@@ -88,13 +92,20 @@ public class ClimateFileReader implements Runnable {
 			int idx = getIndex(date);
 			if (idx < 0)
 				continue;
+			
 			Double val = getValue(row);
 			if (val == null || val < -100 || val > 100) {
 				log.warn("invalid temperature {} at row {}", val, rowNum);
 				result.setWithoutError(false);
 				continue;
 			}
+
+			Double directRad = getValue(row);
+			Double diffuseRad = getValue(row);
+
 			data[idx] = val;
+			directRadiation[idx] = directRad;
+			diffuseRadiation[idx] = diffuseRad;
 			items[idx]++;
 		}
 	}
@@ -151,8 +162,12 @@ public class ClimateFileReader implements Runnable {
 	private void setUp() {
 		result = new ClimateFileResult();
 		data = new double[Stats.HOURS];
+		directRadiation = new double[Stats.HOURS];
+		diffuseRadiation = new double[Stats.HOURS];
 		items = new int[Stats.HOURS];
 		result.setData(data);
+		result.setDirectRadiation(directRadiation);
+		result.setDiffuseRadiation(diffuseRadiation);
 		result.setItemsPerDatum(items);
 		result.setWithoutError(true);
 		index = createIndex();
