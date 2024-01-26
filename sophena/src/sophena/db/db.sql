@@ -12,10 +12,12 @@ CREATE TABLE tbl_weather_stations (
 
     is_protected BOOLEAN,
 
-    longitude   DOUBLE,
-    latitude    DOUBLE,
-    altitude    DOUBLE,
-    data        BLOB (80 K),
+    longitude   		DOUBLE,
+    latitude    		DOUBLE,
+    altitude   			DOUBLE,
+    data        		BLOB (80 K),
+    direction_radiation BLOB (80 K),
+    diffuse_radiation   BLOB (80 K),
 
     PRIMARY KEY (id)
 );
