@@ -14,11 +14,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.db.daos.Dao;
-import sophena.io.ClimateFileReader;
 import sophena.io.ClimateFileSettings;
+import sophena.io.HoursProfile;
 import sophena.model.WeatherStation;
-import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.help.H;
@@ -49,17 +47,21 @@ class ImportWizard extends Wizard {
 		if (!page.valid())
 			return false;		
 		try {
-			ClimateFileReader reader = new ClimateFileReader(page.file,
-					page.settings);
-			getContainer().run(false, false, (m) -> {
-				m.beginTask("Importiere", IProgressMonitor.UNKNOWN);
-				reader.run();					
-			});
-			if(!reader.getResult().isWithoutError()) {
+			if (station.data != null && page.file == null)
+				return true;
+			
+			double[][] allData = HoursProfile.read2(page.file);
+			if(allData == null || allData[0] == null) {
 				MsgBox.error(M.PlausibilityErrors, M.FileImportError);
 				return false;
 			}
-			station.data = reader.getResult().getData();
+			station.data = allData[0];
+			if (allData[1] != null) {
+				station.directRadiation = allData[1];
+			}
+			if (allData[2] != null) {
+				station.diffuseRadiation = allData[2];
+			}
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -173,7 +175,7 @@ class ImportWizard extends Wizard {
 				MsgBox.error(M.PlausibilityErrors, M.AltitudeError);
 				return false;
 			}
-			if (file == null) {
+			if (station.data == null && file == null) {
 				MsgBox.error(M.PlausibilityErrors, M.NoFileError);
 				return false;
 			}

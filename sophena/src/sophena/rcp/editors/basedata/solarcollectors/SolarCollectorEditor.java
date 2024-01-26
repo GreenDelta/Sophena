@@ -146,7 +146,7 @@ public class SolarCollectorEditor extends Editor {
 			if (s == null || s.isProtected)
 				return;
 			boolean doIt = MsgBox.ask("Wirklich löschen?",
-					"Soll die ausgewählte Wärmeleitung wirklich gelöscht werden?");
+					"Soll die ausgewählte Solar thermische Anlage wirklich gelöscht werden?");
 			if (!doIt)
 				return;
 			List<SearchResult> usage = new UsageSearch(App.getDb()).of(s);

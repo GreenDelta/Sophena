@@ -168,7 +168,7 @@ public final class HoursProfile {
 			
 			double[][] profiles2 = new double[profiles[0].cells.length][profiles.length];
 			for(int i = 0; i < profiles.length; i++)
-				for(int j = 0; j < profiles.length; j++)
+				for(int j = 0; j < profiles[i].cells.length; j++)
 					profiles2[j][i] = profiles[i].cells[j];
 			return profiles2;
 		}
@@ -247,6 +247,7 @@ public final class HoursProfile {
 							v.append(c);
 					}
 				}
+				values.add(v.toString());
 				return makeEntry(i.toString(), values);
 			}
 

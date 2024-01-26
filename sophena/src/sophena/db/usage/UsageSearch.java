@@ -19,6 +19,7 @@ import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
 import sophena.model.TransferStation;
+import sophena.model.WeatherStation;
 import sophena.model.SolarCollector;
 
 /**
@@ -74,6 +75,14 @@ public class UsageSearch {
 		String sql = "select c.id, c.name from tbl_consumers c where "
 				+ "c.f_building_state = '" + state.id + "'";
 		return query(sql, ModelType.CONSUMER);
+	}
+	
+	public List<SearchResult> of(WeatherStation station) {
+		if (station == null || station.id == null)
+			return Collections.emptyList();
+		String sql = "select c.id, c.name from tbl_projects c where "
+				+ "c.F_WEATHER_STATION = '" + station.id + "'";
+		return query(sql, ModelType.PROJECT);
 	}
 
 	public List<SearchResult> of(TransferStation station) {

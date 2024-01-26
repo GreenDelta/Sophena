@@ -19,16 +19,19 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.Labels;
 import sophena.db.daos.WeatherStationDao;
+import sophena.db.usage.SearchResult;
+import sophena.db.usage.UsageSearch;
 import sophena.io.HoursProfile;
-import sophena.model.Boiler;
 import sophena.model.ProductType;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -76,8 +79,8 @@ class TablePage extends FormPage {
 				Icon.OPEN_16.des(), () -> openClimateCurve(table));
 		Action export = Actions.create("Temperaturverlauf exportieren",
 				Icon.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
-		Actions.bind(section, add, open, export);
-		Actions.bind(table, add, open, export);
+		Actions.bind(section, add, edit, del, open, export);
+		Actions.bind(table, add, edit, del, open, export);
 		Tables.onDoubleClick(table, e -> openClimateCurve(table));
 	}
 
@@ -89,15 +92,41 @@ class TablePage extends FormPage {
 			return;
 		dao.insert(weatherStation);
 		weatherStationsList.add(weatherStation.toDescriptor());
-		table.setInput(weatherStation.toDescriptor());
+		table.setInput(weatherStationsList);
 	}
 	
 	private void editWeatherStation(TableViewer table) {
-		
+		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
+		if (d == null)
+			return;
+		WeatherStation station = dao.get(d.id);
+		if (ImportWizard.open(station) != Window.OK)
+			return;
+		int idx = weatherStationsList.indexOf(d);
+		station = dao.update(station);
+		weatherStationsList.set(idx, station.toDescriptor());
+		table.setInput(weatherStationsList);
 	}
 	
 	private void deleteWeatherStation(TableViewer table) {
-		
+		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
+		if (d == null)
+			return;
+		WeatherStation station = dao.get(d.id);
+		if (station == null || station.isProtected)
+			return;
+		boolean doIt = MsgBox.ask("Wirklich löschen?",
+				"Soll die ausgewählte Wetterstation wirklich gelöscht werden?");
+		if (!doIt)
+			return;
+		List<SearchResult> usage = new UsageSearch(App.getDb()).of(station);
+		if (!usage.isEmpty()) {
+			UsageError.show(usage);
+			return;
+		}
+		dao.delete(station);
+		weatherStationsList.remove(d);
+		table.setInput(weatherStationsList);
 	}
 	
 	private void openClimateCurve(TableViewer table) {
