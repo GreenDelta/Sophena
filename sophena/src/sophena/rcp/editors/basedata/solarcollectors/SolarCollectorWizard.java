@@ -74,15 +74,15 @@ public class SolarCollectorWizard implements IContent{
 		
 		heatTransferCoefficient1Text = UI.formText(c, "Wärmedurchgangskoeffizient 1");
 		Texts.on(heatTransferCoefficient1Text).required().decimal().validate(wizard::validate);
-		UI.formLabel(c, "W/m2*K");
+		UI.formLabel(c, "W/(m2*K)");
 		
 		heatTransferCoefficient2Text = UI.formText(c, "Wärmedurchgangskoeffizient 2");
 		Texts.on(heatTransferCoefficient2Text).required().decimal().validate(wizard::validate);
-		UI.formLabel(c, "W/m2*K");
+		UI.formLabel(c, "W/(m2*K2)");
 		
 		heatCapacityText = UI.formText(c, "Wärmekapazität des Kollektors");
 		Texts.on(heatCapacityText).required().decimal().validate(wizard::validate);
-		UI.formLabel(c, "W/m2*K");
+		UI.formLabel(c, "Wh/(m2*K)");
 		
 		angleIncidenceEW10Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 10°");
 		Texts.on(angleIncidenceEW10Text).required().decimal().validate(wizard::validate);
