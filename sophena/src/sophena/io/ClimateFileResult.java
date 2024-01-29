@@ -3,6 +3,8 @@ package sophena.io;
 public class ClimateFileResult {
 
 	private double[] data;
+	private double[] directRadiation;
+	private double[] diffuseRadiation;
 	private int[] itemsPerDatum;
 	private boolean withoutError;
 	private boolean complete;
@@ -13,6 +15,22 @@ public class ClimateFileResult {
 
 	void setData(double[] data) {
 		this.data = data;
+	}
+
+	public double[] getDirectRadiation() {
+		return directRadiation;
+	}
+
+	void setDirectRadiation(double[] directRadiation) {
+		this.directRadiation = directRadiation;
+	}
+
+	public double[] getDiffuseRadiation() {
+		return diffuseRadiation;
+	}
+
+	void setDiffuseRadiation(double[] diffuseRadiation) {
+		this.diffuseRadiation = diffuseRadiation;
 	}
 
 	public int[] getItemsPerDatum() {
