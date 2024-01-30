@@ -1,5 +1,10 @@
 package sophena.calc;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+
 import sophena.math.energetic.Buffers;
 import sophena.math.energetic.Producers;
 import sophena.model.HoursTrace;
@@ -8,6 +13,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
+import sophena.rcp.Workspace;
 
 class EnergyCalculator {
 
@@ -32,6 +38,40 @@ class EnergyCalculator {
 		boolean[][] interruptions = interruptions(r);
 
 		boolean loadBuffer = false; // a flag for the summer mode
+		
+		CalcLog solarCalcLog = new CalcLog("SolarCalc");
+		Map<Producer, SolarCalcState> solarCalcStates = new HashMap<Producer, SolarCalcState>();
+
+		for(Producer producer: r.producers)
+			solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
+
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			for(Producer producer: r.producers)
+			{
+				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				solarCalcState.CalcHour(project.heatNet, hour);
+
+				/*
+				if(hour == 0 && producer.solarCollector != null)
+				{
+					solarCalcState.TestgetEWFOW();
+					solarCalcState.TestgetEWFNS();
+				}
+				*/
+			}
+		}
+		
+		try {
+			var logDir = new File(Workspace.dir(), "log");
+			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";
+			try(java.io.PrintWriter pw = new java.io.PrintWriter(filename))
+			{
+				pw.println(solarCalcLog.toString());
+			}
+		}
+		catch(java.io.FileNotFoundException err)
+		{
+		}
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
