@@ -39,39 +39,12 @@ class EnergyCalculator {
 
 		boolean loadBuffer = false; // a flag for the summer mode
 		
-		CalcLog solarCalcLog = new CalcLog("SolarCalc");
+		SolarCalcLog solarCalcLog = new SolarCalcLog();
 		Map<Producer, SolarCalcState> solarCalcStates = new HashMap<Producer, SolarCalcState>();
 
 		for(Producer producer: r.producers)
-			solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
-
-		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			for(Producer producer: r.producers)
-			{
-				SolarCalcState solarCalcState = solarCalcStates.get(producer);
-				solarCalcState.CalcHour(project.heatNet, hour);
-
-				/*
-				if(hour == 0 && producer.solarCollector != null)
-				{
-					solarCalcState.TestgetEWFOW();
-					solarCalcState.TestgetEWFNS();
-				}
-				*/
-			}
-		}
-		
-		try {
-			var logDir = new File(Workspace.dir(), "log");
-			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";
-			try(java.io.PrintWriter pw = new java.io.PrintWriter(filename))
-			{
-				pw.println(solarCalcLog.toString());
-			}
-		}
-		catch(java.io.FileNotFoundException err)
-		{
-		}
+			if(producer.solarCollector != null & producer.solarCollectorSpec != null)
+				solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
@@ -83,7 +56,7 @@ class EnergyCalculator {
 			double suppliedPower = 0;
 
 			boolean isSummerMode = r.producers.length > 0
-					&& requiredLoad < Producers.minPower(r.producers[0], hour)
+					&& requiredLoad < Producers.minPower(r.producers[0], solarCalcStates.get(r.producers[0]), hour)
 					&& !r.producers[0].hasProfile();
 			if (isSummerMode && (bufferPotential / maxBufferCapacity) > 0.9) {
 				// set the load `loadBuffer` flag to false when the buffer is
@@ -92,6 +65,14 @@ class EnergyCalculator {
 				loadBuffer = false;
 			}
 
+			for (int k = 0; k < r.producers.length; k++) {
+				Producer producer = r.producers[k];
+
+				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				if(solarCalcState != null)
+					solarCalcState.calcPre(hour);
+			}
+			
 			for (int k = 0; k < r.producers.length; k++) {
 				if (requiredLoad <= 0)
 					break;
@@ -108,10 +89,16 @@ class EnergyCalculator {
 						continue;
 				}
 
+				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				if(solarCalcState != null) {
+					if(solarCalcState.getOperationMode() == SolarCalcOperationMode.PreHeating || solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
+						continue;
+				}
+
 				if (isSummerMode) {
 					loadBuffer = true;
 					if (bufferCapacity < Producers.minPower(
-							r.producers[0], hour)) {
+							r.producers[0], solarCalcState, hour)) {
 						// set buffer loading to false when the minimal power of
 						// the producer with rank=1 is lower than the capacity
 						// of the buffer; this also avoids buffer loading with
@@ -123,10 +110,10 @@ class EnergyCalculator {
 				// check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
-				if (maxLoad < Producers.minPower(producer, hour))
+				if (maxLoad < Producers.minPower(producer, solarCalcState, hour))
 					continue;
 
-				double power = getSuppliedPower(producer, hour,
+				double power = getSuppliedPower(producer, hour, solarCalcState,
 						requiredLoad, maxLoad);
 				if (power > requiredLoad) {
 					bufferCapacity -= (power - requiredLoad);
@@ -136,11 +123,22 @@ class EnergyCalculator {
 				requiredLoad -= power;
 				r.producerResults[k][hour] = power;
 
+				if(solarCalcState != null)
+					solarCalcState.setConsumedPower(power * 1000);
+
 				if (bufferPotential >= requiredLoad) {
 					// take rest from buffer
 					break;
 				}
 			} // end producer loop
+			
+			for (int k = 0; k < r.producers.length; k++) {
+				Producer producer = r.producers[k];
+
+				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				if(solarCalcState != null)
+					solarCalcState.calcPost(hour);
+			}
 
 			if (requiredLoad >= 0 && bufferPotential > 0) {
 				double bufferPower = requiredLoad;
@@ -169,15 +167,27 @@ class EnergyCalculator {
 
 		} // end hour loop
 
+		try {
+			var logDir = new File(Workspace.dir(), "log");
+			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";
+			try(java.io.PrintWriter pw = new java.io.PrintWriter(filename))
+			{
+				pw.println(solarCalcLog.toString());
+			}
+		}
+		catch(java.io.FileNotFoundException err)
+		{
+		}
+
 		calcTotals(r);
 
 		return r;
 	}
 
-	private double getSuppliedPower(Producer producer, int hour,
+	private double getSuppliedPower(Producer producer, int hour, SolarCalcState solarCalcState,
 			double requiredLoad, double maxLoad) {
-		double bMin = Producers.minPower(producer, hour);
-		double bMax = Producers.maxPower(producer, hour);
+		double bMin = Producers.minPower(producer, solarCalcState, hour);
+		double bMax = Producers.maxPower(producer, solarCalcState, hour);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 				? requiredLoad
 				: maxLoad;

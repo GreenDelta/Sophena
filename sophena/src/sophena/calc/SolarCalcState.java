@@ -6,46 +6,41 @@ import sophena.model.HoursTrace;
 import sophena.model.Producer;
 
 public class SolarCalcState {
-	private CalcLog log;
+	private SolarCalcLog log;
 	private Project project;
 	private Producer producer;
 	private SolarCalcPhase phase;
 	private SolarCalcOperationMode operationMode;
+
 	private double TK_i_minus_one = 0;
 	private double TK_i;
+	private double A;
+	private double C;
+	private double QS_i_before_correction;
+	private double kollektormitteltemperatur;
 	private double QS_i;
-	
-	public SolarCalcState(CalcLog log, Project project, Producer producer)
+
+	private int numStagnationDays;
+
+	public SolarCalcState(SolarCalcLog log, Project project, Producer producer)
 	{
 		this.log = log;
 		this.project = project;
 		this.producer = producer;
 		phase = SolarCalcPhase.Aufheiz;
 		operationMode = SolarCalcOperationMode.PreHeating;
+
+		TK_i_minus_one = project.weatherStation.data[0];
+
+		numStagnationDays = 0;
 	}
 	
-	/*
-	public void TestgetEWFOW()
-	{
-		log.println("getEWFOW():");
-		for (var i = -90; i < 90; i++)
-			log.println("\"" + i + "\"\t\"" + Double.toString(getEWFOW(i)).replace('.', ',')+"\"");
-	}
-	
-	public void TestgetEWFNS()
-	{
-		log.println("getEWFNS():");
-		for (var i = -90; i < 90; i++)
-			log.println("\"" + i + "\"\t\"" + Double.toString(getEWFNS(i)).replace('.', ',')+"\"");
-	}
-	*/
-	
-	public void CalcHour(HeatNet heatNet, int hour)
+	public void calcPre(int hour)
 	{
 		if(producer.solarCollector == null || producer.solarCollectorSpec == null)
 			return;
 		
-		log.h2("Stunde " + hour + " für producer " + producer.name);
+		log.beginProducer(producer);
 
 		// Input
 		
@@ -53,7 +48,7 @@ public class SolarCalcState {
 		double ALB = 0.2;
 
 		// m²
-		double A = producer.solarCollectorSpec.solarCollectorArea;
+		A = producer.solarCollectorSpec.solarCollectorArea;
 		// 1
 		double ETA0 = producer.solarCollector.efficiencyRateRadiation;
 		// 1
@@ -63,7 +58,7 @@ public class SolarCalcState {
 		// W/m²/K²
 		double A2 = producer.solarCollector.heatTransferCoefficient2;
 		// Wh/m²/K
-		double C = producer.solarCollector.heatCapacity;
+		C = producer.solarCollector.heatCapacity;
 		// -180°..+180°
 		double NW = producer.solarCollectorSpec.solarCollectorTilt;
 		// 0°..+90°
@@ -76,7 +71,8 @@ public class SolarCalcState {
 		// °
 		double BG = project.weatherStation.latitude;
 		// °
-		double LG = project.weatherStation.longitude;
+		//TODO: SCFW longitude ist offenbar negiert, warum auch immer 
+		double LG = -project.weatherStation.longitude;
 		// °
 		double MERI = getReferenceLongitude(hour);
 		
@@ -91,20 +87,11 @@ public class SolarCalcState {
 				? project.weatherStation.diffuseRadiation[hour]
 				: 0;
 
-		SolarCalcOperationMode BA_i = operationMode;
-		SolarCalcPhase PHASE_i = phase;
 		// 1..365
 		int JT = 1 + hour / 24;
 		// 1..24
-		int TS = 1+ hour % 24;
-
-		// kW
-		//double P_i		TODO
-		// °C
-		//double TV_i		TODO
-		// °C
-		//double TR_i		TODO
-
+		int TS = 1 + hour % 24;
+		
 		// Calculation
 
 		// rad
@@ -119,33 +106,25 @@ public class SolarCalcState {
 		double HW = -180 + SZ * 180 / 12;
 		
 		// rad
-		double SZW = Math.acos(Math.cos(Math.toRadians(LG)) * Math.cos(Math.toRadians(HW)) * Math.cos(SD) + Math.sin(Math.toRadians(LG)) * Math.sin(SD));
+		double SZW = Math.acos(Math.cos(Math.toRadians(BG)) * Math.cos(Math.toRadians(HW)) * Math.cos(Math.toRadians(SD)) + Math.sin(Math.toRadians(BG)) * Math.sin(Math.toRadians(SD)));
 		// rad
-		//double SAW = Math.signum(HW) * Math.abs(Math.acos(
-		//		(Math.cos(SZW) * Math.sin(Math.toRadians(LG)) - Math.sin(SD)) / ( Math.sin(SZW) * Math.cos(Math.toRadians(LG)))
-		//		));
-		double SAW = Math.signum(HW) * Math.abs(Math.acos(
-				(Math.sin(SD) - Math.cos(SZW) * Math.sin(Math.toRadians(LG))) / ( Math.sin(SZW) * Math.cos(Math.toRadians(LG)))
-				));
+		double SAW = Math.signum(HW) * Math.acos(
+			(Math.cos(SZW) * Math.sin(Math.toRadians(BG)) - Math.sin(Math.toRadians(SD))) / ( Math.sin(SZW) * Math.cos(Math.toRadians(BG)))
+		);
 		// rad
 		double EWK = Math.acos(
 				Math.cos(SZW) * Math.cos(Math.toRadians(NW)) + Math.sin(SZW) * Math.sin(Math.toRadians(NW)) * Math.cos(SAW - Math.toRadians(AUS)) + 0.0000000001
-				) - Math.toRadians(90);
+				);
+		
 		// rad
-		//double EWOW = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-		//		? Math.atan(Math.sin(SZW) * Math.sin(SAW - Math.toRadians(AUS)) / Math.cos(EWK))
-		//		: Math.toRadians(89.999);
-		double EWOW = EWK >= 0
+		double EWOW = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
 				? Math.atan(Math.sin(SZW) * Math.sin(SAW - Math.toRadians(AUS)) / Math.cos(EWK))
-				: Math.toRadians(90.0);
+				: Math.toRadians(89.999);
 				
 		// rad
-		//double EWNS = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-		//		? -Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS)) - Math.toRadians(NW))
-		//		: Math.toRadians(89.990);
-		double EWNS = EWK >= 0
+		double EWNS = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
 				? -Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS)) - Math.toRadians(NW))
-				: Math.toRadians(90.0);
+				: Math.toRadians(89.990);
 		
 		// 1
 		double EWFOW = getEWFOW(Math.toDegrees(EWOW));
@@ -153,22 +132,15 @@ public class SolarCalcState {
 		double EWFNS = getEWFNS(Math.toDegrees(EWNS));
 		
 		// 1
-		//double KOF = Math.toDegrees(SZW) < 89 && Math.toDegrees(EWK) < 89
-		//		? Math.cos(EWK) / Math.cos(SZW)
-		//		: 0;
-		//double KOF = Math.toDegrees(SZW) < 89 && Math.toDegrees(EWK) < 89
-		//		? Math.cos(EWK) / Math.cos(SZW - Math.toRadians(90))
-		//		: 0;
-		double KOF = Math.cos(EWK) / Math.cos(SZW - Math.toRadians(90));
+		double KOF = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
+				? Math.cos(EWK) / Math.cos(SZW)
+				: 0;
 			
-		// TODO: AB HIER EINHEITEN GEWURSCHTEL
-		
 		// 1 (1367 is solar constant in W/m²)
-		//double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(2.0 * Math.PI * JT / 365.0)) * Math.cos(SZW));
-		double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(2.0 * Math.PI * JT / 365.0)) * Math.sin(SZW));
+		double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(360 * JT / 365.0 * Math.PI / 180)) * Math.cos(SZW));
 		
 		// W/m²
-		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDI_i * (1 - RAB) * 0.5 * (1 + Math.cos(NW) * (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(NW)));
+		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDI_i * (1 - RAB) * 0.5 * (1 + Math.cos(NW)) * (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(NW));
 		
 		// W/m²
 		double SDIK = SDI_i * KOF;
@@ -181,87 +153,149 @@ public class SolarCalcState {
 		
 		// Wh
 		QS_i = (ETA0 * EWF * SDIK + ETA0 * KDF * SDFK - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
+
+		operationMode = CalcOperationMode(project.heatNet, hour, ETA0 * EWF * SDIK + ETA0 * KDF * SDFK); //TODO
+
+		double eintrittstemperatur;
+		double austrittstemperatur;
+
+		double TE = project.heatNet.returnTemperature;
+		double TV =  project.heatNet.supplyTemperature;
+
+		switch(operationMode)
+		{
+		case PreHeating:
+			eintrittstemperatur = TE + UEH;
+			austrittstemperatur = TE + UEH + TD;
+			break;
+		case TargetTemperature:
+			eintrittstemperatur = TE + UEH;
+			austrittstemperatur = TV + UEH + TD;
+			break;
+		default:
+			eintrittstemperatur = 0;
+			austrittstemperatur = 0;
+			break;
+		}
+
+		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
+		
+		QS_i_before_correction = QS_i;
+
+		if(TS == 1)
+		{
+			log.beginDay(JT, hour,
+				"BA_i",
+				"PHASE_i",
+				"TS",
+				"TK_i-1 [°C]",
+				"QS_i_before_correction [Wh]",
+				"QS_i [Wh]",
+				"TK_i [°C]",
+				"consumedPower",
+				"kollektormitteltemperatur"
+			);
+
+			phase = SolarCalcPhase.Aufheiz;
+			log.message("Changing Phase to "+phase);
 			
-		// °C
-		TK_i = TK_i_minus_one + QS_i / (A * C);
+			TK_i_minus_one = TL_i;
+		}
 
-		operationMode = CalcOperationMode(heatNet, hour, ETA0 * EWF * SDIK + ETA0 * KDF * SDFK); //TODO
-		
-		// Output
-		
-		// kWh
-		// QS_N_i
+		switch(phase)
+		{
+		case Stagnation:
+			QS_i = 0;
+			if(TS == 24)
+				numStagnationDays++;
+			break;
+		case Aufheiz:
+			{
+				double temperatur = TK_i_minus_one + QS_i / (A * C);
+				if(temperatur >= kollektormitteltemperatur)
+				{
+					phase = SolarCalcPhase.Betrieb;
+					log.message("Changing Phase to "+phase);
 
-		// kWh
-		// QS_PL_i
-		
-		
-		log.h3("Aus Solar Keymark");
-		log.value("A", A, "m²");
-		log.value("ETA0", ETA0, "");
-		log.value("KDF", KDF, "");
-		log.value("A1", A1, "W/(m²*K)");
-		log.value("A2", A2, "W/(m²*K²)");
-		log.value("C", C, "Wh/(m²*K)");
-		log.value("EWFOW", EWFOW, "");
-		log.value("EWFNS", EWFNS, "");
-		
-		log.h3("Benutzereingaben");
-		log.value("NW", NW, "°");
-		log.value("AUS", AUS, "°");
-		log.value("UEH", UEH, "K");
-		log.value("TD", TD, "K");
-		
-		log.h3("Von Wetterstation");
-		log.value("BG", BG, "°");
-		log.value("LG", LG, "°");
-		log.value("MERI", MERI, "°");
-		
-		log.h3("Aus Klimadaten");
-		log.value("TL_i", TL_i, "°C");
-		log.value("SDI_i", SDI_i, "W/m²");
-		log.value("SDF_i", SDF_i, "W/m²");
-		
-		log.h3("Aus Algorithmus");
-		log.println("BA_i="+BA_i);
-		log.println("PHASE_i="+PHASE_i);
-		log.value("JT", JT, "");
-		log.value("TS", TS, "");
-		log.value("TK_i-1", TK_i_minus_one, "°C");
-		//log.value("P_i", P_i, "kW");
-		//log.value("TV_i", TV_i, "°C");
-		//log.value("TR_i", TR_i, "°C");
-		
-		log.h3("Berechnung");
-		log.value("B", B, "");
-		log.value("E", E, "min");
-		log.value("SZ", SZ, "h");
-		log.value("SD", SD, "°");
-		log.value("HW", HW, "°");
-		log.value("SZW", SZW, "");
-		log.value("SAW", SAW, "");
-		log.value("EWK", EWK, "");
-		log.value("EWOW", EWOW, "");
-		log.value("EWNS", EWNS, "");
-		log.value("KOF", KOF, "");
-		log.value("RAB", RAB, "");
-		log.value("SGK", SGK, "W/m²");
-		log.value("SDIK", SDIK, "W/m²");
-		log.value("SDFK", SDFK, "W/m²");
-		log.value("EWF", EWF, "");
-		
-		log.value("QS_i", QS_i, "Wh");
-		log.value("TK_i", TK_i, "°C");
-		
-		log.println("OperationMode="+operationMode);
-	}
+					TK_i_minus_one = kollektormitteltemperatur;
+				}
+				else
+				{
+					TK_i = Math.max(temperatur, TL_i);
+				}
+				QS_i = 0;
+			}
+			break;
+		case Betrieb:
+			{
+				double temperatur = TK_i_minus_one + QS_i / (A * C);
+				if(temperatur >= kollektormitteltemperatur)
+				{
+					QS_i = (temperatur - kollektormitteltemperatur) * A * C;
+					TK_i = kollektormitteltemperatur;
+				}
+				else
+				{
+					phase = SolarCalcPhase.Aufheiz;
+					log.message("Changing Phase to "+phase);
 	
+					TK_i = Math.max(temperatur, TL_i);
+					QS_i = 0;
+				}
+			}
+			break;
+		}
+	
+		consumedPower = 0;
+	}
+
+	private double consumedPower;
+
+	public void setConsumedPower(double consumedPower)
+	{
+		this.consumedPower = consumedPower;
+	}
+
+	public void calcPost(int hour)
+	{
+		log.beginProducer(producer);
+
+		if(phase == SolarCalcPhase.Betrieb)
+		{
+			double deltaQS = QS_i - consumedPower;
+			
+			TK_i = TK_i_minus_one + deltaQS / (A * C);
+			
+			if(TK_i > project.heatNet.maxBufferLoadTemperature)
+			{
+				phase = SolarCalcPhase.Stagnation;
+				log.message("Changing Phase to "+phase);
+			}
+		}
+
+		int TS = 1 + hour % 24;
+		log.hourValues(hour,
+			operationMode,
+			phase,
+			TS,
+			TK_i_minus_one,
+			QS_i_before_correction,
+			QS_i,
+			TK_i,
+			consumedPower,
+			kollektormitteltemperatur
+		);
+
+		TK_i_minus_one = TK_i;
+}
+
 	private SolarCalcOperationMode CalcOperationMode(HeatNet heatNet, int hour, double radiationPerSquareMeter)
 	{
 		switch(producer.solarCollectorSpec.solarCollectorOperatingMode)
 		{
 		case AUTO_RADIATION:
-			return radiationPerSquareMeter > 0.4
+			// 0.4 KW => 400 W
+			return radiationPerSquareMeter > 400
 				? SolarCalcOperationMode.TargetTemperature
 				: SolarCalcOperationMode.PreHeating;
 		case AUTO_SEASON:
@@ -287,7 +321,7 @@ public class SolarCalcState {
 	private double getReferenceLongitude(int hour)
 	{
 		boolean isSummertime = false; //TODO
-		return isSummertime ? +30 : +15;
+		return isSummertime ? -30 : -15;
 	}
 	
 	private double getEWFOW(double degrees)
@@ -360,10 +394,22 @@ public class SolarCalcState {
 		return hour >= interval[0] && hour <= interval[1];
 	}
 	
-	//public double QS_i;
-	//public double QS_N_i;
-	//public double QS_PL_i;
-	//public double TK_i;
+	public SolarCalcOperationMode getOperationMode()
+	{
+		return operationMode;
+	}
+
+	public SolarCalcPhase getPhase()
+	{
+		return phase;
+	}
 	
-	  
+	public double getAvailablePowerInKWh() {
+		return QS_i / 1000;
+	}
+	
+	public int getNumStagnationDays()
+	{
+		return numStagnationDays;
+	}
 }
