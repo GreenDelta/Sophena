@@ -167,6 +167,14 @@ class EnergyCalculator {
 
 		} // end hour loop
 
+		for (int k = 0; k < r.producers.length; k++) {
+			Producer producer = r.producers[k];
+
+			SolarCalcState solarCalcState = solarCalcStates.get(producer);
+			if(solarCalcState != null)
+				r.producerStagnationDays[k] = solarCalcState.getNumStagnationDays();
+		}
+		
 		try {
 			var logDir = new File(Workspace.dir(), "log");
 			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";

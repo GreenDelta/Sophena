@@ -51,11 +51,11 @@ class BoilerTableSection {
 		UI.gridLayout(comp, 1);
 		var table = Tables.createViewer(comp, M.HeatProducer, "Rang",
 				"Nennleistung", "Brennstoffverbrauch", M.GeneratedHeat,
-				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts");
+				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts", "Stagnationstage");
 		table.setLabelProvider(new Label());
-		double w = 1.0 / 9.0;
-		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8);
+		double w = 1.0 / 10.0;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w);
+		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9);
 		table.setInput(getItems());
 	}
 
@@ -90,6 +90,9 @@ class BoilerTableSection {
 					? p.boiler.efficiencyRate
 					: UtilisationRate.get(project, p, result);
 			item.clocks = result.numberOfStarts(p);
+			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
+				item.stagnationDays = result.stagnationDays(p);
+			}
 			items.add(item);
 		}
 	}
@@ -145,6 +148,7 @@ class BoilerTableSection {
 		Integer fullLoadHours;
 		Double utilisationRate;
 		Integer clocks;
+		Integer stagnationDays;
 		boolean separator = false;
 	}
 
@@ -184,6 +188,9 @@ class BoilerTableSection {
 				case 8 -> item.clocks == null
 						? null
 						: Num.intStr(item.clocks);
+				case 9 -> item.stagnationDays == null 
+						? null
+						: Num.intStr(item.stagnationDays);
 				default -> null;
 			};
 		}

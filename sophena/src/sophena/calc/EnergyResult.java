@@ -20,6 +20,7 @@ public class EnergyResult {
 	public Producer[] producers;
 	public double[][] producerResults;
 	public double totalProducedHeat;
+	public int[] producerStagnationDays;
 
 	public double[] suppliedBufferHeat;
 	public double totalBufferedHeat;
@@ -93,6 +94,20 @@ public class EnergyResult {
 		}
 		Arrays.sort(producers,
 				(p1, p2) -> Integer.compare(p1.rank, p2.rank));
+		
+		producerStagnationDays = new int[count];
+	}
+	
+	public int stagnationDays(Producer p) {
+		if (p == null)
+			return 0;
+		double[] vec = null;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				return producerStagnationDays[i];				
+			}
+		}
+		return 0;
 	}
 
 	public EnergyResult sort() {
@@ -110,6 +125,7 @@ public class EnergyResult {
 			clone.producerResults[i] = Arrays.copyOf(producerResults[i],
 					Stats.HOURS);
 		}
+		clone.producerStagnationDays = Arrays.copyOf(producerStagnationDays,producers.length);
 		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat,
 				Stats.HOURS);
 		clone.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
