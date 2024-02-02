@@ -107,7 +107,7 @@ public class SolarCalcLog {
 			var sb = sbPerProducer.get(key);
 			
 			result.append("# Producer ");
-			result.append(key);
+			result.append(key != null ? key.name : "");
 			result.append("\r\n");
 			result.append(sb);
 		}

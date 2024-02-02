@@ -25,11 +25,11 @@ class EnergyCalculator {
 		this.project = project;
 	}
 
-	public static EnergyResult calculate(Project project) {
-		return new EnergyCalculator(project).doIt();
+	public static EnergyResult calculate(Project project, CalcLog log) {
+		return new EnergyCalculator(project).doIt(log);
 	}
 
-	private EnergyResult doIt() {
+	private EnergyResult doIt(CalcLog log) {
 
 		maxBufferCapacity = Buffers.maxCapacity(project.heatNet);
 		double bufferLossFactor = Buffers.lossFactor(project.heatNet);
@@ -45,6 +45,8 @@ class EnergyCalculator {
 		for(Producer producer: r.producers)
 			if(producer.solarCollector != null & producer.solarCollectorSpec != null)
 				solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
+		
+		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
@@ -52,7 +54,9 @@ class EnergyCalculator {
 			double bufferCapacity = r.bufferCapacity[hour];
 			double maxLoad = requiredLoad + bufferCapacity;
 			double bufferPotential = maxBufferCapacity - bufferCapacity;
-
+			
+			bufferCalcState.preStep(hour, 1.0); //TODO
+			
 			double suppliedPower = 0;
 
 			boolean isSummerMode = r.producers.length > 0
@@ -164,6 +168,8 @@ class EnergyCalculator {
 			if ((hour + 1) < Stats.HOURS) {
 				r.bufferCapacity[hour + 1] = bufferCapacity;
 			}
+
+			bufferCalcState.postStep(hour);
 
 		} // end hour loop
 

@@ -19,7 +19,18 @@ public class Buffers {
 		double maxTemp = net.maxBufferLoadTemperature;
 		double minTemp = net.lowerBufferLoadTemperature != null
 				? net.lowerBufferLoadTemperature
-				: net.supplyTemperature;
+				: net.returnTemperature;
+		return 0.001166 * volume * (maxTemp - minTemp);
+	}
+
+	public static double capacity100(HeatNet net) {
+		if (net == null || net.bufferTank == null)
+			return 0;
+		double volume = net.bufferTank.volume; // liters
+		double maxTemp = net.supplyTemperature;
+		double minTemp = net.lowerBufferLoadTemperature != null
+				? net.lowerBufferLoadTemperature
+				: net.returnTemperature;
 		return 0.001166 * volume * (maxTemp - minTemp);
 	}
 
