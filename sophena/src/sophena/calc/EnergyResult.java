@@ -101,7 +101,6 @@ public class EnergyResult {
 	public int stagnationDays(Producer p) {
 		if (p == null)
 			return 0;
-		double[] vec = null;
 		for (int i = 0; i < producers.length; i++) {
 			if (Objects.equals(p, producers[i])) {
 				return producerStagnationDays[i];				
