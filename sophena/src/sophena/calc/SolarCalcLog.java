@@ -1,12 +1,9 @@
 package sophena.calc;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
 
 import sophena.model.Producer;
-import sophena.utils.Strings;
 
 public class SolarCalcLog {
 	private Map<Producer, StringBuilder> sbPerProducer = new HashMap<Producer, StringBuilder>();
@@ -39,14 +36,11 @@ public class SolarCalcLog {
 		
 		int fieldWidth = 20;
 
-		int intDigits = 3;
 		int fractionalDigits = 3;
 		
 		var sb3 = new StringBuilder("0.");
 		for(var k = 0; k < fractionalDigits; k++)
 			sb3.append('0');
-		var decimalFormat = new DecimalFormat(sb3.toString());
-		//decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.);
 		
 		for(var value: values)
 		{
