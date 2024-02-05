@@ -10,6 +10,7 @@ import sophena.math.energetic.Producers;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
@@ -18,8 +19,6 @@ import sophena.rcp.Workspace;
 class EnergyCalculator {
 
 	private Project project;
-
-	private double maxBufferCapacity = 0;
 
 	private EnergyCalculator(Project project) {
 		this.project = project;
@@ -30,39 +29,37 @@ class EnergyCalculator {
 	}
 
 	private EnergyResult doIt(CalcLog log) {
+		SolarCalcLog solarCalcLog = new SolarCalcLog();
+		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
-		maxBufferCapacity = Buffers.maxCapacity(project.heatNet);
 		double bufferLossFactor = Buffers.lossFactor(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
-		r.bufferCapacity[0] = maxBufferCapacity;
 		boolean[][] interruptions = interruptions(r);
 
 		boolean loadBuffer = false; // a flag for the summer mode
 		
-		SolarCalcLog solarCalcLog = new SolarCalcLog();
 		Map<Producer, SolarCalcState> solarCalcStates = new HashMap<Producer, SolarCalcState>();
 
 		for(Producer producer: r.producers)
 			if(producer.solarCollector != null & producer.solarCollectorSpec != null)
 				solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
 		
-		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			bufferCalcState.preStep(hour, 1.0); //TODO
+			
+			if(hour == 01)
+				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity();
 
 			double requiredLoad = r.loadCurve[hour];
-			double bufferCapacity = r.bufferCapacity[hour];
-			double maxLoad = requiredLoad + bufferCapacity;
-			double bufferPotential = maxBufferCapacity - bufferCapacity;
-			
-			bufferCalcState.preStep(hour, 1.0); //TODO
+			double maxLoad = requiredLoad + r.bufferCapacity[hour];
 			
 			double suppliedPower = 0;
 
 			boolean isSummerMode = r.producers.length > 0
 					&& requiredLoad < Producers.minPower(r.producers[0], solarCalcStates.get(r.producers[0]), hour)
 					&& !r.producers[0].hasProfile();
-			if (isSummerMode && (bufferPotential / maxBufferCapacity) > 0.9) {
+			if (isSummerMode && bufferCalcState.getloadFactor() > 0.9) {
 				// set the load `loadBuffer` flag to false when the buffer is
 				// full; because of buffer loss it may is never really full so
 				// we set some arbitrary cutoff for now.
@@ -74,7 +71,7 @@ class EnergyCalculator {
 
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				if(solarCalcState != null)
-					solarCalcState.calcPre(hour);
+					solarCalcState.calcPre(hour, bufferCalcState.TE);
 			}
 			
 			for (int k = 0; k < r.producers.length; k++) {
@@ -83,7 +80,7 @@ class EnergyCalculator {
 
 				Producer producer = r.producers[k];
 
-				if (bufferPotential >= requiredLoad) {
+				if (bufferCalcState.totalUnloadablePower() >= requiredLoad) {
 					// the required load can be fully taken from the buffer.
 					// we do not take any producer when we are in summer mode.
 					// and no peak load producer in this case
@@ -94,13 +91,14 @@ class EnergyCalculator {
 				}
 
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
-				if(solarCalcState != null) {
-					if(solarCalcState.getOperationMode() == SolarCalcOperationMode.PreHeating || solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
-						continue;
-				}
+				if(solarCalcState != null && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
+					continue;
 
 				if (isSummerMode) {
 					loadBuffer = true;
+					var bufferCapacity = isProducerHT(producer, solarCalcState)
+							? bufferCalcState.CalcHTCapacity()
+							: bufferCalcState.CalcNTCapacity();
 					if (bufferCapacity < Producers.minPower(
 							r.producers[0], solarCalcState, hour)) {
 						// set buffer loading to false when the minimal power of
@@ -120,7 +118,10 @@ class EnergyCalculator {
 				double power = getSuppliedPower(producer, hour, solarCalcState,
 						requiredLoad, maxLoad);
 				if (power > requiredLoad) {
-					bufferCapacity -= (power - requiredLoad);
+					var surplus = power - requiredLoad;
+					
+					boolean isHT = isProducerHT(producer, solarCalcState);
+					bufferCalcState.load(hour, surplus, isHT);
 				}
 				suppliedPower += power;
 				maxLoad -= power;
@@ -130,7 +131,7 @@ class EnergyCalculator {
 				if(solarCalcState != null)
 					solarCalcState.setConsumedPower(power * 1000);
 
-				if (bufferPotential >= requiredLoad) {
+				if(bufferCalcState.totalUnloadablePower() > requiredLoad) {
 					// take rest from buffer
 					break;
 				}
@@ -144,31 +145,33 @@ class EnergyCalculator {
 					solarCalcState.calcPost(hour);
 			}
 
-			if (requiredLoad >= 0 && bufferPotential > 0) {
-				double bufferPower = requiredLoad;
-				if (bufferPotential < requiredLoad) {
-					bufferPower = bufferPotential;
-				}
+			if (requiredLoad >= 0) {
+				
+				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, false);
+				if(remainingRequiredLoad > 0)
+					remainingRequiredLoad = bufferCalcState.unload(hour, remainingRequiredLoad, true);
+				
+				double bufferPower = requiredLoad - remainingRequiredLoad;
+
 				suppliedPower += bufferPower;
 				r.suppliedBufferHeat[hour] = bufferPower;
-				bufferCapacity += bufferPower;
 			}
 
 			r.suppliedPower[hour] = suppliedPower;
 
 			// buffer capacity with buffer loss
-			bufferPotential = maxBufferCapacity - bufferCapacity;
-			double bufferLoss = Buffers.loss(project.heatNet,
-					bufferLossFactor, bufferPotential / maxBufferCapacity);
-			r.bufferLoss[hour] = bufferLoss;
-			bufferCapacity = bufferCapacity + bufferLoss;
-			if (bufferCapacity > maxBufferCapacity) {
-				bufferCapacity = maxBufferCapacity;
-			}
-			if ((hour + 1) < Stats.HOURS) {
-				r.bufferCapacity[hour + 1] = bufferCapacity;
+			double bufferLoss2 = Buffers.loss2(project.heatNet, bufferLossFactor, bufferCalcState);
+			if(bufferLoss2 > 0)
+			{
+				bufferCalcState.applyLoss(hour, bufferLoss2);
 			}
 
+			r.bufferLoss[hour] = bufferLoss2;
+
+			if ((hour + 1) < Stats.HOURS) {
+				r.bufferCapacity[hour + 1] = bufferCalcState.CalcHTCapacity();
+			}
+			
 			bufferCalcState.postStep(hour);
 
 		} // end hour loop
@@ -196,6 +199,20 @@ class EnergyCalculator {
 		calcTotals(r);
 
 		return r;
+	}
+	
+	private boolean isProducerHT(Producer producer, SolarCalcState solarCalcState)
+	{
+		switch(producer.productGroup.type)
+		{
+		case HEAT_PUMP:
+			return false; //TODO
+		case SOLAR_THERMAL_PLANT:
+			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature;
+		//TODO: Abwärme (Erzeugerlastgang)
+		default:
+			return true;
+		}
 	}
 
 	private double getSuppliedPower(Producer producer, int hour, SolarCalcState solarCalcState,

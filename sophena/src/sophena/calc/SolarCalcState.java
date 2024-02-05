@@ -35,7 +35,7 @@ public class SolarCalcState {
 		numStagnationDays = 0;
 	}
 	
-	public void calcPre(int hour)
+	public void calcPre(int hour, double TE)
 	{
 		if(producer.solarCollector == null || producer.solarCollectorSpec == null)
 			return;
@@ -159,7 +159,7 @@ public class SolarCalcState {
 		double eintrittstemperatur;
 		double austrittstemperatur;
 
-		double TE = project.heatNet.returnTemperature;
+		//double TE = project.heatNet.returnTemperature;
 		double TV =  project.heatNet.supplyTemperature;
 
 		switch(operationMode)

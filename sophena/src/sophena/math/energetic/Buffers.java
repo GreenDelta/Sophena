@@ -1,5 +1,6 @@
 package sophena.math.energetic;
 
+import sophena.calc.BufferCalcState;
 import sophena.model.BufferTank;
 import sophena.model.HeatNet;
 
@@ -67,6 +68,19 @@ public class Buffers {
 				: net.supplyTemperature;
 		double deltaTemp = (minTemp + fillRate * (maxTemp - minTemp)) - 20;
 		return lossFactor * deltaTemp / 1000;
+	}
+
+	/**
+	 * Returns the buffer loss in kWh for the given fill rate (a value between 0 and 1).
+	 */
+	public static double loss2(HeatNet net, double lossFactor, BufferCalcState bufferCalcState) {
+		if (net == null || lossFactor == 0)
+			return 0;
+		
+		double avgBufferTemp = bufferCalcState.averageTemperature();
+		double averageRoomTemp = 20;
+
+		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000;
 	}
 
 }
