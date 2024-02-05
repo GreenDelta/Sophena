@@ -6,6 +6,8 @@ import java.util.Map;
 import sophena.model.Producer;
 
 public class SolarCalcLog {
+	private final int fieldWidth = 16;
+
 	private Map<Producer, StringBuilder> sbPerProducer = new HashMap<Producer, StringBuilder>();
 	private Producer currentProducer;
 
@@ -26,7 +28,7 @@ public class SolarCalcLog {
 		sb.append(")\r\n");
 		sb.append("\r\n");
 		for(var columnName: columnNames)
-			appendPadded(columnName, 20);
+			appendPadded(columnName, fieldWidth);
 		sb.append("\r\n");
 	}
 	
@@ -34,8 +36,6 @@ public class SolarCalcLog {
 	{
 		var sb = getOrCreateSB(currentProducer);
 		
-		int fieldWidth = 20;
-
 		int fractionalDigits = 3;
 		
 		var sb3 = new StringBuilder("0.");

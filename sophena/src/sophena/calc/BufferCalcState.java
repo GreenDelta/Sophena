@@ -40,6 +40,24 @@ public class BufferCalcState {
 	
 	private double bufferLossFactor;
 
+	// kWh
+	private double qLoadedHTInHour;
+
+	// kWh
+	private double qLoadedNTInHour;
+
+	// kWh
+	private double qUnloadedHTInHour;
+
+	// kWh
+	private double qUnloadedNTInHour;
+
+	// kWh
+	private double qLostHTInHour;
+
+	// kWh
+	private double qLostNTInHour;
+
 	public BufferCalcState(Project project, SolarCalcLog log)
 	{
 		this.project = project;
@@ -68,8 +86,22 @@ public class BufferCalcState {
 		if(ts == 1)
 		{
 			log.beginProducer(null);
-			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]");
+			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
+					"qLoadedHT [kWh]",
+					"qLoadedNT [kWh]",
+					"qUnloaded [kWh]",
+					"qUnloaded [kWh]",
+					"qLostHT [kWh]",
+					"qLostNT [kWh]"
+			);
 		}
+		
+		qLoadedHTInHour = 0;
+		qLoadedNTInHour = 0;
+		qUnloadedHTInHour = 0;
+		qUnloadedNTInHour = 0;
+		qLostHTInHour = 0;
+		qLostNTInHour = 0;
 	}
 
 	public double load(int hour, double qToLoad, boolean isHT)
@@ -86,20 +118,24 @@ public class BufferCalcState {
 		{
 			Qloaded = Math.min(qToLoad, CalcHTCapacity());
 			QP_HT = QP_HT + Qloaded;
-		}
+
+			qLoadedHTInHour += Qloaded;
+}
 		else
 		{
 			Qloaded = Math.min(qToLoad,CalcNTCapacity());
 			QP_NT = QP_NT + Qloaded;
-		}
+
+			qLoadedNTInHour += Qloaded;
+}
 
 		double qToLoadRemaining = qToLoad - Qloaded; 
 
-		log.beginProducer(null);
-		log.message(String.format("BufferCalcState.load(%s, %f, %s) -> loaded %f, still to load %f", hour, qToLoad, isHT ? "HT" : "NT", Qloaded, qToLoadRemaining));
+		//log.beginProducer(null);
+		//log.message(String.format("BufferCalcState.load(%s, %f, %s) -> loaded %f, still to load %f", hour, qToLoad, isHT ? "HT" : "NT", Qloaded, qToLoadRemaining));
 
 		UpdateFGAndTE();
-		
+
 		return qToLoadRemaining;
 	}
 	
@@ -111,18 +147,22 @@ public class BufferCalcState {
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
 			QP_HT = QP_HT - Qunloaded;
-		}
+
+			qUnloadedHTInHour += Qunloaded;
+}
 		else
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
 			QP_NT = QP_NT - Qunloaded;
+
+			qUnloadedNTInHour += Qunloaded;
 		}
 		
 		double qToUnloadRemaining = qToUnload - Qunloaded;
 
-		log.beginProducer(null);
-		log.message(String.format("BufferCalcState.unload(%s, %f, %s) -> unloaded %f, still to unload %f", hour, qToUnload, isHT ? "HT" : "NT", Qunloaded, qToUnloadRemaining));
+		//log.beginProducer(null);
+		//log.message(String.format("BufferCalcState.unload(%s, %f, %s) -> unloaded %f, still to unload %f", hour, qToUnload, isHT ? "HT" : "NT", Qunloaded, qToUnloadRemaining));
 
 		UpdateFGAndTE();
 
@@ -135,27 +175,38 @@ public class BufferCalcState {
 		
 		double Qlost = Math.min(qLoss, QP_HT);
 		QP_HT = QP_HT - Qlost;
-		
+
+		qLostHTInHour += Qlost;
+
 		double qLossRemaining = qLoss - Qlost;
 		
 		if(qLossRemaining > 0)
 		{
-			Qlost = qLoss;
+			Qlost = qLossRemaining;
 			QP_NT = QP_NT - Qlost;
+
+			qLostNTInHour += Qlost;
 		}
 		
-		log.beginProducer(null);
-		log.message(String.format("BufferCalcState.applyLoss(%s, %f) -> lost %f", hour, qLoss, Qlost));
+		//log.beginProducer(null);
+		//log.message(String.format("BufferCalcState.applyLoss(%s, %f) -> lost %f", hour, qLoss, Qlost));
 
 		UpdateFGAndTE();
-		
+
 		return Qlost;
 	}
-
+	
 	public void postStep(int hour) 
 	{
 		log.beginProducer(null);
-		log.hourValues(hour, QP_MAX, QP_100, QP_HT, QP_NT, TV, TR, FG, TE, TMAX);
+		log.hourValues(hour, QP_MAX, QP_100, QP_HT, QP_NT, TV, TR, FG, TE, TMAX,
+				qLoadedHTInHour,
+				qLoadedNTInHour,
+				qUnloadedHTInHour,
+				qUnloadedNTInHour,
+				qLostHTInHour,
+				qLostNTInHour
+		);
 	}
 	
 	public double totalUnloadablePower()
