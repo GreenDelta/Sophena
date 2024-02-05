@@ -1,12 +1,14 @@
 package sophena.calc;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import sophena.model.Producer;
 
 public class SolarCalcLog {
-	private final int fieldWidth = 16;
+	private final int fieldWidth = 18;
 
 	private Map<Producer, StringBuilder> sbPerProducer = new HashMap<Producer, StringBuilder>();
 	private Producer currentProducer;
@@ -108,5 +110,20 @@ public class SolarCalcLog {
 			result.append(sb);
 		}
 		return result.toString();
+	}
+	
+	public static void writeCsv(String filename, double[] values)
+	{
+		try {
+			PrintWriter printWriter = new PrintWriter(filename);
+
+			printWriter.println("Hour;Value");
+			for(var i = 0; i < values.length; i++)
+			{
+				printWriter.println(String.format("%d;%f", i, values[i]));
+			}
+			printWriter.close();
+		} catch (FileNotFoundException e) {
+		}
 	}
 }

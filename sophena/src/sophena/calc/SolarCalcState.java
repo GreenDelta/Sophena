@@ -160,7 +160,7 @@ public class SolarCalcState {
 		double austrittstemperatur;
 
 		//double TE = project.heatNet.returnTemperature;
-		double TV =  project.heatNet.supplyTemperature;
+		double TV =  project.heatNet.supplyTemperature; //TODO: saisonale returnTemperature?
 
 		switch(operationMode)
 		{

@@ -42,7 +42,6 @@ class EnergyCalculator {
 		for(Producer producer: r.producers)
 			if(producer.solarCollector != null & producer.solarCollectorSpec != null)
 				solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
-		
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			bufferCalcState.preStep(hour);
@@ -176,6 +175,18 @@ class EnergyCalculator {
 			if(solarCalcState != null)
 				r.producerStagnationDays[k] = solarCalcState.getNumStagnationDays();
 		}
+
+		
+		double[] targetChargeLevels = new double[Stats.HOURS];
+		double[] flowTemperatures = new double[Stats.HOURS];
+		double[] returnTemperatures = new double[Stats.HOURS];
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			var item = SeasonalItem.calc(project.heatNet, hour);
+			
+			targetChargeLevels[hour] = item.targetChargeLevel;
+			flowTemperatures[hour] = item.flowTemperature;
+			returnTemperatures[hour] = item.returnTemperature;
+		}
 		
 		try {
 			var logDir = new File(Workspace.dir(), "log");
@@ -184,7 +195,11 @@ class EnergyCalculator {
 			{
 				pw.println(solarCalcLog.toString());
 			}
-		}
+
+			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_targetchargelevels.csv", targetChargeLevels);
+			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TV.csv", flowTemperatures);
+			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TR.csv", returnTemperatures);
+}
 		catch(java.io.FileNotFoundException err)
 		{
 		}
