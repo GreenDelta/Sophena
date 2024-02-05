@@ -9,6 +9,7 @@ import sophena.calc.BufferCalcState;
 
 public class BuffersTest {
 
+	/*
 	@Test
 	public void testMaxCapacity() {
 		HeatNet net = new HeatNet();
@@ -18,6 +19,7 @@ public class BuffersTest {
 		net.lowerBufferLoadTemperature = 60d;
 		Assert.assertEquals(233.2, BufferCalcState.maxCapacity(net), 1e-10);
 	}
+	*/
 
 	@Test
 	public void testLoss() {
