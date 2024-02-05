@@ -9,8 +9,8 @@ public class SeasonalItem {
 	public double flowTemperature;
 	public double returnTemperature;
 
-	public static SeasonalItem tmp(HeatNet net, int hour){
-		if (net == null || net.bufferTank == null)
+	public static SeasonalItem calc(HeatNet net, int hour){
+		if (net == null)
 			return null;
 		SeasonalItem seasonalItem = new SeasonalItem();
 		if (net.isSeasonalDrivingStyle) {	
@@ -47,6 +47,7 @@ public class SeasonalItem {
 		}
 		return seasonalItem;
 	}
+
 	private static boolean isHourInInterval(int hour, int[] interval)
 	{
 		return hour >= interval[0] && hour <= interval[1];

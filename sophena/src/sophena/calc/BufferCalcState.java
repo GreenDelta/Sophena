@@ -1,6 +1,7 @@
 package sophena.calc;
 
 import sophena.math.energetic.Buffers;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.BufferTank;
 import sophena.model.HeatNet;
 import sophena.model.Project;
@@ -49,26 +50,28 @@ public class BufferCalcState {
 		this.project = project;
 		this.log = log;
 		
-		QP_HT = 0.5 * Buffers.maxCapacity(project.heatNet);
+		QP_HT = 0.5 * maxCapacity(project.heatNet);
 		QP_NT = 0;
 		TMAX = project.heatNet.maxBufferLoadTemperature;
 	}
 
-	public void preStep(int hour, double maxTargetLoadFactor)
+	public void preStep(int hour)
 	{
-		this.maxTargetLoadFactor = maxTargetLoadFactor;
+		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, hour);
 
-		QP_MAX = Buffers.maxCapacity(project.heatNet);
-		QP_100 = Buffers.capacity100(project.heatNet);
-		TV = project.heatNet.supplyTemperature;
-		TR = project.heatNet.returnTemperature;
+		this.maxTargetLoadFactor = seasonalItem.targetChargeLevel;
 
+		QP_MAX = maxCapacity(project.heatNet);
+		QP_100 = capacity100(project.heatNet);
+		TV = seasonalItem.flowTemperature;
+		TR = seasonalItem.returnTemperature;
+		
 		int jt = 1 + hour / 24;
 		int ts = 1 + hour % 24;
 		if(ts == 1)
 		{
 			log.beginProducer(null);
-			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "TV [°C]", "TR [°C]", "FG", "TE [°C]");
+			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]");
 		}
 	}
 
@@ -84,6 +87,13 @@ public class BufferCalcState {
 
 	public double load(int hour, double qToLoad, boolean isHT)
 	{
+		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
+		
+		if(isHT && QP_NT < 0)
+		{
+			isHT = false;
+		}
+		
 		double Qloaded;
 		if(isHT)
 		{
@@ -113,13 +123,13 @@ public class BufferCalcState {
 		double Qunloaded;
 		if(isHT)
 		{
-			Qunloaded = Math.min(qToUnload, QP_HT);
+			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
 			QP_HT = QP_HT - Qunloaded;
 		}
 		else
 		{
-			Qunloaded = Math.min(qToUnload, QP_NT);
+			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
 			QP_NT = QP_NT - Qunloaded;
 		}
@@ -156,7 +166,7 @@ public class BufferCalcState {
 	public void postStep(int hour) 
 	{
 		log.beginProducer(null);
-		log.hourValues(hour, QP_MAX, QP_100, QP_HT, QP_NT, TV, TR, FG, TE);
+		log.hourValues(hour, QP_MAX, QP_100, QP_HT, QP_NT, TV, TR, FG, TE, TMAX);
 	}
 	
 	public double totalUnloadablePower()
@@ -176,7 +186,6 @@ public class BufferCalcState {
 	
 	public double CalcNTCapacity()
 	{
-	    //return Math.max(0, (1 - QP_HT / QP_100) * QP_100);
 		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP_100 - QP_HT));
 	}
 

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import sophena.math.energetic.Buffers;
 import sophena.math.energetic.Producers;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -32,7 +33,7 @@ class EnergyCalculator {
 		SolarCalcLog solarCalcLog = new SolarCalcLog();
 		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
-		double bufferLossFactor = Buffers.lossFactor(project.heatNet);
+		double bufferLossFactor = BufferCalcState.lossFactor(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
 		boolean[][] interruptions = interruptions(r);
 
@@ -46,7 +47,7 @@ class EnergyCalculator {
 		
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			bufferCalcState.preStep(hour, 1.0); //TODO
+			bufferCalcState.preStep(hour);
 			
 			if(hour == 01)
 				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity();
@@ -160,7 +161,8 @@ class EnergyCalculator {
 			r.suppliedPower[hour] = suppliedPower;
 
 			// buffer capacity with buffer loss
-			double bufferLoss2 = Buffers.loss2(project.heatNet, bufferLossFactor, bufferCalcState);
+			//TODO: integrate directly into BufferCalcState.applyLoss()
+			double bufferLoss2 = BufferCalcState.loss2(project.heatNet, bufferLossFactor, bufferCalcState);
 			if(bufferLoss2 > 0)
 			{
 				bufferCalcState.applyLoss(hour, bufferLoss2);
