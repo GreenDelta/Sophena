@@ -211,7 +211,7 @@ public class BufferCalcState {
 	
 	public double totalUnloadablePower()
 	{
-		return QP_HT + QP_NT;
+		return Math.min(QP_HT + QP_NT, project.heatNet.maximumPerformance);
 	}
 	
 	public double getLoadFactor()
