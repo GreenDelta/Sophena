@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-import sophena.math.energetic.Buffers;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.HoursTrace;
@@ -33,7 +32,6 @@ class EnergyCalculator {
 		SolarCalcLog solarCalcLog = new SolarCalcLog();
 		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
-		double bufferLossFactor = BufferCalcState.lossFactor(project.heatNet);
 		EnergyResult r = new EnergyResult(project);
 		boolean[][] interruptions = interruptions(r);
 
@@ -60,7 +58,7 @@ class EnergyCalculator {
 			boolean isSummerMode = r.producers.length > 0
 					&& requiredLoad < Producers.minPower(r.producers[0], solarCalcStates.get(r.producers[0]), hour)
 					&& !r.producers[0].hasProfile();
-			if (isSummerMode && bufferCalcState.getloadFactor() > 0.9) {
+			if (isSummerMode && bufferCalcState.getLoadFactor() > 0.9) {
 				// set the load `loadBuffer` flag to false when the buffer is
 				// full; because of buffer loss it may is never really full so
 				// we set some arbitrary cutoff for now.
@@ -146,6 +144,9 @@ class EnergyCalculator {
 					solarCalcState.calcPost(hour);
 			}
 
+			// buffer capacity with buffer loss
+			r.bufferLoss[hour] = bufferCalcState.applyLoss(hour);
+
 			if (requiredLoad >= 0) {
 				
 				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, false);
@@ -159,16 +160,6 @@ class EnergyCalculator {
 			}
 
 			r.suppliedPower[hour] = suppliedPower;
-
-			// buffer capacity with buffer loss
-			//TODO: integrate directly into BufferCalcState.applyLoss()
-			double bufferLoss2 = BufferCalcState.loss2(project.heatNet, bufferLossFactor, bufferCalcState);
-			if(bufferLoss2 > 0)
-			{
-				bufferCalcState.applyLoss(hour, bufferLoss2);
-			}
-
-			r.bufferLoss[hour] = bufferLoss2;
 
 			if ((hour + 1) < Stats.HOURS) {
 				r.bufferCapacity[hour + 1] = bufferCalcState.CalcHTCapacity();

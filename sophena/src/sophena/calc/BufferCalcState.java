@@ -1,6 +1,5 @@
 package sophena.calc;
 
-import sophena.math.energetic.Buffers;
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.BufferTank;
 import sophena.model.HeatNet;
@@ -16,12 +15,6 @@ public class BufferCalcState {
 	// kWh
 	private double QP_NT;
 	
-	// %
-	//private double HTV;
-
-	// %
-	//private double NTV;
-
 	// kWh
 	private double QP_100;
 
@@ -45,6 +38,8 @@ public class BufferCalcState {
 	
 	private double maxTargetLoadFactor;
 	
+	private double bufferLossFactor;
+
 	public BufferCalcState(Project project, SolarCalcLog log)
 	{
 		this.project = project;
@@ -53,6 +48,8 @@ public class BufferCalcState {
 		QP_HT = 0.5 * maxCapacity(project.heatNet);
 		QP_NT = 0;
 		TMAX = project.heatNet.maxBufferLoadTemperature;
+		
+		bufferLossFactor = lossFactor(project.heatNet);
 	}
 
 	public void preStep(int hour)
@@ -75,16 +72,6 @@ public class BufferCalcState {
 		}
 	}
 
-	private double calcMaxLoadHT()
-	{
-		return Math.max(0, QP_MAX * maxTargetLoadFactor - QP_NT);
-	}
-
-	private double calcMaxLoadNT()
-	{
-		return Math.max(0, QP_MAX * maxTargetLoadFactor - QP_HT);
-	}
-
 	public double load(int hour, double qToLoad, boolean isHT)
 	{
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
@@ -97,14 +84,12 @@ public class BufferCalcState {
 		double Qloaded;
 		if(isHT)
 		{
-			Qloaded = Math.min(qToLoad,CalcHTCapacity());
-			Qloaded = Math.min(Qloaded, calcMaxLoadHT());
+			Qloaded = Math.min(qToLoad, CalcHTCapacity());
 			QP_HT = QP_HT + Qloaded;
 		}
 		else
 		{
 			Qloaded = Math.min(qToLoad,CalcNTCapacity());
-			Qloaded = Math.min(Qloaded, calcMaxLoadNT());
 			QP_NT = QP_NT + Qloaded;
 		}
 
@@ -144,8 +129,10 @@ public class BufferCalcState {
 		return qToUnloadRemaining;
 	}
 	
-	public void applyLoss(int hour, double qLoss)
+	public double applyLoss(int hour)
 	{
+		double qLoss = calcLoss(project.heatNet, bufferLossFactor);
+		
 		double Qlost = Math.min(qLoss, QP_HT);
 		QP_HT = QP_HT - Qlost;
 		
@@ -161,6 +148,8 @@ public class BufferCalcState {
 		log.message(String.format("BufferCalcState.applyLoss(%s, %f) -> lost %f", hour, qLoss, Qlost));
 
 		UpdateFGAndTE();
+		
+		return Qlost;
 	}
 
 	public void postStep(int hour) 
@@ -174,7 +163,7 @@ public class BufferCalcState {
 		return QP_HT + QP_NT;
 	}
 	
-	public double getloadFactor()
+	public double getLoadFactor()
 	{
 		return (QP_HT + QP_NT) / (QP_MAX * maxTargetLoadFactor);
 	}
@@ -218,7 +207,7 @@ public class BufferCalcState {
 	 * Calculates the buffer tank capacity of the given heating net
 	 * specification, in kWh.
 	 */
-	public static double maxCapacity(HeatNet net) {
+	private double maxCapacity(HeatNet net) {
 		if (net == null || net.bufferTank == null)
 			return 0;
 		double volume = net.bufferTank.volume; // liters
@@ -229,7 +218,7 @@ public class BufferCalcState {
 		return 0.001166 * volume * (maxTemp - minTemp);
 	}
 
-	public static double capacity100(HeatNet net) {
+	private double capacity100(HeatNet net) {
 		if (net == null || net.bufferTank == null)
 			return 0;
 		double volume = net.bufferTank.volume; // liters
@@ -264,6 +253,7 @@ public class BufferCalcState {
 	 * Returns the buffer loss for the given fill rate (a value between 0 and
 	 * 1).
 	 */
+	@Deprecated
 	public static double loss(HeatNet net, double lossFactor, double fillRate) {
 		if (net == null || lossFactor == 0)
 			return 0;
@@ -278,11 +268,11 @@ public class BufferCalcState {
 	/**
 	 * Returns the buffer loss in kWh for the given fill rate (a value between 0 and 1).
 	 */
-	public static double loss2(HeatNet net, double lossFactor, BufferCalcState bufferCalcState) {
+	private double calcLoss(HeatNet net, double lossFactor) {
 		if (net == null || lossFactor == 0)
 			return 0;
 		
-		double avgBufferTemp = bufferCalcState.averageTemperature();
+		double avgBufferTemp = averageTemperature();
 		double averageRoomTemp = 20;
 
 		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000;
