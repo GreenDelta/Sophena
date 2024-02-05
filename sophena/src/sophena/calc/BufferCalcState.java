@@ -89,8 +89,8 @@ public class BufferCalcState {
 			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
 					"qLoadedHT [kWh]",
 					"qLoadedNT [kWh]",
-					"qUnloaded [kWh]",
-					"qUnloaded [kWh]",
+					"qUnloadedHT [kWh]",
+					"qUnloadedNT [kWh]",
 					"qLostHT [kWh]",
 					"qLostNT [kWh]"
 			);
@@ -120,14 +120,14 @@ public class BufferCalcState {
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
-}
+		}
 		else
 		{
 			Qloaded = Math.min(qToLoad,CalcNTCapacity());
 			QP_NT = QP_NT + Qloaded;
 
 			qLoadedNTInHour += Qloaded;
-}
+		}
 
 		double qToLoadRemaining = qToLoad - Qloaded; 
 
@@ -149,7 +149,7 @@ public class BufferCalcState {
 			QP_HT = QP_HT - Qunloaded;
 
 			qUnloadedHTInHour += Qunloaded;
-}
+		}
 		else
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
