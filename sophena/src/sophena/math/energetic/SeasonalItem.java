@@ -50,7 +50,14 @@ public class SeasonalItem {
 
 	private static boolean isHourInInterval(int hour, int[] interval)
 	{
-		return hour >= interval[0] && hour <= interval[1];
+		if(interval[0] < interval[1])
+		{
+			return hour >= interval[0] && hour <= interval[1];
+		}
+		else
+		{
+			return !(hour > interval[1] && hour < interval[0]);
+		}
 	}
 	
 	private static double linearInterpolation(double startHour, double startValue, double endHour, double endValue, double currentHour)
