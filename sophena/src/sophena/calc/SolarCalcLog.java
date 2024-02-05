@@ -68,12 +68,14 @@ public class SolarCalcLog {
 	{
 		var sb = getOrCreateSB(currentProducer);
 
-		var i = sb.length();
-		sb.append(value);
-		var j = sb.length();
+		var sb2 = new StringBuilder();
+		var i = sb2.length();
+		sb2.append(value);
+		var j = sb2.length();
 		var padWidth = Math.max(0, width - (j - i));
 		for(var k = 0; k < padWidth; k++)
-			sb.append(' ');
+			sb2.insert(0, ' ');
+		sb.append(sb2);
 	}
 	
 	public void message(String s)
