@@ -131,9 +131,6 @@ public class BufferCalcState {
 
 		double qToLoadRemaining = qToLoad - Qloaded; 
 
-		//log.beginProducer(null);
-		//log.message(String.format("BufferCalcState.load(%s, %f, %s) -> loaded %f, still to load %f", hour, qToLoad, isHT ? "HT" : "NT", Qloaded, qToLoadRemaining));
-
 		UpdateFGAndTE();
 
 		return qToLoadRemaining;
@@ -161,8 +158,6 @@ public class BufferCalcState {
 		
 		double qToUnloadRemaining = qToUnload - Qunloaded;
 
-		//log.beginProducer(null);
-		//log.message(String.format("BufferCalcState.unload(%s, %f, %s) -> unloaded %f, still to unload %f", hour, qToUnload, isHT ? "HT" : "NT", Qunloaded, qToUnloadRemaining));
 
 		UpdateFGAndTE();
 
@@ -188,9 +183,6 @@ public class BufferCalcState {
 			qLostNTInHour += Qlost;
 		}
 		
-		//log.beginProducer(null);
-		//log.message(String.format("BufferCalcState.applyLoss(%s, %f) -> lost %f", hour, qLoss, Qlost));
-
 		UpdateFGAndTE();
 
 		return Qlost;
@@ -226,12 +218,12 @@ public class BufferCalcState {
 	
 	public double CalcNTCapacity()
 	{
-		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP_100 - QP_HT));
+		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP100_NT()));
 	}
 
 	private void UpdateFGAndTE()
 	{
-		FG = QP_NT / QP_100; 
+		FG = QP_NT / QP100_NT(); 
 		
 		if(FG < 0.8)
 		{
@@ -254,29 +246,36 @@ public class BufferCalcState {
 		return TR + (TMAX - TR) * (QP_HT + QP_NT) / QP_MAX;
 	}
 
+	public double QP100_NT()
+	{
+		return (1 - QP_HT / QP_MAX) * QP_100;
+	}
+
+
 	/**
 	 * Calculates the buffer tank capacity of the given heating net
 	 * specification, in kWh.
 	 */
 	private double maxCapacity(HeatNet net) {
+		double minTemp = net.lowerBufferLoadTemperature != null
+				? net.lowerBufferLoadTemperature
+				: net.returnTemperature;
+		return calcCapacity(net, minTemp);
+	}
+	
+	private double capacity100(HeatNet net) {
+		double minTemp = net.lowerBufferLoadTemperature != null
+				? net.lowerBufferLoadTemperature
+				: net.returnTemperature;
+		return calcCapacity(net, minTemp);
+	}
+
+	private double calcCapacity(HeatNet net, double minTemp) {
+
 		if (net == null || net.bufferTank == null)
 			return 0;
 		double volume = net.bufferTank.volume; // liters
 		double maxTemp = net.maxBufferLoadTemperature;
-		double minTemp = net.lowerBufferLoadTemperature != null
-				? net.lowerBufferLoadTemperature
-				: net.returnTemperature;
-		return 0.001166 * volume * (maxTemp - minTemp);
-	}
-
-	private double capacity100(HeatNet net) {
-		if (net == null || net.bufferTank == null)
-			return 0;
-		double volume = net.bufferTank.volume; // liters
-		double maxTemp = net.supplyTemperature;
-		double minTemp = net.lowerBufferLoadTemperature != null
-				? net.lowerBufferLoadTemperature
-				: net.returnTemperature;
 		return 0.001166 * volume * (maxTemp - minTemp);
 	}
 

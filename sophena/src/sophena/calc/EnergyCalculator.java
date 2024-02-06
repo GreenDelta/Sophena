@@ -143,9 +143,6 @@ class EnergyCalculator {
 					solarCalcState.calcPost(hour);
 			}
 
-			// buffer capacity with buffer loss
-			r.bufferLoss[hour] = bufferCalcState.applyLoss(hour);
-
 			if (requiredLoad >= 0) {
 				
 				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, false);
@@ -157,6 +154,9 @@ class EnergyCalculator {
 				suppliedPower += bufferPower;
 				r.suppliedBufferHeat[hour] = bufferPower;
 			}
+
+			// buffer capacity with buffer loss
+			r.bufferLoss[hour] = bufferCalcState.applyLoss(hour);
 
 			r.suppliedPower[hour] = suppliedPower;
 
