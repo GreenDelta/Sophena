@@ -218,7 +218,7 @@ public class BufferCalcState {
 	
 	public double CalcNTCapacity()
 	{
-		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP100_NT()));
+		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP100_NT() - QP_NT));
 	}
 
 	private void UpdateFGAndTE()
@@ -257,25 +257,18 @@ public class BufferCalcState {
 	 * specification, in kWh.
 	 */
 	private double maxCapacity(HeatNet net) {
-		double minTemp = net.lowerBufferLoadTemperature != null
-				? net.lowerBufferLoadTemperature
-				: net.returnTemperature;
-		return calcCapacity(net, minTemp);
+		return calcCapacity(net, TR, TMAX);
 	}
 	
 	private double capacity100(HeatNet net) {
-		double minTemp = net.lowerBufferLoadTemperature != null
-				? net.lowerBufferLoadTemperature
-				: net.returnTemperature;
-		return calcCapacity(net, minTemp);
+		return calcCapacity(net, TR, TV);
 	}
 
-	private double calcCapacity(HeatNet net, double minTemp) {
+	private double calcCapacity(HeatNet net, double minTemp, double maxTemp) {
 
 		if (net == null || net.bufferTank == null)
 			return 0;
 		double volume = net.bufferTank.volume; // liters
-		double maxTemp = net.maxBufferLoadTemperature;
 		return 0.001166 * volume * (maxTemp - minTemp);
 	}
 
