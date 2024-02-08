@@ -77,13 +77,15 @@ public class SolarCalcState {
 		double MERI = getReferenceLongitude(hour);
 		
 		// °C
-		double TL_i = project.weatherStation.data[hour];
+		double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
+				? project.weatherStation.data[hour]
+				: 0;
 		// W/m²
-		double SDI_i = project.weatherStation.directRadiation != null
+		double SDI_i = project.weatherStation.directRadiation != null && hour < project.weatherStation.directRadiation.length 
 				? project.weatherStation.directRadiation[hour]
 				: 0;
 		// W/m²
-		double SDF_i = project.weatherStation.diffuseRadiation != null
+		double SDF_i = project.weatherStation.diffuseRadiation != null && hour < project.weatherStation.diffuseRadiation.length
 				? project.weatherStation.diffuseRadiation[hour]
 				: 0;
 
