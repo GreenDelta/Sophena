@@ -257,6 +257,8 @@ public final class HoursProfile {
 					double[] values = new double[v.size()];
 					for(int j = 0; j < v.size(); j++)
 						values[j] = Double.parseDouble(v.get(j).replace(',', '.'));
+					if (values.length != 1 && values.length != 3)
+						throw new Exception("Invalid value count!");
 					return new Entry(index - 1, values);
 				} catch (Exception e) {
 					return new Entry(-1, 0);
