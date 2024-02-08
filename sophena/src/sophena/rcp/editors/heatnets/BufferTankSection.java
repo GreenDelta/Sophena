@@ -73,7 +73,7 @@ class BufferTankSection {
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "kW");
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, M.MaxPerformance, H.MaxPerfInfo);
 	}
 
 	private void createMaxTempText(Composite comp, FormToolkit tk) {

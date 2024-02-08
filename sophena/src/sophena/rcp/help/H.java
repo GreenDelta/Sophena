@@ -27,6 +27,7 @@ public class H extends NLS {
 	public static String CollectorTemperatureIncrease;
 	public static String LongitudeInfo;
 	public static String LatitudeInfo;
+	public static String MaxPerfInfo;
 	
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);

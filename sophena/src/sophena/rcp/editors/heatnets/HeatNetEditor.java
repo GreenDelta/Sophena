@@ -103,6 +103,12 @@ public class HeatNetEditor extends Editor {
 					"Der Glättungsfaktor darf nicht negativ sein.");
 			return false;
 		}
+		if (heatNet.bufferTank != null && heatNet.maximumPerformance <= 0)
+		{
+			MsgBox.error("Plausibilitätsfehler",
+					"Die maximale Entladeleistung muss größer als 0 sein.");
+			return false;
+		}
 		return true;
 	}
 
