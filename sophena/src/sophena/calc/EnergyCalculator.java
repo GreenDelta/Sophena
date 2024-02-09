@@ -69,7 +69,7 @@ class EnergyCalculator {
 
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				if(solarCalcState != null)
-					solarCalcState.calcPre(hour, bufferCalcState.TE);
+					solarCalcState.calcPre(hour, bufferCalcState.TE, bufferCalcState.TV);
 			}
 			
 			for (int k = 0; k < r.producers.length; k++) {
@@ -217,6 +217,8 @@ class EnergyCalculator {
 			return false; //TODO
 		case SOLAR_THERMAL_PLANT:
 			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature;
+	//	case OTHER_HEAT_SOURCE:
+	//		return producer
 		//TODO: Abwärme (Erzeugerlastgang)
 		default:
 			return true;

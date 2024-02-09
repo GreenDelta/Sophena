@@ -1,5 +1,18 @@
 package sophena.calc;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.apache.poi.xssf.usermodel.BaseXSSFEvaluationWorkbook;
+
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.HoursTrace;
@@ -35,7 +48,7 @@ public class SolarCalcState {
 		numStagnationDays = 0;
 	}
 	
-	public void calcPre(int hour, double TE)
+	public void calcPre(int hour, double TE, double TV)
 	{
 		if(producer.solarCollector == null || producer.solarCollectorSpec == null)
 			return;
@@ -162,7 +175,7 @@ public class SolarCalcState {
 		double austrittstemperatur;
 
 		//double TE = project.heatNet.returnTemperature;
-		double TV =  project.heatNet.supplyTemperature; //TODO: saisonale returnTemperature?
+		//double TV =  project.heatNet.supplyTemperature; //TODO: saisonale returnTemperature?
 
 		switch(operationMode)
 		{
@@ -322,7 +335,15 @@ public class SolarCalcState {
 
 	private double getReferenceLongitude(int hour)
 	{
-		boolean isSummertime = false; //TODO
+		int year = LocalDate.now().getYear();
+		LocalDateTime localDateTime = LocalDateTime.of(year, 0, 0, 0, 0, 0);
+		localDateTime = localDateTime.plusHours(hour);
+
+		ZoneId zoneId = ZoneId.systemDefault();
+		ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, zoneId);
+		ZoneOffset zoneOffset = zonedDateTime.getOffset();
+		boolean isSummertime = zoneOffset.getTotalSeconds() != zoneId.getRules().getOffset(localDateTime).getTotalSeconds();
+		
 		return isSummertime ? -30 : -15;
 	}
 	
