@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.io.ClimateFileSettings;
 import sophena.io.HoursProfile;
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
@@ -55,15 +56,31 @@ class ImportWizard extends Wizard {
 				MsgBox.error(M.PlausibilityErrors, M.FileImportError);
 				return false;
 			}
+			if (allData[0].length != Stats.HOURS)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.FileImportCountError);
+				return false;
+			}
 			station.data = allData[0];
-			if (allData[1] != null) {
-				station.directRadiation = allData[1];
-			}
-			if (allData[2] != null) {
-				station.diffuseRadiation = allData[2];
-			}
+			if (allData.length > 1)
+				if (allData.length == 3)
+				{
+					if (allData[1].length != Stats.HOURS || allData[2].length != Stats.HOURS)
+					{
+						MsgBox.error(M.PlausibilityErrors, M.FileImportCountError);
+						return false;
+					}
+					station.directRadiation = allData[1];
+					station.diffuseRadiation = allData[2];			
+				}
+				else
+				{
+					MsgBox.error(M.PlausibilityErrors, M.FileImportCountError);
+					return false;
+				}
 			return true;
 		} catch (Exception e) {
+			MsgBox.error(M.PlausibilityErrors, M.FileImportCountError);
 			return false;
 		}
 	}

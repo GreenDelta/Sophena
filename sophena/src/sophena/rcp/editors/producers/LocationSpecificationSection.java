@@ -40,6 +40,8 @@ class LocationSpecificationSection {
 		if (producer().solarCollectorSpec == null) {
 			producer().solarCollectorSpec = new SolarCollectorSpec();
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
+			producer().solarCollectorSpec.solarCollectorTemperatureDifference = 5;
+			producer().solarCollectorSpec.solarCollectorTemperatureIncrease = 5;
 		}
 		createSolarCollectorAreaRow(tk, comp);
 		createSolarCollectorModuleCountRow(tk, comp);
