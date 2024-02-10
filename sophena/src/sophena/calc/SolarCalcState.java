@@ -185,11 +185,11 @@ public class SolarCalcState {
 			break;
 		case TargetTemperature:
 			eintrittstemperatur = TE + UEH;
-			austrittstemperatur = TV + UEH + TD;
+			austrittstemperatur = TV + UEH;
 			break;
 		default:
-			eintrittstemperatur = 0;
-			austrittstemperatur = 0;
+			eintrittstemperatur = TE + UEH;
+			austrittstemperatur = TV + UEH + TD;
 			break;
 		}
 
