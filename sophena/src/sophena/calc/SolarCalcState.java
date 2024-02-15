@@ -174,9 +174,6 @@ public class SolarCalcState {
 		double eintrittstemperatur;
 		double austrittstemperatur;
 
-		//double TE = project.heatNet.returnTemperature;
-		//double TV =  project.heatNet.supplyTemperature; //TODO: saisonale returnTemperature?
-
 		switch(operationMode)
 		{
 		case PreHeating:
@@ -185,7 +182,10 @@ public class SolarCalcState {
 			break;
 		case TargetTemperature:
 			eintrittstemperatur = TE + UEH;
-			austrittstemperatur = TV + UEH;
+			if(TV >= TE)
+				austrittstemperatur = TV + UEH;
+			else
+				austrittstemperatur = TE + UEH + TD;				
 			break;
 		default:
 			eintrittstemperatur = 0;
