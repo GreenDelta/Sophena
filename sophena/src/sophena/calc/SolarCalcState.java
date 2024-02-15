@@ -188,8 +188,8 @@ public class SolarCalcState {
 			austrittstemperatur = TV + UEH;
 			break;
 		default:
-			eintrittstemperatur = TE + UEH;
-			austrittstemperatur = TV + UEH + TD;
+			eintrittstemperatur = 0;
+			austrittstemperatur = 0;
 			break;
 		}
 
