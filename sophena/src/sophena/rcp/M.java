@@ -108,6 +108,7 @@ public class M extends NLS {
 	public static String AutoSeason;
 	public static String PreheatingMode;
 	public static String TargetTemperatureOperation;
+	public static String LimitRadiation;
 	
 	public static String PlausibilityErrors;
 	public static String AlignmentError;

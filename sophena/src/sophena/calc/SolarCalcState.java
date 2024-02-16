@@ -309,8 +309,7 @@ public class SolarCalcState {
 		switch(producer.solarCollectorSpec.solarCollectorOperatingMode)
 		{
 		case AUTO_RADIATION:
-			// 0.4 KW => 400 W
-			return radiationPerSquareMeter > 400
+			return radiationPerSquareMeter > producer.solarCollectorSpec.solarCollectorRadiationLimit
 				? SolarCalcOperationMode.TargetTemperature
 				: SolarCalcOperationMode.PreHeating;
 		case AUTO_SEASON:
@@ -336,7 +335,7 @@ public class SolarCalcState {
 	private double getReferenceLongitude(int hour)
 	{
 		int year = LocalDate.now().getYear();
-		LocalDateTime localDateTime = LocalDateTime.of(year, 0, 0, 0, 0, 0);
+		LocalDateTime localDateTime = LocalDateTime.of(year, 1, 1, 0, 0, 0);
 		localDateTime = localDateTime.plusHours(hour);
 
 		ZoneId zoneId = ZoneId.systemDefault();
