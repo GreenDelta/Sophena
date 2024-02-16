@@ -53,6 +53,7 @@ public class SolarCalcState {
 		if(producer.solarCollector == null || producer.solarCollectorSpec == null)
 			return;
 		
+		
 		log.beginProducer(producer);
 
 		// Input
@@ -194,7 +195,12 @@ public class SolarCalcState {
 		}
 
 		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
-		
+		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature)
+		{
+			phase = SolarCalcPhase.Stagnation;
+			log.message("Changing Phase to "+phase);
+		}
+
 		QS_i_before_correction = QS_i;
 
 		if(TS == 1)
@@ -227,6 +233,7 @@ public class SolarCalcState {
 		case Aufheiz:
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
+				
 				if(temperatur >= kollektormitteltemperatur)
 				{
 					phase = SolarCalcPhase.Betrieb;
@@ -244,6 +251,7 @@ public class SolarCalcState {
 		case Betrieb:
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
+
 				if(temperatur >= kollektormitteltemperatur)
 				{
 					QS_i = (temperatur - kollektormitteltemperatur) * A * C;
@@ -335,10 +343,8 @@ public class SolarCalcState {
 
 	private double getReferenceLongitude(int hour)
 	{
-		// Längengrad der Wetterstation
-		// return -project.weatherStation.?
 		int year = LocalDate.now().getYear();
-		LocalDateTime localDateTime = LocalDateTime.of(year, 0, 0, 0, 0, 0);
+		LocalDateTime localDateTime = LocalDateTime.of(year, 1, 1, 0, 0, 0);
 		localDateTime = localDateTime.plusHours(hour);
 
 		ZoneId zoneId = ZoneId.systemDefault();

@@ -76,10 +76,11 @@ public class BufferCalcState {
 
 		this.maxTargetLoadFactor = seasonalItem.targetChargeLevel;
 
-		QP_MAX = maxCapacity(project.heatNet);
-		QP_100 = capacity100(project.heatNet);
 		TV = seasonalItem.flowTemperature;
 		TR = seasonalItem.returnTemperature;
+
+		QP_MAX = maxCapacity(project.heatNet);
+		QP_100 = capacity100(project.heatNet);
 		
 		int jt = 1 + hour / 24;
 		int ts = 1 + hour % 24;
@@ -104,7 +105,7 @@ public class BufferCalcState {
 		qLostNTInHour = 0;
 	}
 
-	public double load(int hour, double qToLoad, boolean isHT)
+	public double load(int hour, double qToLoad, boolean isHT, boolean useMaxTargetLoadFactor)
 	{
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
 		
@@ -116,14 +117,14 @@ public class BufferCalcState {
 		double Qloaded;
 		if(isHT)
 		{
-			Qloaded = Math.min(qToLoad, CalcHTCapacity());
+			Qloaded = Math.min(qToLoad, CalcHTCapacity(useMaxTargetLoadFactor));
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
 		}
 		else
 		{
-			Qloaded = Math.min(qToLoad,CalcNTCapacity());
+			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor));
 			QP_NT = QP_NT + Qloaded;
 
 			qLoadedNTInHour += Qloaded;
@@ -201,24 +202,30 @@ public class BufferCalcState {
 		);
 	}
 	
-	public double totalUnloadablePower()
+	public double totalUnloadableHTPower()
 	{
-		return Math.min(QP_HT + QP_NT, project.heatNet.maximumPerformance);
+		return Math.min(QP_HT, project.heatNet.maximumPerformance);
 	}
 	
-	public double getLoadFactor()
+	public double getLoadFactor(boolean useMaxTargetLoadFactor)
 	{
-		return (QP_HT + QP_NT) / (QP_MAX * maxTargetLoadFactor);
+		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
+		
+		return (QP_HT + QP_NT) / (QP_MAX * loadFactor);
 	}
 
-	public double CalcHTCapacity()
+	public double CalcHTCapacity(boolean useMaxTargetLoadFactor)
 	{
-		return Math.max(0, QP_MAX * maxTargetLoadFactor - QP_HT - QP_NT);
+		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
+
+		return Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT);
 	}
 	
-	public double CalcNTCapacity()
+	public double CalcNTCapacity(boolean useMaxTargetLoadFactor)
 	{
-		return Math.max(0, Math.min(QP_MAX * maxTargetLoadFactor, QP100_NT() - QP_NT));
+		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
+
+		return Math.max(0, Math.min(QP_MAX * loadFactor, QP100_NT() - QP_NT));
 	}
 
 	private void UpdateFGAndTE()
@@ -227,16 +234,16 @@ public class BufferCalcState {
 		
 		if(FG < 0.8)
 		{
-			TE = TR + 5/12 * (TV - TR) * FG;
+			TE = TR + 5.0 / 12.0 * (TV - TR) * FG;
 		}
 		else if(FG < 1.0)
 		{
-			TE = TR + 1/3 * (TV - TR) * (10 * FG - 7);
+			TE = TR + 1.0 / 3.0 * (TV - TR) * (10.0 * FG - 7.0);
 		}
 		else 
 		{
-			FG = (QP_NT + Q_HT) / QP_MAX;
-			TE = TR + 1/3 * (TMAX-TR) * (10 * FG - 7);
+			FG = (QP_NT + QP_HT) / QP_MAX;
+			TE = TR + 1.0 / 3.0 * (TMAX-TR) * (10.0 * FG - 7.0);
 		}
 		
 		TE = Math.max(TE,TR);
@@ -286,9 +293,9 @@ public class BufferCalcState {
 		if (ins < 0.001) {
 			ins = 0.001;
 		}
-		double r = (buffer.diameter / 1000 - (2 * ins)) / 2;
-		double h = buffer.height / 1000 - (2 * ins);
-		double area = 2 * Math.PI * r * (r + h);
+		double r = (buffer.diameter / 1000.0 - (2.0 * ins)) / 2.0;
+		double h = buffer.height / 1000.0 - (2.0 * ins);
+		double area = 2.0 * Math.PI * r * (r + h);
 		double uValue = net.bufferLambda / ins;
 		return area * uValue;
 	}
@@ -305,8 +312,8 @@ public class BufferCalcState {
 		double minTemp = net.lowerBufferLoadTemperature != null
 				? net.lowerBufferLoadTemperature
 				: net.supplyTemperature;
-		double deltaTemp = (minTemp + fillRate * (maxTemp - minTemp)) - 20;
-		return lossFactor * deltaTemp / 1000;
+		double deltaTemp = (minTemp + fillRate * (maxTemp - minTemp)) - 20.0;
+		return lossFactor * deltaTemp / 1000.0;
 	}
 
 	/**
@@ -317,8 +324,8 @@ public class BufferCalcState {
 			return 0;
 		
 		double avgBufferTemp = averageTemperature();
-		double averageRoomTemp = 20;
+		double averageRoomTemp = 20.0;
 
-		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000;
+		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000.0;
 	}
 }
