@@ -335,6 +335,8 @@ public class SolarCalcState {
 
 	private double getReferenceLongitude(int hour)
 	{
+		// Längengrad der Wetterstation
+		// return -project.weatherStation.?
 		int year = LocalDate.now().getYear();
 		LocalDateTime localDateTime = LocalDateTime.of(year, 0, 0, 0, 0, 0);
 		localDateTime = localDateTime.plusHours(hour);
