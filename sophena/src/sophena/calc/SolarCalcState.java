@@ -174,9 +174,6 @@ public class SolarCalcState {
 		double eintrittstemperatur;
 		double austrittstemperatur;
 
-		//double TE = project.heatNet.returnTemperature;
-		//double TV =  project.heatNet.supplyTemperature; //TODO: saisonale returnTemperature?
-
 		switch(operationMode)
 		{
 		case PreHeating:
@@ -185,7 +182,10 @@ public class SolarCalcState {
 			break;
 		case TargetTemperature:
 			eintrittstemperatur = TE + UEH;
-			austrittstemperatur = TV + UEH + TD;
+			if(TV >= TE)
+				austrittstemperatur = TV + UEH;
+			else
+				austrittstemperatur = TE + UEH + TD;				
 			break;
 		default:
 			eintrittstemperatur = 0;
@@ -334,6 +334,8 @@ public class SolarCalcState {
 
 	private double getReferenceLongitude(int hour)
 	{
+		// Längengrad der Wetterstation
+		// return -project.weatherStation.?
 		int year = LocalDate.now().getYear();
 		LocalDateTime localDateTime = LocalDateTime.of(year, 1, 1, 0, 0, 0);
 		localDateTime = localDateTime.plusHours(hour);

@@ -235,7 +235,8 @@ public class BufferCalcState {
 		}
 		else 
 		{
-			TE = TMAX;
+			FG = (QP_NT + Q_HT) / QP_MAX;
+			TE = TR + 1/3 * (TMAX-TR) * (10 * FG - 7);
 		}
 		
 		TE = Math.max(TE,TR);
