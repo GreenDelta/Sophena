@@ -26,6 +26,9 @@ public class SolarCollectorSpec implements Copyable<SolarCollectorSpec>{
 	
 	@Column(name = "solar_collector_temperature_increase")
 	public double solarCollectorTemperatureIncrease;
+	
+	@Column(name = "solar_collector_radiation_limit")
+	public double solarCollectorRadiationLimit;
 
 	@Override
 	public SolarCollectorSpec copy() {

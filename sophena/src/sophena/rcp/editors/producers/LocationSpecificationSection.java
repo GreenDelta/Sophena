@@ -42,6 +42,7 @@ class LocationSpecificationSection {
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
 			producer().solarCollectorSpec.solarCollectorTemperatureDifference = 5;
 			producer().solarCollectorSpec.solarCollectorTemperatureIncrease = 5;
+			producer().solarCollectorSpec.solarCollectorRadiationLimit = 400;
 		}
 		createSolarCollectorAreaRow(tk, comp);
 		createSolarCollectorModuleCountRow(tk, comp);
@@ -50,6 +51,7 @@ class LocationSpecificationSection {
 		createSolarCollectorOperatingModeRow(tk, comp);
 		createSolarCollectorTempDiffernceRow(tk, comp);
 		createSolarCollectorTempIncreaseRow(tk, comp);
+		createSolarCollectorRadiationLimitRow(tk, comp);
 	}
 	
 	private void createSolarCollectorAreaRow(FormToolkit tk, Composite comp) {
@@ -153,6 +155,18 @@ class LocationSpecificationSection {
 				.init(producer().solarCollectorSpec.solarCollectorTemperatureIncrease)
 				.onChanged((s) -> {
 					producer().solarCollectorSpec.solarCollectorTemperatureIncrease = Texts.getDouble(t);
+					editor.setDirty();
+				});
+	}
+	
+	private void createSolarCollectorRadiationLimitRow(FormToolkit tk, Composite comp) {
+		Text t = UI.formText(comp, tk, M.LimitRadiation);
+		UI.formLabel(comp, tk, "W/m2");
+		UI.formLabel(comp, "");
+		Texts.on(t).decimal().required()
+				.init(producer().solarCollectorSpec.solarCollectorRadiationLimit)
+				.onChanged((s) -> {
+					producer().solarCollectorSpec.solarCollectorRadiationLimit = Texts.getDouble(t);
 					editor.setDirty();
 				});
 	}

@@ -317,8 +317,7 @@ public class SolarCalcState {
 		switch(producer.solarCollectorSpec.solarCollectorOperatingMode)
 		{
 		case AUTO_RADIATION:
-			// 0.4 KW => 400 W
-			return radiationPerSquareMeter > 400
+			return radiationPerSquareMeter > producer.solarCollectorSpec.solarCollectorRadiationLimit
 				? SolarCalcOperationMode.TargetTemperature
 				: SolarCalcOperationMode.PreHeating;
 		case AUTO_SEASON:

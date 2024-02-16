@@ -561,6 +561,7 @@ CREATE TABLE tbl_producers (
 	solar_collector_operating_mode 			VARCHAR(255),
 	solar_collector_temperature_difference  DOUBLE,
 	solar_collector_temperature_increase 	DOUBLE,
+	solar_collector_radiation_limit			DOUBLE,
 
     PRIMARY KEY (id)
 );
