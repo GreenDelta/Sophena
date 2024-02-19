@@ -195,7 +195,7 @@ public class SolarCalcState {
 		}
 
 		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
-		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature)
+		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature && phase != SolarCalcPhase.Stagnation)
 		{
 			phase = SolarCalcPhase.Stagnation;
 			log.message("Changing Phase to "+phase);
@@ -289,11 +289,11 @@ public class SolarCalcState {
 			
 			TK_i = TK_i_minus_one + deltaQS / (A * C);
 			
-			if(TK_i > project.heatNet.maxBufferLoadTemperature)
-			{
-				phase = SolarCalcPhase.Stagnation;
-				log.message("Changing Phase to "+phase);
-			}
+//			if(TK_i > project.heatNet.maxBufferLoadTemperature)
+//			{
+//				phase = SolarCalcPhase.Stagnation;
+//				log.message("Changing Phase to "+phase);
+//			}
 		}
 
 		int TS = 1 + hour % 24;
