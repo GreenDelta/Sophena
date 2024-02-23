@@ -87,6 +87,7 @@ public class SolarCalcState {
 		// °
 		//TODO: SCFW longitude ist offenbar negiert, warum auch immer 
 		double LG = -project.weatherStation.longitude;
+
 		// °
 		double MERI = getReferenceLongitude(hour);
 		
@@ -139,7 +140,7 @@ public class SolarCalcState {
 				
 		// rad
 		double EWNS = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-				? -Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS)) - Math.toRadians(NW))
+				? -(Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS))) - Math.toRadians(NW))
 				: Math.toRadians(89.990);
 		
 		// 1
@@ -156,7 +157,7 @@ public class SolarCalcState {
 		double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(360 * JT / 365.0 * Math.PI / 180)) * Math.cos(SZW));
 		
 		// W/m²
-		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDI_i * (1 - RAB) * 0.5 * (1 + Math.cos(NW)) * (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(NW));
+		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDI_i * (1 - RAB) * 0.5 * (1 + Math.cos(Math.toRadians(NW))) + (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(Math.toRadians(NW)));
 		
 		// W/m²
 		double SDIK = SDI_i * KOF;
@@ -167,10 +168,12 @@ public class SolarCalcState {
 		// 1
 		double EWF = EWFOW * EWFNS;
 		
+		double radiation = ETA0 * EWF * SDIK + ETA0 * KDF * SDFK; 
+		
 		// Wh
-		QS_i = (ETA0 * EWF * SDIK + ETA0 * KDF * SDFK - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
+		QS_i = (radiation - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
 
-		operationMode = CalcOperationMode(project.heatNet, hour, ETA0 * EWF * SDIK + ETA0 * KDF * SDFK); //TODO
+		operationMode = CalcOperationMode(project.heatNet, hour, radiation); //TODO
 
 		double eintrittstemperatur;
 		double austrittstemperatur;
@@ -234,7 +237,7 @@ public class SolarCalcState {
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 				
-				if(temperatur >= kollektormitteltemperatur)
+				if(temperatur > kollektormitteltemperatur)
 				{
 					phase = SolarCalcPhase.Betrieb;
 					log.message("Changing Phase to "+phase);
@@ -252,7 +255,7 @@ public class SolarCalcState {
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 
-				if(temperatur >= kollektormitteltemperatur)
+				if(temperatur > kollektormitteltemperatur)
 				{
 					QS_i = (temperatur - kollektormitteltemperatur) * A * C;
 					TK_i = kollektormitteltemperatur;

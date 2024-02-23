@@ -21,7 +21,7 @@ class EnergyResultSorter {
 			double p2 = power[i2];
 			if (Num.equal(p1, p2))
 				return -Double.compare(load[i1], load[i2]);
-			return -Double.compare(p1, p2);
+			return -Double.compare(p1, p2);			
 		});
 		return createCopy(sortedIdx, result);
 	}
