@@ -351,10 +351,16 @@ public class ProducerWizard extends Wizard {
 				layout.topControl = compSolarCollector;
 				parentTable.layout();
 				updateSolarCollectors();
+				if (functionCombo.getItemCount() > 0)
+				{
+					functionCombo.select(0);
+					functionCombo.setEnabled(false);
+				}
 			} else {
 				layout.topControl = compBoiler;
 				parentTable.layout();				
 				updateBoilers();
+				functionCombo.setEnabled(true);
 			}
 		}
 		

@@ -77,7 +77,7 @@ class TablePage extends FormPage {
 				() -> deleteWeatherStation(table));
 		Action open = Actions.create("Temperaturverlauf anzeigen",
 				Icon.OPEN_16.des(), () -> openClimateCurve(table));
-		Action export = Actions.create("Temperaturverlauf exportieren",
+		Action export = Actions.create("Klimadaten exportieren",
 				Icon.EXPORT_FILE_16.des(), () -> exportClimateCurve(table));
 		Actions.bind(section, add, edit, del, open, export);
 		Actions.bind(table, add, edit, del, open, export);

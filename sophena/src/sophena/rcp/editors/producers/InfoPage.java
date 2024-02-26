@@ -58,7 +58,8 @@ class InfoPage extends FormPage {
 		new CostSection(editor).create(body, tk);
 		if (!producer().hasProfile()) {
 			new InterruptionSection(editor).create(body, tk);
-			new HeatRecoverySection(editor).create(body, tk);
+			if(!(producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT))
+				new HeatRecoverySection(editor).create(body, tk);
 		}
 		form.reflow(true);
 	}
@@ -101,7 +102,7 @@ class InfoPage extends FormPage {
 		if (producer().function == ProducerFunction.BASE_LOAD)
 			c.select(0);
 		else
-			c.select(1);
+			c.select(1);		
 		Controls.onSelect(c, (e) -> {
 			int i = c.getSelectionIndex();
 			if (i == 0) {
@@ -111,6 +112,11 @@ class InfoPage extends FormPage {
 			}
 			editor.setDirty();
 		});
+		if(producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+		{
+			c.select(0);
+			c.setEnabled(false);
+		}
 	}
 
 	private void rankText(FormToolkit tk, Composite comp) {

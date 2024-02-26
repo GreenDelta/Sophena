@@ -176,7 +176,7 @@ public class SolarCollectorEditor extends Editor {
 				return ProductTables.getText(s, col);
 			switch (col) {
 			case 3:
-				return Num.str(s.collectorArea);
+				return Num.str(s.collectorArea) + " m2";
 			default:
 				return null;
 			}

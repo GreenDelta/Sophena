@@ -28,6 +28,7 @@ public class H extends NLS {
 	public static String LongitudeInfo;
 	public static String LatitudeInfo;
 	public static String MaxPerfInfo;
+	public static String LimitRadiationInfo;
 	
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);

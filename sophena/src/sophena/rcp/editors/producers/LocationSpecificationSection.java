@@ -40,6 +40,7 @@ class LocationSpecificationSection {
 		if (producer().solarCollectorSpec == null) {
 			producer().solarCollectorSpec = new SolarCollectorSpec();
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
+			producer().solarCollectorSpec.solarCollectorTilt = 35;
 			producer().solarCollectorSpec.solarCollectorTemperatureDifference = 5;
 			producer().solarCollectorSpec.solarCollectorTemperatureIncrease = 5;
 			producer().solarCollectorSpec.solarCollectorRadiationLimit = 400;
@@ -162,7 +163,7 @@ class LocationSpecificationSection {
 	private void createSolarCollectorRadiationLimitRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.LimitRadiation);
 		UI.formLabel(comp, tk, "W/m2");
-		UI.formLabel(comp, "");
+		HelpLink.create(comp, tk, M.LimitRadiation, H.LimitRadiationInfo);
 		Texts.on(t).decimal().required()
 				.init(producer().solarCollectorSpec.solarCollectorRadiationLimit)
 				.onChanged((s) -> {

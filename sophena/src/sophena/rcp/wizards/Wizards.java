@@ -152,6 +152,7 @@ class Wizards {
 		SolarCollectorSpec solarCollectorSpec = new SolarCollectorSpec();
 		solarCollectorSpec.solarCollectorArea = p.solarCollector.collectorArea;
 		solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
+		solarCollectorSpec.solarCollectorTilt = 35;
 		solarCollectorSpec.solarCollectorTemperatureDifference = 5;
 		solarCollectorSpec.solarCollectorTemperatureIncrease = 5;
 		solarCollectorSpec.solarCollectorRadiationLimit = 400;

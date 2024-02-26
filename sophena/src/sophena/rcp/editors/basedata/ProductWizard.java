@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -75,7 +76,11 @@ public class ProductWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite c = new Composite(parent, SWT.NONE);
+			ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+			sc.setExpandVertical(true);
+			sc.setExpandHorizontal(true);
+			Composite c = new Composite(sc, SWT.NULL);
+			sc.setContent(c);
 			setControl(c);
 			UI.gridLayout(c, 3);
 			nameText = UI.formText(c, M.Name);
@@ -90,7 +95,9 @@ public class ProductWizard extends Wizard {
 			content.render(c);
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.formLabel(c, "");
-			data.bindToUI();
+			data.bindToUI();	
+			
+			sc.setMinSize(c.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		}
 
 		private void createPriceText(Composite c) {

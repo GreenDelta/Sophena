@@ -2,6 +2,7 @@ package sophena.rcp.editors.basedata.solarcollectors;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -53,13 +54,13 @@ public class SolarCollectorWizard implements IContent{
 		SolarCollectorWizard content = new SolarCollectorWizard(solarCollector);
 		ProductWizard w = new ProductWizard(solarCollector, content);
 		content.wizard = w;
-		w.setWindowTitle(Labels.get(solarCollector.type));
+		w.setWindowTitle(Labels.get(solarCollector.type));		
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		return dialog.open();
 	}
 
 	@Override
-	public void render(Composite c) {
+	public void render(Composite c) {		
 		collectorAreaText = UI.formText(c, M.CollectorArea);
 		Texts.on(collectorAreaText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "m2");
