@@ -317,6 +317,9 @@ public class SolarCalcState {
 
 	private SolarCalcOperationMode CalcOperationMode(HeatNet heatNet, int hour, double radiationPerSquareMeter)
 	{
+		if (heatNet != null && heatNet.bufferTank == null)
+			return SolarCalcOperationMode.TargetTemperature;;
+		
 		switch(producer.solarCollectorSpec.solarCollectorOperatingMode)
 		{
 		case AUTO_RADIATION:

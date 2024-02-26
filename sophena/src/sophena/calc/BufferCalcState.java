@@ -230,6 +230,13 @@ public class BufferCalcState {
 
 	private void UpdateFGAndTE()
 	{
+		if (project.heatNet != null && project.heatNet.bufferTank == null)
+		{
+			TE = TV;
+			return;
+		}
+		
+		
 		FG = QP_NT / QP100_NT(); 
 		
 		if(FG < 0.8)
