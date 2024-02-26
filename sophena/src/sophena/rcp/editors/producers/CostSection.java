@@ -9,9 +9,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
+import sophena.model.ProductType;
+import sophena.model.SolarCollector;
 import sophena.rcp.App;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.EntityCombo;
@@ -37,7 +40,10 @@ class CostSection {
 		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
 		if (!producer().hasProfile()) {
-			boilerCombo(tk, comp);
+			if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+				solarCombo(tk, comp);
+			else
+				boilerCombo(tk, comp);
 			UI.filler(comp);
 		}
 		costSection = new ProductCostSection(() -> producer().costs)
@@ -77,6 +83,38 @@ class CostSection {
 			}
 		}
 		Sorters.boilers(filtered);
+		return filtered;
+	}
+	
+	private void solarCombo(FormToolkit tk, Composite comp) {
+		EntityCombo<SolarCollector> combo = new EntityCombo<>();
+		combo.create("Bezeichnung", comp, tk);
+		combo.setLabelProvider(s -> s.name + " (" + s.collectorArea + " m2)");
+		SolarCollector s = producer().solarCollector;
+		if (s == null)
+			return;
+		combo.setInput(getPossibleSolarCollectors(s));
+		combo.select(s);
+		combo.onSelect(solarCollector -> {
+			producer().solarCollector = solarCollector;
+			ProductCosts.copy(solarCollector, producer().costs);
+			costSection.refresh();
+			editor.setDirty();
+		});
+	}
+
+	private List<SolarCollector> getPossibleSolarCollectors(SolarCollector s) {
+		if (s == null || s.group == null)
+			return Collections.emptyList();
+		SolarCollectorDao dao = new SolarCollectorDao(App.getDb());
+		List<SolarCollector> all = dao.getAll();
+		List<SolarCollector> filtered = new ArrayList<>();
+		for (SolarCollector other : all) {
+			if (Objects.equals(s.group, other.group)) {
+				filtered.add(other);
+			}
+		}
+		Sorters.solarCollectors(filtered);
 		return filtered;
 	}
 
