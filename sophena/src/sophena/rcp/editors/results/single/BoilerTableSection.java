@@ -14,8 +14,6 @@ import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.ProductGroup;
-import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.M;

@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -17,17 +17,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.Labels;
 import sophena.db.daos.WeatherStationDao;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.io.HoursProfile;
-import sophena.model.ProductType;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.FileChooser;
@@ -156,11 +156,36 @@ class TablePage extends FormPage {
 		);
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private class Label extends BaseTableLabel {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Icon.CLIMATE_16.img() : null;
+			if (col != 0)
+				return null;
+			if (!(obj instanceof WeatherStationDescriptor))
+				return null;
+			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
+			return entity.isProtected ? Icon.LOCK_16.img() : Icon.CLIMATE_16.img();
+		}
+		
+		@Override
+		public Font getFont(Object obj) {
+			if (!(obj instanceof WeatherStationDescriptor))
+				return null;
+			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
+			if (entity.isProtected)
+				return UI.italicFont();
+			return null;
+		}
+
+		@Override
+		public Color getForeground(Object obj) {
+			if (!(obj instanceof WeatherStationDescriptor))
+				return null;
+			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
+			if (entity.isProtected)
+				return Colors.getDarkGray();
+			return null;
 		}
 
 		@Override

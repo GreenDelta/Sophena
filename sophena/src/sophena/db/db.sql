@@ -15,6 +15,7 @@ CREATE TABLE tbl_weather_stations (
     longitude   		DOUBLE,
     latitude    		DOUBLE,
     altitude   			DOUBLE,
+    reference_longitude DOUBLE,
     data        		BLOB (80 K),
     direct_radiation    BLOB (80 K),
     diffuse_radiation   BLOB (80 K),

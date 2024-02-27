@@ -1,18 +1,5 @@
 package sophena.calc;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.TemporalUnit;
-import java.util.Date;
-import java.util.TimeZone;
-
-import org.apache.poi.xssf.usermodel.BaseXSSFEvaluationWorkbook;
-
 import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.HoursTrace;
@@ -84,12 +71,12 @@ public class SolarCalcState {
 
 		// °
 		double BG = project.weatherStation.latitude;
-		// °
-		//TODO: SCFW longitude ist offenbar negiert, warum auch immer 
-		double LG = -project.weatherStation.longitude;
 
 		// °
-		double MERI = getReferenceLongitude(hour);
+		double LG = project.weatherStation.longitude;
+
+		// °
+		double MERI = project.weatherStation.referenceLongitude;
 		
 		// °C
 		double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
@@ -345,20 +332,6 @@ public class SolarCalcState {
 	{
 		return x * x;
 	} 
-
-	private double getReferenceLongitude(int hour)
-	{
-		int year = LocalDate.now().getYear();
-		LocalDateTime localDateTime = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-		localDateTime = localDateTime.plusHours(hour);
-
-		ZoneId zoneId = ZoneId.systemDefault();
-		ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, zoneId);
-		ZoneOffset zoneOffset = zonedDateTime.getOffset();
-		boolean isSummertime = zoneOffset.getTotalSeconds() != zoneId.getRules().getOffset(localDateTime).getTotalSeconds();
-		
-		return isSummertime ? -30 : -15;
-	}
 	
 	private double getEWFOW(double degrees)
 	{

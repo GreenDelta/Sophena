@@ -5,7 +5,6 @@ import sophena.calc.SolarCalcState;
 import sophena.model.HeatRecovery;
 import sophena.model.Producer;
 import sophena.model.ProductType;
-import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.Stats;
 
 public class Producers {

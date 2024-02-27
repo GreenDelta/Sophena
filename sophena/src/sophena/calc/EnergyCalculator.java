@@ -1,7 +1,6 @@
 package sophena.calc;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import sophena.math.energetic.SeasonalItem;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
