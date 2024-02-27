@@ -49,21 +49,9 @@ class EnergyCalculator {
 			if(hour == 01)
 				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity(false);
 
-			double requiredLoad = r.loadCurve[hour];
-			double maxLoad = requiredLoad + r.bufferCapacity[hour];
-			
+			double requiredLoad = r.loadCurve[hour];			
 			double suppliedPower = 0;
-
-			boolean isSummerMode = r.producers.length > 0
-					&& requiredLoad < Producers.minPower(r.producers[0], solarCalcStates.get(r.producers[0]), hour)
-					&& !r.producers[0].hasProfile();
-			if (isSummerMode && bufferCalcState.getLoadFactor(false) > 0.9) {
-				// set the load `loadBuffer` flag to false when the buffer is
-				// full; because of buffer loss it may is never really full so
-				// we set some arbitrary cutoff for now.
-				loadBuffer = false;
-			}
-			
+		
 			boolean haveAtLeastOneHTProducer = false;
 
 			for (int k = 0; k < r.producers.length; k++) {
@@ -79,59 +67,64 @@ class EnergyCalculator {
 					break;
 
 				Producer producer = r.producers[k];
-
-				if (bufferCalcState.totalUnloadableHTPower() >= requiredLoad) {
-					// the required load can be fully taken from the buffer.
-					// we do not take any producer when we are in summer mode.
-					// and no peak load producer in this case
-					if (isSummerMode && !loadBuffer)
-						break;
-					if (producer.function == ProducerFunction.PEAK_LOAD)
-						continue;
-				}
-
+			
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
-				if(solarCalcState != null && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
+				boolean isSolarProducer = solarCalcState != null;
+				boolean isHTProducer = isProducerHT(producer, solarCalcState);
+
+				if(isSolarProducer && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
 					continue;
-
-				if (isSummerMode) {
-					loadBuffer = true;
-					var bufferCapacity = isProducerHT(producer, solarCalcState)
-							? bufferCalcState.CalcHTCapacity(solarCalcState == null)
-							: bufferCalcState.CalcNTCapacity(solarCalcState == null);
-					if (bufferCapacity < Producers.minPower(
-							r.producers[0], solarCalcState, hour)) {
-						// set buffer loading to false when the minimal power of
-						// the producer with rank=1 is lower than the capacity
-						// of the buffer; this also avoids buffer loading with
-						// secondary producers in the summer mode
-						loadBuffer = false;
-					}
-				}
-
+			
 				// check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
-				if (maxLoad < Producers.minPower(producer, solarCalcState, hour))
+
+				double maxLoad = requiredLoad + bufferCalcState.CalcHTCapacity(!isSolarProducer);
+				double power = getSuppliedPower(producer, hour, solarCalcState, requiredLoad, maxLoad);
+				
+				if (bufferCalcState.totalUnloadableHTPower() > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
+					continue;
+				
+				if(isHTProducer && !isSolarProducer && power > maxLoad)
 					continue;
 
-				double power = getSuppliedPower(producer, hour, solarCalcState,
-						requiredLoad, maxLoad);
-				if (power > requiredLoad) {
-					var surplus = power - requiredLoad;
-					
-					boolean isHT = isProducerHT(producer, solarCalcState);
-					bufferCalcState.load(hour, surplus, isHT, solarCalcState == null);
+				if(isHTProducer)
+				{
+					// Mainly use HT power for the heatnet and leftover to charge the buffer 
+					double surplus = power - requiredLoad;					
+					if(surplus > 0)	
+					{
+						surplus = bufferCalcState.load(hour, surplus, isHTProducer, !isSolarProducer);					
+						requiredLoad = 0;
+						power -= surplus;
+					}
+					else
+						requiredLoad -= power;					
 				}
-				suppliedPower += power;
-				maxLoad -= power;
-				requiredLoad -= power;
+				else
+				{
+					// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
+					double surplus = bufferCalcState.load(hour, power, isHTProducer, !isSolarProducer);
+					if(surplus < requiredLoad)
+					{
+						requiredLoad -= surplus;
+						surplus = 0;
+					}
+					else
+					{
+						surplus -= requiredLoad;
+						requiredLoad = 0;												
+					}
+					power -= surplus;
+				}
+				
+				suppliedPower += power;					
 				r.producerResults[k][hour] = power;
 
-				if(solarCalcState != null)
+				if(isSolarProducer)
 					solarCalcState.setConsumedPower(power * 1000);
 
-				if(isProducerHT(producer, solarCalcState))
+				if(isHTProducer)
 					haveAtLeastOneHTProducer = true;
 
 				if(bufferCalcState.totalUnloadableHTPower() > requiredLoad) {
