@@ -46,7 +46,7 @@ class FurtherResultsPage extends FormPage {
 		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
 		EfficiencyChart.create(efficiency, body, tk);
 		new KeyFigureTable().render(s.apply("Kennzahlen Wärmenetz"), tk);
-		form.reflow(true);
+		form.reflow(true);		
 	}
 
 	private class KeyFigureTable {

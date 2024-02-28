@@ -33,8 +33,6 @@ class EnergyCalculator {
 		EnergyResult r = new EnergyResult(project);
 		boolean[][] interruptions = interruptions(r);
 
-		boolean loadBuffer = false; // a flag for the summer mode
-		
 		Map<Producer, SolarCalcState> solarCalcStates = new HashMap<Producer, SolarCalcState>();
 
 		for(Producer producer: r.producers)

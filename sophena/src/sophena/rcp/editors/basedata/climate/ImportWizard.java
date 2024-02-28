@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.io.ClimateFileSettings;
 import sophena.io.HoursProfile;
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
@@ -92,7 +91,6 @@ class ImportWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private ClimateFileSettings settings = ClimateFileSettings.getDefault();
 		private File file;
 
 		private Page() {

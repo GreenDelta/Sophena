@@ -80,7 +80,7 @@ public class BuildingStateEditor extends Editor {
 					"Volllaststunden", "Voreinstellung");
 			table.setContentProvider(new TableContent(label));
 			table.setLabelProvider(label);
-			table.setSorter(new TableSorter());
+			table.setComparator(new TableSorter());
 			table.setInput(states);
 			double x = 1 / 7d;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);

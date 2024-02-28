@@ -65,7 +65,6 @@ public class SaveAsAction extends NavigationAction {
 	private String checkName(String name) {
 		if (name == null || name.trim().length() == 0)
 			return "Der Name darf nicht leer sein";
-		String n = name.trim();
 		// TODO: search in database
 		// for (Project var : descriptor.getVariants()) {
 		// if (n.equalsIgnoreCase(var.getName()))

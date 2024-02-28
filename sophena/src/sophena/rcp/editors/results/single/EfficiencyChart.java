@@ -20,7 +20,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 
-class EfficiencyChart {
+class EfficiencyChart  {
 
 	private final EfficiencyResult result;
 	private final ColorConfig colors = ColorConfig.get();
@@ -37,8 +37,6 @@ class EfficiencyChart {
 
 	private void render(Composite body, FormToolkit tk) {
 		var section = UI.section(body, tk, "Verwendung Brennstoffenergie");
-		Actions.bind(section, ImageExport.forChart(
-				"Brennstoffenergie.jpg", () -> chart));
 		var comp = UI.sectionClient(section, tk);
 		chart = new Chart(comp, SWT.NONE);
 		var data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
@@ -49,6 +47,8 @@ class EfficiencyChart {
 		chart.setOrientation(SWT.VERTICAL);
 		chart.getTitle().setVisible(false);
 		var set = chart.getSeriesSet();
+		Actions.bind(section, ImageExport.forChart(
+				"Brennstoffenergie.jpg", () -> chart));
 
 		addSeries(set, ColorKey.USED_HEAT);
 		if (result.producedElectrictiy > 0) {
@@ -123,5 +123,4 @@ class EfficiencyChart {
 		}
 		y.setRange(new Range(0, max));
 	}
-
 }

@@ -1,11 +1,11 @@
 package sophena.rcp.editors.basedata.buildings;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
 import sophena.model.BuildingState;
 
-class TableSorter extends ViewerSorter {
+class TableSorter extends ViewerComparator {
 
 	@Override
 	public int compare(Viewer viewer, Object o1, Object o2) {

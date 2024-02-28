@@ -2,11 +2,11 @@ package sophena.rcp.utils;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
 import sophena.utils.Strings;
 
-public class TableColumnSorter<T> extends ViewerSorter {
+public class TableColumnSorter<T> extends ViewerComparator {
 	private Class<T> contentType;
 	private int column;
 	private boolean ascending = true;

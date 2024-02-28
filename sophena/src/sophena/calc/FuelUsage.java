@@ -5,7 +5,6 @@ import java.util.HashMap;
 import sophena.math.energetic.CalorificValue;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
-import sophena.model.Boiler;
 import sophena.model.FuelSpec;
 import sophena.model.Producer;
 
@@ -37,7 +36,6 @@ public class FuelUsage {
 	private static double calcKWh(ProjectResult r, Producer producer) {
 		double Qgen = r.energyResult.totalHeat(producer);
 		r.calcLog.value("Qgen: erzeugte Wärme", Qgen, "KWh");
-		Boiler boiler = producer.boiler;
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer,

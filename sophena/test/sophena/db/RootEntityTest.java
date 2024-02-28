@@ -23,7 +23,7 @@ public class RootEntityTest {
 	}
 
 	private <T extends RootEntity> void test(Class<T> clazz) throws Exception {
-		T entity = clazz.newInstance();
+		T entity = clazz.getDeclaredConstructor().newInstance();
 		RootEntityDao<T> dao = new RootEntityDao<>(clazz, Tests.getDb());
 		entity.id = UUID.randomUUID().toString();
 		entity.name = "test";

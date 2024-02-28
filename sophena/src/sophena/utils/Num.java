@@ -114,7 +114,7 @@ public class Num {
 	}
 
 	public static boolean equal(double d1, double d2) {
-		return equal(d1, d2, 1e-2);
+		return equal(d1, d2, 1e-7);
 	}
 
 	public static boolean equal(double d1, double d2, double epsilon) {
