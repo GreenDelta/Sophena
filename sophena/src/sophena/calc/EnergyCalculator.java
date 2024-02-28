@@ -72,20 +72,27 @@ class EnergyCalculator {
 				boolean isSolarProducer = solarCalcState != null;
 				boolean isHTProducer = isProducerHT(producer, solarCalcState);
 
+				// Check whether the collector is working for the current hour
 				if(isSolarProducer && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
 					continue;
 			
-				// check whether the producer can be taken
+				// Check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
 
-				double maxLoad = requiredLoad + bufferCalcState.CalcHTCapacity(!isSolarProducer);
+				// Maximum amout of power currently needed for heatnet and buffer				
+				double maxLoad = requiredLoad + isHTProducer ?
+					bufferCalcState.CalcHTCapacity(!isSolarProducer) :
+					bufferCalcState.CalcNTCapacity(!isSolarProducer);
+					
 				double power = getSuppliedPower(producer, hour, solarCalcState, requiredLoad, maxLoad);
 				
+				// Don't use expensive peek load producer if the buffer has enaught HT power left to satisfy the heatnet 
 				if (bufferCalcState.totalUnloadableHTPower() > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
-				if(isHTProducer && !isSolarProducer && power > maxLoad)
+				// Always take solar power. If more then needed it will heat up the collector until stagnation
+				if(!isSolarProducer && power > maxLoad)
 					continue;
 
 				if(isHTProducer)
@@ -105,6 +112,7 @@ class EnergyCalculator {
 				{
 					// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
 					double surplus = bufferCalcState.load(hour, power, isHTProducer, !isSolarProducer);
+					// Not sure if this is ok, because we need min. on HT producer for return temperature increasement 
 					if(surplus < requiredLoad)
 					{
 						requiredLoad -= surplus;
@@ -121,14 +129,16 @@ class EnergyCalculator {
 				suppliedPower += power;					
 				r.producerResults[k][hour] = power;
 
+				// Write back used power in order to heat up the collector with the not used part
 				if(isSolarProducer)
 					solarCalcState.setConsumedPower(power * 1000);
 
+				// Only if min. one HT producer is used at the current hour NT engery from the buffer can be unloaded in order to increase return temperature
 				if(isHTProducer)
 					haveAtLeastOneHTProducer = true;
 
+				// Take the rest from buffer and do not use further producers if possible
 				if(bufferCalcState.totalUnloadableHTPower() > requiredLoad) {
-					// take rest from buffer
 					break;
 				}
 			} // end producer loop
