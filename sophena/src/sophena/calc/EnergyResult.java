@@ -109,6 +109,24 @@ public class EnergyResult {
 		return 0;
 	}
 
+	public double maxPeakPower(Producer p)
+	{
+		if (p == null)
+			return 0;
+		double max = 0;
+		double power = 0;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				for (int hour = 0; hour < Stats.HOURS; hour++) {
+					power = producerResults[i][hour];
+					if (power > max)
+						max = power;
+				}
+			}
+		}
+		return max;
+	}
+	
 	public EnergyResult sort() {
 		return EnergyResultSorter.sort(this);
 	}

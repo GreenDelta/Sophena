@@ -114,7 +114,12 @@ class InfoPage extends FormPage {
 		});
 		if(producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
 		{
-			c.select(0);
+			if(c.getSelectionIndex() != 0)
+			{
+				c.select(0);
+				producer().function = ProducerFunction.BASE_LOAD;
+				editor.setDirty();
+			}
 			c.setEnabled(false);
 		}
 	}

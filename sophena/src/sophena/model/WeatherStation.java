@@ -25,6 +25,9 @@ public class WeatherStation extends BaseDataEntity {
 
 	@Column(name = "altitude")
 	public double altitude;
+	
+	@Column(name = "reference_longitude")
+	public double referenceLongitude;
 
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
@@ -48,6 +51,7 @@ public class WeatherStation extends BaseDataEntity {
 		copy.longitude = longitude;
 		copy.latitude = latitude;
 		copy.altitude = altitude;
+		copy.referenceLongitude = referenceLongitude;
 		copy.data = data != null
 				? Arrays.copyOf(data, data.length)
 				: null;
@@ -67,7 +71,8 @@ public class WeatherStation extends BaseDataEntity {
 		d.description = description;
 		d.longitude = longitude;
 		d.latitude = latitude;
-		d.altitude = altitude;
+		d.altitude = altitude;		
+		d.isProtected = isProtected;
 		return d;
 	}
 }

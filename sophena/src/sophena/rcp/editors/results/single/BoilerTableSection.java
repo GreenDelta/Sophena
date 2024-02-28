@@ -74,7 +74,8 @@ class BoilerTableSection {
 		for (Producer p : producers) {
 			var item = new Item();
 			item.name = p.name;
-			item.powerOrVolume = Num.intStr(Producers.maxPower(p)) + " kW";
+			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null ? result.maxPeakPower(p) : Producers.maxPower(p);
+			item.powerOrVolume = Num.intStr(maxPower) + " kW";
 			item.rank = p.function == ProducerFunction.BASE_LOAD
 					? p.rank + " - Grundlast"
 					: p.rank + " - Spitzenlast";
@@ -85,7 +86,7 @@ class BoilerTableSection {
 					+ " " + Labels.getFuelUnit(p);
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			item.share = GeneratedHeat.share(heat, result) + " %";
-			item.fullLoadHours = (int) Producers.fullLoadHours(p, heat);
+			item.fullLoadHours = maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower);;
 			item.utilisationRate = p.boiler != null && p.boiler.isCoGenPlant
 					? p.boiler.efficiencyRate
 					: UtilisationRate.get(project, p, result);
@@ -96,7 +97,7 @@ class BoilerTableSection {
 			items.add(item);
 		}
 	}
-
+	
 	private void addBufferItem(List<Item> items) {
 		var sep = new Item();
 		sep.separator = true;

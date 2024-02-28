@@ -1,9 +1,7 @@
 package sophena.rcp.editors.basedata.climate;
 
 import java.io.File;
-import java.util.UUID;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -88,6 +86,7 @@ class ImportWizard extends Wizard {
 	@Override
 	public void addPages() {
 		page = new Page();
+		page.setPageComplete(!station.isProtected);
 		addPage(page);
 	}
 
@@ -110,6 +109,7 @@ class ImportWizard extends Wizard {
 			createLongitudeRow(comp);
 			createLatitudeRow(comp);
 			createAltitudeRow(comp);
+			createReferenceLongitudeRow(comp);
 			createFileSection(comp);
 		}
 
@@ -155,6 +155,17 @@ class ImportWizard extends Wizard {
 				});
 			UI.formLabel(comp, "m");
 			UI.filler(comp);			
+		}
+		
+		private void createReferenceLongitudeRow(Composite comp) {
+			Text t = UI.formText(comp, M.ReferenceLongitude);
+			Texts.on(t).decimal().required()
+				.init(station.referenceLongitude)
+				.onChanged((s) -> {
+					station.referenceLongitude = Texts.getDouble(t);
+				});
+			UI.formLabel(comp, "°");
+			HelpLink.create(comp, M.ReferenceLongitude, H.ReferenceLongitudeInfo);			
 		}
 
 		private void createFileSection(Composite comp) {
