@@ -109,6 +109,20 @@ public class EnergyResult {
 		return 0;
 	}
 
+	public double maxPeakPowerOfAllProducers()
+	{
+		double max = 0;
+		double producerPower;
+		for (Producer p : producers) {
+			if (p.disabled)
+				continue;
+			producerPower = maxPeakPower(p);
+			if (producerPower > max)
+				max = producerPower;
+		}
+		return max;
+	}
+	
 	public double maxPeakPower(Producer p)
 	{
 		if (p == null)
