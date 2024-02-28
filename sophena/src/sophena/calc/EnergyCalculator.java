@@ -78,10 +78,10 @@ class EnergyCalculator {
 				if (isInterrupted(k, hour, interruptions))
 					continue;
 
-				// Maximum amout of power currently needed for heatnet and buffer				
-				double maxLoad = requiredLoad + isHTProducer ?
+				// Maximum amount of power currently needed for heatnet and buffer				
+				double maxLoad = requiredLoad + (isHTProducer ?
 					bufferCalcState.CalcHTCapacity(!isSolarProducer) :
-					bufferCalcState.CalcNTCapacity(!isSolarProducer);
+					bufferCalcState.CalcNTCapacity(!isSolarProducer));
 					
 				double power = getSuppliedPower(producer, hour, solarCalcState, requiredLoad, maxLoad);
 				
