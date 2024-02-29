@@ -33,8 +33,10 @@ class EmissionTable {
 		TableViewer table = Tables.createViewer(comp, "", "Emissionen");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Tables.rightAlignColumns(table, 1);
-		Tables.autoSizeColumns(table);
+		Tables.rightAlignColumns(table, 1);		
+		//Tables.autoSizeColumns(table);		
+		table.getTable().getColumn(0).setWidth(200);
+		table.getTable().getColumn(1).setWidth(200);
 	}
 
 	private List<Item> createItems() {

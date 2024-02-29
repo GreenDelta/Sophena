@@ -34,7 +34,10 @@ class EfficiencyTable {
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2);
-		Tables.autoSizeColumns(table);
+		//Tables.autoSizeColumns(table);
+		table.getTable().getColumn(0).setWidth(200);
+		table.getTable().getColumn(1).setWidth(200);
+		table.getTable().getColumn(2).setWidth(200);
 	}
 
 	private List<Item> createItems() {
