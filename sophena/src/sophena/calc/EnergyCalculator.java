@@ -83,7 +83,7 @@ class EnergyCalculator {
 					
 				double power = getSuppliedPower(producer, hour, solarCalcState, requiredLoad, maxLoad);
 				
-				// Don't use expensive peek load producer if the buffer has enaught HT power left to satisfy the heatnet 
+				// Don't use expensive peek load producer if the buffer has enaugh HT power left to satisfy the heatnet 
 				if (bufferCalcState.totalUnloadableHTPower() > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
@@ -108,7 +108,7 @@ class EnergyCalculator {
 				{
 					// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
 					double surplus = bufferCalcState.load(hour, power, isHTProducer, !isSolarProducer);
-					// Not sure if this is ok, because we need min. on HT producer for return temperature increasement 
+					// Not sure if this is ok, because we need min. one HT producer for return temperature increasement 
 					if(surplus < requiredLoad)
 					{
 						requiredLoad -= surplus;
