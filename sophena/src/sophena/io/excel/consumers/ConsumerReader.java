@@ -1,10 +1,12 @@
 package sophena.io.excel.consumers;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.utils.Result;
+import sophena.utils.Strings;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,25 +45,61 @@ public class ConsumerReader {
 		}
 	}
 
-	private List<ConsumerRow> readRowsFrom(Workbook wb) {
-		var consumers = new ArrayList<ConsumerRow>();
+	private List<ConsumerEntry> readRowsFrom(Workbook wb) {
+		var entries = new ArrayList<ConsumerEntry>();
 		for (var it = wb.sheetIterator(); it.hasNext(); ) {
+
+			// check  each sheet, if there is an entry in the
+			// top-left cell, we will read the content
 			var sheet = it.next();
 			var head = RowReader.of(sheet.getRow(0)).orElse(null);
 			if (head == null || head.str(0) == null)
 				continue;
-			for (var rowIt = sheet.rowIterator(); rowIt.hasNext(); ) {
-				var row = rowIt.next();
-				if (row.getRowNum() == 0)
-					continue;
+
+			// read the consumer rows
+			var nextIdx = 1;
+			Row row;
+			while ((row = sheet.getRow(nextIdx)) != null) {
+				nextIdx++;
 				var r = RowReader.of(row).orElse(null);
-				if (r == null)
+				if (r == null || Strings.nullOrEmpty(r.str(0)))
 					continue;
-				ConsumerRow.readFrom(r).ifPresent(consumers::add);
+				var entry = ConsumerEntry.readFrom(r).orElse(null);
+				if (entry == null)
+					continue;
+				entries.add(entry);
+
+				if (!entry.isConsumptionBased())
+					continue;
+
+				// read fuel entries
+				var fuelRow = r;
+				while (true) {
+					var e = FuelEntry.readFrom(fuelRow).orElse(null);
+					if (e == null)
+						break;
+					entry.add(e);
+					fuelRow = RowReader.of(sheet.getRow(nextIdx)).orElse(null);
+					if (isFuelContinuationRow(fuelRow)) {
+						nextIdx++;
+					} else {
+						break;
+					}
+				}
 			}
 		}
-		return consumers;
+		return entries;
 	}
 
-
+	/**
+	 * A consumer can have multiple fuel entries. The first entry is in the
+	 * same row as the consumer definition. Additional entries are under the
+	 * rows below.
+	 */
+	private boolean isFuelContinuationRow(RowReader r) {
+		if (r == null)
+			return false;
+		return Strings.nullOrEmpty(r.str(Field.NAME))
+				&& Strings.notEmpty(r.str(Field.FUEL));
+	}
 }
