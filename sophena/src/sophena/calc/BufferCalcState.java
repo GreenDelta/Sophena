@@ -62,10 +62,14 @@ public class BufferCalcState {
 	{
 		this.project = project;
 		this.log = log;
-		
+
+		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, 0);
+		TV = seasonalItem.flowTemperature;
+		TR = seasonalItem.returnTemperature;
+
+		TMAX = project.heatNet.maxBufferLoadTemperature;
 		QP_HT = 0.5 * maxCapacity(project.heatNet);
 		QP_NT = 0;
-		TMAX = project.heatNet.maxBufferLoadTemperature;
 		
 		bufferLossFactor = lossFactor(project.heatNet);
 	}
