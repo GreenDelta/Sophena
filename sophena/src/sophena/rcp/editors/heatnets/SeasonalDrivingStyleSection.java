@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import sophena.model.HeatNet;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.Texts;
@@ -32,6 +34,11 @@ public class SeasonalDrivingStyleSection {
 	private Text tFlowTemperatureSummer;
 	private Text tReturnTemperatureWinter;
 	private Text tReturnTemperatureSummer;
+	
+	private static String summerStart = "--02-15";
+	private static String summerEnd = "--09-15";
+	private static String winterStart = "--11-15";
+	private static String winterEnd = "--03-15";
 	
 	SeasonalDrivingStyleSection(HeatNetEditor editor) {
 		this.editor = editor;
@@ -104,10 +111,16 @@ public class SeasonalDrivingStyleSection {
 		startBoxWinter = new MonthDayBox("", comp, tk);
 		TimeInterval intervalWinter = heatNet().intervalWinter;
 		if (intervalWinter != null) {
+			if(intervalWinter.start == null)
+				intervalWinter.start = winterStart;
+			if(intervalWinter.end == null)
+				intervalWinter.end = winterEnd;
 			initBoxValue(startBoxWinter, intervalWinter.start);
 		} else {
 			intervalWinter = new TimeInterval();
 			intervalWinter.id = UUID.randomUUID().toString();
+			intervalWinter.start = winterStart;
+			intervalWinter.end = winterEnd;
 			heatNet().intervalWinter = intervalWinter;
 		}
 		startBoxWinter.onSelect((monthDay) -> {
@@ -121,10 +134,16 @@ public class SeasonalDrivingStyleSection {
 		startBoxSummer = new MonthDayBox("", comp, tk);
 		TimeInterval intervalSummer = heatNet().intervalSummer;
 		if (intervalSummer != null) {
+			if(intervalSummer.start == null)
+				intervalSummer.start = summerStart;
+			if(intervalSummer.end == null)
+				intervalSummer.end = summerEnd;
 			initBoxValue(startBoxSummer, intervalSummer.start);
 		} else {
 			intervalSummer = new TimeInterval();
 			intervalSummer.id = UUID.randomUUID().toString();
+			intervalSummer.start = summerStart;
+			intervalSummer.end = summerEnd;
 			heatNet().intervalSummer = intervalSummer;
 		}
 		startBoxSummer.onSelect((monthDay) -> {
@@ -134,7 +153,8 @@ public class SeasonalDrivingStyleSection {
 			i.start = monthDay.toString();
 			editor.setDirty();
 		});
-		UI.filler(comp);
+		HelpLink.create(comp, tk, "Zwischenzeiten",
+				H.InterpolationInfo);
 
 		UI.formLabel(comp, tk, M.End);
 		endBoxWinter = new MonthDayBox("", comp, tk);

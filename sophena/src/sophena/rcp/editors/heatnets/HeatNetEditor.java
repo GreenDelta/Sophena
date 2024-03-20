@@ -1,5 +1,7 @@
 package sophena.rcp.editors.heatnets;
 
+import java.time.MonthDay;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -10,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import sophena.db.daos.ProjectDao;
 import sophena.model.HeatNet;
 import sophena.model.Project;
+import sophena.model.TimeInterval;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -108,6 +112,23 @@ public class HeatNetEditor extends Editor {
 			MsgBox.error("Plausibilitätsfehler",
 					"Die maximale Entladeleistung muss größer als 0 sein.");
 			return false;
+		}
+		if(heatNet.isSeasonalDrivingStyle)
+		{
+			TimeInterval intervalSummer = heatNet.intervalSummer;
+			TimeInterval intervalWinter = heatNet.intervalWinter;
+			if((intervalSummer.start != null) && (intervalWinter.end != null) && MonthDay.parse(intervalSummer.start).compareTo(MonthDay.parse(intervalWinter.end)) > 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						M.StartSummerError);
+				return false;
+			}	
+			if((intervalSummer.end != null) && (intervalWinter.start != null) && MonthDay.parse(intervalSummer.end).compareTo(MonthDay.parse(intervalWinter.start)) > 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						M.EndSummerError);
+				return false;
+			}	
 		}
 		return true;
 	}

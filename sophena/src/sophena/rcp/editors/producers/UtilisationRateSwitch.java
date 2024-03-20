@@ -75,6 +75,8 @@ class UtilisationRateSwitch {
 			HelpLink.create(comp, tk, title, H.AnnualCOP);
 		} else if (Producers.isCoGenPlant(producer())) {
 			HelpLink.create(comp, tk, title, H.UtilisationRate);
+		}else if (producer().solarCollector != null) {
+			HelpLink.create(comp, tk, title, H.UtilisationRateSolarInfo);
 		} else {
 			UI.filler(comp, tk);
 		}

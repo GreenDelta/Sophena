@@ -201,6 +201,10 @@ class ImportWizard extends Wizard {
 				MsgBox.error(M.PlausibilityErrors, M.AltitudeError);
 				return false;
 			}
+			if (station.referenceLongitude < -180 || station.referenceLongitude > 180) {
+				MsgBox.error(M.PlausibilityErrors, M.ReferenceLongitudeError);
+				return false;
+			}
 			if (station.data == null && file == null) {
 				MsgBox.error(M.PlausibilityErrors, M.NoFileError);
 				return false;

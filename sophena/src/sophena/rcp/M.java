@@ -140,6 +140,10 @@ public class M extends NLS {
     public static String FileImportError;
     public static String FileImportCountError;
     public static String ReferenceLongitude;
+    public static String ReferenceLongitudeError;
+    
+    public static String StartSummerError;
+    public static String EndSummerError;
     
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
