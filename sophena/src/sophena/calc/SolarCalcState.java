@@ -73,7 +73,7 @@ public class SolarCalcState {
 		double BG = project.weatherStation.latitude;
 
 		// °
-		double LG = project.weatherStation.longitude;
+		double LG = -project.weatherStation.longitude;
 
 		// °
 		double MERI = project.weatherStation.referenceLongitude;
