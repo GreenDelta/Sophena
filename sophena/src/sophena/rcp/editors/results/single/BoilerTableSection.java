@@ -49,14 +49,31 @@ class BoilerTableSection {
 		UI.gridData(section, true, false);
 		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		var table = Tables.createViewer(comp, M.HeatProducer, "Rang",
-				"Nennleistung", "Brennstoffverbrauch", M.GeneratedHeat,
-				"Anteil", "Volllaststunden", "Nutzungsgrad", "Starts", "Stagnationstage");
+		List<Item> items = getItems();
+		boolean showStagnationDays = false;
+		for(int i = 0; i < items.size(); i++)
+			if(items.get(i).showStagnationDays)
+				showStagnationDays = true;
+		
+		List<String> properties = new ArrayList<String>();
+		properties.add(M.HeatProducer);
+		properties.add("Rang");
+		properties.add("Nennleistung");
+		properties.add("Brennstoffverbrauch");
+		properties.add(M.GeneratedHeat);
+		properties.add("Anteil");
+		properties.add("Volllaststunden");
+		properties.add("Nutzungsgrad");
+		properties.add("Starts");
+		if(showStagnationDays)
+			properties.add("Stagnationstage");
+		
+		var table = Tables.createViewer(comp, properties.toArray(new String[0]));
 		table.setLabelProvider(new Label());
 		double w = 1.0 / 10.0;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w);
 		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9);
-		table.setInput(getItems());
+		table.setInput(items);
 	}
 
 	private List<Item> getItems() {
@@ -93,6 +110,7 @@ class BoilerTableSection {
 			item.clocks = result.numberOfStarts(p);
 			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
 				item.stagnationDays = result.stagnationDays(p);
+				item.showStagnationDays = true;
 			}
 			items.add(item);
 		}
@@ -150,6 +168,7 @@ class BoilerTableSection {
 		Double utilisationRate;
 		Integer clocks;
 		Integer stagnationDays;
+		boolean showStagnationDays;
 		boolean separator = false;
 	}
 
