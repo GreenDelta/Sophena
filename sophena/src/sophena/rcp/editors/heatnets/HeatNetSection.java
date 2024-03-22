@@ -10,9 +10,11 @@ import sophena.calc.ProjectLoad;
 import sophena.db.daos.ProjectDao;
 import sophena.math.Smoothing;
 import sophena.math.energetic.HeatNets;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
@@ -31,6 +33,8 @@ class HeatNetSection {
 
 	private Composite comp;
 	private FormToolkit tk;
+	private Text supplyTemperatureText;
+	private Text returnTemperatureText; 
 	private Text lengthText;
 	private Text powerLossText;
 	private Text maxLoadText;
@@ -59,12 +63,14 @@ class HeatNetSection {
 		smoothingFactorRow();
 		maxSimultaneousLoadRow();
 		editor.bus.on("pipes", this::colorTexts);
+		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
 		colorTexts();
+		seasonalDrivingChanged();
 	}
 
 	private void supplyTemperatureRow() {
-		Text t = UI.formText(comp, tk, "Vorlauftemperatur");
-		Texts.on(t).init(net().supplyTemperature).decimal().required()
+		supplyTemperatureText = UI.formText(comp, tk, "Vorlauftemperatur");
+		Texts.on(supplyTemperatureText).init(net().supplyTemperature).decimal().required()
 				.onChanged(s -> {
 					net().supplyTemperature = Num.read(s);
 					editor.bus.notify("supplyTemperature");
@@ -75,8 +81,8 @@ class HeatNetSection {
 	}
 
 	private void returnTemperatureRow() {
-		Text t = UI.formText(comp, tk, "Rücklauftemperatur");
-		Texts.on(t).init(net().returnTemperature).decimal().required()
+		returnTemperatureText = UI.formText(comp, tk, "Rücklauftemperatur");
+		Texts.on(returnTemperatureText).init(net().returnTemperature).decimal().required()
 				.onChanged(s -> {
 					net().returnTemperature = Num.read(s);
 					editor.bus.notify("returnTemperature");
@@ -164,6 +170,33 @@ class HeatNetSection {
 		} else {
 			smoothingFactorText.setBackground(Colors.forModifiedDefault());
 		}
+	}
+	
+	private void seasonalDrivingChanged()
+	{
+		if(net().isSeasonalDrivingStyle)
+		{
+			double averageFlowTemperature = 0;
+			double averageReturnTempeature = 0;
+			for(int hour = 0; hour < Stats.HOURS; hour++)
+			{
+				SeasonalItem seasonalItem = SeasonalItem.calc(editor.heatNet, hour);
+				averageFlowTemperature += seasonalItem.flowTemperature;
+				averageReturnTempeature += seasonalItem.returnTemperature;
+			}
+			averageFlowTemperature /= Stats.HOURS;
+			averageReturnTempeature /= Stats.HOURS;
+
+			editor.heatNet.supplyTemperature = Math.ceil(averageFlowTemperature);
+			editor.heatNet.returnTemperature = Math.floor(averageReturnTempeature);
+
+			supplyTemperatureText.setText(Num.str(net().supplyTemperature));
+			returnTemperatureText.setText(Num.str(net().returnTemperature));
+		}
+
+		boolean enable = !net().isSeasonalDrivingStyle;
+		supplyTemperatureText.setEnabled(enable);
+		returnTemperatureText.setEnabled(enable);
 	}
 
 	private void maxLoadRow() {

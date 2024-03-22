@@ -10,7 +10,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.HeatNet;
+import sophena.model.Stats;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
 import sophena.rcp.help.H;
@@ -82,6 +84,7 @@ public class SeasonalDrivingStyleSection {
 			boolean enabled = check.getSelection();
 			enableControls(enabled);
 			heatNet().isSeasonalDrivingStyle = enabled;
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 	}	
@@ -128,6 +131,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.start = monthDay.toString();
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
@@ -151,6 +155,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.start = monthDay.toString();
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		HelpLink.create(comp, tk, "Zwischenzeiten",
@@ -164,6 +169,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.end = monthDay.toString();
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
@@ -174,6 +180,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.end = monthDay.toString();
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
@@ -206,6 +213,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().flowTemperatureWinter)
 		.onChanged((s) -> {
 			heatNet().flowTemperatureWinter = Texts.getDouble(tFlowTemperatureWinter);
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
@@ -214,6 +222,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().flowTemperatureSummer)
 		.onChanged((s) -> {
 			heatNet().flowTemperatureSummer = Texts.getDouble(tFlowTemperatureSummer);
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
@@ -226,6 +235,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().returnTemperatureWinter)
 		.onChanged((s) -> {
 			heatNet().returnTemperatureWinter = Texts.getDouble(tReturnTemperatureWinter);
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
@@ -234,6 +244,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().returnTemperatureSummer)
 		.onChanged((s) -> {
 			heatNet().returnTemperatureSummer = Texts.getDouble(tReturnTemperatureSummer);
+			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
