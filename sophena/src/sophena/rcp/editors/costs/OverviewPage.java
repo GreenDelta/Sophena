@@ -201,7 +201,8 @@ class OverviewPage extends FormPage {
 				}
 				continue;
 			}
-			if (!p.hasProfile())
+			
+			if(p.solarCollectorSpec == null && !p.hasProfile())
 				continue;
 			// producer profiles
 			if (p.productGroup == null
