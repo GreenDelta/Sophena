@@ -43,6 +43,8 @@ public final class Images {
 			return null;
 		case TRANSFER_STATION:
 			return Icon.CONSUMER_16.img();
+		case SOLAR_THERMAL_PLANT:
+			return Icon.SOLARTHERM_16.img();
 		default:
 			return null;
 		}

@@ -132,6 +132,7 @@ public class ActionBarAdvisor extends
 			case BUFFER_TANK -> Icon.BUFFER_16.des();
 			case PIPE -> Icon.PIPE_16.des();
 			case TRANSFER_STATION -> Icon.CONSUMER_16.des();
+			case SOLAR_THERMAL_PLANT -> Icon.SOLARTHERM_16.des();
 			default -> null;
 		};
 	}
