@@ -39,10 +39,10 @@ class EnergyResultPage extends FormPage {
 		var body = UI.formBody(form, tk);
 		new BoilerTableSection(editor, maxLoad)
 				.render(body, tk);
-		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad))
+		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad), maxLoad)
 				.sorted(false)
 				.render(body, tk);
-		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad))
+		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad), maxLoad)
 				.sorted(true)
 				.render(body, tk);
 		createLoadCurve(tk, body);
