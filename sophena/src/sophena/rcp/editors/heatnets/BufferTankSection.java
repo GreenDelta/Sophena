@@ -88,6 +88,7 @@ class BufferTankSection {
 	}
 
 	private void createLowerTempText(Composite comp, FormToolkit tk) {
+		/*
 		Text t = UI.formText(comp, tk, "Untere Ladetemperatur");
 		double initial = net().supplyTemperature;
 		Double lowerBuffTemp = net().lowerBufferLoadTemperature;
@@ -105,6 +106,7 @@ class BufferTankSection {
 		});
 		UI.formLabel(comp, tk, "°C");
 		UI.filler(comp, tk);
+		*/
 	}
 
 	private void createLamdaText(Composite comp, FormToolkit tk) {

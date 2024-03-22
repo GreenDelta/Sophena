@@ -89,6 +89,8 @@ public class HeatNetEditor extends Editor {
 							+ "Ladetemperatur des Pufferspeichers.");
 			return false;
 		}
+
+		/*
 		Double lowerBuffTemp = heatNet.lowerBufferLoadTemperature;
 		if (lowerBuffTemp != null
 				&& lowerBuffTemp > heatNet.maxBufferLoadTemperature) {
@@ -97,6 +99,8 @@ public class HeatNetEditor extends Editor {
 							+ "Ladetemperatur des Pufferspeichers.");
 			return false;
 		}
+		*/
+		
 		if (heatNet.simultaneityFactor < 0 || heatNet.simultaneityFactor > 1) {
 			MsgBox.error("Plausibilitätsfehler",
 					"Der Gleichzeitigkeitsfaktor muss zwischen 0 und 1 liegen.");
