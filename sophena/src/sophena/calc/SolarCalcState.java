@@ -266,7 +266,7 @@ public class SolarCalcState {
 
 	public void setConsumedPower(double consumedPower)
 	{
-		this.consumedPower = consumedPower;
+		this.consumedPower = consumedPower / producer.utilisationRate;
 	}
 
 	public void calcPost(int hour)
@@ -414,7 +414,7 @@ public class SolarCalcState {
 	}
 	
 	public double getAvailablePowerInKWh() {
-		return QS_i / 1000;
+		return QS_i / 1000 * producer.utilisationRate;
 	}
 	
 	public int getNumStagnationDays()
