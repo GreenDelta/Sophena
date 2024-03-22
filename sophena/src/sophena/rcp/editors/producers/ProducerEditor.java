@@ -132,6 +132,12 @@ public class ProducerEditor extends Editor {
 		}
 		if (producer.solarCollectorSpec != null)
 		{
+			if(producer.utilisationRate <= 0)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.UtilizationRateMustBePositive);
+				return false;
+			}
+
 			double alignment = producer.solarCollectorSpec.solarCollectorAlignment;
 			if (alignment < -180 || alignment > 180) {
 				MsgBox.error(M.PlausibilityErrors, M.AlignmentError);

@@ -145,6 +145,8 @@ public class M extends NLS {
     public static String StartSummerError;
     public static String EndSummerError;
     
+    public static String UtilizationRateMustBePositive;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}
