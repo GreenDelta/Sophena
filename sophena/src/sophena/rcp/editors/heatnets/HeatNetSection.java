@@ -197,6 +197,8 @@ class HeatNetSection {
 		boolean enable = !net().isSeasonalDrivingStyle;
 		supplyTemperatureText.setEnabled(enable);
 		returnTemperatureText.setEnabled(enable);
+		
+		colorTexts();
 	}
 
 	private void maxLoadRow() {
