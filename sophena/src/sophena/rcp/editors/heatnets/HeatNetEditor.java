@@ -121,7 +121,7 @@ public class HeatNetEditor extends Editor {
 		{
 			TimeInterval intervalSummer = heatNet.intervalSummer;
 			TimeInterval intervalWinter = heatNet.intervalWinter;
-			if((intervalSummer.start != null) && (intervalWinter.end != null) && MonthDay.parse(intervalSummer.start).compareTo(MonthDay.parse(intervalWinter.end)) > 0)
+			if((intervalSummer.start != null) && (intervalWinter.end != null) && MonthDay.parse(intervalSummer.start).compareTo(MonthDay.parse(intervalWinter.end)) < 0)
 			{
 				MsgBox.error("Plausibilitätsfehler",
 						M.StartSummerError);
