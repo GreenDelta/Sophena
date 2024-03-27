@@ -62,6 +62,9 @@ public class SeasonalItem {
 	
 	private static double linearInterpolation(double startHour, double startValue, double endHour, double endValue, double currentHour)
 	{
-		return startValue + ((endValue - startValue) / (endHour - startHour)) * (currentHour - startHour);
+		double deltaHours = endHour - startHour;
+		if(deltaHours == 0)
+			return startValue;
+		return startValue + ((endValue - startValue) / deltaHours) * (currentHour - startHour);
 	}
 }
