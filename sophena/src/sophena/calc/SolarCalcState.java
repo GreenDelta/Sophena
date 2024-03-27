@@ -73,7 +73,7 @@ public class SolarCalcState {
 		double BG = project.weatherStation.latitude;
 
 		// °
-		double LG = -project.weatherStation.longitude;
+		double LG = project.weatherStation.longitude;
 
 		// °
 		double MERI = project.weatherStation.referenceLongitude;
@@ -156,10 +156,58 @@ public class SolarCalcState {
 		double EWF = EWFOW * EWFNS;
 		
 		double radiation = ETA0 * EWF * SDIK + ETA0 * KDF * SDFK; 
-		
+
 		// Wh
 		QS_i = (radiation - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
 
+		if(hour >= 108 && hour <= 112)
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append("\r\n");
+			sb.append("ALB      ="); sb.append(ALB); sb.append("\r\n");
+			sb.append("A        ="); sb.append(A); sb.append("\r\n");
+			sb.append("ETA0     ="); sb.append(ETA0); sb.append("\r\n");
+			sb.append("KDF      ="); sb.append(KDF); sb.append("\r\n");
+			sb.append("A1       ="); sb.append(A1); sb.append("\r\n");
+			sb.append("A2       ="); sb.append(A2); sb.append("\r\n");
+			sb.append("C        ="); sb.append(C); sb.append("\r\n");
+			sb.append("NW       ="); sb.append(NW); sb.append("\r\n");
+			sb.append("AUS      ="); sb.append(AUS); sb.append("\r\n");
+			sb.append("UEH      ="); sb.append(UEH); sb.append("\r\n");
+			sb.append("TD       ="); sb.append(TD); sb.append("\r\n");
+			sb.append("BG       ="); sb.append(BG); sb.append("\r\n");
+			sb.append("LG       ="); sb.append(LG); sb.append("\r\n");
+			sb.append("MERI     ="); sb.append(MERI); sb.append("\r\n");
+			sb.append("TL_i     ="); sb.append(TL_i); sb.append("\r\n");
+			sb.append("SDI_i    ="); sb.append(SDI_i); sb.append("\r\n");
+			sb.append("SDF_i    ="); sb.append(SDF_i); sb.append("\r\n");
+			sb.append("JT       ="); sb.append(JT); sb.append("\r\n");
+			sb.append("TS       ="); sb.append(TS); sb.append("\r\n");
+			sb.append("B        ="); sb.append(B); sb.append("\r\n");
+			sb.append("E        ="); sb.append(E); sb.append("\r\n");
+			sb.append("SZ       ="); sb.append(SZ); sb.append("\r\n");
+			sb.append("SD       ="); sb.append(SD); sb.append("\r\n");
+			sb.append("HW       ="); sb.append(HW); sb.append("\r\n");
+			sb.append("SZW      ="); sb.append(SZW); sb.append("\r\n");
+			sb.append("SAW      ="); sb.append(SAW); sb.append("\r\n");
+			sb.append("EWK      ="); sb.append(EWK); sb.append("\r\n");
+			sb.append("EWOW     ="); sb.append(EWOW); sb.append("\r\n");
+			sb.append("EWNS     ="); sb.append(EWNS); sb.append("\r\n");
+			sb.append("EWFOW    ="); sb.append(EWFOW); sb.append("\r\n");
+			sb.append("EWFNS    ="); sb.append(EWFNS); sb.append("\r\n");
+			sb.append("KOF      ="); sb.append(KOF); sb.append("\r\n");
+			sb.append("RAB      ="); sb.append(RAB); sb.append("\r\n");
+			sb.append("SGK      ="); sb.append(SGK); sb.append("\r\n");
+			sb.append("SDIK     ="); sb.append(SDIK); sb.append("\r\n");
+			sb.append("SDFK     ="); sb.append(SDFK); sb.append("\r\n");
+			sb.append("EWF      ="); sb.append(EWF); sb.append("\r\n");
+			sb.append("radiation="); sb.append(radiation); sb.append("\r\n");
+			sb.append("QS_i     ="); sb.append(QS_i); sb.append("\r\n");
+
+			log.message(sb.toString());
+		}
+		
 		operationMode = CalcOperationMode(project.heatNet, hour, radiation); //TODO
 
 		double eintrittstemperatur;
