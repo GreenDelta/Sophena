@@ -159,54 +159,6 @@ public class SolarCalcState {
 
 		// Wh
 		QS_i = (radiation - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
-
-		if(hour >= 108 && hour <= 112)
-		{
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append("\r\n");
-			sb.append("ALB      ="); sb.append(ALB); sb.append("\r\n");
-			sb.append("A        ="); sb.append(A); sb.append("\r\n");
-			sb.append("ETA0     ="); sb.append(ETA0); sb.append("\r\n");
-			sb.append("KDF      ="); sb.append(KDF); sb.append("\r\n");
-			sb.append("A1       ="); sb.append(A1); sb.append("\r\n");
-			sb.append("A2       ="); sb.append(A2); sb.append("\r\n");
-			sb.append("C        ="); sb.append(C); sb.append("\r\n");
-			sb.append("NW       ="); sb.append(NW); sb.append("\r\n");
-			sb.append("AUS      ="); sb.append(AUS); sb.append("\r\n");
-			sb.append("UEH      ="); sb.append(UEH); sb.append("\r\n");
-			sb.append("TD       ="); sb.append(TD); sb.append("\r\n");
-			sb.append("BG       ="); sb.append(BG); sb.append("\r\n");
-			sb.append("LG       ="); sb.append(LG); sb.append("\r\n");
-			sb.append("MERI     ="); sb.append(MERI); sb.append("\r\n");
-			sb.append("TL_i     ="); sb.append(TL_i); sb.append("\r\n");
-			sb.append("SDI_i    ="); sb.append(SDI_i); sb.append("\r\n");
-			sb.append("SDF_i    ="); sb.append(SDF_i); sb.append("\r\n");
-			sb.append("JT       ="); sb.append(JT); sb.append("\r\n");
-			sb.append("TS       ="); sb.append(TS); sb.append("\r\n");
-			sb.append("B        ="); sb.append(B); sb.append("\r\n");
-			sb.append("E        ="); sb.append(E); sb.append("\r\n");
-			sb.append("SZ       ="); sb.append(SZ); sb.append("\r\n");
-			sb.append("SD       ="); sb.append(SD); sb.append("\r\n");
-			sb.append("HW       ="); sb.append(HW); sb.append("\r\n");
-			sb.append("SZW      ="); sb.append(SZW); sb.append("\r\n");
-			sb.append("SAW      ="); sb.append(SAW); sb.append("\r\n");
-			sb.append("EWK      ="); sb.append(EWK); sb.append("\r\n");
-			sb.append("EWOW     ="); sb.append(EWOW); sb.append("\r\n");
-			sb.append("EWNS     ="); sb.append(EWNS); sb.append("\r\n");
-			sb.append("EWFOW    ="); sb.append(EWFOW); sb.append("\r\n");
-			sb.append("EWFNS    ="); sb.append(EWFNS); sb.append("\r\n");
-			sb.append("KOF      ="); sb.append(KOF); sb.append("\r\n");
-			sb.append("RAB      ="); sb.append(RAB); sb.append("\r\n");
-			sb.append("SGK      ="); sb.append(SGK); sb.append("\r\n");
-			sb.append("SDIK     ="); sb.append(SDIK); sb.append("\r\n");
-			sb.append("SDFK     ="); sb.append(SDFK); sb.append("\r\n");
-			sb.append("EWF      ="); sb.append(EWF); sb.append("\r\n");
-			sb.append("radiation="); sb.append(radiation); sb.append("\r\n");
-			sb.append("QS_i     ="); sb.append(QS_i); sb.append("\r\n");
-
-			log.message(sb.toString());
-		}
 		
 		operationMode = CalcOperationMode(project.heatNet, hour, radiation); //TODO
 
@@ -244,6 +196,45 @@ public class SolarCalcState {
 		if(TS == 1)
 		{
 			log.beginDay(JT, hour,
+				"Hour",
+				"ALB",
+				"A",
+				"ETA0",
+				"KDF",
+				"A1 [W/m²/K]",
+				"A2 [W/m²/K²]",
+				"C [Wh/m²/K]",
+				"NW [°]",
+				"AUS [°]",
+				"UEH [K]",
+				"TD [K]",
+				"BG [°]",
+				"LG [°]",
+				"MERI [°]",
+				"TL_i [°C]",
+				"SDI_i [W/m²]",
+				"SDF_i [W/m²]",
+				"JT",
+				"TS",
+				"B [rad]",
+				"E [min]",
+				"SZ [h]",
+				"SD [°]",
+				"HW [°]",
+				"SZW [rad]",
+				"SAW [rad]",
+				"EWK [rad]",
+				"EWOW [rad]",
+				"EWNS [rad]",
+				"EWFOW",
+				"EWFNS",
+				"KOF",
+				"RAB",
+				"SGK [W/m²]",
+				"SDIK [W/m²]",
+				"SDFK [W/m²]",
+				"EWF",
+				"radiation",
 				"BA_i",
 				"PHASE_i",
 				"TS",
@@ -307,6 +298,49 @@ public class SolarCalcState {
 			break;
 		}
 	
+		log.hourValues(hour,
+				false,
+				hour,
+				ALB,
+				A,
+				ETA0,
+				KDF,
+				A1,
+				A2,
+				C,
+				NW,
+				AUS,
+				UEH,
+				TD,
+				BG,
+				LG,
+				MERI,
+				TL_i,
+				SDI_i,
+				SDF_i,
+				JT,
+				TS,
+				B,
+				E,
+				SZ,
+				SD,
+				HW,
+				SZW,
+				SAW,
+				EWK,
+				EWOW,
+				EWNS,
+				EWFOW,
+				EWFNS,
+				KOF,
+				RAB,
+				SGK,
+				SDIK,
+				SDFK,
+				EWF,
+				radiation
+			);
+		
 		consumedPower = 0;
 	}
 
@@ -319,6 +353,7 @@ public class SolarCalcState {
 
 	public void calcPost(int hour)
 	{
+		boolean writeLog = false;
 		log.beginProducer(producer);
 
 		if(phase == SolarCalcPhase.Betrieb)
@@ -330,12 +365,13 @@ public class SolarCalcState {
 			if(TK_i > project.heatNet.maxBufferLoadTemperature)
 			{
 				phase = SolarCalcPhase.Stagnation;
-				log.message("Changing Phase to "+phase);
+				writeLog = true;
 			}
 		}
 
 		int TS = 1 + hour % 24;
 		log.hourValues(hour,
+			true,
 			operationMode,
 			phase,
 			TS,
@@ -347,6 +383,9 @@ public class SolarCalcState {
 			kollektormitteltemperatur
 		);
 
+		if(writeLog)
+			log.message("Changing Phase to "+phase);
+		
 		TK_i_minus_one = TK_i;
 }
 

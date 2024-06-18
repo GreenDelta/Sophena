@@ -196,7 +196,7 @@ public class BufferCalcState {
 	public void postStep(int hour) 
 	{
 		log.beginProducer(null);
-		log.hourValues(hour, QP_MAX, QP_100, QP_HT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
+		log.hourValues(hour, true, QP_MAX, QP_100, QP_HT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
 				qLoadedHTInHour,
 				qLoadedNTInHour,
 				qUnloadedHTInHour,

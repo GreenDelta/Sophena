@@ -34,7 +34,7 @@ public class SolarCalcLog {
 		sb.append("\r\n");
 	}
 	
-	public void hourValues(int hour, Object... values)
+	public void hourValues(int hour, boolean withNewRow, Object... values)
 	{
 		var sb = getOrCreateSB(currentProducer);
 		
@@ -57,7 +57,8 @@ public class SolarCalcLog {
 			else
 				appendPadded(value.toString(), fieldWidth);
 		}
-		sb.append("\r\n");
+		if(withNewRow)
+			sb.append("\r\n");
 	}
 
 	private void appendPadded(String value, int width)
