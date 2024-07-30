@@ -6,9 +6,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
+import sophena.calc.ProjectLoad;
+import sophena.db.daos.ProjectDao;
 import sophena.model.BufferTank;
+import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
+import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.SearchDialog;
@@ -26,6 +31,7 @@ class BufferTankSection {
 
 	private final HeatNetEditor editor;
 	private Text volText;
+	private Text maximumPerformanceText;
 
 	private ProductCostSection costSection;
 
@@ -66,10 +72,10 @@ class BufferTankSection {
 	}
 	
 	private void createMaxPerfText(Composite comp, FormToolkit tk) {
-		Text t = UI.formText(comp, tk, M.MaxPerformance);
-		Texts.on(t).init(net().maximumPerformance)
+		maximumPerformanceText = UI.formText(comp, tk, M.MaxPerformance);
+		Texts.on(maximumPerformanceText).init(net().maximumPerformance)
 				.decimal().required().onChanged(s -> {
-					net().maximumPerformance = Texts.getDouble(t);
+					net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
 					editor.setDirty();
 				});
 		UI.formLabel(comp, tk, "kW");
@@ -161,6 +167,41 @@ class BufferTankSection {
 		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
 		costSection.refresh();
+		updateMaximumPerformance();
 		editor.setDirty();
 	}
+	
+	private void updateMaximumPerformance()
+	{
+		if (net().bufferTank != null)
+		  Texts.set(maximumPerformanceText, calculateMaxSimLoad());
+	}
+	
+	private double calculateMaxSimLoad() {
+		HeatNet net = net();
+		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
+		double sim = net.simultaneityFactor * max;
+		return Math.ceil(sim);
+	}
+
+	private double calculateMaxLoad() {
+		try {
+			// net load from the net-specification on this page
+			double load = ProjectLoad.getNetLoad(net());
+			// add consumer loads from the consumers in the database
+			// we load them freshly from the database because the may changed
+			// in other editors
+			ProjectDao dao = new ProjectDao(App.getDb());
+			Project p = dao.get(editor.project.id);
+			for (Consumer c : p.consumers) {
+				if (c.disabled)
+					continue;
+				load += c.heatingLoad;
+			}
+			return Math.ceil(load);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
 }
