@@ -161,11 +161,11 @@ public class SolarCollectorWizard implements IContent{
 	@Override
 	public void bindToUI() {
 		Texts.set(collectorAreaText, solarCollector.collectorArea);
-		Texts.set(efficiencyRateRadiationText, solarCollector.efficiencyRateRadiation);
-		Texts.set(correctionFactorText, solarCollector.correctionFactor);
-		Texts.set(heatTransferCoefficient1Text, solarCollector.heatTransferCoefficient1);
-		Texts.set(heatTransferCoefficient2Text, solarCollector.heatTransferCoefficient2);
-		Texts.set(heatCapacityText, solarCollector.heatCapacity);
+		Texts.set(efficiencyRateRadiationText, solarCollector.efficiencyRateRadiation, 3);
+		Texts.set(correctionFactorText, solarCollector.correctionFactor, 3);
+		Texts.set(heatTransferCoefficient1Text, solarCollector.heatTransferCoefficient1, 3);
+		Texts.set(heatTransferCoefficient2Text, solarCollector.heatTransferCoefficient2, 3);
+		Texts.set(heatCapacityText, solarCollector.heatCapacity, 3);
 		Texts.set(angleIncidenceEW10Text, solarCollector.angleIncidenceEW10);
 		Texts.set(angleIncidenceEW20Text, solarCollector.angleIncidenceEW20);
 		Texts.set(angleIncidenceEW30Text, solarCollector.angleIncidenceEW30);
@@ -189,11 +189,11 @@ public class SolarCollectorWizard implements IContent{
 	@Override
 	public void bindToModel() {
 		solarCollector.collectorArea = Texts.getDouble(collectorAreaText);
-		solarCollector.efficiencyRateRadiation = Texts.getDouble(efficiencyRateRadiationText);
-		solarCollector.correctionFactor = Texts.getDouble(correctionFactorText);
-		solarCollector.heatTransferCoefficient1 = Texts.getDouble(heatTransferCoefficient1Text);
-		solarCollector.heatTransferCoefficient2 = Texts.getDouble(heatTransferCoefficient2Text);
-		solarCollector.heatCapacity = Texts.getDouble(heatCapacityText);
+		solarCollector.efficiencyRateRadiation = Texts.getDouble(efficiencyRateRadiationText, 3);
+		solarCollector.correctionFactor = Texts.getDouble(correctionFactorText, 3);
+		solarCollector.heatTransferCoefficient1 = Texts.getDouble(heatTransferCoefficient1Text, 3);
+		solarCollector.heatTransferCoefficient2 = Texts.getDouble(heatTransferCoefficient2Text, 3);
+		solarCollector.heatCapacity = Texts.getDouble(heatCapacityText, 3);
 		solarCollector.angleIncidenceEW10 = Texts.getDouble(angleIncidenceEW10Text);
 		solarCollector.angleIncidenceEW20 = Texts.getDouble(angleIncidenceEW20Text);
 		solarCollector.angleIncidenceEW30 = Texts.getDouble(angleIncidenceEW30Text);

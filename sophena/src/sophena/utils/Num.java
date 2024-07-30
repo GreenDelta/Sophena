@@ -20,6 +20,18 @@ public class Num {
 		return format;
 	}
 
+	public static DecimalFormat getFormat(int decimalPlaces)
+	{		
+		StringBuilder pattern = new StringBuilder("#.###.###.###.##0,");
+		for (int i = 0; i < decimalPlaces; i++) {
+			pattern.append('0');
+		}
+		 DecimalFormat f = (DecimalFormat) DecimalFormat
+				.getInstance(Locale.GERMAN);
+		 f.applyLocalizedPattern(pattern.toString());
+		 return f;
+	}
+	
 	public static DecimalFormat getIntFormat() {
 		if (intFormat == null) {
 			intFormat = (DecimalFormat) DecimalFormat
@@ -34,6 +46,11 @@ public class Num {
 		return n == null ? 0 : n.doubleValue();
 	}
 
+	public static double read(String text, int decimalPlaces) {
+		Number n = readNumber(text);
+		return n == null ? 0 : n.doubleValue();
+	}
+	
 	public static int readInt(String text) {
 		Number n = readNumber(text);
 		return n == null ? 0 : n.intValue();
@@ -52,6 +69,19 @@ public class Num {
 		}
 	}
 
+	public static Number readNumber(String text, int decimalPlaces) {
+		if (text == null || text.trim().isEmpty())
+			return null;
+		try {
+			Number n = getFormat(decimalPlaces).parse(text.trim());
+			return n;
+		} catch (Exception e) {
+			Logger log = LoggerFactory.getLogger(Num.class);
+			log.trace("invalid number " + text);
+			return null;
+		}
+	}
+	
 	public static boolean isNumeric(String text) {
 		return readNumber(text) != null;
 	}
@@ -83,13 +113,7 @@ public class Num {
 	public static String str(double val, int decimalPlaces) {
 		if (decimalPlaces <= 0)
 			return intStr(val);
-		StringBuilder pattern = new StringBuilder("#.###.###.###.##0,");
-		for (int i = 0; i < decimalPlaces; i++) {
-			pattern.append('0');
-		}
-		DecimalFormat f = (DecimalFormat) DecimalFormat
-				.getInstance(Locale.GERMAN);
-		f.applyLocalizedPattern(pattern.toString());
+		DecimalFormat f = getFormat(decimalPlaces);				
 		return f.format(val);
 	}
 
