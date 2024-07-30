@@ -133,7 +133,7 @@ class LocationSpecificationSection {
 			editor.setDirty();
 		});
 		UI.formLabel(comp, "");
-		UI.filler(comp);
+		HelpLink.create(comp, tk, M.OperatingMode, H.OperatingModeInfo);
 	}
 	
 	private void createSolarCollectorTempDiffernceRow(FormToolkit tk, Composite comp) {
