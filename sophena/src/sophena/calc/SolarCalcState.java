@@ -144,7 +144,7 @@ public class SolarCalcState {
 		double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(360 * JT / 365.0 * Math.PI / 180)) * Math.cos(SZW));
 		
 		// W/m²
-		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDI_i * (1 - RAB) * 0.5 * (1 + Math.cos(Math.toRadians(NW))) + (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(Math.toRadians(NW)));
+		double SGK = SDI_i * KOF + SDF_i * RAB * KOF + SDF_i * (1 - RAB) * 0.5 * (1 + Math.cos(Math.toRadians(NW))) + (SDI_i + SDF_i) * ALB * (1 - 0.5) * (1 - Math.cos(Math.toRadians(NW)));
 		
 		// W/m²
 		double SDIK = SDI_i * KOF;
