@@ -147,6 +147,25 @@ public class M extends NLS {
     
     public static String UtilizationRateMustBePositive;
     
+    public static String BiomassBoiler;
+    public static String FossilFuelBoiler; 
+    public static String CogenerationPlant;
+    public static String ElectricHeatGenerator;
+    public static String OtherHeatSource;
+    public static String BoilerAccessories;
+    public static String OtherEquipment;
+    public static String HeatRecovery;
+    public static String FlueGasCleaning;
+    public static String BufferTank;
+    public static String BoilerHouseTechnology;
+    public static String Building;
+    public static String Pipe;
+    public static String HeatingNetTechnology;
+    public static String HeatingNetConstruction;
+    public static String TransferStation;
+    public static String Planning;
+    public static String HeatPump;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

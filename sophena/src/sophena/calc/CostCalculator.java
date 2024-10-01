@@ -158,7 +158,7 @@ class CostCalculator {
 	private void finishCapitalCosts(CostResult r) {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
-			double funding = Fundings.get(project, log);
+			double funding = Fundings.get(project, r, log);
 			r.dynamicTotal.funding = funding;
 			r.staticTotal.funding = funding;
 			bonus += funding;

@@ -127,9 +127,8 @@ CREATE TABLE tbl_cost_settings (
     heat_revenues               DOUBLE,
 
     funding DOUBLE,
-    funding_biomass_boilers DOUBLE,
-    funding_heat_net DOUBLE,
-    funding_transfer_stations DOUBLE,
+    funding_percent DOUBLE,
+    funding_types INTEGER,
     connection_fees DOUBLE,
 
     interest_rate DOUBLE,
