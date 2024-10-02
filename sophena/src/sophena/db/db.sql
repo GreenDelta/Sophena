@@ -562,6 +562,10 @@ CREATE TABLE tbl_producers (
 	solar_collector_temperature_difference  DOUBLE,
 	solar_collector_temperature_increase 	DOUBLE,
 	solar_collector_radiation_limit			DOUBLE,
+	
+	is_outdoor_temperature_control		BOOLEAN,
+	outdoor_temperature					DOUBLE,
+	outdoor_temperature_control_kind	VARCHAR(255),
 
     PRIMARY KEY (id)
 );

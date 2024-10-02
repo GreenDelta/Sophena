@@ -166,6 +166,12 @@ public class M extends NLS {
     public static String Planning;
     public static String HeatPump;
     
+    public static String ActivateOutdoorTemperature;
+    public static String Temperature;
+    public static String From;
+    public static String Until;
+    public static String Use;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

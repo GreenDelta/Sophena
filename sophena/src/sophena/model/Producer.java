@@ -111,6 +111,16 @@ public class Producer extends RootEntity {
 	@Embedded
 	public SolarCollectorSpec solarCollectorSpec;
 	
+	@Column(name = "is_outdoor_temperature_control")
+	public boolean isOutdoorTemperatureControl;
+	
+	@Column(name = "outdoor_temperature")
+	public double outdoorTemperature;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "outdoor_temperature_control_kind")
+	public OutdoorTemperatureControlKind outdoorTemperatureControlKind;
+	
 	/**
 	 * Indicates whether the producer is based on a producer profile or not.
 	 */
@@ -130,6 +140,9 @@ public class Producer extends RootEntity {
 		clone.function = function;
 		clone.rank = rank;
 		clone.solarCollector = solarCollector;
+		clone.isOutdoorTemperatureControl = isOutdoorTemperatureControl;
+		clone.outdoorTemperature = outdoorTemperature;
+		clone.outdoorTemperatureControlKind = outdoorTemperatureControlKind;
 		if (costs != null) {
 			clone.costs = costs.copy();
 		}

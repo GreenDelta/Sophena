@@ -1,6 +1,7 @@
 package sophena.rcp.editors.producers;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -10,9 +11,11 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import sophena.Labels;
+import sophena.model.OutdoorTemperatureControlKind;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductType;
+import sophena.model.SolarCollectorOperatingMode;
 import sophena.rcp.M;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
@@ -24,6 +27,9 @@ class InfoPage extends FormPage {
 
 	private final ProducerEditor editor;
 	private ProfileSection profileSection;
+	private Button radioOutdoorFrom;
+	private Button radioOutdoorUntil;
+	private Text outdoorTemperature;
 
 	public InfoPage(ProducerEditor editor) {
 		super(editor, "sophena.ProducerInfoPage", "Wärmeerzeuger");
@@ -46,6 +52,7 @@ class InfoPage extends FormPage {
 		functionCombo(tk, comp);
 		rankText(tk, comp);
 		UtilisationRateSwitch.checkCreate(editor, comp, tk);
+		outdoorTemperatureControl(tk, comp);
 		importButton(tk, comp);
 		if (producer().hasProfile()) {
 			profileSection = ProfileSection
@@ -64,6 +71,61 @@ class InfoPage extends FormPage {
 		form.reflow(true);
 	}
 
+	private void outdoorTemperatureControl(FormToolkit tk, Composite comp)
+	{
+		createCheck(tk, comp);
+		UI.filler(comp);
+		UI.formLabel(comp, tk, M.Use);
+		Composite inner = tk.createComposite(comp);
+		UI.innerGrid(inner, 4);
+		if(producer().outdoorTemperatureControlKind == null)
+			producer().outdoorTemperatureControlKind = OutdoorTemperatureControlKind.From;
+		OutdoorTemperatureControlKind current = producer().outdoorTemperatureControlKind;
+		radioOutdoorFrom = tk.createButton(inner, M.From, SWT.RADIO);
+		radioOutdoorFrom.setSelection(current == OutdoorTemperatureControlKind.From);
+		Controls.onSelect(radioOutdoorFrom, e -> {
+			producer().outdoorTemperatureControlKind = OutdoorTemperatureControlKind.From;
+			editor.setDirty();
+		});
+		UI.filler(inner, tk);
+		UI.filler(inner, tk);
+		UI.filler(inner, tk);
+		radioOutdoorUntil = tk.createButton(inner, M.Until, SWT.RADIO);
+		radioOutdoorUntil.setSelection(current == OutdoorTemperatureControlKind.Until);
+		Controls.onSelect(radioOutdoorUntil, e -> {
+			producer().outdoorTemperatureControlKind = OutdoorTemperatureControlKind.Until;
+			editor.setDirty();
+		});
+		
+		outdoorTemperature = UI.formText(inner, tk, "");
+		UI.gridData(outdoorTemperature, false, false).widthHint = 80;
+		Texts.set(outdoorTemperature, producer().outdoorTemperature);
+		Texts.on(outdoorTemperature).init(producer().outdoorTemperature).decimal().required()
+				.onChanged(s -> {
+					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);					
+				});
+		UI.formLabel(inner, tk, "°C");		
+
+		enableControls(producer().isOutdoorTemperatureControl);
+	}
+	
+	private void createCheck(FormToolkit tk, Composite comp) {
+		var check = tk.createButton(comp, M.ActivateOutdoorTemperature, SWT.CHECK);
+		check.setSelection(producer().isOutdoorTemperatureControl);
+		Controls.onSelect(check, (e) -> {
+			boolean enabled = check.getSelection();
+			enableControls(enabled);
+			producer().isOutdoorTemperatureControl = enabled;
+			editor.setDirty();
+		});
+	}
+	
+	private void enableControls(Boolean enable) {
+		radioOutdoorFrom.setEnabled(enable);
+		radioOutdoorUntil.setEnabled(enable);
+		outdoorTemperature.setEnabled(enable);
+	}
+	
 	private void nameText(FormToolkit tk, Composite comp) {
 		Text nt = UI.formText(comp, tk, M.Name);
 		Texts.set(nt, producer().name);

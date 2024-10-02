@@ -58,6 +58,10 @@ class EnergyCalculator {
 					solarCalcState.calcPre(hour, bufferCalcState.TE, bufferCalcState.TV);
 			}
 			
+			double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
+					? project.weatherStation.data[hour]
+					: 0;
+			
 			for (int k = 0; k < r.producers.length; k++) {
 				if (requiredLoad <= 0)
 					break;
@@ -75,7 +79,22 @@ class EnergyCalculator {
 				// Check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
-
+				if(producer.isOutdoorTemperatureControl)
+				{
+					switch (producer.outdoorTemperatureControlKind){
+					case From:
+						if(producer.outdoorTemperature > TL_i)
+							continue;
+						break;
+					case Until:
+						if(producer.outdoorTemperature < TL_i)
+							continue;
+						break;
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + producer.outdoorTemperatureControlKind);
+					}
+				}
+				
 				// Maximum amount of power currently needed for heatnet and buffer				
 				double maxLoad = requiredLoad + (isHTProducer ?
 					bufferCalcState.CalcHTCapacity(!isSolarProducer) :
