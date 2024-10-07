@@ -70,7 +70,7 @@ class EnergyCalculator {
 			
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				boolean isSolarProducer = solarCalcState != null;
-				boolean isHTProducer = isProducerHT(producer, solarCalcState);
+				boolean isHTProducer = isProducerHT(producer, solarCalcState, hour);
 
 				// Check whether the collector is working for the current hour
 				if(isSolarProducer && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
@@ -232,8 +232,12 @@ class EnergyCalculator {
 		return r;
 	}
 	
-	private boolean isProducerHT(Producer producer, SolarCalcState solarCalcState)
+	private boolean isProducerHT(Producer producer, SolarCalcState solarCalcState, int hour)
 	{
+		if(producer.hasProfile())
+		{
+			return producer.profile.temperaturLevel[hour] >= 95;
+		}
 		switch(producer.productGroup.type)
 		{
 		case HEAT_PUMP:

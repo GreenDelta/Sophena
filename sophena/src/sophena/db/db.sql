@@ -322,8 +322,9 @@ CREATE TABLE tbl_producer_profiles (
 
     id CHAR(36),
 
-    min_power BLOB (80 K),
-    max_power BLOB (80 K),
+    min_power 			BLOB (80 K),
+    max_power 			BLOB (80 K),
+    temperatur_level	BLOB (80 K),
 
     PRIMARY KEY (id)
 );
