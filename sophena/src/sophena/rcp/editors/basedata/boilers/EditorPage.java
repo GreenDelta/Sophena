@@ -82,9 +82,7 @@ class EditorPage extends FormPage {
 	}
 
 	private String[] getColumns() {
-		String erLabel = type == ProductType.HEAT_PUMP
-				? "COP"
-				: "Wirkungsgrad";
+		String erLabel = "Wirkungsgrad";
 		if (type == ProductType.COGENERATION_PLANT)
 			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
 					"Max. Leistung el.", "Wirkungsgrad el.",
@@ -115,7 +113,7 @@ class EditorPage extends FormPage {
 		boiler.type = type;
 		boiler.id = UUID.randomUUID().toString();
 		boiler.name = Labels.get(type) + " - neu";
-		boiler.efficiencyRate = type == ProductType.HEAT_PUMP ? 1.0 : 0.8;
+		boiler.efficiencyRate = 0.8;
 		if (BoilerWizard.open(boiler) != Window.OK)
 			return;
 		dao.insert(boiler);
@@ -192,8 +190,6 @@ class EditorPage extends FormPage {
 			case 4:
 				if (coGen)
 					return s(boiler.efficiencyRateElectric * 100d, "%");
-				if (type == ProductType.HEAT_PUMP)
-					return Num.str(boiler.efficiencyRate);
 				return s(boiler.efficiencyRate * 100d, "%");
 			case 5:
 				return coGen ? s(boiler.maxPower, "kW") : null;

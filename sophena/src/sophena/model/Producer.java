@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.persistence.annotations.Convert;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
@@ -120,6 +122,21 @@ public class Producer extends RootEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "outdoor_temperature_control_kind")
 	public OutdoorTemperatureControlKind outdoorTemperatureControlKind;
+
+	@OneToOne
+	@JoinColumn(name = "f_heat_pump")
+	public HeatPump heatPump;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "heat_pump_mode")
+	public HeatPumpMode heatPumpMode;
+	
+	@Column(name = "source_temperature_user")
+	public Double sourceTemperatureUser;
+	
+	@Column(name = "source_temperature_hourly")
+	@Convert("DoubleArrayConverter")
+	public double[] sourceTemperatureHourly;
 	
 	/**
 	 * Indicates whether the producer is based on a producer profile or not.

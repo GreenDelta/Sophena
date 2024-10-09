@@ -79,9 +79,12 @@ public class ProductWizard extends Wizard {
 			ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 			sc.setExpandVertical(true);
 			sc.setExpandHorizontal(true);
-			Composite c = new Composite(sc, SWT.NULL);
-			sc.setContent(c);
-			setControl(c);
+			Composite cParent = new Composite(sc, SWT.NULL);
+			UI.gridLayout(cParent, 1);
+			sc.setContent(cParent);
+			setControl(cParent);
+			Composite c = new Composite(cParent, SWT.NULL);
+			UI.gridData(c, true, false);
 			UI.gridLayout(c, 3);
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
@@ -97,7 +100,7 @@ public class ProductWizard extends Wizard {
 			UI.formLabel(c, "");
 			data.bindToUI();	
 			
-			sc.setMinSize(c.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			sc.setMinSize(cParent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		}
 
 		private void createPriceText(Composite c) {

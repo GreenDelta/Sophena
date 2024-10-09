@@ -35,6 +35,7 @@
 		<class>sophena.model.TimeInterval</class>
 		<class>sophena.model.TransferStation</class>
 		<class>sophena.model.WeatherStation</class>
+		<class>sophena.model.HeatPump</class>
 		
 
 		<properties>

@@ -172,6 +172,12 @@ public class M extends NLS {
     public static String Until;
     public static String Use;
     
+    public static String TargetTemperature;
+    public static String SourceTemperature;
+    public static String MaxPower;
+    public static String MinPower;
+    public static String Cop;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

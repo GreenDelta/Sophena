@@ -14,6 +14,7 @@ import sophena.model.BufferTank;
 import sophena.model.BuildingState;
 import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
+import sophena.model.HeatPump;
 import sophena.model.HeatRecovery;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
@@ -131,6 +132,14 @@ public class UsageSearch {
 			return Collections.emptyList();
 		String sql = "select p.id, p.name from tbl_producers p "
 				+ "where f_solar_collector = '" + solarCollector.id + "'";
+		return query(sql, ModelType.PRODUCER);
+	}
+	
+	public List<SearchResult> of(HeatPump heatPump) {
+		if (heatPump == null || heatPump.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_producers p "
+				+ "where f_heat_pump = '" + heatPump.id + "'";
 		return query(sql, ModelType.PRODUCER);
 	}
 	

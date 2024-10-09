@@ -567,6 +567,11 @@ CREATE TABLE tbl_producers (
 	is_outdoor_temperature_control		BOOLEAN,
 	outdoor_temperature					DOUBLE,
 	outdoor_temperature_control_kind	VARCHAR(255),
+	
+	f_heat_pump					CHAR(36),
+	heat_pump_mode 				VARCHAR(36),
+	source_temperature_user		DOUBLE,
+	source_temperature_hourly	BLOB(80 K),
 
     PRIMARY KEY (id)
 );
@@ -626,6 +631,29 @@ CREATE TABLE tbl_solar_collectors (
 	angle_incidence_NS_70 DOUBLE,
 	angle_incidence_NS_80 DOUBLE,
 	angle_incidence_NS_90 DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE tbl_heat_pumps (
+
+    id          CHAR(36),
+    name        VARCHAR(255),
+    description CLOB(64 K),
+
+    is_protected BOOLEAN,
+    
+    purchase_price 	DOUBLE,
+    url 			VARCHAR(255),
+    product_type 	VARCHAR(50),
+    f_product_group CHAR(36),
+    f_manufacturer 	CHAR(36),
+
+    min_power		   		DOUBLE,
+    max_power        		BLOB (80 K),
+    cop    					BLOB (80 K),
+    target_temperature   	BLOB (80 K),
+    source_temperature   	BLOB (80 K),
 
     PRIMARY KEY (id)
 );

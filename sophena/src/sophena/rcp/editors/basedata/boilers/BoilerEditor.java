@@ -27,7 +27,6 @@ public class BoilerEditor extends Editor {
 		switch (type) {
 		case BIOMASS_BOILER:
 		case FOSSIL_FUEL_BOILER:
-		case HEAT_PUMP:
 		case COGENERATION_PLANT:
 			return true;
 		default:
