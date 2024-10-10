@@ -5,6 +5,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.Boiler;
+import sophena.model.HeatPump;
 import sophena.rcp.Icon;
 import sophena.utils.Num;
 
@@ -18,6 +19,22 @@ class BoilerLabel extends LabelProvider
 
 	@Override
 	public String getColumnText(Object elem, int col) {
+		if(elem instanceof HeatPump)
+		{
+			HeatPump p = (HeatPump) elem;
+			switch (col) {
+			case 0:
+				return p.manufacturer != null
+						? p.manufacturer.name
+						: null;
+			case 1:
+				return Num.str(p.ratedPower) + " kW";
+			case 2:
+				return p.name;
+			default:
+				return null;
+			}
+		}
 		if (!(elem instanceof Boiler))
 			return null;
 		Boiler b = (Boiler) elem;

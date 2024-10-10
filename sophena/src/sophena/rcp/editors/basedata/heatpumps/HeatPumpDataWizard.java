@@ -67,14 +67,14 @@ public class HeatPumpDataWizard extends Wizard {
 			targetText = UI.formText(comp, M.TargetTemperature);
 			Texts.on(targetText).init(heatPumpData.targetTemperature).decimal().required()
 						.onChanged(s -> {
-							heatPumpData.targetTemperature = 5*(Math.round(Texts.getDouble(targetText)/5));
+							heatPumpData.targetTemperature = 5*(Math.round(Texts.getInt(targetText)/5));
 						});
 			UI.formLabel(comp, "°C");
 			
 			sourceText = UI.formText(comp, M.SourceTemperature);
 			Texts.on(sourceText).init(heatPumpData.sourceTemperature).decimal().required()
 			.onChanged(s -> {
-				heatPumpData.sourceTemperature = 5*(Math.round(Texts.getDouble(sourceText)/5));
+				heatPumpData.sourceTemperature = 5*(Math.round(Texts.getInt(sourceText)/5));
 			});
 			UI.formLabel(comp, "°C");
 			

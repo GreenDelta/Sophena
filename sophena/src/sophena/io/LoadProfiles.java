@@ -145,7 +145,7 @@ public final class LoadProfiles {
 	/**
 	 * Identify the column separator from the content of the file.
 	 */
-	private static String getSeparator(List<String> rows) {
+	public static String getSeparator(List<String> rows) {
 		var header = rows.get(0);
 		boolean inQuotes = false;
 		boolean hasSemicolon = false;

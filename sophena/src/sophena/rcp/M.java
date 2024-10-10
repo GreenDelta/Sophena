@@ -177,6 +177,7 @@ public class M extends NLS {
     public static String MaxPower;
     public static String MinPower;
     public static String Cop;
+    public static String RatedPower;
     
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);

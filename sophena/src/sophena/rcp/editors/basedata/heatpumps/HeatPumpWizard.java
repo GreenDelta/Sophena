@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -14,14 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sophena.Labels;
+import sophena.io.LoadHeatPumpData;
+import sophena.io.ProducerProfiles;
 import sophena.model.HeatPump;
 import sophena.model.ProductType;
+import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.Log;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
@@ -36,6 +43,7 @@ public class HeatPumpWizard implements IContent {
 	private List<HeatPumpData> heatPumpDataList = new ArrayList<>();
 	private ProductWizard wizard;
 	private Text minText;
+	private Text ratedPowerText;
 	private TableViewer table;
 
 	private HeatPumpWizard(HeatPump heatPump) {
@@ -55,7 +63,7 @@ public class HeatPumpWizard implements IContent {
 
 	@Override
 	public void render(Composite c) {
-		createMinMaxTexts(c);
+		createTexts(c);
 		Composite comp = new Composite(c.getParent(), SWT.NONE);
 		UI.gridData(comp, true, true);
 		UI.gridLayout(comp, 1);
@@ -65,6 +73,41 @@ public class HeatPumpWizard implements IContent {
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.3, 0.2);
 		var toolBar = bindActions(c.getParent(), table);
 		toolBar.moveAbove(comp);
+		
+		Button btn = new Button(comp, SWT.NONE);
+		btn.setText("Betriebspunkte importieren");
+		Controls.onSelect(btn, e -> onSelectFile());
+	}
+	
+	private void onSelectFile() {
+		var file = FileChooser.open("*.csv", "*.txt");
+		if (file == null)
+			return;
+		try {
+
+			var r = LoadHeatPumpData.readHeatPumpData(file);
+
+			// check error
+			if (r.isError()) {
+				MsgBox.error(r.message().orElse(
+						"Fehler beim Lesen der Datei"));
+				return;
+			}
+
+			// show warnings
+			if (r.isWarning()) {
+				MsgBox.warn(r.message().orElse(
+						"Die Datei enthält Formatfehler"));
+			}
+
+			for(var heatPumpData : r.get())
+				heatPumpDataList.add(heatPumpData);
+			table.setInput(heatPumpDataList);
+		} catch (Exception e) {
+			MsgBox.error("Datei konnte nicht gelesen werden",
+					e.getMessage());
+			Log.error(this, "Failed to read heat pump data file " + file, e);
+		}
 	}
 
 	private ToolBar bindActions(Composite comp, TableViewer table) {
@@ -111,24 +154,29 @@ public class HeatPumpWizard implements IContent {
 		return new String[] { M.TargetTemperature, M.SourceTemperature, M.MaxPower, M.Cop };
 	}
 	
-	private void createMinMaxTexts(Composite c) {
+	private void createTexts(Composite c) {
 		minText = UI.formText(c, M.MinPower);
 		Texts.on(minText).decimal().required().validate(wizard::validate);
+		UI.formLabel(c, "kW");
+		ratedPowerText = UI.formText(c, M.RatedPower);
+		Texts.on(ratedPowerText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}
 
 	@Override
 	public void bindToUI() {
 		Texts.set(minText, heatPump.minPower);
+		Texts.set(ratedPowerText, heatPump.ratedPower);
 		if(heatPump.targetTemperature != null)
 			for(var i = 0; i < heatPump.targetTemperature.length; i++)
-				heatPumpDataList.add(new HeatPumpData(heatPump.maxPower[i], heatPump.cop[i], heatPump.targetTemperature[i], heatPump.sourceTemperature[i]));
+				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
 		table.setInput(heatPumpDataList);
 	}
 
 	@Override
 	public void bindToModel() {
 		heatPump.minPower = Texts.getDouble(minText);
+		heatPump.ratedPower = Texts.getDouble(ratedPowerText);
 		var count = heatPumpDataList.size();
 		heatPump.targetTemperature = new double[count];
 		heatPump.sourceTemperature = new double[count];
@@ -152,6 +200,8 @@ public class HeatPumpWizard implements IContent {
 	private String valid() {
 		if (!Texts.hasNumber(minText))
 			return "Es wurde keine minimale Leistung angegeben";
+		if (!Texts.hasNumber(ratedPowerText))
+			return "Es wurde keine Nennleistung angegeben";
 		return null;
 	}
 
@@ -193,19 +243,19 @@ public class HeatPumpWizard implements IContent {
 		}
 	}
 	
-	public class HeatPumpData
+	public static class HeatPumpData
 	{
 		public double maxPower;
 		public double cop;
 		public double targetTemperature;
 		public double sourceTemperature;
 		
-		public HeatPumpData(double maxPower, double cop, double targetTemperature, double sourceTemperature) 
-		{
-			this.maxPower = maxPower;
-			this.cop = cop;
+		public HeatPumpData(double targetTemperature, double sourceTemperature, double maxPower, double cop) 
+		{			
 			this.targetTemperature = targetTemperature;
 			this.sourceTemperature = sourceTemperature;
+			this.maxPower = maxPower;
+			this.cop = cop;
 		}
 			
 	}

@@ -1,6 +1,7 @@
 package sophena.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -182,6 +183,15 @@ public class Producer extends RootEntity {
 			clone.profile = profile.copy();
 			clone.profileMaxPower = profileMaxPower;
 			clone.profileMaxPowerElectric = profileMaxPowerElectric;
+		}
+		if(heatPump != null)
+		{
+			clone.heatPump = heatPump;
+			clone.heatPumpMode = heatPumpMode;
+			clone.sourceTemperatureUser = sourceTemperatureUser;
+			clone.sourceTemperatureHourly = sourceTemperatureHourly != null
+					? Arrays.copyOf(sourceTemperatureHourly, sourceTemperatureHourly.length)
+					: null;
 		}
 		return clone;
 	}

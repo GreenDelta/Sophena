@@ -15,6 +15,9 @@ public class HeatPump extends AbstractProduct {
 
 	@Column(name = "min_power")
 	public double minPower;
+	
+	@Column(name = "rated_power")
+	public double ratedPower;
 
 	@Column(name = "max_power")
 	@Convert("DoubleArrayConverter")
@@ -38,6 +41,7 @@ public class HeatPump extends AbstractProduct {
 		AbstractProduct.copyFields(this, clone);
 		clone.id = UUID.randomUUID().toString();
 		clone.minPower = minPower;
+		clone.ratedPower = ratedPower;
 		clone.maxPower = maxPower != null
 				? Arrays.copyOf(maxPower, maxPower.length)
 				: null;

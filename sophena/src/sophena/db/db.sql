@@ -650,6 +650,7 @@ CREATE TABLE tbl_heat_pumps (
     f_manufacturer 	CHAR(36),
 
     min_power		   		DOUBLE,
+    rated_power				DOUBLE,
     max_power        		BLOB (80 K),
     cop    					BLOB (80 K),
     target_temperature   	BLOB (80 K),

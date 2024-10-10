@@ -22,10 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.HeatPumpDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
 import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
+import sophena.model.HeatPump;
+import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
@@ -79,13 +82,13 @@ public class ProducerWizard extends Wizard {
 			Wizards.initFuelSpec(producer, project);
 			Wizards.initCosts(producer);
 			Wizards.initElectricity(producer, project);
-			if (producer.productGroup != null
-					&& producer.productGroup.type == ProductType.HEAT_PUMP) {
+			if (producer.productGroup != null && producer.productGroup.type == ProductType.HEAT_PUMP) {
 				producer.utilisationRate = 0.0;
 			}
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
 				Wizards.initSolarCollectorSpec(producer);
 				producer.utilisationRate = 0.85;
+				producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 			}
 
 			project.producers.add(producer);
@@ -182,7 +185,17 @@ public class ProducerWizard extends Wizard {
 					} else {
 						nameEdited = !Strings.nullOrEqual(t, s.name);
 					}
-				} else {
+				}
+				else if (group != null && group.type == ProductType.HEAT_PUMP)
+				{
+					HeatPump h = Viewers.getFirstSelected(boilerTable);
+					if (h == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, h.name);
+					}
+				}
+				else {
 					Boiler b = Viewers.getFirstSelected(boilerTable);
 					if (b == null) {
 						nameEdited = true;
@@ -304,7 +317,16 @@ public class ProducerWizard extends Wizard {
 				if (s != null) {
 					p.productGroup = s.group;
 				}
-			} else {
+			} 
+			else if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPump h = Viewers.getFirstSelected(boilerTable);
+				p.heatPump = h;
+				if (h != null) {
+					p.productGroup = h.group;
+				}
+			}
+			else {
 				Boiler b = Viewers.getFirstSelected(boilerTable);
 				p.boiler = b;
 				if (b != null) {
@@ -326,11 +348,24 @@ public class ProducerWizard extends Wizard {
 		private void suggestName() {
 			if (nameEdited && !Texts.isEmpty(nameText))
 				return;
-			Boiler b = Viewers.getFirstSelected(boilerTable);
-			if (b == null) {
-				nameText.setText("");
-			} else {
-				Texts.set(nameText, b.name);
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPump h = Viewers.getFirstSelected(boilerTable);
+				if (h == null) {
+					nameText.setText("");
+				} else {
+					Texts.set(nameText, h.name);
+				}
+			}
+			else
+			{
+				Boiler b = Viewers.getFirstSelected(boilerTable);
+				if (b == null) {
+					nameText.setText("");
+				} else {
+					Texts.set(nameText, b.name);
+				}
 			}
 		}
 
@@ -365,19 +400,37 @@ public class ProducerWizard extends Wizard {
 		}
 		
 		private void updateBoilers() {
-			BoilerDao dao = new BoilerDao(App.getDb());
-			ArrayList<Boiler> input = new ArrayList<>();
 			ProductGroup group = getGroup();
-			for (Boiler b : dao.getAll()) {
-				if (group != null && !Objects.equals(b.group, group))
-					continue;
-				if (!PowerFilter.matches(b, powerFilter,
-						powerCombo.getSelectionIndex()))
-					continue;
-				input.add(b);
+			if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPumpDao dao = new HeatPumpDao(App.getDb());
+				ArrayList<HeatPump> input = new ArrayList<>();
+				for (HeatPump h : dao.getAll()) {
+					if (group != null && !Objects.equals(h.group, group))
+						continue;
+					if (!PowerFilter.matches(h, powerFilter,
+							powerCombo.getSelectionIndex()))
+						continue;
+					input.add(h);
+				}
+				Sorters.heatPumps(input);
+				boilerTable.setInput(input);
 			}
-			Sorters.boilers(input);
-			boilerTable.setInput(input);
+			else
+			{
+				BoilerDao dao = new BoilerDao(App.getDb());
+				ArrayList<Boiler> input = new ArrayList<>();
+				for (Boiler b : dao.getAll()) {
+					if (group != null && !Objects.equals(b.group, group))
+						continue;
+					if (!PowerFilter.matches(b, powerFilter,
+							powerCombo.getSelectionIndex()))
+						continue;
+					input.add(b);
+				}
+				Sorters.boilers(input);
+				boilerTable.setInput(input);
+			}
 			setPageComplete(false);
 		}
 		
@@ -531,6 +584,15 @@ public class ProducerWizard extends Wizard {
 				return true;
 			double[] range = filter.ranges[i];
 			return matches(solarCollector.collectorArea, range);
+		}
+		
+		static boolean matches(HeatPump heatPump, PowerFilter filter, int i) {
+			if (heatPump == null)
+				return false;
+			if (filter == null || i >= filter.len())
+				return true;
+			double[] range = filter.ranges[i];
+			return matches(heatPump.ratedPower, range);
 		}
 		
 		static boolean matches(double value, double[] range) {

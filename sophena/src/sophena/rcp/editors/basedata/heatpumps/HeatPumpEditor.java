@@ -90,7 +90,7 @@ public class HeatPumpEditor extends Editor {
 
 		private String[] getColumns() {
 				return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
-						"Minimale Leistung" };
+						"Nennleistung" };
 		}
 
 		private void bindActions(Section section, TableViewer table) {
@@ -116,7 +116,7 @@ public class HeatPumpEditor extends Editor {
 				return;
 			dao.insert(heatPump);
 			heatPumps.add(heatPump);
-			table.setInput(heatPump);
+			table.setInput(heatPumps);
 		}
 
 		private void edit(TableViewer table) {
@@ -183,7 +183,7 @@ public class HeatPumpEditor extends Editor {
 					return ProductTables.getText(heatPump, col);
 				switch (col) {
 				case 3:
-					return s(heatPump.minPower, "kW");
+					return s(heatPump.ratedPower, "kW");
 				default:
 					return null;
 				}
