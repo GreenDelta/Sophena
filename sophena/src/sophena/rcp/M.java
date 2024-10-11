@@ -179,6 +179,12 @@ public class M extends NLS {
     public static String Cop;
     public static String RatedPower;
     
+    public static String OutdoorMode; 
+    public static String UserMode;
+    public static String HourlyMode;
+    public static String HeatPumpMode;
+    public static String UserTemperatureInput;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

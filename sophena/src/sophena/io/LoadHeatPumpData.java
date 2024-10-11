@@ -27,7 +27,6 @@ public class LoadHeatPumpData {
 				return Result.error(
 						"Das Spaltentrennzeichen konnte nicht ermittelt werden");
 
-			// check the number of rows
 			String warning = null;
 
 			// parse the rows
@@ -56,11 +55,69 @@ public class LoadHeatPumpData {
 					return Result.error("Die Zahlen in Zeile "
 							+ (row + 1) + " konnten nicht gelesen werden.");
 				}
-			} // for
+			}
 
 			return warning != null
 					? Result.warning(list, warning)
 					: Result.ok(list);
+
+		} catch (Exception e) {
+			return Result.error(
+					"Die Datei konnte nicht gelesen werden: " + e.getMessage());
+		}
+	}
+	
+	public static Result<double[]> readHourlyTemperature(File file) {
+		try {
+			// read all lines
+			var rows = Files.readAllLines(file.toPath());
+			if (rows.size() < 2)
+				return Result.error("Die Datei hat weniger als zwei Zeilen.");
+
+			// determine the column separator
+			var sep = LoadProfiles.getSeparator(rows);
+			if ("?".equals(sep))
+				return Result.error(
+						"Das Spaltentrennzeichen konnte nicht ermittelt werden");
+
+			// check the number of rows
+			String warning = null;
+			if (rows.size() != (Stats.HOURS + 1)) {
+				warning = "Die Datei enthält weniger als "
+						+ (Stats.HOURS + 1) + "Zeilen";
+			}
+
+			// parse the rows
+			var hourlyTemperature = new double[Stats.HOURS];
+			for (int row = 1; row < rows.size(); row++) {
+				var line = rows.get(row);
+				if (Strings.nullOrEmpty(line))
+					continue;
+
+				// split the row and check the format
+				var parts = line.split(sep);
+				if (parts.length < 2)
+					return Result.error("Ungültiges Dateiformat: Die Zeile "
+							+ (row + 1) + " hat weniger als 2 Spalten");
+
+				// parse the numbers
+				try {
+					int idx = Integer.parseInt(parts[0], 10) - 1;
+					double temperature = Double.parseDouble(parts[1].replace(',', '.'));
+
+					if (idx < 0 || idx >= Stats.HOURS)
+						return Result.error("Ungültige Stunde in Zeile "
+								+ (row + 1) + ": " + (idx + 1));
+					hourlyTemperature[idx] = temperature;
+				} catch (Exception e) {
+					return Result.error("Die Zahlen in Zeile "
+							+ (row + 1) + " konnten nicht gelesen werden.");
+				}
+			} 
+
+			return warning != null
+					? Result.warning(hourlyTemperature, warning)
+					: Result.ok(hourlyTemperature);
 
 		} catch (Exception e) {
 			return Result.error(

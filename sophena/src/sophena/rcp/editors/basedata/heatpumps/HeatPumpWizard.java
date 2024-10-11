@@ -84,7 +84,6 @@ public class HeatPumpWizard implements IContent {
 		if (file == null)
 			return;
 		try {
-
 			var r = LoadHeatPumpData.readHeatPumpData(file);
 
 			// check error
