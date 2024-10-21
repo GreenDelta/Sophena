@@ -208,3 +208,14 @@ type SolarCollector struct {
 	AngleIncidenceNS80       float64 `json:"angleIncidenceNS80"`
 	AngleIncidenceNS90       float64 `json:"angleIncidenceNS90"`
 }
+
+// A HeatPump stores data of a heat pump
+type HeatPump struct {
+	Product
+	MinPower          float64   `json:"minPower"`
+	RatedPower        float64   `json:"ratedPower"`
+	MaxPower          []float64 `json:"maxPower"`
+	Cop               []float64 `json:"cop"`
+	TargetTemperature []float64 `json:"targetTemperature"`
+	SourceTemperature []float64 `json:"sourceTemperature"`
+}

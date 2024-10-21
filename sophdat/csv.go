@@ -21,6 +21,7 @@ type CsvModel struct {
 	FlueGasCleanings []*FlueGasCleaning
 	TransferStations []*TransferStation
 	SolarCollectors  []*SolarCollector
+	HeatPumps        []*HeatPump
 }
 
 // ReadCsvModel reads all CSV data into memory and links them
@@ -37,6 +38,8 @@ func ReadCsvModel() *CsvModel {
 	model.readFlueGasCleanings()
 	model.readTransferStations()
 	model.readSolarCollectors()
+	model.readHeatPumps()
+	model.readHeatPumpCurves()
 	return model
 }
 
@@ -135,7 +138,6 @@ func (model *CsvModel) readBoilers() {
 	}
 	eachCsvRow("data/csv/boilers_cogen_plants.csv", fn)
 	eachCsvRow("data/csv/boilers.csv", fn)
-	eachCsvRow("data/csv/heat_pumps.csv", fn)
 }
 
 func (model *CsvModel) readBufferTanks() {
@@ -258,6 +260,56 @@ func (model *CsvModel) readSolarCollectors() {
 		model.SolarCollectors = append(model.SolarCollectors, &s)
 	}
 	eachCsvRow("data/csv/solar_collectors.csv", fn)
+}
+
+func (model *CsvModel) readHeatPumps() {
+	model.HeatPumps = make([]*HeatPump, 0)
+	fn := func(row []string) {
+		h := HeatPump{}
+		productType := cStr(row, 1)
+		model.mapProductData(row, &h.Product, productType)
+		h.MinPower = cFlo(row, 7)
+		h.RatedPower = cFlo(row, 7)              // TODO
+		h.MaxPower = make([]float64, 0)          // TODO
+		h.Cop = make([]float64, 0)               // TODO
+		h.TargetTemperature = make([]float64, 0) // TODO
+		h.SourceTemperature = make([]float64, 0) // TODO
+		h.Description = cStr(row, 10)
+
+		model.HeatPumps = append(model.HeatPumps, &h)
+	}
+
+	eachCsvRow("data/csv/heat_pumps.csv", fn)
+}
+
+func (model *CsvModel) readHeatPumpCurves() {
+	//model.HeatPumps = make([]*HeatPump, 0)
+	fn := func(row []string) {
+		id := cStr(row, 0)
+		maxPower := cFlo(row, 1)
+		sourceTemperature := cFlo(row, 2)
+		targetTemperature := cFlo(row, 3)
+		cop := cFlo(row, 4)
+
+		index := -1
+		for i := 0; i < len(model.HeatPumps); i++ {
+			if model.HeatPumps[i].ID == id {
+				index = i
+				break
+			}
+		}
+
+		if index == -1 {
+			panic("Cannot resolve heat pump ID")
+		}
+
+		model.HeatPumps[index].MaxPower = append(model.HeatPumps[index].MaxPower, maxPower)
+		model.HeatPumps[index].Cop = append(model.HeatPumps[index].Cop, cop)
+		model.HeatPumps[index].TargetTemperature = append(model.HeatPumps[index].TargetTemperature, targetTemperature)
+		model.HeatPumps[index].SourceTemperature = append(model.HeatPumps[index].SourceTemperature, sourceTemperature)
+	}
+
+	eachCsvRow("data/csv/heat_pump_curves.csv", fn)
 }
 
 func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
