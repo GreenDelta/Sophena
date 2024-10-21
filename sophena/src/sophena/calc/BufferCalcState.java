@@ -16,6 +16,9 @@ public class BufferCalcState {
 	private double QP_NT;
 	
 	// kWh
+	private double QP_VT;
+
+	// kWh
 	private double QP_100;
 
 	// 0..1
@@ -47,16 +50,25 @@ public class BufferCalcState {
 	private double qLoadedNTInHour;
 
 	// kWh
+	private double qLoadedVTInHour;
+
+	// kWh
 	private double qUnloadedHTInHour;
 
 	// kWh
 	private double qUnloadedNTInHour;
 
 	// kWh
+	private double qUnloadedVTInHour;
+
+	// kWh
 	private double qLostHTInHour;
 
 	// kWh
 	private double qLostNTInHour;
+
+	// kWh
+	private double qLostVTInHour;
 
 	public BufferCalcState(Project project, SolarCalcLog log)
 	{
@@ -70,6 +82,7 @@ public class BufferCalcState {
 		TMAX = project.heatNet.maxBufferLoadTemperature;
 		QP_HT = 0.5 * maxCapacity(project.heatNet);
 		QP_NT = 0;
+		QP_VT = 0;
 		
 		bufferLossFactor = lossFactor(project.heatNet);
 	}
@@ -94,19 +107,25 @@ public class BufferCalcState {
 			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "QP100_NT [kWH]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
 					"qLoadedHT [kWh]",
 					"qLoadedNT [kWh]",
+					"qLoadedVT [kWh]",
 					"qUnloadedHT [kWh]",
 					"qUnloadedNT [kWh]",
+					"qUnloadedVT [kWh]",
 					"qLostHT [kWh]",
 					"qLostNT [kWh]"
+					"qLostVT [kWh]"
 			);
 		}
 		
 		qLoadedHTInHour = 0;
 		qLoadedNTInHour = 0;
+		qLoadedVTInHour = 0;
 		qUnloadedHTInHour = 0;
 		qUnloadedNTInHour = 0;
+		qUnloadedVTInHour = 0;
 		qLostHTInHour = 0;
 		qLostNTInHour = 0;
+		qLostVTInHour = 0;
 	}
 
 	public double load(int hour, double qToLoad, boolean isHT, boolean useMaxTargetLoadFactor)
@@ -126,6 +145,13 @@ public class BufferCalcState {
 
 			qLoadedHTInHour += Qloaded;
 		}
+		else if(isVT)
+		{
+			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor));
+			QP_VT = QP_HV + Qloaded;
+
+			qLoadedVTInHour += Qloaded;
+		}			
 		else
 		{
 			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor));
@@ -152,6 +178,14 @@ public class BufferCalcState {
 
 			qUnloadedHTInHour += Qunloaded;
 		}
+		else if(isVT)
+		{
+			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
+			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
+			QP_VT = QP_VT - Qunloaded;
+
+			qUnloadedVTInHour += Qunloaded;
+		}			
 		else
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
@@ -183,6 +217,14 @@ public class BufferCalcState {
 		if(qLossRemaining > 0)
 		{
 			Qlost = qLossRemaining;
+			QP_VT = QP_VT - Qlost;
+
+			qLostVTInHour += Qlost;
+		}
+
+		if(qLossRemaining > 0)
+		{
+			Qlost = qLossRemaining;
 			QP_NT = QP_NT - Qlost;
 
 			qLostNTInHour += Qlost;
@@ -199,10 +241,13 @@ public class BufferCalcState {
 		log.hourValues(hour, true, QP_MAX, QP_100, QP_HT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
 				qLoadedHTInHour,
 				qLoadedNTInHour,
+				qLoadedVTInHour,
 				qUnloadedHTInHour,
 				qUnloadedNTInHour,
+				qUnloadedVTInHout,
 				qLostHTInHour,
-				qLostNTInHour
+				qLostNTInHour,
+				qLostVTInHour
 		);
 	}
 	
@@ -215,21 +260,21 @@ public class BufferCalcState {
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 		
-		return (QP_HT + QP_NT) / (QP_MAX * loadFactor);
+		return (QP_HT + QP_VT + QP_NT) / (QP_MAX * loadFactor);
 	}
 
 	public double CalcHTCapacity(boolean useMaxTargetLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT);
+		return Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT - QP_VT);
 	}
 	
 	public double CalcNTCapacity(boolean useMaxTargetLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, Math.min(QP_MAX * loadFactor, QP100_NT() - QP_NT));
+		return Math.max(0, Math.min(QP_MAX * loadFactor, QP100_NT() - QP_NT - QP_VT));
 	}
 
 	private void UpdateFGAndTE()
@@ -241,7 +286,7 @@ public class BufferCalcState {
 		}
 		
 		
-		FG = QP_NT / QP100_NT(); 
+		FG = (QP_VT + QP_NT) / QP100_NT(); 
 		
 		if(FG < 0.8)
 		{
@@ -253,7 +298,7 @@ public class BufferCalcState {
 		}
 		else 
 		{
-			FG = (QP_NT + QP_HT) / QP_MAX;
+			FG = (QP_NT + QP_VT + QP_HT) / QP_MAX;
 			TE = TR + 1.0 / 3.0 * (TMAX-TR) * (10.0 * FG - 7.0);
 		}
 		
@@ -262,7 +307,7 @@ public class BufferCalcState {
 	
 	public double averageTemperature()
 	{
-		return TR + (TMAX - TR) * (QP_HT + QP_NT) / QP_MAX;
+		return TR + (TMAX - TR) * (QP_HT + QP_NT + QP_VT) / QP_MAX;
 	}
 
 	public double QP100_NT()
