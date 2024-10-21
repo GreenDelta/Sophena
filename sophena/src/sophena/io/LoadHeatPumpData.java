@@ -44,11 +44,14 @@ public class LoadHeatPumpData {
 
 				// parse the numbers
 				try {
-					double targettemp = 5*(Math.round((int)Double.parseDouble(parts[0].replace(',', '.'))/5));
-					double sourcetemp = 5*(Math.round((int)Double.parseDouble(parts[1].replace(',', '.'))/5));
+					double targettemp = Double.parseDouble(parts[0].replace(',', '.'));
+					double sourcetemp = Double.parseDouble(parts[1].replace(',', '.'));
 					double maxPower = Double.parseDouble(parts[2].replace(',', '.'));
 					double cop = Double.parseDouble(parts[3].replace(',', '.'));;
 
+					if(targettemp < 5 || targettemp > 95 || targettemp % 5 != 0 || sourcetemp < -30 || sourcetemp > 100 || maxPower <= 0 || cop < 1 || cop > 10)
+						return Result.error("Ungültige Werte in Zeile " + (row + 1));
+					
 					var heatPumpData = new HeatPumpData(targettemp, sourcetemp, maxPower, cop);
 					list.add(heatPumpData);
 				} catch (Exception e) {

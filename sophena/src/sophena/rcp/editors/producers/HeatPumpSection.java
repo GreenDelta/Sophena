@@ -1,8 +1,10 @@
 package sophena.rcp.editors.producers;
 
+import java.awt.Color;
 import java.io.File;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -29,7 +31,13 @@ import sophena.rcp.utils.UI;
 public class HeatPumpSection {
 	private ProducerEditor editor;
 	private HeatPumpTemperatureChart chart;
-
+	private Button btnImport;
+	private Text userinput;
+	private Composite c;
+	private GridData dataC;
+	private Composite cUser;
+	private GridData dataUser;
+	
 	HeatPumpSection(ProducerEditor editor) {
 		this.editor = editor;
 	}
@@ -51,13 +59,22 @@ public class HeatPumpSection {
 		if(producer().heatPumpMode == null)
 			producer().heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 		createHeatPumpModeRow(tk, comp);
-		createHeatPumpUserTemperatureRow(tk, comp);
-		createHeatPumpHourlyRow(tk, comp);
-		var c = new Composite(section, SWT.NONE);
+		
+		cUser = new Composite(section, SWT.NONE);
+		cUser.setBackground(Colors.getWhite());
+		UI.gridLayout(cUser, 4);		
+		dataUser = new GridData(SWT.FILL, SWT.FILL, false, false);
+		cUser.setLayoutData(dataUser);
+		createHeatPumpUserTemperatureRow(tk, cUser);
+		
+		c = new Composite(section, SWT.NONE);
 		c.setBackground(Colors.getWhite());
-		UI.gridLayout(c, 1);
-		UI.gridData(c, true, true);
+		UI.gridLayout(c, 1);		
+		dataC = new GridData(SWT.FILL, SWT.FILL, false, false);
+	    c.setLayoutData(dataC);
+	    createHeatPumpHourlyRow(tk, c);
 		createHeatPumpHourlyChart(tk, c);
+		updateControls();
 	}
 	
 	private void createHeatPumpHourlyChart(FormToolkit tk, Composite comp)
@@ -76,6 +93,7 @@ public class HeatPumpSection {
 		Controls.onSelect(outdoor, e -> {
 			producer().heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 			editor.setDirty();
+			updateControls();
 		});
 		
 		Button user = tk.createButton(inner, M.UserMode, SWT.RADIO);
@@ -83,6 +101,7 @@ public class HeatPumpSection {
 		Controls.onSelect(user, e -> {
 			producer().heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
 			editor.setDirty();
+			updateControls();
 		});
 		
 		Button hourly = tk.createButton(inner, M.HourlyMode, SWT.RADIO);
@@ -90,29 +109,62 @@ public class HeatPumpSection {
 		Controls.onSelect(hourly, e -> {
 			producer().heatPumpMode = HeatPumpMode.HOURLY_TEMPERATURE_MODE;
 			editor.setDirty();
+			updateControls();
 		});
 				
 		UI.formLabel(comp, "");
 		HelpLink.create(comp, tk, M.HeatPumpMode, "");
 	}
 	
+	private void updateControls()
+	{
+		switch(producer().heatPumpMode)
+		{
+		case USER_TEMPERATURE_MODE:
+			cUser.setVisible(true);
+			dataUser.exclude = false;
+			cUser.requestLayout();
+			c.setVisible(false);
+			dataC.exclude = true;	
+			c.requestLayout();
+			break;
+		case HOURLY_TEMPERATURE_MODE:
+			cUser.setVisible(false);
+			dataUser.exclude = true;
+			cUser.requestLayout();
+			c.setVisible(true);
+			dataC.exclude = false;	
+			c.requestLayout();
+			break;
+		default:
+			cUser.setVisible(false);
+			dataUser.exclude = true;
+			cUser.requestLayout();
+			c.setVisible(false);
+			dataC.exclude = true;	
+			c.requestLayout();
+			break;
+		}
+		
+	}
+	
 	private void createHeatPumpUserTemperatureRow(FormToolkit tk, Composite comp) {
-		Text t = UI.formText(comp, tk, M.UserTemperatureInput);
+		userinput = UI.formText(comp, tk, M.UserTemperatureInput);
 		UI.formLabel(comp, tk, "°C");
 		HelpLink.create(comp, tk, M.UserTemperatureInput, "");
-		Texts.on(t).decimal().required()
+		Texts.on(userinput).decimal().required()
 				.init(producer().sourceTemperatureUser)
 				.onChanged((s) -> {
-					producer().sourceTemperatureUser = Texts.getDouble(t);
+					producer().sourceTemperatureUser = Texts.getDouble(userinput);
 					editor.setDirty();
 				});
 	}
 	
 	private void createHeatPumpHourlyRow(FormToolkit tk, Composite comp)
 	{
-		Button btn = tk.createButton(
+		btnImport = tk.createButton(
 				comp, "Quelltemperatur Verlauf importieren", SWT.NONE);
-		Controls.onSelect(btn, e -> updateHourlyTemperature());
+		Controls.onSelect(btnImport, e -> updateHourlyTemperature());
 	}
 	
 	private void updateHourlyTemperature() {

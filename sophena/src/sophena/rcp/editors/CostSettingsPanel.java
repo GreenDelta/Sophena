@@ -182,7 +182,6 @@ public class CostSettingsPanel {
 	
 	private void setInnerGridVisible(Boolean visible)
 	{
-		var oldState = inner.getVisible();
 		inner.setVisible(visible);
 		dataInner.exclude = !visible;	
 		inner.requestLayout();			

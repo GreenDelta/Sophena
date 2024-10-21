@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.rcp.M;
 import sophena.rcp.editors.basedata.heatpumps.HeatPumpWizard.HeatPumpData;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -37,7 +38,8 @@ public class HeatPumpDataWizard extends Wizard {
 	}
 	@Override
 	public boolean performFinish() {
-
+		if (!page.valid())
+			return false;	
 		return true;
 	}
 
@@ -67,14 +69,14 @@ public class HeatPumpDataWizard extends Wizard {
 			targetText = UI.formText(comp, M.TargetTemperature);
 			Texts.on(targetText).init(heatPumpData.targetTemperature).decimal().required()
 						.onChanged(s -> {
-							heatPumpData.targetTemperature = 5*(Math.round(Texts.getInt(targetText)/5));
+							heatPumpData.targetTemperature = Texts.getDouble(targetText);
 						});
 			UI.formLabel(comp, "°C");
 			
 			sourceText = UI.formText(comp, M.SourceTemperature);
 			Texts.on(sourceText).init(heatPumpData.sourceTemperature).decimal().required()
 			.onChanged(s -> {
-				heatPumpData.sourceTemperature = 5*(Math.round(Texts.getInt(sourceText)/5));
+				heatPumpData.sourceTemperature = Texts.getDouble(sourceText);
 			});
 			UI.formLabel(comp, "°C");
 			
@@ -91,6 +93,27 @@ public class HeatPumpDataWizard extends Wizard {
 				heatPumpData.cop = Texts.getDouble(copText);
 			});
 			UI.formLabel(comp, "");
+		}
+		
+		private boolean valid() {
+			if (heatPumpData.sourceTemperature < -30 || heatPumpData.sourceTemperature > 100) {
+				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureError);
+				return false;
+			}	
+			if (heatPumpData.targetTemperature % 5 != 0 || heatPumpData.targetTemperature < 5 || heatPumpData.targetTemperature > 95) {
+				MsgBox.error(M.PlausibilityErrors, M.TargetTemperatureError);
+				return false;
+			}
+			if (heatPumpData.maxPower <= 0) {
+				MsgBox.error(M.PlausibilityErrors, M.MaxPowerError);
+				return false;
+			}
+			if (heatPumpData.cop < 1 || heatPumpData.cop > 10) {
+				MsgBox.error(M.PlausibilityErrors, M.COPError);
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
