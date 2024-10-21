@@ -34,10 +34,16 @@ class EnergyCalculator {
 		boolean[][] interruptions = interruptions(r);
 
 		Map<Producer, SolarCalcState> solarCalcStates = new HashMap<Producer, SolarCalcState>();
+		Map<Producer, HeatPumpCalcState> heatPumpCalcStates = new HashMap<Producer, HeatPumpCalcState>();
 
 		for(Producer producer: r.producers)
+		{
 			if(producer.solarCollector != null & producer.solarCollectorSpec != null)
 				solarCalcStates.put(producer, new SolarCalcState(solarCalcLog, project, producer));
+			
+			if(producer.heatPump != null)
+				heatPumpCalcStates.put(producer, new HeatPumpCalcState(solarCalcLog, project, producer));
+		}
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			bufferCalcState.preStep(hour);
@@ -56,6 +62,10 @@ class EnergyCalculator {
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				if(solarCalcState != null)
 					solarCalcState.calcPre(hour, bufferCalcState.getTE(), bufferCalcState.getTV());
+				
+				HeatPumpCalcState heatPumpCalcState = heatPumpCalcStates.get(producer);
+				if(heatPumpCalcState != null)
+					heatPumpCalcState.calcPre(hour, bufferCalcState.getTR(), bufferCalcState.getTV());
 			}
 			
 			double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
@@ -69,8 +79,9 @@ class EnergyCalculator {
 				Producer producer = r.producers[k];
 			
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				HeatPumpCalcState heatPumpCalcState = heatPumpCalcStates.get(producer);
 				boolean isSolarProducer = solarCalcState != null;
-				BufferCalcLoadType bufferLoadType = getProducerBufferLoadType(producer, bufferCalcState, solarCalcState, hour);
+				BufferCalcLoadType bufferLoadType = getProducerBufferLoadType(producer, bufferCalcState, solarCalcState, heatPumpCalcState, hour);
 				
 				if(bufferLoadType == BufferCalcLoadType.None)
 					continue;
@@ -103,7 +114,7 @@ class EnergyCalculator {
 					bufferCalcState.CalcHTCapacity(!isSolarProducer) :
 					bufferCalcState.CalcNTCapacity(!isSolarProducer));
 					
-				double power = getSuppliedPower(producer, hour, solarCalcState, requiredLoad, maxLoad);
+				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoad);
 				
 				// Don't use expensive peek load producer if the buffer has enaugh HT power left to satisfy the heatnet 
 				if (bufferCalcState.totalUnloadableHTPower() > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
@@ -167,6 +178,10 @@ class EnergyCalculator {
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				if(solarCalcState != null)
 					solarCalcState.calcPost(hour);
+				
+				HeatPumpCalcState heatPumpCalcState = heatPumpCalcStates.get(producer);
+				if(heatPumpCalcState != null)
+					heatPumpCalcState.calcPost(hour);
 			}
 
 			if (requiredLoad >= 0) {
@@ -227,7 +242,7 @@ class EnergyCalculator {
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_targetchargelevels.csv", targetChargeLevels);
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TV.csv", flowTemperatures);
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TR.csv", returnTemperatures);
-}
+		}
 		catch(java.io.FileNotFoundException err)
 		{
 		}
@@ -237,7 +252,7 @@ class EnergyCalculator {
 		return r;
 	}
 	
-	private BufferCalcLoadType getProducerBufferLoadType(Producer producer, BufferCalcState bufferCalcState, SolarCalcState solarCalcState, int hour)
+	private BufferCalcLoadType getProducerBufferLoadType(Producer producer, BufferCalcState bufferCalcState, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour)
 	{
 		if(producer.hasProfile())
 		{
@@ -258,7 +273,7 @@ class EnergyCalculator {
 		switch(producer.productGroup.type)
 		{
 		case HEAT_PUMP:
-			return BufferCalcLoadType.VT; //TODO
+			return heatPumpCalcState.getBufferLoadType();
 		case SOLAR_THERMAL_PLANT:
 			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
 		default:
@@ -267,9 +282,10 @@ class EnergyCalculator {
 	}
 
 	private double getSuppliedPower(Producer producer, int hour, SolarCalcState solarCalcState,
-			double requiredLoad, double maxLoad) {
-		double bMin = Producers.minPower(producer, solarCalcState, hour);
-		double bMax = Producers.maxPower(producer, solarCalcState, hour);
+		HeatPumpCalcState heatPumpCalcState,
+		double requiredLoad, double maxLoad) {
+		double bMin = Producers.minPower(producer, solarCalcState, heatPumpCalcState, hour);
+		double bMax = Producers.maxPower(producer, solarCalcState, heatPumpCalcState, hour);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 				? requiredLoad
 				: maxLoad;
