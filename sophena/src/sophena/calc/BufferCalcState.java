@@ -25,13 +25,13 @@ public class BufferCalcState {
 	private double FG;
 
 	// °C
-	public double TE;
+	private double TE;
 
 	// °C
 	private double TR;
 	
 	// °C
-	public double TV;
+	private double TV;
 	
 	// °C
 	private double TMAX;
@@ -112,7 +112,7 @@ public class BufferCalcState {
 					"qUnloadedNT [kWh]",
 					"qUnloadedVT [kWh]",
 					"qLostHT [kWh]",
-					"qLostNT [kWh]"
+					"qLostNT [kWh]",
 					"qLostVT [kWh]"
 			);
 		}
@@ -128,27 +128,31 @@ public class BufferCalcState {
 		qLostVTInHour = 0;
 	}
 
-	public double load(int hour, double qToLoad, boolean isHT, boolean useMaxTargetLoadFactor)
+	public double load(int hour, double qToLoad, BufferCalcLoadType loadType, boolean useMaxTargetLoadFactor)
 	{
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
 		
-		if(isHT && QP_NT < 0)
+		if(loadType != BufferCalcLoadType.NT && QP_NT < 0)
 		{
-			isHT = false;
+			loadType = BufferCalcLoadType.NT;
+		}
+		else if(loadType == BufferCalcLoadType.HT && QP_VT < 0)
+		{
+			loadType = BufferCalcLoadType.VT;
 		}
 		
 		double Qloaded;
-		if(isHT)
+		if(loadType == BufferCalcLoadType.HT)
 		{
 			Qloaded = Math.min(qToLoad, CalcHTCapacity(useMaxTargetLoadFactor));
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
 		}
-		else if(isVT)
+		else if(loadType == BufferCalcLoadType.VT)
 		{
 			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor));
-			QP_VT = QP_HV + Qloaded;
+			QP_VT = QP_VT + Qloaded;
 
 			qLoadedVTInHour += Qloaded;
 		}			
@@ -167,10 +171,10 @@ public class BufferCalcState {
 		return qToLoadRemaining;
 	}
 	
-	public double unload(int hour, double qToUnload, boolean isHT)
+	public double unload(int hour, double qToUnload, BufferCalcLoadType loadType)
 	{
 		double Qunloaded;
-		if(isHT)
+		if(loadType == BufferCalcLoadType.HT)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
@@ -178,7 +182,7 @@ public class BufferCalcState {
 
 			qUnloadedHTInHour += Qunloaded;
 		}
-		else if(isVT)
+		else if(loadType == BufferCalcLoadType.VT)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
@@ -244,7 +248,7 @@ public class BufferCalcState {
 				qLoadedVTInHour,
 				qUnloadedHTInHour,
 				qUnloadedNTInHour,
-				qUnloadedVTInHout,
+				qUnloadedVTInHour,
 				qLostHTInHour,
 				qLostNTInHour,
 				qLostVTInHour
@@ -384,4 +388,9 @@ public class BufferCalcState {
 
 		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000.0;
 	}
+	
+	public double getTE() { return TE; }
+	public double getTV() { return TV; }
+	public double getTR() { return TR; }
+	public double getTMAX() { return TMAX; }
 }

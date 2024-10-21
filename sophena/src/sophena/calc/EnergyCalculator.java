@@ -55,7 +55,7 @@ class EnergyCalculator {
 
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				if(solarCalcState != null)
-					solarCalcState.calcPre(hour, bufferCalcState.TE, bufferCalcState.TV);
+					solarCalcState.calcPre(hour, bufferCalcState.getTE(), bufferCalcState.getTV());
 			}
 			
 			double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
@@ -70,7 +70,10 @@ class EnergyCalculator {
 			
 				SolarCalcState solarCalcState = solarCalcStates.get(producer);
 				boolean isSolarProducer = solarCalcState != null;
-				boolean isHTProducer = isProducerHT(producer, solarCalcState, hour);
+				BufferCalcLoadType bufferLoadType = getProducerBufferLoadType(producer, bufferCalcState, solarCalcState, hour);
+				
+				if(bufferLoadType == BufferCalcLoadType.None)
+					continue;
 
 				// Check whether the collector is working for the current hour
 				if(isSolarProducer && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
@@ -96,7 +99,7 @@ class EnergyCalculator {
 				}
 				
 				// Maximum amount of power currently needed for heatnet and buffer				
-				double maxLoad = requiredLoad + (isHTProducer ?
+				double maxLoad = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
 					bufferCalcState.CalcHTCapacity(!isSolarProducer) :
 					bufferCalcState.CalcNTCapacity(!isSolarProducer));
 					
@@ -110,13 +113,13 @@ class EnergyCalculator {
 				if(!isSolarProducer && power > maxLoad)
 					continue;
 
-				if(isHTProducer)
+				if(bufferLoadType != BufferCalcLoadType.NT)
 				{
-					// Mainly use HT power for the heatnet and leftover to charge the buffer 
+					// Mainly use HT/VT power for the heatnet and leftover to charge the buffer 
 					double surplus = power - requiredLoad;					
 					if(surplus > 0)	
 					{
-						surplus = bufferCalcState.load(hour, surplus, isHTProducer, !isSolarProducer);					
+						surplus = bufferCalcState.load(hour, surplus, bufferLoadType, !isSolarProducer);					
 						requiredLoad = 0;
 						power -= surplus;
 					}
@@ -126,7 +129,7 @@ class EnergyCalculator {
 				else
 				{
 					// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
-					double surplus = bufferCalcState.load(hour, power, isHTProducer, !isSolarProducer);
+					double surplus = bufferCalcState.load(hour, power, bufferLoadType, !isSolarProducer);
 					// Not sure if this is ok, because we need min. one HT producer for return temperature increasement 
 					if(surplus < requiredLoad)
 					{
@@ -149,7 +152,7 @@ class EnergyCalculator {
 					solarCalcState.setConsumedPower(power * 1000);
 
 				// Only if min. one HT producer is used at the current hour NT engery from the buffer can be unloaded in order to increase return temperature
-				if(isHTProducer)
+				if(bufferLoadType == BufferCalcLoadType.HT)
 					haveAtLeastOneHTProducer = true;
 
 				// Take the rest from buffer and do not use further producers if possible
@@ -168,9 +171,11 @@ class EnergyCalculator {
 
 			if (requiredLoad >= 0) {
 				
-				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, true);
+				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, BufferCalcLoadType.HT);
+				if(remainingRequiredLoad > 0)
+					remainingRequiredLoad = bufferCalcState.unload(hour, remainingRequiredLoad, BufferCalcLoadType.VT);
 				if(remainingRequiredLoad > 0 && haveAtLeastOneHTProducer)
-					remainingRequiredLoad = bufferCalcState.unload(hour, remainingRequiredLoad, false);
+					remainingRequiredLoad = bufferCalcState.unload(hour, remainingRequiredLoad, BufferCalcLoadType.NT);
 				
 				double bufferPower = requiredLoad - remainingRequiredLoad;
 
@@ -232,23 +237,32 @@ class EnergyCalculator {
 		return r;
 	}
 	
-	private boolean isProducerHT(Producer producer, SolarCalcState solarCalcState, int hour)
+	private BufferCalcLoadType getProducerBufferLoadType(Producer producer, BufferCalcState bufferCalcState, SolarCalcState solarCalcState, int hour)
 	{
 		if(producer.hasProfile())
 		{
-			return producer.profile.temperaturLevel[hour] >= 95;
+			double temperature = producer.profile.temperaturLevel[hour];
+			
+			if(temperature >= bufferCalcState.getTMAX())
+				return BufferCalcLoadType.HT;
+			
+			if(temperature >= bufferCalcState.getTV())
+				return BufferCalcLoadType.VT;
+			
+			if(temperature >= bufferCalcState.getTR())
+				return BufferCalcLoadType.NT;
+			
+			return BufferCalcLoadType.None;
 		}
+
 		switch(producer.productGroup.type)
 		{
 		case HEAT_PUMP:
-			return false; //TODO
+			return BufferCalcLoadType.VT; //TODO
 		case SOLAR_THERMAL_PLANT:
-			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature;
-	//	case OTHER_HEAT_SOURCE:
-	//		return producer
-		//TODO: Abwärme (Erzeugerlastgang)
+			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
 		default:
-			return true;
+			return BufferCalcLoadType.HT;
 		}
 	}
 
