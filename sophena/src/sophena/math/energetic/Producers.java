@@ -1,5 +1,6 @@
 package sophena.math.energetic;
 
+import sophena.calc.HeatPumpCalcState;
 import sophena.calc.ProjectResult;
 import sophena.calc.SolarCalcState;
 import sophena.model.HeatRecovery;
@@ -39,7 +40,7 @@ public class Producers {
 	 * Get the minimum power of the given producer for the given hour (used in
 	 * energy simulations).
 	 */
-	public static double minPower(Producer p, SolarCalcState solarCalcState, int hour) {
+	public static double minPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
 		if (p == null)
 			return 0;
 		if (p.hasProfile()) {
@@ -56,7 +57,7 @@ public class Producers {
 	 * Get the minimum power of the given producer for the given hour (used in
 	 * energy simulations).
 	 */
-	public static double maxPower(Producer p, SolarCalcState solarCalcState, int hour) {
+	public static double maxPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
 		if (p == null)
 			return 0;
 		if (p.hasProfile()) {
@@ -66,6 +67,8 @@ public class Producers {
 		}
 		if(p.solarCollector !=null && solarCalcState != null)
 			return solarCalcState.getAvailablePowerInKWh();
+		if(p.heatPump != null && heatPumpCalcState != null)
+			return heatPumpCalcState.getMaxPower();
 		if (p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);

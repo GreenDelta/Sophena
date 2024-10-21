@@ -2,7 +2,6 @@ package sophena.calc;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import sophena.model.Producer;
 import sophena.model.Project;
 
@@ -10,7 +9,12 @@ public class HeatPumpCalcState {
 	private SolarCalcLog log;
 	private Project project;
 	private Producer producer;
-	
+	private BufferCalcLoadType bufferLoadType;
+
+	private double TQ;
+	private double maxPower;
+	private double cop;
+
 	public HeatPumpCalcState(SolarCalcLog log, Project project, Producer producer)
 	{
 		this.log = log;
@@ -18,20 +22,231 @@ public class HeatPumpCalcState {
 		this.producer = producer;
 	}
 	
-	public void calc(int hour, double TR, double TV)
+	public void calcPre(int hour, double TR, double TV)
 	{
+		bufferLoadType = BufferCalcLoadType.None;
+
 		if(producer.heatPump == null)
 			return;
+
+		TQ = calcTQ(hour);
+		if(Double.isNaN(TQ))
+			return;
 		
-		// 1..365
-		int JT = 1 + hour / 24;
-		// 1..24
-		int TS = 1 + hour % 24;
+		// Find largest temperature below and smallest above TV. Same for TR.
 		
-		List<Integer> list = new ArrayList<>();
+		double maxTemperatureSmallerThanTV = Double.MIN_VALUE;
+		double maxTemperatureSmallerThanTR = Double.MIN_VALUE;
+		double minTemperatureGreaterThanTV = Double.MAX_VALUE;
+		double minTemperatureGreaterThanTR = Double.MAX_VALUE;
+		
 		for(var i = 0; i < producer.heatPump.targetTemperature.length; i++)
 		{
+			double temperature = producer.heatPump.targetTemperature[i];
 			
+			maxTemperatureSmallerThanTV = Math.max(maxTemperatureSmallerThanTV, temperature);
+			maxTemperatureSmallerThanTR = Math.max(maxTemperatureSmallerThanTR, temperature);
+			
+			minTemperatureGreaterThanTV = Math.min(minTemperatureGreaterThanTV, temperature);
+			minTemperatureGreaterThanTR = Math.min(minTemperatureGreaterThanTR, temperature);
 		}
+		
+		// Determine which curves to use as possible upper curves for TV and TR
+
+		List<Integer> upperIndicesForTV = new ArrayList<>();
+		List<Integer> upperIndicesForTR = new ArrayList<>();
+
+		for(var i = 0; i < producer.heatPump.targetTemperature.length; i++)
+		{
+			double temperature = producer.heatPump.targetTemperature[i];
+			if(temperature == minTemperatureGreaterThanTV)
+				upperIndicesForTV.add(i);
+			else if(temperature == minTemperatureGreaterThanTR)
+				upperIndicesForTR.add(i);
+		}
+		
+		// At least one curve must have at least two points
+
+		if(upperIndicesForTV.size() < 2 && upperIndicesForTR.size() < 2)
+			return;
+		
+		// Decide which upper curve to use
+
+		List<Integer> upperIndices = upperIndicesForTV.size() > 1 ? upperIndicesForTV : upperIndicesForTR;
+		double maxTemperatureSmaller = upperIndicesForTV.size() > 1 ? maxTemperatureSmallerThanTV : maxTemperatureSmallerThanTR;
+		double targetTemperature = upperIndicesForTV.size() > 1 ? TV : TR;
+		
+		// Determine which curve to use as lower curve 
+
+		List<Integer> lowerIndices = new ArrayList<>();
+		for(var i = 0; i < producer.heatPump.targetTemperature.length; i++)
+		{
+			double temperature = producer.heatPump.targetTemperature[i];
+
+			if(temperature == maxTemperatureSmaller)
+				lowerIndices.add(i);
+		}
+		
+		// Determine left and right point indices within the upper curve based on source temperature
+
+		int indexLeftUpper = -1;
+		int indexRightUpper = -1;
+
+		int indexLeftLower = -1;
+		int indexRightLower = -1;
+
+		for(var i = 0; i < upperIndices.size(); i++)
+		{
+			var upperIndex = upperIndices.get(i);
+			var temperature = producer.heatPump.sourceTemperature[upperIndex];
+			
+			if(temperature <= TQ)
+			{
+				if(indexLeftUpper == -1)
+					indexLeftUpper = upperIndex;
+				else if(temperature > producer.heatPump.sourceTemperature[indexLeftUpper])
+					indexLeftUpper = upperIndex;
+			}
+
+			if(temperature > TQ)
+			{
+				if(indexRightUpper == -1)
+					indexRightUpper = upperIndex;
+				else if(temperature < producer.heatPump.sourceTemperature[indexRightUpper])
+					indexRightUpper = upperIndex;
+			}
+		}
+
+		// Exit if source temperature is outside upper curve
+		
+		if(indexLeftUpper == -1 || indexRightUpper == -1)
+			return;
+		
+		// Determine left and right point indices within the lower curve based on source temperature
+		
+		for(var i = 0; i < lowerIndices.size(); i++)
+		{
+			var lowerIndex = lowerIndices.get(i);
+			var temperature = producer.heatPump.sourceTemperature[lowerIndex];
+			
+			if(temperature <= TQ)
+			{
+				if(indexLeftLower == -1)
+					indexLeftLower = lowerIndex;
+				else if(temperature > producer.heatPump.sourceTemperature[indexLeftLower])
+					indexLeftLower = lowerIndex;
+			}
+
+			if(temperature > TQ)
+			{
+				if(indexRightLower == -1)
+					indexRightLower = lowerIndex;
+				else if(temperature < producer.heatPump.sourceTemperature[indexRightLower])
+					indexRightLower = lowerIndex;
+			}
+		}
+		
+		// Either interpolate between upper and lower curve, or just use the upper curve
+		
+		if(indexLeftLower == -1 || indexRightLower == -1)
+		{
+			// Interpolate max power and COP for upper curve, by TQ
+			
+			double upperK = findLerpK(producer.heatPump.sourceTemperature[indexLeftUpper], producer.heatPump.sourceTemperature[indexRightUpper], TQ);
+			maxPower = lerp(producer.heatPump.maxPower[indexLeftUpper], producer.heatPump.maxPower[indexRightUpper], upperK);
+			cop = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
+		}
+		else
+		{
+			// Interpolate max power and COP for upper curve, by TQ
+
+			double upperK = findLerpK(producer.heatPump.sourceTemperature[indexLeftUpper], producer.heatPump.sourceTemperature[indexRightUpper], TQ);
+			double upperMaxPower = lerp(producer.heatPump.maxPower[indexLeftUpper], producer.heatPump.maxPower[indexRightUpper], upperK);
+			double upperCOP = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
+			
+			// Interpolate max power and COP for lower curve, by TQ
+
+			double lowerK = findLerpK(producer.heatPump.sourceTemperature[indexLeftLower], producer.heatPump.sourceTemperature[indexRightLower], TQ);
+			double lowerMaxPower = lerp(producer.heatPump.maxPower[indexLeftLower], producer.heatPump.maxPower[indexRightLower], lowerK);
+			double lowerCOP = lerp(producer.heatPump.cop[indexLeftLower], producer.heatPump.cop[indexRightLower], lowerK);
+
+			// Interpolate between interpolated values of upper and lower curve, by  targetTemperature
+
+			double k = findLerpK(producer.heatPump.targetTemperature[indexLeftLower], producer.heatPump.targetTemperature[indexLeftUpper], targetTemperature);
+			maxPower = lerp(lowerMaxPower, upperMaxPower, k);
+			cop = lerp(lowerCOP, upperCOP, k);
+		}
+
+		// The buffer load type depends on which upper curve was chosen
+
+		bufferLoadType = upperIndicesForTV.size() > 1 ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
+	}
+	
+	public void calcPost(int hour)
+	{
+		log.beginProducer(producer);
+
+		int JT = 1 + hour / 24;
+		int TS = 1 + hour % 24;
+		
+		if(TS == 1){
+			log.beginDay(
+				JT,
+				hour,
+				"Hour",
+				"TS",
+				"TQ",
+				"maxPower",
+				"COP"
+			);
+		}
+
+		log.hourValues(hour,
+			true,
+			TS,
+			TQ,
+			maxPower,
+			cop
+		);
+	}
+	
+	private double calcTQ(int hour)
+	{
+		switch(producer.heatPumpMode)
+		{
+		case OUTODOOR_TEMPERATURE_MODE:
+			return project.weatherStation.data[hour];
+		case USER_TEMPERATURE_MODE:
+			return producer.sourceTemperatureUser;
+		case HOURLY_TEMPERATURE_MODE:
+			return producer.sourceTemperatureHourly[hour];
+		default:
+			return Double.NaN;
+		}
+	}
+	
+	private static double findLerpK(double left, double right, double value)
+	{
+		return (value - left) / (right - left);
+	}
+	
+	private static double lerp(double a,double b, double t)
+	{
+		return a * (1 - t) + b * t;
+	}
+	
+	public BufferCalcLoadType getBufferLoadType() {
+		
+		return bufferLoadType; 
+	}
+	
+	public double getMaxPower()
+	{
+		return maxPower;
+	}
+
+	public double getCOP()
+	{
+		return cop;
 	}
 }
