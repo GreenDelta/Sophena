@@ -11,13 +11,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import sophena.Labels;
 import sophena.io.LoadHeatPumpData;
 import sophena.io.ProducerProfiles;
 import sophena.model.HeatPump;
+import sophena.model.Producer;
 import sophena.model.ProductType;
 import sophena.model.Stats;
 import sophena.rcp.Icon;
@@ -102,6 +107,7 @@ public class HeatPumpWizard implements IContent {
 			for(var heatPumpData : r.get())
 				heatPumpDataList.add(heatPumpData);
 			table.setInput(heatPumpDataList);
+			wizard.validate();
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden",
 					e.getMessage());
@@ -128,6 +134,7 @@ public class HeatPumpWizard implements IContent {
 			return;
 		heatPumpDataList.add(heatPumpData);		
 		table.setInput(heatPumpDataList);
+		wizard.validate();
 	}
 
 	private void edit(TableViewer table) {
@@ -137,6 +144,7 @@ public class HeatPumpWizard implements IContent {
 		if (HeatPumpDataWizard.open(heatPumpData) != Window.OK)
 			return;	
 		table.setInput(heatPumpDataList);
+		wizard.validate();
 	}
 
 	private void delete(TableViewer table) {
@@ -147,6 +155,7 @@ public class HeatPumpWizard implements IContent {
 			return;
 		heatPumpDataList.remove(heatPumpData);		
 		table.setInput(heatPumpDataList);
+		wizard.validate();
 	}
 	
 	private String[] getColumns() {
@@ -201,9 +210,26 @@ public class HeatPumpWizard implements IContent {
 			return "Es wurde keine minimale Leistung angegeben";
 		if (!Texts.hasNumber(ratedPowerText))
 			return "Es wurde keine Nennleistung angegeben";
+		if(!checkEveryValueExistsAlteastTwice(heatPumpDataList))
+			return "Jede Zieltemperatur muss mindestens zweimal vorkommen!";
 		return null;
 	}
 
+	private boolean checkEveryValueExistsAlteastTwice(List<HeatPumpData> list)
+	{
+		Map<Double, Boolean> doubleToBool = new HashMap<>();
+		for (var i = 0; i < list.size(); i++) 
+		{			
+			var v = list.get(i).targetTemperature;
+			if(doubleToBool.containsKey(v))
+				doubleToBool.put(v, true);
+			else
+				doubleToBool.put(v, false);
+		}
+		if(doubleToBool.values().stream().anyMatch(x -> x == false))
+			return false;			
+		return true;
+	}
 
 	@Override
 	public String getPageName() {
