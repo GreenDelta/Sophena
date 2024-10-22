@@ -220,6 +220,10 @@ class EnergyCalculator {
 			SolarCalcState solarCalcState = solarCalcStates.get(producer);
 			if(solarCalcState != null)
 				r.producerStagnationDays[k] = solarCalcState.getNumStagnationDays();
+			
+			HeatPumpCalcState heatPumpCalcState = heatPumpCalcStates.get(producer);
+			if(heatPumpCalcState != null)
+				r.producerJaz[k] = heatPumpCalcState.getJAZ();
 		}
 
 		

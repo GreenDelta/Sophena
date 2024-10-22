@@ -24,6 +24,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +56,14 @@ class BoilerTableSection {
 			if(items.get(i).showStagnationDays)
 				showStagnationDays = true;
 		
+		boolean showJAZ = false;
+		for(Producer p : result.producers)
+			if(p.heatPump != null)
+			{
+				showJAZ = true;
+				break;
+			}				
+		
 		List<String> properties = new ArrayList<String>();
 		properties.add(M.HeatProducer);
 		properties.add("Rang");
@@ -65,14 +74,35 @@ class BoilerTableSection {
 		properties.add("Volllaststunden");
 		properties.add("Nutzungsgrad");
 		properties.add("Starts");
+		int count = 9;
 		if(showStagnationDays)
+		{
 			properties.add("Stagnationstage");
-		
+			count++;
+		}
+		if(showJAZ)
+		{
+			properties.add("JAZ");
+			count++;
+		}
 		var table = Tables.createViewer(comp, properties.toArray(new String[0]));
 		table.setLabelProvider(new Label());
-		double w = 1.0 / 10.0;
-		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9);
+		double w = 1.0 / count;
+		if(count == 11)
+		{
+		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, w);
+		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10, 11);
+		}
+		else if(count == 10)
+		{
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w,w);
+			Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10);
+		}
+		else
+		{
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
+			Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9);
+		}
 		table.setInput(items);
 	}
 
@@ -111,6 +141,11 @@ class BoilerTableSection {
 			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
 				item.stagnationDays = result.stagnationDays(p);
 				item.showStagnationDays = true;
+			}
+			if(p.heatPump != null)
+			{
+				item.jaz = result.jaz(p);
+				item.showJAZ = true;
 			}
 			items.add(item);
 		}
@@ -170,6 +205,8 @@ class BoilerTableSection {
 		Integer stagnationDays;
 		boolean showStagnationDays;
 		boolean separator = false;
+		boolean showJAZ;
+		Double jaz;
 	}
 
 	private static class Label extends LabelProvider
@@ -211,6 +248,9 @@ class BoilerTableSection {
 				case 9 -> item.stagnationDays == null 
 						? null
 						: Num.intStr(item.stagnationDays);
+				case 10 -> item.jaz == null
+						? null
+						: new DecimalFormat("#.0#").format(item.jaz);
 				default -> null;
 			};
 		}

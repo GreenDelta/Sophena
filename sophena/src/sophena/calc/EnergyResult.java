@@ -21,6 +21,7 @@ public class EnergyResult {
 	public double[][] producerResults;
 	public double totalProducedHeat;
 	public int[] producerStagnationDays;
+	public double[] producerJaz;
 
 	public double[] suppliedBufferHeat;
 	public double totalBufferedHeat;
@@ -96,6 +97,7 @@ public class EnergyResult {
 				(p1, p2) -> Integer.compare(p1.rank, p2.rank));
 		
 		producerStagnationDays = new int[count];
+		producerJaz = new double[count];
 	}
 	
 	public int stagnationDays(Producer p) {
@@ -109,6 +111,17 @@ public class EnergyResult {
 		return 0;
 	}
 
+	public double jaz(Producer p) {
+		if (p == null)
+			return 0;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				return producerJaz[i];				
+			}
+		}
+		return 0;
+	}
+	
 	public double maxPeakPowerOfAllProducers()
 	{
 		double max = 0;
@@ -157,6 +170,7 @@ public class EnergyResult {
 					Stats.HOURS);
 		}
 		clone.producerStagnationDays = Arrays.copyOf(producerStagnationDays,producers.length);
+		clone.producerJaz = Arrays.copyOf(producerJaz,producers.length);
 		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat,
 				Stats.HOURS);
 		clone.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
