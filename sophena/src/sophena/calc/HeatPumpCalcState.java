@@ -44,11 +44,15 @@ public class HeatPumpCalcState {
 		{
 			double temperature = producer.heatPump.targetTemperature[i];
 			
-			maxTemperatureSmallerThanTV = Math.max(maxTemperatureSmallerThanTV, temperature);
-			maxTemperatureSmallerThanTR = Math.max(maxTemperatureSmallerThanTR, temperature);
+			if(temperature < TV)
+				maxTemperatureSmallerThanTV = Math.max(maxTemperatureSmallerThanTV, temperature);
+			if(temperature < TR)
+				maxTemperatureSmallerThanTR = Math.max(maxTemperatureSmallerThanTR, temperature);
 			
-			minTemperatureGreaterThanTV = Math.min(minTemperatureGreaterThanTV, temperature);
-			minTemperatureGreaterThanTR = Math.min(minTemperatureGreaterThanTR, temperature);
+			if(temperature >= TV)
+				minTemperatureGreaterThanTV = Math.min(minTemperatureGreaterThanTV, temperature);
+			if(temperature >= TR)
+				minTemperatureGreaterThanTR = Math.min(minTemperatureGreaterThanTR, temperature);
 		}
 		
 		// Determine which curves to use as possible upper curves for TV and TR
@@ -72,9 +76,9 @@ public class HeatPumpCalcState {
 		
 		// Decide which upper curve to use
 
-		List<Integer> upperIndices = upperIndicesForTV.size() > 1 ? upperIndicesForTV : upperIndicesForTR;
-		double maxTemperatureSmaller = upperIndicesForTV.size() > 1 ? maxTemperatureSmallerThanTV : maxTemperatureSmallerThanTR;
-		double targetTemperature = upperIndicesForTV.size() > 1 ? TV : TR;
+		boolean useTV = upperIndicesForTV.size() > 1;
+		List<Integer> upperIndices = useTV ? upperIndicesForTV : upperIndicesForTR;
+		double maxTemperatureSmaller = useTV ? maxTemperatureSmallerThanTV : maxTemperatureSmallerThanTR;
 		
 		// Determine which curve to use as lower curve 
 
@@ -148,22 +152,18 @@ public class HeatPumpCalcState {
 		
 		// Either interpolate between upper and lower curve, or just use the upper curve
 		
+		// Interpolate max power and COP for upper curve, by TQ
+		double upperK = findLerpK(producer.heatPump.sourceTemperature[indexLeftUpper], producer.heatPump.sourceTemperature[indexRightUpper], TQ);
+		double upperMaxPower = lerp(producer.heatPump.maxPower[indexLeftUpper], producer.heatPump.maxPower[indexRightUpper], upperK);
+		double upperCOP = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
+
 		if(indexLeftLower == -1 || indexRightLower == -1)
-		{
-			// Interpolate max power and COP for upper curve, by TQ
-			
-			double upperK = findLerpK(producer.heatPump.sourceTemperature[indexLeftUpper], producer.heatPump.sourceTemperature[indexRightUpper], TQ);
-			maxPower = lerp(producer.heatPump.maxPower[indexLeftUpper], producer.heatPump.maxPower[indexRightUpper], upperK);
-			cop = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
+		{						
+			maxPower = upperMaxPower;
+			cop = upperCOP;
 		}
 		else
 		{
-			// Interpolate max power and COP for upper curve, by TQ
-
-			double upperK = findLerpK(producer.heatPump.sourceTemperature[indexLeftUpper], producer.heatPump.sourceTemperature[indexRightUpper], TQ);
-			double upperMaxPower = lerp(producer.heatPump.maxPower[indexLeftUpper], producer.heatPump.maxPower[indexRightUpper], upperK);
-			double upperCOP = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
-			
 			// Interpolate max power and COP for lower curve, by TQ
 
 			double lowerK = findLerpK(producer.heatPump.sourceTemperature[indexLeftLower], producer.heatPump.sourceTemperature[indexRightLower], TQ);
@@ -172,6 +172,7 @@ public class HeatPumpCalcState {
 
 			// Interpolate between interpolated values of upper and lower curve, by  targetTemperature
 
+			double targetTemperature = useTV ? TV : TR;
 			double k = findLerpK(producer.heatPump.targetTemperature[indexLeftLower], producer.heatPump.targetTemperature[indexLeftUpper], targetTemperature);
 			maxPower = lerp(lowerMaxPower, upperMaxPower, k);
 			cop = lerp(lowerCOP, upperCOP, k);
@@ -179,7 +180,7 @@ public class HeatPumpCalcState {
 
 		// The buffer load type depends on which upper curve was chosen
 
-		bufferLoadType = upperIndicesForTV.size() > 1 ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
+		bufferLoadType = useTV ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
 	}
 	
 	public void calcPost(int hour)
