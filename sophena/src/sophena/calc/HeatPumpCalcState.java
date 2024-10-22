@@ -49,9 +49,8 @@ public class HeatPumpCalcState {
 		// Find largest temperature below and smallest above TV. Same for TR.
 		
 		double maxTemperatureSmallerThanTV = Double.MIN_VALUE;
-		double maxTemperatureSmallerThanTR = Double.MIN_VALUE;
 		double minTemperatureGreaterThanTV = Double.MAX_VALUE;
-		double minTemperatureGreaterThanTR = Double.MAX_VALUE;
+		double maxTemperatureBetweenTRAndTV = Double.MIN_VALUE;
 		
 		for(var i = 0; i < producer.heatPump.targetTemperature.length; i++)
 		{
@@ -59,13 +58,11 @@ public class HeatPumpCalcState {
 			
 			if(temperature < TV)
 				maxTemperatureSmallerThanTV = Math.max(maxTemperatureSmallerThanTV, temperature);
-			if(temperature < TR)
-				maxTemperatureSmallerThanTR = Math.max(maxTemperatureSmallerThanTR, temperature);
 			
 			if(temperature >= TV)
 				minTemperatureGreaterThanTV = Math.min(minTemperatureGreaterThanTV, temperature);
-			if(temperature >= TR)
-				minTemperatureGreaterThanTR = Math.min(minTemperatureGreaterThanTR, temperature);
+			if(temperature >= TR && temperature < TV)
+				maxTemperatureBetweenTRAndTV = Math.max(maxTemperatureBetweenTRAndTV, temperature);
 		}
 		
 		// Determine which curves to use as possible upper curves for TV and TR
@@ -78,7 +75,7 @@ public class HeatPumpCalcState {
 			double temperature = producer.heatPump.targetTemperature[i];
 			if(temperature == minTemperatureGreaterThanTV)
 				upperIndicesForTV.add(i);
-			else if(temperature == minTemperatureGreaterThanTR)
+			else if(temperature == maxTemperatureBetweenTRAndTV)
 				upperIndicesForTR.add(i);
 		}
 		
@@ -86,6 +83,7 @@ public class HeatPumpCalcState {
 
 		if(upperIndicesForTV.size() < 2 && upperIndicesForTR.size() < 2)
 		{
+			log.beginProducer(producer);
 			log.message("Exit because at least one curve must have at least two points");
 			return;
 		}
@@ -94,7 +92,7 @@ public class HeatPumpCalcState {
 
 		boolean useTV = upperIndicesForTV.size() > 1;
 		List<Integer> upperIndices = useTV ? upperIndicesForTV : upperIndicesForTR;
-		double maxTemperatureSmaller = useTV ? maxTemperatureSmallerThanTV : maxTemperatureSmallerThanTR;
+		double maxTemperatureSmaller = useTV ? maxTemperatureSmallerThanTV : Double.MIN_VALUE;
 		
 		// Determine which curve to use as lower curve 
 
@@ -141,6 +139,7 @@ public class HeatPumpCalcState {
 		
 		if(indexLeftUpper == -1 || indexRightUpper == -1)
 		{
+			log.beginProducer(producer);
 			log.message("Exit because source temperature is outside upper curve");
 			return;
 		}
