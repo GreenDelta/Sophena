@@ -161,6 +161,9 @@ class EnergyCalculator {
 				// Write back used power in order to heat up the collector with the not used part
 				if(isSolarProducer)
 					solarCalcState.setConsumedPower(power * 1000);
+				
+				if(heatPumpCalcState != null)
+					heatPumpCalcState.setConsumedPower(power * 1000);
 
 				// Only if min. one HT producer is used at the current hour NT engery from the buffer can be unloaded in order to increase return temperature
 				if(bufferLoadType == BufferCalcLoadType.HT)

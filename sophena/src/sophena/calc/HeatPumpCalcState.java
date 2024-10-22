@@ -14,6 +14,9 @@ public class HeatPumpCalcState {
 	private double TQ;
 	private double maxPower;
 	private double cop;
+	
+	private double Q_used;
+	private double Q_el_used;
 
 	public HeatPumpCalcState(SolarCalcLog log, Project project, Producer producer)
 	{
@@ -26,8 +29,18 @@ public class HeatPumpCalcState {
 	{
 		bufferLoadType = BufferCalcLoadType.None;
 
+		consumedPower = 0;
+		maxPower = 0;
+		cop = 0;
+
 		if(producer.heatPump == null)
 			return;
+		
+		if(hour == 0)
+		{
+			Q_used = 0;
+			Q_el_used = 0;
+		}
 
 		TQ = calcTQ(hour);
 		if(Double.isNaN(TQ))
@@ -185,6 +198,12 @@ public class HeatPumpCalcState {
 	
 	public void calcPost(int hour)
 	{
+		if(bufferLoadType != BufferCalcLoadType.None)
+		{
+			Q_used += consumedPower;
+			Q_el_used += consumedPower / cop;
+		}
+		
 		log.beginProducer(producer);
 
 		int JT = 1 + hour / 24;
@@ -249,5 +268,17 @@ public class HeatPumpCalcState {
 	public double getCOP()
 	{
 		return cop;
+	}
+
+	private double consumedPower;
+
+	public void setConsumedPower(double consumedPower)
+	{
+		this.consumedPower = consumedPower / producer.utilisationRate;
+	}
+
+	public double getJAZ()
+	{
+		return Q_el_used > 0 ? Q_used / Q_el_used : 0;
 	}
 }
