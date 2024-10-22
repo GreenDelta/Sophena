@@ -174,7 +174,10 @@ class BufferTankSection {
 	private void updateMaximumPerformance()
 	{
 		if (net().bufferTank != null)
-		  Texts.set(maximumPerformanceText, calculateMaxSimLoad());
+		{
+			Texts.set(maximumPerformanceText, calculateMaxSimLoad());
+			net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
+		}
 	}
 	
 	private double calculateMaxSimLoad() {
