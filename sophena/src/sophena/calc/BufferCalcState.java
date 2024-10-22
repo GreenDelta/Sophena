@@ -234,7 +234,7 @@ public class BufferCalcState {
 			qLostNTInHour += Qlost;
 		}
 		
-		UpdateFGAndTE();
+		//UpdateFGAndTE();
 
 		return Qlost;
 	}
@@ -304,9 +304,8 @@ public class BufferCalcState {
 			TE = TR + 1.0 / 3.0 * (TV - TR) * (10.0 * FG - 7.0);
 		}
 		else 
-		{
-			FG = QP_MAX == 0 ? 0 : (QP_NT + QP_VT + QP_HT) / QP_MAX;
-			TE = TR + 1.0 / 3.0 * (TMAX-TR) * (10.0 * FG - 7.0);
+		{			
+			TE = TMAX;
 		}
 		
 		TE = Math.max(TE,TR);
