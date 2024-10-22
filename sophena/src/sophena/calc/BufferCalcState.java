@@ -264,7 +264,11 @@ public class BufferCalcState {
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 		
-		return (QP_HT + QP_VT + QP_NT) / (QP_MAX * loadFactor);
+		double denominator = QP_MAX * loadFactor;
+		if(denominator == 0)
+			return 0;
+		
+		return (QP_HT + QP_VT + QP_NT) / denominator;
 	}
 
 	public double CalcHTCapacity(boolean useMaxTargetLoadFactor)
@@ -289,7 +293,6 @@ public class BufferCalcState {
 			return;
 		}
 		
-		
 		FG = (QP_VT + QP_NT) / QP100_NT(); 
 		
 		if(FG < 0.8)
@@ -302,7 +305,7 @@ public class BufferCalcState {
 		}
 		else 
 		{
-			FG = (QP_NT + QP_VT + QP_HT) / QP_MAX;
+			FG = QP_MAX == 0 ? 0 : (QP_NT + QP_VT + QP_HT) / QP_MAX;
 			TE = TR + 1.0 / 3.0 * (TMAX-TR) * (10.0 * FG - 7.0);
 		}
 		
@@ -311,11 +314,15 @@ public class BufferCalcState {
 	
 	public double averageTemperature()
 	{
+		if(QP_MAX == 0)
+			return TR;
 		return TR + (TMAX - TR) * (QP_HT + QP_NT + QP_VT) / QP_MAX;
 	}
 
 	public double QP100_NT()
 	{
+		if(QP_100 == 0)
+			return 0;
 		return (1 - QP_HT / QP_MAX) * QP_100;
 	}
 
@@ -380,9 +387,8 @@ public class BufferCalcState {
 	 * Returns the buffer loss in kWh for the given fill rate (a value between 0 and 1).
 	 */
 	private double calcLoss(HeatNet net, double lossFactor) {
-		if (net == null || lossFactor == 0)
+		if (net == null || net.bufferTank == null)
 			return 0;
-		
 		double avgBufferTemp = averageTemperature();
 		double averageRoomTemp = 20.0;
 
