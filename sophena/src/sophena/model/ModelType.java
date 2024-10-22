@@ -42,7 +42,9 @@ public enum ModelType {
 
 	WEATHER_STATION(WeatherStation.class),
 	
-	SOLAR_COLLECTOR(SolarCollector.class);
+	SOLAR_COLLECTOR(SolarCollector.class),
+	
+	HEAT_PUMP(HeatPump.class);
 
 	private final Class<? extends AbstractEntity> modelClass;
 

@@ -104,7 +104,7 @@ public class BufferCalcState {
 		if(ts == 1)
 		{
 			log.beginProducer(null);
-			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_NT [kWh]", "QP100_NT [kWH]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
+			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_VT [kWh]", "QP_NT [kWh]", "QP100_NT [kWH]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
 					"qLoadedHT [kWh]",
 					"qLoadedNT [kWh]",
 					"qLoadedVT [kWh]",
@@ -242,7 +242,7 @@ public class BufferCalcState {
 	public void postStep(int hour) 
 	{
 		log.beginProducer(null);
-		log.hourValues(hour, true, QP_MAX, QP_100, QP_HT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
+		log.hourValues(hour, true, QP_MAX, QP_100, QP_HT, QP_VT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
 				qLoadedHTInHour,
 				qLoadedNTInHour,
 				qLoadedVTInHour,

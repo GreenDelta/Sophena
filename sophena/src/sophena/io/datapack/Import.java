@@ -26,6 +26,7 @@ import sophena.model.BuildingState;
 import sophena.model.CostSettings;
 import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
+import sophena.model.HeatPump;
 import sophena.model.HeatRecovery;
 import sophena.model.Manufacturer;
 import sophena.model.ModelType;
@@ -71,6 +72,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.FUEL, Fuel.class);
 			importEntities(ModelType.BUFFER, BufferTank.class);
 			importEntities(ModelType.BOILER, Boiler.class);
+			importEntities(ModelType.HEAT_PUMP, HeatPump.class);
 			importEntities(ModelType.SOLAR_COLLECTOR, SolarCollector.class);
 			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
 			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
@@ -122,7 +124,7 @@ public class Import implements Runnable {
 				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
 				WeatherStation.class, TransferStation.class,
 				FlueGasCleaning.class, ProjectFolder.class,
-				HeatRecovery.class, Manufacturer.class, SolarCollector.class
+				HeatRecovery.class, Manufacturer.class, SolarCollector.class, HeatPump.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))

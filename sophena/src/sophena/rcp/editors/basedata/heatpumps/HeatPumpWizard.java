@@ -27,9 +27,12 @@ import sophena.model.ProductType;
 import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
@@ -69,12 +72,15 @@ public class HeatPumpWizard implements IContent {
 	@Override
 	public void render(Composite c) {
 		createTexts(c);
+		Text t = new Text(c.getParent(), 0);
+		t.setText(M.OperatingData);
+		t.setBackground(c.getBackground());
 		Composite comp = new Composite(c.getParent(), SWT.NONE);
 		UI.gridData(comp, true, true);
-		UI.gridLayout(comp, 1);
+		UI.gridLayout(comp, 1);		
 		table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new Label());
-		
+
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.3, 0.2);
 		var toolBar = bindActions(c.getParent(), table);
 		toolBar.moveAbove(comp);
@@ -82,6 +88,10 @@ public class HeatPumpWizard implements IContent {
 		Button btn = new Button(comp, SWT.NONE);
 		btn.setText("Betriebspunkte importieren");
 		Controls.onSelect(btn, e -> onSelectFile());
+		
+		if(heatPump.targetTemperature != null)
+			for(var i = 0; i < heatPump.targetTemperature.length; i++)
+				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
 	}
 	
 	private void onSelectFile() {
@@ -122,7 +132,9 @@ public class HeatPumpWizard implements IContent {
 				() -> edit(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> delete(table));
-		var control = Actions.bind(comp, add, edit, del);
+		Action info = Actions.create(M.Information,	Icon.INFO_16.des(), 
+				() -> info(table));
+		var control = Actions.bind(comp, add, edit, del, info);
 		Actions.bind(table, add, edit, del);
 		Tables.onDoubleClick(table, e -> edit(table));
 		return control;
@@ -158,6 +170,11 @@ public class HeatPumpWizard implements IContent {
 		wizard.validate();
 	}
 	
+	private void info(TableViewer table)
+	{
+		HelpBox.show(M.OperatingData, H.OperatingData);
+	}
+	
 	private String[] getColumns() {
 		return new String[] { M.TargetTemperature, M.SourceTemperature, M.MaxPower, M.Cop };
 	}
@@ -175,10 +192,7 @@ public class HeatPumpWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(minText, heatPump.minPower);
 		Texts.set(ratedPowerText, heatPump.ratedPower);
-		if(heatPump.targetTemperature != null)
-			for(var i = 0; i < heatPump.targetTemperature.length; i++)
-				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
-		table.setInput(heatPumpDataList);
+		table.setInput(heatPumpDataList);		
 	}
 
 	@Override
@@ -210,8 +224,10 @@ public class HeatPumpWizard implements IContent {
 			return "Es wurde keine minimale Leistung angegeben";
 		if (!Texts.hasNumber(ratedPowerText))
 			return "Es wurde keine Nennleistung angegeben";
+		if(heatPumpDataList.size() < 2)
+			return M.TableError;
 		if(!checkEveryValueExistsAlteastTwice(heatPumpDataList))
-			return "Jede Zieltemperatur muss mindestens zweimal vorkommen!";
+			return "Bitte geben Sie mindestens 2 Betriebspunkte für jede Zieltemperatur ein.";
 		return null;
 	}
 

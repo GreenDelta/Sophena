@@ -185,6 +185,15 @@ public class M extends NLS {
     public static String HeatPumpMode;
     public static String UserTemperatureInput;
     
+    public static String OperatingData;
+    public static String Information;
+    
+    public static String SourceTemperatureError;
+    public static String TargetTemperatureError;
+    public static String MaxPowerError;
+    public static String COPError;
+    public static String TableError;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

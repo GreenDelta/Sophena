@@ -286,9 +286,9 @@ func (model *CsvModel) readHeatPumpCurves() {
 	//model.HeatPumps = make([]*HeatPump, 0)
 	fn := func(row []string) {
 		id := cStr(row, 0)
-		maxPower := cFlo(row, 1)
+		targetTemperature := cFlo(row, 1)
 		sourceTemperature := cFlo(row, 2)
-		targetTemperature := cFlo(row, 3)
+		maxPower := cFlo(row, 3)
 		cop := cFlo(row, 4)
 
 		index := -1
