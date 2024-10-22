@@ -275,7 +275,7 @@ class EnergyCalculator {
 		case HEAT_PUMP:
 			return heatPumpCalcState.getBufferLoadType();
 		case SOLAR_THERMAL_PLANT:
-			return solarCalcState.getOperationMode() == SolarCalcOperationMode.TargetTemperature ? BufferCalcLoadType.VT : BufferCalcLoadType.NT;
+			 return solarCalcState.getBufferLoadType();
 		default:
 			return BufferCalcLoadType.HT;
 		}

@@ -187,8 +187,8 @@ public class SolarCalcState {
 		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
 		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature && phase != SolarCalcPhase.Stagnation)
 		{
-			phase = SolarCalcPhase.Stagnation;
-			log.message("Changing Phase to "+phase);
+			operationMode  = SolarCalcOperationMode.HighTemperature;
+			log.message("Changing Operation Mode to " + operationMode);
 		}
 
 		QS_i_before_correction = QS_i;
@@ -359,10 +359,9 @@ public class SolarCalcState {
 		if(phase == SolarCalcPhase.Betrieb)
 		{
 			double deltaQS = QS_i - consumedPower;
-			
 			TK_i = TK_i_minus_one + deltaQS / (A * C);
 			
-			if(TK_i > project.heatNet.maxBufferLoadTemperature)
+			if(TK_i > project.heatNet.maxBufferLoadTemperature && deltaQS > 0)
 			{
 				phase = SolarCalcPhase.Stagnation;
 				writeLog = true;
@@ -387,7 +386,22 @@ public class SolarCalcState {
 			log.message("Changing Phase to "+phase);
 		
 		TK_i_minus_one = TK_i;
-}
+	}
+
+	public BufferCalcLoadType getBufferLoadType()
+	{
+		switch(operationMode)
+		{
+			case TargetTemperature:
+				return BufferCalcLoadType.VT;
+			case HighTemperature:
+				return BufferCalcLoadType.HT;
+			case PreHeating:
+				return BufferCalcLoadType.NT;
+			default:
+				throw new UnsupportedOperationException();
+		}
+	}
 
 	private SolarCalcOperationMode CalcOperationMode(HeatNet heatNet, int hour, double radiationPerSquareMeter)
 	{
