@@ -72,7 +72,10 @@ public class HeatPumpCalcState {
 		// At least one curve must have at least two points
 
 		if(upperIndicesForTV.size() < 2 && upperIndicesForTR.size() < 2)
+		{
+			log.message("Exit because at least one curve must have at least two points");
 			return;
+		}
 		
 		// Decide which upper curve to use
 
@@ -124,7 +127,10 @@ public class HeatPumpCalcState {
 		// Exit if source temperature is outside upper curve
 		
 		if(indexLeftUpper == -1 || indexRightUpper == -1)
+		{
+			log.message("Exit because source temperature is outside upper curve");
 			return;
+		}
 		
 		// Determine left and right point indices within the lower curve based on source temperature
 		
@@ -195,10 +201,10 @@ public class HeatPumpCalcState {
 				JT,
 				hour,
 				"Hour",
-				"TS",
 				"TQ",
 				"maxPower",
-				"COP"
+				"COP",
+				"Load type"
 			);
 		}
 
@@ -207,7 +213,8 @@ public class HeatPumpCalcState {
 			TS,
 			TQ,
 			maxPower,
-			cop
+			cop,
+			bufferLoadType
 		);
 	}
 	

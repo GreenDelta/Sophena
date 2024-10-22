@@ -88,6 +88,10 @@ public class HeatPumpWizard implements IContent {
 		Button btn = new Button(comp, SWT.NONE);
 		btn.setText("Betriebspunkte importieren");
 		Controls.onSelect(btn, e -> onSelectFile());
+		
+		if(heatPump.targetTemperature != null)
+			for(var i = 0; i < heatPump.targetTemperature.length; i++)
+				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
 	}
 	
 	private void onSelectFile() {
@@ -188,10 +192,7 @@ public class HeatPumpWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(minText, heatPump.minPower);
 		Texts.set(ratedPowerText, heatPump.ratedPower);
-		if(heatPump.targetTemperature != null)
-			for(var i = 0; i < heatPump.targetTemperature.length; i++)
-				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
-		table.setInput(heatPumpDataList);
+		table.setInput(heatPumpDataList);		
 	}
 
 	@Override
