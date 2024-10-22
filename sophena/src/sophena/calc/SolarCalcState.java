@@ -239,11 +239,12 @@ public class SolarCalcState {
 				"PHASE_i",
 				"TS",
 				"TK_i-1 [°C]",
-				"QS_i_before_correction [Wh]",
+				"QS_i_uncorr [Wh]",
 				"QS_i [Wh]",
 				"TK_i [°C]",
 				"consumedPower",
-				"kollektormitteltemperatur"
+				"kollmitteltemp",
+				"Load type"
 			);
 
 			phase = SolarCalcPhase.Aufheiz;
@@ -371,6 +372,7 @@ public class SolarCalcState {
 		}
 
 		int TS = 1 + hour % 24;
+
 		log.hourValues(hour,
 			true,
 			operationMode,
@@ -381,7 +383,8 @@ public class SolarCalcState {
 			QS_i,
 			TK_i,
 			consumedPower,
-			kollektormitteltemperatur
+			kollektormitteltemperatur,
+			getBufferLoadType()
 		);
 
 		if(writeLog)
