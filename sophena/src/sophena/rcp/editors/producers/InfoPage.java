@@ -159,7 +159,7 @@ class InfoPage extends FormPage {
 	}
 
 	private void functionCombo(FormToolkit tk, Composite comp) {
-		Combo c = UI.formCombo(comp, tk, "Funktion");
+		Combo c = UI.formCombo(comp, tk, M.BufferTank);
 		String[] items = { Labels.get(ProducerFunction.BASE_LOAD), Labels.get(ProducerFunction.PEAK_LOAD), Labels.get(ProducerFunction.MAX_LOAD) };
 		c.setItems(items);
 		if (producer().function == ProducerFunction.BASE_LOAD)
