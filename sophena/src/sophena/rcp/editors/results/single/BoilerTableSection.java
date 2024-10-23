@@ -2,10 +2,13 @@ package sophena.rcp.editors.results.single;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.Labels;
 import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
@@ -35,7 +38,7 @@ class BoilerTableSection {
 	private final ResultColors colors;
 	private final Project project;
 	private final double maxLoad;
-
+	
 	BoilerTableSection(ResultEditor editor, double maxLoad) {
 		this.projectResult = editor.result;
 		this.colors = editor.colors;
@@ -48,7 +51,7 @@ class BoilerTableSection {
 		var section = UI.section(body, tk, M.HeatProducers);
 		UI.gridData(section, true, false);
 		var comp = UI.sectionClient(section, tk);
-		UI.gridLayout(comp, 1);
+		UI.gridLayout(comp, 1);		
 		List<Item> items = getItems();
 		boolean showStagnationDays = false;
 		for(int i = 0; i < items.size(); i++)
@@ -73,36 +76,31 @@ class BoilerTableSection {
 		properties.add("Volllaststunden");
 		properties.add("Nutzungsgrad");
 		properties.add("Starts");
+		properties.add("Stagnationstage");
+		properties.add("JAZ");
+		
 		int count = 9;
 		if(showStagnationDays)
-		{
-			properties.add("Stagnationstage");
 			count++;
-		}
 		if(showJAZ)
-		{
-			properties.add("JAZ");
 			count++;
-		}
+		
 		var table = Tables.createViewer(comp, properties.toArray(new String[0]));
 		table.setLabelProvider(new Label());
-		double w = 1.0 / count;
+		double w = 0.9 / count;
 		if(count == 11)
-		{
-		Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, w);
-		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10, 11);
-		}
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, w);		
 		else if(count == 10)
 		{
-			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w,w);
-			Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10);
+			if(showStagnationDays)
+				Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, 0);
+			else
+				Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, 0, w);
 		}
 		else
-		{
-			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
-			Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9);
-		}
-		table.setInput(items);
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, 0, 0);
+		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10, 11);		
+		table.setInput(items);		
 	}
 
 	private List<Item> getItems() {
@@ -225,7 +223,7 @@ class BoilerTableSection {
 			if (!(element instanceof Item item))
 				return null;
 			if (item.separator)
-				return null;
+				return null;			
 			return switch (col) {
 				case 0 -> item.name;
 				case 1 -> item.rank;
