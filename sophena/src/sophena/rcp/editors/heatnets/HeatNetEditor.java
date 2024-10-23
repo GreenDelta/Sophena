@@ -100,21 +100,7 @@ public class HeatNetEditor extends Editor {
 			return false;
 		}
 		*/
-		
-		if(heatNet.supplyTemperature % 5 != 0)
-		{
-			MsgBox.error("Plausibilitätsfehler",
-					"Die Vorlauftemperatur kann nur auf 5 °C genau angegeben werden.");
-			return false;
-		}
-		
-		if(heatNet.returnTemperature % 5 != 0)
-		{
-			MsgBox.error("Plausibilitätsfehler",
-					"Die Rücklauftemperatur kann nur auf 5 °C genau angegeben werden.");
-			return false;
-		}
-		
+				
 		if (heatNet.simultaneityFactor < 0 || heatNet.simultaneityFactor > 1) {
 			MsgBox.error("Plausibilitätsfehler",
 					"Der Gleichzeitigkeitsfaktor muss zwischen 0 und 1 liegen.");
@@ -147,6 +133,34 @@ public class HeatNetEditor extends Editor {
 						M.EndSummerError);
 				return false;
 			}	
+			if(heatNet.flowTemperatureSummer % 5 != 0 || heatNet.flowTemperatureWinter % 5 != 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						"Saisonale Fahrweise: Die Vorlauftemperatur kann nur auf 5 °C genau angegeben werden.");
+				return false;
+			}			
+			if(heatNet.returnTemperatureSummer % 5 != 0 || heatNet.returnTemperatureWinter % 5 != 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						"Saisonale Fahrweise: Die Rücklauftemperatur kann nur auf 5 °C genau angegeben werden.");
+				return false;
+			}
+		}
+		else
+		{
+			if(heatNet.supplyTemperature % 5 != 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						"Die Vorlauftemperatur kann nur auf 5 °C genau angegeben werden.");
+				return false;
+			}			
+			if(heatNet.returnTemperature % 5 != 0)
+			{
+				MsgBox.error("Plausibilitätsfehler",
+						"Die Rücklauftemperatur kann nur auf 5 °C genau angegeben werden.");
+				return false;
+			}
+
 		}
 		return true;
 	}
