@@ -304,7 +304,7 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(composite, true, false);
 			rankText = UI.formText(composite, "Rang");
 			Texts.on(rankText).integer().required().validate(this::validate);
-			functionCombo = UI.formCombo(composite, "Funktion");
+			functionCombo = UI.formCombo(composite, "Pufferspeicher");
 		}
 
 		private void bindToModel(Producer p) {
@@ -339,9 +339,9 @@ public class ProducerWizard extends Wizard {
 		}
 
 		private void bindToUI() {
-			Texts.set(rankText, Wizards.nextProducerRank(project));
-			updateTables();
+			Texts.set(rankText, Wizards.nextProducerRank(project));			
 			Wizards.fillProducerFunctions(project, functionCombo);
+			updateTables();
 			setPageComplete(false);
 		}
 
@@ -386,16 +386,17 @@ public class ProducerWizard extends Wizard {
 				layout.topControl = compSolarCollector;
 				parentTable.layout();
 				updateSolarCollectors();
-				if (functionCombo.getItemCount() > 0)
-				{
-					functionCombo.select(0);
-					functionCombo.setEnabled(false);
-				}
+				if (functionCombo.getItemCount() > 2)				
+					functionCombo.select(2);				
 			} else {
 				layout.topControl = compBoiler;
 				parentTable.layout();				
 				updateBoilers();
-				functionCombo.setEnabled(true);
+				if(group != null && (group.type == ProductType.HEAT_PUMP || group.type == ProductType.BIOMASS_BOILER || group.type == ProductType.COGENERATION_PLANT))
+					if(functionCombo.getItemCount() > 0)
+						functionCombo.select(0);
+				if(group != null && group.type == ProductType.FOSSIL_FUEL_BOILER && functionCombo.getItemCount() > 1)
+					functionCombo.select(1);
 			}
 		}
 		

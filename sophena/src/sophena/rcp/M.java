@@ -194,6 +194,10 @@ public class M extends NLS {
     public static String COPError;
     public static String TableError;
     
+    public static String BaseLoadText;
+    public static String PeakLoadText;
+    public static String MaxLoadText;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

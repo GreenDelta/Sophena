@@ -12,7 +12,6 @@ import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.BufferTank;
 import sophena.model.Producer;
-import sophena.model.ProducerFunction;
 import sophena.model.Stats;
 import sophena.utils.Num;
 
@@ -34,9 +33,7 @@ class HeatSheet {
 		for (Producer p : result.energyResult.producers) {
 			double heat = result.energyResult.totalHeat(p);
 			w.str(row, 0, p.name);
-			w.str(p.function == ProducerFunction.BASE_LOAD
-					? p.rank + " - Grundlast"
-					: p.rank + " - Spitzenlast");
+			w.str(Labels.getRankText(p.function, p.rank));
 			w.rint(Producers.maxPower(p));
 			w.str(getFuelUse(p, heat));
 			w.rint(heat);
@@ -54,7 +51,7 @@ class HeatSheet {
 		diffAndBuffer(row, result.energyResult.producers);
 		Excel.autoSize(w.sheet, 0, 7);
 	}
-
+	
 	private void header() {
 		w.boldStr(0, 0, "Wärmeerzeuger");
 		w.boldStr("Rang");

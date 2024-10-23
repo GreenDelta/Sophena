@@ -6,10 +6,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+
+import sophena.Labels;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.Producers;
-import sophena.model.ProducerFunction;
 import sophena.rcp.M;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;
@@ -68,9 +69,7 @@ class ElectricityResultPage extends FormPage {
 			item.color = colors.of(p);
 			list.add(item);
 			item.name = p.name;
-			item.rank = p.function == ProducerFunction.BASE_LOAD
-					? p.rank + " - Grundlast"
-					: p.rank + " - Spitzenlast";
+			item.rank = Labels.getRankText(p.function, p.rank);
 			item.maxPower = elPower;
 			item.efficiencyRate = Producers.electricalEfficiency(p);
 			item.fullLoadHours = Producers.fullLoadHours(p, result);

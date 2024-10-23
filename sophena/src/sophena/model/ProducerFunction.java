@@ -4,6 +4,7 @@ public enum ProducerFunction {
 
 	BASE_LOAD,
 
-	PEAK_LOAD
-
+	PEAK_LOAD,
+	
+	MAX_LOAD
 }

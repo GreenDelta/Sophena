@@ -201,11 +201,11 @@ public class ProducerProfileWizard extends Wizard {
 						producer.rank = Num.readInt(rank.getText());
 						validate();
 					});
-			// producer profiles are always initialized as `base load`
+
 			Combo function = UI.formCombo(composite, "Funktion");
 			Wizards.fillProducerFunctions(project, function);
-			function.select(0);
-			producer.function = ProducerFunction.BASE_LOAD;
+			function.select(2);
+			producer.function = ProducerFunction.MAX_LOAD;
 			Controls.onSelect(function, e -> {
 				producer.function = Wizards.getProducerFunction(function);
 			});

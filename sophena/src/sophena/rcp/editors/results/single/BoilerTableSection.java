@@ -13,7 +13,6 @@ import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.Producer;
-import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.M;
@@ -123,9 +122,7 @@ class BoilerTableSection {
 			item.name = p.name;
 			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null ? result.maxPeakPower(p) : Producers.maxPower(p);
 			item.powerOrVolume = Num.intStr(maxPower) + " kW";
-			item.rank = p.function == ProducerFunction.BASE_LOAD
-					? p.rank + " - Grundlast"
-					: p.rank + " - Spitzenlast";
+			item.rank = Labels.getRankText(p.function, p.rank);
 			item.color = colors.of(p);
 			double heat = result.totalHeat(p);
 			item.fuelUse = Labels.getFuel(p) + ": "

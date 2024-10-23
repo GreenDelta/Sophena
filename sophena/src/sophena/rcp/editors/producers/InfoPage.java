@@ -160,32 +160,25 @@ class InfoPage extends FormPage {
 
 	private void functionCombo(FormToolkit tk, Composite comp) {
 		Combo c = UI.formCombo(comp, tk, "Funktion");
-		String[] items = { Labels.get(ProducerFunction.BASE_LOAD),
-				Labels.get(ProducerFunction.PEAK_LOAD) };
+		String[] items = { Labels.get(ProducerFunction.BASE_LOAD), Labels.get(ProducerFunction.PEAK_LOAD), Labels.get(ProducerFunction.MAX_LOAD) };
 		c.setItems(items);
 		if (producer().function == ProducerFunction.BASE_LOAD)
 			c.select(0);
-		else
+		else if (producer().function == ProducerFunction.PEAK_LOAD)
 			c.select(1);		
+		else
+			c.select(2);
 		Controls.onSelect(c, (e) -> {
 			int i = c.getSelectionIndex();
 			if (i == 0) {
 				producer().function = ProducerFunction.BASE_LOAD;
-			} else {
+			} else if (i==1) {
 				producer().function = ProducerFunction.PEAK_LOAD;
 			}
+			else
+				producer().function = ProducerFunction.MAX_LOAD;
 			editor.setDirty();
 		});
-		if(producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
-		{
-			if(c.getSelectionIndex() != 0)
-			{
-				c.select(0);
-				producer().function = ProducerFunction.BASE_LOAD;
-				editor.setDirty();
-			}
-			c.setEnabled(false);
-		}
 	}
 
 	private void rankText(FormToolkit tk, Composite comp) {

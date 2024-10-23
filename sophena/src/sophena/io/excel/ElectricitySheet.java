@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
+import sophena.Labels;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.Producers;
@@ -41,11 +42,7 @@ class ElectricitySheet {
 			double heat = result.energyResult.totalHeat(p);
 			double value = GeneratedElectricity.get(p, result);
 			w.str(p.name);
-			if (p.function == ProducerFunction.BASE_LOAD) {
-				w.str(p.rank + " - Grundlast");
-			} else {
-				w.str(p.rank + " - Spitzenlast");
-			}
+			w.str(Labels.getRankText(p.function, p.rank));
 
 			w.rint(Producers.electricPower(p))
 					.rint(value)
