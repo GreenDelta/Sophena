@@ -104,7 +104,8 @@ class InfoPage extends FormPage {
 		Texts.set(outdoorTemperature, producer().outdoorTemperature);
 		Texts.on(outdoorTemperature).init(producer().outdoorTemperature).decimal().required()
 				.onChanged(s -> {
-					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);					
+					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);	
+					editor.setDirty();
 				});
 		UI.formLabel(inner, tk, "°C");		
 
