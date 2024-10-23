@@ -84,7 +84,7 @@ public class BaseCostEditor extends Editor {
 			toolkit = mform.getToolkit();
 			Composite body = UI.formBody(form, toolkit);
 			CostSettingsPanel panel = new CostSettingsPanel(editor,
-					() -> costs);
+					() -> costs, () -> {});
 			panel.isForProject = false;
 			panel.render(toolkit, body);
 			form.reflow(true);
