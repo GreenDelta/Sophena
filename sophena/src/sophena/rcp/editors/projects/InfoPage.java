@@ -46,7 +46,7 @@ class InfoPage extends FormPage {
 		Composite body = UI.formBody(form, toolkit);
 		createInfoSection(body, toolkit);
 		CostSettingsPanel panel = new CostSettingsPanel(
-				editor, () -> project().costSettings);
+				editor, () -> project().costSettings, () -> form.reflow(true));
 		panel.isForProject = true;
 		panel.render(toolkit, body);
 		form.reflow(true);

@@ -38,10 +38,12 @@ public class CostSettingsPanel {
 	private FormToolkit tk;
 	private Composite inner;
 	private GridData dataInner;
+	private final Runnable updateScrolledForm;
 
-	public CostSettingsPanel(Editor editor, Supplier<CostSettings> fn) {
+	public CostSettingsPanel(Editor editor, Supplier<CostSettings> fn, Runnable updateScrolledForm) {
 		this.editor = editor;
 		this.fn = fn;
+		this.updateScrolledForm = updateScrolledForm;
 	}
 
 	private CostSettings costs() {
@@ -184,7 +186,9 @@ public class CostSettingsPanel {
 	{
 		inner.setVisible(visible);
 		dataInner.exclude = !visible;	
-		inner.requestLayout();			
+		inner.requestLayout();
+		
+		updateScrolledForm.run();
 	}
 	
 	private void createOtherSection(Composite body) {

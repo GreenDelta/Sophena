@@ -117,7 +117,7 @@ class EnergyCalculator {
 				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoad);
 				
 				// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
-				if (bufferCalcState.totalUnloadableHTPower() > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
+				if ((bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower()) > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
 				// Always take solar power. If more then needed it will heat up the collector until stagnation
