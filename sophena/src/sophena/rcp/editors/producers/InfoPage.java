@@ -104,7 +104,8 @@ class InfoPage extends FormPage {
 		Texts.set(outdoorTemperature, producer().outdoorTemperature);
 		Texts.on(outdoorTemperature).init(producer().outdoorTemperature).decimal().required()
 				.onChanged(s -> {
-					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);					
+					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);	
+					editor.setDirty();
 				});
 		UI.formLabel(inner, tk, "°C");		
 
@@ -159,7 +160,7 @@ class InfoPage extends FormPage {
 	}
 
 	private void functionCombo(FormToolkit tk, Composite comp) {
-		Combo c = UI.formCombo(comp, tk, "Funktion");
+		Combo c = UI.formCombo(comp, tk, M.BufferTank);
 		String[] items = { Labels.get(ProducerFunction.BASE_LOAD), Labels.get(ProducerFunction.PEAK_LOAD), Labels.get(ProducerFunction.MAX_LOAD) };
 		c.setItems(items);
 		if (producer().function == ProducerFunction.BASE_LOAD)

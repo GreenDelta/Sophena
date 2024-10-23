@@ -75,6 +75,12 @@ public class HeatPumpSection {
 	    createHeatPumpHourlyRow(tk, c);
 		createHeatPumpHourlyChart(tk, c);
 		updateControls();
+		enableControls();
+	}
+	
+	private void enableControls()
+	{
+		//if(producer().heatPump.type)
 	}
 	
 	private void createHeatPumpHourlyChart(FormToolkit tk, Composite comp)
@@ -85,8 +91,9 @@ public class HeatPumpSection {
 	
 	private void createHeatPumpModeRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.HeatPumpMode);
+		UI.gridLayout(comp, 1);
 		Composite inner = tk.createComposite(comp);
-		UI.innerGrid(inner, 3);
+		UI.innerGrid(inner, 4);
 		HeatPumpMode current = producer().heatPumpMode;
 		Button outdoor = tk.createButton(inner, M.OutdoorMode, SWT.RADIO);
 		outdoor.setSelection(current == HeatPumpMode.OUTODOOR_TEMPERATURE_MODE);
@@ -110,10 +117,8 @@ public class HeatPumpSection {
 			producer().heatPumpMode = HeatPumpMode.HOURLY_TEMPERATURE_MODE;
 			editor.setDirty();
 			updateControls();
-		});
-				
-		UI.formLabel(comp, "");
-		HelpLink.create(comp, tk, M.HeatPumpMode, "");
+		});	
+		HelpLink.create(inner, tk, M.HeatPumpMode, "");
 	}
 	
 	private void updateControls()
@@ -150,8 +155,7 @@ public class HeatPumpSection {
 	
 	private void createHeatPumpUserTemperatureRow(FormToolkit tk, Composite comp) {
 		userinput = UI.formText(comp, tk, M.UserTemperatureInput);
-		UI.formLabel(comp, tk, "°C");
-		HelpLink.create(comp, tk, M.UserTemperatureInput, "");
+		UI.formLabel(comp, tk, "°C");		
 		Texts.on(userinput).decimal().required()
 				.init(producer().sourceTemperatureUser)
 				.onChanged((s) -> {
@@ -163,7 +167,7 @@ public class HeatPumpSection {
 	private void createHeatPumpHourlyRow(FormToolkit tk, Composite comp)
 	{
 		btnImport = tk.createButton(
-				comp, "Quelltemperatur Verlauf importieren", SWT.NONE);
+				comp, "Temperaturverlauf importieren", SWT.NONE);
 		Controls.onSelect(btnImport, e -> updateHourlyTemperature());
 	}
 	

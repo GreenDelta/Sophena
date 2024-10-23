@@ -202,7 +202,7 @@ public class ProducerProfileWizard extends Wizard {
 						validate();
 					});
 
-			Combo function = UI.formCombo(composite, "Funktion");
+			Combo function = UI.formCombo(composite, M.BufferTank);
 			Wizards.fillProducerFunctions(project, function);
 			function.select(2);
 			producer.function = ProducerFunction.MAX_LOAD;
