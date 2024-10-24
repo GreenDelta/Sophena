@@ -103,6 +103,8 @@ public class Producers {
 			return 0;
 		if (p.boiler != null)
 			return p.boiler.efficiencyRate * heatRecoveryFactor(p);
+		if(p.heatPump != null)
+			return 1;
 		// for producer profiles we assume that the utilization rate
 		// is the same as thermal efficiency rate
 		return p.utilisationRate != null
