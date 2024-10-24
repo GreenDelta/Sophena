@@ -222,7 +222,8 @@ public class HeatPumpCalcState {
 				"TQ",
 				"maxPower",
 				"COP",
-				"Load type"
+				"Load type",
+				"Consumed power"
 			);
 		}
 
@@ -232,7 +233,8 @@ public class HeatPumpCalcState {
 			TQ,
 			maxPower,
 			cop,
-			bufferLoadType
+			bufferLoadType,
+			consumedPower
 		);
 	}
 	
