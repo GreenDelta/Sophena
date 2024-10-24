@@ -1,6 +1,5 @@
 package sophena.rcp.editors.producers;
 
-import java.awt.Color;
 import java.io.File;
 
 import org.eclipse.swt.SWT;
@@ -10,16 +9,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.io.ConsumerProfiles;
 import sophena.io.LoadHeatPumpData;
 import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
-import sophena.model.SolarCollectorOperatingMode;
 import sophena.rcp.M;
 import sophena.rcp.charts.HeatPumpTemperatureChart;
-import sophena.rcp.charts.ProducerProfileChart;
 import sophena.rcp.colors.Colors;
-import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;

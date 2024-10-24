@@ -30,7 +30,7 @@ public final class CalculationCheck {
 			Double ur = producer.utilisationRate;
 			if (ur != null && ur <= 0) {
 				MsgBox.error("Plausibilitätsfehler",
-						"Der Nutzungsgrad bzw. die Jahresarbeitszahl eines"
+						"Der Nutzungsgrad eines"
 								+ " Wärmeerzeugers (" + producer.name
 								+ ") ist \u2264 0.");
 				return false;

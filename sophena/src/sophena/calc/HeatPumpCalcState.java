@@ -282,9 +282,7 @@ public class HeatPumpCalcState {
 
 	public void setConsumedPower(double consumedPower)
 	{
-		this.consumedPower = producer.utilisationRate == null || producer.utilisationRate == 0
-			? 0
-			: consumedPower / producer.utilisationRate;
+		this.consumedPower = consumedPower;
 	}
 
 	public double getJAZ()
