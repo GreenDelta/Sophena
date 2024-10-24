@@ -79,6 +79,8 @@ public class Producers {
 			return 0;
 		if (p.hasProfile())
 			return p.profileMaxPower;
+		if(p.heatPump != null)
+			return p.heatPump.ratedPower;
 		if (p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);
