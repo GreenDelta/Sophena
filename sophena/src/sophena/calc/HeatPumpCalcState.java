@@ -219,11 +219,11 @@ public class HeatPumpCalcState {
 				JT,
 				hour,
 				"Hour",
-				"TQ",
-				"maxPower",
+				"TQ [°C]",
+				"maxPower[kW]",
 				"COP",
 				"Load type",
-				"Consumed power"
+				"consumedPower[W]"
 			);
 		}
 
