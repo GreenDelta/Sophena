@@ -140,18 +140,20 @@ class EnergyCalculator {
 					{
 						// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
 						double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
-						// Not sure if this is ok, because we need min. one HT producer for return temperature increase 
-						if(surplus < requiredLoad)
+						if(haveAtLeastOneHTProducer)
 						{
-							requiredLoad -= surplus;
-							surplus = 0;
+							if(surplus < requiredLoad)
+							{
+								requiredLoad -= surplus;
+								surplus = 0;
+							}
+							else
+							{
+								surplus -= requiredLoad;
+								requiredLoad = 0;												
+							}
+							power -= surplus;
 						}
-						else
-						{
-							surplus -= requiredLoad;
-							requiredLoad = 0;												
-						}
-						power -= surplus;
 					}
 					
 					suppliedPower += power;					
