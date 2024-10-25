@@ -9,8 +9,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.HeatPumpDao;
 import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
+import sophena.model.HeatPump;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
@@ -42,6 +44,8 @@ class CostSection {
 		if (!producer().hasProfile()) {
 			if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
 				solarCombo(tk, comp);
+			else if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.HEAT_PUMP)
+				heatPumpCombo(tk, comp);
 			else
 				boilerCombo(tk, comp);
 			UI.filler(comp);
@@ -102,6 +106,23 @@ class CostSection {
 			editor.setDirty();
 		});
 	}
+	
+	private void heatPumpCombo(FormToolkit tk, Composite comp) {
+		EntityCombo<HeatPump> combo = new EntityCombo<>();
+		combo.create("Bezeichnung", comp, tk);
+		combo.setLabelProvider(h -> h.name + " (" + h.ratedPower + " kW)");
+		HeatPump h = producer().heatPump;
+		if (h == null)
+			return;
+		combo.setInput(getPossibleHeatPumps(h));
+		combo.select(h);
+		combo.onSelect(heatPump -> {
+			producer().heatPump = heatPump;
+			ProductCosts.copy(heatPump, producer().costs);
+			costSection.refresh();
+			editor.setDirty();
+		});
+	}
 
 	private List<SolarCollector> getPossibleSolarCollectors(SolarCollector s) {
 		if (s == null || s.group == null)
@@ -115,6 +136,21 @@ class CostSection {
 			}
 		}
 		Sorters.solarCollectors(filtered);
+		return filtered;
+	}
+	
+	private List<HeatPump> getPossibleHeatPumps(HeatPump h) {
+		if (h == null || h.group == null)
+			return Collections.emptyList();
+		HeatPumpDao dao = new HeatPumpDao(App.getDb());
+		List<HeatPump> all = dao.getAll();
+		List<HeatPump> filtered = new ArrayList<>();
+		for (HeatPump other : all) {
+			if (Objects.equals(h.group, other.group)) {
+				filtered.add(other);
+			}
+		}
+		Sorters.heatPumps(filtered);
 		return filtered;
 	}
 

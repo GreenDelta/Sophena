@@ -67,7 +67,7 @@ class InfoPage extends FormPage {
 		new CostSection(editor).create(body, tk);
 		if (!producer().hasProfile()) {
 			new InterruptionSection(editor).create(body, tk);
-			if(!(producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT))
+			if(!(producer().productGroup != null && producer().productGroup.type != null && (producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT || producer().productGroup.type == ProductType.HEAT_PUMP)))
 				new HeatRecoverySection(editor).create(body, tk);
 		}
 		form.reflow(true);
