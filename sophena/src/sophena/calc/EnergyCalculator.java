@@ -152,8 +152,8 @@ class EnergyCalculator {
 								surplus -= requiredLoad;
 								requiredLoad = 0;												
 							}
-							power -= surplus;
 						}
+						power -= surplus;
 					}
 					
 					suppliedPower += power;					
