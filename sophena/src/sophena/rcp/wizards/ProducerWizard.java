@@ -85,10 +85,14 @@ public class ProducerWizard extends Wizard {
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
 				Wizards.initSolarCollectorSpec(producer);
 				producer.utilisationRate = 0.85;
-				producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 			}
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.HEAT_PUMP)
-				producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
+			{
+				if(producer.productGroup.name.contains("Luft"))
+					producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
+				else
+					producer.heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
+			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);

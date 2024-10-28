@@ -51,8 +51,6 @@ public class HeatPumpSection {
 		comp.setBackground(Colors.getWhite());
 		UI.gridLayout(comp, 4);		
 		UI.gridData(comp, true, true);
-		if(producer().heatPumpMode == null)
-			producer().heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 		createHeatPumpModeRow(tk, comp);
 		
 		cUser = new Composite(section, SWT.NONE);
@@ -70,12 +68,6 @@ public class HeatPumpSection {
 	    createHeatPumpHourlyRow(tk, c);
 		createHeatPumpHourlyChart(tk, c);
 		updateControls();
-		enableControls();
-	}
-	
-	private void enableControls()
-	{
-		//if(producer().heatPump.type)
 	}
 	
 	private void createHeatPumpHourlyChart(FormToolkit tk, Composite comp)
@@ -88,24 +80,28 @@ public class HeatPumpSection {
 		UI.formLabel(comp, tk, M.HeatPumpMode);
 		UI.gridLayout(comp, 1);
 		Composite inner = tk.createComposite(comp);
-		UI.innerGrid(inner, 4);
+		UI.innerGrid(inner, 3);
 		HeatPumpMode current = producer().heatPumpMode;
-		Button outdoor = tk.createButton(inner, M.OutdoorMode, SWT.RADIO);
-		outdoor.setSelection(current == HeatPumpMode.OUTODOOR_TEMPERATURE_MODE);
-		Controls.onSelect(outdoor, e -> {
-			producer().heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
-			editor.setDirty();
-			updateControls();
-		});
-		
-		Button user = tk.createButton(inner, M.UserMode, SWT.RADIO);
-		user.setSelection(current == HeatPumpMode.USER_TEMPERATURE_MODE);
-		Controls.onSelect(user, e -> {
-			producer().heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
-			editor.setDirty();
-			updateControls();
-		});
-		
+		if(producer().productGroup.name.contains("Luft"))
+		{
+			Button outdoor = tk.createButton(inner, M.OutdoorMode, SWT.RADIO);
+			outdoor.setSelection(current == HeatPumpMode.OUTODOOR_TEMPERATURE_MODE);
+			Controls.onSelect(outdoor, e -> {
+				producer().heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
+				editor.setDirty();
+				updateControls();
+			});
+		}
+		else
+		{
+			Button user = tk.createButton(inner, M.UserMode, SWT.RADIO);
+			user.setSelection(current == HeatPumpMode.USER_TEMPERATURE_MODE);
+			Controls.onSelect(user, e -> {
+				producer().heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
+				editor.setDirty();
+				updateControls();
+			});
+		}
 		Button hourly = tk.createButton(inner, M.HourlyMode, SWT.RADIO);
 		hourly.setSelection(current == HeatPumpMode.HOURLY_TEMPERATURE_MODE);
 		Controls.onSelect(hourly, e -> {
