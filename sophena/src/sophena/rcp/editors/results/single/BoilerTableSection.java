@@ -246,7 +246,7 @@ class BoilerTableSection {
 						: Num.intStr(item.stagnationDays);
 				case 10 -> item.jaz == null
 						? null
-						: new DecimalFormat("#.0#").format(item.jaz);
+						: new DecimalFormat("#0.0#").format(item.jaz);
 				default -> null;
 			};
 		}

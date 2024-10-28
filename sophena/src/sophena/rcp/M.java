@@ -198,6 +198,9 @@ public class M extends NLS {
     public static String PeakLoadText;
     public static String MaxLoadText;
     
+    public static String SourceTemperatureUserError;
+    public static String SourceTemperatureHourlyError;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

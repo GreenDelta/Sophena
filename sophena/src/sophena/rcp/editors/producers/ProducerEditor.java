@@ -2,6 +2,8 @@ package sophena.rcp.editors.producers;
 
 import java.util.Objects;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -11,6 +13,7 @@ import org.eclipse.ui.PartInitException;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.FuelSpec;
+import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.SolarCollectorOperatingMode;
@@ -154,6 +157,19 @@ public class ProducerEditor extends Editor {
 				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
 				return false;
 			}
+		}
+		if(producer.heatPump != null)
+		{
+			if(producer.heatPumpMode == HeatPumpMode.USER_TEMPERATURE_MODE && producer.sourceTemperatureUser == null)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureUserError);
+				return false;
+			}
+			else if(producer.heatPumpMode == HeatPumpMode.HOURLY_TEMPERATURE_MODE && producer.sourceTemperatureHourly == null)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureHourlyError);
+				return false;
+			}				
 		}
 
 		return true;

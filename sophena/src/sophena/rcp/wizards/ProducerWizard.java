@@ -91,7 +91,10 @@ public class ProducerWizard extends Wizard {
 				if(producer.productGroup.name.contains("Luft"))
 					producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
 				else
+				{
 					producer.heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
+					producer.sourceTemperatureUser = 0d;
+				}
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
