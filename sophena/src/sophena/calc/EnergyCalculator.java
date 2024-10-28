@@ -54,8 +54,6 @@ class EnergyCalculator {
 			double requiredLoad = r.loadCurve[hour];			
 			double suppliedPower = 0;
 		
-			boolean haveAtLeastOneHTProducer = false;
-
 			for (int k = 0; k < r.producers.length; k++) {
 				Producer producer = r.producers[k];
 
@@ -71,6 +69,51 @@ class EnergyCalculator {
 			double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
 					? project.weatherStation.data[hour]
 					: 0;
+
+			// Determine if there is at least one HT producer
+
+			boolean haveAtLeastOneHTProducer = false;
+			for (int k = 0; k < r.producers.length; k++)
+			{
+				Producer producer = r.producers[k];
+			
+				SolarCalcState solarCalcState = solarCalcStates.get(producer);
+				HeatPumpCalcState heatPumpCalcState = heatPumpCalcStates.get(producer);
+				boolean isSolarProducer = solarCalcState != null;
+				BufferCalcLoadType bufferLoadType = getProducerBufferLoadType(producer, bufferCalcState, solarCalcState, heatPumpCalcState, hour);
+				
+				if(bufferLoadType == BufferCalcLoadType.None)
+					continue;
+
+				// Check whether the collector is working for the current hour
+				if(isSolarProducer && solarCalcState.getPhase() != SolarCalcPhase.Betrieb)
+					continue;
+			
+				// Check whether the producer can be taken
+				if (isInterrupted(k, hour, interruptions))
+					continue;
+
+				if(producer.isOutdoorTemperatureControl)
+				{
+					switch (producer.outdoorTemperatureControlKind){
+					case From:
+						if(producer.outdoorTemperature > TL_i)
+							continue;
+						break;
+					case Until:
+						if(producer.outdoorTemperature < TL_i)
+							continue;
+						break;
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + producer.outdoorTemperatureControlKind);
+					}
+				}
+
+				if(bufferLoadType == BufferCalcLoadType.HT)
+					haveAtLeastOneHTProducer = true;
+			}
+
+			// Main producer loop
 			
 			for (int k = 0; k < r.producers.length; k++) {
 				if (requiredLoad <= 0)
@@ -138,10 +181,11 @@ class EnergyCalculator {
 					}
 					else
 					{
-						// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
-						double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
 						if(haveAtLeastOneHTProducer)
 						{
+							// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
+							double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
+
 							if(surplus < requiredLoad)
 							{
 								requiredLoad -= surplus;
@@ -152,8 +196,13 @@ class EnergyCalculator {
 								surplus -= requiredLoad;
 								requiredLoad = 0;												
 							}
+
+							power -= surplus;
 						}
-						power -= surplus;
+						else
+						{
+							power = 0;
+						}
 					}
 					
 					suppliedPower += power;					
@@ -168,8 +217,8 @@ class EnergyCalculator {
 					heatPumpCalcState.setConsumedPower(power * 1000);
 
 				// Only if min. one HT producer is used at the current hour NT energy from the buffer can be unloaded in order to increase return temperature
-				if(bufferLoadType == BufferCalcLoadType.HT)
-					haveAtLeastOneHTProducer = true;
+				//if(bufferLoadType == BufferCalcLoadType.HT)
+				//	haveAtLeastOneHTProducer = true;
 
 				// Take the rest from buffer and do not use further producers if possible
 				if(bufferCalcState.totalUnloadableHTPower() > requiredLoad) {
