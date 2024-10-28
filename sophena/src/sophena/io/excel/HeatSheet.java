@@ -39,13 +39,26 @@ class HeatSheet {
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
 			w.rint(Producers.fullLoadHours(p, heat));
-			if (p.boiler != null && p.boiler.isCoGenPlant) {
+			if(p.heatPump != null)
+				w.nextCol();
+			else if (p.boiler != null && p.boiler.isCoGenPlant) {
 				w.rint(100 * p.boiler.efficiencyRate);
 			} else {
 				w.rint(100 * UtilisationRate.get(
 						result.project, p, result.energyResult));
 			}
 			w.num(result.energyResult.numberOfStarts(p));
+			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
+				w.rint(result.energyResult.stagnationDays(p));
+			}
+			else
+				w.nextCol();
+			if(p.heatPump != null)
+			{
+				w.num((double)Math.round(result.energyResult.jaz(p) * 100) / 100);
+			}
+			else
+				w.nextCol();
 			row++;
 		}
 		diffAndBuffer(row, result.energyResult.producers);
@@ -62,6 +75,8 @@ class HeatSheet {
 		w.boldStr("Volllaststunden [h]");
 		w.boldStr("Nutzungsgrad [%]");
 		w.boldStr("Starts");
+		w.boldStr("Stagnationstage");
+		w.boldStr("JAZ");
 	}
 
 	private String getFuelUse(Producer pr, double heat) {
