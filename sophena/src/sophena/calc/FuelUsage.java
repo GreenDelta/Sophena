@@ -36,6 +36,13 @@ public class FuelUsage {
 	private static double calcKWh(ProjectResult r, Producer producer) {
 		double Qgen = r.energyResult.totalHeat(producer);
 		r.calcLog.value("Qgen: erzeugte Wärme", Qgen, "KWh");
+		if(producer.heatPump != null)
+		{
+			var jaz = r.energyResult.jaz(producer);
+			if(jaz != 0)
+				return Qgen / jaz;
+			return 0;
+		}
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer,

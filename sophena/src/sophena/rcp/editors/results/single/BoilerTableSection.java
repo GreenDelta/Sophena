@@ -139,6 +139,7 @@ class BoilerTableSection {
 			}
 			if(p.heatPump != null)
 			{
+				item.utilisationRate = null;
 				item.jaz = result.jaz(p);
 				item.showJAZ = true;
 			}
