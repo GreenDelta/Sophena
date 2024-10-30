@@ -176,8 +176,11 @@ public class HeatPumpCalcState {
 		double upperCOP = lerp(producer.heatPump.cop[indexLeftUpper], producer.heatPump.cop[indexRightUpper], upperK);
 
 		if(indexLeftLower == -1 || indexRightLower == -1)
-		{						
-			maxPower = upperMaxPower;
+		{		
+			double k = (producer.heatPump.targetTemperature[indexLeftUpper] - TR) / (TV - TR);
+			if(k > 1)
+				k = 1;
+			maxPower = k * upperMaxPower;
 			cop = upperCOP;
 		}
 		else
