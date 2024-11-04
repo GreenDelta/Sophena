@@ -93,21 +93,8 @@ class EnergyCalculator {
 				if (isInterrupted(k, hour, interruptions))
 					continue;
 
-				if(producer.isOutdoorTemperatureControl)
-				{
-					switch (producer.outdoorTemperatureControlKind){
-					case From:
-						if(producer.outdoorTemperature > TL_i)
-							continue;
-						break;
-					case Until:
-						if(producer.outdoorTemperature < TL_i)
-							continue;
-						break;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + producer.outdoorTemperatureControlKind);
-					}
-				}
+				if(DoContinueOnOutdoorTemperature(producer, TL_i))
+					continue;
 
 				if(bufferLoadType == BufferCalcLoadType.HT)
 					haveAtLeastOneHTProducer = true;
@@ -136,21 +123,9 @@ class EnergyCalculator {
 				// Check whether the producer can be taken
 				if (isInterrupted(k, hour, interruptions))
 					continue;
-				if(producer.isOutdoorTemperatureControl)
-				{
-					switch (producer.outdoorTemperatureControlKind){
-					case From:
-						if(producer.outdoorTemperature > TL_i)
-							continue;
-						break;
-					case Until:
-						if(producer.outdoorTemperature < TL_i)
-							continue;
-						break;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + producer.outdoorTemperatureControlKind);
-					}
-				}
+				
+				if(DoContinueOnOutdoorTemperature(producer, TL_i))
+					continue;
 				
 				// Maximum amount of power currently needed for heatnet and buffer				
 				double maxLoad = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
@@ -181,11 +156,10 @@ class EnergyCalculator {
 					}
 					else
 					{
+						// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
+						double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
 						if(haveAtLeastOneHTProducer)
 						{
-							// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
-							double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
-
 							if(surplus < requiredLoad)
 							{
 								requiredLoad -= surplus;
@@ -196,13 +170,8 @@ class EnergyCalculator {
 								surplus -= requiredLoad;
 								requiredLoad = 0;												
 							}
-
-							power -= surplus;
 						}
-						else
-						{
-							power = 0;
-						}
+						power -= surplus;
 					}
 					
 					suppliedPower += power;					
@@ -308,6 +277,27 @@ class EnergyCalculator {
 		calcTotals(r);
 
 		return r;
+	}
+	
+	private boolean DoContinueOnOutdoorTemperature(Producer producer, double TL_i)
+	{
+		boolean result = false;
+		if(producer.isOutdoorTemperatureControl)
+		{
+			switch (producer.outdoorTemperatureControlKind){
+			case From:
+				if(producer.outdoorTemperature > TL_i)
+					result = true;
+				break;
+			case Until:
+				if(producer.outdoorTemperature < TL_i)
+					result = true;
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + producer.outdoorTemperatureControlKind);
+			}
+		}
+		return result;
 	}
 	
 	private BufferCalcLoadType getProducerBufferLoadType(Producer producer, BufferCalcState bufferCalcState, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour)
