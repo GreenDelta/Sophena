@@ -519,6 +519,11 @@ public class SolarCalcState {
 		return phase;
 	}
 	
+	public double getTK_i()
+	{
+		return TK_i;
+	}
+	
 	public double getAvailablePowerInKWh() {
 		return QS_i / 1000 * producer.utilisationRate;
 	}

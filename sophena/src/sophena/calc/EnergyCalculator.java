@@ -160,6 +160,20 @@ class EnergyCalculator {
 						double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
 						if(haveAtLeastOneHTProducer)
 						{
+							double TR = bufferCalcState.getTR();
+							double TV = bufferCalcState.getTV();
+							
+							double TK_i = TR;
+							if(isSolarProducer)
+								TK_i = solarCalcState.getTK_i();							
+							if(heatPumpCalcState != null)
+								TK_i = heatPumpCalcState.getTK_i();
+							if(producer.hasProfile())
+								TK_i = producer.profile.temperaturLevel[hour];
+
+							// limit supplied power for the heat net based on temperature currently provided
+							surplus = Math.max(0, Math.min(surplus, requiredLoad * (TK_i - TR) / (TV - TR)));
+						
 							if(surplus < requiredLoad)
 							{
 								requiredLoad -= surplus;

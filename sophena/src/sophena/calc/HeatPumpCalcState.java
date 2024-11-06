@@ -12,6 +12,7 @@ public class HeatPumpCalcState {
 	private BufferCalcLoadType bufferLoadType;
 
 	private double TQ;
+	private double TK_i;
 	private double maxPower;
 	private double cop;
 	
@@ -177,10 +178,8 @@ public class HeatPumpCalcState {
 
 		if(indexLeftLower == -1 || indexRightLower == -1)
 		{		
-			double k = (producer.heatPump.targetTemperature[indexLeftUpper] - TR) / (TV - TR);
-			if(k > 1)
-				k = 1;
-			maxPower = k * upperMaxPower;
+			TK_i = producer.heatPump.targetTemperature[indexLeftUpper];
+			maxPower = upperMaxPower;
 			cop = upperCOP;
 		}
 		else
@@ -194,6 +193,7 @@ public class HeatPumpCalcState {
 			// Interpolate between interpolated values of upper and lower curve, by  targetTemperature
 
 			double targetTemperature = useTV ? TV : TR;
+			TK_i = targetTemperature;
 			double k = findLerpK(producer.heatPump.targetTemperature[indexLeftLower], producer.heatPump.targetTemperature[indexLeftUpper], targetTemperature);
 			maxPower = lerp(lowerMaxPower, upperMaxPower, k);
 			cop = lerp(lowerCOP, upperCOP, k);
@@ -281,6 +281,11 @@ public class HeatPumpCalcState {
 		return cop;
 	}
 
+	public double getTK_i()
+	{
+		return TK_i;
+	}
+	
 	private double consumedPower;
 
 	public void setConsumedPower(double consumedPower)
