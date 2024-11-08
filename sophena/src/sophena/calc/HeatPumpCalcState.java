@@ -47,10 +47,17 @@ public class HeatPumpCalcState {
 		if(Double.isNaN(TQ))
 			return;
 		
+		List<Integer> lowerIndices = new ArrayList<>();
+		int indexLeftUpper = -1;
+		int indexRightUpper = -1;
+
+		int indexLeftLower = -1;
+		int indexRightLower = -1;
+		boolean useTV = true;
 		// Find largest temperature below and smallest above TV. Same for TR.
 		double destTemperature = TV;
 		
-		while(destTemperture > TR)
+		while(destTemperature > TR)
 		{
 			double maxTemperatureSmallerThanTV = Double.MIN_VALUE;
 			double minTemperatureGreaterThanTV = Double.MAX_VALUE;
@@ -60,10 +67,10 @@ public class HeatPumpCalcState {
 			{
 				double temperature = producer.heatPump.targetTemperature[i];
 				
-				if(temperature < destTemperature)
+				if(temperature < destTemperature && useTV)
 					maxTemperatureSmallerThanTV = Math.max(maxTemperatureSmallerThanTV, temperature);
 				
-				if(temperature >= destTemperature)
+				if(temperature >= destTemperature && useTV)
 					minTemperatureGreaterThanTV = Math.min(minTemperatureGreaterThanTV, temperature);
 				
 				if(temperature > TR && temperature < destTemperature)
@@ -84,24 +91,23 @@ public class HeatPumpCalcState {
 					upperIndicesForTR.add(i);
 			}
 			
-			// At least one curve must have at least two points
-
-			if(upperIndicesForTV.size() < 2 || upperIndicesForTR.size() < 2)
+		
+			// Decide which upper curve to use
+			useTV = upperIndicesForTV.size() > 1;
+			List<Integer> upperIndices = useTV ? upperIndicesForTV : upperIndicesForTR;
+			double maxTemperatureSmaller = useTV ? maxTemperatureSmallerThanTV : Double.MIN_VALUE;
+			
+			// Upper curve must have at least two points
+			if(upperIndices.size() < 2)
 			{
 				log.beginProducer(producer);
 				log.message("Exit because each curve must have at least two points");
 				return;
 			}
-			
-			// Decide which upper curve to use
 
-			boolean useTV = upperIndicesForTV.size() > 1;
-			List<Integer> upperIndices = useTV ? upperIndicesForTV : upperIndicesForTR;
-			double maxTemperatureSmaller = useTV ? maxTemperatureSmallerThanTV : Double.MIN_VALUE;
-			
 			// Determine which curve to use as lower curve 
 
-			List<Integer> lowerIndices = new ArrayList<>();
+			lowerIndices.clear();
 			for(var i = 0; i < producer.heatPump.targetTemperature.length; i++)
 			{
 				double temperature = producer.heatPump.targetTemperature[i];
@@ -112,11 +118,11 @@ public class HeatPumpCalcState {
 			
 			// Determine left and right point indices within the upper curve based on source temperature
 
-			int indexLeftUpper = -1;
-			int indexRightUpper = -1;
+			indexLeftUpper = -1;
+			indexRightUpper = -1;
 
-			int indexLeftLower = -1;
-			int indexRightLower = -1;
+			indexLeftLower = -1;
+			indexRightLower = -1;
 
 			for(var i = 0; i < upperIndices.size(); i++)
 			{
@@ -144,7 +150,8 @@ public class HeatPumpCalcState {
 			
 			if(indexLeftUpper == -1 || indexRightUpper == -1)
 			{
-				destTemperature = producer.heatPump.targetTemperature[upperIndices[0]];
+				destTemperature = producer.heatPump.targetTemperature[upperIndices.get(0)] - 1;
+				useTV = destTemperature > TV;
 				log.beginProducer(producer);
 				log.message("ReRun curver search because source temperature is outside upper curve");
 			}
