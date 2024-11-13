@@ -151,7 +151,7 @@ public class HeatPumpCalcState {
 			if(indexLeftUpper == -1 || indexRightUpper == -1)
 			{
 				destTemperature = producer.heatPump.targetTemperature[upperIndices.get(0)] - 1;
-				useTV = destTemperature > TV;
+				useTV = false;
 				log.beginProducer(producer);
 				log.message("ReRun curver search because source temperature is outside upper curve");
 			}
