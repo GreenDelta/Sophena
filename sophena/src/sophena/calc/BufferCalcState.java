@@ -220,16 +220,17 @@ public class BufferCalcState {
 		
 		if(qLossRemaining > 0)
 		{
-			Qlost = qLossRemaining;
-			QP_VT = QP_VT - Qlost;
+			Qlost = Math.min(qLossRemaining, QP_VT);
+			QP_VT -= Qlost;
 
 			qLostVTInHour += Qlost;
+			qLossRemaining -= Qlost;
 		}
 
 		if(qLossRemaining > 0)
 		{
 			Qlost = qLossRemaining;
-			QP_NT = QP_NT - Qlost;
+			QP_NT -= Qlost;
 
 			qLostNTInHour += Qlost;
 		}
