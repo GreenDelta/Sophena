@@ -49,7 +49,7 @@ public class SeasonalItem {
 						net.returnTemperatureWinter, hourIntervalWinterSummer[1], net.returnTemperatureSummer, hour);
 			}
 		} else {
-			seasonalItem.targetChargeLevel = 1;
+			seasonalItem.targetChargeLevel = 0.5;
 			seasonalItem.flowTemperature = net.supplyTemperature;
 			seasonalItem.returnTemperature = net.returnTemperature;
 		}
