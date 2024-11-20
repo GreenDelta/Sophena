@@ -137,7 +137,8 @@ public class CostSettingsPanel {
 							});
 			if(costs().fundingPercent == 0)
 				costs().fundingTypes = FundingType.BiomassBoiler.getValue() | FundingType.SolarThermalPlant.getValue() | FundingType.BoilerAccessories.getValue() | FundingType.HeatRecovery.getValue() | FundingType.FlueGasCleaning.getValue() | FundingType.BufferTank.getValue() 
-				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue() | FundingType.TransferStation.getValue() | FundingType.Planning.getValue();
+				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue() 
+				| FundingType.TransferStation.getValue() | FundingType.Planning.getValue() | FundingType.HeatPump.getValue();
 			createCheckSection(body);
 			setInnerGridVisible(costs().fundingPercent > 0);
 		}
@@ -151,6 +152,7 @@ public class CostSettingsPanel {
 	    inner.setLayoutData(dataInner);
 	    setCheckBox(tk.createButton(inner, M.BiomassBoiler, SWT.CHECK), FundingType.BiomassBoiler.getValue());
 	    setCheckBox(tk.createButton(inner, M.FossilFuelBoiler, SWT.CHECK), FundingType.FossilFuelBoiler.getValue());
+	    setCheckBox(tk.createButton(inner, M.HeatPump, SWT.CHECK), FundingType.HeatPump.getValue());
 	    setCheckBox(tk.createButton(inner, M.CogenerationPlant, SWT.CHECK), FundingType.CogenerationPlant.getValue());
 	    setCheckBox(tk.createButton(inner, M.SolarThermalPlant, SWT.CHECK), FundingType.SolarThermalPlant.getValue());
 	    setCheckBox(tk.createButton(inner, M.ElectricHeatGenerator, SWT.CHECK), FundingType.ElectricHeatGenerator.getValue());
@@ -166,8 +168,7 @@ public class CostSettingsPanel {
 	    setCheckBox(tk.createButton(inner, M.HeatingNetTechnology, SWT.CHECK), FundingType.HeatingNetTechnology.getValue());
 	    setCheckBox(tk.createButton(inner, M.HeatingNetConstruction, SWT.CHECK), FundingType.HeatingNetConstruction.getValue());
 	    setCheckBox(tk.createButton(inner, M.TransferStation, SWT.CHECK), FundingType.TransferStation.getValue());
-	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());
-	    setCheckBox(tk.createButton(inner, M.HeatPump, SWT.CHECK), FundingType.HeatPump.getValue());
+	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());	    
 	}
 	
 	private void setCheckBox(Button check, int fundingTypeValue)
