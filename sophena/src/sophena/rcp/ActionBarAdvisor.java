@@ -105,6 +105,8 @@ public class ActionBarAdvisor extends
 		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
 		for (ProductType type : ProductType.values()) {
+			if(type == ProductType.ELECTRIC_HEAT_GENERATOR || type == ProductType.OTHER_HEAT_SOURCE)
+				continue;
 			m.add(Actions.create(
 					Labels.getPlural(type),
 					img(type),
