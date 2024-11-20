@@ -138,8 +138,7 @@ class EnergyCalculator {
 				if ((bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower()) > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
-				// Always take solar power. If more then needed it will heat up the collector until stagnation
-				if(producer.function == ProducerFunction.MAX_LOAD || power <=  maxLoad)
+				if(power <=  maxLoad)
 				{
 					if(bufferLoadType != BufferCalcLoadType.NT)
 					{
@@ -156,9 +155,6 @@ class EnergyCalculator {
 					}
 					else
 					{
-						// Mainly use NT power to charge the buffer, then add the rest to the heatnet in order to increase return temperature
-						double surplus = bufferCalcState.load(hour, power, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);
-						power -= surplus;
 						if(haveAtLeastOneHTProducer)
 						{
 							double TR = bufferCalcState.getTR();
@@ -173,18 +169,17 @@ class EnergyCalculator {
 								TK_i = producer.profile.temperaturLevel[hour];
 
 							// limit supplied power for the heat net based on temperature currently provided
-							surplus = Math.max(0, Math.min(surplus, requiredLoad * (TK_i - TR) / (TV - TR)));
+							power = Math.max(0, Math.min(power, requiredLoad * (TK_i - TR) / (TV - TR)));
 						
-							if(surplus < requiredLoad)
+							double surplus = power - requiredLoad;					
+							if(surplus > 0)	
 							{
-								requiredLoad -= surplus;
-								power += surplus;
+								surplus = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+								requiredLoad = 0;
+								power -= surplus;
 							}
 							else
-							{
-								requiredLoad = 0;												
-								power += requiredLoad;
-							}
+								requiredLoad -= power;					
 						}
 					}
 					
@@ -348,7 +343,7 @@ class EnergyCalculator {
 		double requiredLoad, double maxLoad) {
 		double bMin = Producers.minPower(producer, solarCalcState, heatPumpCalcState, hour);
 		double bMax = Producers.maxPower(producer, solarCalcState, heatPumpCalcState, hour);
-		double load = producer.function == ProducerFunction.PEAK_LOAD
+		double load = producer.function != ProducerFunction.MAX_LOAD 
 				? requiredLoad
 				: maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);
