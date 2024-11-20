@@ -237,7 +237,8 @@ CREATE TABLE tbl_heat_nets (
 	flow_temperature_winter DOUBLE,
 	flow_temperature_summer DOUBLE,
 	return_temperature_winter DOUBLE,
-	return_temperature_summer DOUBLE,    
+	return_temperature_summer DOUBLE,   
+	target_charge_level DOUBLE, 
 
     PRIMARY KEY (id)
 );

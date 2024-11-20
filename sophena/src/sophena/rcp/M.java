@@ -201,6 +201,8 @@ public class M extends NLS {
     public static String SourceTemperatureUserError;
     public static String SourceTemperatureHourlyError;
     
+    public static String TargetChargeLevelError;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

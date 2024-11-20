@@ -32,6 +32,7 @@ class BufferTankSection {
 	private final HeatNetEditor editor;
 	private Text volText;
 	private Text maximumPerformanceText;
+	private Text targetChargeText;
 
 	private ProductCostSection costSection;
 
@@ -48,6 +49,7 @@ class BufferTankSection {
 		UI.gridLayout(comp, 4);
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
+		createTargetChargeLevelText(comp, tk);
 		createMaxPerfText(comp, tk);
 		createMaxTempText(comp, tk);
 		createLowerTempText(comp, tk);
@@ -57,6 +59,8 @@ class BufferTankSection {
 		costSection = new ProductCostSection(() -> net().bufferTankCosts)
 				.withEditor(editor)
 				.createFields(comp, tk);
+		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
+		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
 	}
 
 	private void createVolText(Composite comp, FormToolkit tk) {
@@ -125,6 +129,18 @@ class BufferTankSection {
 		UI.formLabel(comp, tk, "W/m*K");
 		HelpLink.create(comp, tk, "λ-Wert der Dämmung", H.BufferLambda);
 	}
+	
+	private void createTargetChargeLevelText(Composite comp, FormToolkit tk) {		
+		targetChargeText = UI.formText(comp, tk, "Ziel-Ladestand");
+		Texts.on(targetChargeText).decimal().required()
+		.init(net().targetChargeLevel)
+		.onChanged((s) -> {
+			net().targetChargeLevel = Texts.getDouble(targetChargeText);
+			editor.setDirty();
+		});
+		UI.formLabel(comp, tk, "%");
+		UI.filler(comp, tk);
+	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
 		UI.formLabel(comp, tk, "Produkt");
@@ -152,6 +168,11 @@ class BufferTankSection {
 		});
 		UI.filler(comp, tk);
 		UI.filler(comp, tk);
+	}
+	
+	private void seasonalDrivingChanged()
+	{
+		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
 	}
 
 	private void selectBufferTank(ImageHyperlink link) {

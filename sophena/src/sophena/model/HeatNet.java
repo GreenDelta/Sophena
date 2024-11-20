@@ -95,6 +95,9 @@ public class HeatNet extends AbstractEntity {
 	
 	@Column(name = "return_temperature_summer")
 	public double returnTemperatureSummer;
+	
+	@Column(name = "target_charge_level")
+	public double targetChargeLevel;
 
 	public static void addDefaultTo(Project p) {
 		if (p == null)
@@ -112,6 +115,7 @@ public class HeatNet extends AbstractEntity {
 		net.isSeasonalDrivingStyle = false;
 		net.targetChargeLevelWinter = 50;
 		net.targetChargeLevelSummer = 0;
+		net.targetChargeLevel = 50;
 		net.flowTemperatureWinter = 80;
 		net.flowTemperatureSummer = 80;
 		net.returnTemperatureWinter = 60;
@@ -155,6 +159,7 @@ public class HeatNet extends AbstractEntity {
 		clone.isSeasonalDrivingStyle = isSeasonalDrivingStyle;
 		clone.targetChargeLevelWinter = targetChargeLevelWinter;
 		clone.targetChargeLevelSummer = targetChargeLevelSummer;
+		clone.targetChargeLevel = targetChargeLevel;
 		clone.flowTemperatureWinter = flowTemperatureWinter;
 		clone.flowTemperatureSummer = flowTemperatureSummer;
 		clone.returnTemperatureWinter = returnTemperatureWinter;
