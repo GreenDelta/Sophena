@@ -81,18 +81,10 @@ class FurtherResultsSheet {
 	public void createEfficiency(Sheet sheet, CellStyle style,
 			EfficiencyResult efficiency) {
 
-		Excel.cell(sheet, row, 0, "Effizienz").setCellStyle(style);
+		Excel.cell(sheet, row, 0, "Effizienz Speicherung und Verteilung").setCellStyle(style);
 		row++;
 		Excel.cell(sheet, row, 1, "Absolut in kWh").setCellStyle(style);
 		Excel.cell(sheet, row, 2, "Prozentual in %").setCellStyle(style);
-		row++;
-		Excel.cell(sheet, row, 0, "Brennstoffenergie");
-		Excel.cell(sheet, row, 1, Math.round(efficiency.fuelEnergy));
-		row++;
-		Excel.cell(sheet, row, 0, "Konversionsverluste");
-		Excel.cell(sheet, row, 1, Math.round(efficiency.conversionLoss));
-		Excel.cell(sheet, row, 2, Math.round(((efficiency.conversionLoss
-				/ efficiency.fuelEnergy) * 100)));
 		row++;
 		Excel.cell(sheet, row, 0, "Erzeugte Wärme");
 		Excel.cell(sheet, row, 1, Math.round(efficiency.producedHeat));

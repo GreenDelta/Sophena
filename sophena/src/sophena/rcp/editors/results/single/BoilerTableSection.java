@@ -48,7 +48,7 @@ class BoilerTableSection {
 	}
 
 	public void render(Composite body, FormToolkit tk) {
-		var section = UI.section(body, tk, M.HeatProducers);
+		var section = UI.section(body, tk, "Wärmeerzeugung");
 		UI.gridData(section, true, false);
 		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);		
@@ -70,7 +70,7 @@ class BoilerTableSection {
 		properties.add(M.HeatProducer);
 		properties.add("Rang");
 		properties.add("Nennleistung");
-		properties.add("Brennstoffverbrauch");
+		properties.add("Energieträgereinsatz");
 		properties.add(M.GeneratedHeat);
 		properties.add("Anteil");
 		properties.add("Volllaststunden");

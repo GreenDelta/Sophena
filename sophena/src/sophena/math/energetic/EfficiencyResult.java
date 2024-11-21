@@ -61,7 +61,7 @@ public class EfficiencyResult {
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
 			res.usedHeat = res.producedHeat - res.distributionLoss
 					- res.bufferLoss;
-			res.totalLoss = res.conversionLoss + res.distributionLoss
+			res.totalLoss = res.distributionLoss
 					+ res.bufferLoss;
 			return res;
 		}

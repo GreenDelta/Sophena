@@ -42,9 +42,6 @@ class EfficiencyTable {
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
-		items.add(new Item("Brennstoffenergie", r.fuelEnergy));
-		items.add(new Item("Konversionsverluste", r.conversionLoss,
-				r.fuelEnergy));
 		if (r.producedElectrictiy > 0) {
 			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
 		}

@@ -43,7 +43,7 @@ class FurtherResultsPage extends FormPage {
 		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(co2, body, tk);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
-		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
+		EfficiencyTable.create(efficiency, s.apply("Effizienz Speicherung und Verteilung"));
 		EfficiencyChart.create(efficiency, body, tk);
 		new KeyFigureTable().render(s.apply("Kennzahlen Wärmenetz"), tk);
 		form.reflow(true);		

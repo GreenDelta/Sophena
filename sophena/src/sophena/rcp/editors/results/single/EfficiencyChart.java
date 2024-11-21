@@ -36,7 +36,7 @@ class EfficiencyChart  {
 	}
 
 	private void render(Composite body, FormToolkit tk) {
-		var section = UI.section(body, tk, "Verwendung Brennstoffenergie");
+		var section = UI.section(body, tk, "Erzeugte Wärme");
 		var comp = UI.sectionClient(section, tk);
 		chart = new Chart(comp, SWT.NONE);
 		var data = new GridData(SWT.LEFT, SWT.CENTER, true, true);
@@ -54,7 +54,6 @@ class EfficiencyChart  {
 		if (result.producedElectrictiy > 0) {
 			addSeries(set, ColorKey.PRODUCED_ELECTRICITY);
 		}
-		addSeries(set, ColorKey.LOSSES_CONVERSION);
 		addSeries(set, ColorKey.LOSSES_BUFFER);
 		addSeries(set, ColorKey.LOSSES_DISTRIBUTION);
 
@@ -75,7 +74,6 @@ class EfficiencyChart  {
 		return switch (key) {
 			case USED_HEAT -> "Genutzte Wärme";
 			case PRODUCED_ELECTRICITY -> "Erzeugter Strom";
-			case LOSSES_CONVERSION -> "Konversionsverluste";
 			case LOSSES_BUFFER -> "Pufferspeicherverluste";
 			case LOSSES_DISTRIBUTION -> "Verteilungsverluste";
 			default -> "?";
@@ -86,7 +84,6 @@ class EfficiencyChart  {
 		double val = switch (key) {
 			case USED_HEAT -> result.usedHeat;
 			case PRODUCED_ELECTRICITY -> result.producedElectrictiy;
-			case LOSSES_CONVERSION -> result.conversionLoss;
 			case LOSSES_BUFFER -> result.bufferLoss;
 			case LOSSES_DISTRIBUTION -> result.distributionLoss;
 			default -> 0;
@@ -115,7 +112,6 @@ class EfficiencyChart  {
 		y.getTitle().setFont(UI.defaultFont());
 		double max = result.usedHeat
 				+ result.producedElectrictiy
-				+ result.conversionLoss
 				+ result.bufferLoss
 				+ result.distributionLoss;
 		if (max == 0) {

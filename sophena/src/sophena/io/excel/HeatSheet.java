@@ -69,7 +69,7 @@ class HeatSheet {
 		w.boldStr(0, 0, "Wärmeerzeuger");
 		w.boldStr("Rang");
 		w.boldStr("Nennleistung [kW]");
-		w.boldStr("Brennstoffverbrauch");
+		w.boldStr("Energieträgereinsatz");
 		w.boldStr("Erzeugte Wärme [kWh]");
 		w.boldStr("Anteil [%]");
 		w.boldStr("Volllaststunden [h]");
