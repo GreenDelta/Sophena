@@ -2,6 +2,7 @@ package sophena.io.excel.consumers;
 
 import org.apache.poi.ss.usermodel.Row;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,12 +26,18 @@ class RowReader {
 
 	String str(Field field) {
 		return field != null
-				? str(field.column)
+				? str(field.column, null)
+				: null;
+	}
+	
+	String str(Field field, DecimalFormat df) {
+		return field != null
+				? str(field.column, df)
 				: null;
 	}
 
-	String str(int pos) {
-		var s = rawStr(pos);
+	String str(int pos, DecimalFormat df) {
+		var s = rawStr(pos, df);
 		if (s == null)
 			return null;
 		var trimmed = s.strip();
@@ -39,7 +46,7 @@ class RowReader {
 				: trimmed;
 	}
 
-	private String rawStr(int pos) {
+	private String rawStr(int pos, DecimalFormat df) {
 		var cell = row.getCell(pos);
 		if (cell == null)
 			return null;
@@ -47,7 +54,7 @@ class RowReader {
 			case STRING -> cell.getStringCellValue();
 			case BOOLEAN -> Boolean.toString(cell.getBooleanCellValue());
 			case FORMULA -> cell.getCellFormula();
-			case NUMERIC -> Double.toString(cell.getNumericCellValue());
+			case NUMERIC -> df != null ? df.format(cell.getNumericCellValue()) : Double.toString(cell.getNumericCellValue());
 			default -> null;
 		};
 	}

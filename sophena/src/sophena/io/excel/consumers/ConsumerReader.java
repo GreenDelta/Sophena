@@ -45,21 +45,20 @@ public class ConsumerReader {
 
 	private List<ConsumerRow> readRowsFrom(Workbook wb) {
 		var consumers = new ArrayList<ConsumerRow>();
-		for (var it = wb.sheetIterator(); it.hasNext(); ) {
-			var sheet = it.next();
-			var head = RowReader.of(sheet.getRow(0)).orElse(null);
-			if (head == null || head.str(0) == null)
+		var it = wb.sheetIterator(); 
+		var sheet = it.next();
+		var head = RowReader.of(sheet.getRow(0)).orElse(null);
+		if (head == null || head.str(0, null) == null)
+			return null;
+		for (var rowIt = sheet.rowIterator(); rowIt.hasNext(); ) {
+			var row = rowIt.next();
+			if (row.getRowNum() == 0)
 				continue;
-			for (var rowIt = sheet.rowIterator(); rowIt.hasNext(); ) {
-				var row = rowIt.next();
-				if (row.getRowNum() == 0)
-					continue;
-				var r = RowReader.of(row).orElse(null);
-				if (r == null)
-					continue;
-				ConsumerRow.readFrom(r).ifPresent(consumers::add);
-			}
-		}
+			var r = RowReader.of(row).orElse(null);
+			if (r == null)
+				continue;
+			ConsumerRow.readFrom(r).ifPresent(consumers::add);
+		}		
 		return consumers;
 	}
 
