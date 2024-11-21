@@ -101,7 +101,7 @@ class EnergyCalculator {
 			}
 
 			// Main producer loop
-			
+			double bufferLoadPower = 0;
 			for (int k = 0; k < r.producers.length; k++) {
 				if (requiredLoad <= 0)
 					break;
@@ -146,9 +146,10 @@ class EnergyCalculator {
 						double surplus = power - requiredLoad;					
 						if(surplus > 0)	
 						{
-							surplus = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+							bufferLoadPower += surplus - remaining;
 							requiredLoad = 0;
-							power -= surplus;
+							power -= remaining;
 						}
 						else
 							requiredLoad -= power;					
@@ -174,13 +175,16 @@ class EnergyCalculator {
 							double surplus = power - requiredLoad;					
 							if(surplus > 0)	
 							{
-								surplus = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+								double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+								bufferLoadPower += surplus - remaining;
 								requiredLoad = 0;
-								power -= surplus;
+								power -= remaining;
 							}
 							else
 								requiredLoad -= power;					
 						}
+						else 
+							power = 0;
 					}
 					
 					suppliedPower += power;					
@@ -227,7 +231,8 @@ class EnergyCalculator {
 				double bufferPower = requiredLoad - remainingRequiredLoad;
 
 				suppliedPower += bufferPower;
-				r.suppliedBufferHeat[hour] = bufferPower;
+				if(bufferLoadPower < bufferPower)
+					r.suppliedBufferHeat[hour] = bufferPower - bufferLoadPower;
 			}
 
 			// buffer capacity with buffer loss
@@ -343,7 +348,7 @@ class EnergyCalculator {
 		double requiredLoad, double maxLoad) {
 		double bMin = Producers.minPower(producer, solarCalcState, heatPumpCalcState, hour);
 		double bMax = Producers.maxPower(producer, solarCalcState, heatPumpCalcState, hour);
-		double load = producer.function != ProducerFunction.MAX_LOAD 
+		double load = producer.function == ProducerFunction.PEAK_LOAD 
 				? requiredLoad
 				: maxLoad;
 		return Math.min(Math.max(load, bMin), bMax);
