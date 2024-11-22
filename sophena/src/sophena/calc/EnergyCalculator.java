@@ -170,18 +170,18 @@ class EnergyCalculator {
 								TK_i = producer.profile.temperaturLevel[hour];
 
 							// limit supplied power for the heat net based on temperature currently provided
-							power = Math.max(0, Math.min(power, requiredLoad * (TK_i - TR) / (TV - TR)));
-						
-							double surplus = power - requiredLoad;					
+							double reducedPower = Math.max(0, Math.min(power, requiredLoad * (TK_i - TR) / (TV - TR)));						
+							requiredLoad -= reducedPower;					
+							
+							double surplus = power - reducedPower;					
 							if(surplus > 0)	
 							{
 								double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
 								bufferLoadPower += surplus - remaining;
-								requiredLoad = 0;
 								power -= remaining;
 							}
 							else
-								requiredLoad -= power;					
+								power = reducedPower; 
 						}
 						else 
 							power = 0;
