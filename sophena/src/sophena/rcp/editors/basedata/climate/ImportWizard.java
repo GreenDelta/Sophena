@@ -124,8 +124,8 @@ class ImportWizard extends Wizard {
 
 		private void createLongitudeRow(Composite comp) {
 			Text t = UI.formText(comp, M.Longitude);
+			t.setText(Double.toString(station.longitude));
 			Texts.on(t).decimal().required()
-				.init(station.longitude)
 				.onChanged((s) -> {
 					station.longitude = Texts.getDouble(t);
 				});
@@ -135,8 +135,8 @@ class ImportWizard extends Wizard {
 		
 		private void createLatitudeRow(Composite comp) {
 			Text t = UI.formText(comp, M.Latitude);
+			t.setText(Double.toString(station.latitude));
 			Texts.on(t).decimal().required()
-				.init(station.latitude)
 				.onChanged((s) -> {
 					station.latitude = Texts.getDouble(t);
 				});

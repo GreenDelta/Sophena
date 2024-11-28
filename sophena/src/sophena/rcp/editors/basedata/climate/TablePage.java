@@ -197,9 +197,9 @@ class TablePage extends FormPage {
 			case 0:
 				return d.name;
 			case 1:
-				return Num.str(d.longitude);
+				return Double.toString(d.longitude);
 			case 2:
-				return Num.str(d.latitude);
+				return Double.toString(d.latitude);
 			case 3:
 				return Num.str(d.altitude) + " m";
 			default:
