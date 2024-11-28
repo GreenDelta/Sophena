@@ -128,7 +128,7 @@ class BoilerTableSection {
 					+ " " + Labels.getFuelUnit(p);
 			item.producedHeat = Num.intStr(heat) + " kWh";
 			item.share = GeneratedHeat.share(heat, result) + " %";
-			item.fullLoadHours = maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower);;
+			item.fullLoadHours = maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower);
 			item.utilisationRate = p.boiler != null && p.boiler.isCoGenPlant
 					? p.boiler.efficiencyRate
 					: UtilisationRate.get(project, p, result);

@@ -5,14 +5,20 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Label;
 
 import sophena.calc.CO2Result;
 import sophena.calc.ProjectResult;
 import sophena.math.energetic.EfficiencyResult;
+import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.UsedHeat;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class FurtherResultsSheet {
 
@@ -113,7 +119,7 @@ class FurtherResultsSheet {
 				.setCellStyle(style);
 
 		Excel.cell(sheet, row, 2, Math.round(((efficiency.totalLoss
-				/ efficiency.fuelEnergy) * 100))).setCellStyle(style);
+				/ efficiency.producedHeat) * 100))).setCellStyle(style);
 		row += 2;
 
 	}
@@ -128,10 +134,27 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 1, Math.round(length));
 		row++;
 		Excel.cell(sheet, row, 0, "Wärmebelegungsdichte in MWh/(m*a)");
-		Excel.cell(sheet, row, 1, UsedHeat.get(result) / (1000 * length));
+		double hl = length == 0 ? 0
+				: UsedHeat.get(result) / (1000 * length);
+		Excel.cell(sheet, row, 1, hl);
 		row++;
 		Excel.cell(sheet, row, 0, "Primärenergiefaktor");
 		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(result));
+		row++;
+		
+		int share = 0;
+		for (Producer p : project.producers)
+		{
+			if(!p.disabled && p.solarCollector != null && p.solarCollectorSpec != null)
+			{
+				share += GeneratedHeat.share(result.energyResult.totalHeat(p), result.energyResult);					
+			}
+		}
+		if (share > 0)
+		{
+			Excel.cell(sheet, row, 0, "Solarthermischer Deckungsbeitrag in %");
+			Excel.cell(sheet, row, 1, Num.intStr(share));
+		}
 	}
 
 }

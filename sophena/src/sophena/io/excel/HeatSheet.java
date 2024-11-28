@@ -34,11 +34,12 @@ class HeatSheet {
 			double heat = result.energyResult.totalHeat(p);
 			w.str(row, 0, p.name);
 			w.str(Labels.getRankText(p.function, p.rank));
-			w.rint(Producers.maxPower(p));
+			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null ? result.energyResult.maxPeakPower(p) : Producers.maxPower(p);
+			w.rint(maxPower);
 			w.str(getFuelUse(p, heat));
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
-			w.rint(Producers.fullLoadHours(p, heat));
+			w.rint(maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower));
 			if(p.heatPump != null)
 				w.nextCol();
 			else if (p.boiler != null && p.boiler.isCoGenPlant) {
@@ -75,8 +76,19 @@ class HeatSheet {
 		w.boldStr("Volllaststunden [h]");
 		w.boldStr("Nutzungsgrad [%]");
 		w.boldStr("Starts");
-		w.boldStr("Stagnationstage");
-		w.boldStr("JAZ");
+		boolean showStagnationDays = false;		
+		boolean showJAZ = false;
+		for(Producer p : result.energyResult.producers)
+		{
+			if(p.solarCollector != null & p.solarCollectorSpec != null)
+				showStagnationDays = true;
+			if(p.heatPump != null)
+				showJAZ = true;
+		}
+		if(showStagnationDays)
+			w.boldStr("Stagnationstage");
+		if(showJAZ)
+			w.boldStr("JAZ");
 	}
 
 	private String getFuelUse(Producer pr, double heat) {
