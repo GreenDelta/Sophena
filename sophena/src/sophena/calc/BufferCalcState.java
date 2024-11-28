@@ -80,7 +80,7 @@ public class BufferCalcState {
 		TR = seasonalItem.returnTemperature;
 
 		TMAX = project.heatNet.maxBufferLoadTemperature;
-		QP_HT = 0.5 * maxCapacity(project.heatNet);
+		QP_HT = seasonalItem.targetChargeLevel * maxCapacity(project.heatNet);
 		QP_NT = 0;
 		QP_VT = 0;
 		
