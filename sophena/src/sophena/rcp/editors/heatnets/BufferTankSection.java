@@ -139,7 +139,7 @@ class BufferTankSection {
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "%");
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, M.TargetChargeLevel, H.TargetChargeLevel);
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {

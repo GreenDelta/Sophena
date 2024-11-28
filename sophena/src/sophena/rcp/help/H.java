@@ -34,6 +34,7 @@ public class H extends NLS {
 	public static String UtilisationRateSolarInfo;
 	public static String OperatingModeInfo;
 	public static String OperatingData;
+	public static String TargetChargeLevel;
 	
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);
