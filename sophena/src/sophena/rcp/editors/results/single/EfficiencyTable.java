@@ -52,7 +52,7 @@ class EfficiencyTable {
 				r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
-		Item total = new Item("Gesamtverluste", r.totalLoss, r.fuelEnergy);
+		Item total = new Item("Gesamtverluste", r.totalLoss, r.producedHeat);
 		total.total = true;
 		items.add(total);
 		return items;
