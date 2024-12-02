@@ -19,6 +19,9 @@ class HeatSheet {
 
 	private final ProjectResult result;
 	private final SheetWriter w;
+	
+	private boolean showStagnationDays = false;		
+	private boolean showJAZ = false;
 
 	HeatSheet(Workbook wb, ProjectResult result) {
 		this.result = result;
@@ -52,13 +55,13 @@ class HeatSheet {
 			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
 				w.rint(result.energyResult.stagnationDays(p));
 			}
-			else
+			else if (showStagnationDays)
 				w.nextCol();
 			if(p.heatPump != null)
 			{
 				w.num((double)Math.round(result.energyResult.jaz(p) * 100) / 100);
 			}
-			else
+			else if (showJAZ)
 				w.nextCol();
 			row++;
 		}
@@ -76,8 +79,7 @@ class HeatSheet {
 		w.boldStr("Volllaststunden [h]");
 		w.boldStr("Nutzungsgrad [%]");
 		w.boldStr("Starts");
-		boolean showStagnationDays = false;		
-		boolean showJAZ = false;
+		
 		for(Producer p : result.energyResult.producers)
 		{
 			if(p.solarCollector != null & p.solarCollectorSpec != null)
