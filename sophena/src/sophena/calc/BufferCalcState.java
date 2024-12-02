@@ -288,7 +288,7 @@ public class BufferCalcState {
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, Math.min(QP_MAX * loadFactor, QP100_NT()) - QP_NT - QP_VT);
+		return Math.max(0, Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
 	}
 
 	private void UpdateFGAndTE()
