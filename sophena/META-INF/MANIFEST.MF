@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Sophena
 Bundle-SymbolicName: sophena;singleton:=true
 Automatic-Module-Name: sophena
-Bundle-Version: 2.1.0
+Bundle-Version: 3.0.0
 Bundle-Activator: sophena.rcp.Activator
 Bundle-Vendor: GreenDelta
 Import-Package: org.osgi.framework
