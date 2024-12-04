@@ -128,17 +128,21 @@ class EnergyCalculator {
 					continue;
 				
 				// Maximum amount of power currently needed for heatnet and buffer				
-				double maxLoad = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
+				double maxLoadRel = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
 					bufferCalcState.CalcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
 					bufferCalcState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD));
 					
-				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoad);
+				double maxLoadAbs = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
+					bufferCalcState.CalcHTCapacity(false) :
+					bufferCalcState.CalcNTCapacity(false));
+
+				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoadRel);
 				
 				// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
 				if ((bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower()) > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
-				if(power <=  maxLoad)
+				if(power <=  maxLoadAbs)
 				{
 					if(bufferLoadType != BufferCalcLoadType.NT)
 					{
@@ -146,7 +150,7 @@ class EnergyCalculator {
 						double surplus = power - requiredLoad;					
 						if(surplus > 0)	
 						{
-							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
 							bufferLoadPower += surplus - remaining;
 							requiredLoad = 0;
 							power -= remaining;
@@ -176,7 +180,7 @@ class EnergyCalculator {
 							double surplus = power - reducedPower;					
 							if(surplus > 0)	
 							{
-								double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, producer.function != ProducerFunction.MAX_LOAD);					
+								double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
 								bufferLoadPower += surplus - remaining;
 								power -= remaining;
 							}
