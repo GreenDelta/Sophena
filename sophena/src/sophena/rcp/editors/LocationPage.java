@@ -84,7 +84,8 @@ public class LocationPage extends FormPage {
 	private Text number(Composite comp, String label, Double initial,
 			Consumer<Double> fn) {
 		var text = UI.formText(comp, toolkit, label);
-		text.setText(Double.toString(initial));
+		if(initial != null)
+			text.setText(Double.toString(initial));
 		Texts.on(text).onChanged(s -> {
 			if (Texts.isEmpty(text)) {
 				fn.accept(null);
