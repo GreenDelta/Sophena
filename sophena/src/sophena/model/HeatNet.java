@@ -114,7 +114,7 @@ public class HeatNet extends AbstractEntity {
 
 		net.isSeasonalDrivingStyle = false;
 		net.targetChargeLevelWinter = 50;
-		net.targetChargeLevelSummer = 0;
+		net.targetChargeLevelSummer = 50;
 		net.targetChargeLevel = 50;
 		net.flowTemperatureWinter = 80;
 		net.flowTemperatureSummer = 80;
