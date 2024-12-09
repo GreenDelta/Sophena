@@ -171,6 +171,15 @@ public class BufferCalcState {
 		return qToLoadRemaining;
 	}
 	
+	public boolean getMaxTargetLoadStillReachedAfterPartialUnload(double requiredLoad)
+	{
+       double denominator = QP_MAX;
+       if(denominator == 0)
+    	   return false;
+       
+       return maxTargetLoadFactor < ((QP_HT + QP_VT + QP_NT - requiredLoad) / denominator);
+	}
+	
 	public double unload(int hour, double qToUnload, BufferCalcLoadType loadType)
 	{
 		double Qunloaded;

@@ -142,6 +142,9 @@ class EnergyCalculator {
 				if ((bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower()) > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;
 				
+				if(bufferCalcState.getMaxTargetLoadStillReachedAfterPartialUnload(requiredLoad) && producer.function == ProducerFunction.BASE_LOAD)
+					continue;
+				
 				if(power <=  maxLoadAbs)
 				{
 					if(bufferLoadType != BufferCalcLoadType.NT)
