@@ -114,12 +114,12 @@ public class HeatNet extends AbstractEntity {
 
 		net.isSeasonalDrivingStyle = false;
 		net.targetChargeLevelWinter = 50;
-		net.targetChargeLevelSummer = 50;
+		net.targetChargeLevelSummer = 0;
 		net.targetChargeLevel = 50;
 		net.flowTemperatureWinter = 80;
 		net.flowTemperatureSummer = 80;
-		net.returnTemperatureWinter = 60;
-		net.returnTemperatureSummer = 60;
+		net.returnTemperatureWinter = 50;
+		net.returnTemperatureSummer = 50;
 		TimeInterval intervalWinter = new TimeInterval();
 		intervalWinter.description = "Winter";
 		intervalWinter.id = UUID.randomUUID().toString();
