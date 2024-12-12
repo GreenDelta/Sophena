@@ -204,15 +204,6 @@ class EnergyCalculator {
 				
 				if(heatPumpCalcState != null)
 					heatPumpCalcState.setConsumedPower(power * 1000);
-
-				// Only if min. one HT producer is used at the current hour NT energy from the buffer can be unloaded in order to increase return temperature
-				//if(bufferLoadType == BufferCalcLoadType.HT)
-				//	haveAtLeastOneHTProducer = true;
-
-				// Take the rest from buffer and do not use further producers if possible
-				if(bufferCalcState.totalUnloadableHTPower() > requiredLoad) {
-					break;
-				}
 			} // end producer loop
 			
 			for (int k = 0; k < r.producers.length; k++) {
