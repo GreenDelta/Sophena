@@ -138,12 +138,16 @@ class EnergyCalculator {
 
 				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoadRel);
 				
-				// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
-				if ((bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower()) > requiredLoad && producer.function == ProducerFunction.PEAK_LOAD)
-					continue;
-				
-				if(bufferCalcState.getMaxTargetLoadStillReachedAfterPartialUnload(requiredLoad) && producer.function == ProducerFunction.BASE_LOAD)
-					continue;
+				if(!isSolarProducer)
+				{
+					double unloadablePower = bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower() + (haveAtLeastOneHTProducer ? bufferCalcState.totalUnloadableNTPower() : 0);
+					// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
+					if((unloadablePower > requiredLoad) && producer.function == ProducerFunction.PEAK_LOAD)
+						continue;
+					
+					if(bufferCalcState.getMaxTargetLoadStillReachedAfterPartialUnload(requiredLoad) && (unloadablePower > requiredLoad) && producer.function == ProducerFunction.BASE_LOAD)
+						continue;
+				}
 				
 				if(power <=  maxLoadAbs)
 				{

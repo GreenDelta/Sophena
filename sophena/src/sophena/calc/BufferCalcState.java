@@ -275,6 +275,11 @@ public class BufferCalcState {
 		return Math.min(QP_VT, project.heatNet.maximumPerformance);
 	}
 	
+	public double totalUnloadableNTPower()
+	{
+		return Math.min(QP_NT, project.heatNet.maximumPerformance);
+	}
+	
 	public double getLoadFactor(boolean useMaxTargetLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
