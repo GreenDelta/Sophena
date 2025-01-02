@@ -149,7 +149,7 @@ class EnergyCalculator {
 						continue;
 				}
 				
-				if(power <=  maxLoadAbs)
+				if(power <=  maxLoadAbs || isSolarProducer)
 				{
 					if(bufferLoadType != BufferCalcLoadType.NT)
 					{
