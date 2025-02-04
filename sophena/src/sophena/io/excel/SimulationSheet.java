@@ -31,7 +31,7 @@ class SimulationSheet {
 			Excel.cell(sheet, r, 0, r);
 			cell(row, 0, r);
 			cell(row, 1, round(result.loadCurve[i]));
-			cell(row, 2, round(result.suppliedPower[i]));
+			cell(row, 2, round(result.suppliedPower[i] + result.suppliedBufferHeat[i]));
 			cell(row, 3, round(diff));
 			cell(row, 4, round(result.bufferCapacity[i]));
 			cell(row, 5, round(result.suppliedBufferHeat[i]));
