@@ -103,7 +103,7 @@ class EnergyCalculator {
 			// Main producer loop
 			double bufferLoadPower = 0;
 			for (int k = 0; k < r.producers.length; k++) {
-				if (requiredLoad <= 0)
+				if (r.loadCurve[hour] - suppliedPower <= 0)
 					break;
 
 				Producer producer = r.producers[k];
