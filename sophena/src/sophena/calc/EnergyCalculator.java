@@ -48,7 +48,7 @@ class EnergyCalculator {
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			bufferCalcState.preStep(hour);
 			
-			if(hour == 01)
+			if(hour == 0)
 				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity(false);
 
 			double requiredLoad = r.loadCurve[hour];			
