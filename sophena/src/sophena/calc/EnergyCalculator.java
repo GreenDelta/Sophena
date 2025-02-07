@@ -140,7 +140,7 @@ class EnergyCalculator {
 
 				double loadFactor = (bufferLoadType != BufferCalcLoadType.NT)? 1 : (TK_i - TR) / (TV - TR);
 				requiredLoad = Math.max(0, r.loadCurve[hour] * loadFactor - suppliedPower); 
-				double uppperBufferNTLimit = r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(producer.function != ProducerFunction.MAX_LOAD) - suppliedPower;
+				double uppperBufferNTLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(producer.function != ProducerFunction.MAX_LOAD) - suppliedPower);
 				
 				// Maximum amount of power currently needed for heatnet and buffer				
 				double maxLoadRel = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
@@ -166,7 +166,7 @@ class EnergyCalculator {
 				
 				if(power <=  maxLoadAbs || isSolarProducer)
 				{
-					if(haveAtLeastOneHTProducer || bufferLoadType != BufferCalcLoadType.NT)
+					if((haveAtLeastOneHTProducer && requiredLoad > 0) || bufferLoadType != BufferCalcLoadType.NT)
 					{
 						// Mainly use HT/VT power for the heatnet and leftover to charge the buffer 
 						double surplus = power - requiredLoad;					
@@ -175,12 +175,18 @@ class EnergyCalculator {
 							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
 							bufferLoadPower += surplus - remaining;
 							power -= remaining;
+							suppliedPower += requiredLoad;					
+							requiredLoad = 0;
+						}
+						else
+						{
+							requiredLoad -= power;
+							suppliedPower += power;
 						}
 					}
-					else 
+					else
 						power = 0;
 					
-					suppliedPower += power;					
 					r.producerResults[k][hour] = power;
 				}
 				
