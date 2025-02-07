@@ -166,7 +166,7 @@ class EnergyCalculator {
 				
 				if(power <=  maxLoadAbs || isSolarProducer)
 				{
-					if(bufferLoadType != BufferCalcLoadType.NT)
+					if(haveAtLeastOneHTProducer || bufferLoadType != BufferCalcLoadType.NT)
 					{
 						// Mainly use HT/VT power for the heatnet and leftover to charge the buffer 
 						double surplus = power - requiredLoad;					
@@ -174,33 +174,11 @@ class EnergyCalculator {
 						{
 							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
 							bufferLoadPower += surplus - remaining;
-							requiredLoad = 0;
 							power -= remaining;
 						}
-						else
-							requiredLoad -= power;					
 					}
-					else
-					{
-						if(haveAtLeastOneHTProducer)
-						{
-							// limit supplied power for the heat net based on temperature currently provided
-							double reducedPower = Math.max(0, Math.min(power, requiredLoad));						
-							requiredLoad -= reducedPower;					
-							
-							double surplus = power - reducedPower;					
-							if(surplus > 0)	
-							{
-								double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
-								bufferLoadPower += surplus - remaining;
-								power -= remaining;
-							}
-							else
-								power = reducedPower; 
-						}
-						else 
-							power = 0;
-					}
+					else 
+						power = 0;
 					
 					suppliedPower += power;					
 					r.producerResults[k][hour] = power;
