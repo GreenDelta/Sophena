@@ -170,6 +170,7 @@ public class UI {
 		tk.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
+		form.getForm().setForeground(Colors.of(0, 33, 113));
 		return form;
 	}
 
@@ -182,7 +183,7 @@ public class UI {
 	public static Section section(
 			Composite parent, FormToolkit tk, String label) {
 		var s = tk.createSection(parent,
-				ExpandableComposite.SHORT_TITLE_BAR
+				ExpandableComposite.TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.EXPANDED
 						| ExpandableComposite.TWISTIE);
@@ -192,7 +193,7 @@ public class UI {
 	public static Section collapsedSection(
 			Composite parent, FormToolkit tk, String label) {
 		var s = tk.createSection(parent,
-				ExpandableComposite.SHORT_TITLE_BAR
+				ExpandableComposite.TITLE_BAR
 						| ExpandableComposite.FOCUS_TITLE
 						| ExpandableComposite.COMPACT
 						| ExpandableComposite.TWISTIE);
@@ -200,10 +201,10 @@ public class UI {
 	}
 
 	private static Section styleSection(Section s, String label) {
-		s.setTitleBarBackground(Colors.getWhite());
+		s.setTitleBarBackground(Colors.of(150, 200, 255));
 		s.setTitleBarBorderColor(Colors.of(122, 122, 122));
-		s.setTitleBarForeground(Colors.of(38, 38, 38));
-		s.setToggleColor(Colors.of(38, 38, 38));
+		s.setTitleBarForeground(Colors.of(0, 33, 113));
+		s.setToggleColor(Colors.of(0, 33, 113));	
 		gridData(s, true, false);
 		s.setText(label);
 		return s;
