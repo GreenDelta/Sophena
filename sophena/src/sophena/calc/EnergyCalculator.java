@@ -127,6 +127,21 @@ class EnergyCalculator {
 				if(DoContinueOnOutdoorTemperature(producer, TL_i))
 					continue;
 				
+				double TR = bufferCalcState.getTR();
+				double TV = bufferCalcState.getTV();
+				
+				double TK_i = TR;
+				if(isSolarProducer)
+					TK_i = solarCalcState.getTK_i();							
+				if(heatPumpCalcState != null)
+					TK_i = heatPumpCalcState.getTK_i();
+				if(producer.hasProfile())
+					TK_i = producer.profile.temperaturLevel[hour];
+
+				double loadFactor = (bufferLoadType != BufferCalcLoadType.NT)? 1 : (TK_i - TR) / (TV - TR);
+				requiredLoad = Math.max(0, r.loadCurve[hour] * loadFactor - suppliedPower); 
+				double uppperBufferNTLimit = r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(producer.function != ProducerFunction.MAX_LOAD) - suppliedPower;
+				
 				// Maximum amount of power currently needed for heatnet and buffer				
 				double maxLoadRel = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
 					bufferCalcState.CalcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
@@ -140,7 +155,7 @@ class EnergyCalculator {
 				
 				if(!isSolarProducer)
 				{
-					double unloadablePower = bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower() + (haveAtLeastOneHTProducer ? bufferCalcState.totalUnloadableNTPower() : 0);
+					double unloadablePower = bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower() + (haveAtLeastOneHTProducer ? Math.min(uppperBufferNTLimit, bufferCalcState.totalUnloadableNTPower()) : 0);
 					// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
 					if((unloadablePower > requiredLoad) && producer.function == ProducerFunction.PEAK_LOAD)
 						continue;
@@ -169,19 +184,8 @@ class EnergyCalculator {
 					{
 						if(haveAtLeastOneHTProducer)
 						{
-							double TR = bufferCalcState.getTR();
-							double TV = bufferCalcState.getTV();
-							
-							double TK_i = TR;
-							if(isSolarProducer)
-								TK_i = solarCalcState.getTK_i();							
-							if(heatPumpCalcState != null)
-								TK_i = heatPumpCalcState.getTK_i();
-							if(producer.hasProfile())
-								TK_i = producer.profile.temperaturLevel[hour];
-
 							// limit supplied power for the heat net based on temperature currently provided
-							double reducedPower = Math.max(0, Math.min(power, requiredLoad * (TK_i - TR) / (TV - TR)));						
+							double reducedPower = Math.max(0, Math.min(power, requiredLoad));						
 							requiredLoad -= reducedPower;					
 							
 							double surplus = power - reducedPower;					
