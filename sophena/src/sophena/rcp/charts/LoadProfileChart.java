@@ -77,6 +77,7 @@ public class LoadProfileChart {
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		trace.setTraceType(Trace.TraceType.AREA);
 		trace.setTraceColor(Colors.of(colors.get(ColorKey.LOAD_DYNAMIC)));
+		trace.setAreaAlpha(255);
 		g.addTrace(trace);
 	}
 
@@ -86,6 +87,7 @@ public class LoadProfileChart {
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		trace.setTraceType(Trace.TraceType.AREA);
 		trace.setTraceColor(Colors.of(colors.get(ColorKey.LOAD_STATIC)));
+		trace.setAreaAlpha(255);
 		g.addTrace(trace);
 	}
 }
