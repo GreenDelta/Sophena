@@ -151,14 +151,14 @@ public class BufferCalcState {
 		}
 		else if(loadType == BufferCalcLoadType.VT)
 		{
-			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor));
+			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, 1));
 			QP_VT = QP_VT + Qloaded;
 
 			qLoadedVTInHour += Qloaded;
 		}			
 		else
 		{
-			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor));
+			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor, 1));
 			QP_NT = QP_NT + Qloaded;
 
 			qLoadedNTInHour += Qloaded;
@@ -295,7 +295,7 @@ public class BufferCalcState {
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return (QP_NT + QP_VT) / Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT());
+		return loadFactor == 0 ? 0 : (QP_NT + QP_VT) / Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT());
 	}
 	
 
@@ -306,11 +306,11 @@ public class BufferCalcState {
 		return Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT - QP_VT);
 	}
 	
-	public double CalcNTCapacity(boolean useMaxTargetLoadFactor)
+	public double CalcNTCapacity(boolean useMaxTargetLoadFactor, double realLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
+		return Math.max(0, realLoadFactor * Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
 	}
 
 
