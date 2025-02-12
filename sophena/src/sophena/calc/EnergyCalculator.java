@@ -140,7 +140,7 @@ class EnergyCalculator {
 
 				// For NT producer calculate the power factor based on their temperature level
 				double loadFactorTK_i = (bufferLoadType != BufferCalcLoadType.NT)? 1 : (TK_i - TR) / (TV - TR);
-				reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - suppliedPower); 
+				double reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - suppliedPower); 
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(false) - suppliedPower);
 				
 				// Amount of power currently needed for heatnet and buffer based on producer buffer load type
@@ -205,7 +205,8 @@ class EnergyCalculator {
 				if(heatPumpCalcState != null)
 					heatPumpCalcState.calcPost(hour);
 			}
-
+			
+			requiredLoad = (r.loadCurve[hour] - suppliedPower);
 			if (requiredLoad >= 0) {
 				
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(false) - suppliedPower);
