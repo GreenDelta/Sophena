@@ -128,7 +128,7 @@ public class BufferCalcState {
 		qLostVTInHour = 0;
 	}
 
-	public double load(int hour, double qToLoad, BufferCalcLoadType loadType, boolean useMaxTargetLoadFactor)
+	public double load(int hour, double qToLoad, BufferCalcLoadType loadType, boolean useMaxTargetLoadFactor, double loadFactorTK_i)
 	{
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
 		
@@ -151,14 +151,14 @@ public class BufferCalcState {
 		}
 		else if(loadType == BufferCalcLoadType.VT)
 		{
-			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, 1));
+			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
 			QP_VT = QP_VT + Qloaded;
 
 			qLoadedVTInHour += Qloaded;
 		}			
 		else
 		{
-			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor, 1));
+			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
 			QP_NT = QP_NT + Qloaded;
 
 			qLoadedNTInHour += Qloaded;
@@ -303,14 +303,14 @@ public class BufferCalcState {
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT - QP_VT);
+		return loadFactor == 0 ? 0 : Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT - QP_VT);
 	}
 	
-	public double CalcNTCapacity(boolean useMaxTargetLoadFactor, double realLoadFactor)
+	public double CalcNTCapacity(boolean useMaxTargetLoadFactor, double loadFactorTK_i)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
-		return Math.max(0, realLoadFactor * Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
+		return loadFactor == 0 ? 0 : Math.max(0, loadFactorTK_i * Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
 	}
 
 

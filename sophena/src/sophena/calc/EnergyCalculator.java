@@ -49,7 +49,7 @@ class EnergyCalculator {
 			bufferCalcState.preStep(hour);
 			
 			if(hour == 0)
-				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity(false);
+				r.bufferCapacity[hour] = bufferCalcState.CalcHTCapacity(false) + bufferCalcState.CalcNTCapacity(false, 1);
 
 			double requiredLoad = r.loadCurve[hour];			
 			double suppliedPower = 0;
@@ -101,7 +101,6 @@ class EnergyCalculator {
 			}
 
 			// Main producer loop
-			double bufferLoadPower = 0;
 			for (int k = 0; k < r.producers.length; k++) {
 				if (r.loadCurve[hour] - suppliedPower <= 0)
 					break;
@@ -130,7 +129,7 @@ class EnergyCalculator {
 				double TR = bufferCalcState.getTR();
 				double TV = bufferCalcState.getTV();
 				
-				double TK_i = TR;
+				double TK_i = TV;
 				if(isSolarProducer)
 					TK_i = solarCalcState.getTK_i();							
 				if(heatPumpCalcState != null)
@@ -138,18 +137,18 @@ class EnergyCalculator {
 				if(producer.hasProfile())
 					TK_i = producer.profile.temperaturLevel[hour];
 
-				double loadFactor = (bufferLoadType != BufferCalcLoadType.NT)? 1 : (TK_i - TR) / (TV - TR);
-				requiredLoad = Math.max(0, r.loadCurve[hour] * loadFactor - suppliedPower); 
+				double loadFactorTK_i = (bufferLoadType != BufferCalcLoadType.NT)? 1 : (TK_i - TR) / (TV - TR);
+				requiredLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - suppliedPower); 
 				double uppperBufferNTLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(false) - suppliedPower);
 				
 				// Maximum amount of power currently needed for heatnet and buffer				
 				double maxLoadRel = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
 					bufferCalcState.CalcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
-					bufferCalcState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD, loadFactor));
+					bufferCalcState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD, loadFactorTK_i));
 					
 				double maxLoadAbs = requiredLoad + (bufferLoadType == BufferCalcLoadType.HT ?
 					bufferCalcState.CalcHTCapacity(false) :
-					bufferCalcState.CalcNTCapacity(false, loadFactor));
+					bufferCalcState.CalcNTCapacity(false, loadFactorTK_i));
 
 				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, requiredLoad, maxLoadRel);
 				
@@ -172,8 +171,7 @@ class EnergyCalculator {
 						double surplus = power - requiredLoad;					
 						if(surplus > 0)	
 						{
-							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false);					
-							bufferLoadPower += surplus - remaining;
+							double remaining = bufferCalcState.load(hour, surplus, bufferLoadType, false, loadFactorTK_i);		
 							power -= remaining;
 							suppliedPower += power;					
 							requiredLoad = 0;
@@ -210,20 +208,23 @@ class EnergyCalculator {
 					heatPumpCalcState.calcPost(hour);
 			}
 
+			requiredLoad = (r.loadCurve[hour] - suppliedPower);
 			if (requiredLoad >= 0) {
 				
+				double uppperBufferNTLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(false) - suppliedPower);
 				double remainingRequiredLoad = bufferCalcState.unload(hour, requiredLoad, BufferCalcLoadType.HT);
 				if(remainingRequiredLoad > 0)
 					remainingRequiredLoad = bufferCalcState.unload(hour, remainingRequiredLoad, BufferCalcLoadType.VT);
-				double uppperBufferNTLimit = Math.max(0, r.loadCurve[hour] * bufferCalcState.getNTLoadFactor(false) - suppliedPower);
 				if(remainingRequiredLoad > 0 && haveAtLeastOneHTProducer)
-					remainingRequiredLoad = bufferCalcState.unload(hour, Math.min(uppperBufferNTLimit, remainingRequiredLoad), BufferCalcLoadType.NT);
+				{
+					double p = remainingRequiredLoad - Math.min(uppperBufferNTLimit, remainingRequiredLoad);
+					remainingRequiredLoad = bufferCalcState.unload(hour, Math.min(uppperBufferNTLimit, remainingRequiredLoad), BufferCalcLoadType.NT) + p;					
+				}
 				
 				double bufferPower = requiredLoad - remainingRequiredLoad;
 
 				suppliedPower += bufferPower;
-				if(bufferLoadPower < bufferPower)
-					r.suppliedBufferHeat[hour] = bufferPower - bufferLoadPower;
+				r.suppliedBufferHeat[hour] = bufferPower; 
 			}
 
 			// buffer capacity with buffer loss
@@ -232,7 +233,7 @@ class EnergyCalculator {
 			r.suppliedPower[hour] = suppliedPower;
 
 			if ((hour + 1) < Stats.HOURS) {
-				r.bufferCapacity[hour + 1] = bufferCalcState.CalcHTCapacity(false);
+				r.bufferCapacity[hour + 1] = bufferCalcState.CalcHTCapacity(false) + bufferCalcState.CalcNTCapacity(false, 1);
 			}
 			
 			bufferCalcState.postStep(hour);
