@@ -72,7 +72,6 @@ class EnergyCalculator {
 					: 0;
 
 			// Determine if there is at least one HT producer
-
 			boolean haveAtLeastOneHTProducer = false;
 			for (int k = 0; k < r.producers.length; k++)
 			{
@@ -161,22 +160,22 @@ class EnergyCalculator {
 				if(!isSolarProducer)
 				{
 					double unloadablePower = bufferCalcState.totalUnloadableHTPower() + bufferCalcState.totalUnloadableVTPower() + (haveAtLeastOneHTProducer ? unloadableNTPower : 0);
-					// Don't use expensive peek load producer if the buffer has enough HT power left to satisfy the heatnet 
+					// Don't use expensive peek load producer if the buffer has enough HT, VT and NT power left to satisfy the heatnet 
 					if((unloadablePower > requiredLoad) && producer.function == ProducerFunction.PEAK_LOAD)
 						continue;
 					
 					// Don't use base load producer if buffer is still above base load limit after required unload to satisfy the heatnet
-					if(bufferCalcState.getMaxTargetLoadStillReachedAfterPartialUnload(reducedLoad) && (unloadablePower > requiredLoad) && producer.function == ProducerFunction.BASE_LOAD)
+					if(bufferCalcState.getMaxTargetLoadStillReachedAfterPartialUnload(requiredLoad) && (unloadablePower > requiredLoad) && producer.function == ProducerFunction.BASE_LOAD)
 						continue;
 				}
 				
-				// Don't limit producer unless they exceed the maximum power currently needed or they are solar producer 
+				// Don't limit producer unless they exceed the maximum power currently needed, allways use solar producer 
 				if(power <= maxLoadAbs || isSolarProducer)
 				{
 					if(bufferLoadType ==  BufferCalcLoadType.HT && producer.function == ProducerFunction.PEAK_LOAD && bufferCalcState.totalUnloadableNTPower() > 0)
 					{
 						double p = Math.min(unloadableNTPower, power - Producers.minPower(producer, solarCalcState, heatPumpCalcState, hour));
-						bufferCalcState.unload(hour, Math.min(bufferNTUnloadLimit, p), BufferCalcLoadType.NT);
+						bufferCalcState.unload(hour, p, BufferCalcLoadType.NT);
 						totalSuppliedPower += p; 
 						heatNetSuppliedPower += p;
 						power -= p;
@@ -186,7 +185,7 @@ class EnergyCalculator {
 
 					if(haveAtLeastOneHTProducer || bufferLoadType != BufferCalcLoadType.NT)
 					{
-						// Mainly use HT/VT power for the heatnet and leftover to charge the buffer 
+						// Mainly use producer power for the heatnet and leftover to charge the buffer 
 						double surplus = power - reducedLoad;	
 						heatNetSuppliedPower += surplus > 0 ? power - surplus : power;
 						if(surplus > 0)	
