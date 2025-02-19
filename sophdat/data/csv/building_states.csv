@@ -59,6 +59,6 @@ da6b4497-d63f-490b-ae27-7ef15ae40fc7 ; Standard                                 
 da9551ee-90ad-4ced-9e26-b3983daceeea ; Standard bis 1918                          ; BLOCK_OF_FLATS       ; 17            ; 5                        ; 13             ; 1591       ; false      ; 0      
 e104ef28-b543-4416-bf3f-d6ae6d6e09a0 ; Niedrigstenergiehaus (KfW 40)/ Passivhaus  ; TOWER_BLOCK          ; 10            ; 5                        ; 72             ; 879        ; false      ; 9      
 e3999888-ae9b-408d-929d-0b6c44bbd7f1 ; Standard bis 1918                          ; MULTI_FAMILY_HOUSE   ; 17            ; 5                        ; 13             ; 1918       ; false      ; 0      
-e61f843d-5e9c-4372-8ae0-9f51b8c7029e ; Standards                                   ; RESTAURANT           ; 17            ; 5                        ; 7              ; 2000       ; true       ; 0      
+e61f843d-5e9c-4372-8ae0-9f51b8c7029e ; Standard                                   ; RESTAURANT           ; 17            ; 5                        ; 7              ; 2000       ; true       ; 0      
 6b5f8ae2-8847-4849-9a76-0d075aa7021b ; Gülle                                      ; FERMENTER            ; 40            ; 5                        ; 0.85           ; 8000       ; true       ; 0      
 aa3d57b6-7399-4569-823a-67b0eb66243a ; Nawaro                                     ; FERMENTER            ; 40            ; 5                        ; 0.2            ; 5000       ; false      ; 1      
