@@ -170,7 +170,7 @@ class EnergyCalculator {
 				}
 				
 				// Don't limit producer unless they exceed the maximum power currently needed, allways use solar producer 
-				if(power <= maxLoadAbs || isSolarProducer)
+				if(power <= maxLoadAbs)
 				{
 					if(bufferLoadType ==  BufferCalcLoadType.HT && producer.function == ProducerFunction.PEAK_LOAD && bufferCalcState.totalUnloadableNTPower() > 0)
 					{
