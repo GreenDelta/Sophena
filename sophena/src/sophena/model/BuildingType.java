@@ -26,8 +26,6 @@ public enum BuildingType {
 
 	HOTEL,
 
-	COMMERCIAL_BUILDING,
-
 	FERMENTER,
 
 	OTHER

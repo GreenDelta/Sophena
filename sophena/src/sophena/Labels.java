@@ -71,7 +71,6 @@ public final class Labels {
 			case NURSING_HOME -> "Alten/-Pflegeheim";
 			case RESTAURANT -> "Gaststätte";
 			case HOTEL -> "Hotel";
-			case COMMERCIAL_BUILDING -> "Gewerbe";
 			case OTHER -> "Sonstiges";
 			case FERMENTER -> "Fermenter";
 		};
