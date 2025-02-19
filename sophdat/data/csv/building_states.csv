@@ -14,7 +14,7 @@ id                                   ; name                                     
 2716dbfc-756d-4e0f-8756-c3f3304b4403 ; Standard 1949-1957                         ; MULTI_FAMILY_HOUSE   ; 15            ; 5                        ; 13             ; 1764       ; false      ; 3      
 2de65d6a-53a2-4407-bbed-70acd6da4ffb ; Niedrigenergiehaus (KfW 70)                ; BLOCK_OF_FLATS       ; 12            ; 5                        ; 42             ; 1825       ; false      ; 9      
 2e3bbca5-94be-4257-af59-3364a90e3ebf ; Fertighaus 1969-1978                       ; SINGLE_FAMILY_HOUSE  ; 15            ; 5                        ; 13             ; 1918       ; false      ; 3      
-336f1a57-637e-4fc5-bf34-49a0cfcbab39 ;                                            ; SCHOOL               ; 15            ; 5                        ; 3.4            ; 1400       ; true       ; 0      
+336f1a57-637e-4fc5-bf34-49a0cfcbab39 ; Standard                                   ; SCHOOL               ; 15            ; 5                        ; 3.4            ; 1400       ; true       ; 0      
 35bc03b8-97c3-4928-8ef3-bf655943b4f2 ; NBL Standard 1970-1980                     ; TOWER_BLOCK          ; 15            ; 5                        ; 21             ; 1990       ; false      ; 2      
 36983d9d-a49f-404a-952b-04269b63cd87 ; Niedrigenergiehaus (KfW 55)                ; TERRACE_HOUSE        ; 12            ; 5                        ; 49             ; 1009       ; false      ; 8      
 3b27491c-c3c2-468b-9cec-ac69a8b2112b ; Standard 1919-1948                         ; MULTI_FAMILY_HOUSE   ; 17            ; 5                        ; 8              ; 1728       ; false      ; 1      
@@ -31,13 +31,13 @@ id                                   ; name                                     
 675e8224-dd1e-4628-bd4e-f2c0c61f31c6 ; Standard 1979-1994                         ; BLOCK_OF_FLATS       ; 15            ; 5                        ; 23             ; 2093       ; true       ; 5      
 71ecc127-9082-4468-9d67-54f5a11b32c6 ; ENEV 2009/2014 (KfW 100/ 85)               ; BLOCK_OF_FLATS       ; 12            ; 5                        ; 35             ; 2163       ; false      ; 8      
 729d8c64-ddaa-488e-82a5-760dc0498b1e ; Niedrigenergiehaus (KfW 55)                ; BLOCK_OF_FLATS       ; 12            ; 5                        ; 42             ; 1787       ; false      ; 10     
-72a46060-0d32-4e32-afdf-56e6bbbc8487 ;                                            ; HOSPITAL             ; 17            ; 5                        ; 19             ; 2500       ; true       ; 0      
+72a46060-0d32-4e32-afdf-56e6bbbc8487 ; Standard                                   ; HOSPITAL             ; 17            ; 5                        ; 19             ; 2500       ; true       ; 0      
 79ee0ca8-56cc-4561-8842-c7c1b70c92ea ; Niedrigstenergiehaus (KfW 40)/ Passivhaus  ; SINGLE_FAMILY_HOUSE  ; 10            ; 5                        ; 53             ; 928        ; false      ; 9      
 7dc20dc3-0c02-41db-8f06-8e365a2ef4f6 ; ENEV 2009/2014 (KfW 100/ 85)               ; SINGLE_FAMILY_HOUSE  ; 12            ; 5                        ; 17             ; 1603       ; false      ; 6      
 82f2def7-93ee-4b1e-aafe-a50c163b2011 ; Standard 1919-1948                         ; TERRACE_HOUSE        ; 17            ; 5                        ; 21             ; 2055       ; false      ; 1      
 8425bfc8-1f94-49ad-97e8-ea8d3fb903ca ; Niedrigstenergiehaus (KfW 40)/ Passivhaus  ; BLOCK_OF_FLATS       ; 10            ; 5                        ; 54             ; 1415       ; false      ; 11     
-8a8ade63-1d9c-4746-ae37-559a28317735 ;                                            ; KINDERGARDEN         ; 15            ; 5                        ; 3.4            ; 1500       ; true       ; 0      
-9020b4c2-4fdf-4631-9271-451bb4f51c8c ;                                            ; OFFICE_BUILDING      ; 15            ; 5                        ; 4.6            ; 1700       ; true       ; 0      
+8a8ade63-1d9c-4746-ae37-559a28317735 ; Standard                                   ; KINDERGARDEN         ; 15            ; 5                        ; 3.4            ; 1500       ; true       ; 0      
+9020b4c2-4fdf-4631-9271-451bb4f51c8c ; Standard                                   ; OFFICE_BUILDING      ; 15            ; 5                        ; 4.6            ; 1700       ; true       ; 0      
 91442f28-39ff-4d96-bc68-f22c3a0d2143 ; Standard 1995-2009                         ; TERRACE_HOUSE        ; 15            ; 5                        ; 26             ; 1906       ; false      ; 5      
 92c967b1-f816-4d6b-a1fa-71f1f0f05bee ; NBL Standard 1970-1980                     ; BLOCK_OF_FLATS       ; 15            ; 5                        ; 20             ; 1945       ; false      ; 4      
 99056059-23b1-417e-b21c-7397d09d0907 ; NBL Standard 1981-1985                     ; TOWER_BLOCK          ; 15            ; 5                        ; 27             ; 2164       ; false      ; 4      
@@ -53,12 +53,12 @@ c5bbaa52-5e21-4107-a8b3-d1e60d5a9a91 ; Standard 1979-1994                       
 c975bc48-632c-4d7b-8a82-87e5bd778aa2 ; Standard 1949-1957                         ; BLOCK_OF_FLATS       ; 15            ; 5                        ; 15             ; 1797       ; false      ; 2      
 cbda9808-6323-431b-b147-b8c6182a3f17 ; Niedrigenergiehaus (KfW 70)                ; TERRACE_HOUSE        ; 12            ; 5                        ; 32             ; 1522       ; false      ; 7      
 ce62db54-5312-4b6a-906d-90e58ac95158 ; Standard 1979-1994                         ; TOWER_BLOCK          ; 15            ; 5                        ; 26             ; 2244       ; true       ; 3      
-d17b86bb-f8ec-409a-9c5b-ea4dd4bfdc1c ;                                            ; HOTEL                ; 17            ; 5                        ; 11             ; 2100       ; true       ; 0      
+d17b86bb-f8ec-409a-9c5b-ea4dd4bfdc1c ; Standard                                   ; HOTEL                ; 17            ; 5                        ; 11             ; 2100       ; true       ; 0      
 d80708a9-db6b-4218-bb2c-9ad9373fd743 ; Standard 1979-1994                         ; TERRACE_HOUSE        ; 15            ; 5                        ; 26             ; 1556       ; true       ; 4      
-da6b4497-d63f-490b-ae27-7ef15ae40fc7 ;                                            ; NURSING_HOME         ; 17            ; 5                        ; 10             ; 2500       ; true       ; 0      
+da6b4497-d63f-490b-ae27-7ef15ae40fc7 ; Standard                                   ; NURSING_HOME         ; 17            ; 5                        ; 10             ; 2500       ; true       ; 0      
 da9551ee-90ad-4ced-9e26-b3983daceeea ; Standard bis 1918                          ; BLOCK_OF_FLATS       ; 17            ; 5                        ; 13             ; 1591       ; false      ; 0      
 e104ef28-b543-4416-bf3f-d6ae6d6e09a0 ; Niedrigstenergiehaus (KfW 40)/ Passivhaus  ; TOWER_BLOCK          ; 10            ; 5                        ; 72             ; 879        ; false      ; 9      
 e3999888-ae9b-408d-929d-0b6c44bbd7f1 ; Standard bis 1918                          ; MULTI_FAMILY_HOUSE   ; 17            ; 5                        ; 13             ; 1918       ; false      ; 0      
-e61f843d-5e9c-4372-8ae0-9f51b8c7029e ;                                            ; RESTAURANT           ; 17            ; 5                        ; 7              ; 2000       ; true       ; 0      
+e61f843d-5e9c-4372-8ae0-9f51b8c7029e ; Standards                                   ; RESTAURANT           ; 17            ; 5                        ; 7              ; 2000       ; true       ; 0      
 6b5f8ae2-8847-4849-9a76-0d075aa7021b ; Gülle                                      ; FERMENTER            ; 40            ; 5                        ; 0.85           ; 8000       ; true       ; 0      
 aa3d57b6-7399-4569-823a-67b0eb66243a ; Nawaro                                     ; FERMENTER            ; 40            ; 5                        ; 0.2            ; 5000       ; false      ; 1      
