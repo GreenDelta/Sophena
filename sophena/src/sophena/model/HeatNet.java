@@ -98,6 +98,9 @@ public class HeatNet extends AbstractEntity {
 	
 	@Column(name = "target_charge_level")
 	public double targetChargeLevel;
+	
+	@Column(name = "use_heating_curve")
+	public boolean useHeatingCurve;
 
 	public static void addDefaultTo(Project p) {
 		if (p == null)
@@ -132,6 +135,7 @@ public class HeatNet extends AbstractEntity {
 		intervalSummer.start = MonthDay.of(5, 15).toString();
 		intervalSummer.end = MonthDay.of(9, 15).toString();
 		net.intervalSummer = intervalSummer;
+		net.useHeatingCurve = false;
 	}
 	
 	@Override
@@ -170,6 +174,7 @@ public class HeatNet extends AbstractEntity {
 		if (intervalSummer != null) {
 			clone.intervalSummer = intervalSummer.copy();
 		}
+		clone.useHeatingCurve = useHeatingCurve;
 		
 		for (var p : pipes) {
 			clone.pipes.add(p.copy());

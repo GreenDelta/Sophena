@@ -69,13 +69,23 @@ public class BufferCalcState {
 
 	// kWh
 	private double qLostVTInHour;
+	
+	private double minWeatherStationTemperature;
+	
+	private double maxConsumerHeatingLimit;
 
 	public BufferCalcState(Project project, SolarCalcLog log)
 	{
 		this.project = project;
 		this.log = log;
 
-		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, 0);
+		minWeatherStationTemperature = project.weatherStation.minTemperature(); 
+		maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
+		
+		double temperature = project.weatherStation.data != null && 0 < project.weatherStation.data.length
+				? project.weatherStation.data[0]
+				: 0;
+		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, 0, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 		TV = seasonalItem.flowTemperature;
 		TR = seasonalItem.returnTemperature;
 
@@ -89,7 +99,10 @@ public class BufferCalcState {
 
 	public void preStep(int hour)
 	{
-		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, hour);
+		double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
+				? project.weatherStation.data[hour]
+				: 0;
+		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 
 		this.maxTargetLoadFactor = seasonalItem.targetChargeLevel;
 

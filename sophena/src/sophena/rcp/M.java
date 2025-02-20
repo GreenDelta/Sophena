@@ -203,6 +203,8 @@ public class M extends NLS {
     
     public static String TargetChargeLevelError;
     
+    public static String UseHeatingCurve;
+    
 	static {
 		NLS.initializeMessages("sophena.rcp.messages", M.class);
 	}

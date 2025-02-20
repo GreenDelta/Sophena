@@ -4,6 +4,7 @@ import java.time.MonthDay;
 import java.util.UUID;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -36,6 +37,7 @@ public class SeasonalDrivingStyleSection {
 	private Text tFlowTemperatureSummer;
 	private Text tReturnTemperatureWinter;
 	private Text tReturnTemperatureSummer;
+	private Button useHeatingCurve;
 	
 	private static String summerStart = "--02-15";
 	private static String summerEnd = "--09-15";
@@ -61,6 +63,7 @@ public class SeasonalDrivingStyleSection {
 		createTargetChargeLevelRow(toolkit, inner);
 		createFlowTemperatureRow(toolkit, inner);
 		createReturnTemperatureRow(toolkit, inner);
+		createUseHeatingCurveCheck(toolkit, inner);
 		enableControls(heatNet().isSeasonalDrivingStyle);
 	}
 
@@ -75,7 +78,20 @@ public class SeasonalDrivingStyleSection {
 		endBoxWinter.setEnabled(enable);
 		startBoxSummer.setEnabled(enable);
 		endBoxSummer.setEnabled(enable);
+		useHeatingCurve.setEnabled(enable);
 	}
+	
+	private void createUseHeatingCurveCheck(FormToolkit tk, Composite comp) {
+		useHeatingCurve = tk.createButton(comp, M.UseHeatingCurve, SWT.CHECK);
+		useHeatingCurve.setSelection(heatNet().useHeatingCurve);
+		Controls.onSelect(useHeatingCurve, (e) -> {
+			heatNet().useHeatingCurve = useHeatingCurve.getSelection();
+			editor.bus.notify("seasonal-driving-changed");
+			editor.setDirty();
+		});
+		HelpLink.create(comp, tk, "Heizkurve",
+				H.UseHeatingCurve);
+	}	
 	
 	private void createCheck(FormToolkit tk, Composite comp) {
 		var check = tk.createButton(comp, M.Activate, SWT.CHECK);

@@ -239,6 +239,7 @@ CREATE TABLE tbl_heat_nets (
 	return_temperature_winter DOUBLE,
 	return_temperature_summer DOUBLE,   
 	target_charge_level DOUBLE, 
+	use_heating_curve BOOLEAN,
 
     PRIMARY KEY (id)
 );

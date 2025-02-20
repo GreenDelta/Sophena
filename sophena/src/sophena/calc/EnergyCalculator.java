@@ -269,8 +269,13 @@ class EnergyCalculator {
 		double[] targetChargeLevels = new double[Stats.HOURS];
 		double[] flowTemperatures = new double[Stats.HOURS];
 		double[] returnTemperatures = new double[Stats.HOURS];
+		double minWeatherStationTemperature = project.weatherStation.minTemperature(); 
+		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			var item = SeasonalItem.calc(project.heatNet, hour);
+			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
+					? project.weatherStation.data[hour]
+							: 0;
+			var item = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 			
 			targetChargeLevels[hour] = item.targetChargeLevel;
 			flowTemperatures[hour] = item.flowTemperature;

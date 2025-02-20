@@ -178,9 +178,14 @@ class HeatNetSection {
 		{
 			double averageFlowTemperature = 0;
 			double averageReturnTempeature = 0;
+			double minWeatherStationTemperature = editor.project.weatherStation.minTemperature(); 
+			double maxConsumerHeatingLimit = editor.project.maxConsumerHeatTemperature();			
 			for(int hour = 0; hour < Stats.HOURS; hour++)
 			{
-				SeasonalItem seasonalItem = SeasonalItem.calc(editor.heatNet, hour);
+				double temperature = editor.project.weatherStation.data != null && hour < editor.project.weatherStation.data.length
+						? editor.project.weatherStation.data[hour]
+								: 0;
+				SeasonalItem seasonalItem = SeasonalItem.calc(editor.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 				averageFlowTemperature += seasonalItem.flowTemperature;
 				averageReturnTempeature += seasonalItem.returnTemperature;
 			}
