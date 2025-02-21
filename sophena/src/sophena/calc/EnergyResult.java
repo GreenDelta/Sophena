@@ -42,7 +42,7 @@ public class EnergyResult {
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferLoss = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
-		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project.heatNet));
+		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
 	}
 
 	public double totalHeat(Producer p) {

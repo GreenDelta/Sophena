@@ -3,6 +3,7 @@ package sophena.calc;
 import java.util.Arrays;
 
 import sophena.math.Smoothing;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
@@ -101,13 +102,28 @@ public class ProjectLoad {
 				: net.powerLoss * net.length / 1000.0;
 	}
 
-	public static double[] getNetLoadCurve(HeatNet net) {
+	public static double[] getNetLoadCurve(Project project) {
 		double[] curve = new double[Stats.HOURS];
+		HeatNet net = project.heatNet;
 		if (net == null)
 			return curve;
 		double load = getNetLoad(net);
 		Arrays.fill(curve, load);
 		applyInterruption(curve, net);
+
+		double minWeatherStationTemperature = project.weatherStation.minTemperature(); 
+		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
+
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
+					? project.weatherStation.data[hour]
+					: 0;
+			SeasonalItem seasonalItem = SeasonalItem.calc(net, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
+	
+			double TV = seasonalItem.flowTemperature;
+			double TR = seasonalItem.returnTemperature;
+			curve[hour] *= ((TV + TR) / 2.0 – 10.0);
+		}
 		return curve;
 	}
 
