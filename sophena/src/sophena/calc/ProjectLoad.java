@@ -74,6 +74,25 @@ public class ProjectLoad {
 		return data;
 	}
 
+	public static double[] getDynamicCurve(Project project) {
+		double[] dynamicData = new double[Stats.HOURS];
+		if (project == null)
+			return dynamicData;
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.dynamicData, dynamicData);
+		}
+		double[] data = Smoothing.on(dynamicData,
+				Smoothing.getCount(project));
+		double netLoad = getNetLoad(project.heatNet);
+		Arrays.setAll(data, i -> data[i] + netLoad);
+		applyInterruption(data, project.heatNet);
+		return data;
+	}
+	
 	public static double[] getStaticCurve(Project project) {
 		double[] staticData = new double[Stats.HOURS];
 		if (project == null)

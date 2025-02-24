@@ -54,7 +54,7 @@ class EnergyResultPage extends FormPage {
 		section.setTitle("Jahresdauerlinie - Netzlast");
 		section.setSorted(true);
 		var profile = new LoadProfile();
-		profile.dynamicData = Stats.copy(result.loadCurve);
+		profile.dynamicData = ProjectLoad.getDynamicCurve(editor.project);
 		profile.staticData = ProjectLoad.getStaticCurve(editor.project);
 		section.setData(profile);
 		section.render(body, tk);
