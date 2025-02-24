@@ -27,7 +27,7 @@ class ProductCleanup implements Runnable {
 		boolean doIt = MsgBox.ask("Produktdatenbank zurücksetzen?",
 				"Diese Aktion löscht alle Produkte der "
 						+ "Produktdatenbank, die nicht selbst "
-						+ "erfasst wurden. Soll dies ausgeführt werden?");
+						+ "erfasst wurden und die nicht in einem Projekt verwendet werden. Soll dies ausgeführt werden?");
 		if (!doIt)
 			return;
 
