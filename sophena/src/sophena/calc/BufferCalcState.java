@@ -307,8 +307,10 @@ public class BufferCalcState {
 	public double getNTLoadFactor(boolean useMaxTargetLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
-
-		return loadFactor == 0 ? 0 : (QP_NT + QP_VT) / Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT());
+		double denominator = Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT());
+		if (denominator == 0)
+			return 0;
+		return loadFactor == 0 ? 0 : (QP_NT + QP_VT) / denominator;
 	}
 	
 
