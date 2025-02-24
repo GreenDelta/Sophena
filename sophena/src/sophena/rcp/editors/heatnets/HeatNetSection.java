@@ -125,7 +125,7 @@ class HeatNetSection {
 	private void textsUpdated() {
 		editor.setDirty();
 		if (loadCurve != null) {
-			loadCurve.setData(NetLoadProfile.get(net()));
+			loadCurve.setData(NetLoadProfile.get(editor.project));
 		}
 		Texts.set(maxSimLoadText, calculateMaxSimLoad());
 		editor.setDirty();

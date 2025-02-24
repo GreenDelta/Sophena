@@ -122,7 +122,7 @@ public class ProjectLoad {
 	
 			double TV = seasonalItem.flowTemperature;
 			double TR = seasonalItem.returnTemperature;
-			curve[hour] *= ((TV + TR) / 2.0 – 10.0);
+			curve[hour] *= ((TV + TR) / 2.0 - 10.0);
 		}
 		return curve;
 	}

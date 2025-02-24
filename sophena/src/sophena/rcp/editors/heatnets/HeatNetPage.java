@@ -49,7 +49,7 @@ class HeatNetPage extends FormPage {
 		loadCurve.setSorted(false);
 		loadCurve.setTitle("Verlustleistung des Wärmenetzes");
 		loadCurve.render(body, toolkit);
-		loadCurve.setData(NetLoadProfile.get(heatNet()));
+		loadCurve.setData(NetLoadProfile.get(editor.project));
 		return loadCurve;
 	}
 
