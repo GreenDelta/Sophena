@@ -74,6 +74,21 @@ public class ProjectLoad {
 		return data;
 	}
 
+	public static double[] getStaticCurve(Project project) {
+		double[] staticData = new double[Stats.HOURS];
+		if (project == null)
+			return staticData;
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.staticData, staticData);
+		}
+		applyInterruption(staticData, project.heatNet);
+		return staticData;
+	}
+	
 	/**
 	 * Calculates the load curve of the project without applying smoothing on the
 	 * dynamic part of the data.

@@ -34,7 +34,7 @@ public class LoadProfileChart {
 	public void setData(LoadProfile profile) {
 		if (profile == null)
 			return;
-		double[] total = profile.calculateTotal();
+		double[] total = profile.dynamicData;
 		double[] stat = profile.staticData;
 		if (stat == null) {
 			stat = new double[Stats.HOURS];

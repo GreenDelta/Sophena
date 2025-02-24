@@ -55,7 +55,7 @@ class EnergyResultPage extends FormPage {
 		section.setSorted(true);
 		var profile = new LoadProfile();
 		profile.dynamicData = Stats.copy(result.loadCurve);
-		profile.staticData = new double[Stats.HOURS];
+		profile.staticData = ProjectLoad.getStaticCurve(editor.project);
 		section.setData(profile);
 		section.render(body, tk);
 	}
