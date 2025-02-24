@@ -51,9 +51,6 @@ class EfficiencyChart  {
 				"Brennstoffenergie.jpg", () -> chart));
 
 		addSeries(set, ColorKey.USED_HEAT);
-		if (result.producedElectrictiy > 0) {
-			addSeries(set, ColorKey.PRODUCED_ELECTRICITY);
-		}
 		addSeries(set, ColorKey.LOSSES_BUFFER);
 		addSeries(set, ColorKey.LOSSES_DISTRIBUTION);
 
@@ -73,7 +70,6 @@ class EfficiencyChart  {
 	private String labelOf(ColorKey key) {
 		return switch (key) {
 			case USED_HEAT -> "Genutzte Wärme";
-			case PRODUCED_ELECTRICITY -> "Erzeugter Strom";
 			case LOSSES_BUFFER -> "Pufferspeicherverluste";
 			case LOSSES_DISTRIBUTION -> "Verteilungsverluste";
 			default -> "?";
@@ -83,7 +79,6 @@ class EfficiencyChart  {
 	private double[] valueOf(ColorKey key) {
 		double val = switch (key) {
 			case USED_HEAT -> result.usedHeat;
-			case PRODUCED_ELECTRICITY -> result.producedElectrictiy;
 			case LOSSES_BUFFER -> result.bufferLoss;
 			case LOSSES_DISTRIBUTION -> result.distributionLoss;
 			default -> 0;
