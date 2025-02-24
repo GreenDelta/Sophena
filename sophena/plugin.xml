@@ -14,7 +14,7 @@
    </property>
    <property
          name="aboutText"
-         value="Sophena - Version 3.0 BETA&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de&#x0A;&#x0A;Technische Umsetzung: greenDelta + AVS GmbH">
+         value="Sophena - Version 3.0&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de&#x0A;&#x0A;Technische Umsetzung: &#x0A;GreenDelta: https://www.greendelta.com&#x0A;AVS GmbH: https://www.alzinger-vogel.de">
    </property>
    <property
          name="windowImages"
