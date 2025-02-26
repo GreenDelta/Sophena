@@ -68,16 +68,17 @@ public class SeasonalDrivingStyleSection {
 	}
 
 	private void enableControls(Boolean enable) {
+		boolean enableBox = enable && !useHeatingCurve.getSelection();
 		tTargetChargeWinter.setEnabled(enable);
 		tTargetChargeSummer.setEnabled(enable);
 		tFlowTemperatureWinter.setEnabled(enable);
 		tFlowTemperatureSummer.setEnabled(enable);
 		tReturnTemperatureWinter.setEnabled(enable);
 		tReturnTemperatureSummer.setEnabled(enable);
-		startBoxWinter.setEnabled(enable);
-		endBoxWinter.setEnabled(enable);
-		startBoxSummer.setEnabled(enable);
-		endBoxSummer.setEnabled(enable);
+		startBoxWinter.setEnabled(enableBox);
+		endBoxWinter.setEnabled(enableBox);
+		startBoxSummer.setEnabled(enableBox);
+		endBoxSummer.setEnabled(enableBox);
 		useHeatingCurve.setEnabled(enable);
 	}
 	
@@ -86,6 +87,7 @@ public class SeasonalDrivingStyleSection {
 		useHeatingCurve.setSelection(heatNet().useHeatingCurve);
 		Controls.onSelect(useHeatingCurve, (e) -> {
 			heatNet().useHeatingCurve = useHeatingCurve.getSelection();
+			enableControls(heatNet().isSeasonalDrivingStyle);
 			editor.bus.notify("seasonal-driving-changed");
 			editor.setDirty();
 		});

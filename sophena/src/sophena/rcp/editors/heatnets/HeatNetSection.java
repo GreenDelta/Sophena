@@ -68,6 +68,7 @@ class HeatNetSection {
 		maxSimultaneousLoadRow();
 		editor.bus.on("pipes", this::colorTexts);
 		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
+		editor.bus.on("length-powerloss-changed", this::updateLengthPowerLoss);
 		colorTexts();
 		seasonalDrivingChanged();
 	}
@@ -98,34 +99,27 @@ class HeatNetSection {
 
 	private void lengthAndPowerLossRow() {
 		lengthText = UI.formText(comp, tk, "Trassenlänge");
-		Texts.on(lengthText).init(net().length).decimal().required()
-				.onChanged(s -> {
-					net().length = Texts.getDouble(lengthText);
-					textsUpdated();
-				});
+		Texts.on(lengthText).init(net().length).decimal().calculated();		
 		UI.formLabel(comp, tk, "m");
-
-		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
-		button.setImage(Icon.CALCULATE_16.img());
+		HelpLink.create(comp, tk, "Trassenlänge und Verlustleistung",
+				H.LengthPowerLoss);
+		
 		powerLossText = UI.formText(comp, tk, "Verlustleistung");
-		Texts.on(powerLossText).init(net().powerLoss).decimal().required()
-				.onChanged(s -> {
-					net().powerLoss = Texts.getDouble(powerLossText);
-					textsUpdated();
-				});
+		Texts.on(powerLossText).init(net().powerLoss).decimal().calculated();
 		UI.formLabel(comp, tk, "W/K");
 		UI.formLabel(comp, "");
-
-		Controls.onSelect(button, e -> {
-			HeatNet net = net();
-			net.length = HeatNets.getTotalSupplyLength(net);
-			net.powerLoss = HeatNets.calculatePowerLoss(net);
-			Texts.set(lengthText, net.length);
-			Texts.set(powerLossText, net.powerLoss);
-			textsUpdated();
-		});
 	}
 
+	private void updateLengthPowerLoss()
+	{
+		HeatNet net = net();
+		net.length = HeatNets.getTotalSupplyLength(net);
+		net.powerLoss = HeatNets.calculatePowerLoss(net);
+		Texts.set(lengthText, net.length);
+		Texts.set(powerLossText, net.powerLoss);
+		textsUpdated();
+	}
+	
 	private void textsUpdated() {
 		editor.setDirty();
 		if (loadCurve != null) {
@@ -138,26 +132,6 @@ class HeatNetSection {
 
 	private void colorTexts() {
 		HeatNet net = net();
-		if (net.pipes.isEmpty()) {
-			lengthText.setBackground(Colors.forRequiredField());
-			powerLossText.setBackground(Colors.forRequiredField());
-			return;
-		}
-
-		// power loss
-		if (Num.equal(net.powerLoss, HeatNets.calculatePowerLoss(net))) {
-			powerLossText.setBackground(Colors.forRequiredField());
-		} else {
-			powerLossText.setBackground(Colors.forModifiedDefault());
-		}
-
-		// net length
-		if (Num.equal(net.length, HeatNets.getTotalSupplyLength(net))) {
-			lengthText.setBackground(Colors.forRequiredField());
-		} else {
-			lengthText.setBackground(Colors.forModifiedDefault());
-		}
-
 		// max load
 		if (net.maxLoad == null) {
 			Texts.set(maxLoadText, calculateMaxLoad());
@@ -208,6 +182,7 @@ class HeatNetSection {
 		returnTemperatureText.setEnabled(enable);
 		
 		colorTexts();
+		textsUpdated();
 	}
 
 	private void maxLoadRow() {

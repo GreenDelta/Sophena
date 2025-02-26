@@ -36,6 +36,7 @@ public class H extends NLS {
 	public static String OperatingData;
 	public static String TargetChargeLevel;
 	public static String UseHeatingCurve;
+	public static String LengthPowerLoss;
 	
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);
