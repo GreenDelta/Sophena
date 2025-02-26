@@ -25,7 +25,8 @@ public class ProjectLoad {
 		HeatNet net = project.heatNet;
 		if (net != null && net.maxLoad != null)
 			return net.maxLoad;
-		double load = getNetLoad(net);
+		double load = getMaxNetLoad(project);
+		
 		for (Consumer c : project.consumers) {
 			if (c.disabled)
 				continue;
@@ -68,8 +69,8 @@ public class ProjectLoad {
 		double[] data = Smoothing.on(dynamicData,
 				Smoothing.getCount(project));
 		Stats.add(staticData, data);
-		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(data, i -> data[i] + netLoad);
+		double[] netLoad = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
@@ -87,8 +88,8 @@ public class ProjectLoad {
 		}
 		double[] data = Smoothing.on(dynamicData,
 				Smoothing.getCount(project));
-		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(data, i -> data[i] + netLoad);
+		double[] netLoad = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
@@ -124,16 +125,23 @@ public class ProjectLoad {
 			Stats.add(profile.dynamicData, data);
 			Stats.add(profile.staticData, data);
 		}
-		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(data, i -> data[i] + netLoad);
+		double netLoad[] = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
 
-	public static double getNetLoad(HeatNet net) {
-		return net == null
-				? 0
-				: net.powerLoss * net.length / 1000.0;
+	public static double getMaxNetLoad(Project project) {
+		if(project == null)
+			return 0;
+		
+		double[] netLoadCurve = getNetLoadCurve(project);
+		double max = 0;
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			if(netLoadCurve[hour] > max);
+				max = netLoadCurve[hour];
+		}
+		return max;
 	}
 
 	public static double[] getNetLoadCurve(Project project) {
@@ -141,8 +149,8 @@ public class ProjectLoad {
 		HeatNet net = project.heatNet;
 		if (net == null)
 			return curve;
-		double load = getNetLoad(net);
-		Arrays.fill(curve, load);
+		
+		Arrays.fill(curve, net.powerLoss);
 		applyInterruption(curve, net);
 
 		double minWeatherStationTemperature = project.weatherStation.minTemperature(); 
@@ -156,7 +164,10 @@ public class ProjectLoad {
 	
 			double TV = seasonalItem.flowTemperature;
 			double TR = seasonalItem.returnTemperature;
+			// Multiply W per K with temperature difference between pipes (TV-TR)/2 and ground 10°C  
 			curve[hour] *= ((TV + TR) / 2.0 - 10.0);
+			// W to kW
+			curve[hour] /= 1000.0;
 		}
 		return curve;
 	}

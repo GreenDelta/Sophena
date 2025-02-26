@@ -42,20 +42,18 @@ public class HeatNets {
 			return 0;
 		double sum = 0;
 		for (HeatNetPipe p : net.pipes) {
-			sum += getPowerLoss(p, net) * p.length;
+			sum += getPowerLoss(p, net);
 		}
-		return sum / supplyLength;
+		return sum;
 	}
 
 	/**
-	 * Get the power loss per meter of the given pipe in the given heating net.
+	 * Get the power loss per K of the given pipe in the given heating net.
 	 */
 	public static double getPowerLoss(HeatNetPipe pipe, HeatNet net) {
 		if (pipe == null || pipe.pipe == null || net == null)
 			return 0;
-		double tNet = (net.supplyTemperature + net.returnTemperature) / 2;
-		double tempDelta = tNet - 10;
-		return tempDelta * pipe.pipe.uValue;
+		return pipe.length * pipe.pipe.uValue;
 	}
 
 }

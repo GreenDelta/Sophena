@@ -101,7 +101,7 @@ class ConsumerResultPage extends FormPage {
 			if (r.energyResult == null || r.project == null)
 				return item;
 			item.demand = f(r.energyResult.heatNetLoss, "kWh");
-			item.load = f(ProjectLoad.getNetLoad(r.project.heatNet), "kW");
+			item.load = f(ProjectLoad.getMaxNetLoad(r.project), "kW");
 			return item;
 		}
 
@@ -122,7 +122,7 @@ class ConsumerResultPage extends FormPage {
 				demand += r.energyResult.totalBufferLoss;
 			}
 			if (r.project != null) {
-				load += ProjectLoad.getNetLoad(r.project.heatNet);
+				load += ProjectLoad.getMaxNetLoad(r.project);
 			}
 			item.demand = f(demand, "kWh");
 			item.load = f(load, "kW");

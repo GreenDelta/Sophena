@@ -46,8 +46,8 @@ class ConsumerSheet {
 		}
 
 		// net result
-		double netLoad = ProjectLoad.getNetLoad(
-				result.project.heatNet);
+		double netLoad = ProjectLoad.getMaxNetLoad(
+				result.project);
 		load += netLoad;
 		demand += result.energyResult.heatNetLoss;
 		w.str("Netzverluste")

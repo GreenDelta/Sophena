@@ -44,6 +44,10 @@ class BufferTankSection {
 		return editor.heatNet;
 	}
 
+	private Project project() {
+		return editor.project;
+	}
+
 	void create(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk, "Pufferspeicher");
 		UI.gridLayout(comp, 4);
@@ -211,7 +215,7 @@ class BufferTankSection {
 	private double calculateMaxLoad() {
 		try {
 			// net load from the net-specification on this page
-			double load = ProjectLoad.getNetLoad(net());
+			double load = ProjectLoad.getMaxNetLoad(project());
 			// add consumer loads from the consumers in the database
 			// we load them freshly from the database because the may changed
 			// in other editors

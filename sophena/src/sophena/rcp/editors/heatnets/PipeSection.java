@@ -148,7 +148,7 @@ class PipeSection {
 				return Num.str(pipe.length) + " m";
 			case 3:
 				return Num.str(HeatNets.getPowerLoss(pipe, net()))
-						+ " W/m";
+						+ " W/K";
 			default:
 				return getCostLabel(pipe.costs, col);
 			}
