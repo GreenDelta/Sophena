@@ -182,7 +182,9 @@ class HeatNetSection {
 		returnTemperatureText.setEnabled(enable);
 		
 		colorTexts();
-		textsUpdated();
+		if (loadCurve != null) {
+			loadCurve.setData(NetLoadProfile.get(editor.project));
+		}
 	}
 
 	private void maxLoadRow() {

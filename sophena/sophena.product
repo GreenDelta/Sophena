@@ -15,7 +15,7 @@ Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.
 http://www.carmen-ev.de - contact@carmen-ev.de
 
 Technische Umsetzung: 
-GreenDelta: https://www.greendelta.com
+GreenDelta GmbH:: https://www.greendelta.com
 AVS GmbH: https://www.alzinger-vogel.de
       </text>
    </aboutInfo>
@@ -55,7 +55,6 @@ AVS GmbH: https://www.alzinger-vogel.de
 
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>

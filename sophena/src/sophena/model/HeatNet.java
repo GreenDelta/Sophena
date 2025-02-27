@@ -109,7 +109,7 @@ public class HeatNet extends AbstractEntity {
 		p.heatNet = net;
 		net.id = UUID.randomUUID().toString();
 		net.simultaneityFactor = 1;
-		net.powerLoss = 20;
+		net.powerLoss = 0;
 		net.maxBufferLoadTemperature = 95;
 		net.bufferLambda = 0.04;
 		net.supplyTemperature = 80;
