@@ -150,6 +150,18 @@ public class HeatNetEditor extends Editor {
 				MsgBox.error(M.PlausibilityErrors, M.TargetChargeLevelError);
 				return false;
 			}
+			if (heatNet.returnTemperatureWinter >= heatNet.flowTemperatureWinter) {
+				MsgBox.error(M.PlausibilityErrors,
+						"Die Rücklauftemperatur im Winter ist größer oder gleich der "
+								+ "Vorlauftemperatur.");
+				return false;
+			}
+			if (heatNet.returnTemperatureSummer >= heatNet.flowTemperatureSummer) {
+				MsgBox.error(M.PlausibilityErrors,
+						"Die Rücklauftemperatur im Sommer ist größer oder gleich der "
+								+ "Vorlauftemperatur.");
+				return false;
+			}
 		}
 		else
 		{

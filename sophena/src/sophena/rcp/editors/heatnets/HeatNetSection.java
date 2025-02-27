@@ -107,7 +107,8 @@ class HeatNetSection {
 		powerLossText = UI.formText(comp, tk, "Verlustleistung");
 		Texts.on(powerLossText).init(net().powerLoss).decimal().calculated();
 		UI.formLabel(comp, tk, "W/K");
-		UI.formLabel(comp, "");
+		HelpLink.create(comp, tk, "Verlustleistung",
+				H.LengthPowerLoss);
 	}
 
 	private void updateLengthPowerLoss()
