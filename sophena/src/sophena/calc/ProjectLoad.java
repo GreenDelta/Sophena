@@ -138,7 +138,7 @@ public class ProjectLoad {
 		double[] netLoadCurve = getNetLoadCurve(project);
 		double max = 0;
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			if(netLoadCurve[hour] > max);
+			if(netLoadCurve[hour] > max)
 				max = netLoadCurve[hour];
 		}
 		return max;
