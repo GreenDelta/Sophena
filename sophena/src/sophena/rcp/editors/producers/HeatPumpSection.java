@@ -45,7 +45,7 @@ public class HeatPumpSection {
 		if (producer().heatPump == null)
 			return;
 		Composite section = UI.formSection(body, tk,
-				"Wärmepumpenspezifikation");
+				"Wärmequellenspezifikation");
 		UI.gridLayout(section, 1);
 		Composite comp = new Composite(section, SWT.NONE);
 		comp.setBackground(Colors.getWhite());

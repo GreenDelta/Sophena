@@ -137,7 +137,7 @@ public class HeatPumpCalcState {
 						indexLeftUpper = upperIndex;
 				}
 
-				if(temperature > TQ)
+				if(temperature >= TQ)
 				{
 					if(indexRightUpper == -1)
 						indexRightUpper = upperIndex;
@@ -182,7 +182,7 @@ public class HeatPumpCalcState {
 					indexLeftLower = lowerIndex;
 			}
 
-			if(temperature > TQ)
+			if(temperature >= TQ)
 			{
 				if(indexRightLower == -1)
 					indexRightLower = lowerIndex;
@@ -280,7 +280,10 @@ public class HeatPumpCalcState {
 	
 	private static double findLerpK(double left, double right, double value)
 	{
-		return (value - left) / (right - left);
+		if (left == right)
+			return 0;
+		else
+			return (value - left) / (right - left);
 	}
 	
 	private static double lerp(double a,double b, double t)
