@@ -3,17 +3,20 @@ package sophena.io.excel.consumers;
 import sophena.Labels;
 import sophena.db.Database;
 import sophena.db.daos.BuildingStateDao;
-import sophena.db.daos.FuelDao;
-import sophena.math.energetic.UtilisationRate;
-import sophena.model.*;
+import sophena.model.BuildingType;
+import sophena.model.Consumer;
+import sophena.model.Location;
 import sophena.utils.Num;
 import sophena.utils.Result;
+import sophena.utils.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.UUID;
 
-class ConsumerRow {
+class ConsumerEntry {
 
 	private final int index;
 
@@ -21,15 +24,10 @@ class ConsumerRow {
 	private String description;
 	private String buildingType;
 	private String buildingState;
-	private String type;
 
+	private String type;
 	private Double heatingLoad;
-	private String fuel;
-	private Double fuelAmount;
-	private String fuelUnit;
-	private Double waterFraction;
-	private Double efficiencyRate;
-	private Double utilisationRate;
+	private final List<FuelEntry> fuels = new ArrayList<>();
 
 	private String location;
 	private String street;
@@ -38,31 +36,25 @@ class ConsumerRow {
 	private Double latitude;
 	private Double longitude;
 
-	private ConsumerRow(int index) {
+	private ConsumerEntry(int index) {
 		this.index = index;
 	}
 
-	static Optional<ConsumerRow> readFrom(RowReader r) {
+	static Optional<ConsumerEntry> readFrom(RowReader r) {
 		if (r == null)
 			return Optional.empty();
 		var name = r.str(Field.NAME);
 		if (name == null)
 			return Optional.empty();
 
-		var row = new ConsumerRow(r.index() + 1);
+		var row = new ConsumerEntry(r.index() + 1);
 		row.name = name;
 		row.description = r.str(Field.DESCRIPTION);
 		row.buildingType = r.str(Field.BUILDING_TYPE);
 		row.buildingState = r.str(Field.BUILDING_STATE);
-		row.type = r.str(Field.TYPE);
 
+		row.type = r.str(Field.TYPE);
 		row.heatingLoad = r.num(Field.HEATING_LOAD);
-		row.fuel = r.str(Field.FUEL);
-		row.fuelAmount = r.num(Field.FUEL_AMOUNT);
-		row.fuelUnit = r.str(Field.FUEL_UNIT);
-		row.waterFraction = r.num(Field.WATER_FRACTION);
-		row.efficiencyRate = r.num(Field.EFFICIENCY_RATE);
-		row.utilisationRate = r.num(Field.UTILIZATION_RATE);
 
 		row.location = r.str(Field.LOCATION);
 		row.street = r.str(Field.STREET);
@@ -73,7 +65,6 @@ class ConsumerRow {
 
 		return Optional.of(row);
 	}
-
 
 	Result<Consumer> toConsumer(Database db) {
 		if (name == null)
@@ -96,7 +87,7 @@ class ConsumerRow {
 		// sync. heating load or fuel consumption
 		return consumer.demandBased
 				? syncHeatingLoad(consumer)
-				: syncFuelConsumption(consumer, db);
+				: syncFuelConsumptions(consumer, db);
 	}
 
 
@@ -109,16 +100,26 @@ class ConsumerRow {
 		if (type == null)
 			return err("unbekannter Gebäudetyp: " + buildingType);
 
-		// sync. building state
-		if (buildingState == null)
-			return err("es wurde kein Gebäudezustand angegeben");
-		var state = new BuildingStateDao(db).getAll()
+		var states = new BuildingStateDao(db).getAll()
 				.stream()
-				.filter(s -> s.type == type && eq(buildingState, s.name))
+				.filter(s -> s.type == type)
+				.toList();
+		if (states.isEmpty())
+			return err("Gebäudetyp " + buildingType
+					+ " hat keinen Defaultzustand in der Datenbank");
+
+		var state = states.size() == 1
+				? states.get(0)
+				: states.stream()
+				.filter(s -> eq(buildingState, s.name))
 				.findAny()
 				.orElse(null);
+
+		// sync. building state
 		if (state == null)
-			return err("unbekannter Gebäudezustand: " + buildingState);
+			return Strings.nullOrEmpty(buildingState)
+					? err("es wurde kein Gebäudezustand angegeben")
+					: err("unbekannter Gebäudezustand: " + buildingState);
 
 		c.buildingState = state;
 		c.heatingLimit = state.heatingLimit;
@@ -161,82 +162,21 @@ class ConsumerRow {
 		return Result.ok(c);
 	}
 
-	private Result<Consumer> syncFuelConsumption(Consumer c, Database db) {
-
-		// sync. fuel
-		if (fuel == null)
-			return err("es wurde kein Brennstoff angegeben");
-		var fuelObj = new FuelDao(db).getAll()
-				.stream()
-				.filter(f -> eq(fuel, f.name))
-				.findAny()
-				.orElse(null);
-		if (fuelObj == null)
-			return err("unbekannter Brennstoff: " + fuel);
-
-		var cons = new FuelConsumption();
-		cons.id = UUID.randomUUID().toString();
-		cons.fuel = fuelObj;
-
-		// sync. amount
-		if (fuelAmount == null)
-			return err("es wurde keine Brennstoffmenge angegeben");
-		cons.amount = fuelAmount;
-		if (cons.amount <= 0)
-			return err("ungültige Brennstoffmenge: " + Num.str(cons.amount));
-
-		// sync. unit
-		if (fuelUnit == null)
-			return err("es wurde keine Brennstoffeinheit angegeben");
-		if (fuelObj.isWood()) {
-			cons.woodAmountType = woodAmountTypeOf(fuelUnit);
-			if (cons.woodAmountType == null)
-				return err("unbekannte Einheit für Holzbrennstoff: " + fuelUnit);
-		} else {
-			if (!eq(fuelUnit, fuelObj.unit))
-				return err("Brennstoff " + fuel + " muss in "
-						+ fuelObj.unit + " angegeben werden");
+	private Result<Consumer> syncFuelConsumptions(Consumer c, Database db) {
+		double usedHeat = 0;
+		for (var e : fuels) {
+			var r = e.toFuelConsumption(db, c.loadHours);
+			if (r.isError())
+				return err(r.message()
+						.orElse("Brennstoffverbrauch konnte nicht gelesen werden"));
+			var fuelCons = r.get();
+			usedHeat += fuelCons.getUsedHeat();
+			c.fuelConsumptions.add(fuelCons);
 		}
-
-		// sync. water content
-		if (fuelObj.isWood()) {
-			if (waterFraction == null)
-				return err("es wurde kein Wassergehalt angegeben");
-			cons.waterContent = waterFraction;
-			if (cons.waterContent < 0 || cons.waterContent > 0.6)
-				return err("ungültiger Wassergehalt: " + Num.str(cons.waterContent));
-		}
-
-		// sync. utilisation rate
-		if (utilisationRate != null) {
-			double ur = utilisationRate;
-			if (ur < 0 || ur > 10)
-				return err("ungültiger Nutzungsgrad: " + Num.str(ur));
-			cons.utilisationRate = ur * 100;
-		} else if (efficiencyRate != null) {
-			double er = efficiencyRate;
-			if (er < 0 || er > 10)
-				return err("ungültiger Wirkungsgrad: " + Num.str(er));
-			cons.utilisationRate = UtilisationRate.get(er * 100, c.loadHours);
-		}
-
-		if (efficiencyRate == null && utilisationRate == null)
-			return err("es wurde kein Wirkungsgrad oder Nutzungsgrad angegeben");
-
 		if (c.loadHours != 0) {
-			c.heatingLoad = cons.getUsedHeat() / c.loadHours;
+			c.heatingLoad = usedHeat / c.loadHours;
 		}
-
-		c.fuelConsumptions.add(cons);
 		return Result.ok(c);
-	}
-
-	private WoodAmountType woodAmountTypeOf(String unit) {
-		for (var wat : WoodAmountType.values()) {
-			if (eq(wat.getUnit(), unit))
-				return wat;
-		}
-		return null;
 	}
 
 	private boolean eq(String s1, String s2) {
@@ -262,6 +202,19 @@ class ConsumerRow {
 		loc.latitude = latitude;
 		loc.longitude = longitude;
 		return loc;
+	}
+
+	boolean isConsumptionBased() {
+		var t = type != null
+				? type.strip().toLowerCase()
+				: "v";
+		return !t.equals("b");
+	}
+
+	void add(FuelEntry fuelEntry) {
+		if (fuelEntry != null) {
+			fuels.add(fuelEntry);
+		}
 	}
 
 	private Result<Consumer> err(String msg) {
