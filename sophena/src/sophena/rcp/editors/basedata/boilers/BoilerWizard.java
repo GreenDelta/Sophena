@@ -52,7 +52,6 @@ class BoilerWizard implements IContent {
 			createMinMaxElTexts(c);
 			createEfficiencyElText(c);
 		}
-
 	}
 
 	private void createMinMaxTexts(Composite c) {
@@ -75,13 +74,8 @@ class BoilerWizard implements IContent {
 
 	private void createEfficiencyText(Composite c) {
 		String label, unit;
-		if (getProductType() == ProductType.HEAT_PUMP) {
-			label = "COP";
-			unit = "";
-		} else {
-			label = M.EfficiencyRate + " th.";
-			unit = "%";
-		}
+		label = M.EfficiencyRate + " th.";
+		unit = "%";
 		efficiencyText = UI.formText(c, label);
 		Texts.on(efficiencyText).decimal().required()
 				.validate(wizard::validate);
@@ -100,11 +94,7 @@ class BoilerWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(maxText, boiler.maxPower);
 		Texts.set(minText, boiler.minPower);
-		if (getProductType() == ProductType.HEAT_PUMP) {
-			Texts.set(efficiencyText, boiler.efficiencyRate);
-		} else {
-			Texts.set(efficiencyText, boiler.efficiencyRate * 100d);
-		}
+		Texts.set(efficiencyText, boiler.efficiencyRate * 100d);
 		Texts.set(maxElText, boiler.maxPowerElectric);
 		Texts.set(minElText, boiler.minPowerElectric);
 		Texts.set(efficiencyElText, boiler.efficiencyRateElectric * 100d);
@@ -116,11 +106,7 @@ class BoilerWizard implements IContent {
 		boiler.minPower = Texts.getDouble(minText);
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
-		if (getProductType() == ProductType.HEAT_PUMP) {
-			boiler.efficiencyRate = Texts.getDouble(efficiencyText);
-		} else {
-			boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
-		}
+		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
 		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText)
 				/ 100d;
 	}
@@ -138,13 +124,8 @@ class BoilerWizard implements IContent {
 			return "Es wurde keine maximale Leistung angegeben.";
 		if (!Texts.hasNumber(minText))
 			return "Es wurde keine minimale Leistung angegeben";
-		if (getProductType() == ProductType.HEAT_PUMP) {
-			if (!Texts.inRange(efficiencyText, 1, 6)) {
-				return "Es muss ein COP zwischen 1 und 6 angegeben werden.";
-			}
-		} else if (!Texts.inRange(efficiencyText, 0, 120)) {
+		if (!Texts.inRange(efficiencyText, 0, 120)) 
 			return "Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.";
-		}
 		double max = Texts.getDouble(maxText);
 		double min = Texts.getDouble(minText);
 		if (min > max)

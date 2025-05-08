@@ -29,12 +29,7 @@ class UtilisationRateSwitch {
 	private Producer producer() {
 		return editor.getProducer();
 	}
-
-	private boolean isHeatPump() {
-		return producer().boiler != null
-				&& producer().boiler.type == ProductType.HEAT_PUMP;
-	}
-
+	
 	/**
 	 * Create a switch for manuel input of the utilisation rate if appropiate
 	 * for the producer.
@@ -48,16 +43,18 @@ class UtilisationRateSwitch {
 			return;
 		if (p.boiler != null && p.boiler.isCoGenPlant)
 			return;
+		if(p.heatPump != null)
+			return;
 		new UtilisationRateSwitch(editor).render(c, tk);
 	}
 
 	private void render(Composite parent, FormToolkit tk) {
-		String title = isHeatPump() ? "Jahresarbeitszahl" : "Nutzungsgrad";
+		String title = "Nutzungsgrad";
 		UI.formLabel(parent, tk, title);
 		Composite comp = tk.createComposite(parent);
 		UI.innerGrid(comp, 3);
 		Button r1 = tk.createButton(comp, "Automatische Berechnung", SWT.RADIO);
-		if (producer().hasProfile() || isHeatPump()) {
+		if (producer().hasProfile() || (producer().solarCollector != null)) {
 			r1.setEnabled(false);
 		}
 		UI.filler(comp, tk);
@@ -66,15 +63,15 @@ class UtilisationRateSwitch {
 		text = tk.createText(comp, "");
 		UI.gridData(text, false, false).widthHint = 80;
 		initText();
-		if (!isHeatPump() && producer().utilisationRate == null) {
+		if (producer().utilisationRate == null) {
 			r1.setSelection(true);
 		} else {
 			r2.setSelection(true);
 		}
-		if (isHeatPump()) {
-			HelpLink.create(comp, title, H.AnnualCOP);
-		} else if (Producers.isCoGenPlant(producer())) {
-			HelpLink.create(comp, title, H.UtilisationRate);
+		if (Producers.isCoGenPlant(producer())) {
+			HelpLink.create(comp, tk, title, H.UtilisationRate);
+		}else if (producer().solarCollector != null) {
+			HelpLink.create(comp, tk, title, H.UtilisationRateSolarInfo);
 		} else {
 			UI.filler(comp, tk);
 		}
@@ -85,10 +82,7 @@ class UtilisationRateSwitch {
 	private void initText() {
 		if (text == null)
 			return;
-		if (isHeatPump()) {
-			text.setBackground(Colors.forRequiredField());
-			Texts.set(text, producer().utilisationRate);
-		} else if (producer().utilisationRate == null) {
+		if (producer().utilisationRate == null) {
 			text.setBackground(Colors.forCalculatedField());
 			text.setEditable(false);
 		} else {
@@ -114,7 +108,7 @@ class UtilisationRateSwitch {
 	}
 
 	private void switchToInput() {
-		if (isHeatPump() || producer().hasProfile())
+		if (producer().hasProfile())
 			return;
 		producer().utilisationRate = 0.8;
 		Texts.set(text, 0.8);

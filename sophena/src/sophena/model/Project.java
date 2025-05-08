@@ -112,4 +112,15 @@ public class Project extends RootEntity {
 		d.description = description;
 		return d;
 	}
+	
+	public double maxConsumerHeatTemperature()
+	{
+		double max = -Double.MAX_VALUE;
+		for (var consumer : consumers) 
+		{
+			if(consumer.heatingLimit > max)
+				max = consumer.heatingLimit;
+		}
+		return max;
+	}
 }

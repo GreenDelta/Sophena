@@ -47,47 +47,47 @@ public class ConsumerReader {
 
 	private List<ConsumerEntry> readRowsFrom(Workbook wb) {
 		var entries = new ArrayList<ConsumerEntry>();
-		for (var it = wb.sheetIterator(); it.hasNext(); ) {
+		var it = wb.sheetIterator(); it.hasNext();
 
-			// check  each sheet, if there is an entry in the
-			// top-left cell, we will read the content
-			var sheet = it.next();
-			var head = RowReader.of(sheet.getRow(0)).orElse(null);
-			if (head == null || head.str(0) == null)
+		// check  each sheet, if there is an entry in the
+		// top-left cell, we will read the content
+		var sheet = it.next();
+		var head = RowReader.of(sheet.getRow(0)).orElse(null);
+		if (head == null || head.str(0) == null)
+			return null;
+
+		// read the consumer rows
+		var nextIdx = 1;
+		Row row;
+		while ((row = sheet.getRow(nextIdx)) != null) {
+			nextIdx++;
+			var r = RowReader.of(row).orElse(null);
+			if (r == null || Strings.nullOrEmpty(r.str(0)))
+				continue;
+			var entry = ConsumerEntry.readFrom(r).orElse(null);
+			if (entry == null)
+				continue;
+			entries.add(entry);
+
+			if (!entry.isConsumptionBased())
 				continue;
 
-			// read the consumer rows
-			var nextIdx = 1;
-			Row row;
-			while ((row = sheet.getRow(nextIdx)) != null) {
-				nextIdx++;
-				var r = RowReader.of(row).orElse(null);
-				if (r == null || Strings.nullOrEmpty(r.str(0)))
-					continue;
-				var entry = ConsumerEntry.readFrom(r).orElse(null);
-				if (entry == null)
-					continue;
-				entries.add(entry);
-
-				if (!entry.isConsumptionBased())
-					continue;
-
-				// read fuel entries
-				var fuelRow = r;
-				while (true) {
-					var e = FuelEntry.readFrom(fuelRow).orElse(null);
-					if (e == null)
-						break;
-					entry.add(e);
-					fuelRow = RowReader.of(sheet.getRow(nextIdx)).orElse(null);
-					if (isFuelContinuationRow(fuelRow)) {
-						nextIdx++;
-					} else {
-						break;
-					}
+			// read fuel entries
+			var fuelRow = r;
+			while (true) {
+				var e = FuelEntry.readFrom(fuelRow).orElse(null);
+				if (e == null)
+					break;
+				entry.add(e);
+				fuelRow = RowReader.of(sheet.getRow(nextIdx)).orElse(null);
+				if (isFuelContinuationRow(fuelRow)) {
+					nextIdx++;
+				} else {
+					break;
 				}
 			}
 		}
+
 		return entries;
 	}
 

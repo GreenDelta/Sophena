@@ -26,12 +26,25 @@ public class ProducerProfile extends AbstractEntity {
 	@Convert("DoubleArrayConverter")
 	public double[] maxPower;
 
+	@Column(name = "temperatur_level")
+	@Convert("DoubleArrayConverter")
+	public double[] temperaturLevel;
+	
+	public static ProducerProfile initEmpty() {
+		ProducerProfile p = new ProducerProfile();
+		p.maxPower = new double[Stats.HOURS];
+		p.minPower = new double[Stats.HOURS];
+		p.temperaturLevel = new double[Stats.HOURS];
+		return p;
+	}
+	
 	@Override
 	public ProducerProfile copy() {
 		var clone = new ProducerProfile();
 		clone.id = UUID.randomUUID().toString();
 		clone.minPower = Stats.copy(minPower);
 		clone.maxPower = Stats.copy(maxPower);
+		clone.temperaturLevel = Stats.copy(temperaturLevel);
 		return clone;
 	}
 }

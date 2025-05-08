@@ -10,9 +10,11 @@ import sophena.calc.ProjectLoad;
 import sophena.db.daos.ProjectDao;
 import sophena.math.Smoothing;
 import sophena.math.energetic.HeatNets;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
@@ -31,6 +33,8 @@ class HeatNetSection {
 
 	private Composite comp;
 	private FormToolkit tk;
+	private Text supplyTemperatureText;
+	private Text returnTemperatureText; 
 	private Text lengthText;
 	private Text powerLossText;
 	private Text maxLoadText;
@@ -47,6 +51,10 @@ class HeatNetSection {
 		return editor.heatNet;
 	}
 
+	private Project project() {
+		return editor.project;
+	}
+
 	void create(Composite body, FormToolkit tk) {
 		this.tk = tk;
 		comp = UI.formSection(body, tk, M.HeatingNetwork);
@@ -59,12 +67,15 @@ class HeatNetSection {
 		smoothingFactorRow();
 		maxSimultaneousLoadRow();
 		editor.bus.on("pipes", this::colorTexts);
+		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
+		editor.bus.on("length-powerloss-changed", this::updateLengthPowerLoss);
 		colorTexts();
+		seasonalDrivingChanged();
 	}
 
 	private void supplyTemperatureRow() {
-		Text t = UI.formText(comp, tk, "Vorlauftemperatur");
-		Texts.on(t).init(net().supplyTemperature).decimal().required()
+		supplyTemperatureText = UI.formText(comp, tk, "Vorlauftemperatur");
+		Texts.on(supplyTemperatureText).init(net().supplyTemperature).decimal().required()
 				.onChanged(s -> {
 					net().supplyTemperature = Num.read(s);
 					editor.bus.notify("supplyTemperature");
@@ -75,8 +86,8 @@ class HeatNetSection {
 	}
 
 	private void returnTemperatureRow() {
-		Text t = UI.formText(comp, tk, "Rücklauftemperatur");
-		Texts.on(t).init(net().returnTemperature).decimal().required()
+		returnTemperatureText = UI.formText(comp, tk, "Rücklauftemperatur");
+		Texts.on(returnTemperatureText).init(net().returnTemperature).decimal().required()
 				.onChanged(s -> {
 					net().returnTemperature = Num.read(s);
 					editor.bus.notify("returnTemperature");
@@ -88,38 +99,32 @@ class HeatNetSection {
 
 	private void lengthAndPowerLossRow() {
 		lengthText = UI.formText(comp, tk, "Trassenlänge");
-		Texts.on(lengthText).init(net().length).decimal().required()
-				.onChanged(s -> {
-					net().length = Texts.getDouble(lengthText);
-					textsUpdated();
-				});
+		Texts.on(lengthText).init(net().length).decimal().calculated();		
 		UI.formLabel(comp, tk, "m");
-
-		Button button = tk.createButton(comp, "Berechnen", SWT.NONE);
-		button.setImage(Icon.CALCULATE_16.img());
+		HelpLink.create(comp, tk, "Trassenlänge und Verlustleistung",
+				H.LengthPowerLoss);
+		
 		powerLossText = UI.formText(comp, tk, "Verlustleistung");
-		Texts.on(powerLossText).init(net().powerLoss).decimal().required()
-				.onChanged(s -> {
-					net().powerLoss = Texts.getDouble(powerLossText);
-					textsUpdated();
-				});
-		UI.formLabel(comp, tk, "W/m");
-		UI.formLabel(comp, "");
-
-		Controls.onSelect(button, e -> {
-			HeatNet net = net();
-			net.length = HeatNets.getTotalSupplyLength(net);
-			net.powerLoss = HeatNets.calculatePowerLoss(net);
-			Texts.set(lengthText, net.length);
-			Texts.set(powerLossText, net.powerLoss);
-			textsUpdated();
-		});
+		Texts.on(powerLossText).init(net().powerLoss).decimal().calculated();
+		UI.formLabel(comp, tk, "W/K");
+		HelpLink.create(comp, tk, "Verlustleistung",
+				H.PowerLoss);
 	}
 
+	private void updateLengthPowerLoss()
+	{
+		HeatNet net = net();
+		net.length = HeatNets.getTotalSupplyLength(net);
+		net.powerLoss = HeatNets.calculatePowerLoss(net);
+		Texts.set(lengthText, net.length);
+		Texts.set(powerLossText, net.powerLoss);
+		textsUpdated();
+	}
+	
 	private void textsUpdated() {
 		editor.setDirty();
 		if (loadCurve != null) {
-			loadCurve.setData(NetLoadProfile.get(net()));
+			loadCurve.setData(NetLoadProfile.get(editor.project));
 		}
 		Texts.set(maxSimLoadText, calculateMaxSimLoad());
 		editor.setDirty();
@@ -128,26 +133,6 @@ class HeatNetSection {
 
 	private void colorTexts() {
 		HeatNet net = net();
-		if (net.pipes.isEmpty()) {
-			lengthText.setBackground(Colors.forRequiredField());
-			powerLossText.setBackground(Colors.forRequiredField());
-			return;
-		}
-
-		// power loss
-		if (Num.equal(net.powerLoss, HeatNets.calculatePowerLoss(net))) {
-			powerLossText.setBackground(Colors.forRequiredField());
-		} else {
-			powerLossText.setBackground(Colors.forModifiedDefault());
-		}
-
-		// net length
-		if (Num.equal(net.length, HeatNets.getTotalSupplyLength(net))) {
-			lengthText.setBackground(Colors.forRequiredField());
-		} else {
-			lengthText.setBackground(Colors.forModifiedDefault());
-		}
-
 		// max load
 		if (net.maxLoad == null) {
 			Texts.set(maxLoadText, calculateMaxLoad());
@@ -163,6 +148,43 @@ class HeatNetSection {
 			smoothingFactorText.setBackground(Colors.forRequiredField());
 		} else {
 			smoothingFactorText.setBackground(Colors.forModifiedDefault());
+		}
+	}
+	
+	private void seasonalDrivingChanged()
+	{
+		if(net().isSeasonalDrivingStyle)
+		{
+			double averageFlowTemperature = 0;
+			double averageReturnTempeature = 0;
+			double minWeatherStationTemperature = editor.project.weatherStation.minTemperature(); 
+			double maxConsumerHeatingLimit = editor.project.maxConsumerHeatTemperature();			
+			for(int hour = 0; hour < Stats.HOURS; hour++)
+			{
+				double temperature = editor.project.weatherStation.data != null && hour < editor.project.weatherStation.data.length
+						? editor.project.weatherStation.data[hour]
+								: 0;
+				SeasonalItem seasonalItem = SeasonalItem.calc(editor.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
+				averageFlowTemperature += seasonalItem.flowTemperature;
+				averageReturnTempeature += seasonalItem.returnTemperature;
+			}
+			averageFlowTemperature /= Stats.HOURS;
+			averageReturnTempeature /= Stats.HOURS;
+
+			editor.heatNet.supplyTemperature = Math.ceil(averageFlowTemperature);
+			editor.heatNet.returnTemperature = Math.floor(averageReturnTempeature);
+
+			supplyTemperatureText.setText(Num.str(net().supplyTemperature));
+			returnTemperatureText.setText(Num.str(net().returnTemperature));
+		}
+
+		boolean enable = !net().isSeasonalDrivingStyle;
+		supplyTemperatureText.setEnabled(enable);
+		returnTemperatureText.setEnabled(enable);
+		
+		colorTexts();
+		if (loadCurve != null) {
+			loadCurve.setData(NetLoadProfile.get(editor.project));
 		}
 	}
 
@@ -262,7 +284,7 @@ class HeatNetSection {
 	private double calculateMaxLoad() {
 		try {
 			// net load from the net-specification on this page
-			double load = ProjectLoad.getNetLoad(net());
+			double load = ProjectLoad.getMaxNetLoad(project());
 			// add consumer loads from the consumers in the database
 			// we load them freshly from the database because the may changed
 			// in other editors

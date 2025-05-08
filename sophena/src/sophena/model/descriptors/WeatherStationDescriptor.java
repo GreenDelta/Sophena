@@ -7,6 +7,7 @@ public class WeatherStationDescriptor extends Descriptor {
 	public double longitude;
 	public double latitude;
 	public double altitude;
+	public boolean isProtected;
 
 	@Override
 	public ModelType getType() {

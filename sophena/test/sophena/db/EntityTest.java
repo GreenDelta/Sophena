@@ -62,7 +62,7 @@ public class EntityTest {
 
 	private <T extends AbstractEntity> void test(Class<T> clazz)
 			throws Exception {
-		T entity = clazz.newInstance();
+		T entity = clazz.getDeclaredConstructor().newInstance();
 		Dao<T> dao = new Dao<>(clazz, Tests.getDb());
 		entity.id = UUID.randomUUID().toString();
 		dao.insert(entity);

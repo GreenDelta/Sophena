@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import sophena.db.Database;
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.Dao;
+import sophena.db.daos.HeatPumpDao;
 import sophena.db.daos.ProductDao;
+import sophena.db.daos.SolarCollectorDao;
 import sophena.db.usage.UsageSearch;
 import sophena.model.BufferTank;
 import sophena.model.FlueGasCleaning;
@@ -25,7 +27,7 @@ class ProductCleanup implements Runnable {
 		boolean doIt = MsgBox.ask("Produktdatenbank zurücksetzen?",
 				"Diese Aktion löscht alle Produkte der "
 						+ "Produktdatenbank, die nicht selbst "
-						+ "erfasst wurden. Soll dies ausgeführt werden?");
+						+ "erfasst wurden und die nicht in einem Projekt verwendet werden. Soll dies ausgeführt werden?");
 		if (!doIt)
 			return;
 
@@ -118,6 +120,26 @@ class ProductCleanup implements Runnable {
 				return;
 			if (usage.of(ts).isEmpty()) {
 				tsDao.delete(ts);
+			}
+		});
+		
+		// solar collectors
+		SolarCollectorDao sdao = new SolarCollectorDao(db);
+		sdao.getAll().stream().forEach(b -> {
+			if (!b.isProtected)
+				return;
+			if (usage.of(b).isEmpty()) {
+				sdao.delete(b);
+			}
+		});
+		
+		// heat pumps
+		HeatPumpDao hpdao = new HeatPumpDao(db);
+		hpdao.getAll().stream().forEach(b -> {
+			if (!b.isProtected)
+				return;
+			if (usage.of(b).isEmpty()) {
+				hpdao.delete(b);
 			}
 		});
 	}

@@ -51,7 +51,7 @@ class FuelSection {
 
 	void render(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk,
-				"Brennstoffspezifikation");
+				"Energieträgerspezifikation");
 		UI.gridLayout(comp, 3);
 		FuelSpec spec = producer().fuelSpec;
 		if (spec == null || spec.fuel == null)

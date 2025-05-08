@@ -3,7 +3,6 @@ package sophena.math.costs;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.math.costs.Costs;
 import sophena.model.CostSettings;
 import sophena.model.Project;
 

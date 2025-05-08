@@ -5,7 +5,10 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
 
 public class Actions {
@@ -68,4 +71,17 @@ public class Actions {
 		section.setTextClient(control);
 	}
 
+	public static ToolBar bind(Composite comp, Action... actions) {
+		var toolBar = new ToolBarManager();
+		for (var action : actions) {
+			toolBar.add(action);
+		}
+		var control = toolBar.createControl(comp);
+		// we need to set the background color of the toolbar
+		// here, otherwise it is grey on Windows; not sure if
+		// this works with dark mode though
+		control.setBackground(comp.getBackground());	
+		return control;
+	}
+	
 }

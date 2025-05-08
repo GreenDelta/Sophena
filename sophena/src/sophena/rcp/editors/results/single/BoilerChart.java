@@ -31,15 +31,17 @@ class BoilerChart {
 
 	private EnergyResult result;
 	private boolean sorted = false;
+	private final double maxY;
 	private final double maxLoad;
 	private final ResultColors colors;
 
 	private XYGraph chart;
 	private Trace loadTrace;
 
-	BoilerChart(EnergyResult result, ResultColors colors, double maxLoad) {
+	BoilerChart(EnergyResult result, ResultColors colors, double maxY, double maxLoad) {
 		this.result = result;
 		this.colors = colors;
+		this.maxY = maxY;
 		this.maxLoad = maxLoad;
 	}
 
@@ -98,11 +100,11 @@ class BoilerChart {
 		y.setMinorTicksVisible(false);
 		y.setFormatPattern("###,###,###,###");
 
-		double magnitude = Math.floor(Math.log10(maxLoad));
+		double magnitude = Math.floor(Math.log10(maxY));
 		double max = Math.pow(10, magnitude);
 		double step = max / 10;
 		double upper = step;
-		while (step > 0 && upper <= maxLoad) {
+		while (step > 0 && upper <= maxY) {
 			upper += step;
 		}
 		y.setRange(0, upper);

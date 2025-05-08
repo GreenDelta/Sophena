@@ -141,7 +141,7 @@ class InfoSection {
 	}
 
 	private void floorSpaceText(Composite comp, FormToolkit tk) {
-		Text t = UI.formText(comp, tk, "Wohnfläche");
+		Text t = UI.formText(comp, tk, "Beheizte Fläche");
 		if (consumer().floorSpace != 0)
 			Texts.set(t, consumer().floorSpace);
 		Texts.on(t).decimal().onChanged(text -> {

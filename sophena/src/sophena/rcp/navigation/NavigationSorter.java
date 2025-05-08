@@ -1,9 +1,9 @@
 package sophena.rcp.navigation;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
-public class NavigationSorter extends ViewerSorter {
+public class NavigationSorter extends ViewerComparator {
 
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {

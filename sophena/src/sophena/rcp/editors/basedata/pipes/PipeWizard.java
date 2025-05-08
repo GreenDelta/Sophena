@@ -88,7 +88,7 @@ class PipeWizard implements IContent {
 		Texts.set(materialText, pipe.material);
 		int idx = pipe.pipeType == PipeType.UNO ? 0 : 1;
 		typeCombo.select(idx);
-		Texts.set(uValueText, pipe.uValue);
+		Texts.set(uValueText, pipe.uValue, 4);
 		Texts.set(innerDiamText, pipe.innerDiameter);
 		Texts.set(outerDiamText, pipe.outerDiameter);
 		Texts.set(totalDiamText, pipe.totalDiameter);

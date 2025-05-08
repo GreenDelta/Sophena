@@ -55,8 +55,6 @@ class EntrySection {
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		fillEntries(); // to fill the table
-		Action info = Actions.create("Information",
-				Icon.INFO_16.des(), this::info);
 		Action addGlobal = Actions.create(
 				"Produkt aus Produktdatenbank hinzufügen",
 				Icon.SEARCH_16.des(), this::addGlobal);
@@ -65,7 +63,7 @@ class EntrySection {
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
 		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::delete);
-		Actions.bind(section, addGlobal, addPrivate, edit, del, info);
+		Actions.bind(section, addGlobal, addPrivate, edit, del);
 		Actions.bind(table, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
@@ -79,31 +77,6 @@ class EntrySection {
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		table.setLabelProvider(new EntryLabel(type));
 		return table;
-	}
-
-	private void info() {
-		switch (type) {
-		case BOILER_ACCESSORIES:
-			HelpBox.show("Kesselzubehör", H.BoilerAccessories);
-			break;
-		case BOILER_HOUSE_TECHNOLOGY:
-			HelpBox.show("Heizhaus-Technik", H.BoilerHouseTechnology);
-			break;
-		case BUILDING:
-			HelpBox.show("Gebäude", H.Buildings);
-			break;
-		case HEATING_NET_TECHNOLOGY:
-			HelpBox.show("Wärmenetz-Technik", H.HeatingNetTechnology);
-			break;
-		case HEATING_NET_CONSTRUCTION:
-			HelpBox.show("Wärmenetz-Bau", H.HeatingNetConstruction);
-			break;
-		case PLANNING:
-			HelpBox.show("Planung", H.Planning);
-			break;
-		default:
-			break;
-		}
 	}
 
 	/** Add a product from the product database. */

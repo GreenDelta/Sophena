@@ -188,6 +188,10 @@ public class DataPack implements Closeable {
 			return "transfer_stations";
 		case WEATHER_STATION:
 			return "weather_stations";
+		case SOLAR_COLLECTOR:
+			return "solar_collectors";
+		case HEAT_PUMP:
+			return "heat_pumps";
 		default:
 			return "unknown";
 		}

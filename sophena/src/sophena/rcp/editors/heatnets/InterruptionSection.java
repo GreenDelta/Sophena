@@ -131,7 +131,7 @@ class InterruptionSection {
 	private void updateLoadCurve() {
 		if (loadCurve == null)
 			return;
-		loadCurve.setData(NetLoadProfile.get(heatNet()));
+		loadCurve.setData(NetLoadProfile.get(editor.project));
 	}
 
 }

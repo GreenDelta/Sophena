@@ -28,7 +28,7 @@ public class ProjectResult {
 
 	public static ProjectResult calculate(Project project) {
 		var r = new ProjectResult(project);
-		r.energyResult = EnergyCalculator.calculate(project);
+		r.energyResult = EnergyCalculator.calculate(project, r.calcLog);
 		r.fuelUsage = FuelUsage.calculate(r);
 		var costCalc = new CostCalculator(r);
 		costCalc.withFunding(false);

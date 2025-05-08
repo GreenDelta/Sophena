@@ -66,11 +66,14 @@ type Product struct {
 // WeatherStation contains meta-information and temperature data of a
 // DWD weather station.
 type WeatherStation struct {
-	RootEntity
-	Longitude float64   `json:"longitude"`
-	Latitude  float64   `json:"latitude"`
-	Altitude  float64   `json:"altitude"`
-	Data      []float64 `json:"data"`
+	BaseDataEntity
+	Longitude          float64   `json:"longitude"`
+	Latitude           float64   `json:"latitude"`
+	Altitude           float64   `json:"altitude"`
+	ReferenceLongitude float64   `json:"referenceLongitude"`
+	Data               []float64 `json:"data"`
+	DirectRadiation    []float64 `json:"directRadiation"`
+	DiffuseRadiation   []float64 `json:"diffuseRadiation"`
 }
 
 // Fuel stores fuel data like the unit of measurement of the
@@ -176,4 +179,43 @@ type FlueGasCleaning struct {
 	CleaningMethod            string  `json:"cleaningMethod,omitempty"`
 	CleaningType              string  `json:"cleaningType,omitempty"`
 	SeparationEfficiency      float64 `json:"separationEfficiency"`
+}
+
+type SolarCollector struct {
+	Product
+	CollectorArea            float64 `json:"collectorArea"`
+	EfficiencyRateRadiation  float64 `json:"efficiencyRateRadiation"`
+	CorrectionFactor         float64 `json:"correctionFactor"`
+	HeatTransferCoefficient1 float64 `json:"heatTransferCoefficient1"`
+	HeatTransferCoefficient2 float64 `json:"heatTransferCoefficient2"`
+	HeatCapacity             float64 `json:"heatCapacity"`
+	AngleIncidenceEW10       float64 `json:"angleIncidenceEW10"`
+	AngleIncidenceEW20       float64 `json:"angleIncidenceEW20"`
+	AngleIncidenceEW30       float64 `json:"angleIncidenceEW30"`
+	AngleIncidenceEW40       float64 `json:"angleIncidenceEW40"`
+	AngleIncidenceEW50       float64 `json:"angleIncidenceEW50"`
+	AngleIncidenceEW60       float64 `json:"angleIncidenceEW60"`
+	AngleIncidenceEW70       float64 `json:"angleIncidenceEW70"`
+	AngleIncidenceEW80       float64 `json:"angleIncidenceEW80"`
+	AngleIncidenceEW90       float64 `json:"angleIncidenceEW90"`
+	AngleIncidenceNS10       float64 `json:"angleIncidenceNS10"`
+	AngleIncidenceNS20       float64 `json:"angleIncidenceNS20"`
+	AngleIncidenceNS30       float64 `json:"angleIncidenceNS30"`
+	AngleIncidenceNS40       float64 `json:"angleIncidenceNS40"`
+	AngleIncidenceNS50       float64 `json:"angleIncidenceNS50"`
+	AngleIncidenceNS60       float64 `json:"angleIncidenceNS60"`
+	AngleIncidenceNS70       float64 `json:"angleIncidenceNS70"`
+	AngleIncidenceNS80       float64 `json:"angleIncidenceNS80"`
+	AngleIncidenceNS90       float64 `json:"angleIncidenceNS90"`
+}
+
+// A HeatPump stores data of a heat pump
+type HeatPump struct {
+	Product
+	MinPower          float64   `json:"minPower"`
+	RatedPower        float64   `json:"ratedPower"`
+	MaxPower          []float64 `json:"maxPower"`
+	Cop               []float64 `json:"cop"`
+	TargetTemperature []float64 `json:"targetTemperature"`
+	SourceTemperature []float64 `json:"sourceTemperature"`
 }

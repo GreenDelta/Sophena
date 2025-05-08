@@ -20,6 +20,8 @@ public class EnergyResult {
 	public Producer[] producers;
 	public double[][] producerResults;
 	public double totalProducedHeat;
+	public int[] producerStagnationDays;
+	public double[] producerJaz;
 
 	public double[] suppliedBufferHeat;
 	public double totalBufferedHeat;
@@ -40,7 +42,7 @@ public class EnergyResult {
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferLoss = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
-		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project.heatNet));
+		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
 	}
 
 	public double totalHeat(Producer p) {
@@ -93,8 +95,65 @@ public class EnergyResult {
 		}
 		Arrays.sort(producers,
 				(p1, p2) -> Integer.compare(p1.rank, p2.rank));
+		
+		producerStagnationDays = new int[count];
+		producerJaz = new double[count];
+	}
+	
+	public int stagnationDays(Producer p) {
+		if (p == null)
+			return 0;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				return producerStagnationDays[i];				
+			}
+		}
+		return 0;
 	}
 
+	public double jaz(Producer p) {
+		if (p == null)
+			return 0;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				return producerJaz[i];				
+			}
+		}
+		return 0;
+	}
+	
+	public double maxPeakPowerOfAllProducers()
+	{
+		double max = 0;
+		double producerPower;
+		for (Producer p : producers) {
+			if (p.disabled)
+				continue;
+			producerPower = maxPeakPower(p);
+			if (producerPower > max)
+				max = producerPower;
+		}
+		return max;
+	}
+	
+	public double maxPeakPower(Producer p)
+	{
+		if (p == null)
+			return 0;
+		double max = 0;
+		double power = 0;
+		for (int i = 0; i < producers.length; i++) {
+			if (Objects.equals(p, producers[i])) {
+				for (int hour = 0; hour < Stats.HOURS; hour++) {
+					power = producerResults[i][hour];
+					if (power > max)
+						max = power;
+				}
+			}
+		}
+		return max;
+	}
+	
 	public EnergyResult sort() {
 		return EnergyResultSorter.sort(this);
 	}
@@ -110,6 +169,8 @@ public class EnergyResult {
 			clone.producerResults[i] = Arrays.copyOf(producerResults[i],
 					Stats.HOURS);
 		}
+		clone.producerStagnationDays = Arrays.copyOf(producerStagnationDays,producers.length);
+		clone.producerJaz = Arrays.copyOf(producerJaz,producers.length);
 		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat,
 				Stats.HOURS);
 		clone.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);

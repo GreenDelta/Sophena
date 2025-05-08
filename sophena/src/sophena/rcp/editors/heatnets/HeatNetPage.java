@@ -33,6 +33,8 @@ class HeatNetPage extends FormPage {
 		HeatNetSection netSection = new HeatNetSection(editor);
 		netSection.create(body, tk);
 		new BufferTankSection(editor).create(body, tk);
+		SeasonalDrivingStyleSection seasonalDrivingStyleSection = new SeasonalDrivingStyleSection(editor);
+		seasonalDrivingStyleSection.create(body, tk);
 		InterruptionSection interruptionSec = new InterruptionSection(editor);
 		interruptionSec.create(body, tk);
 		LoadCurveSection loadCurve = createLoadCurve(tk, body);
@@ -47,7 +49,7 @@ class HeatNetPage extends FormPage {
 		loadCurve.setSorted(false);
 		loadCurve.setTitle("Verlustleistung des Wärmenetzes");
 		loadCurve.render(body, toolkit);
-		loadCurve.setData(NetLoadProfile.get(heatNet()));
+		loadCurve.setData(NetLoadProfile.get(editor.project));
 		return loadCurve;
 	}
 

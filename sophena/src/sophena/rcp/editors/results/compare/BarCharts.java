@@ -44,9 +44,9 @@ class BarCharts {
 		return chart;
 	}
 
-	static IBarSeries series(Chart chart, String name, Color color,
+	static IBarSeries<double[]> series(Chart chart, String name, Color color,
 			double[] data) {
-		IBarSeries bars = (IBarSeries) chart.getSeriesSet()
+		IBarSeries<double[]> bars = (IBarSeries<double[]>) chart.getSeriesSet()
 				.createSeries(SeriesType.BAR, name);
 		bars.setYSeries(data);
 		bars.setBarColor(color);
@@ -55,7 +55,7 @@ class BarCharts {
 		return bars;
 	}
 
-	static IBarSeries stackSeries(Chart chart, String name, Color color,
+	static IBarSeries<double[]> stackSeries(Chart chart, String name, Color color,
 			double[] data) {
 		// values < 0 are not allowed for stacked bar charts
 		for (int i = 0; i < data.length; i++) {
@@ -63,7 +63,7 @@ class BarCharts {
 				data[i] = 0;
 			}
 		}
-		IBarSeries bars = series(chart, name, color, data);
+		IBarSeries<double[]> bars = series(chart, name, color, data);
 		bars.enableStack(true);
 		return bars;
 	}

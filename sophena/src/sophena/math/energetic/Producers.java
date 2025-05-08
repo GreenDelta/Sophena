@@ -1,6 +1,8 @@
 package sophena.math.energetic;
 
+import sophena.calc.HeatPumpCalcState;
 import sophena.calc.ProjectResult;
+import sophena.calc.SolarCalcState;
 import sophena.model.HeatRecovery;
 import sophena.model.Producer;
 import sophena.model.ProductType;
@@ -38,7 +40,7 @@ public class Producers {
 	 * Get the minimum power of the given producer for the given hour (used in
 	 * energy simulations).
 	 */
-	public static double minPower(Producer p, int hour) {
+	public static double minPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
 		if (p == null)
 			return 0;
 		if (p.hasProfile()) {
@@ -55,7 +57,7 @@ public class Producers {
 	 * Get the minimum power of the given producer for the given hour (used in
 	 * energy simulations).
 	 */
-	public static double maxPower(Producer p, int hour) {
+	public static double maxPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
 		if (p == null)
 			return 0;
 		if (p.hasProfile()) {
@@ -63,6 +65,10 @@ public class Producers {
 				return 0;
 			return Stats.get(p.profile.maxPower, hour);
 		}
+		if(p.solarCollector !=null && solarCalcState != null)
+			return solarCalcState.getAvailablePowerInKWh();
+		if(p.heatPump != null && heatPumpCalcState != null)
+			return heatPumpCalcState.getMaxPower();
 		if (p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);
@@ -73,6 +79,8 @@ public class Producers {
 			return 0;
 		if (p.hasProfile())
 			return p.profileMaxPower;
+		if(p.heatPump != null)
+			return p.heatPump.ratedPower;
 		if (p.boiler == null)
 			return 0;
 		return p.boiler.maxPower * heatRecoveryFactor(p);
@@ -95,6 +103,8 @@ public class Producers {
 			return 0;
 		if (p.boiler != null)
 			return p.boiler.efficiencyRate * heatRecoveryFactor(p);
+		if(p.heatPump != null)
+			return 1;
 		// for producer profiles we assume that the utilization rate
 		// is the same as thermal efficiency rate
 		return p.utilisationRate != null

@@ -56,7 +56,8 @@ public class ProfileSection {
 				Icon.IMPORT_16.des(),
 				this::importProfile);
 		Actions.bind(section, imp, ImageExport.forXYGraph(
-				"Erzeugerlastgang.jpg", () -> chart.graph));
+				"Erzeugerlastgang.jpg", () -> chart.graph), ImageExport.forXYGraph(
+						"ErzeugerlastgangTemperatur.jpg", () -> chart.graphTemperature));
 		return this;
 	}
 

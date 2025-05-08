@@ -60,7 +60,6 @@ public class ColorConfigDialog extends FormDialog {
 				ColorKey.USED_HEAT,
 				ColorKey.PRODUCED_ELECTRICITY,
 				ColorKey.LOSSES_BUFFER,
-				ColorKey.LOSSES_CONVERSION,
 				ColorKey.LOSSES_DISTRIBUTION);
 
 		keyGroupOf("Emissionen", body, tk,
@@ -111,7 +110,6 @@ public class ColorConfigDialog extends FormDialog {
 			case USED_HEAT -> "Genutzte Wärme";
 			case PRODUCED_ELECTRICITY -> "Erzeugter Strom";
 			case LOSSES_BUFFER -> "Pufferspeicherverluste";
-			case LOSSES_CONVERSION -> "Konversionsverluste";
 			case LOSSES_DISTRIBUTION -> "Verteilungsverluste";
 		};
 	}

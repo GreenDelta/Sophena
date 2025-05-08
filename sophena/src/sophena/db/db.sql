@@ -12,10 +12,13 @@ CREATE TABLE tbl_weather_stations (
 
     is_protected BOOLEAN,
 
-    longitude   DOUBLE,
-    latitude    DOUBLE,
-    altitude    DOUBLE,
-    data        BLOB (80 K),
+    longitude   		DOUBLE,
+    latitude    		DOUBLE,
+    altitude   			DOUBLE,
+    reference_longitude DOUBLE,
+    data        		BLOB (80 K),
+    direct_radiation    BLOB (80 K),
+    diffuse_radiation   BLOB (80 K),
 
     PRIMARY KEY (id)
 );
@@ -124,9 +127,8 @@ CREATE TABLE tbl_cost_settings (
     heat_revenues               DOUBLE,
 
     funding DOUBLE,
-    funding_biomass_boilers DOUBLE,
-    funding_heat_net DOUBLE,
-    funding_transfer_stations DOUBLE,
+    funding_percent DOUBLE,
+    funding_types INTEGER,
     connection_fees DOUBLE,
 
     interest_rate DOUBLE,
@@ -224,6 +226,20 @@ CREATE TABLE tbl_heat_nets (
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE,
+    
+    maximum_performance DOUBLE,
+
+	is_seasonal_driving_style BOOLEAN,
+	f_interval_winter CHAR(36),
+	f_interval_summer CHAR(36),
+	target_charge_level_winter DOUBLE,
+	target_charge_level_summer DOUBLE,
+	flow_temperature_winter DOUBLE,
+	flow_temperature_summer DOUBLE,
+	return_temperature_winter DOUBLE,
+	return_temperature_summer DOUBLE,   
+	target_charge_level DOUBLE, 
+	use_heating_curve BOOLEAN,
 
     PRIMARY KEY (id)
 );
@@ -308,8 +324,9 @@ CREATE TABLE tbl_producer_profiles (
 
     id CHAR(36),
 
-    min_power BLOB (80 K),
-    max_power BLOB (80 K),
+    min_power 			BLOB (80 K),
+    max_power 			BLOB (80 K),
+    temperatur_level	BLOB (80 K),
 
     PRIMARY KEY (id)
 );
@@ -540,6 +557,24 @@ CREATE TABLE tbl_producers (
     heat_recovery_maintenance DOUBLE,
     heat_recovery_operation   DOUBLE,
 
+	f_solar_collector						CHAR(36), 						
+	solar_collector_area 					DOUBLE,
+	solar_collector_alignment 				DOUBLE,
+	solar_collector_tilt 					DOUBLE,
+	solar_collector_operating_mode 			VARCHAR(255),
+	solar_collector_temperature_difference  DOUBLE,
+	solar_collector_temperature_increase 	DOUBLE,
+	solar_collector_radiation_limit			DOUBLE,
+	
+	is_outdoor_temperature_control		BOOLEAN,
+	outdoor_temperature					DOUBLE,
+	outdoor_temperature_control_kind	VARCHAR(255),
+	
+	f_heat_pump					CHAR(36),
+	heat_pump_mode 				VARCHAR(36),
+	source_temperature_user		DOUBLE,
+	source_temperature_hourly	BLOB(80 K),
+
     PRIMARY KEY (id)
 );
 
@@ -555,6 +590,73 @@ CREATE TABLE tbl_manufacturer (
 
     address VARCHAR(255),
     url VARCHAR(255),
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_solar_collectors (
+
+    id CHAR(36),
+    name VARCHAR(255),
+    description CLOB(64 K),
+
+    is_protected BOOLEAN,
+
+    purchase_price DOUBLE,
+    url VARCHAR(255),
+    product_type VARCHAR(50),
+    f_product_group CHAR(36),
+    f_manufacturer CHAR(36),
+
+    collector_area DOUBLE,
+    efficiency_rate_radiation DOUBLE,
+	correction_factor DOUBLE,
+	heat_transfer_coefficient1 DOUBLE,
+	heat_transfer_coefficient2 DOUBLE,
+	heat_capacity DOUBLE,
+	angle_incidence_EW_10 DOUBLE,
+	angle_incidence_EW_20 DOUBLE,
+	angle_incidence_EW_30 DOUBLE,
+	angle_incidence_EW_40 DOUBLE,
+	angle_incidence_EW_50 DOUBLE,
+	angle_incidence_EW_60 DOUBLE,
+	angle_incidence_EW_70 DOUBLE,
+	angle_incidence_EW_80 DOUBLE,
+	angle_incidence_EW_90 DOUBLE,
+	angle_incidence_NS_10 DOUBLE,
+	angle_incidence_NS_20 DOUBLE,
+	angle_incidence_NS_30 DOUBLE,
+	angle_incidence_NS_40 DOUBLE,
+	angle_incidence_NS_50 DOUBLE,
+	angle_incidence_NS_60 DOUBLE,
+	angle_incidence_NS_70 DOUBLE,
+	angle_incidence_NS_80 DOUBLE,
+	angle_incidence_NS_90 DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE tbl_heat_pumps (
+
+    id          CHAR(36),
+    name        VARCHAR(255),
+    description CLOB(64 K),
+
+    is_protected BOOLEAN,
+    
+    purchase_price 	DOUBLE,
+    url 			VARCHAR(255),
+    product_type 	VARCHAR(50),
+    f_product_group CHAR(36),
+    f_manufacturer 	CHAR(36),
+
+    min_power		   		DOUBLE,
+    rated_power				DOUBLE,
+    max_power        		BLOB (80 K),
+    cop    					BLOB (80 K),
+    target_temperature   	BLOB (80 K),
+    source_temperature   	BLOB (80 K),
 
     PRIMARY KEY (id)
 );

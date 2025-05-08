@@ -23,7 +23,6 @@ public enum ColorKey {
 	// energy usage
 	USED_HEAT("usedHeat"),
 	PRODUCED_ELECTRICITY("producedElectricity"),
-	LOSSES_CONVERSION("lossesConversion"),
 	LOSSES_BUFFER("lossesBuffer"),
 	LOSSES_DISTRIBUTION("lossesDistribution")
 	;

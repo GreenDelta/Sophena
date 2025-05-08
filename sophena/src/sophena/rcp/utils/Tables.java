@@ -117,7 +117,7 @@ public class Tables {
 					int direction = sorter.isAscending() ? SWT.UP : SWT.DOWN;
 					table.setSortDirection(direction);
 					table.setSortColumn(column);
-					viewer.setSorter(sorter);
+					viewer.setComparator(sorter);
 					viewer.refresh();
 				}
 			});

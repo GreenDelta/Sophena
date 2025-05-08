@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="2.1" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
       <text>
-         Sophena - Version 2.1
+         Sophena - Version 3.0
 
 Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.
 
 C.A.R.M.E.N. e.V.
 Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.
 http://www.carmen-ev.de - contact@carmen-ev.de
+
+Technische Umsetzung: 
+GreenDelta GmbH:: https://www.greendelta.com
+AVS GmbH: https://www.alzinger-vogel.de
       </text>
    </aboutInfo>
 
@@ -33,6 +37,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
+
    <launcher name="Sophena">
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
@@ -46,6 +51,7 @@ http://www.carmen-ev.de - contact@carmen-ev.de
             winExtraLargeHigh="icons/App/256x256bmp.bmp"/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -66,61 +72,61 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.apache.felix.scr"/>
       <plugin id="org.apache.xmlgraphics"/>
       <plugin id="org.eclipse.core.commands"/>
-      <plugin id="org.eclipse.core.commands.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.commands.nl_de"/>
       <plugin id="org.eclipse.core.contenttype"/>
-      <plugin id="org.eclipse.core.contenttype.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.contenttype.nl_de"/>
       <plugin id="org.eclipse.core.databinding"/>
-      <plugin id="org.eclipse.core.databinding.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.databinding.nl_de"/>
       <plugin id="org.eclipse.core.databinding.observable"/>
-      <plugin id="org.eclipse.core.databinding.observable.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.databinding.observable.nl_de"/>
       <plugin id="org.eclipse.core.databinding.property"/>
-      <plugin id="org.eclipse.core.databinding.property.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.databinding.property.nl_de"/>
       <plugin id="org.eclipse.core.expressions"/>
-      <plugin id="org.eclipse.core.expressions.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.expressions.nl_de"/>
       <plugin id="org.eclipse.core.jobs"/>
-      <plugin id="org.eclipse.core.jobs.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs.nl_de"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime.nl_de"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
-      <plugin id="org.eclipse.e4.core.contexts.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.contexts.nl_de"/>
       <plugin id="org.eclipse.e4.core.di"/>
       <plugin id="org.eclipse.e4.core.di.annotations"/>
-      <plugin id="org.eclipse.e4.core.di.annotations.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.di.annotations.nl_de"/>
       <plugin id="org.eclipse.e4.core.di.extensions"/>
-      <plugin id="org.eclipse.e4.core.di.extensions.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.nl_de"/>
       <plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
-      <plugin id="org.eclipse.e4.core.di.extensions.supplier.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.e4.core.di.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.supplier.nl_de"/>
+      <plugin id="org.eclipse.e4.core.di.nl_de"/>
       <plugin id="org.eclipse.e4.core.services"/>
-      <plugin id="org.eclipse.e4.core.services.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.core.services.nl_de"/>
       <plugin id="org.eclipse.e4.emf.xpath"/>
-      <plugin id="org.eclipse.e4.emf.xpath.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.emf.xpath.nl_de"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
       <plugin id="org.eclipse.e4.ui.css.core"/>
-      <plugin id="org.eclipse.e4.ui.css.core.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.css.core.nl_de"/>
       <plugin id="org.eclipse.e4.ui.css.swt"/>
-      <plugin id="org.eclipse.e4.ui.css.swt.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.css.swt.nl_de"/>
       <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
-      <plugin id="org.eclipse.e4.ui.css.swt.theme.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.css.swt.theme.nl_de"/>
       <plugin id="org.eclipse.e4.ui.di"/>
-      <plugin id="org.eclipse.e4.ui.di.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.di.nl_de"/>
       <plugin id="org.eclipse.e4.ui.dialogs"/>
-      <plugin id="org.eclipse.e4.ui.dialogs.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.dialogs.nl_de"/>
       <plugin id="org.eclipse.e4.ui.model.workbench"/>
-      <plugin id="org.eclipse.e4.ui.model.workbench.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.model.workbench.nl_de"/>
       <plugin id="org.eclipse.e4.ui.services"/>
-      <plugin id="org.eclipse.e4.ui.services.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.e4.ui.swt.win32" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.services.nl_de"/>
+      <plugin id="org.eclipse.e4.ui.swt.win32"/>
       <plugin id="org.eclipse.e4.ui.widgets"/>
-      <plugin id="org.eclipse.e4.ui.widgets.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.widgets.nl_de"/>
       <plugin id="org.eclipse.e4.ui.workbench"/>
       <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
       <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
       <plugin id="org.eclipse.e4.ui.workbench.swt"/>
       <plugin id="org.eclipse.e4.ui.workbench3"/>
-      <plugin id="org.eclipse.e4.ui.workbench3.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.workbench3.nl_de"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.ecore"/>
       <plugin id="org.eclipse.emf.ecore.change"/>
@@ -129,46 +135,46 @@ http://www.carmen-ev.de - contact@carmen-ev.de
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.event"/>
       <plugin id="org.eclipse.equinox.preferences"/>
-      <plugin id="org.eclipse.equinox.region" fragment="true"/>
+      <plugin id="org.eclipse.equinox.region"/>
       <plugin id="org.eclipse.equinox.registry"/>
-      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
-      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.transforms.hook"/>
+      <plugin id="org.eclipse.equinox.weaving.hook"/>
       <plugin id="org.eclipse.help"/>
-      <plugin id="org.eclipse.help.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.help.nl_de"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
-      <plugin id="org.eclipse.jface.databinding.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.jface.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.jface.databinding.nl_de"/>
+      <plugin id="org.eclipse.jface.nl_de"/>
       <plugin id="org.eclipse.nebula.visualization.xygraph"/>
       <plugin id="org.eclipse.nebula.widgets.opal.commons"/>
       <plugin id="org.eclipse.nebula.widgets.opal.notifier"/>
       <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
-      <plugin id="org.eclipse.osgi.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.osgi.compatibility.state"/>
+      <plugin id="org.eclipse.osgi.nl_de"/>
       <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="org.eclipse.osgi.services.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.osgi.services.nl_de"/>
       <plugin id="org.eclipse.platform"/>
-      <plugin id="org.eclipse.platform.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.platform.nl_de"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.nl_de"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64"/>
       <plugin id="org.eclipse.swtchart"/>
       <plugin id="org.eclipse.swtchart.extensions"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.forms"/>
-      <plugin id="org.eclipse.ui.forms.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_de"/>
       <plugin id="org.eclipse.ui.intro"/>
-      <plugin id="org.eclipse.ui.intro.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.intro.nl_de"/>
       <plugin id="org.eclipse.ui.navigator"/>
-      <plugin id="org.eclipse.ui.navigator.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.ui.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.navigator.nl_de"/>
+      <plugin id="org.eclipse.ui.nl_de"/>
       <plugin id="org.eclipse.ui.views"/>
-      <plugin id="org.eclipse.ui.views.nl_de" fragment="true"/>
-      <plugin id="org.eclipse.ui.win32.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.views.nl_de"/>
+      <plugin id="org.eclipse.ui.win32.nl_de"/>
       <plugin id="org.eclipse.ui.workbench"/>
-      <plugin id="org.eclipse.ui.workbench.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.workbench.nl_de"/>
       <plugin id="org.eclipse.urischeme"/>
-      <plugin id="org.eclipse.urischeme.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.urischeme.nl_de"/>
       <plugin id="org.osgi.service.cm"/>
       <plugin id="org.osgi.service.component"/>
       <plugin id="org.osgi.service.device"/>

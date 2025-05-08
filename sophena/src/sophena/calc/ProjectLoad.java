@@ -3,6 +3,7 @@ package sophena.calc;
 import java.util.Arrays;
 
 import sophena.math.Smoothing;
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
@@ -24,7 +25,8 @@ public class ProjectLoad {
 		HeatNet net = project.heatNet;
 		if (net != null && net.maxLoad != null)
 			return net.maxLoad;
-		double load = getNetLoad(net);
+		double load = getMaxNetLoad(project);
+		
 		for (Consumer c : project.consumers) {
 			if (c.disabled)
 				continue;
@@ -67,12 +69,46 @@ public class ProjectLoad {
 		double[] data = Smoothing.on(dynamicData,
 				Smoothing.getCount(project));
 		Stats.add(staticData, data);
-		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(data, i -> data[i] + netLoad);
+		double[] netLoad = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
 
+	public static double[] getDynamicCurve(Project project) {
+		double[] dynamicData = new double[Stats.HOURS];
+		if (project == null)
+			return dynamicData;
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.dynamicData, dynamicData);
+		}
+		double[] data = Smoothing.on(dynamicData,
+				Smoothing.getCount(project));
+		double[] netLoad = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
+		applyInterruption(data, project.heatNet);
+		return data;
+	}
+	
+	public static double[] getStaticCurve(Project project) {
+		double[] staticData = new double[Stats.HOURS];
+		if (project == null)
+			return staticData;
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+					consumer, project.weatherStation);
+			Stats.add(profile.staticData, staticData);
+		}
+		applyInterruption(staticData, project.heatNet);
+		return staticData;
+	}
+	
 	/**
 	 * Calculates the load curve of the project without applying smoothing on the
 	 * dynamic part of the data.
@@ -89,25 +125,50 @@ public class ProjectLoad {
 			Stats.add(profile.dynamicData, data);
 			Stats.add(profile.staticData, data);
 		}
-		double netLoad = getNetLoad(project.heatNet);
-		Arrays.setAll(data, i -> data[i] + netLoad);
+		double netLoad[] = getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
 
-	public static double getNetLoad(HeatNet net) {
-		return net == null
-				? 0
-				: net.powerLoss * net.length / 1000.0;
+	public static double getMaxNetLoad(Project project) {
+		if(project == null)
+			return 0;
+		
+		double[] netLoadCurve = getNetLoadCurve(project);
+		double max = 0;
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			if(netLoadCurve[hour] > max)
+				max = netLoadCurve[hour];
+		}
+		return max;
 	}
 
-	public static double[] getNetLoadCurve(HeatNet net) {
+	public static double[] getNetLoadCurve(Project project) {
 		double[] curve = new double[Stats.HOURS];
+		HeatNet net = project.heatNet;
 		if (net == null)
 			return curve;
-		double load = getNetLoad(net);
-		Arrays.fill(curve, load);
+		
+		Arrays.fill(curve, net.powerLoss);
 		applyInterruption(curve, net);
+
+		double minWeatherStationTemperature = project.weatherStation.minTemperature(); 
+		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
+
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
+					? project.weatherStation.data[hour]
+					: 0;
+			SeasonalItem seasonalItem = SeasonalItem.calc(net, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
+	
+			double TV = seasonalItem.flowTemperature;
+			double TR = seasonalItem.returnTemperature;
+			// Multiply W per K with temperature difference between pipes (TV-TR)/2 and ground 10°C  
+			curve[hour] *= ((TV + TR) / 2.0 - 10.0);
+			// W to kW
+			curve[hour] /= 1000.0;
+		}
 		return curve;
 	}
 

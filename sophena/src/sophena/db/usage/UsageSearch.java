@@ -14,11 +14,14 @@ import sophena.model.BufferTank;
 import sophena.model.BuildingState;
 import sophena.model.FlueGasCleaning;
 import sophena.model.Fuel;
+import sophena.model.HeatPump;
 import sophena.model.HeatRecovery;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
 import sophena.model.TransferStation;
+import sophena.model.WeatherStation;
+import sophena.model.SolarCollector;
 
 /**
  * Searches for the usage of entities in other entities.
@@ -74,6 +77,14 @@ public class UsageSearch {
 				+ "c.f_building_state = '" + state.id + "'";
 		return query(sql, ModelType.CONSUMER);
 	}
+	
+	public List<SearchResult> of(WeatherStation station) {
+		if (station == null || station.id == null)
+			return Collections.emptyList();
+		String sql = "select c.id, c.name from tbl_projects c where "
+				+ "c.F_WEATHER_STATION = '" + station.id + "'";
+		return query(sql, ModelType.PROJECT);
+	}
 
 	public List<SearchResult> of(TransferStation station) {
 		if (station == null || station.id == null)
@@ -116,6 +127,22 @@ public class UsageSearch {
 		return all;
 	}
 
+	public List<SearchResult> of(SolarCollector solarCollector) {
+		if (solarCollector == null || solarCollector.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_producers p "
+				+ "where f_solar_collector = '" + solarCollector.id + "'";
+		return query(sql, ModelType.PRODUCER);
+	}
+	
+	public List<SearchResult> of(HeatPump heatPump) {
+		if (heatPump == null || heatPump.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_producers p "
+				+ "where f_heat_pump = '" + heatPump.id + "'";
+		return query(sql, ModelType.PRODUCER);
+	}
+	
 	private List<SearchResult> query(String sql, ModelType type) {
 		try {
 			List<SearchResult> results = new ArrayList<>();

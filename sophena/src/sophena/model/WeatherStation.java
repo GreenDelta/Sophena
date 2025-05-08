@@ -25,10 +25,21 @@ public class WeatherStation extends BaseDataEntity {
 
 	@Column(name = "altitude")
 	public double altitude;
+	
+	@Column(name = "reference_longitude")
+	public double referenceLongitude;
 
 	@Column(name = "data")
 	@Convert("DoubleArrayConverter")
 	public double[] data;
+	
+	@Column(name = "direct_radiation")
+	@Convert("DoubleArrayConverter")
+	public double[] directRadiation;
+	
+	@Column(name = "diffuse_radiation")
+	@Convert("DoubleArrayConverter")
+	public double[] diffuseRadiation;
 
 	@Override
 	public WeatherStation copy() {
@@ -40,8 +51,15 @@ public class WeatherStation extends BaseDataEntity {
 		copy.longitude = longitude;
 		copy.latitude = latitude;
 		copy.altitude = altitude;
+		copy.referenceLongitude = referenceLongitude;
 		copy.data = data != null
 				? Arrays.copyOf(data, data.length)
+				: null;
+		copy.directRadiation = directRadiation != null
+				? Arrays.copyOf(directRadiation, directRadiation.length)
+				: null;
+		copy.diffuseRadiation = diffuseRadiation != null
+				? Arrays.copyOf(diffuseRadiation, diffuseRadiation.length)
 				: null;
 		return copy;
 	}
@@ -53,7 +71,19 @@ public class WeatherStation extends BaseDataEntity {
 		d.description = description;
 		d.longitude = longitude;
 		d.latitude = latitude;
-		d.altitude = altitude;
+		d.altitude = altitude;		
+		d.isProtected = isProtected;
 		return d;
+	}
+	
+	public double minTemperature()
+	{
+		double min = Double.MAX_VALUE;
+		for (int i = 0; i < Stats.HOURS; i++)
+		{
+			if(data[i] < min)
+				min = data[i];
+		}
+		return min;
 	}
 }

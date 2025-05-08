@@ -1,5 +1,6 @@
 package sophena.model;
 
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class HeatNet extends AbstractEntity {
 	@Embedded
 	public ProductCosts bufferTankCosts;
 
-	/** Loss of the heating network per meter of net length in [W/m]. */
+	/** Loss of the heating network per meter of net length in [W/K]. */
 	@Column(name = "power_loss")
 	public double powerLoss;
 
@@ -62,6 +63,44 @@ public class HeatNet extends AbstractEntity {
 	@JoinColumn(name = "f_heat_net")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
+	
+	@Column(name = "maximum_performance")
+	public double maximumPerformance;
+	
+	@Column(name = "is_seasonal_driving_style")
+	public boolean isSeasonalDrivingStyle;
+	
+	@JoinColumn(name = "f_interval_winter")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public TimeInterval intervalWinter;
+	
+	@JoinColumn(name = "f_interval_summer")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public TimeInterval intervalSummer;
+	
+	@Column(name = "target_charge_level_winter")
+	public double targetChargeLevelWinter;
+	
+	@Column(name = "target_charge_level_summer")
+	public double targetChargeLevelSummer;
+	
+	@Column(name = "flow_temperature_winter")
+	public double flowTemperatureWinter;
+	
+	@Column(name = "flow_temperature_summer")
+	public double flowTemperatureSummer;
+	
+	@Column(name = "return_temperature_winter")
+	public double returnTemperatureWinter;
+	
+	@Column(name = "return_temperature_summer")
+	public double returnTemperatureSummer;
+	
+	@Column(name = "target_charge_level")
+	public double targetChargeLevel;
+	
+	@Column(name = "use_heating_curve")
+	public boolean useHeatingCurve;
 
 	public static void addDefaultTo(Project p) {
 		if (p == null)
@@ -70,13 +109,35 @@ public class HeatNet extends AbstractEntity {
 		p.heatNet = net;
 		net.id = UUID.randomUUID().toString();
 		net.simultaneityFactor = 1;
-		net.powerLoss = 20;
+		net.powerLoss = 0;
 		net.maxBufferLoadTemperature = 95;
 		net.bufferLambda = 0.04;
 		net.supplyTemperature = 80;
 		net.returnTemperature = 50;
-	}
 
+		net.isSeasonalDrivingStyle = false;
+		net.targetChargeLevelWinter = 50;
+		net.targetChargeLevelSummer = 0;
+		net.targetChargeLevel = 50;
+		net.flowTemperatureWinter = 80;
+		net.flowTemperatureSummer = 80;
+		net.returnTemperatureWinter = 50;
+		net.returnTemperatureSummer = 50;
+		TimeInterval intervalWinter = new TimeInterval();
+		intervalWinter.description = "Winter";
+		intervalWinter.id = UUID.randomUUID().toString();
+		intervalWinter.start = MonthDay.of(11, 15).toString();
+		intervalWinter.end = MonthDay.of(3, 15).toString();
+		net.intervalWinter = intervalWinter;
+		TimeInterval intervalSummer = new TimeInterval();
+		intervalSummer.description = "Sommer";
+		intervalSummer.id = UUID.randomUUID().toString();
+		intervalSummer.start = MonthDay.of(5, 15).toString();
+		intervalSummer.end = MonthDay.of(9, 15).toString();
+		net.intervalSummer = intervalSummer;
+		net.useHeatingCurve = false;
+	}
+	
 	@Override
 	public HeatNet copy() {
 		var clone = new HeatNet();
@@ -98,6 +159,23 @@ public class HeatNet extends AbstractEntity {
 		if (interruption != null) {
 			clone.interruption = interruption.copy();
 		}
+		clone.maximumPerformance = maximumPerformance;
+		clone.isSeasonalDrivingStyle = isSeasonalDrivingStyle;
+		clone.targetChargeLevelWinter = targetChargeLevelWinter;
+		clone.targetChargeLevelSummer = targetChargeLevelSummer;
+		clone.targetChargeLevel = targetChargeLevel;
+		clone.flowTemperatureWinter = flowTemperatureWinter;
+		clone.flowTemperatureSummer = flowTemperatureSummer;
+		clone.returnTemperatureWinter = returnTemperatureWinter;
+		clone.returnTemperatureSummer = returnTemperatureSummer;
+		if (intervalWinter != null) {
+			clone.intervalWinter = intervalWinter.copy();
+		}
+		if (intervalSummer != null) {
+			clone.intervalSummer = intervalSummer.copy();
+		}
+		clone.useHeatingCurve = useHeatingCurve;
+		
 		for (var p : pipes) {
 			clone.pipes.add(p.copy());
 		}

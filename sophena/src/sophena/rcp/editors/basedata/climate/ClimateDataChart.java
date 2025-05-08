@@ -62,11 +62,11 @@ class ClimateDataChart extends Dialog {
 		data.setBufferSize(Stats.HOURS);
 		data.setCurrentYDataArray(station.data);
 		data.setConcatenate_data(false);
-		Trace trace = new Trace("Data", g.primaryXAxis, g.primaryYAxis, data);
+		Trace trace = new Trace("Data", g.getPrimaryXAxis(), g.getPrimaryYAxis(), data);
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		trace.setTraceColor(Colors.getLinkBlue());
 		g.addTrace(trace);
-		Axis x = g.primaryXAxis;
+		Axis x = g.getPrimaryXAxis();
 		x.setRange(0, Stats.HOURS);
 		x.setTitle(M.DwdSourceInfo);
 		x.setMinorTicksVisible(false);

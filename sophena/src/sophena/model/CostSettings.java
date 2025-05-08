@@ -75,24 +75,18 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "interest_rate_funding")
 	public double interestRateFunding;
 
+	@Column(name = "connection_fees")
+	public double connectionFees;
+	
 	/** General investment funding in EUR */
 	@Column(name = "funding")
 	public double funding;
 
-	/** Funding for biomass boilers in EUR/kW */
-	@Column(name = "funding_biomass_boilers")
-	public double fundingBiomassBoilers;
-
-	/** Funding for the heat net in EUR/m */
-	@Column(name = "funding_heat_net")
-	public double fundingHeatNet;
-
-	/** Funding for transfer stations in EUR/piece */
-	@Column(name = "funding_transfer_stations")
-	public double fundingTransferStations;
-
-	@Column(name = "connection_fees")
-	public double connectionFees;
+	@Column(name = "funding_percent")
+	public double fundingPercent;
+	
+	@Column(name = "funding_types")
+	public int fundingTypes;
 
 	// other costs
 
@@ -142,9 +136,8 @@ public class CostSettings extends AbstractEntity {
 
 		// fundings
 		clone.funding = funding;
-		clone.fundingBiomassBoilers = fundingBiomassBoilers;
-		clone.fundingHeatNet = fundingHeatNet;
-		clone.fundingTransferStations = fundingTransferStations;
+		clone.fundingPercent = fundingPercent;
+		clone.fundingTypes = fundingTypes;
 
 		// revenues
 		clone.electricityRevenues = electricityRevenues;

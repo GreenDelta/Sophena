@@ -14,6 +14,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -21,13 +22,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.HeatPumpDao;
 import sophena.db.daos.ProductGroupDao;
 import sophena.db.daos.ProjectDao;
+import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
+import sophena.model.HeatPump;
+import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.model.SolarCollector;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.M;
@@ -76,11 +82,20 @@ public class ProducerWizard extends Wizard {
 			Wizards.initFuelSpec(producer, project);
 			Wizards.initCosts(producer);
 			Wizards.initElectricity(producer, project);
-			if (producer.productGroup != null
-					&& producer.productGroup.type == ProductType.HEAT_PUMP) {
-				producer.utilisationRate = 0.0;
+			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
+				Wizards.initSolarCollectorSpec(producer);
+				producer.utilisationRate = 0.85;
 			}
-
+			if (producer.productGroup != null && producer.productGroup.type == ProductType.HEAT_PUMP)
+			{
+				if(producer.productGroup.name.contains("Luft"))
+					producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
+				else
+				{
+					producer.heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
+					producer.sourceTemperatureUser = 0d;
+				}
+			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
@@ -106,13 +121,19 @@ public class ProducerWizard extends Wizard {
 		private boolean nameEdited;
 		private Combo groupCombo;
 		private TableViewer boilerTable;
+		private TableViewer solarCollectorTable;
 		private Text rankText;
 		private Combo functionCombo;
 
 		private Combo powerCombo;
 		private PowerFilter powerFilter;
 		private final ProductGroup[] groupFilter;
-
+		
+		private final StackLayout layout = new StackLayout();
+		private Composite compBoiler;
+		private Composite compSolarCollector;
+		private Composite parentTable;
+		
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
 			setMessage(" ");
@@ -129,7 +150,8 @@ public class ProducerWizard extends Wizard {
 					ProductType.BIOMASS_BOILER,
 					ProductType.FOSSIL_FUEL_BOILER,
 					ProductType.HEAT_PUMP,
-					ProductType.COGENERATION_PLANT);
+					ProductType.COGENERATION_PLANT,
+					ProductType.SOLAR_THERMAL_PLANT);					
 			for (ProductGroup g : groups) {
 				if (g.name == null || g.type == null)
 					continue;
@@ -150,7 +172,7 @@ public class ProducerWizard extends Wizard {
 			nameField(comp);
 			groupCombo(comp);
 			powerCombo(comp);
-			boilerTable(root);
+			tables(root);			
 			functionFields(root);
 			bindToUI();
 		}
@@ -160,11 +182,31 @@ public class ProducerWizard extends Wizard {
 			nameEdited = false;
 			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged((t) -> {
-				Boiler b = Viewers.getFirstSelected(boilerTable);
-				if (b == null) {
-					nameEdited = true;
-				} else {
-					nameEdited = !Strings.nullOrEqual(t, b.name);
+				ProductGroup group = getGroup();
+				if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+					SolarCollector s = Viewers.getFirstSelected(solarCollectorTable);
+					if (s == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, s.name);
+					}
+				}
+				else if (group != null && group.type == ProductType.HEAT_PUMP)
+				{
+					HeatPump h = Viewers.getFirstSelected(boilerTable);
+					if (h == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, h.name);
+					}
+				}
+				else {
+					Boiler b = Viewers.getFirstSelected(boilerTable);
+					if (b == null) {
+						nameEdited = true;
+					} else {
+						nameEdited = !Strings.nullOrEqual(t, b.name);
+					}
 				}
 			});
 		}
@@ -178,7 +220,7 @@ public class ProducerWizard extends Wizard {
 			groupCombo.select(items.length > 1 ? 1 : 0);
 			Controls.onSelect(groupCombo, e -> {
 				updatePowerFilter();
-				updateBoilers();
+				updateTables();
 				suggestName();
 			});
 		}
@@ -213,13 +255,27 @@ public class ProducerWizard extends Wizard {
 			powerCombo = UI.formCombo(comp, "Größenklasse");
 			updatePowerFilter();
 			Controls.onSelect(powerCombo, e -> {
-				updateBoilers();
+				updateTables();
 				suggestName();
 			});
 		}
 
-		private void boilerTable(Composite root) {
-			Composite comp = new Composite(root, SWT.NONE);
+		private void tables(Composite root)
+		{
+			parentTable = new Composite(root, SWT.NONE);
+			UI.gridData(parentTable, true, true);
+			UI.gridLayout(parentTable, 1);
+			parentTable.setLayout(layout); 
+			compBoiler = new Composite(parentTable, SWT.NONE);
+			
+			boilerTable(compBoiler);
+			layout.topControl = compBoiler;
+			parentTable.layout();
+			compSolarCollector = new Composite(parentTable, SWT.NONE);
+			solarCollectorTable(compSolarCollector);
+		}
+		
+		private void boilerTable(Composite comp) {			
 			UI.gridData(comp, true, true);
 			UI.gridLayout(comp, 1);
 			boilerTable = Tables.createViewer(comp, "Hersteller",
@@ -232,6 +288,20 @@ public class ProducerWizard extends Wizard {
 				validate();
 			});
 		}
+		
+		private void solarCollectorTable(Composite comp) {
+			UI.gridData(comp, true, true);
+			UI.gridLayout(comp, 1);
+			solarCollectorTable = Tables.createViewer(comp, "Hersteller",
+					"Bruttokollektorfläche", "Bezeichnung");
+			Tables.bindColumnWidths(solarCollectorTable, 0.3, 0.25, 0.45);
+			solarCollectorTable.setContentProvider(ArrayContentProvider.getInstance());
+			solarCollectorTable.setLabelProvider(new SolarCollectorLabel());
+			solarCollectorTable.addSelectionChangedListener((e) -> {
+				suggestSolarName();
+				validate();
+			});
+		}
 
 		private void functionFields(Composite root) {
 			Composite composite = new Composite(root, SWT.NONE);
@@ -239,16 +309,34 @@ public class ProducerWizard extends Wizard {
 			UI.gridData(composite, true, false);
 			rankText = UI.formText(composite, "Rang");
 			Texts.on(rankText).integer().required().validate(this::validate);
-			functionCombo = UI.formCombo(composite, "Funktion");
+			functionCombo = UI.formCombo(composite, "Pufferspeicher");
 		}
 
 		private void bindToModel(Producer p) {
 			if (p == null)
 				return;
-			Boiler b = Viewers.getFirstSelected(boilerTable);
-			p.boiler = b;
-			if (b != null) {
-				p.productGroup = b.group;
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+				SolarCollector s = Viewers.getFirstSelected(solarCollectorTable);
+				p.solarCollector = s;
+				if (s != null) {
+					p.productGroup = s.group;
+				}
+			} 
+			else if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPump h = Viewers.getFirstSelected(boilerTable);
+				p.heatPump = h;
+				if (h != null) {
+					p.productGroup = h.group;
+				}
+			}
+			else {
+				Boiler b = Viewers.getFirstSelected(boilerTable);
+				p.boiler = b;
+				if (b != null) {
+					p.productGroup = b.group;
+				}
 			}
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
@@ -256,37 +344,116 @@ public class ProducerWizard extends Wizard {
 		}
 
 		private void bindToUI() {
-			Texts.set(rankText, Wizards.nextProducerRank(project));
-			updateBoilers();
+			Texts.set(rankText, Wizards.nextProducerRank(project));			
 			Wizards.fillProducerFunctions(project, functionCombo);
+			updateTables();
 			setPageComplete(false);
 		}
 
 		private void suggestName() {
 			if (nameEdited && !Texts.isEmpty(nameText))
 				return;
-			Boiler b = Viewers.getFirstSelected(boilerTable);
-			if (b == null) {
-				nameText.setText("");
-			} else {
-				Texts.set(nameText, b.name);
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPump h = Viewers.getFirstSelected(boilerTable);
+				if (h == null) {
+					nameText.setText("");
+				} else {
+					Texts.set(nameText, h.name);
+				}
+			}
+			else
+			{
+				Boiler b = Viewers.getFirstSelected(boilerTable);
+				if (b == null) {
+					nameText.setText("");
+				} else {
+					Texts.set(nameText, b.name);
+				}
 			}
 		}
 
-		private void updateBoilers() {
-			BoilerDao dao = new BoilerDao(App.getDb());
-			ArrayList<Boiler> input = new ArrayList<>();
+		private void suggestSolarName() {
+			if (nameEdited && !Texts.isEmpty(nameText))
+				return;
+			SolarCollector s = Viewers.getFirstSelected(solarCollectorTable);
+			if (s == null) {
+				nameText.setText("");
+			} else {
+				Texts.set(nameText, s.name);
+			}
+		}
+		
+		private void updateTables() {
 			ProductGroup group = getGroup();
-			for (Boiler b : dao.getAll()) {
-				if (group != null && !Objects.equals(b.group, group))
+			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+				layout.topControl = compSolarCollector;
+				parentTable.layout();
+				updateSolarCollectors();
+				if (functionCombo.getItemCount() > 2)				
+					functionCombo.select(2);				
+			} else {
+				layout.topControl = compBoiler;
+				parentTable.layout();				
+				updateBoilers();
+				if(group != null && (group.type == ProductType.HEAT_PUMP || group.type == ProductType.BIOMASS_BOILER || group.type == ProductType.COGENERATION_PLANT))
+					if(functionCombo.getItemCount() > 0)
+						functionCombo.select(0);
+				if(group != null && group.type == ProductType.FOSSIL_FUEL_BOILER && functionCombo.getItemCount() > 1)
+					functionCombo.select(1);
+			}
+		}
+		
+		private void updateBoilers() {
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.HEAT_PUMP)
+			{
+				HeatPumpDao dao = new HeatPumpDao(App.getDb());
+				ArrayList<HeatPump> input = new ArrayList<>();
+				for (HeatPump h : dao.getAll()) {
+					if (group != null && !Objects.equals(h.group, group))
+						continue;
+					if (!PowerFilter.matches(h, powerFilter,
+							powerCombo.getSelectionIndex()))
+						continue;
+					input.add(h);
+				}
+				Sorters.heatPumps(input);
+				boilerTable.setInput(input);
+			}
+			else
+			{
+				BoilerDao dao = new BoilerDao(App.getDb());
+				ArrayList<Boiler> input = new ArrayList<>();
+				for (Boiler b : dao.getAll()) {
+					if (group != null && !Objects.equals(b.group, group))
+						continue;
+					if (!PowerFilter.matches(b, powerFilter,
+							powerCombo.getSelectionIndex()))
+						continue;
+					input.add(b);
+				}
+				Sorters.boilers(input);
+				boilerTable.setInput(input);
+			}
+			setPageComplete(false);
+		}
+		
+		private void updateSolarCollectors() {
+			SolarCollectorDao dao = new SolarCollectorDao(App.getDb());
+			ArrayList<SolarCollector> input = new ArrayList<>();
+			ProductGroup group = getGroup();
+			for (SolarCollector s : dao.getAll()) {
+				if (group != null && !Objects.equals(s.group, group))
 					continue;
-				if (!PowerFilter.matches(b, powerFilter,
+				if (!PowerFilter.matches(s, powerFilter,
 						powerCombo.getSelectionIndex()))
 					continue;
-				input.add(b);
+				input.add(s);
 			}
-			Sorters.boilers(input);
-			boilerTable.setInput(input);
+			Sorters.solarCollectors(input);
+			solarCollectorTable.setInput(input);
 			setPageComplete(false);
 		}
 
@@ -299,9 +466,17 @@ public class ProducerWizard extends Wizard {
 						+ " dem angegebenen Rang.");
 			}
 			setErrorMessage(null);
-			if (Viewers.getFirstSelected(boilerTable) == null) {
-				setPageComplete(false);
-				return false;
+			ProductGroup group = getGroup();
+			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
+				if (Viewers.getFirstSelected(solarCollectorTable) == null) {
+					setPageComplete(false);
+					return false;
+				}
+			} else {		
+				if (Viewers.getFirstSelected(boilerTable) == null) {
+					setPageComplete(false);
+					return false;
+				}
 			}
 			setPageComplete(true);
 			return true;
@@ -381,6 +556,17 @@ public class ProducerWizard extends Wizard {
 								"50 - 150 kW el.",
 								"150 - 500 kW el.",
 								"über 500 kW el." });
+			case SOLAR_THERMAL_PLANT:
+				return new PowerFilter(group.type,
+						new double[][] {
+						null,
+						{ 0, 5 },
+						{ 5, Integer.MAX_VALUE }
+						},
+						new String[] {
+								"",
+								"bis 5 m2",
+								"über 5 m2"});
 			default:
 				return null;
 			}
@@ -397,6 +583,24 @@ public class ProducerWizard extends Wizard {
 			return matches(boiler.maxPower, range);
 		}
 
+		static boolean matches(SolarCollector solarCollector, PowerFilter filter, int i) {
+			if (solarCollector == null)
+				return false;
+			if (filter == null || i >= filter.len())
+				return true;
+			double[] range = filter.ranges[i];
+			return matches(solarCollector.collectorArea, range);
+		}
+		
+		static boolean matches(HeatPump heatPump, PowerFilter filter, int i) {
+			if (heatPump == null)
+				return false;
+			if (filter == null || i >= filter.len())
+				return true;
+			double[] range = filter.ranges[i];
+			return matches(heatPump.ratedPower, range);
+		}
+		
 		static boolean matches(double value, double[] range) {
 			if (range == null || range.length < 2)
 				return true;

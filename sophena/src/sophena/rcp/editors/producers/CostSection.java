@@ -9,9 +9,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.BoilerDao;
+import sophena.db.daos.HeatPumpDao;
+import sophena.db.daos.SolarCollectorDao;
 import sophena.model.Boiler;
+import sophena.model.HeatPump;
 import sophena.model.Producer;
 import sophena.model.ProductCosts;
+import sophena.model.ProductType;
+import sophena.model.SolarCollector;
 import sophena.rcp.App;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.EntityCombo;
@@ -37,7 +42,12 @@ class CostSection {
 		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
 		if (!producer().hasProfile()) {
-			boilerCombo(tk, comp);
+			if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+				solarCombo(tk, comp);
+			else if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.HEAT_PUMP)
+				heatPumpCombo(tk, comp);
+			else
+				boilerCombo(tk, comp);
 			UI.filler(comp);
 		}
 		costSection = new ProductCostSection(() -> producer().costs)
@@ -77,6 +87,70 @@ class CostSection {
 			}
 		}
 		Sorters.boilers(filtered);
+		return filtered;
+	}
+	
+	private void solarCombo(FormToolkit tk, Composite comp) {
+		EntityCombo<SolarCollector> combo = new EntityCombo<>();
+		combo.create("Bezeichnung", comp, tk);
+		combo.setLabelProvider(s -> s.name + " (" + s.collectorArea + " m2)");
+		SolarCollector s = producer().solarCollector;
+		if (s == null)
+			return;
+		combo.setInput(getPossibleSolarCollectors(s));
+		combo.select(s);
+		combo.onSelect(solarCollector -> {
+			producer().solarCollector = solarCollector;
+			ProductCosts.copy(solarCollector, producer().costs);
+			costSection.refresh();
+			editor.setDirty();
+		});
+	}
+	
+	private void heatPumpCombo(FormToolkit tk, Composite comp) {
+		EntityCombo<HeatPump> combo = new EntityCombo<>();
+		combo.create("Bezeichnung", comp, tk);
+		combo.setLabelProvider(h -> h.name + " (" + h.ratedPower + " kW)");
+		HeatPump h = producer().heatPump;
+		if (h == null)
+			return;
+		combo.setInput(getPossibleHeatPumps(h));
+		combo.select(h);
+		combo.onSelect(heatPump -> {
+			producer().heatPump = heatPump;
+			ProductCosts.copy(heatPump, producer().costs);
+			costSection.refresh();
+			editor.setDirty();
+		});
+	}
+
+	private List<SolarCollector> getPossibleSolarCollectors(SolarCollector s) {
+		if (s == null || s.group == null)
+			return Collections.emptyList();
+		SolarCollectorDao dao = new SolarCollectorDao(App.getDb());
+		List<SolarCollector> all = dao.getAll();
+		List<SolarCollector> filtered = new ArrayList<>();
+		for (SolarCollector other : all) {
+			if (Objects.equals(s.group, other.group)) {
+				filtered.add(other);
+			}
+		}
+		Sorters.solarCollectors(filtered);
+		return filtered;
+	}
+	
+	private List<HeatPump> getPossibleHeatPumps(HeatPump h) {
+		if (h == null || h.group == null)
+			return Collections.emptyList();
+		HeatPumpDao dao = new HeatPumpDao(App.getDb());
+		List<HeatPump> all = dao.getAll();
+		List<HeatPump> filtered = new ArrayList<>();
+		for (HeatPump other : all) {
+			if (Objects.equals(h.group, other.group)) {
+				filtered.add(other);
+			}
+		}
+		Sorters.heatPumps(filtered);
 		return filtered;
 	}
 

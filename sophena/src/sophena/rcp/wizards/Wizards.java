@@ -17,6 +17,8 @@ import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.model.SolarCollectorOperatingMode;
+import sophena.model.SolarCollectorSpec;
 import sophena.model.WoodAmountType;
 import sophena.rcp.App;
 
@@ -45,9 +47,10 @@ class Wizards {
 	static void fillProducerFunctions(Project project, Combo combo) {
 		if (project == null || combo == null)
 			return;
-		String[] items = new String[2];
+		String[] items = new String[3];
 		items[0] = Labels.get(ProducerFunction.BASE_LOAD);
 		items[1] = Labels.get(ProducerFunction.PEAK_LOAD);
+		items[2] = Labels.get(ProducerFunction.MAX_LOAD);
 		int selection = 0;
 		for (Producer p : project.producers) {
 			if (p.function == ProducerFunction.BASE_LOAD) {
@@ -65,8 +68,10 @@ class Wizards {
 		int i = combo.getSelectionIndex();
 		if (i == 0)
 			return ProducerFunction.BASE_LOAD;
-		else
+		else if (i==1)
 			return ProducerFunction.PEAK_LOAD;
+		else
+			return ProducerFunction.MAX_LOAD;
 	}
 
 	static boolean producerRankExists(Project project, int rank) {
@@ -139,6 +144,22 @@ class Wizards {
 				.getAll().stream()
 				.filter(e -> e.group == FuelGroup.ELECTRICITY)
 				.findFirst().orElse(null);
+	}
+	
+	static void initSolarCollectorSpec(Producer p) {
+		if (p == null || p.productGroup == null)
+			return;
+		if (p.productGroup.type != ProductType.SOLAR_THERMAL_PLANT)
+			return;
+		
+		SolarCollectorSpec solarCollectorSpec = new SolarCollectorSpec();
+		solarCollectorSpec.solarCollectorArea = p.solarCollector.collectorArea;
+		solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
+		solarCollectorSpec.solarCollectorTilt = 35;
+		solarCollectorSpec.solarCollectorTemperatureDifference = 5;
+		solarCollectorSpec.solarCollectorTemperatureIncrease = 5;
+		solarCollectorSpec.solarCollectorRadiationLimit = 400;
+		p.solarCollectorSpec = solarCollectorSpec;
 	}
 
 	static void initCosts(Producer p) {

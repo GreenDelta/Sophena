@@ -13,8 +13,10 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.CO2Result;
 import sophena.math.energetic.EfficiencyResult;
+import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.UsedHeat;
+import sophena.model.Producer;
 import sophena.rcp.M;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
@@ -41,10 +43,10 @@ class FurtherResultsPage extends FormPage {
 		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(co2, body, tk);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);
-		EfficiencyTable.create(efficiency, s.apply("Effizienz"));
+		EfficiencyTable.create(efficiency, s.apply("Effizienz Speicherung und Verteilung"));
 		EfficiencyChart.create(efficiency, body, tk);
 		new KeyFigureTable().render(s.apply("Kennzahlen Wärmenetz"), tk);
-		form.reflow(true);
+		form.reflow(true);		
 	}
 
 	private class KeyFigureTable {
@@ -78,7 +80,25 @@ class FurtherResultsPage extends FormPage {
 			pefLabel.setLayoutData(
 					new GridData(SWT.RIGHT, SWT.TOP, false, false));
 			HelpLink.create(comp, tk, "Primärenergiefaktor",
-					H.PrimaryEnergyFactor);
+					H.PrimaryEnergyFactor);			
+					
+			int share = 0;
+			for (Producer p : editor.project.producers)
+			{
+				if(!p.disabled && p.solarCollector != null && p.solarCollectorSpec != null)
+				{
+					share += GeneratedHeat.share(editor.result.energyResult.totalHeat(p), editor.result.energyResult);					
+				}
+			}
+			if (share > 0)
+			{
+				UI.formLabel(comp, tk, "Solarthermischer Deckungsbeitrag");
+				Label shareLabel = UI.formLabel(comp, tk, Num.intStr(share));
+				shareLabel.setAlignment(SWT.RIGHT);
+				shareLabel.setLayoutData(
+						new GridData(SWT.RIGHT, SWT.TOP, false, false));
+				UI.formLabel(comp, tk, "%");
+			}
 			UI.formLabel(comp, tk, "");
 		}
 	}

@@ -34,14 +34,14 @@ class EfficiencyTable {
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2);
-		Tables.autoSizeColumns(table);
+		//Tables.autoSizeColumns(table);
+		table.getTable().getColumn(0).setWidth(200);
+		table.getTable().getColumn(1).setWidth(200);
+		table.getTable().getColumn(2).setWidth(200);
 	}
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
-		items.add(new Item("Brennstoffenergie", r.fuelEnergy));
-		items.add(new Item("Konversionsverluste", r.conversionLoss,
-				r.fuelEnergy));
 		if (r.producedElectrictiy > 0) {
 			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
 		}
@@ -52,7 +52,7 @@ class EfficiencyTable {
 				r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
-		Item total = new Item("Gesamtverluste", r.totalLoss, r.fuelEnergy);
+		Item total = new Item("Gesamtverluste", r.totalLoss, r.producedHeat);
 		total.total = true;
 		items.add(total);
 		return items;

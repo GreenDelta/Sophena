@@ -10,7 +10,7 @@ public class ProducerProfiles {
 
 	public static Result<ProducerProfile> read(File file) {
 		// we re-use the load profile reader here
-		var load = LoadProfiles.read(file);
+		var load = LoadProfiles.readProducer(file);
 		var msg = load.message();
 		if (load.isError())
 			return Result.error(msg.orElse(
@@ -19,8 +19,9 @@ public class ProducerProfiles {
 
 		var profile = new ProducerProfile();
 		profile.id = UUID.randomUUID().toString();
-		profile.maxPower = load.get().dynamicData; // 1. column
-		profile.minPower = load.get().staticData;  // 2. column
+		profile.maxPower = load.get().maxPower; // 1. column
+		profile.minPower = load.get().minPower;  // 2. column
+		profile.temperaturLevel = load.get().temperaturLevel;
 		return load.isWarning() && msg.isPresent()
 				? Result.warning(profile, msg.get())
 				: Result.ok(profile);

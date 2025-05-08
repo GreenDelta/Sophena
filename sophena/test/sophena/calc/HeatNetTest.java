@@ -21,7 +21,7 @@ public class HeatNetTest {
 		HeatNet net = p.heatNet = new HeatNet();
 		net.length = 500; // [m]
 		net.powerLoss = 20; // [W/m]
-		double[] curve = ProjectLoad.getNetLoadCurve(net);
+		double[] curve = ProjectLoad.getNetLoadCurve(p);
 		for (int i = 0; i < Stats.HOURS; i++) {
 			Assert.assertEquals(10, curve[i], 1e-16);
 		}

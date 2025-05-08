@@ -31,9 +31,12 @@
 		<class>sophena.model.ProductGroup</class>
 		<class>sophena.model.Project</class>
 		<class>sophena.model.ProjectFolder</class>
+		<class>sophena.model.SolarCollector</class>
 		<class>sophena.model.TimeInterval</class>
 		<class>sophena.model.TransferStation</class>
 		<class>sophena.model.WeatherStation</class>
+		<class>sophena.model.HeatPump</class>
+		
 
 		<properties>
 			<property name="eclipselink.connection-pool.default.max" value="10" />

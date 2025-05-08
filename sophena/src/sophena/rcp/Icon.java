@@ -109,7 +109,9 @@ public enum Icon {
 
 	WARNING_16("warning_16.png"),
 
-	WEBLINK_16("weblink_16.png");
+	WEBLINK_16("weblink_16.png"),
+	
+	SOLARTHERM_16("solartherm_16.png");
 
 	private final String fileName;
 

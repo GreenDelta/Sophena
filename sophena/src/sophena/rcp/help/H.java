@@ -20,7 +20,25 @@ public class H extends NLS {
 	public static String SimultaneityFactor;
 	public static String SmoothingFactor;
 	public static String UtilisationRate;
-
+	public static String CollectorArea;
+	public static String CollectorAlignment;
+	public static String CollectorTilt;
+	public static String CollectorTemperatureDifference;
+	public static String CollectorTemperatureIncrease;
+	public static String LongitudeInfo;
+	public static String LatitudeInfo;
+	public static String MaxPerfInfo;
+	public static String LimitRadiationInfo;
+	public static String ReferenceLongitudeInfo;
+	public static String InterpolationInfo;
+	public static String UtilisationRateSolarInfo;
+	public static String OperatingModeInfo;
+	public static String OperatingData;
+	public static String TargetChargeLevel;
+	public static String UseHeatingCurve;
+	public static String LengthPowerLoss;
+	public static String PowerLoss;
+	
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);
 	}

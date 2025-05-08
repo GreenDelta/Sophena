@@ -12,7 +12,6 @@ import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;
 import sophena.model.BufferTank;
 import sophena.model.Producer;
-import sophena.model.ProducerFunction;
 import sophena.model.Stats;
 import sophena.utils.Num;
 
@@ -20,6 +19,9 @@ class HeatSheet {
 
 	private final ProjectResult result;
 	private final SheetWriter w;
+	
+	private boolean showStagnationDays = false;		
+	private boolean showJAZ = false;
 
 	HeatSheet(Workbook wb, ProjectResult result) {
 		this.result = result;
@@ -34,37 +36,61 @@ class HeatSheet {
 		for (Producer p : result.energyResult.producers) {
 			double heat = result.energyResult.totalHeat(p);
 			w.str(row, 0, p.name);
-			w.str(p.function == ProducerFunction.BASE_LOAD
-					? p.rank + " - Grundlast"
-					: p.rank + " - Spitzenlast");
-			w.rint(Producers.maxPower(p));
+			w.str(Labels.getRankText(p.function, p.rank));
+			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null ? result.energyResult.maxPeakPower(p) : Producers.maxPower(p);
+			w.rint(maxPower);
 			w.str(getFuelUse(p, heat));
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
-			w.rint(Producers.fullLoadHours(p, heat));
-			if (p.boiler != null && p.boiler.isCoGenPlant) {
+			w.rint(maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower));
+			if(p.heatPump != null)
+				w.nextCol();
+			else if (p.boiler != null && p.boiler.isCoGenPlant) {
 				w.rint(100 * p.boiler.efficiencyRate);
 			} else {
 				w.rint(100 * UtilisationRate.get(
 						result.project, p, result.energyResult));
 			}
 			w.num(result.energyResult.numberOfStarts(p));
+			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
+				w.rint(result.energyResult.stagnationDays(p));
+			}
+			else if (showStagnationDays)
+				w.nextCol();
+			if(p.heatPump != null)
+			{
+				w.num((double)Math.round(result.energyResult.jaz(p) * 100) / 100);
+			}
+			else if (showJAZ)
+				w.nextCol();
 			row++;
 		}
 		diffAndBuffer(row, result.energyResult.producers);
 		Excel.autoSize(w.sheet, 0, 7);
 	}
-
+	
 	private void header() {
 		w.boldStr(0, 0, "Wärmeerzeuger");
 		w.boldStr("Rang");
 		w.boldStr("Nennleistung [kW]");
-		w.boldStr("Brennstoffverbrauch");
+		w.boldStr("Energieträgereinsatz");
 		w.boldStr("Erzeugte Wärme [kWh]");
 		w.boldStr("Anteil [%]");
 		w.boldStr("Volllaststunden [h]");
 		w.boldStr("Nutzungsgrad [%]");
 		w.boldStr("Starts");
+		
+		for(Producer p : result.energyResult.producers)
+		{
+			if(p.solarCollector != null & p.solarCollectorSpec != null)
+				showStagnationDays = true;
+			if(p.heatPump != null)
+				showJAZ = true;
+		}
+		if(showStagnationDays)
+			w.boldStr("Stagnationstage");
+		if(showJAZ)
+			w.boldStr("JAZ");
 	}
 
 	private String getFuelUse(Producer pr, double heat) {

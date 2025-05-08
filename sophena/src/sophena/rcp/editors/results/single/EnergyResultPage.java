@@ -20,6 +20,7 @@ class EnergyResultPage extends FormPage {
 	private final ResultColors colors;
 	private final EnergyResult result;
 	private final double maxLoad;
+	private final double maxPeakPower;
 
 	EnergyResultPage(ResultEditor editor) {
 		super(editor, "sophena.EnergyResultPage", M.Heat);
@@ -28,6 +29,7 @@ class EnergyResultPage extends FormPage {
 		this.result = editor.result.energyResult;
 		Project p = editor.project;
 		maxLoad = ProjectLoad.getSimultaneousMax(p);
+		maxPeakPower = editor.result.energyResult.maxPeakPowerOfAllProducers();
 	}
 
 	@Override
@@ -37,10 +39,10 @@ class EnergyResultPage extends FormPage {
 		var body = UI.formBody(form, tk);
 		new BoilerTableSection(editor, maxLoad)
 				.render(body, tk);
-		new BoilerChart(result, colors, maxLoad)
+		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad), maxLoad)
 				.sorted(false)
 				.render(body, tk);
-		new BoilerChart(result, colors, maxLoad)
+		new BoilerChart(result, colors, Math.max(maxPeakPower, maxLoad), maxLoad)
 				.sorted(true)
 				.render(body, tk);
 		createLoadCurve(tk, body);
@@ -52,8 +54,8 @@ class EnergyResultPage extends FormPage {
 		section.setTitle("Jahresdauerlinie - Netzlast");
 		section.setSorted(true);
 		var profile = new LoadProfile();
-		profile.dynamicData = Stats.copy(result.loadCurve);
-		profile.staticData = new double[Stats.HOURS];
+		profile.dynamicData = ProjectLoad.getDynamicCurve(editor.project);
+		profile.staticData = ProjectLoad.getStaticCurve(editor.project);
 		section.setData(profile);
 		section.render(body, tk);
 	}

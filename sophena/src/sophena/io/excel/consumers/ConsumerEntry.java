@@ -12,6 +12,7 @@ import sophena.utils.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,7 +58,7 @@ class ConsumerEntry {
 
 		row.location = r.str(Field.LOCATION);
 		row.street = r.str(Field.STREET);
-		row.zipCode = r.str(Field.ZIP_CODE);
+		row.zipCode = r.str(Field.ZIP_CODE, new DecimalFormat("#"));
 		row.city = r.str(Field.CITY);
 		row.latitude = r.num(Field.LATITUDE);
 		row.longitude = r.num(Field.LONGITUDE);

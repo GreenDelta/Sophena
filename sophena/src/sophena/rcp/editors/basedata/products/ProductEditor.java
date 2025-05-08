@@ -9,7 +9,9 @@ import sophena.model.ProductType;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.boilers.BoilerEditor;
 import sophena.rcp.editors.basedata.buffers.BufferTankEditor;
+import sophena.rcp.editors.basedata.heatpumps.HeatPumpEditor;
 import sophena.rcp.editors.basedata.pipes.PipeEditor;
+import sophena.rcp.editors.basedata.solarcollectors.SolarCollectorEditor;
 import sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -30,10 +32,12 @@ public class ProductEditor extends Editor {
 			return;
 		switch (type) {
 		case BIOMASS_BOILER:
-		case FOSSIL_FUEL_BOILER:
-		case HEAT_PUMP:
+		case FOSSIL_FUEL_BOILER:		
 		case COGENERATION_PLANT:
 			BoilerEditor.open(type);
+			break;
+		case HEAT_PUMP:
+			HeatPumpEditor.open();
 			break;
 		case HEAT_RECOVERY:
 			HeatRecoveryEditor.open();
@@ -49,6 +53,9 @@ public class ProductEditor extends Editor {
 			break;
 		case TRANSFER_STATION:
 			TransferStationEditor.open();
+			break;
+		case SOLAR_THERMAL_PLANT:
+			SolarCollectorEditor.open();
 			break;
 		default:
 			KeyEditorInput input = new KeyEditorInput(

@@ -1,0 +1,7 @@
+package sophena.model;
+
+public enum HeatPumpMode {
+	OUTODOOR_TEMPERATURE_MODE,
+	USER_TEMPERATURE_MODE,
+	HOURLY_TEMPERATURE_MODE,
+}

@@ -20,6 +20,8 @@ type CsvModel struct {
 	HeatRecoveries   []*HeatRecovery
 	FlueGasCleanings []*FlueGasCleaning
 	TransferStations []*TransferStation
+	SolarCollectors  []*SolarCollector
+	HeatPumps        []*HeatPump
 }
 
 // ReadCsvModel reads all CSV data into memory and links them
@@ -35,6 +37,9 @@ func ReadCsvModel() *CsvModel {
 	model.readHeatRecoveries()
 	model.readFlueGasCleanings()
 	model.readTransferStations()
+	model.readSolarCollectors()
+	model.readHeatPumps()
+	model.readHeatPumpCurves()
 	return model
 }
 
@@ -133,7 +138,6 @@ func (model *CsvModel) readBoilers() {
 	}
 	eachCsvRow("data/csv/boilers_cogen_plants.csv", fn)
 	eachCsvRow("data/csv/boilers.csv", fn)
-	eachCsvRow("data/csv/heat_pumps.csv", fn)
 }
 
 func (model *CsvModel) readBufferTanks() {
@@ -219,6 +223,93 @@ func (model *CsvModel) readTransferStations() {
 		model.TransferStations = append(model.TransferStations, &t)
 	}
 	eachCsvRow("data/csv/transfer_stations.csv", fn)
+}
+
+func (model *CsvModel) readSolarCollectors() {
+	model.SolarCollectors = make([]*SolarCollector, 0)
+	fn := func(row []string) {
+		s := SolarCollector{}
+		productType := cStr(row, 1)
+		model.mapProductData(row, &s.Product, productType)
+		s.CollectorArea = cFlo(row, 7)
+		s.EfficiencyRateRadiation = cFlo(row, 8)
+		s.CorrectionFactor = cFlo(row, 9)
+		s.HeatTransferCoefficient1 = cFlo(row, 10)
+		s.HeatTransferCoefficient2 = cFlo(row, 11)
+		s.HeatCapacity = cFlo(row, 12)
+		s.AngleIncidenceEW10 = cFlo(row, 13)
+		s.AngleIncidenceEW20 = cFlo(row, 14)
+		s.AngleIncidenceEW30 = cFlo(row, 15)
+		s.AngleIncidenceEW40 = cFlo(row, 16)
+		s.AngleIncidenceEW50 = cFlo(row, 17)
+		s.AngleIncidenceEW60 = cFlo(row, 18)
+		s.AngleIncidenceEW70 = cFlo(row, 19)
+		s.AngleIncidenceEW80 = cFlo(row, 20)
+		s.AngleIncidenceEW90 = cFlo(row, 21)
+		s.AngleIncidenceNS10 = cFlo(row, 22)
+		s.AngleIncidenceNS20 = cFlo(row, 23)
+		s.AngleIncidenceNS30 = cFlo(row, 24)
+		s.AngleIncidenceNS40 = cFlo(row, 25)
+		s.AngleIncidenceNS50 = cFlo(row, 26)
+		s.AngleIncidenceNS60 = cFlo(row, 27)
+		s.AngleIncidenceNS70 = cFlo(row, 28)
+		s.AngleIncidenceNS80 = cFlo(row, 29)
+		s.AngleIncidenceNS90 = cFlo(row, 30)
+		s.Description = cStr(row, 31)
+
+		model.SolarCollectors = append(model.SolarCollectors, &s)
+	}
+	eachCsvRow("data/csv/solar_collectors.csv", fn)
+}
+
+func (model *CsvModel) readHeatPumps() {
+	model.HeatPumps = make([]*HeatPump, 0)
+	fn := func(row []string) {
+		h := HeatPump{}
+		productType := cStr(row, 1)
+		model.mapProductData(row, &h.Product, productType)
+		h.MinPower = cFlo(row, 7)
+		h.RatedPower = cFlo(row, 7)              // TODO
+		h.MaxPower = make([]float64, 0)          // TODO
+		h.Cop = make([]float64, 0)               // TODO
+		h.TargetTemperature = make([]float64, 0) // TODO
+		h.SourceTemperature = make([]float64, 0) // TODO
+		h.Description = cStr(row, 10)
+
+		model.HeatPumps = append(model.HeatPumps, &h)
+	}
+
+	eachCsvRow("data/csv/heat_pumps.csv", fn)
+}
+
+func (model *CsvModel) readHeatPumpCurves() {
+	//model.HeatPumps = make([]*HeatPump, 0)
+	fn := func(row []string) {
+		id := cStr(row, 0)
+		targetTemperature := cFlo(row, 1)
+		sourceTemperature := cFlo(row, 2)
+		maxPower := cFlo(row, 3)
+		cop := cFlo(row, 4)
+
+		index := -1
+		for i := 0; i < len(model.HeatPumps); i++ {
+			if model.HeatPumps[i].ID == id {
+				index = i
+				break
+			}
+		}
+
+		if index == -1 {
+			panic("Cannot resolve heat pump ID")
+		}
+
+		model.HeatPumps[index].MaxPower = append(model.HeatPumps[index].MaxPower, maxPower)
+		model.HeatPumps[index].Cop = append(model.HeatPumps[index].Cop, cop)
+		model.HeatPumps[index].TargetTemperature = append(model.HeatPumps[index].TargetTemperature, targetTemperature)
+		model.HeatPumps[index].SourceTemperature = append(model.HeatPumps[index].SourceTemperature, sourceTemperature)
+	}
+
+	eachCsvRow("data/csv/heat_pump_curves.csv", fn)
 }
 
 func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {

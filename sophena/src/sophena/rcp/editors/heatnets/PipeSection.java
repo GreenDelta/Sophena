@@ -94,6 +94,7 @@ class PipeSection {
 			net().pipes.add(pipe);
 			table.setInput(net().pipes);
 			editor.setDirty();
+			editor.bus.notify("length-powerloss-changed");
 		}
 		editor.bus.notify("pipes");
 	}
@@ -114,6 +115,7 @@ class PipeSection {
 		table.setInput(net().pipes);
 		editor.setDirty();
 		editor.bus.notify("pipes");
+		editor.bus.notify("length-powerloss-changed");
 	}
 
 	private void del() {
@@ -125,6 +127,7 @@ class PipeSection {
 		table.setInput(net().pipes);
 		editor.setDirty();
 		editor.bus.notify("pipes");
+		editor.bus.notify("length-powerloss-changed");
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {
@@ -148,7 +151,7 @@ class PipeSection {
 				return Num.str(pipe.length) + " m";
 			case 3:
 				return Num.str(HeatNets.getPowerLoss(pipe, net()))
-						+ " W/m";
+						+ " W/K";
 			default:
 				return getCostLabel(pipe.costs, col);
 			}

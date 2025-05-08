@@ -2,6 +2,8 @@ package sophena.rcp.editors.producers;
 
 import java.util.Objects;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -11,11 +13,14 @@ import org.eclipse.ui.PartInitException;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.FuelSpec;
+import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
+import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
@@ -127,6 +132,44 @@ public class ProducerEditor extends Editor {
 								+ " auftreten.");
 				return true;
 			}
+		}
+		if (producer.solarCollectorSpec != null)
+		{
+			if(producer.utilisationRate <= 0)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.UtilizationRateMustBePositive);
+				return false;
+			}
+
+			double alignment = producer.solarCollectorSpec.solarCollectorAlignment;
+			if (alignment < -180 || alignment > 180) {
+				MsgBox.error(M.PlausibilityErrors, M.AlignmentError);
+				return false;
+			}
+			
+			double tilt = producer.solarCollectorSpec.solarCollectorTilt;
+			if (tilt < 0 || tilt > 90) {
+				MsgBox.error(M.PlausibilityErrors, M.TiltError);
+				return false;
+			}
+			
+			if (producer.solarCollectorSpec.solarCollectorOperatingMode == SolarCollectorOperatingMode.AUTO_SEASON && !project.heatNet.isSeasonalDrivingStyle) {
+				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
+				return false;
+			}
+		}
+		if(producer.heatPump != null)
+		{
+			if(producer.heatPumpMode == HeatPumpMode.USER_TEMPERATURE_MODE && producer.sourceTemperatureUser == null)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureUserError);
+				return false;
+			}
+			else if(producer.heatPumpMode == HeatPumpMode.HOURLY_TEMPERATURE_MODE && producer.sourceTemperatureHourly == null)
+			{
+				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureHourlyError);
+				return false;
+			}				
 		}
 
 		return true;

@@ -64,6 +64,8 @@ public class CalcLog {
 		String pref = strip(prefix);
 		String text = strip(s);
 		int offset = PAGE_WIDTH - pref.length() - text.length();
+		if(offset < 0)
+			offset = 0;
 		return pref + repeat(' ', offset) + text;
 	}
 

@@ -201,7 +201,14 @@ class OverviewPage extends FormPage {
 				}
 				continue;
 			}
-			if (!p.hasProfile())
+			
+			if(p.heatPump != null && type == ProductType.HEAT_PUMP)
+			{
+				list.add(p);
+				continue;
+			}
+			
+			if(p.solarCollectorSpec == null && !p.hasProfile())
 				continue;
 			// producer profiles
 			if (p.productGroup == null

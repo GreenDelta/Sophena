@@ -105,6 +105,8 @@ public class ActionBarAdvisor extends
 		MenuManager m = new MenuManager("Produktdaten");
 		menu.add(m);
 		for (ProductType type : ProductType.values()) {
+			if(type == ProductType.ELECTRIC_HEAT_GENERATOR || type == ProductType.OTHER_HEAT_SOURCE)
+				continue;
 			m.add(Actions.create(
 					Labels.getPlural(type),
 					img(type),
@@ -132,6 +134,7 @@ public class ActionBarAdvisor extends
 			case BUFFER_TANK -> Icon.BUFFER_16.des();
 			case PIPE -> Icon.PIPE_16.des();
 			case TRANSFER_STATION -> Icon.CONSUMER_16.des();
+			case SOLAR_THERMAL_PLANT -> Icon.SOLARTHERM_16.des();
 			default -> null;
 		};
 	}
@@ -139,8 +142,6 @@ public class ActionBarAdvisor extends
 	private void fillHelpMenu(IMenuManager menu) {
 		var m = new MenuManager(M.Help);
 		m.add(Actions.create("Ergebnisfarben ...", ColorConfigDialog::show));
-		// SQL query editor
-		m.add(Actions.create("SQL", SqlEditor::open));
 		menu.add(m);
 		m.add(aboutAction);
 	}

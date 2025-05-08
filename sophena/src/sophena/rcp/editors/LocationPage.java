@@ -1,5 +1,6 @@
 package sophena.rcp.editors;
 
+import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -83,7 +84,9 @@ public class LocationPage extends FormPage {
 	private Text number(Composite comp, String label, Double initial,
 			Consumer<Double> fn) {
 		var text = UI.formText(comp, toolkit, label);
-		Texts.on(text).init(initial).onChanged(s -> {
+		if(initial != null)
+			text.setText(Double.toString(initial));
+		Texts.on(text).onChanged(s -> {
 			if (Texts.isEmpty(text)) {
 				fn.accept(null);
 				updateMarker();

@@ -11,6 +11,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
+import sophena.rcp.M;
 import sophena.utils.Strings;
 
 public final class Labels {
@@ -48,8 +49,9 @@ public final class Labels {
 		if (fn == null)
 			return "";
 		return switch (fn) {
-			case BASE_LOAD -> "Grundlast";
-			case PEAK_LOAD -> "Spitzenlast";
+			case BASE_LOAD -> M.BaseLoadText;
+			case PEAK_LOAD -> M.PeakLoadText;
+			case MAX_LOAD -> M.MaxLoadText;
 		};
 	}
 
@@ -69,7 +71,6 @@ public final class Labels {
 			case NURSING_HOME -> "Alten/-Pflegeheim";
 			case RESTAURANT -> "Gaststätte";
 			case HOTEL -> "Hotel";
-			case COMMERCIAL_BUILDING -> "Gewerbe";
 			case OTHER -> "Sonstiges";
 			case FERMENTER -> "Fermenter";
 		};
@@ -189,5 +190,25 @@ public final class Labels {
 			return "?";
 		FuelSpec spec = producer.fuelSpec;
 		return spec.fuel != null ? spec.fuel.name : "?";
+	}
+	
+	public static String getRankText(ProducerFunction func, int rank)
+	{
+		String s = "";
+		switch(func)
+		{
+		case BASE_LOAD:
+			s = " - bis Ziel-Ladestand laden ";
+			break;
+		case MAX_LOAD:
+			s = " - möglichst viel laden ";
+			break;
+		case PEAK_LOAD:
+			s = " - möglichst wenig laden ";
+			break;
+		default:
+			break;		
+		}
+		return rank + s;
 	}
 }

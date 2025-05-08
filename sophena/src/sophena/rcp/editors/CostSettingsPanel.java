@@ -5,18 +5,23 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.db.daos.FuelDao;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
+import sophena.model.FundingType;
 import sophena.rcp.App;
+import sophena.rcp.M;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -31,10 +36,14 @@ public class CostSettingsPanel {
 	private final Editor editor;
 	private final Supplier<CostSettings> fn;
 	private FormToolkit tk;
+	private Composite inner;
+	private GridData dataInner;
+	private final Runnable updateScrolledForm;
 
-	public CostSettingsPanel(Editor editor, Supplier<CostSettings> fn) {
+	public CostSettingsPanel(Editor editor, Supplier<CostSettings> fn, Runnable updateScrolledForm) {
 		this.editor = editor;
 		this.fn = fn;
+		this.updateScrolledForm = updateScrolledForm;
 	}
 
 	private CostSettings costs() {
@@ -116,22 +125,73 @@ public class CostSettingsPanel {
 						.onChanged(s -> costs().interestRateFunding = Num
 								.read(s));
 		if (isForProject) {
-			t(c, "Investitionsförderung allgemein", "EUR", costs().funding)
-					.onChanged(s -> costs().funding = Num.read(s));
-			t(c, "Förderung Biomassekessel", "EUR/kW",
-					costs().fundingBiomassBoilers).onChanged(
-							s -> costs().fundingBiomassBoilers = Num.read(s));
-			t(c, "Förderung Wärmenetz", "EUR/m",
-					costs().fundingHeatNet).onChanged(
-							s -> costs().fundingHeatNet = Num.read(s));
-			t(c, "Förderung Hausübergabestationen", "EUR/Stk.",
-					costs().fundingTransferStations).onChanged(
-							s -> costs().fundingTransferStations = Num.read(s));
-			t(c, "Anschlusskostenbeiträge", "EUR", costs().connectionFees)
-					.onChanged(s -> costs().connectionFees = Num.read(s));
+			t(c, "Einmalige Anschlusskosten", "EUR", costs().connectionFees)
+			.onChanged(s -> costs().connectionFees = Num.read(s));
+			t(c, "Investitionsförderung absolut", "EUR", costs().funding)
+					.onChanged(s -> costs().funding = Num.read(s));					
+			t(c, "Investitionsförderung prozentual", "%",
+					costs().fundingPercent).onChanged(
+							s ->{
+								costs().fundingPercent = Num.read(s);	
+								setInnerGridVisible(costs().fundingPercent > 0);
+							});
+			if(costs().fundingPercent == 0)
+				costs().fundingTypes = FundingType.BiomassBoiler.getValue() | FundingType.SolarThermalPlant.getValue() | FundingType.BoilerAccessories.getValue() | FundingType.HeatRecovery.getValue() | FundingType.FlueGasCleaning.getValue() | FundingType.BufferTank.getValue() 
+				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue() 
+				| FundingType.TransferStation.getValue() | FundingType.Planning.getValue() | FundingType.HeatPump.getValue();
+			createCheckSection(body);
+			setInnerGridVisible(costs().fundingPercent > 0);
 		}
 	}
 
+	private void createCheckSection(Composite c)
+	{
+		inner = tk.createComposite(c);
+		UI.gridLayout(inner, 4);	
+		dataInner = new GridData(SWT.FILL, SWT.FILL, false, false);
+	    inner.setLayoutData(dataInner);
+	    setCheckBox(tk.createButton(inner, M.BiomassBoiler, SWT.CHECK), FundingType.BiomassBoiler.getValue());
+	    setCheckBox(tk.createButton(inner, M.FossilFuelBoiler, SWT.CHECK), FundingType.FossilFuelBoiler.getValue());
+	    setCheckBox(tk.createButton(inner, M.HeatPump, SWT.CHECK), FundingType.HeatPump.getValue());
+	    setCheckBox(tk.createButton(inner, M.CogenerationPlant, SWT.CHECK), FundingType.CogenerationPlant.getValue());
+	    setCheckBox(tk.createButton(inner, M.SolarThermalPlant, SWT.CHECK), FundingType.SolarThermalPlant.getValue());
+	    setCheckBox(tk.createButton(inner, M.ElectricHeatGenerator, SWT.CHECK), FundingType.ElectricHeatGenerator.getValue());
+	    setCheckBox(tk.createButton(inner, M.OtherHeatSource, SWT.CHECK), FundingType.OtherHeatSource.getValue());
+	    setCheckBox(tk.createButton(inner, M.BoilerAccessories, SWT.CHECK), FundingType.BoilerAccessories.getValue());
+	    setCheckBox(tk.createButton(inner, M.OtherEquipment, SWT.CHECK), FundingType.OtherEquipment.getValue());
+	    setCheckBox(tk.createButton(inner, M.HeatRecovery, SWT.CHECK), FundingType.HeatRecovery.getValue());
+	    setCheckBox(tk.createButton(inner, M.FlueGasCleaning, SWT.CHECK), FundingType.FlueGasCleaning.getValue());
+	    setCheckBox(tk.createButton(inner, M.BufferTank, SWT.CHECK), FundingType.BufferTank.getValue());
+	    setCheckBox(tk.createButton(inner, M.BoilerHouseTechnology, SWT.CHECK), FundingType.BoilerHouseTechnology.getValue());
+	    setCheckBox(tk.createButton(inner, M.Building, SWT.CHECK), FundingType.Building.getValue());
+	    setCheckBox(tk.createButton(inner, M.Pipe, SWT.CHECK), FundingType.Pipe.getValue());
+	    setCheckBox(tk.createButton(inner, M.HeatingNetTechnology, SWT.CHECK), FundingType.HeatingNetTechnology.getValue());
+	    setCheckBox(tk.createButton(inner, M.HeatingNetConstruction, SWT.CHECK), FundingType.HeatingNetConstruction.getValue());
+	    setCheckBox(tk.createButton(inner, M.TransferStation, SWT.CHECK), FundingType.TransferStation.getValue());
+	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());	    
+	}
+	
+	private void setCheckBox(Button check, int fundingTypeValue)
+	{
+		check.setSelection((costs().fundingTypes & fundingTypeValue) > 0);
+		Controls.onSelect(check, (e) -> {
+			if(check.getSelection())
+				costs().fundingTypes |= fundingTypeValue;
+			else
+				costs().fundingTypes &= ~fundingTypeValue;
+			editor.setDirty();
+		});
+	}
+	
+	private void setInnerGridVisible(Boolean visible)
+	{
+		inner.setVisible(visible);
+		dataInner.exclude = !visible;	
+		inner.requestLayout();
+		
+		updateScrolledForm.run();
+	}
+	
 	private void createOtherSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Sonstige Kosten");
 		UI.gridLayout(c, 3);

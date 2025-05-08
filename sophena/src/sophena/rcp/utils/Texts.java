@@ -50,6 +50,12 @@ public final class Texts {
 		text.setText(Num.str(d));
 	}
 
+	public static void set(Text text, double d, int decimalPlaces) {
+		if (text == null)
+			return;
+		text.setText(Num.str(d, decimalPlaces));
+	}
+	
 	public static void set(Text text, Double d) {
 		if (text == null)
 			return;
@@ -94,6 +100,13 @@ public final class Texts {
 			return Num.read(text.getText());
 	}
 
+	public static double getDouble(Text text, int decimalPlaces) {
+		if (text == null)
+			return 0;
+		else
+			return Num.read(text.getText(), decimalPlaces);
+	}
+	
 	public static int getInt(Text text) {
 		if (text == null)
 			return 0;

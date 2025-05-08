@@ -6,10 +6,16 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
+import sophena.calc.ProjectLoad;
+import sophena.db.daos.ProjectDao;
 import sophena.model.BufferTank;
+import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
+import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.Icon;
+import sophena.rcp.M;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.help.H;
@@ -25,6 +31,8 @@ class BufferTankSection {
 
 	private final HeatNetEditor editor;
 	private Text volText;
+	private Text maximumPerformanceText;
+	private Text targetChargeText;
 
 	private ProductCostSection costSection;
 
@@ -36,11 +44,17 @@ class BufferTankSection {
 		return editor.heatNet;
 	}
 
+	private Project project() {
+		return editor.project;
+	}
+
 	void create(Composite body, FormToolkit tk) {
 		Composite comp = UI.formSection(body, tk, "Pufferspeicher");
 		UI.gridLayout(comp, 4);
 		createProductRow(comp, tk);
 		createVolText(comp, tk);
+		createTargetChargeLevelText(comp, tk);
+		createMaxPerfText(comp, tk);
 		createMaxTempText(comp, tk);
 		createLowerTempText(comp, tk);
 		createLamdaText(comp, tk);
@@ -49,6 +63,8 @@ class BufferTankSection {
 		costSection = new ProductCostSection(() -> net().bufferTankCosts)
 				.withEditor(editor)
 				.createFields(comp, tk);
+		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
+		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
 	}
 
 	private void createVolText(Composite comp, FormToolkit tk) {
@@ -61,6 +77,17 @@ class BufferTankSection {
 				.decimal().calculated();
 		UI.formLabel(comp, tk, "L");
 		UI.filler(comp, tk);
+	}
+	
+	private void createMaxPerfText(Composite comp, FormToolkit tk) {
+		maximumPerformanceText = UI.formText(comp, tk, M.MaxPerformance);
+		Texts.on(maximumPerformanceText).init(net().maximumPerformance)
+				.decimal().required().onChanged(s -> {
+					net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
+					editor.setDirty();
+				});
+		UI.formLabel(comp, tk, "kW");
+		HelpLink.create(comp, tk, M.MaxPerformance, H.MaxPerfInfo);
 	}
 
 	private void createMaxTempText(Composite comp, FormToolkit tk) {
@@ -75,6 +102,7 @@ class BufferTankSection {
 	}
 
 	private void createLowerTempText(Composite comp, FormToolkit tk) {
+		/*
 		Text t = UI.formText(comp, tk, "Untere Ladetemperatur");
 		double initial = net().supplyTemperature;
 		Double lowerBuffTemp = net().lowerBufferLoadTemperature;
@@ -92,6 +120,7 @@ class BufferTankSection {
 		});
 		UI.formLabel(comp, tk, "°C");
 		UI.filler(comp, tk);
+		*/
 	}
 
 	private void createLamdaText(Composite comp, FormToolkit tk) {
@@ -103,6 +132,18 @@ class BufferTankSection {
 				});
 		UI.formLabel(comp, tk, "W/m*K");
 		HelpLink.create(comp, tk, "λ-Wert der Dämmung", H.BufferLambda);
+	}
+	
+	private void createTargetChargeLevelText(Composite comp, FormToolkit tk) {		
+		targetChargeText = UI.formText(comp, tk, "Ziel-Ladestand");
+		Texts.on(targetChargeText).decimal().required()
+		.init(net().targetChargeLevel)
+		.onChanged((s) -> {
+			net().targetChargeLevel = Texts.getDouble(targetChargeText);
+			editor.setDirty();
+		});
+		UI.formLabel(comp, tk, "%");
+		HelpLink.create(comp, tk, M.TargetChargeLevel, H.TargetChargeLevel);
 	}
 
 	private void createProductRow(Composite comp, FormToolkit tk) {
@@ -132,6 +173,11 @@ class BufferTankSection {
 		UI.filler(comp, tk);
 		UI.filler(comp, tk);
 	}
+	
+	private void seasonalDrivingChanged()
+	{
+		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
+	}
 
 	private void selectBufferTank(ImageHyperlink link) {
 		BufferTank b = SearchDialog.forBuffers();
@@ -146,6 +192,44 @@ class BufferTankSection {
 		if (b.purchasePrice != null)
 			costs.investment = b.purchasePrice;
 		costSection.refresh();
+		updateMaximumPerformance();
 		editor.setDirty();
 	}
+	
+	private void updateMaximumPerformance()
+	{
+		if (net().bufferTank != null)
+		{
+			Texts.set(maximumPerformanceText, calculateMaxSimLoad());
+			net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
+		}
+	}
+	
+	private double calculateMaxSimLoad() {
+		HeatNet net = net();
+		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
+		double sim = net.simultaneityFactor * max;
+		return Math.ceil(sim);
+	}
+
+	private double calculateMaxLoad() {
+		try {
+			// net load from the net-specification on this page
+			double load = ProjectLoad.getMaxNetLoad(project());
+			// add consumer loads from the consumers in the database
+			// we load them freshly from the database because the may changed
+			// in other editors
+			ProjectDao dao = new ProjectDao(App.getDb());
+			Project p = dao.get(editor.project.id);
+			for (Consumer c : p.consumers) {
+				if (c.disabled)
+					continue;
+				load += c.heatingLoad;
+			}
+			return Math.ceil(load);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
 }
