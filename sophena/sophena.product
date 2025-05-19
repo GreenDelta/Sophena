@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0.1" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
       <text>
-         Sophena - Version 3.0
+         Sophena - Version 3.0.1
 
 Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.
 
@@ -55,6 +55,7 @@ AVS GmbH: https://www.alzinger-vogel.de
 
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
