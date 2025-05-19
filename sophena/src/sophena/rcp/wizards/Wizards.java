@@ -12,11 +12,13 @@ import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
+import sophena.model.HeatPump;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.model.SolarCollector;
 import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.SolarCollectorSpec;
 import sophena.model.WoodAmountType;
@@ -168,9 +170,20 @@ class Wizards {
 		ProductCosts costs = new ProductCosts();
 		p.costs = costs;
 		Boiler b = p.boiler;
+		HeatPump h = p.heatPump;
+		SolarCollector sc = p.solarCollector;
 		if (b != null) {
 			ProductCosts.copy(b, costs);
-		} else {
+		}
+        else if(h != null)
+		{
+			ProductCosts.copy(h, costs);
+		}
+        else if(sc != null)
+		{
+			ProductCosts.copy(sc, costs);
+		}
+        else {
 			ProductCosts.copy(p.productGroup, costs);
 		}
 		if (!p.hasProfile()) {
