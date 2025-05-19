@@ -9,6 +9,7 @@ import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;
 import sophena.math.costs.FuelCosts;
 import sophena.math.costs.Fundings;
+import sophena.math.costs.InvestmentCosts;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
@@ -88,8 +89,9 @@ class CostCalculator {
 		if (item == null || item.costs == null)
 			return;
 		r.items.add(item);
-		r.dynamicTotal.investments += item.costs.investment;
-		r.staticTotal.investments += item.costs.investment;
+		item.investmentCosts = InvestmentCosts.get(item);
+		r.dynamicTotal.investments += item.investmentCosts;
+		r.staticTotal.investments += item.investmentCosts;
 
 		// add capital costs
 		log.println("=> Kapitalkosten: " + item.label);

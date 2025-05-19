@@ -19,7 +19,9 @@ public class CostResultItem {
 	public String label;
 	public ProductType productType;
 	public ProductCosts costs;
+	public Producer producer;
 
+	public double investmentCosts;
 	public double capitalCosts;
 	public double demandRelatedCosts;
 	public double operationRelatedCosts;
@@ -46,6 +48,7 @@ public class CostResultItem {
 		} else if (producer.productGroup != null) {
 			item.productType = producer.productGroup.type;
 		}
+		item.producer = producer;
 		return copy(producer.costs, item);
 	}
 
