@@ -109,7 +109,7 @@ public class HeatPumpSection {
 			editor.setDirty();
 			updateControls();
 		});	
-		HelpLink.create(inner, tk, M.HeatPumpMode, "");
+		//HelpLink.create(inner, tk, M.HeatPumpMode, "");
 	}
 	
 	private void updateControls()
