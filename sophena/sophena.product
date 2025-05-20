@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0.1" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
@@ -37,7 +37,6 @@ AVS GmbH: https://www.alzinger-vogel.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
-
    <launcher name="Sophena">
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
@@ -52,10 +51,8 @@ AVS GmbH: https://www.alzinger-vogel.de
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>
