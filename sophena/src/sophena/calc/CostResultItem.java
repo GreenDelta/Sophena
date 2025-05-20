@@ -53,7 +53,7 @@ public class CostResultItem {
 	}
 
 	static CostResultItem forBuffer(Project project) {
-		if (project == null || project.heatNet == null)
+		if (project == null || project.heatNet == null || project.heatNet.bufferTank == null)
 			return new CostResultItem();
 		CostResultItem item = init(project.heatNet.bufferTank,
 				ProductType.BUFFER_TANK, "Pufferspeicher");
