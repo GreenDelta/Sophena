@@ -190,7 +190,7 @@ class CostSheet {
 			}
 
 			w.str(i.label)
-					.rint(i.costs.investment)
+					.rint(i.investmentCosts)
 					.rint(i.capitalCosts)
 					.rint(i.demandRelatedCosts)
 					.rint(i.operationRelatedCosts)

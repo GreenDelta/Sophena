@@ -59,7 +59,7 @@ class CostDetailsTable {
 			item.type = r.productType;
 			item.category = Labels.getPlural(r.productType);
 			item.product = r.label;
-			item.investment = r.costs.investment;
+			item.investment = r.investmentCosts;
 			item.capitalCosts = s(r.capitalCosts, "EUR/a");
 			item.consumptionCosts = s(r.demandRelatedCosts, "EUR/a");
 			item.operationCosts = s(r.operationRelatedCosts, "EUR/a");

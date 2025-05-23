@@ -19,7 +19,9 @@ public class CostResultItem {
 	public String label;
 	public ProductType productType;
 	public ProductCosts costs;
+	public Producer producer;
 
+	public double investmentCosts;
 	public double capitalCosts;
 	public double demandRelatedCosts;
 	public double operationRelatedCosts;
@@ -46,11 +48,12 @@ public class CostResultItem {
 		} else if (producer.productGroup != null) {
 			item.productType = producer.productGroup.type;
 		}
+		item.producer = producer;
 		return copy(producer.costs, item);
 	}
 
 	static CostResultItem forBuffer(Project project) {
-		if (project == null || project.heatNet == null)
+		if (project == null || project.heatNet == null || project.heatNet.bufferTank == null)
 			return new CostResultItem();
 		CostResultItem item = init(project.heatNet.bufferTank,
 				ProductType.BUFFER_TANK, "Pufferspeicher");

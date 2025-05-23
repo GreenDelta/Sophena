@@ -32,7 +32,7 @@ public class CapitalCosts {
 			return 0;
 		double interestFactor = 1 + interestRate / 100;
 		return calculate(
-				item.costs.investment,
+				item.investmentCosts,
 				item.costs.duration,
 				project.duration,
 				interestFactor,

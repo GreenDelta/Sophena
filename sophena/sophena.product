@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
       <text>
-         Sophena - Version 3.0
+         Sophena - Version 3.0.1
 
 Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.
 
@@ -37,7 +37,6 @@ AVS GmbH: https://www.alzinger-vogel.de
 
    <windowImages i16="icons/WindowImages/16x16.png" i32="icons/WindowImages/32x32.png" i48="icons/WindowImages/48x48.png" i64="icons/WindowImages/64x64.png" i128="icons/WindowImages/128x128.png" i256="icons/WindowImages/256x256.png"/>
 
-
    <launcher name="Sophena">
       <win useIco="true">
          <ico path="/sophena/icons/Sophena_web.ico"/>
@@ -51,7 +50,6 @@ AVS GmbH: https://www.alzinger-vogel.de
             winExtraLargeHigh="icons/App/256x256bmp.bmp"/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>

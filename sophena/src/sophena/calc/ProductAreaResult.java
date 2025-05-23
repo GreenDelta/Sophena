@@ -43,8 +43,8 @@ public class ProductAreaResult {
 			data.put(area, entry);
 		}
 		if (item.costs != null) {
-			entry.investmentCosts += item.costs.investment;
-			totalInvestmentCosts += item.costs.investment;
+			entry.investmentCosts += item.investmentCosts;
+			totalInvestmentCosts += item.investmentCosts;
 		}
 		entry.capitalCosts += item.capitalCosts;
 		totalCapitalCosts += item.capitalCosts;
