@@ -53,7 +53,7 @@ public class ConsumerReader {
 		// top-left cell, we will read the content
 		var sheet = it.next();
 		var head = RowReader.of(sheet.getRow(0)).orElse(null);
-		if (head == null || head.str(0) == null)
+		if (head == null || head.str(0, null) == null)
 			return null;
 
 		// read the consumer rows
@@ -62,7 +62,7 @@ public class ConsumerReader {
 		while ((row = sheet.getRow(nextIdx)) != null) {
 			nextIdx++;
 			var r = RowReader.of(row).orElse(null);
-			if (r == null || Strings.nullOrEmpty(r.str(0)))
+			if (r == null || Strings.nullOrEmpty(r.str(0, null)))
 				continue;
 			var entry = ConsumerEntry.readFrom(r).orElse(null);
 			if (entry == null)

@@ -39,7 +39,7 @@ public class Fundings {
 			
 			Integer fundingTypeValue = ConvertType.ProductTypeToFundingType(item.productType).getValue();
 			if((fundingTypes & fundingTypeValue) > 0)
-				total += factor * item.costs.investment;
+				total += factor * item.investmentCosts;
 		}
 		if (log != null) 
 		{
