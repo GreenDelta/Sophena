@@ -50,11 +50,13 @@ class RowReader {
 		var cell = row.getCell(pos);
 		if (cell == null)
 			return null;
-		return switch (cell.getCellTypeEnum()) {
+		return switch (cell.getCellType()) {
 			case STRING -> cell.getStringCellValue();
 			case BOOLEAN -> Boolean.toString(cell.getBooleanCellValue());
 			case FORMULA -> cell.getCellFormula();
-			case NUMERIC -> df != null ? df.format(cell.getNumericCellValue()) : Double.toString(cell.getNumericCellValue());
+			case NUMERIC -> df != null 
+					? df.format(cell.getNumericCellValue()) 
+					: Double.toString(cell.getNumericCellValue());
 			default -> null;
 		};
 	}

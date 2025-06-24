@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.persistence.EntityManagerFactory;
 
-import org.apache.derby.jdbc.EmbeddedDriver;
+import org.apache.derby.iapi.jdbc.AutoloadedDriver;
 import org.eclipse.persistence.jpa.PersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class Database implements Closeable {
 
 	private void registerDriver() {
 		try {
-			DriverManager.registerDriver(new EmbeddedDriver());
+			DriverManager.registerDriver(new AutoloadedDriver());
 		} catch (Exception e) {
 			throw new RuntimeException("Could not register driver", e);
 		}
@@ -76,7 +76,7 @@ public class Database implements Closeable {
 		Map<Object, Object> map = new HashMap<>();
 		map.put("jakarta.persistence.jdbc.url", url);
 		map.put("jakarta.persistence.jdbc.driver",
-				"org.apache.derby.jdbc.EmbeddedDriver");
+				"org.apache.derby.iapi.jdbc.AutoloadedDriver");
 		map.put("eclipselink.classloader", getClass().getClassLoader());
 		map.put("eclipselink.target-database", "Derby");
 		entityFactory = new PersistenceProvider().createEntityManagerFactory(
