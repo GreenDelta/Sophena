@@ -30,8 +30,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.colors.Colors;
-
 public class UI {
 
 	private UI() {
@@ -92,7 +90,7 @@ public class UI {
 					return fn.apply(args);
 				} catch (Exception e) {
 					var log = LoggerFactory.getLogger(UI.class);
-					log.error("failed to execute browser function " + name, e);
+					log.error("failed to execute browser function {}", name, e);
 					return null;
 				}
 			}
@@ -171,7 +169,6 @@ public class UI {
 		tk.getHyperlinkGroup().setHyperlinkUnderlineMode(
 				HyperlinkSettings.UNDERLINE_HOVER);
 		form.setText(title);
-		form.getForm().setForeground(Colors.of(0, 33, 113));
 		return form;
 	}
 
@@ -183,29 +180,22 @@ public class UI {
 
 	public static Section section(
 			Composite parent, FormToolkit tk, String label) {
-		var s = tk.createSection(parent,
-				ExpandableComposite.TITLE_BAR
-						| ExpandableComposite.FOCUS_TITLE
-						| ExpandableComposite.EXPANDED
-						| ExpandableComposite.TWISTIE);
-		return styleSection(s, label);
+		return makeSection(parent, tk, label, ExpandableComposite.EXPANDED);
 	}
 
 	public static Section collapsedSection(
 			Composite parent, FormToolkit tk, String label) {
-		var s = tk.createSection(parent,
-				ExpandableComposite.TITLE_BAR
-						| ExpandableComposite.FOCUS_TITLE
-						| ExpandableComposite.COMPACT
-						| ExpandableComposite.TWISTIE);
-		return styleSection(s, label);
+		return makeSection(parent, tk, label, ExpandableComposite.COMPACT);
 	}
 
-	private static Section styleSection(Section s, String label) {
-		s.setTitleBarBackground(Colors.of(150, 200, 255));
-		s.setTitleBarBorderColor(Colors.of(122, 122, 122));
-		s.setTitleBarForeground(Colors.of(0, 33, 113));
-		s.setToggleColor(Colors.of(0, 33, 113));	
+	private static Section makeSection(
+			Composite parent, FormToolkit tk, String label, int expansion) {
+		var s = tk.createSection(parent,
+				ExpandableComposite.SHORT_TITLE_BAR
+						| ExpandableComposite.FOCUS_TITLE
+						| ExpandableComposite.TWISTIE
+						| expansion
+		);
 		gridData(s, true, false);
 		s.setText(label);
 		return s;
@@ -257,8 +247,8 @@ public class UI {
 		return layout;
 	}
 
-	public static GridData fillHorizontal(Control control) {
-		return gridData(control, true, false);
+	public static void fillHorizontal(Control control) {
+		gridData(control, true, false);
 	}
 
 	public static Composite formComposite(Composite parent) {
@@ -278,14 +268,12 @@ public class UI {
 		return formCheckBox(parent, null, label);
 	}
 
-	public static Button formCheckBox(Composite parent, FormToolkit toolkit,
-																		String label) {
+	public static Button formCheckBox(
+			Composite parent, FormToolkit tk, String label) {
 		formLabel(parent, label);
-		Button button = null;
-		if (toolkit != null)
-			button = toolkit.createButton(parent, null, SWT.CHECK);
-		else
-			button = new Button(parent, SWT.CHECK);
+		var button = tk != null
+				? tk.createButton(parent, null, SWT.CHECK)
+				: new Button(parent, SWT.CHECK);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		button.setLayoutData(gd);
 		return button;
@@ -308,15 +296,13 @@ public class UI {
 		return formText(parent, toolkit, label, SWT.BORDER);
 	}
 
-	public static Text formText(Composite parent, FormToolkit toolkit,
-															String label, int flags) {
+	public static Text formText(
+			Composite parent, FormToolkit tk, String label, int flags) {
 		if (label != null)
-			formLabel(parent, toolkit, label);
-		Text text = null;
-		if (toolkit != null)
-			text = toolkit.createText(parent, null, flags);
-		else
-			text = new Text(parent, flags);
+			formLabel(parent, tk, label);
+		var text = tk != null
+				? tk.createText(parent, null, flags)
+				: new Text(parent, flags);
 		gridData(text, true, false);
 		return text;
 	}
@@ -357,7 +343,7 @@ public class UI {
 
 	public static Label formLabel(Composite parent, FormToolkit toolkit,
 																String label) {
-		Label labelWidget = null;
+		Label labelWidget;
 		if (toolkit != null)
 			labelWidget = toolkit.createLabel(parent, label, SWT.NONE);
 		else {
