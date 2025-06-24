@@ -5,7 +5,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.SolarCollector;
-import sophena.rcp.Icon;
 import sophena.utils.Num;
 
 public class SolarCollectorLabel extends LabelProvider

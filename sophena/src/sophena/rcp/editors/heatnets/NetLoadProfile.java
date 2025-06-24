@@ -1,7 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
 import sophena.calc.ProjectLoad;
-import sophena.model.HeatNet;
 import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.model.Stats;

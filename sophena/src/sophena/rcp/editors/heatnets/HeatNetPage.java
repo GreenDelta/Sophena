@@ -6,7 +6,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import sophena.model.HeatNet;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.UI;
 
@@ -17,10 +16,6 @@ class HeatNetPage extends FormPage {
 	public HeatNetPage(HeatNetEditor editor) {
 		super(editor, "sophena.HeatNetPage", "Wärmeverteilung");
 		this.editor = editor;
-	}
-
-	private HeatNet heatNet() {
-		return editor.heatNet;
 	}
 
 	@Override

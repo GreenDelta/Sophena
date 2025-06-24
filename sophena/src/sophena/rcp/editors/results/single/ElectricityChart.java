@@ -1,5 +1,9 @@
 package sophena.rcp.editors.results.single;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -9,6 +13,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import sophena.calc.EnergyResult;
 import sophena.math.energetic.Producers;
 import sophena.model.Stats;
@@ -17,10 +22,6 @@ import sophena.rcp.colors.Colors;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 class ElectricityChart {
 

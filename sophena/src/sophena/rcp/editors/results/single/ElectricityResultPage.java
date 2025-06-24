@@ -1,5 +1,8 @@
 package sophena.rcp.editors.results.single;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -18,9 +21,6 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 import sophena.utils.Ref;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ElectricityResultPage extends FormPage {
 

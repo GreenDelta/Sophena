@@ -1,6 +1,5 @@
 package sophena.rcp.editors;
 
-import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 

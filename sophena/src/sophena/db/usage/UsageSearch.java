@@ -19,9 +19,9 @@ import sophena.model.HeatRecovery;
 import sophena.model.ModelType;
 import sophena.model.Pipe;
 import sophena.model.Product;
+import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
-import sophena.model.SolarCollector;
 
 /**
  * Searches for the usage of entities in other entities.

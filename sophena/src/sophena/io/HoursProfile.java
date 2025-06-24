@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.model.Stats;
-import sophena.utils.Strings;
 import sophena.utils.Num;
+import sophena.utils.Strings;
 
 /**
  * Reads or writes data from an hours profile. A hours profile file should have the

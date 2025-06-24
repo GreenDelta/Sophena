@@ -1,7 +1,6 @@
 package sophena.rcp.editors.producers;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -10,12 +9,12 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.Labels;
 import sophena.model.OutdoorTemperatureControlKind;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductType;
-import sophena.model.SolarCollectorOperatingMode;
 import sophena.rcp.M;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.basedata.ProductGroupEditor;

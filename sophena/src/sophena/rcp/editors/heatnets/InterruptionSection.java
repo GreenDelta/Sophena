@@ -1,10 +1,14 @@
 package sophena.rcp.editors.heatnets;
 
+import java.time.MonthDay;
+import java.util.UUID;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sophena.model.HeatNet;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
@@ -12,9 +16,6 @@ import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.MonthDayBox;
 import sophena.rcp.utils.UI;
-
-import java.time.MonthDay;
-import java.util.UUID;
 
 class InterruptionSection {
 

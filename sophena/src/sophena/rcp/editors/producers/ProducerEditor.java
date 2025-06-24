@@ -2,8 +2,6 @@ package sophena.rcp.editors.producers;
 
 import java.util.Objects;
 
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;

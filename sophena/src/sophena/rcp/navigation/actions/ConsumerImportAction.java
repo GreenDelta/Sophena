@@ -1,5 +1,7 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
+
 import sophena.db.daos.ProjectDao;
 import sophena.io.excel.consumers.ConsumerReader;
 import sophena.model.Consumer;
@@ -12,8 +14,6 @@ import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
-
-import java.util.List;
 
 public class ConsumerImportAction extends NavigationAction {
 

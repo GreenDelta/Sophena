@@ -5,9 +5,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Label;
 
 import sophena.calc.CO2Result;
 import sophena.calc.ProjectResult;
@@ -17,7 +14,6 @@ import sophena.math.energetic.PrimaryEnergyFactor;
 import sophena.math.energetic.UsedHeat;
 import sophena.model.Producer;
 import sophena.model.Project;
-import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
 class FurtherResultsSheet {

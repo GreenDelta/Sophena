@@ -19,8 +19,6 @@ import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
-import sophena.rcp.help.H;
-import sophena.rcp.help.HelpBox;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;

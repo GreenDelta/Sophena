@@ -1,13 +1,14 @@
 package sophena.rcp.colors;
 
-import org.eclipse.swt.graphics.Color;
-import sophena.calc.ProjectResult;
-import sophena.model.Producer;
-import sophena.model.ProductType;
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.swt.graphics.Color;
+
+import sophena.calc.ProjectResult;
+import sophena.model.Producer;
+import sophena.model.ProductType;
 
 public class ResultColors {
 

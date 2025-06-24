@@ -1,5 +1,8 @@
 package sophena.rcp.colors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -11,14 +14,12 @@ import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.LoggerFactory;
+
 import sophena.Labels;
 import sophena.model.ProductType;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ColorConfigDialog extends FormDialog {
 

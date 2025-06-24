@@ -3,6 +3,7 @@ package sophena.io;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import sophena.model.RootEntity;
 
 public class Json {

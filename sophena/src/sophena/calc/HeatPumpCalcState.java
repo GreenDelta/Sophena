@@ -2,6 +2,7 @@ package sophena.calc;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import sophena.model.Producer;
 import sophena.model.Project;
 

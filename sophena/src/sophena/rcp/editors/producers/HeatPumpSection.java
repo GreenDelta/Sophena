@@ -15,7 +15,6 @@ import sophena.model.Producer;
 import sophena.rcp.M;
 import sophena.rcp.charts.HeatPumpTemperatureChart;
 import sophena.rcp.colors.Colors;
-import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Log;

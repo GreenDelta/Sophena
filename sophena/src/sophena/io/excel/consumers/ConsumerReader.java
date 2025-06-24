@@ -1,16 +1,17 @@
 package sophena.io.excel.consumers;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+
 import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.utils.Result;
 import sophena.utils.Strings;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConsumerReader {
 

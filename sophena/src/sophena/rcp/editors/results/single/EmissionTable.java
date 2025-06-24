@@ -1,5 +1,9 @@
 package sophena.rcp.editors.results.single;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -7,15 +11,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+
 import sophena.calc.CO2Result;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 class EmissionTable {
 

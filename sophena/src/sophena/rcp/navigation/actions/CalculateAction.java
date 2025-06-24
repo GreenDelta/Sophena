@@ -4,9 +4,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.rcp.Icon;
 import sophena.rcp.editors.results.single.ResultEditor;
+import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
-import sophena.rcp.navigation.NavigationElement;
 
 public class CalculateAction extends NavigationAction {
 

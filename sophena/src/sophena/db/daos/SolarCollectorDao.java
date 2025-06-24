@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sophena.db.Database;
-import sophena.model.SolarCollector;
 import sophena.model.ProductType;
+import sophena.model.SolarCollector;
 
 public class SolarCollectorDao extends RootEntityDao<SolarCollector> {
 

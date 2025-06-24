@@ -5,10 +5,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.rcp.editors.basedata.heatpumps.HeatPumpWizard.HeatPumpData;
-import sophena.rcp.utils.Texts;
 import sophena.utils.Result;
 import sophena.utils.Strings;
 

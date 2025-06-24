@@ -1,9 +1,9 @@
 package sophena.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-
-import java.util.UUID;
 
 /**
  * In Sophena, projects can be organized in folders. Sub-folders are currently

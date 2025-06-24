@@ -1,9 +1,9 @@
 package sophena.model;
 
-import sophena.utils.Strings;
-
 import java.util.Objects;
 import java.util.Optional;
+
+import sophena.utils.Strings;
 
 /**
  * All products in Sophena have exactly one of the following types. The order in

@@ -1,5 +1,7 @@
 package sophena.rcp.colors;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -11,9 +13,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import sophena.rcp.utils.UI;
 
-import java.util.function.Consumer;
+import sophena.rcp.utils.UI;
 
 class ColorBox {
 

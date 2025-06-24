@@ -1,5 +1,8 @@
 package sophena.io.excel.consumers;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import sophena.db.Database;
 import sophena.db.daos.FuelDao;
 import sophena.math.energetic.UtilisationRate;
@@ -7,9 +10,6 @@ import sophena.model.FuelConsumption;
 import sophena.model.WoodAmountType;
 import sophena.utils.Num;
 import sophena.utils.Result;
-
-import java.util.Optional;
-import java.util.UUID;
 
 class FuelEntry {
 

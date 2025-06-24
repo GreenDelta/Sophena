@@ -1,17 +1,5 @@
 package sophena.rcp.colors;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.eclipse.swt.graphics.RGB;
-import org.slf4j.LoggerFactory;
-import sophena.io.Json;
-import sophena.model.Copyable;
-import sophena.model.ProductType;
-import sophena.rcp.Workspace;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +13,20 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.eclipse.swt.graphics.RGB;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import sophena.io.Json;
+import sophena.model.Copyable;
+import sophena.model.ProductType;
+import sophena.rcp.Workspace;
 
 public class ColorConfig implements Copyable<ColorConfig> {
 

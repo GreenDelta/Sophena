@@ -1,5 +1,8 @@
 package sophena.rcp.editors.projects;
 
+import java.io.File;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -7,6 +10,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
@@ -22,9 +26,6 @@ import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-
-import java.io.File;
-import java.util.List;
 
 class InfoPage extends FormPage {
 

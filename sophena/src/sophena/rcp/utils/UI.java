@@ -1,5 +1,7 @@
 package sophena.rcp.utils;
 
+import java.util.function.Function;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -27,9 +29,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.LoggerFactory;
-import sophena.rcp.colors.Colors;
 
-import java.util.function.Function;
+import sophena.rcp.colors.Colors;
 
 public class UI {
 

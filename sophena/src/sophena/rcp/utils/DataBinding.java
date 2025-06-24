@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+
 import org.eclipse.swt.widgets.Text;
 
 import sophena.utils.Num;

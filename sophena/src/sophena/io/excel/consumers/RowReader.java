@@ -1,10 +1,10 @@
 package sophena.io.excel.consumers;
 
-import org.apache.poi.ss.usermodel.Row;
-
 import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Row;
 
 class RowReader {
 

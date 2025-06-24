@@ -11,9 +11,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.math.energetic.SeasonalItem;
 import sophena.model.HeatNet;
-import sophena.model.Stats;
 import sophena.model.TimeInterval;
 import sophena.rcp.M;
 import sophena.rcp.help.H;

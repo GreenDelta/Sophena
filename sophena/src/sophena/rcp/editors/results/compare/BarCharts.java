@@ -1,5 +1,7 @@
 package sophena.rcp.editors.results.compare;
 
+import java.util.Arrays;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -11,13 +13,12 @@ import org.eclipse.swtchart.IBarSeries.BarWidthStyle;
 import org.eclipse.swtchart.ISeries.SeriesType;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.calc.Comparison;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
-
-import java.util.Arrays;
 
 class BarCharts {
 

@@ -1,11 +1,11 @@
 package sophena.calc;
 
-import sophena.model.Project;
-import sophena.model.Stats;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import sophena.model.Project;
+import sophena.model.Stats;
 
 public class ProjectResult {
 

@@ -2,10 +2,10 @@ package sophena.rcp.navigation.actions;
 
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
-import sophena.rcp.navigation.SubFolderElement;
-import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.wizards.ProducerProfileWizard;
 
 public class AddProducerProfileAction extends NavigationAction {

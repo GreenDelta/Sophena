@@ -1,7 +1,11 @@
 package sophena.rcp.editors.basedata.heatpumps;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -11,23 +15,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import sophena.Labels;
 import sophena.io.LoadHeatPumpData;
-import sophena.io.ProducerProfiles;
 import sophena.model.HeatPump;
-import sophena.model.Producer;
 import sophena.model.ProductType;
-import sophena.model.Stats;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
-import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.basedata.ProductWizard;
 import sophena.rcp.editors.basedata.ProductWizard.IContent;

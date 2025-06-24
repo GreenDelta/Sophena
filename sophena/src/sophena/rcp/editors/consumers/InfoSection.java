@@ -1,11 +1,15 @@
 package sophena.rcp.editors.consumers;
 
+import java.io.File;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import sophena.Labels;
 import sophena.db.daos.BuildingStateDao;
 import sophena.io.ConsumerProfiles;
@@ -21,9 +25,6 @@ import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-
-import java.io.File;
-import java.util.List;
 
 class InfoSection {
 

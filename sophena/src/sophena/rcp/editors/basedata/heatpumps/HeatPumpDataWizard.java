@@ -13,7 +13,6 @@ import sophena.rcp.editors.basedata.heatpumps.HeatPumpWizard.HeatPumpData;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Num;
 
 public class HeatPumpDataWizard extends Wizard {
 	

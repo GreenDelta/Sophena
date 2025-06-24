@@ -1,5 +1,8 @@
 package sophena.rcp.colors;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -9,10 +12,8 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sophena.utils.Strings;
 
-import java.util.HashMap;
-import java.util.List;
+import sophena.utils.Strings;
 
 /**
  * Managed SWT colors: the colors are created on demand and disposed when the

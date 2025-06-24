@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
 import sophena.db.Database;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;

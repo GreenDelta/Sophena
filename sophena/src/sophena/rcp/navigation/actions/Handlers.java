@@ -6,8 +6,8 @@ import org.eclipse.jface.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.NavigationElement;
+import sophena.rcp.navigation.SubFolderElement;
 
 class Handlers {
 

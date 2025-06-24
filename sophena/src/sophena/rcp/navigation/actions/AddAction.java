@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.ConsumerElement;
-import sophena.rcp.navigation.SubFolderElement;
-import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
+import sophena.rcp.navigation.SubFolderElement;
+import sophena.rcp.navigation.SubFolderType;
 import sophena.rcp.wizards.ConsumerWizard;
 import sophena.rcp.wizards.ProducerWizard;
 

@@ -1,9 +1,9 @@
 package sophena.calc;
 
 import sophena.model.HeatNet;
-import sophena.model.Project;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
+import sophena.model.Project;
 
 public class SolarCalcState {
 	private SolarCalcLog log;

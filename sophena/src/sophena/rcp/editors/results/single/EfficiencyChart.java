@@ -3,7 +3,6 @@ package sophena.rcp.editors.results.single;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swtchart.Chart;
 import org.eclipse.swtchart.IAxis;
 import org.eclipse.swtchart.IBarSeries;
@@ -11,13 +10,14 @@ import org.eclipse.swtchart.IBarSeries.BarWidthStyle;
 import org.eclipse.swtchart.ISeries.SeriesType;
 import org.eclipse.swtchart.ISeriesSet;
 import org.eclipse.swtchart.Range;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.math.energetic.EfficiencyResult;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.ColorKey;
-import sophena.rcp.utils.Actions;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
 
 class EfficiencyChart  {

@@ -1,5 +1,11 @@
 package sophena.io.excel.consumers;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import sophena.Labels;
 import sophena.db.Database;
 import sophena.db.daos.BuildingStateDao;
@@ -9,12 +15,6 @@ import sophena.model.Location;
 import sophena.utils.Num;
 import sophena.utils.Result;
 import sophena.utils.Strings;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.text.DecimalFormat;
-import java.util.Optional;
-import java.util.UUID;
 
 class ConsumerEntry {
 

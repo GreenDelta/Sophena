@@ -8,10 +8,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
-import sophena.model.ProductType;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
-import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

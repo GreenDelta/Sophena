@@ -1,16 +1,15 @@
 package sophena.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import java.util.Arrays;
+import java.util.UUID;
 
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.Converter;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import sophena.model.descriptors.WeatherStationDescriptor;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_weather_stations")

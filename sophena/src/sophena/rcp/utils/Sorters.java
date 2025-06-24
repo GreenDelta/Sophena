@@ -8,15 +8,15 @@ import sophena.model.BaseDataEntity;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.FlueGasCleaning;
+import sophena.model.HeatPump;
 import sophena.model.HeatRecovery;
 import sophena.model.Pipe;
 import sophena.model.PipeType;
 import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
+import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.utils.Strings;
-import sophena.model.SolarCollector;
-import sophena.model.HeatPump;
 
 public class Sorters {
 

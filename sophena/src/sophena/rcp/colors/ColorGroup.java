@@ -1,16 +1,18 @@
 package sophena.rcp.colors;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import org.eclipse.swt.graphics.RGB;
-import sophena.io.Json;
-import sophena.model.Copyable;
-import sophena.model.ProductType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+
+import org.eclipse.swt.graphics.RGB;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import sophena.io.Json;
+import sophena.model.Copyable;
+import sophena.model.ProductType;
 
 public class ColorGroup implements Copyable<ColorGroup> {
 

@@ -9,7 +9,6 @@ import sophena.calc.ProjectResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
-import sophena.model.ProducerFunction;
 
 class ElectricitySheet {
 

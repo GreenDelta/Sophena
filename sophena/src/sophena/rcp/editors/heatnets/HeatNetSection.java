@@ -1,7 +1,6 @@
 package sophena.rcp.editors.heatnets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -16,12 +15,11 @@ import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.LoadCurveSection;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
-import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

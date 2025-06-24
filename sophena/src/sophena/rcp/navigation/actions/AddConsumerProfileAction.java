@@ -3,9 +3,9 @@ package sophena.rcp.navigation.actions;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.ConsumerElement;
+import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
-import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.wizards.ConsumerProfileWizard;
 
 public class AddConsumerProfileAction extends NavigationAction {
