@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 <target name="Running Platform" sequenceNumber="25">
-    <locations>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/technology/babel/update-site/R0.17.1/2019-12/"/>
-		    <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.14.0.v20200113020001"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/tools/gef/classic/releases/3.15.0/"/>
-		    <unit id="org.eclipse.draw2d.feature.group" version="3.15.0.202211301913"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/modeling/emf/emf/builds/release/2.33.0"/>
-		    <unit id="org.eclipse.emf.sdk.feature.group" version="2.33.0.v20230226-0921"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/nebula/releases/3.0.0/"/>
-		    <unit id="org.eclipse.nebula.feature.feature.group" version="3.0.0.202303072132"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/swtchart/releases/0.14.0/repository/"/>
-		    <unit id="org.eclipse.swtchart.feature.feature.group" version="0.14.0.202301260747"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
-		    <unit id="org.apache.commons.io" version="2.8.0.v20210415-0900"/>
-		    <unit id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
-	    </location>
-	    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		    <repository location="https://download.eclipse.org/eclipse/updates/4.26/"/>
-		    <unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.600.v20221116-1440"/>
-		    <unit id="org.eclipse.platform.sdk" version="4.26.0.I20221123-1800"/>
-		    <unit id="org.eclipse.rcp.feature.group" version="4.26.0.v20221123-2302"/>
-	    </location>
-    </locations>
+	<locations>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/tools/gef/classic/release/3.24.0"/>
+			<unit id="org.eclipse.gef.feature.group" version="3.24.0.202505280821"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/modeling/emf/emf/builds/release/2.42.0"/>
+			<unit id="org.eclipse.emf.sdk.feature.group" version="2.42.0.v20250415-0852"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/nebula/archive/releases/3.1.1/"/>
+			<unit id="org.eclipse.nebula.feature.feature.group" version="3.1.1.202402011804"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/swtchart/releases/1.0.0/repository/"/>
+			<unit id="org.eclipse.swtchart.feature.feature.group" version="1.0.0.202412021530"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
+			<unit id="org.apache.commons.io" version="2.8.0.v20210415-0900"/>
+			<unit id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/eclipse/updates/4.36/R-4.36-202505281830"/>
+			<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.1700.v20250526-2018"/>
+			<unit id="org.eclipse.rcp.feature.group" version="4.36.0.v20250528-1830"/>
+			<unit id="org.eclipse.platform.ide" version="4.36.0.I20250528-1830"/>
+		</location>
+		<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://download.eclipse.org/technology/babel/update-site/R0.20.0/2022-12/"/>
+			<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.26.0.v20230220105658"/>
+		</location>
+	</locations>
 </target>

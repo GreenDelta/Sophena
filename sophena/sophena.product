@@ -55,18 +55,18 @@ AVS GmbH: https://www.alzinger-vogel.de
    </vm>
 
    <plugins>
+      <plugin id="com.github.weisj.jsvg"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.jna.platform"/>
-      <plugin id="javax.annotation"/>
-      <plugin id="javax.inject"/>
+      <plugin id="jakarta.annotation-api"/>
+      <plugin id="jakarta.inject.jakarta.inject-api"/>
       <plugin id="org.apache.batik.constants"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.i18n"/>
       <plugin id="org.apache.batik.util"/>
-      <plugin id="org.apache.commons.io"/>
-      <plugin id="org.apache.commons.jxpath"/>
-      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.commons.commons-io"/>
+      <plugin id="org.apache.commons.commons-logging"/>
       <plugin id="org.apache.felix.scr"/>
       <plugin id="org.apache.xmlgraphics"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -87,6 +87,7 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.core.runtime.nl_de"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
+      <plugin id="org.eclipse.e4.core.commands.nl_de"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
       <plugin id="org.eclipse.e4.core.contexts.nl_de"/>
       <plugin id="org.eclipse.e4.core.di"/>
@@ -102,6 +103,7 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.e4.emf.xpath"/>
       <plugin id="org.eclipse.e4.emf.xpath.nl_de"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
+      <plugin id="org.eclipse.e4.ui.bindings.nl_de"/>
       <plugin id="org.eclipse.e4.ui.css.core"/>
       <plugin id="org.eclipse.e4.ui.css.core.nl_de"/>
       <plugin id="org.eclipse.e4.ui.css.swt"/>
@@ -121,8 +123,12 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.e4.ui.widgets.nl_de"/>
       <plugin id="org.eclipse.e4.ui.workbench"/>
       <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt.nl_de"/>
+      <plugin id="org.eclipse.e4.ui.workbench.nl_de"/>
       <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt.nl_de"/>
       <plugin id="org.eclipse.e4.ui.workbench.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.swt.nl_de"/>
       <plugin id="org.eclipse.e4.ui.workbench3"/>
       <plugin id="org.eclipse.e4.ui.workbench3.nl_de"/>
       <plugin id="org.eclipse.emf.common"/>
@@ -146,15 +152,14 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.nebula.visualization.xygraph"/>
       <plugin id="org.eclipse.nebula.widgets.opal.commons"/>
       <plugin id="org.eclipse.nebula.widgets.opal.notifier"/>
+      <plugin id="org.eclipse.orbit.xml-apis-ext"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state"/>
-      <plugin id="org.eclipse.osgi.nl_de"/>
-      <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="org.eclipse.osgi.services.nl_de"/>
       <plugin id="org.eclipse.platform"/>
       <plugin id="org.eclipse.platform.nl_de"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.nl_de"/>
+      <plugin id="org.eclipse.swt.svg"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64"/>
       <plugin id="org.eclipse.swtchart"/>
       <plugin id="org.eclipse.swtchart.extensions"/>
@@ -173,22 +178,11 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.ui.workbench.nl_de"/>
       <plugin id="org.eclipse.urischeme"/>
       <plugin id="org.eclipse.urischeme.nl_de"/>
-      <plugin id="org.osgi.service.cm"/>
       <plugin id="org.osgi.service.component"/>
-      <plugin id="org.osgi.service.device"/>
       <plugin id="org.osgi.service.event"/>
-      <plugin id="org.osgi.service.metatype"/>
       <plugin id="org.osgi.service.prefs"/>
-      <plugin id="org.osgi.service.provisioning"/>
-      <plugin id="org.osgi.service.upnp"/>
-      <plugin id="org.osgi.service.useradmin"/>
-      <plugin id="org.osgi.service.wireadmin"/>
       <plugin id="org.osgi.util.function"/>
       <plugin id="org.osgi.util.promise"/>
-      <plugin id="org.w3c.css.sac"/>
-      <plugin id="org.w3c.dom.events"/>
-      <plugin id="org.w3c.dom.smil"/>
-      <plugin id="org.w3c.dom.svg"/>
       <plugin id="sophena"/>
    </plugins>
 

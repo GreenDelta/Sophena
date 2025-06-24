@@ -67,8 +67,8 @@ def fetch_jre(target: Path):
         print(f"  {target} exists")
         return
     url = (
-        "https://github.com/adoptium/temurin17-binaries/releases/download/"
-        "jdk-17.0.6%2B10/OpenJDK17U-jre_x64_windows_hotspot_17.0.6_10.zip"
+        "https://github.com/adoptium/temurin21-binaries/releases/download/"
+        "jdk-21.0.7%2B6/OpenJDK21U-jre_x64_windows_hotspot_21.0.7_6.zip"
     )
     print(f"  download JRE from {url}")
     jre_dir = target.parent
