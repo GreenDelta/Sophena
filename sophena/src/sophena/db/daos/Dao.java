@@ -17,7 +17,7 @@ public class Dao<T extends AbstractEntity> {
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
 	protected Database db;
-	private Class<T> type;
+	private final Class<T> type;
 
 	public Dao(Class<T> type, Database db) {
 		this.type = type;

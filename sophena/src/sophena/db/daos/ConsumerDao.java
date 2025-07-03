@@ -33,7 +33,7 @@ public class ConsumerDao extends RootEntityDao<Consumer> {
 				return true;
 			});
 		} catch (Exception e) {
-			log.error("failed to get descriptors for " + getType(), e);
+			log.error("failed to get descriptors for {}", getType(), e);
 		}
 		return list;
 	}

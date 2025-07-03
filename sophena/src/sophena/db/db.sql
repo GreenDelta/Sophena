@@ -1,7 +1,7 @@
 CREATE TABLE sophena_version (
     version SMALLINT
 );
-INSERT INTO sophena_version (version) VALUES (2);
+INSERT INTO sophena_version (version) VALUES (3);
 
 
 CREATE TABLE tbl_weather_stations (
@@ -39,6 +39,24 @@ CREATE TABLE tbl_fuels (
     co2_emissions         DOUBLE,
     primary_energy_factor DOUBLE,
     ash_content           DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_biogas_substrates (
+
+    id          CHAR(36),
+    name        VARCHAR(255),
+    description CLOB(64 K),
+
+    is_protected BOOLEAN,
+
+    dry_matter          DOUBLE,
+    organic_dry_matter  DOUBLE,
+    biogas_production   DOUBLE,
+    methane_content     DOUBLE,
+    co2_emissions       DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -226,7 +244,7 @@ CREATE TABLE tbl_heat_nets (
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE,
-    
+
     maximum_performance DOUBLE,
 
 	is_seasonal_driving_style BOOLEAN,
@@ -237,8 +255,8 @@ CREATE TABLE tbl_heat_nets (
 	flow_temperature_winter DOUBLE,
 	flow_temperature_summer DOUBLE,
 	return_temperature_winter DOUBLE,
-	return_temperature_summer DOUBLE,   
-	target_charge_level DOUBLE, 
+	return_temperature_summer DOUBLE,
+	target_charge_level DOUBLE,
 	use_heating_curve BOOLEAN,
 
     PRIMARY KEY (id)
@@ -557,7 +575,7 @@ CREATE TABLE tbl_producers (
     heat_recovery_maintenance DOUBLE,
     heat_recovery_operation   DOUBLE,
 
-	f_solar_collector						CHAR(36), 						
+	f_solar_collector						CHAR(36),
 	solar_collector_area 					DOUBLE,
 	solar_collector_alignment 				DOUBLE,
 	solar_collector_tilt 					DOUBLE,
@@ -565,11 +583,11 @@ CREATE TABLE tbl_producers (
 	solar_collector_temperature_difference  DOUBLE,
 	solar_collector_temperature_increase 	DOUBLE,
 	solar_collector_radiation_limit			DOUBLE,
-	
+
 	is_outdoor_temperature_control		BOOLEAN,
 	outdoor_temperature					DOUBLE,
 	outdoor_temperature_control_kind	VARCHAR(255),
-	
+
 	f_heat_pump					CHAR(36),
 	heat_pump_mode 				VARCHAR(36),
 	source_temperature_user		DOUBLE,
@@ -644,7 +662,7 @@ CREATE TABLE tbl_heat_pumps (
     description CLOB(64 K),
 
     is_protected BOOLEAN,
-    
+
     purchase_price 	DOUBLE,
     url 			VARCHAR(255),
     product_type 	VARCHAR(50),

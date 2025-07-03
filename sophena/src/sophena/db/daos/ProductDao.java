@@ -26,7 +26,7 @@ public class ProductDao extends RootEntityDao<Product> {
 			query.setParameter("type", type);
 			return query.getResultList();
 		} catch (Exception e) {
-			log.error("failed to get products of type " + type, e);
+			log.error("failed to get products of type {}", type, e);
 			return Collections.emptyList();
 		} finally {
 			em.close();

@@ -32,7 +32,7 @@ import sophena.model.WeatherStation;
 public class EntityTest {
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends AbstractEntity>[] classes = new Class[] {
+	private final Class<? extends AbstractEntity>[] classes = new Class[] {
 			Boiler.class,
 			BufferTank.class,
 			BuildingState.class,
@@ -74,7 +74,7 @@ public class EntityTest {
 	}
 
 	@Test
-	public void testInitEmbedded() throws Exception {
+	public void testInitEmbedded() {
 		Producer p = new Producer();
 		p.id = UUID.randomUUID().toString();
 		p.costs = new ProductCosts();
