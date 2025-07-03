@@ -3,7 +3,6 @@ package sophena.rcp;
 import java.io.File;
 import java.util.Optional;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -55,9 +54,9 @@ public class ActionBarAdvisor extends
 	}
 
 	@Override
-	protected void fillCoolBar(ICoolBarManager coolBar) {
+	protected void fillCoolBar(ICoolBarManager top) {
 		var toolbar = new ToolBarManager(SWT.FLAT | SWT.LEFT);
-		coolBar.add(new ToolBarContributionItem(toolbar, "main"));
+		top.add(new ToolBarContributionItem(toolbar, "main"));
 		toolbar.add(saveAction);
 		toolbar.add(saveAsAction);
 		toolbar.add(saveAllAction);
@@ -70,23 +69,22 @@ public class ActionBarAdvisor extends
 		fillProjectMenu(menu);
 		fillBaseDataMenu(menu);
 		fillProductMenu(menu);
+		fillBiogasMenu(menu);
 		fillHelpMenu(menu);
 	}
 
-	private void fillProjectMenu(IMenuManager menu) {
-		MenuManager projectMenu = new MenuManager(M.Project);
-		Action newAction = Actions.create(M.NewProject,
-				Icon.NEW_PROJECT_16.des(), ProjectWizard::open);
-		projectMenu.add(newAction);
-		Action compare = Actions.create("Projekte vergleichen",
-				Icon.BAR_CHART_16.des(),
-				() -> ComparisonDialog.open(Optional.empty()));
-		projectMenu.add(compare);
-		menu.add(projectMenu);
+	private void fillProjectMenu(IMenuManager man) {
+		var m = new MenuManager(M.Project);
+		man.add(m);
+		m.add(Actions.create(M.NewProject, Icon.NEW_PROJECT_16.des(),
+				ProjectWizard::open));
+		m.add(Actions.create("Projekte vergleichen", Icon.BAR_CHART_16.des(),
+				() -> ComparisonDialog.open(Optional.empty())));
 	}
 
-	private void fillBaseDataMenu(IMenuManager menu) {
-		MenuManager m = new MenuManager(M.BaseData);
+	private void fillBaseDataMenu(IMenuManager man) {
+		var m = new MenuManager(M.BaseData);
+		man.add(m);
 		m.add(Actions.create(M.ClimateData, Icon.CLIMATE_16.des(),
 				ClimateDataEditor::open));
 		m.add(Actions.create("Gebäudetypen", Icon.BUILDING_TYPE_16.des(),
@@ -97,28 +95,32 @@ public class ActionBarAdvisor extends
 				ProductGroupEditor::open));
 		m.add(Actions.create("Kosteneinstellungen", Icon.COSTS_16.des(),
 				BaseCostEditor::open));
-		menu.add(m);
 	}
 
-	private void fillProductMenu(IMenuManager menu) {
-		MenuManager m = new MenuManager("Produktdaten");
-		menu.add(m);
-		for (ProductType type : ProductType.values()) {
-			if(type == ProductType.ELECTRIC_HEAT_GENERATOR || type == ProductType.OTHER_HEAT_SOURCE)
+	private void fillProductMenu(IMenuManager man) {
+		var m = new MenuManager("Produktdaten");
+		man.add(m);
+		for (var type : ProductType.values()) {
+			if (type == ProductType.ELECTRIC_HEAT_GENERATOR
+					|| type == ProductType.OTHER_HEAT_SOURCE)
 				continue;
-			m.add(Actions.create(
-					Labels.getPlural(type),
-					img(type),
+			m.add(Actions.create(Labels.getPlural(type), img(type),
 					() -> ProductEditor.open(type)));
 		}
-		m.add(Actions.create(
-				M.Manufacturers,
-				Icon.MANUFACTURER_16.des(),
+		m.add(Actions.create(M.Manufacturers, Icon.MANUFACTURER_16.des(),
 				ManufacturerEditor::open));
 		m.add(Actions.create(
-				"Produktdatenbank zurücksetzen",
-				Icon.DELETE_16.des(),
+				"Produktdatenbank zurücksetzen", Icon.DELETE_16.des(),
 				new ProductCleanup()));
+	}
+
+	private void fillBiogasMenu(IMenuManager man) {
+		var m = new MenuManager("Biogasanlagenkonfigurator");
+		man.add(m);
+		m.add(Actions.create("Biogasanlagen", () -> {}));
+		m.add(Actions.create("Substrate", () -> {}));
+		m.add(Actions.create("Strompreise", () -> {}));
+		m.add(Actions.create("Marktwerte", () -> {}));
 	}
 
 	private ImageDescriptor img(ProductType type) {
@@ -138,46 +140,43 @@ public class ActionBarAdvisor extends
 		};
 	}
 
-	private void fillHelpMenu(IMenuManager menu) {
+	private void fillHelpMenu(IMenuManager man) {
 		var m = new MenuManager(M.Help);
+		man.add(m);
 		m.add(Actions.create("Ergebnisfarben ...", ColorConfigDialog::show));
-		menu.add(m);
 		m.add(aboutAction);
 	}
 
-	private void fillFileMenu(IMenuManager menuBar) {
-		MenuManager menu = new MenuManager(M.File,
-				IWorkbenchActionConstants.M_FILE);
-		menu.add(saveAction);
-		menu.add(saveAsAction);
-		menu.add(saveAllAction);
-		menu.add(new Separator());
-		menu.add(closeAction);
-		menu.add(closeAllAction);
-		menu.add(new Separator());
-		menu.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
+	private void fillFileMenu(IMenuManager man) {
+		var m = new MenuManager(M.File, IWorkbenchActionConstants.M_FILE);
+		man.add(m);
+		m.add(saveAction);
+		m.add(saveAsAction);
+		m.add(saveAllAction);
+		m.add(new Separator());
+		m.add(closeAction);
+		m.add(closeAllAction);
+		m.add(new Separator());
+		m.add(Actions.create("Datenimport", Icon.IMPORT_16.des(),
 				this::importFile));
-		createWorkspaceActions(menu);
-		menu.add(new Separator());
-		menu.add(exitAction);
-		menuBar.add(menu);
+		createWorkspaceActions(m);
+		m.add(new Separator());
+		m.add(exitAction);
 	}
 
-	private void createWorkspaceActions(MenuManager parent) {
-		AppConfig conf = AppConfig.load();
+	private void createWorkspaceActions(MenuManager top) {
+		var conf = AppConfig.load();
 		if (conf.lastDataDirs.isEmpty()) {
-			parent.add(Actions.create("Datenverzeichnis wechseln",
+			top.add(Actions.create("Datenverzeichnis wechseln",
 					Workspace::switchWorkspace));
 			return;
 		}
-		MenuManager menu = new MenuManager("Datenverzeichnis wechseln");
-		parent.add(menu);
-		for (String dir : conf.lastDataDirs) {
-			Action a = Actions.create(dir,
-					() -> Workspace.switchWorkspace(dir));
-			menu.add(a);
+		var sub = new MenuManager("Datenverzeichnis wechseln");
+		top.add(sub);
+		for (var dir : conf.lastDataDirs) {
+			sub.add(Actions.create(dir, () -> Workspace.switchWorkspace(dir)));
 		}
-		menu.add(Actions.create("Anderes ...", Workspace::switchWorkspace));
+		sub.add(Actions.create("Anderes ...", Workspace::switchWorkspace));
 	}
 
 	@Override
@@ -199,15 +198,15 @@ public class ActionBarAdvisor extends
 	}
 
 	private void importFile() {
-		FileDialog dialog = new FileDialog(UI.shell(), SWT.OPEN);
-		dialog.setFilterExtensions(new String[] { "*.sophena" });
+		var dialog = new FileDialog(UI.shell(), SWT.OPEN);
+		dialog.setFilterExtensions(new String[]{"*.sophena"});
 		dialog.setText(M.SelectFile);
 		String path = dialog.open();
 		if (path == null)
 			return;
-		File file = new File(path);
+		var file = new File(path);
 		try {
-			Import in = new Import(file, App.getDb());
+			var in = new Import(file, App.getDb());
 			Rcp.run("Importiere Daten ...", in, Navigator::refresh);
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");

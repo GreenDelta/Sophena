@@ -24,15 +24,13 @@ public class BoilerEditor extends Editor {
 	private static boolean valid(ProductType type) {
 		if (type == null)
 			return false;
-		switch (type) {
-		case BIOMASS_BOILER:
-		case FOSSIL_FUEL_BOILER:
-		case COGENERATION_PLANT:
-			return true;
-		default:
-			Logs.error(BoilerEditor.class, "invalid product type {}", type);
-			return false;
-		}
+		return switch (type) {
+			case BIOMASS_BOILER, FOSSIL_FUEL_BOILER, COGENERATION_PLANT -> true;
+			default -> {
+				Logs.error(BoilerEditor.class, "invalid product type {}", type);
+				yield false;
+			}
+		};
 	}
 
 	@Override

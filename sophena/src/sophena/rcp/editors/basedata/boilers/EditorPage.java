@@ -39,10 +39,10 @@ import sophena.utils.Num;
 
 class EditorPage extends FormPage {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private BoilerDao dao = new BoilerDao(App.getDb());
-	private List<Boiler> boilers;
+	private final BoilerDao dao = new BoilerDao(App.getDb());
+	private final List<Boiler> boilers;
 	private final ProductType type;
 
 	public EditorPage(Editor editor, ProductType type) {
@@ -133,7 +133,7 @@ class EditorPage extends FormPage {
 			boilers.set(idx, boiler);
 			table.setInput(boilers);
 		} catch (Exception e) {
-			log.error("failed to update boiler ", boiler, e);
+			log.error("failed to update boiler {}", boiler, e);
 		}
 	}
 
@@ -169,7 +169,7 @@ class EditorPage extends FormPage {
 			boilers.remove(boiler);
 			table.setInput(boilers);
 		} catch (Exception e) {
-			log.error("failed to delete boiler " + boiler, e);
+			log.error("failed to delete boiler {}", boiler, e);
 		}
 	}
 
@@ -177,27 +177,26 @@ class EditorPage extends FormPage {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Boiler))
+			if (!(obj instanceof Boiler boiler))
 				return null;
-			Boiler boiler = (Boiler) obj;
 			if (col < 3)
 				return ProductTables.getText(boiler, col);
 			boolean coGen = type == ProductType.COGENERATION_PLANT;
-			switch (col) {
-			case 3:
-				return coGen ? s(boiler.maxPowerElectric, "kW")
+			return switch (col) {
+				case 3 -> coGen
+						? s(boiler.maxPowerElectric, "kW")
 						: s(boiler.maxPower, "kW");
-			case 4:
-				if (coGen)
-					return s(boiler.efficiencyRateElectric * 100d, "%");
-				return s(boiler.efficiencyRate * 100d, "%");
-			case 5:
-				return coGen ? s(boiler.maxPower, "kW") : null;
-			case 6:
-				return coGen ? s(boiler.efficiencyRate * 100d, "%") : null;
-			default:
-				return null;
-			}
+				case 4 -> coGen
+						? s(boiler.efficiencyRateElectric * 100d, "%")
+						: s(boiler.efficiencyRate * 100d, "%");
+				case 5 -> coGen
+						? s(boiler.maxPower, "kW")
+						: null;
+				case 6 -> coGen
+						? s(boiler.efficiencyRate * 100d, "%")
+						: null;
+				default -> null;
+			};
 		}
 
 		private String s(double val, String unit) {

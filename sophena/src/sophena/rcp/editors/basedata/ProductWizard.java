@@ -33,8 +33,8 @@ import sophena.utils.Strings;
 public class ProductWizard extends Wizard {
 
 	private Page page;
-	private AbstractProduct product;
-	private IContent content;
+	private final AbstractProduct product;
+	private final IContent content;
 
 	public ProductWizard(AbstractProduct product, IContent content) {
 		this.product = product;
@@ -98,8 +98,8 @@ public class ProductWizard extends Wizard {
 			content.render(c);
 			descriptionText = UI.formMultiText(c, "Zusatzinformation");
 			UI.formLabel(c, "");
-			data.bindToUI();	
-			
+			data.bindToUI();
+
 			sc.setMinSize(cParent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		}
 

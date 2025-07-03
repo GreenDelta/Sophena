@@ -107,8 +107,7 @@ class BoilerWizard implements IContent {
 		boiler.maxPowerElectric = Texts.getDouble(maxElText);
 		boiler.minPowerElectric = Texts.getDouble(minElText);
 		boiler.efficiencyRate = Texts.getDouble(efficiencyText) / 100d;
-		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText)
-				/ 100d;
+		boiler.efficiencyRateElectric = Texts.getDouble(efficiencyElText) / 100d;
 	}
 
 	@Override
@@ -124,7 +123,7 @@ class BoilerWizard implements IContent {
 			return "Es wurde keine maximale Leistung angegeben.";
 		if (!Texts.hasNumber(minText))
 			return "Es wurde keine minimale Leistung angegeben";
-		if (!Texts.inRange(efficiencyText, 0, 120)) 
+		if (!Texts.inRange(efficiencyText, 0, 120))
 			return "Es muss ein Wirkungsgrad zwischen 0% und 120% angegeben werden.";
 		double max = Texts.getDouble(maxText);
 		double min = Texts.getDouble(minText);
