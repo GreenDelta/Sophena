@@ -21,26 +21,18 @@ class TableLabel {
 
 		@Override
 		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Fuel))
+			if (!(element instanceof Fuel f))
 				return null;
-			Fuel f = (Fuel) element;
-			switch (col) {
-			case 0:
-				return f.name;
-			case 1:
-				return Num.str(f.calorificValue)
-						+ " kWh/" + f.unit;
-			case 2:
-				return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
-			case 3:
-				return Num.str(f.primaryEnergyFactor);
-			case 4:
-				if (f.ashContent == 0d)
-					return null;
-				return Num.str(f.ashContent) + " %";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> f.name;
+				case 1 -> Num.str(f.calorificValue) + " kWh/" + f.unit;
+				case 2 -> Num.str(f.co2Emissions) + " g CO2 äq./kWh";
+				case 3 -> Num.str(f.primaryEnergyFactor);
+				case 4 -> f.ashContent == 0d
+						? null
+						: Num.str(f.ashContent) + " %";
+				default -> null;
+			};
 		}
 	}
 
@@ -48,28 +40,19 @@ class TableLabel {
 
 		@Override
 		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Fuel))
+			if (!(element instanceof Fuel f))
 				return null;
-			Fuel f = (Fuel) element;
-			switch (col) {
-			case 0:
-				return f.name;
-			case 1:
-				return Num.str(f.density) + " kg/fm";
-			case 2:
-				return Num.str(f.calorificValue)
-						+ " kWh/" + f.unit;
-			case 3:
-				return Num.str(f.co2Emissions) + " g CO2 äq./kWh";
-			case 4:
-				return Num.str(f.primaryEnergyFactor);
-			case 5:
-				if (f.ashContent == 0d)
-					return null;
-				return Num.str(f.ashContent) + " %";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> f.name;
+				case 1 -> Num.str(f.density) + " kg/fm";
+				case 2 -> Num.str(f.calorificValue) + " kWh/" + f.unit;
+				case 3 -> Num.str(f.co2Emissions) + " g CO2 äq./kWh";
+				case 4 -> Num.str(f.primaryEnergyFactor);
+				case 5 -> f.ashContent == 0d
+						? null
+						: Num.str(f.ashContent) + " %";
+				default -> null;
+			};
 		}
 	}
 

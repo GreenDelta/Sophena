@@ -16,7 +16,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.db.daos.FuelDao;
+import sophena.db.Database;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
 import sophena.model.Fuel;
@@ -37,7 +37,7 @@ import sophena.rcp.utils.Viewers;
 
 public class FuelEditor extends Editor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public static void open() {
 		KeyEditorInput input = new KeyEditorInput("data.fuels", M.Fuels);
@@ -55,10 +55,9 @@ public class FuelEditor extends Editor {
 
 	private class Page extends FormPage {
 
-		private FuelDao dao = new FuelDao(App.getDb());
-
-		private List<Fuel> woodFuels = new ArrayList<>();
-		private List<Fuel> fuels = new ArrayList<>();
+		private final Database db = App.getDb();
+		private final List<Fuel> woodFuels = new ArrayList<>();
+		private final List<Fuel> fuels = new ArrayList<>();
 
 		public Page() {
 			super(FuelEditor.this, "FuelEditorPage", M.Fuels);
@@ -66,7 +65,7 @@ public class FuelEditor extends Editor {
 		}
 
 		private void initData() {
-			List<Fuel> all = dao.getAll();
+			var all = db.getAll(Fuel.class);
 			Sorters.sortBaseData(all);
 			for (Fuel f : all) {
 				if (f.isWood())
@@ -109,7 +108,7 @@ public class FuelEditor extends Editor {
 			Action copy = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> copy(table, false));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
-					() -> delete(table, fuels, false));
+					() -> delete(table, fuels));
 			Actions.bind(section, add, edit, copy, del);
 			Actions.bind(table, add, edit, copy, del);
 			Tables.onDoubleClick(table, (e) -> edit(table, fuels, false));
@@ -125,11 +124,11 @@ public class FuelEditor extends Editor {
 			if (FuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
-				fuel = dao.insert(fuel);
+				fuel = db.insert(fuel);
 				fuels.add(fuel);
 				table.setInput(fuels);
 			} catch (Exception e) {
-				log.error("failed to add fuel " + fuel, e);
+				log.error("failed to add fuel {}", fuel, e);
 			}
 		}
 
@@ -142,11 +141,11 @@ public class FuelEditor extends Editor {
 				return;
 			try {
 				int idx = list.indexOf(f);
-				f = dao.update(f);
+				f = db.update(f);
 				list.set(idx, f);
 				table.setInput(list);
 			} catch (Exception e) {
-				log.error("failed to update fuel " + f, e);
+				log.error("failed to update fuel {}", f, e);
 			}
 		}
 
@@ -160,7 +159,7 @@ public class FuelEditor extends Editor {
 			int code = wood ? WoodFuelWizard.open(copy) : FuelWizard.open(copy);
 			if (code != Window.OK)
 				return;
-			dao.insert(copy);
+			db.insert(copy);
 			if (wood) {
 				woodFuels.add(copy);
 				table.setInput(woodFuels);
@@ -170,7 +169,7 @@ public class FuelEditor extends Editor {
 			}
 		}
 
-		private void delete(TableViewer table, List<Fuel> list, boolean wood) {
+		private void delete(TableViewer table, List<Fuel> list) {
 			Fuel f = Viewers.getFirstSelected(table);
 			if (f == null || f.isProtected)
 				return;
@@ -184,20 +183,20 @@ public class FuelEditor extends Editor {
 				return;
 			}
 			try {
-				dao.delete(f);
+				db.delete(f);
 				list.remove(f);
 				table.setInput(list);
 			} catch (Exception e) {
-				log.error("failed to delete fuel " + f, e);
+				log.error("failed to delete fuel {}", f, e);
 			}
 		}
 
 		private void createWoodSection(Composite body, FormToolkit tk) {
-			Section section = UI.section(body, tk, M.WoodFuels);
+			var section = UI.section(body, tk, M.WoodFuels);
 			UI.gridData(section, true, true);
-			Composite comp = UI.sectionClient(section, tk);
+			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, M.WoodFuel,
+			var table = Tables.createViewer(comp, M.WoodFuel,
 					"Dichte", "Heizwert", "CO2 Emissionen",
 					"Primärenergiefaktor", "Aschegehalt");
 			table.setLabelProvider(TableLabel.getForWood());
@@ -215,32 +214,31 @@ public class FuelEditor extends Editor {
 			Action copy = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> copy(table, true));
 			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
-					() -> delete(table, woodFuels, true));
+					() -> delete(table, woodFuels));
 			Actions.bind(section, add, edit, copy, del);
 			Actions.bind(table, add, edit, copy, del);
 			Tables.onDoubleClick(table, (e) -> edit(table, woodFuels, true));
 		}
 
 		private void addWood(TableViewer table) {
-			Fuel fuel = new Fuel();
+			var fuel = new Fuel();
 			fuel.id = UUID.randomUUID().toString();
 			fuel.name = M.WoodFuel;
 			fuel.group = FuelGroup.WOOD;
 			fuel.unit = "t atro";
 			fuel.calorificValue = 5000d;
 			fuel.density = 450d;
-			fuel.group = FuelGroup.WOOD;
 			fuel.primaryEnergyFactor = 0.2d;
 			fuel.co2Emissions = 35d;
 			fuel.ashContent = 1d;
 			if (WoodFuelWizard.open(fuel) != Window.OK)
 				return;
 			try {
-				fuel = dao.insert(fuel);
+				fuel = db.insert(fuel);
 				woodFuels.add(fuel);
 				table.setInput(woodFuels);
 			} catch (Exception e) {
-				log.error("failed to add fuel " + fuel, e);
+				log.error("failed to add fuel {}", fuel, e);
 			}
 		}
 	}

@@ -8,6 +8,7 @@
 
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
+		<class>sophena.model.BiogasSubstrate</class>
 		<class>sophena.model.Boiler</class>
 		<class>sophena.model.BufferTank</class>
 		<class>sophena.model.BuildingState</class>
@@ -36,7 +37,7 @@
 		<class>sophena.model.TransferStation</class>
 		<class>sophena.model.WeatherStation</class>
 		<class>sophena.model.HeatPump</class>
-		
+
 
 		<properties>
 			<property name="eclipselink.connection-pool.default.max" value="10" />

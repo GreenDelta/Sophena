@@ -53,7 +53,7 @@ class FuelGroupCombo {
 	private void init() {
 		if (!canEdit()) {
 			String item = Labels.get(fuel.group);
-			combo.setItems(new String[] { item });
+			combo.setItems(item);
 			combo.select(0);
 			combo.setEnabled(false);
 			return;

@@ -20,7 +20,7 @@ import sophena.utils.Strings;
 
 class FuelWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Fuel fuel;
 

@@ -43,7 +43,7 @@ class WoodFuelWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private DataBinding data = new DataBinding();
+		private final DataBinding data = new DataBinding();
 
 		private Text nameText;
 		private Text descriptionText;

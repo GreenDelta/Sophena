@@ -7,10 +7,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import sophena.Tests;
-import sophena.db.daos.RootEntityDao;
 import sophena.model.RootEntity;
 
 public class RootEntityTest {
+
+	private final Database db = Tests.getDb();
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -24,14 +25,13 @@ public class RootEntityTest {
 
 	private <T extends RootEntity> void test(Class<T> clazz) throws Exception {
 		T entity = clazz.getDeclaredConstructor().newInstance();
-		RootEntityDao<T> dao = new RootEntityDao<>(clazz, Tests.getDb());
 		entity.id = UUID.randomUUID().toString();
 		entity.name = "test";
-		dao.insert(entity);
-		T clone = dao.get(entity.id);
+		db.insert(entity);
+		T clone = db.get(clazz, entity.id);
 		Assert.assertEquals(entity, clone);
-		dao.delete(entity);
-		clone = dao.get(entity.id);
+		db.delete(entity);
+		clone = db.get(clazz, entity.id);
 		Assert.assertNull(clone);
 	}
 }
