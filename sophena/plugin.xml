@@ -279,5 +279,11 @@
 	        id="sophena.HeatPumpEditor"
 	        name="Wärmepumpen">
 	  </editor>
+     <editor
+           class="sophena.rcp.editors.biogas.substrate.SubstrateEditor"
+           default="false"
+           id="sophena.SubstrateEditor"
+           name="Biogassubstrate">
+     </editor>
 	</extension>
 </plugin>
