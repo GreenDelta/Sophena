@@ -40,7 +40,7 @@ public class Workspace {
 			return file.toURI().toURL().toString();
 		} catch (Exception e) {
 			var log = LoggerFactory.getLogger(Workspace.class);
-			log.error("Could not get URL to page " + page, e);
+			log.error("Could not get URL to page {}", page, e);
 			return "";
 		}
 	}

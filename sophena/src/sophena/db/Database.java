@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 public class Database implements Closeable {
@@ -159,6 +162,90 @@ public class Database implements Closeable {
 			log.error("failed to get the database version", e);
 			return -1;
 		}
+	}
+
+	public <T> boolean contains(Class<T> type, String id) {
+		return get(type, id) != null;
+	}
+
+	public <T> T get(Class<T> type, String id) {
+		if (id == null)
+			return null;
+		log.trace("get {} for id={}", type, id);
+		try (var em = newEntityManager()) {
+			return em.find(type, id);
+		} catch (Exception e) {
+			log.error("Error while loading {} with id {}", type, id, e);
+			return null;
+		}
+	}
+
+	public <T> List<T> getAll(Class<T> type, List<String> ids) {
+		try (var em = newEntityManager()) {
+			var jpql = "SELECT o FROM " + type.getSimpleName()
+					+ " o WHERE o.id IN :ids";
+			var query = em.createQuery(jpql, type);
+			query.setParameter("ids", ids);
+			return query.getResultList();
+		} catch (Exception e) {
+			log.error("Error while loading {} for ids", type, e);
+			return Collections.emptyList();
+		}
+	}
+
+	public <T> List<T> getAll(Class<T> type) {
+		try (var em = newEntityManager()) {
+			var jpql = "SELECT o FROM " + type.getSimpleName() + " o";
+			var query = em.createQuery(jpql, type);
+			return query.getResultList();
+		} catch (Exception e) {
+			log.error("Error while loading all instances of {}", type, e);
+			return Collections.emptyList();
+		}
+	}
+
+	public <T> T insert(T entity) {
+		if (entity == null)
+			return null;
+		try (var em = newEntityManager()) {
+			em.getTransaction().begin();
+			em.persist(entity);
+			em.getTransaction().commit();
+			return entity;
+		} catch (Exception e) {
+			log.error("Error while inserting {}", entity, e);
+			return entity;
+		}
+	}
+
+	public <T> T update(T entity) {
+		if (entity == null)
+			return null;
+		try (var em = newEntityManager()) {
+			em.getTransaction().begin();
+			T merged = em.merge(entity);
+			em.getTransaction().commit();
+			return merged;
+		} catch (Exception e) {
+			log.error("Error while updating {}", entity, e);
+			return entity;
+		}
+	}
+
+	public <T> void delete(T entity) {
+		if (entity == null)
+			return;
+		try (var em = newEntityManager()) {
+			em.getTransaction().begin();
+			em.remove(em.merge(entity));
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			log.error("Error while deleting {}", entity, e);
+		}
+	}
+
+	private EntityManager newEntityManager() {
+		return entityFactory.createEntityManager();
 	}
 
 }

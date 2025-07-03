@@ -32,7 +32,7 @@ import sophena.model.WeatherStation;
 public class EntityTest {
 
 	@SuppressWarnings("unchecked")
-	private final Class<? extends AbstractEntity>[] classes = new Class[] {
+	private final Class<? extends AbstractEntity>[] classes = new Class[]{
 			Boiler.class,
 			BufferTank.class,
 			BuildingState.class,

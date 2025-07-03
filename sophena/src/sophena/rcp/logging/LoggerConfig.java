@@ -29,7 +29,7 @@ public class LoggerConfig {
 		if (s == null)
 			return Level.INFO;
 		return switch (s.trim().toLowerCase()) {
-			case "all" -> Level.ALL;
+			case "all", "trace" -> Level.TRACE;
 			case "error" -> Level.ERROR;
 			case "warn" -> Level.WARN;
 			default -> Level.INFO;

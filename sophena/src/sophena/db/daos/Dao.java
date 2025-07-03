@@ -1,14 +1,11 @@
 package sophena.db.daos;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Table;
-import jakarta.persistence.TypedQuery;
 import sophena.db.Database;
 import sophena.model.AbstractEntity;
 
@@ -28,113 +25,32 @@ public class Dao<T extends AbstractEntity> {
 		return type;
 	}
 
-	protected String getTable() {
-		if (!type.isAnnotationPresent(Table.class))
-			return null;
-		Table t = type.getAnnotation(Table.class);
-		return t.name();
-	}
-
 	public boolean contains(String id) {
-		return get(id) != null;
+		return db.contains(type, id);
 	}
 
 	public T get(String id) {
-		if (id == null)
-			return null;
-		log.trace("get {} for id={}", type, id);
-		EntityManager entityManager = createManager();
-		try {
-			T o = entityManager.find(type, id);
-			return o;
-		} catch (Exception e) {
-			log.error("Error while loading " + type + " with id " + id, e);
-			return null;
-		} finally {
-			entityManager.close();
-		}
+		return db.get(type, id);
 	}
 
 	public List<T> getAll(List<String> ids) {
-		EntityManager em = createManager();
-		try {
-			String jpql = "SELECT o FROM " + type.getSimpleName()
-					+ " o WHERE o.id IN :ids";
-			TypedQuery<T> query = em.createQuery(jpql, type);
-			query.setParameter("ids", ids);
-			return query.getResultList();
-		} catch (Exception e) {
-			log.error("Error while loading " + type + " for ids", e);
-			return Collections.emptyList();
-		} finally {
-			em.close();
-		}
+		return db.getAll(type, ids);
 	}
 
 	public List<T> getAll() {
-		log.debug("Select all for class {}", type);
-		EntityManager em = createManager();
-		try {
-			String jpql = "SELECT o FROM " + type.getSimpleName() + " o";
-			TypedQuery<T> query = em.createQuery(jpql, type);
-			List<T> results = query.getResultList();
-			log.debug("{} results", results.size());
-			return results;
-		} catch (Exception e) {
-			log.error("Error while loading all instances of " + type, e);
-			return Collections.emptyList();
-		} finally {
-			em.close();
-		}
+		return db.getAll(type);
 	}
 
 	public T insert(T entity) {
-		if (entity == null)
-			return null;
-		EntityManager em = createManager();
-		try {
-			em.getTransaction().begin();
-			em.persist(entity);
-			em.getTransaction().commit();
-			return entity;
-		} catch (Exception e) {
-			log.error("Error while inserting " + entity, e);
-			return entity;
-		} finally {
-			em.close();
-		}
+		return db.insert(entity);
 	}
 
 	public T update(T entity) {
-		if (entity == null)
-			return null;
-		EntityManager em = createManager();
-		try {
-			em.getTransaction().begin();
-			T retval = em.merge(entity);
-			em.getTransaction().commit();
-			return retval;
-		} catch (Exception e) {
-			log.error("Error while updating " + entity, e);
-			return entity;
-		} finally {
-			em.close();
-		}
+		return db.update(entity);
 	}
 
 	public void delete(T entity) {
-		if (entity == null)
-			return;
-		EntityManager em = createManager();
-		try {
-			em.getTransaction().begin();
-			em.remove(em.merge(entity));
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			log.error("Error while deleting " + entity, e);
-		} finally {
-			em.close();
-		}
+		db.delete(entity);
 	}
 
 	protected EntityManager createManager() {
