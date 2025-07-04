@@ -8,6 +8,7 @@
 
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
+		<class>sophena.model.BiogasPlant</class>
 		<class>sophena.model.BiogasSubstrate</class>
 		<class>sophena.model.Boiler</class>
 		<class>sophena.model.BufferTank</class>

@@ -62,6 +62,28 @@ CREATE TABLE tbl_biogas_substrates (
 );
 
 
+CREATE TABLE tbl_biogas_plants (
+
+    id                     CHAR(36),
+    name                   VARCHAR(255),
+    description            CLOB(64 K),
+
+    f_produced_electricity CHAR(36),
+    f_product              CHAR(36),
+    rated_power            DOUBLE,
+    minimum_runtime        INTEGER,
+
+    -- ProductCosts embedded fields
+    investment             DOUBLE,
+    duration               INTEGER,
+    repair                 DOUBLE,
+    maintenance            DOUBLE,
+    operation              DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_building_states (
 
     id          CHAR(36),
