@@ -41,10 +41,12 @@ public enum ModelType {
 	TRANSFER_STATION(TransferStation.class),
 
 	WEATHER_STATION(WeatherStation.class),
-	
+
 	SOLAR_COLLECTOR(SolarCollector.class),
-	
-	HEAT_PUMP(HeatPump.class);
+
+	HEAT_PUMP(HeatPump.class),
+
+	BIOGAS_SUBSTRATE(BiogasSubstrate.class);
 
 	private final Class<? extends AbstractEntity> modelClass;
 

@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import sophena.model.BiogasSubstrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -30,7 +31,7 @@ import sophena.model.WeatherStation;
 
 public class Export {
 
-	private DataPack pack;
+	private final DataPack pack;
 
 	public Export(DataPack pack) {
 		this.pack = pack;
@@ -49,11 +50,22 @@ public class Export {
 	private Gson getGson(RootEntity root) {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
-				Boiler.class, BufferTank.class, BuildingState.class,
-				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class,
-				FlueGasCleaning.class, ProjectFolder.class,
-				HeatRecovery.class, Manufacturer.class, SolarCollector.class, HeatPump.class
+				BiogasSubstrate.class,
+				Boiler.class,
+				BufferTank.class,
+				BuildingState.class,
+				Fuel.class,
+				Pipe.class,
+				Product.class,
+				ProductGroup.class,
+				WeatherStation.class,
+				TransferStation.class,
+				FlueGasCleaning.class,
+				ProjectFolder.class,
+				HeatRecovery.class,
+				Manufacturer.class,
+				SolarCollector.class,
+				HeatPump.class
 		};
 		Serializer ed = new Serializer(root);
 		for (Class<?> refType : refTypes) {

@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -31,9 +32,8 @@ public class DataPack implements Closeable {
 
 	public static final int VERSION = 2;
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-
-	private FileSystem zip;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final FileSystem zip;
 
 	public static DataPack open(File zipFile) throws IOException {
 		return new DataPack(zipFile);
@@ -52,16 +52,15 @@ public class DataPack implements Closeable {
 		if (type == null || id == null || json == null)
 			return;
 		try {
-			byte[] bytes = json.getBytes("utf-8");
 			String dirName = getPath(type);
 			Path dir = zip.getPath(dirName);
 			if (!Files.exists(dir)) {
 				Files.createDirectory(dir);
 			}
 			Path path = zip.getPath(dirName + "/" + id + ".json");
-			Files.write(path, bytes, StandardOpenOption.CREATE);
+			Files.writeString(path, json, StandardOpenOption.CREATE);
 		} catch (Exception e) {
-			log.error("failed to add " + type + "/" + id, e);
+			log.error("failed to add {}/{}", type, id, e);
 		}
 	}
 
@@ -80,8 +79,7 @@ public class DataPack implements Closeable {
 		try {
 			Path path = zip.getPath("meta.json");
 			String json = new Gson().toJson(PackInfo.current());
-			byte[] bytes = json.getBytes("utf-8");
-			Files.write(path, bytes, StandardOpenOption.CREATE);
+			Files.writeString(path, json, StandardOpenOption.CREATE);
 		} catch (Exception e) {
 			log.error("Failed to add meta.json", e);
 		}
@@ -114,14 +112,14 @@ public class DataPack implements Closeable {
 		try {
 			return readJson(path);
 		} catch (Exception e) {
-			log.error("failed to read json object " + type + " " + id, e);
+			log.error("failed to read json object {} {}", type, id, e);
 			return null;
 		}
 	}
 
 	private JsonObject readJson(Path path) throws Exception {
 		byte[] bytes = Files.readAllBytes(path);
-		String json = new String(bytes, "utf-8");
+		String json = new String(bytes, StandardCharsets.UTF_8);
 		JsonElement elem = new Gson().fromJson(json, JsonElement.class);
 		if (!elem.isJsonObject())
 			return null;
@@ -138,7 +136,7 @@ public class DataPack implements Closeable {
 		try {
 			Files.walkFileTree(dir, collector);
 		} catch (Exception e) {
-			log.error("failed to get ids for type " + type, e);
+			log.error("failed to get ids for type {}", type, e);
 		}
 		return collector.ids;
 	}
@@ -151,59 +149,37 @@ public class DataPack implements Closeable {
 	private String getPath(ModelType type) {
 		if (type == null)
 			return "unknown";
-		switch (type) {
-		case BOILER:
-			return "boilers";
-		case BUFFER:
-			return "buffers";
-		case BUILDING_STATE:
-			return "building_states";
-		case CONSUMER:
-			return "consumers";
-		case COST_SETTINGS:
-			return "cost_settings";
-		case FLUE_GAS_CLEANING:
-			return "flue_gas_cleaning";
-		case FUEL:
-			return "fuels";
-		case HEAT_RECOVERY:
-			return "heat_recovery";
-		case LOAD_PROFILE:
-			return "load_profiles";
-		case MANUFACTURER:
-			return "manufacturers";
-		case PIPE:
-			return "pipes";
-		case PRODUCER:
-			return "producers";
-		case PRODUCT:
-			return "products";
-		case PRODUCT_GROUP:
-			return "product_groups";
-		case PROJECT:
-			return "projects";
-		case PROJECT_FOLDER:
-			return "project_folders";
-		case TRANSFER_STATION:
-			return "transfer_stations";
-		case WEATHER_STATION:
-			return "weather_stations";
-		case SOLAR_COLLECTOR:
-			return "solar_collectors";
-		case HEAT_PUMP:
-			return "heat_pumps";
-		default:
-			return "unknown";
-		}
+		return switch (type) {
+			case BOILER -> "boilers";
+			case BUFFER -> "buffers";
+			case BUILDING_STATE -> "building_states";
+			case CONSUMER -> "consumers";
+			case COST_SETTINGS -> "cost_settings";
+			case FLUE_GAS_CLEANING -> "flue_gas_cleaning";
+			case FUEL -> "fuels";
+			case HEAT_RECOVERY -> "heat_recovery";
+			case LOAD_PROFILE -> "load_profiles";
+			case MANUFACTURER -> "manufacturers";
+			case PIPE -> "pipes";
+			case PRODUCER -> "producers";
+			case PRODUCT -> "products";
+			case PRODUCT_GROUP -> "product_groups";
+			case PROJECT -> "projects";
+			case PROJECT_FOLDER -> "project_folders";
+			case TRANSFER_STATION -> "transfer_stations";
+			case WEATHER_STATION -> "weather_stations";
+			case SOLAR_COLLECTOR -> "solar_collectors";
+			case HEAT_PUMP -> "heat_pumps";
+			case BIOGAS_SUBSTRATE -> "biogas_substrates";
+		};
 	}
 
-	private class IdCollector extends SimpleFileVisitor<Path> {
+	private static class IdCollector extends SimpleFileVisitor<Path> {
 
-		private List<String> ids = new ArrayList<>();
+		private final List<String> ids = new ArrayList<>();
 
 		@Override
-		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-				throws IOException {
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 			if (file == null)
 				return FileVisitResult.CONTINUE;
 			String fileName = file.getFileName().toString();

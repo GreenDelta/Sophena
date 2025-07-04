@@ -20,6 +20,7 @@ import com.google.gson.JsonParseException;
 import sophena.db.Database;
 import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
+import sophena.model.BiogasSubstrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -43,10 +44,10 @@ import sophena.utils.Strings;
 
 public class Import implements Runnable {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private Database db;
-	private File packFile;
+	private final Database db;
+	private final File packFile;
 	private DataPack pack;
 
 	private final List<Upgrade> upgrades = new ArrayList<>();
@@ -58,7 +59,7 @@ public class Import implements Runnable {
 
 	@Override
 	public void run() {
-		try (DataPack pack = DataPack.open(packFile)) {
+		try (var pack = DataPack.open(packFile)) {
 			this.pack = pack;
 			PackInfo info = pack.readInfo();
 			if (info.version < 2) {
@@ -80,31 +81,34 @@ public class Import implements Runnable {
 			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
+
+			importEntities(ModelType.BIOGAS_SUBSTRATE, BiogasSubstrate.class);
+
 			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
-			importEntities(ModelType.PROJECT, Project.class);			
+			importEntities(ModelType.PROJECT, Project.class);
 		} catch (Exception e) {
-			log.error("failed to import data pack " + pack, e);
+			log.error("failed to import data pack {}", pack, e);
 		}
 	}
 
-	private <T extends AbstractEntity> void importEntities(ModelType type,
-			Class<T> clazz) {
+	private <T extends AbstractEntity> void importEntities(
+			ModelType type, Class<T> clazz
+	) {
 		try {
 			Gson gson = getGson(clazz);
-			Dao<T> dao = new Dao<>(clazz, db);
+
 			for (String id : pack.getIds(type)) {
-				if (dao.contains(id)) {
-					log.info("{} with id={} is already exists: not imported",
-							clazz, id);
+				if (db.contains(clazz, id)) {
+					log.info("{} with id={} is already exists: not imported", clazz, id);
 					continue;
 				}
-				JsonObject json = pack.get(type, id);
+				var json = pack.get(type, id);
 				checkUpgrades(type, json);
 				T instance = gson.fromJson(json, clazz);
-				dao.insert(instance);
+				db.insert(instance);
 			}
 		} catch (Exception e) {
-			log.error("failed to import instances of " + clazz, e);
+			log.error("failed to import instances of {}", clazz, e);
 		}
 	}
 
@@ -116,7 +120,7 @@ public class Import implements Runnable {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private Gson getGson(Class<?> rootType) {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
@@ -138,7 +142,7 @@ public class Import implements Runnable {
 	private class Deserializer<T extends RootEntity>
 			implements JsonDeserializer<T> {
 
-		private Class<T> type;
+		private final Class<T> type;
 
 		Deserializer(Class<T> type) {
 			this.type = type;
@@ -146,7 +150,7 @@ public class Import implements Runnable {
 
 		@Override
 		public T deserialize(JsonElement json, Type type,
-				JsonDeserializationContext context) throws JsonParseException {
+												 JsonDeserializationContext context) throws JsonParseException {
 			if (json == null || !json.isJsonObject())
 				return null;
 			if (Objects.equals(this.type, Product.class))
