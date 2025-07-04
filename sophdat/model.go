@@ -219,3 +219,13 @@ type HeatPump struct {
 	TargetTemperature []float64 `json:"targetTemperature"`
 	SourceTemperature []float64 `json:"sourceTemperature"`
 }
+
+// BiogasSubstrate stores data for biogas substrates used in biogas production
+type BiogasSubstrate struct {
+	BaseDataEntity
+	DryMatter        float64 `json:"dryMatter"`
+	OrganicDryMatter float64 `json:"organicDryMatter"`
+	BiogasProduction float64 `json:"biogasProduction"`
+	MethaneContent   float64 `json:"methaneContent"`
+	Co2Emissions     float64 `json:"co2Emissions"`
+}

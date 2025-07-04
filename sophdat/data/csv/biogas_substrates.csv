@@ -1,0 +1,26 @@
+id                                   ; name                     ; dry matter  ; organic dry matter  ; biogas production  ; methane content  ; co2 emissions  
+bddb4c38-b9db-46cc-bab8-7d32b0109544 ; Getreidestroh            ; 92.2        ; 94.4                ; 452.0              ; 52.7             ; 0.0            
+b9dc09fe-286e-41e8-b327-fc56bcbde55e ; Maisstrohsilage          ; 50.0        ; 90.0                ; 580.0              ; 53.0             ; 0.0            
+7f8f0101-23de-4cba-9399-84669bf5afb9 ; Zw.-frucht (Kleegras)    ; 35.6        ; 88.9                ; 564.0              ; 57.1             ; 0.0            
+cdc0f7fb-0fcd-44a3-a308-64470ee0948f ; Zw.-frucht (Weidelgras)  ; 35.0        ; 85.6                ; 592.0              ; 54.6             ; 0.0            
+9500d9ad-bae7-4abc-b567-c54135654a77 ; Zw.-frucht (Grünroggen)  ; 25.0        ; 88.6                ; 608.0              ; 54.2             ; 0.0            
+5dff1bc4-13d6-4b30-b521-eb8a64eb4acd ; Zw.-frucht (Raps)        ; 14.0        ; 80.0                ; 673.0              ; 55.9             ; 0.0            
+bd8237d8-1735-4fc5-ae0f-4ddf89c934b6 ; Rindergülle              ; 8.9         ; 78.9                ; 456.0              ; 56.0             ; 0.0            
+b83f218b-7524-4fea-8186-343a3130e945 ; Rindergülle sep.         ; 20.8        ; 85.9                ; 343.0              ; 58.2             ; 0.0            
+f67c910f-33b2-45ed-b8f5-0c49ee8b0e23 ; Rindermist               ; 22.9        ; 82.2                ; 350.0              ; 58.0             ; 0.0            
+8a7f5cd7-4111-4963-a728-f12f2d32b491 ; Schweinegülle            ; 4.8         ; 72.7                ; 345.0              ; 67.2             ; 0.0            
+b8290d44-54a2-460b-b580-5993acac966d ; Schweinegülle sep.       ; 25.5        ; 77.6                ; 257.0              ; 58.4             ; 0.0            
+f70a3235-7c8c-4924-bdd9-99a2d21b8c55 ; Pferdemist               ; 31.5        ; 81.8                ; 394.0              ; 55.6             ; 0.0            
+66a88fc7-596e-4c3c-9350-411279867b38 ; HTK                      ; 50.9        ; 78.7                ; 456.0              ; 56.0             ; 0.0            
+44b63af0-9d6b-41d1-b965-2122553f07ce ; Geflügelmist             ; 50.0        ; 80.0                ; 500.0              ; 56.0             ; 0.0            
+854ee40c-25e7-4cc6-b66a-c0b4e0d40d06 ; Maissilage               ; 35.1        ; 96.5                ; 658.0              ; 54.3             ; 0.0            
+c9cfbded-f72c-42c0-b4d9-3d359706d158 ; Getreide-GPS             ; 32.8        ; 93.7                ; 624.0              ; 56.0             ; 0.0            
+2fcc0a7b-0f15-4036-919b-3f49aaedb378 ; Grassilage               ; 28.2        ; 89.7                ; 567.0              ; 55.7             ; 0.0            
+2799c7be-62d9-4c4d-9910-4a8d9e7c36ce ; Zuckerrübensilage        ; 22.5        ; 82.0                ; 657.0              ; 53.0             ; 0.0            
+4ef714e1-784c-4f3f-9a65-21866aa86d3c ; Silphiesilage            ; 23.5        ; 89.3                ; 486.0              ; 60.0             ; 0.0            
+cb3464c0-9c9b-4313-8a89-b0996665ff5d ; Kleegrassilage           ; 35.6        ; 88.9                ; 564.0              ; 57.1             ; 0.0            
+f156f90d-095e-49d8-99a0-1c0463b01c61 ; Riesenweizengrassilage   ; 31.0        ; 84.2                ; 602.0              ; 57.0             ; 0.0            
+0ff5c5ec-93dc-4df2-bd96-6174898e14f2 ; Sorghumsilage            ; 26.2        ; 93.8                ; 576.0              ; 55.0             ; 0.0            
+b586d18e-2299-4894-b67b-a3f99e37322d ; Getreideschrot           ; 84.0        ; 97.8                ; 670.0              ; 52.0             ; 0.0            
+9ac96f7b-8a7b-4de3-979d-d6ced587eda2 ; Körnermais               ; 87.0        ; 96.0                ; 730.0              ; 52.0             ; 0.0            
+f2d85cc2-8625-47f2-b4ae-029b2522dbbf ; CCM                      ; 65.0        ; 98.0                ; 700.0              ; 54.0             ; 0.0            

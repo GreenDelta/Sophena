@@ -65,6 +65,9 @@ func pack() {
 	for _, f := range csvModel.Fuels {
 		baseData.Put(f, "fuels")
 	}
+	for _, s := range csvModel.BiogasSubstrates {
+		baseData.Put(s, "biogas_substrates")
+	}
 
 	// write poduct data
 	productData := NewPackWriter("gen/product_data.sophena")

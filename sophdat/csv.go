@@ -22,6 +22,7 @@ type CsvModel struct {
 	TransferStations []*TransferStation
 	SolarCollectors  []*SolarCollector
 	HeatPumps        []*HeatPump
+	BiogasSubstrates []*BiogasSubstrate
 }
 
 // ReadCsvModel reads all CSV data into memory and links them
@@ -40,6 +41,7 @@ func ReadCsvModel() *CsvModel {
 	model.readSolarCollectors()
 	model.readHeatPumps()
 	model.readHeatPumpCurves()
+	model.readBiogasSubstrates()
 	return model
 }
 
@@ -310,6 +312,23 @@ func (model *CsvModel) readHeatPumpCurves() {
 	}
 
 	eachCsvRow("data/csv/heat_pump_curves.csv", fn)
+}
+
+func (model *CsvModel) readBiogasSubstrates() {
+	model.BiogasSubstrates = make([]*BiogasSubstrate, 0)
+	fn := func(row []string) {
+		s := BiogasSubstrate{}
+		s.IsProtected = true
+		s.ID = cStr(row, 0)
+		s.Name = cStr(row, 1)
+		s.DryMatter = cFlo(row, 2)
+		s.OrganicDryMatter = cFlo(row, 3)
+		s.BiogasProduction = cFlo(row, 4)
+		s.MethaneContent = cFlo(row, 5)
+		s.Co2Emissions = cFlo(row, 6)
+		model.BiogasSubstrates = append(model.BiogasSubstrates, &s)
+	}
+	eachCsvRow("data/csv/biogas_substrates.csv", fn)
 }
 
 func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
