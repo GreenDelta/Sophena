@@ -104,6 +104,9 @@ public class BiogasPlantWizard extends Wizard {
 			plant.name = nameText.getText();
 			plant.product = Viewers.getFirstSelected(table);
 			plant.ratedPower = Texts.getDouble(powerFilter);
+			if (plant.ratedPower == 0 && plant.product != null) {
+				plant.ratedPower = plant.product.maxPowerElectric;
+			}
 		}
 
 		@Override

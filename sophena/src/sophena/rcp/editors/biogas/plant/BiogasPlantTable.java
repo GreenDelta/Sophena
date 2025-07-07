@@ -3,21 +3,27 @@ package sophena.rcp.editors.biogas.plant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.Database;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.App;
+import sophena.rcp.Icon;
+import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
+import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 
 public class BiogasPlantTable extends Editor {
@@ -70,6 +76,48 @@ public class BiogasPlantTable extends Editor {
 			table.setInput(plants);
 			double w = 1d / 3d;
 			Tables.bindColumnWidths(table, w, w, w);
+			bindActions(section, table);
+		}
+
+		private void bindActions(Section section, TableViewer table) {
+			var add = Actions.create(M.Add, Icon.ADD_16.des(),
+					() -> addPlant(table));
+			var edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
+					() -> editPlant(table));
+			var copy = Actions.create(M.Copy, Icon.COPY_16.des(),
+					() -> copyPlant(table));
+			var del = Actions.create(M.Delete, Icon.DELETE_16.des(),
+					() -> deletePlant(table));
+			Actions.bind(section, add, edit, copy, del);
+			Actions.bind(table, add, edit, copy, del);
+			Tables.onDoubleClick(table, (e) -> editPlant(table));
+		}
+
+		private void addPlant(TableViewer table) {
+			// TODO: Implement adding a new biogas plant
+			BiogasPlantWizard.open();
+		}
+
+		private void editPlant(TableViewer table) {
+			BiogasPlant plant = Viewers.getFirstSelected(table);
+			if (plant == null)
+				return;
+			// TODO: Implement editing selected biogas plant
+			BiogasPlantEditor.open(plant);
+		}
+
+		private void copyPlant(TableViewer table) {
+			BiogasPlant plant = Viewers.getFirstSelected(table);
+			if (plant == null)
+				return;
+			// TODO: Implement copying selected biogas plant
+		}
+
+		private void deletePlant(TableViewer table) {
+			BiogasPlant plant = Viewers.getFirstSelected(table);
+			if (plant == null)
+				return;
+			// TODO: Implement deleting selected biogas plant
 		}
 	}
 
