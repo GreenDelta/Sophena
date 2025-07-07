@@ -18,7 +18,7 @@ import sophena.rcp.logging.LoggerConfig;
 
 public class Activator extends AbstractUIPlugin {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private static BundleContext context;
 
@@ -61,7 +61,7 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
-	public void stop(BundleContext bundleContext) throws Exception {
+	public void stop(BundleContext bundleContext) {
 		try {
 			if (App.getDb() != null)
 				App.getDb().close();

@@ -291,5 +291,11 @@
 				id="sophena.BiogasPlantTable"
 				name="Biogasanlagen">
 		</editor>
+		<editor
+				class="sophena.rcp.editors.biogas.plant.BiogasPlantEditor"
+				default="false"
+				id="sophena.BiogasPlantEditor"
+				name="Biogasanlage">
+		</editor>
 	</extension>
 </plugin>

@@ -28,11 +28,7 @@ public class EventBus {
 	public void on(String event, Runnable target) {
 		if (event == null || target == null)
 			return;
-		List<Runnable> list = clients.get(event);
-		if (list == null) {
-			list = new ArrayList<>();
-			clients.put(event, list);
-		}
+		List<Runnable> list = clients.computeIfAbsent(event, k -> new ArrayList<>());
 		for (Runnable t : list) {
 			if (t == target)
 				return;

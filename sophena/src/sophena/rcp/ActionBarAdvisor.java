@@ -29,6 +29,7 @@ import sophena.rcp.editors.basedata.climate.ClimateDataEditor;
 import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
 import sophena.rcp.editors.basedata.products.ProductEditor;
+import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
 import sophena.rcp.editors.biogas.plant.BiogasPlantTable;
 import sophena.rcp.editors.biogas.substrate.SubstrateEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
@@ -119,7 +120,8 @@ public class ActionBarAdvisor extends
 	private void fillBiogasMenu(IMenuManager man) {
 		var m = new MenuManager("Biogasanlagenkonfigurator");
 		man.add(m);
-		m.add(Actions.create("Biogasanlagen", BiogasPlantTable::open));
+		m.add(Actions.create("Neue Biogasanlage", BiogasPlantEditor::createNew));
+		m.add(Actions.create("Biogasanlagen verwalten", BiogasPlantTable::open));
 		m.add(Actions.create("Substrate", SubstrateEditor::open));
 		m.add(Actions.create("Strompreise", () -> {}));
 		m.add(Actions.create("Marktwerte", () -> {}));

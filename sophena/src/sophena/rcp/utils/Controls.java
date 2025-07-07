@@ -2,21 +2,42 @@ package sophena.rcp.utils;
 
 import java.util.function.Consumer;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+
+import sophena.model.ProductGroup;
+import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.basedata.ProductGroupEditor;
 
 public final class Controls {
 
 	private Controls() {
+	}
+
+	public static void renderGroupLink(
+			ProductGroup group, FormToolkit tk, Composite comp
+	) {
+		UI.formLabel(comp, tk, "Produktgruppe");
+		var link = tk.createImageHyperlink(comp, SWT.NONE);
+		if (group != null) {
+			link.setText(group.name);
+		} else {
+			link.setText("FEHLER: keine Produktgruppe");
+		}
+		link.setForeground(Colors.getLinkBlue());
+		Controls.onClick(link, e -> ProductGroupEditor.open());
 	}
 
 	public static void onClick(Hyperlink link, Consumer<HyperlinkEvent> fn) {

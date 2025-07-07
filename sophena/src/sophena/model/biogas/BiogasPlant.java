@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
 import sophena.model.ProductCosts;
+import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 
 @Entity
@@ -24,6 +25,10 @@ public class BiogasPlant extends RootEntity {
 	@OneToOne
 	@JoinColumn(name = "f_product")
 	public Boiler product;
+
+	@OneToOne
+	@JoinColumn(name = "f_product_group")
+	public ProductGroup productGroup;
 
 	/// rated power in kW
 	@Column(name = "rated_power")
@@ -45,6 +50,7 @@ public class BiogasPlant extends RootEntity {
 		clone.description = description;
 		clone.producedElectricity = producedElectricity;
 		clone.product = product;
+		clone.productGroup = productGroup;
 		clone.ratedPower = ratedPower;
 		clone.minimumRuntime = minimumRuntime;
 		clone.costs = costs != null ? costs.copy() : null;

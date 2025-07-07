@@ -2,7 +2,6 @@ package sophena.rcp;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +31,7 @@ class ProductCleanup implements Runnable {
 			return;
 
 		Editors.closeAll();
-		IProgressService progress = PlatformUI.getWorkbench()
-				.getProgressService();
+		var progress = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progress.run(true, false, monitor -> {
 				monitor.beginTask("Lösche Produkte", IProgressMonitor.UNKNOWN);
@@ -55,7 +53,7 @@ class ProductCleanup implements Runnable {
 
 		// boilers
 		BoilerDao bdao = new BoilerDao(db);
-		bdao.getAll().stream().forEach(b -> {
+		bdao.getAll().forEach(b -> {
 			if (!b.isProtected)
 				return;
 			if (usage.of(b).isEmpty()) {
@@ -65,7 +63,7 @@ class ProductCleanup implements Runnable {
 
 		// generic products
 		ProductDao pdao = new ProductDao(db);
-		pdao.getAll().stream().forEach(p -> {
+		pdao.getAll().forEach(p -> {
 			if (!p.isProtected)
 				return;
 			if (usage.of(p).isEmpty()) {
@@ -75,7 +73,7 @@ class ProductCleanup implements Runnable {
 
 		// heat recoveries
 		Dao<HeatRecovery> hrDao = new Dao<>(HeatRecovery.class, db);
-		hrDao.getAll().stream().forEach(hr -> {
+		hrDao.getAll().forEach(hr -> {
 			if (!hr.isProtected)
 				return;
 			if (usage.of(hr).isEmpty()) {
@@ -85,7 +83,7 @@ class ProductCleanup implements Runnable {
 
 		// flue gas cleaning
 		Dao<FlueGasCleaning> fgcDao = new Dao<>(FlueGasCleaning.class, db);
-		fgcDao.getAll().stream().forEach(fgc -> {
+		fgcDao.getAll().forEach(fgc -> {
 			if (!fgc.isProtected)
 				return;
 			if (usage.of(fgc).isEmpty()) {
@@ -95,7 +93,7 @@ class ProductCleanup implements Runnable {
 
 		// buffer tanks
 		Dao<BufferTank> bufDao = new Dao<>(BufferTank.class, db);
-		bufDao.getAll().stream().forEach(buf -> {
+		bufDao.getAll().forEach(buf -> {
 			if (!buf.isProtected)
 				return;
 			if (usage.of(buf).isEmpty()) {
@@ -105,7 +103,7 @@ class ProductCleanup implements Runnable {
 
 		// pipes
 		Dao<Pipe> pipDao = new Dao<>(Pipe.class, db);
-		pipDao.getAll().stream().forEach(pip -> {
+		pipDao.getAll().forEach(pip -> {
 			if (!pip.isProtected)
 				return;
 			if (usage.of(pip).isEmpty()) {
@@ -115,27 +113,27 @@ class ProductCleanup implements Runnable {
 
 		// transfer stations
 		Dao<FlueGasCleaning> tsDao = new Dao<>(FlueGasCleaning.class, db);
-		tsDao.getAll().stream().forEach(ts -> {
+		tsDao.getAll().forEach(ts -> {
 			if (!ts.isProtected)
 				return;
 			if (usage.of(ts).isEmpty()) {
 				tsDao.delete(ts);
 			}
 		});
-		
+
 		// solar collectors
 		SolarCollectorDao sdao = new SolarCollectorDao(db);
-		sdao.getAll().stream().forEach(b -> {
+		sdao.getAll().forEach(b -> {
 			if (!b.isProtected)
 				return;
 			if (usage.of(b).isEmpty()) {
 				sdao.delete(b);
 			}
 		});
-		
+
 		// heat pumps
 		HeatPumpDao hpdao = new HeatPumpDao(db);
-		hpdao.getAll().stream().forEach(b -> {
+		hpdao.getAll().forEach(b -> {
 			if (!b.isProtected)
 				return;
 			if (usage.of(b).isEmpty()) {

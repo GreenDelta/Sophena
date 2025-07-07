@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.Labels;
 import sophena.model.OutdoorTemperatureControlKind;
@@ -16,8 +15,6 @@ import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductType;
 import sophena.rcp.M;
-import sophena.rcp.colors.Colors;
-import sophena.rcp.editors.basedata.ProductGroupEditor;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -41,15 +38,17 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, producer().name);
-		FormToolkit tk = mform.getToolkit();
-		Composite body = UI.formBody(form, tk);
-		Composite comp = UI.formSection(body, tk, "Erzeugerinformationen");
+		var form = UI.formHeader(mform, producer().name);
+		var tk = mform.getToolkit();
+		var body = UI.formBody(form, tk);
+
+		var comp = UI.formSection(body, tk, "Erzeugerinformationen");
 		nameText(tk, comp);
-		groupLink(tk, comp);
+		Controls.renderGroupLink(producer().productGroup, tk, comp);
 		descriptionText(tk, comp);
 		functionCombo(tk, comp);
 		rankText(tk, comp);
+
 		UtilisationRateSwitch.checkCreate(editor, comp, tk);
 		outdoorTemperatureControl(tk, comp);
 		importButton(tk, comp);
@@ -58,6 +57,7 @@ class InfoPage extends FormPage {
 					.of(editor)
 					.create(body, tk);
 		}
+
 		new FuelSection(editor).render(body, tk);
 		if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
 			new LocationSpecificationSection(editor).create(body, tk);
@@ -97,20 +97,20 @@ class InfoPage extends FormPage {
 			producer().outdoorTemperatureControlKind = OutdoorTemperatureControlKind.Until;
 			editor.setDirty();
 		});
-		
+
 		outdoorTemperature = UI.formText(inner, tk, "");
 		UI.gridData(outdoorTemperature, false, false).widthHint = 80;
 		Texts.set(outdoorTemperature, producer().outdoorTemperature);
 		Texts.on(outdoorTemperature).init(producer().outdoorTemperature).decimal().required()
 				.onChanged(s -> {
-					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);	
+					producer().outdoorTemperature = Texts.getDouble(outdoorTemperature);
 					editor.setDirty();
 				});
-		UI.formLabel(inner, tk, "°C");		
+		UI.formLabel(inner, tk, "°C");
 
 		enableControls(producer().isOutdoorTemperatureControl);
 	}
-	
+
 	private void createCheck(FormToolkit tk, Composite comp) {
 		var check = tk.createButton(comp, M.ActivateOutdoorTemperature, SWT.CHECK);
 		check.setSelection(producer().isOutdoorTemperatureControl);
@@ -121,13 +121,13 @@ class InfoPage extends FormPage {
 			editor.setDirty();
 		});
 	}
-	
+
 	private void enableControls(Boolean enable) {
 		radioOutdoorFrom.setEnabled(enable);
 		radioOutdoorUntil.setEnabled(enable);
 		outdoorTemperature.setEnabled(enable);
 	}
-	
+
 	private void nameText(FormToolkit tk, Composite comp) {
 		Text nt = UI.formText(comp, tk, M.Name);
 		Texts.set(nt, producer().name);
@@ -135,18 +135,6 @@ class InfoPage extends FormPage {
 			producer().name = nt.getText();
 			editor.setDirty();
 		});
-	}
-
-	private void groupLink(FormToolkit tk, Composite comp) {
-		UI.formLabel(comp, tk, "Produktgruppe");
-		var link = tk.createImageHyperlink(comp, SWT.NONE);
-		if (producer().productGroup != null) {
-			link.setText(producer().productGroup.name);
-		} else {
-			link.setText("FEHLER: keine Produktgruppe");
-		}
-		link.setForeground(Colors.getLinkBlue());
-		Controls.onClick(link, e -> ProductGroupEditor.open());
 	}
 
 	private void descriptionText(FormToolkit tk, Composite comp) {
@@ -165,7 +153,7 @@ class InfoPage extends FormPage {
 		if (producer().function == ProducerFunction.BASE_LOAD)
 			c.select(0);
 		else if (producer().function == ProducerFunction.PEAK_LOAD)
-			c.select(1);		
+			c.select(1);
 		else
 			c.select(2);
 		Controls.onSelect(c, (e) -> {

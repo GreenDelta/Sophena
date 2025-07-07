@@ -31,12 +31,11 @@ public class ProducerEditor extends Editor {
 	private String projectId;
 	private Producer producer;
 
-	public static void open(ProjectDescriptor project,
-			ProducerDescriptor producer) {
+	public static void open(
+			ProjectDescriptor project, ProducerDescriptor producer) {
 		if (project == null || producer == null)
 			return;
-		EditorInput input = new EditorInput(producer.id,
-				producer.name);
+		var input = new EditorInput(producer.id, producer.name);
 		input.projectKey = project.id;
 		Editors.open(input, "sophena.ProducerEditor");
 	}
@@ -95,7 +94,7 @@ public class ProducerEditor extends Editor {
 			Navigator.refresh();
 			setSaved();
 		} catch (Exception e) {
-			log.error("failed to update project " + projectId, e);
+			log.error("failed to update project {}", projectId, e);
 		}
 	}
 
@@ -131,10 +130,8 @@ public class ProducerEditor extends Editor {
 				return true;
 			}
 		}
-		if (producer.solarCollectorSpec != null)
-		{
-			if(producer.utilisationRate <= 0)
-			{
+		if (producer.solarCollectorSpec != null) {
+			if (producer.utilisationRate <= 0) {
 				MsgBox.error(M.PlausibilityErrors, M.UtilizationRateMustBePositive);
 				return false;
 			}
@@ -144,30 +141,26 @@ public class ProducerEditor extends Editor {
 				MsgBox.error(M.PlausibilityErrors, M.AlignmentError);
 				return false;
 			}
-			
+
 			double tilt = producer.solarCollectorSpec.solarCollectorTilt;
 			if (tilt < 0 || tilt > 90) {
 				MsgBox.error(M.PlausibilityErrors, M.TiltError);
 				return false;
 			}
-			
+
 			if (producer.solarCollectorSpec.solarCollectorOperatingMode == SolarCollectorOperatingMode.AUTO_SEASON && !project.heatNet.isSeasonalDrivingStyle) {
-				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);				
+				MsgBox.error(M.PlausibilityErrors, M.OperatingModeError);
 				return false;
 			}
 		}
-		if(producer.heatPump != null)
-		{
-			if(producer.heatPumpMode == HeatPumpMode.USER_TEMPERATURE_MODE && producer.sourceTemperatureUser == null)
-			{
+		if (producer.heatPump != null) {
+			if (producer.heatPumpMode == HeatPumpMode.USER_TEMPERATURE_MODE && producer.sourceTemperatureUser == null) {
 				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureUserError);
 				return false;
-			}
-			else if(producer.heatPumpMode == HeatPumpMode.HOURLY_TEMPERATURE_MODE && producer.sourceTemperatureHourly == null)
-			{
+			} else if (producer.heatPumpMode == HeatPumpMode.HOURLY_TEMPERATURE_MODE && producer.sourceTemperatureHourly == null) {
 				MsgBox.error(M.PlausibilityErrors, M.SourceTemperatureHourlyError);
 				return false;
-			}				
+			}
 		}
 
 		return true;
@@ -180,7 +173,7 @@ public class ProducerEditor extends Editor {
 
 	@Override
 	public void doSaveAs() {
-		InputDialog dialog = new InputDialog(UI.shell(), "Speichern unter",
+		var dialog = new InputDialog(UI.shell(), "Speichern unter",
 				"Name des Erzeugers", producer.name + " - Kopie", null);
 		if (dialog.open() != Window.OK)
 			return;

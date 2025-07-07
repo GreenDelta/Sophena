@@ -70,10 +70,10 @@ CREATE TABLE tbl_biogas_plants (
 
     f_produced_electricity CHAR(36),
     f_product              CHAR(36),
+    f_product_group        CHAR(36),
     rated_power            DOUBLE,
     minimum_runtime        INTEGER,
 
-    -- ProductCosts embedded fields
     investment             DOUBLE,
     duration               INTEGER,
     repair                 DOUBLE,
