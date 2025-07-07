@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.Database;
 import sophena.db.NativeSql;
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -78,7 +78,7 @@ public class UsageSearch {
 				+ "c.f_building_state = '" + state.id + "'";
 		return query(sql, ModelType.CONSUMER);
 	}
-	
+
 	public List<SearchResult> of(WeatherStation station) {
 		if (station == null || station.id == null)
 			return Collections.emptyList();
@@ -135,7 +135,7 @@ public class UsageSearch {
 				+ "where f_solar_collector = '" + solarCollector.id + "'";
 		return query(sql, ModelType.PRODUCER);
 	}
-	
+
 	public List<SearchResult> of(HeatPump heatPump) {
 		if (heatPump == null || heatPump.id == null)
 			return Collections.emptyList();
@@ -144,7 +144,7 @@ public class UsageSearch {
 		return query(sql, ModelType.PRODUCER);
 	}
 
-	public List<SearchResult> of(BiogasSubstrate substrate) {
+	public List<SearchResult> of(Substrate substrate) {
 		if (substrate == null || substrate.id == null)
 			return Collections.emptyList();
 		// BiogasSubstrate may be used in biogas plants or other biogas-related producers
@@ -152,7 +152,7 @@ public class UsageSearch {
 		// This method can be extended when BiogasSubstrate is integrated with other entities
 		return Collections.emptyList();
 	}
-	
+
 	private List<SearchResult> query(String sql, ModelType type) {
 		try {
 			List<SearchResult> results = new ArrayList<>();

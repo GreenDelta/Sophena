@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Convert;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -57,7 +57,7 @@ public class Producer extends RootEntity {
 	 */
 	@Column(name = "profile_max_power_electric")
 	public double profileMaxPowerElectric;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "producer_function")
 	public ProducerFunction function;
@@ -105,20 +105,20 @@ public class Producer extends RootEntity {
 	 */
 	@Column(name = "utilisation_rate")
 	public Double utilisationRate;
-	
+
 	@OneToOne
 	@JoinColumn(name = "f_solar_collector")
 	public SolarCollector solarCollector;
-	
+
 	@Embedded
 	public SolarCollectorSpec solarCollectorSpec;
-	
+
 	@Column(name = "is_outdoor_temperature_control")
 	public boolean isOutdoorTemperatureControl;
-	
+
 	@Column(name = "outdoor_temperature")
 	public double outdoorTemperature;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "outdoor_temperature_control_kind")
 	public OutdoorTemperatureControlKind outdoorTemperatureControlKind;
@@ -126,18 +126,18 @@ public class Producer extends RootEntity {
 	@OneToOne
 	@JoinColumn(name = "f_heat_pump")
 	public HeatPump heatPump;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "heat_pump_mode")
 	public HeatPumpMode heatPumpMode;
-	
+
 	@Column(name = "source_temperature_user")
 	public Double sourceTemperatureUser;
-	
+
 	@Column(name = "source_temperature_hourly")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] sourceTemperatureHourly;
-	
+
 	/**
 	 * Indicates whether the producer is based on a producer profile or not.
 	 */

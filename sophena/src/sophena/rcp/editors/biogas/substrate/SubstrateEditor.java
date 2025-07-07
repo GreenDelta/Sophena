@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import sophena.db.Database;
 import sophena.db.usage.SearchResult;
 import sophena.db.usage.UsageSearch;
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
@@ -54,7 +54,7 @@ public class SubstrateEditor extends Editor {
 	private class Page extends FormPage {
 
 		private final Database db = App.getDb();
-		private List<BiogasSubstrate> substrates;
+		private List<Substrate> substrates;
 
 		public Page() {
 			super(SubstrateEditor.this, "SubstrateEditorPage", "Biogas Substrate");
@@ -62,7 +62,7 @@ public class SubstrateEditor extends Editor {
 		}
 
 		private void initData() {
-			substrates = db.getAll(BiogasSubstrate.class);
+			substrates = db.getAll(Substrate.class);
 			Sorters.sortBaseData(substrates);
 		}
 
@@ -105,7 +105,7 @@ public class SubstrateEditor extends Editor {
 		}
 
 		private void addSubstrate(TableViewer table) {
-			BiogasSubstrate substrate = new BiogasSubstrate();
+			Substrate substrate = new Substrate();
 			substrate.id = UUID.randomUUID().toString();
 			substrate.name = "Neues Substrat";
 			substrate.dryMatter = 20.0;
@@ -125,7 +125,7 @@ public class SubstrateEditor extends Editor {
 		}
 
 		private void editSubstrate(TableViewer table) {
-			BiogasSubstrate substrate = Viewers.getFirstSelected(table);
+			Substrate substrate = Viewers.getFirstSelected(table);
 			if (substrate == null)
 				return;
 			if (SubstrateWizard.open(substrate) != Window.OK)
@@ -141,10 +141,10 @@ public class SubstrateEditor extends Editor {
 		}
 
 		private void copySubstrate(TableViewer table) {
-			BiogasSubstrate substrate = Viewers.getFirstSelected(table);
+			Substrate substrate = Viewers.getFirstSelected(table);
 			if (substrate == null)
 				return;
-			BiogasSubstrate copy = substrate.copy();
+			Substrate copy = substrate.copy();
 			copy.id = UUID.randomUUID().toString();
 			copy.isProtected = false;
 			if (SubstrateWizard.open(copy) != Window.OK)
@@ -155,7 +155,7 @@ public class SubstrateEditor extends Editor {
 		}
 
 		private void deleteSubstrate(TableViewer table) {
-			BiogasSubstrate substrate = Viewers.getFirstSelected(table);
+			Substrate substrate = Viewers.getFirstSelected(table);
 			if (substrate == null || substrate.isProtected)
 				return;
 			boolean doIt = MsgBox.ask(M.Delete,

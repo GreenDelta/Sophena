@@ -3,17 +3,14 @@ package sophena.model;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Convert;
-import org.eclipse.persistence.annotations.Converter;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import sophena.model.descriptors.WeatherStationDescriptor;
 
 @Entity
 @Table(name = "tbl_weather_stations")
-@Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
 public class WeatherStation extends BaseDataEntity {
 
 	@Column(name = "longitude")
@@ -24,20 +21,20 @@ public class WeatherStation extends BaseDataEntity {
 
 	@Column(name = "altitude")
 	public double altitude;
-	
+
 	@Column(name = "reference_longitude")
 	public double referenceLongitude;
 
 	@Column(name = "data")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] data;
-	
+
 	@Column(name = "direct_radiation")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] directRadiation;
-	
+
 	@Column(name = "diffuse_radiation")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] diffuseRadiation;
 
 	@Override
@@ -70,11 +67,11 @@ public class WeatherStation extends BaseDataEntity {
 		d.description = description;
 		d.longitude = longitude;
 		d.latitude = latitude;
-		d.altitude = altitude;		
+		d.altitude = altitude;
 		d.isProtected = isProtected;
 		return d;
 	}
-	
+
 	public double minTemperature()
 	{
 		double min = Double.MAX_VALUE;

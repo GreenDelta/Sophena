@@ -3,9 +3,8 @@ package sophena.model;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Convert;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -15,24 +14,24 @@ public class HeatPump extends AbstractProduct {
 
 	@Column(name = "min_power")
 	public double minPower;
-	
+
 	@Column(name = "rated_power")
 	public double ratedPower;
 
 	@Column(name = "max_power")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] maxPower;
-	
+
 	@Column(name = "cop")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] cop;
 
 	@Column(name = "target_temperature")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] targetTemperature;
-	
+
 	@Column(name = "source_temperature")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] sourceTemperature;
 
 	@Override

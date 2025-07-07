@@ -1,5 +1,7 @@
 package sophena.model;
 
+import sophena.model.biogas.Substrate;
+
 /**
  * An enumeration of all root entity types. This is used in things like data
  * exchange, e.g. for assigning package paths to types and the other way around.
@@ -46,7 +48,7 @@ public enum ModelType {
 
 	HEAT_PUMP(HeatPump.class),
 
-	BIOGAS_SUBSTRATE(BiogasSubstrate.class);
+	BIOGAS_SUBSTRATE(Substrate.class);
 
 	private final Class<? extends AbstractEntity> modelClass;
 

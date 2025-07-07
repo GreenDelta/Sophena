@@ -8,13 +8,14 @@
 
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-		<class>sophena.model.BiogasPlant</class>
-		<class>sophena.model.BiogasSubstrate</class>
+		<class>sophena.model.biogas.BiogasPlant</class>
+		<class>sophena.model.biogas.Substrate</class>
 		<class>sophena.model.Boiler</class>
 		<class>sophena.model.BufferTank</class>
 		<class>sophena.model.BuildingState</class>
 		<class>sophena.model.Consumer</class>
 		<class>sophena.model.CostSettings</class>
+		<class>sophena.model.DoubleArrayConverter</class>
 		<class>sophena.model.FlueGasCleaning</class>
 		<class>sophena.model.FlueGasCleaningEntry</class>
 		<class>sophena.model.FuelConsumption</class>

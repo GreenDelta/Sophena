@@ -1,6 +1,6 @@
 package sophena.rcp.editors.biogas.substrate;
 
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.utils.Num;
 
@@ -8,7 +8,7 @@ class SubstrateTableLabel extends BaseTableLabel {
 
 	@Override
 	public String getColumnText(Object element, int col) {
-		if (!(element instanceof BiogasSubstrate substrate))
+		if (!(element instanceof Substrate substrate))
 			return null;
 		return switch (col) {
 			case 0 -> substrate.name;

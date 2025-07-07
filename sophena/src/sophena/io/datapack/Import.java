@@ -20,7 +20,7 @@ import com.google.gson.JsonParseException;
 import sophena.db.Database;
 import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -82,7 +82,7 @@ public class Import implements Runnable {
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
 
-			importEntities(ModelType.BIOGAS_SUBSTRATE, BiogasSubstrate.class);
+			importEntities(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
 
 			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
 			importEntities(ModelType.PROJECT, Project.class);

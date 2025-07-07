@@ -10,20 +10,19 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-import sophena.utils.Strings;
 
 public class SubstrateWizard extends Wizard {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
-	private BiogasSubstrate substrate;
+	private Substrate substrate;
 
-	public static int open(BiogasSubstrate substrate) {
+	public static int open(Substrate substrate) {
 		if (substrate == null)
 			return Window.CANCEL;
 		SubstrateWizard wiz = new SubstrateWizard();

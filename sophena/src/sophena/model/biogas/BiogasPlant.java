@@ -1,4 +1,4 @@
-package sophena.model;
+package sophena.model.biogas;
 
 import java.util.UUID;
 
@@ -8,6 +8,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import sophena.model.Boiler;
+import sophena.model.Fuel;
+import sophena.model.ProductCosts;
+import sophena.model.RootEntity;
 
 @Entity
 @Table(name = "tbl_biogas_plants")

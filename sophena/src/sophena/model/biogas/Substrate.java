@@ -1,14 +1,15 @@
-package sophena.model;
+package sophena.model.biogas;
 
 import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import sophena.model.BaseDataEntity;
 
 @Entity
 @Table(name = "tbl_biogas_substrates")
-public class BiogasSubstrate extends BaseDataEntity {
+public class Substrate extends BaseDataEntity {
 
 	/// dry matter content in percentage (%)
 	@Column(name = "dry_matter")
@@ -31,8 +32,8 @@ public class BiogasSubstrate extends BaseDataEntity {
 	public double co2Emissions;
 
 	@Override
-	public BiogasSubstrate copy() {
-		var clone = new BiogasSubstrate();
+	public Substrate copy() {
+		var clone = new Substrate();
 		clone.id = UUID.randomUUID().toString();
 		clone.name = name;
 		clone.description = description;

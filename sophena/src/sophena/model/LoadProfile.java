@@ -2,10 +2,8 @@ package sophena.model;
 
 import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Convert;
-import org.eclipse.persistence.annotations.Converter;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -16,16 +14,14 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "tbl_load_profiles")
-@Converter(name = "DoubleArrayConverter",
-		converterClass = DoubleArrayConverter.class)
 public class LoadProfile extends AbstractEntity {
 
 	@Column(name = "dynamic_data")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] dynamicData;
 
 	@Column(name = "static_data")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] staticData;
 
 	/**

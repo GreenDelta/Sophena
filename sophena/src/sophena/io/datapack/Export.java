@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import sophena.model.BiogasSubstrate;
+import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -50,7 +50,7 @@ public class Export {
 	private Gson getGson(RootEntity root) {
 		GsonBuilder builder = new GsonBuilder();
 		Class<?>[] refTypes = {
-				BiogasSubstrate.class,
+				Substrate.class,
 				Boiler.class,
 				BufferTank.class,
 				BuildingState.class,

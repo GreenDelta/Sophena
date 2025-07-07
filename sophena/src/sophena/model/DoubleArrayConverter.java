@@ -2,48 +2,33 @@ package sophena.model;
 
 import java.nio.ByteBuffer;
 
-import org.eclipse.persistence.internal.helper.DatabaseField;
-import org.eclipse.persistence.mappings.DatabaseMapping;
-import org.eclipse.persistence.mappings.converters.Converter;
-import org.eclipse.persistence.sessions.Session;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
-public class DoubleArrayConverter implements Converter {
-
-	private static final long serialVersionUID = -5046729949761054727L;
+@Converter(autoApply = true)
+public class DoubleArrayConverter implements AttributeConverter<double[], byte[]> {
 
 	@Override
-	public Object convertDataValueToObjectValue(Object byteData, Session session) {
-		if (!(byteData instanceof byte[] bytes))
+	public byte[] convertToDatabaseColumn(double[] doubles) {
+		if (doubles == null)
 			return null;
-		double[] doubles = new double[bytes.length / 8];
-		for (int i = 0; i < doubles.length; i++) {
-			double d = ByteBuffer.wrap(bytes, i * 8, 8).getDouble();
-			doubles[i] = d;
+		var buffer = ByteBuffer.allocate(doubles.length * 8);
+		for (double d : doubles) {
+			buffer.putDouble(d);
+		}
+		return buffer.array();
+	}
+
+	@Override
+	public double[] convertToEntityAttribute(byte[] bytes) {
+		if (bytes == null)
+			return null;
+		var buffer = ByteBuffer.wrap(bytes);
+		int n = bytes.length / 8;
+		double[] doubles = new double[n];
+		for (int i = 0; i < n; i++) {
+			doubles[i] = buffer.getDouble();
 		}
 		return doubles;
 	}
-
-	@Override
-	public Object convertObjectValueToDataValue(Object doubleData,
-			Session session) {
-		if (!(doubleData instanceof double[] doubles))
-			return null;
-		byte[] bytes = new byte[doubles.length * 8];
-		for (int i = 0; i < doubles.length; i++) {
-			ByteBuffer.wrap(bytes, i * 8, 8).putDouble(doubles[i]);
-		}
-		return bytes;
-	}
-
-	@Override
-	public void initialize(DatabaseMapping mapping, Session session) {
-		DatabaseField field = mapping.getField();
-		field.setSqlType(java.sql.Types.BLOB);
-	}
-
-	@Override
-	public boolean isMutable() {
-		return false;
-	}
-
 }

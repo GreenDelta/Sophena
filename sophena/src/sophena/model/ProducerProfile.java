@@ -2,10 +2,8 @@ package sophena.model;
 
 import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Convert;
-import org.eclipse.persistence.annotations.Converter;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -15,21 +13,20 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "tbl_producer_profiles")
-@Converter(name = "DoubleArrayConverter", converterClass = DoubleArrayConverter.class)
 public class ProducerProfile extends AbstractEntity {
 
 	@Column(name = "min_power")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] minPower;
 
 	@Column(name = "max_power")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] maxPower;
 
 	@Column(name = "temperatur_level")
-	@Convert("DoubleArrayConverter")
+	@Convert(converter = DoubleArrayConverter.class)
 	public double[] temperaturLevel;
-	
+
 	public static ProducerProfile initEmpty() {
 		ProducerProfile p = new ProducerProfile();
 		p.maxPower = new double[Stats.HOURS];
@@ -37,7 +34,7 @@ public class ProducerProfile extends AbstractEntity {
 		p.temperaturLevel = new double[Stats.HOURS];
 		return p;
 	}
-	
+
 	@Override
 	public ProducerProfile copy() {
 		var clone = new ProducerProfile();
