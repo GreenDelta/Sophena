@@ -1,7 +1,5 @@
 package sophena.rcp.editors.biogas.plant;
 
-import java.util.UUID;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -9,9 +7,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
-import sophena.model.FuelGroup;
-import sophena.model.ProductGroup;
-import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.App;
 import sophena.rcp.M;
@@ -20,7 +15,6 @@ import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
@@ -29,27 +23,7 @@ public class BiogasPlantEditor extends Editor {
 	private BiogasPlant plant;
 
 	public static void createNew() {
-
-		ProductGroup group = null;
-		for (var g : App.getDb().getAll(ProductGroup.class)) {
-			if (g.type == ProductType.COGENERATION_PLANT
-					&& g.fuelGroup == FuelGroup.BIOGAS) {
-				group = g;
-				break;
-			}
-		}
-		if (group == null) {
-			MsgBox.error("Produktgruppe Biogas-BHKW nicht gefunden",
-					"Die Produktgruppe Biogas-BHKW wurde nicht in der Datenbank gefunden");
-			return;
-		}
-
-		var plant = new BiogasPlant();
-		plant.id = UUID.randomUUID().toString();
-		plant.name = "Neue Biogasanlage";
-		plant.productGroup = group;
-		App.getDb().insert(plant);
-		open(plant);
+		BiogasPlantWizard.open().ifPresent(BiogasPlantEditor::open);
 	}
 
 	public static void open(BiogasPlant plant) {
