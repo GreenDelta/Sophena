@@ -10,7 +10,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.db.Database;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
@@ -44,12 +43,11 @@ public class BiogasPlantTable extends Editor {
 
 	private class Page extends FormPage {
 
-		private final Database db = App.getDb();
 		private final List<BiogasPlant> plants;
 
 		Page() {
 			super(BiogasPlantTable.this, "PlantEditorPage", "Biogasanlagen");
-			plants = new ArrayList<>(db.getAll(BiogasPlant.class));
+			plants = new ArrayList<>(App.getDb().getAll(BiogasPlant.class));
 			Sorters.byName(plants);
 		}
 
@@ -94,30 +92,46 @@ public class BiogasPlantTable extends Editor {
 		}
 
 		private void addPlant(TableViewer table) {
-			// TODO: Implement adding a new biogas plant
-			BiogasPlantWizard.open();
+			var plant = BiogasPlantWizard.open().orElse(null);
+			if (plant == null)
+				return;
+			plants.add(plant);
+			table.setInput(plants);
 		}
 
 		private void editPlant(TableViewer table) {
 			BiogasPlant plant = Viewers.getFirstSelected(table);
 			if (plant == null)
 				return;
-			// TODO: Implement editing selected biogas plant
 			BiogasPlantEditor.open(plant);
 		}
 
 		private void copyPlant(TableViewer table) {
-			BiogasPlant plant = Viewers.getFirstSelected(table);
+			var plant = getFreshSelected(table);
 			if (plant == null)
 				return;
-			// TODO: Implement copying selected biogas plant
+			var copy = plant.copy();
+			copy.name += " - Kopie";
+			App.getDb().insert(copy);
+			plants.add(copy);
+			table.setInput(plants);
+			BiogasPlantEditor.open(copy);
 		}
 
 		private void deletePlant(TableViewer table) {
-			BiogasPlant plant = Viewers.getFirstSelected(table);
+			var plant = getFreshSelected(table);
 			if (plant == null)
 				return;
-			// TODO: Implement deleting selected biogas plant
+			App.getDb().delete(plant);
+			plants.remove(plant);
+			table.setInput(plants);
+		}
+
+		private BiogasPlant getFreshSelected(TableViewer table) {
+			BiogasPlant plant = Viewers.getFirstSelected(table);
+			return plant != null
+					? App.getDb().get(BiogasPlant.class, plant.id)
+					: null;
 		}
 	}
 
