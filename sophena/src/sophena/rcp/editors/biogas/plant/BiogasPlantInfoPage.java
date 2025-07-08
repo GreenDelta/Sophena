@@ -79,6 +79,10 @@ class BiogasPlantInfoPage extends FormPage {
 				.withEditor(editor);
 		boilerCombo(tk, comp, costs);
 		costs.createFields(comp, tk);
+
+		// substrate section
+		SubstrateSection substrateSection = SubstrateSection.of(editor);
+		substrateSection.create(body, tk);
 	}
 
 	private void boilerCombo(
@@ -86,8 +90,8 @@ class BiogasPlantInfoPage extends FormPage {
 	) {
 		var combo = new EntityCombo<Boiler>();
 		combo.create("Produkt", comp, tk);
-		combo.setLabelProvider(b -> b.name + " ("
-				+ Num.str(b.maxPowerElectric) + " kW el.)");
+		combo.setLabelProvider(bi -> bi.name + " ("
+				+ Num.str(bi.maxPowerElectric) + " kW el.)");
 		var b = plant().product;
 		if (b == null || b.group == null)
 			return;
