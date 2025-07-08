@@ -26,7 +26,7 @@ import sophena.utils.Num;
 
 class CostSection {
 
-	private ProducerEditor editor;
+	private final ProducerEditor editor;
 	private ProductCostSection costSection;
 
 	CostSection(ProducerEditor editor) {
@@ -42,9 +42,9 @@ class CostSection {
 		Composite comp = UI.formSection(body, tk, label);
 		UI.gridLayout(comp, 3);
 		if (!producer().hasProfile()) {
-			if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+			if (producer().productGroup != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
 				solarCombo(tk, comp);
-			else if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.HEAT_PUMP)
+			else if (producer().productGroup != null && producer().productGroup.type == ProductType.HEAT_PUMP)
 				heatPumpCombo(tk, comp);
 			else
 				boilerCombo(tk, comp);
@@ -60,7 +60,7 @@ class CostSection {
 		combo.create("Bezeichnung", comp, tk);
 		combo.setLabelProvider(b -> b.name + " ("
 				+ Num.str(b.minPower) + " kW - "
-				+ Num.str(b.maxPower) + " kW, \u03B7 = "
+				+ Num.str(b.maxPower) + " kW, η = "
 				+ Num.str(b.efficiencyRate * 100d) + "%)");
 		Boiler b = producer().boiler;
 		if (b == null)
@@ -89,7 +89,7 @@ class CostSection {
 		Sorters.boilers(filtered);
 		return filtered;
 	}
-	
+
 	private void solarCombo(FormToolkit tk, Composite comp) {
 		EntityCombo<SolarCollector> combo = new EntityCombo<>();
 		combo.create("Bezeichnung", comp, tk);
@@ -106,7 +106,7 @@ class CostSection {
 			editor.setDirty();
 		});
 	}
-	
+
 	private void heatPumpCombo(FormToolkit tk, Composite comp) {
 		EntityCombo<HeatPump> combo = new EntityCombo<>();
 		combo.create("Bezeichnung", comp, tk);
@@ -138,7 +138,7 @@ class CostSection {
 		Sorters.solarCollectors(filtered);
 		return filtered;
 	}
-	
+
 	private List<HeatPump> getPossibleHeatPumps(HeatPump h) {
 		if (h == null || h.group == null)
 			return Collections.emptyList();

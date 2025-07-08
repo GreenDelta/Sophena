@@ -59,27 +59,28 @@ class InfoPage extends FormPage {
 		}
 
 		new FuelSection(editor).render(body, tk);
-		if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
+		if (producer().productGroup != null && producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT)
 			new LocationSpecificationSection(editor).create(body, tk);
-		if (producer().productGroup != null && producer().productGroup.type != null && producer().productGroup.type == ProductType.HEAT_PUMP)
+		if (producer().productGroup != null && producer().productGroup.type == ProductType.HEAT_PUMP)
 			new HeatPumpSection(editor).create(body, tk);
 		new CostSection(editor).create(body, tk);
 		if (!producer().hasProfile()) {
 			new InterruptionSection(editor).create(body, tk);
-			if(!(producer().productGroup != null && producer().productGroup.type != null && (producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT || producer().productGroup.type == ProductType.HEAT_PUMP)))
+			if (!(producer().productGroup != null
+					&& (producer().productGroup.type == ProductType.SOLAR_THERMAL_PLANT
+					|| producer().productGroup.type == ProductType.HEAT_PUMP)))
 				new HeatRecoverySection(editor).create(body, tk);
 		}
 		form.reflow(true);
 	}
 
-	private void outdoorTemperatureControl(FormToolkit tk, Composite comp)
-	{
+	private void outdoorTemperatureControl(FormToolkit tk, Composite comp) {
 		createCheck(tk, comp);
 		UI.filler(comp);
 		UI.formLabel(comp, tk, M.Use);
 		Composite inner = tk.createComposite(comp);
 		UI.innerGrid(inner, 4);
-		if(producer().outdoorTemperatureControlKind == null)
+		if (producer().outdoorTemperatureControlKind == null)
 			producer().outdoorTemperatureControlKind = OutdoorTemperatureControlKind.From;
 		OutdoorTemperatureControlKind current = producer().outdoorTemperatureControlKind;
 		radioOutdoorFrom = tk.createButton(inner, M.From, SWT.RADIO);
@@ -148,7 +149,7 @@ class InfoPage extends FormPage {
 
 	private void functionCombo(FormToolkit tk, Composite comp) {
 		Combo c = UI.formCombo(comp, tk, M.BufferTank);
-		String[] items = { Labels.get(ProducerFunction.BASE_LOAD), Labels.get(ProducerFunction.PEAK_LOAD), Labels.get(ProducerFunction.MAX_LOAD) };
+		String[] items = {Labels.get(ProducerFunction.BASE_LOAD), Labels.get(ProducerFunction.PEAK_LOAD), Labels.get(ProducerFunction.MAX_LOAD)};
 		c.setItems(items);
 		if (producer().function == ProducerFunction.BASE_LOAD)
 			c.select(0);
@@ -160,10 +161,9 @@ class InfoPage extends FormPage {
 			int i = c.getSelectionIndex();
 			if (i == 0) {
 				producer().function = ProducerFunction.BASE_LOAD;
-			} else if (i==1) {
+			} else if (i == 1) {
 				producer().function = ProducerFunction.PEAK_LOAD;
-			}
-			else
+			} else
 				producer().function = ProducerFunction.MAX_LOAD;
 			editor.setDirty();
 		});

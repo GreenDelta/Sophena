@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.model.Boiler;
 import sophena.model.FuelGroup;
+import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
@@ -82,6 +83,10 @@ public class BiogasPlantWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		page.update(plant);
+		plant.costs = new ProductCosts();
+		if (plant.product != null) {
+			ProductCosts.copy(plant.product, plant.costs);
+		}
 		App.getDb().insert(plant);
 		return true;
 	}
@@ -98,6 +103,7 @@ public class BiogasPlantWizard extends Wizard {
 			super("BiogasPlantWizardPage", "Neue Biogasanlage", null);
 			setMessage(" ");
 			this.group = group;
+			setPageComplete(false);
 		}
 
 		private void update(BiogasPlant plant) {

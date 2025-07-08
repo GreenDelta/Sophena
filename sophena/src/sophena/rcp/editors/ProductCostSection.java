@@ -16,7 +16,7 @@ import sophena.utils.Num;
 
 public class ProductCostSection {
 
-	private Supplier<ProductCosts> costs;
+	private final Supplier<ProductCosts> costs;
 
 	private Editor editor;
 	private Composite composite;
@@ -24,7 +24,7 @@ public class ProductCostSection {
 
 	public Text investmentText;
 	public Text durationText;
-	public Text repairTest;
+	public Text repairText;
 	public Text maintenanceText;
 	public Text operationText;
 
@@ -61,7 +61,7 @@ public class ProductCostSection {
 		durationText = t("Nutzungsdauer", "Jahre", costs().duration)
 				.onChanged((s) -> costs().duration = Num.readInt(s)).text;
 
-		repairTest = t("Instandsetzung", "%", costs().repair)
+		repairText = t("Instandsetzung", "%", costs().repair)
 				.onChanged((s) -> costs().repair = Num.read(s)).text;
 
 		maintenanceText = t("Wartung und Inspektion", "%", costs().maintenance)
@@ -96,9 +96,8 @@ public class ProductCostSection {
 
 	private void fillers() {
 		Layout layout = composite.getLayout();
-		if (!(layout instanceof GridLayout))
+		if (!(layout instanceof GridLayout grid))
 			return;
-		GridLayout grid = (GridLayout) layout;
 		if (grid.numColumns <= 3)
 			return;
 		for (int i = 3; i < grid.numColumns; i++) {
@@ -112,7 +111,7 @@ public class ProductCostSection {
 		else
 			Texts.set(investmentText, "");
 		Texts.set(durationText, costs().duration);
-		Texts.set(repairTest, costs().repair);
+		Texts.set(repairText, costs().repair);
 		Texts.set(maintenanceText, costs().maintenance);
 		Texts.set(operationText, costs().operation);
 	}
