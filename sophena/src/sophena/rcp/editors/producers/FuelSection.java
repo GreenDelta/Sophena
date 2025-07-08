@@ -35,7 +35,7 @@ import sophena.utils.Num;
  */
 class FuelSection {
 
-	private ProducerEditor editor;
+	private final ProducerEditor editor;
 	private Text calorificValueText;
 	private Label calorificValueUnit;
 	private Label priceUnit;
@@ -75,8 +75,7 @@ class FuelSection {
 		Fuel fuel = producer().fuelSpec.fuel;
 		EntityCombo<Fuel> combo = new EntityCombo<>();
 		combo.create(M.Fuel, comp, tk);
-		FuelDao dao = new FuelDao(App.getDb());
-		List<Fuel> fuels = dao.getAll().stream()
+		var fuels = App.getDb().getAll(Fuel.class).stream()
 				.filter((f) -> f.group == fuel.group)
 				.sorted(Sorters.byName())
 				.collect(Collectors.toList());

@@ -33,7 +33,7 @@ import sophena.utils.Strings;
 
 class ConsumptionWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private FuelConsumption consumption;
 	private int loadHours;
@@ -68,7 +68,7 @@ class ConsumptionWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private DataBinding data = new DataBinding();
+		private final DataBinding data = new DataBinding();
 
 		private EntityCombo<Fuel> fuelCombo;
 		private Text amountText;

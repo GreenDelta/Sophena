@@ -1,32 +1,16 @@
 package sophena.rcp.editors.biogas.plant;
 
-import java.util.Objects;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.model.Boiler;
-import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.App;
-import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
-import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Editors;
-import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.rcp.utils.Sorters;
-import sophena.rcp.utils.Texts;
-import sophena.rcp.utils.UI;
-import sophena.utils.Num;
 
 public class BiogasPlantEditor extends Editor {
 
@@ -43,6 +27,10 @@ public class BiogasPlantEditor extends Editor {
 		Editors.open(input, "sophena.BiogasPlantEditor");
 	}
 
+	BiogasPlant plant() {
+		return plant;
+	}
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
@@ -56,7 +44,7 @@ public class BiogasPlantEditor extends Editor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new Page(this));
+			addPage(new BiogasPlantInfoPage(this));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}
@@ -72,95 +60,6 @@ public class BiogasPlantEditor extends Editor {
 		} catch (Exception e) {
 			log.error("failed to save biogas plant", e);
 		}
-	}
-
-	private static class Page extends FormPage {
-
-		private final BiogasPlantEditor editor;
-
-		Page(BiogasPlantEditor editor) {
-			super(editor, "BiogasPlantPage", "Biogasanlage");
-			this.editor = editor;
-		}
-
-		private BiogasPlant plant() {
-			return editor.plant;
-		}
-
-		@Override
-		protected void createFormContent(IManagedForm mForm) {
-			var form = UI.formHeader(mForm, plant().name);
-			var tk = mForm.getToolkit();
-			var body = UI.formBody(form, tk);
-
-			var comp = UI.formSection(body, tk, "BHKW");
-			UI.gridLayout(comp, 3);
-
-			// name
-			Texts.on(UI.formText(comp, tk, M.Name))
-					.required()
-					.init(plant().name)
-					.onChanged(s -> {
-						plant().name = s;
-						editor.setDirty();
-					});
-			UI.filler(comp, tk);
-
-			// product group
-			Controls.renderGroupLink(plant().productGroup, tk, comp);
-			UI.filler(comp, tk);
-
-			// description
-			Texts.on(UI.formMultiText(comp, tk, M.Description))
-					.init(plant().description)
-					.onChanged(s -> {
-						plant().description = s;
-						editor.setDirty();
-					});
-			UI.filler(comp, tk);
-
-			Texts.on(UI.formText(comp, tk, "Bemessungsleistung"))
-					.init(plant().ratedPower)
-					.integer()
-					.onChanged(s -> {
-						plant().ratedPower = Num.readInt(s);
-						editor.setDirty();
-					});
-			UI.formLabel(comp, tk, "kW el.");
-
-			// product costs
-			var costs = new ProductCostSection(() -> plant().costs)
-					.withEditor(editor);
-			boilerCombo(tk, comp, costs);
-			costs.createFields(comp, tk);
-		}
-
-		private void boilerCombo(
-				FormToolkit tk, Composite comp, ProductCostSection costs
-		) {
-			var combo = new EntityCombo<Boiler>();
-			combo.create("Produkt", comp, tk);
-			combo.setLabelProvider(b -> b.name + " ("
-					+ Num.str(b.maxPowerElectric) + " kW el.)");
-			var b = plant().product;
-			if (b == null || b.group == null)
-				return;
-			var boilers = App.getDb().getAll(Boiler.class)
-					.stream()
-					.filter(bi -> Objects.equals(bi.group, b.group))
-					.sorted(Sorters.byName())
-					.toList();
-			combo.setInput(boilers);
-			combo.select(b);
-			combo.onSelect(bi -> {
-				plant().product = bi;
-				ProductCosts.copy(bi, plant().costs);
-				costs.refresh();
-				editor.setDirty();
-			});
-			UI.filler(comp, tk);
-		}
-
 	}
 
 }

@@ -40,7 +40,7 @@ import sophena.utils.Strings;
 
 public class ConsumerWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Project project;
 
@@ -99,9 +99,9 @@ public class ConsumerWizard extends Wizard {
 		addPage(page);
 	}
 
-	private class Page extends WizardPage {
+	private static class Page extends WizardPage {
 
-		private Consumer consumer;
+		private final Consumer consumer;
 		private EntityCombo<BuildingState> stateCombo;
 
 		private Page() {
