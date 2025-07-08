@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -346,10 +347,18 @@ func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
 // function for every row in the file. The column separator should
 // be a semicolon and the firts row (column header) is ignored.
 func eachCsvRow(filePath string, fn func([]string)) {
+	_, err := os.Stat(filePath)
+	if errors.Is(err, os.ErrNotExist) {
+		fmt.Println("File does not exist; skipped:", filePath)
+		return
+	}
+	check(err)
+
 	fmt.Println("Read file", filePath, "...")
 	file, err := os.Open(filePath)
 	check(err)
 	defer file.Close()
+
 	reader := csv.NewReader(file)
 	reader.Comma = ';'
 	i := 0
