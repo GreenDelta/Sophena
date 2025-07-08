@@ -117,7 +117,7 @@ public class ConsumerEditor extends Editor {
 			Navigator.refresh();
 			setSaved();
 		} catch (Exception e) {
-			log.error("failed to update project " + projectId, e);
+			log.error("failed to update project {}", projectId, e);
 		}
 	}
 

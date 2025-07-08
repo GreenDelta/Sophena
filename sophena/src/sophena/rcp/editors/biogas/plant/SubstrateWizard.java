@@ -19,7 +19,6 @@ import sophena.model.Stats;
 import sophena.model.biogas.Substrate;
 import sophena.model.biogas.SubstrateProfile;
 import sophena.rcp.App;
-import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
@@ -37,10 +36,10 @@ class SubstrateWizard extends Wizard {
 	public static int open(SubstrateProfile profile) {
 		if (profile == null)
 			return Window.CANCEL;
-		SubstrateWizard wiz = new SubstrateWizard();
+		var wiz = new SubstrateWizard();
 		wiz.setWindowTitle("Substratprofil bearbeiten");
 		wiz.profile = profile;
-		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
+		var dialog = new WizardDialog(UI.shell(), wiz);
 		return dialog.open();
 	}
 
@@ -71,8 +70,8 @@ class SubstrateWizard extends Wizard {
 
 		private Button monthlyRadio;
 		private Button hourlyRadio;
-		private Text[] monthlyTexts;
 		private Text hourlyFileText;
+		private MonthPanel monthPanel;
 
 		private Page() {
 			super("SubstrateProfileWizardPage", "Substratprofil bearbeiten", null);
@@ -81,13 +80,11 @@ class SubstrateWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
+			var composite = new Composite(parent, SWT.NONE);
 			setControl(composite);
 			UI.gridLayout(composite, 1);
-
 			createBasicSection(composite);
 			createDistributionSection(composite);
-
 			data.bindToUI();
 		}
 
@@ -102,12 +99,6 @@ class SubstrateWizard extends Wizard {
 			substrateCombo.create("Substrat", group);
 			UI.formLabel(group, "");
 			substrateCombo.onSelect((s) -> data.validate());
-
-			// annual amount
-			annualAmountText = UI.formText(group, "Jährliche Menge");
-			Texts.on(annualAmountText).required().decimal();
-			UI.formLabel(group, "t/a");
-			annualAmountText.addModifyListener((e) -> data.validate());
 
 			// costs
 			costsText = UI.formText(group, "Substratkosten");
@@ -135,39 +126,23 @@ class SubstrateWizard extends Wizard {
 			hourlyRadio.setText("Excel-Datei mit Stundenwerten");
 
 			// monthly section
-			createMonthlySection(group);
+			monthPanel = MonthPanel.create(group);
 
 			// hourly section
 			createHourlySection(group);
 
 			// radio button listeners
 			Controls.onSelect(monthlyRadio, (e) -> {
-				setMonthlyEnabled(true);
+				monthPanel.setEnabled(true);
 				setHourlyEnabled(false);
 			});
 
 			Controls.onSelect(hourlyRadio, (e) -> {
-				setMonthlyEnabled(false);
+				monthPanel.setEnabled(false);
 				setHourlyEnabled(true);
 			});
 		}
 
-		private void createMonthlySection(Composite parent) {
-			Group monthlyGroup = new Group(parent, SWT.NONE);
-			monthlyGroup.setText("Monatliche Verteilung (%)");
-			UI.gridData(monthlyGroup, true, false);
-			UI.gridLayout(monthlyGroup, 4);
-
-			monthlyTexts = new Text[12];
-			String[] months = {"Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
-					"Jul", "Aug", "Sep", "Okt", "Nov", "Dez"};
-
-			for (int i = 0; i < 12; i++) {
-				monthlyTexts[i] = UI.formText(monthlyGroup, months[i]);
-				Texts.on(monthlyTexts[i]).decimal();
-				monthlyTexts[i].addModifyListener((e) -> data.validate());
-			}
-		}
 
 		private void createHourlySection(Composite parent) {
 			Group hourlyGroup = new Group(parent, SWT.NONE);
@@ -186,13 +161,6 @@ class SubstrateWizard extends Wizard {
 			setHourlyEnabled(false);
 		}
 
-		private void setMonthlyEnabled(boolean enabled) {
-			if (monthlyTexts != null) {
-				for (Text text : monthlyTexts) {
-					text.setEnabled(enabled);
-				}
-			}
-		}
 
 		private void setHourlyEnabled(boolean enabled) {
 			if (hourlyFileText != null) {
@@ -209,10 +177,7 @@ class SubstrateWizard extends Wizard {
 
 				if (monthlyRadio.getSelection()) {
 					// bind monthly values
-					profile.monthlyPercentages = new double[12];
-					for (int i = 0; i < 12; i++) {
-						profile.monthlyPercentages[i] = Texts.getDouble(monthlyTexts[i]);
-					}
+					profile.monthlyPercentages = monthPanel.values();
 					profile.hourlyValues = null;
 				} else {
 					// hourly values - for now just initialize empty array
@@ -237,26 +202,14 @@ class SubstrateWizard extends Wizard {
 				if (hasHourly && !hasMonthly) {
 					hourlyRadio.setSelection(true);
 					monthlyRadio.setSelection(false);
-					setMonthlyEnabled(false);
+					monthPanel.setEnabled(false);
 					setHourlyEnabled(true);
 				} else {
 					monthlyRadio.setSelection(true);
 					hourlyRadio.setSelection(false);
-					setMonthlyEnabled(true);
+					monthPanel.setEnabled(true);
 					setHourlyEnabled(false);
 
-					// bind monthly values
-					if (hasMonthly) {
-						for (int i = 0; i < 12 && i < profile.monthlyPercentages.length; i++) {
-							Texts.set(monthlyTexts[i], profile.monthlyPercentages[i]);
-						}
-					} else {
-						// set default equal distribution
-						double equalPercent = 100.0 / 12.0;
-						for (int i = 0; i < 12; i++) {
-							Texts.set(monthlyTexts[i], equalPercent);
-						}
-					}
 				}
 
 				validate();
@@ -289,10 +242,8 @@ class SubstrateWizard extends Wizard {
 				if (monthlyRadio.getSelection()) {
 					// validate monthly percentages
 					double sum = 0;
-					for (Text text : monthlyTexts) {
-						if (!Strings.nullOrEmpty(text.getText())) {
-							sum += Texts.getDouble(text);
-						}
+					for (double d : monthPanel.values()) {
+							sum += d;
 					}
 					if (Math.abs(sum - 100.0) > 0.1) {
 						return error("Die Summe der monatlichen Prozentwerte muss 100% betragen (aktuell: " +
@@ -312,4 +263,5 @@ class SubstrateWizard extends Wizard {
 			}
 		}
 	}
+
 }
