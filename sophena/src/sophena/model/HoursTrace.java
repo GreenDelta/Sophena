@@ -12,8 +12,9 @@ import org.slf4j.LoggerFactory;
  */
 public class HoursTrace {
 
-	public static final int[] DAYS_IN_MONTH = { 31, 28, 31, 30, 31, 30, 31, 31,
-			30, 31, 30, 31 };
+	public static final int[] DAYS_IN_MONTH = {
+		31, 28, 31, 30, 31, 30, 31, 31,	30, 31, 30, 31
+	};
 
 	private HoursTrace() {
 	}

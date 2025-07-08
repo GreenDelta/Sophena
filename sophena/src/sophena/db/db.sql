@@ -62,6 +62,17 @@ CREATE TABLE tbl_biogas_substrates (
 );
 
 
+CREATE TABLE tbl_biogas_substrate_profiles (
+    id                     CHAR(36),
+    f_substrate            CHAR(36),
+    annual_amount          DOUBLE,
+    substrate_costs        DOUBLE,
+    monthly_percentages    BLOB (120),
+    hourly_values          BLOB (80 K),
+
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE tbl_biogas_plants (
 
     id                     CHAR(36),
@@ -192,9 +203,9 @@ CREATE TABLE tbl_cost_settings (
 
 
 CREATE TABLE tbl_annual_costs (
-    f_project CHAR(36),
-    label VARCHAR(255),
-    cost_entry DOUBLE
+    f_project   CHAR(36),
+    label       VARCHAR(255),
+    cost_entry  DOUBLE
 );
 
 

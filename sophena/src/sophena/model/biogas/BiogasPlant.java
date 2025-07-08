@@ -1,11 +1,15 @@
 package sophena.model.biogas;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import sophena.model.Boiler;
@@ -42,6 +46,11 @@ public class BiogasPlant extends RootEntity {
 	@Embedded
 	public ProductCosts costs;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_biogas_plant")
+	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
+
+
 	@Override
 	public BiogasPlant copy() {
 		var clone = new BiogasPlant();
@@ -54,6 +63,9 @@ public class BiogasPlant extends RootEntity {
 		clone.ratedPower = ratedPower;
 		clone.minimumRuntime = minimumRuntime;
 		clone.costs = costs != null ? costs.copy() : null;
+		for (var p : substrateProfiles) {
+			clone.substrateProfiles.add(p.copy());
+		}
 		return clone;
 	}
 }
