@@ -81,7 +81,7 @@ class BiogasPlantInfoPage extends FormPage {
 		costs.createFields(comp, tk);
 
 		// substrate section
-		SubstrateSection substrateSection = SubstrateSection.of(editor);
+		var substrateSection = SubstrateSection.of(editor);
 		substrateSection.create(body, tk);
 	}
 

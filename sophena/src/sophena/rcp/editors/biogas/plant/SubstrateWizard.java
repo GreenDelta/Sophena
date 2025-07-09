@@ -218,7 +218,7 @@ class SubstrateWizard extends Wizard {
 
 				var ref = new Ref<File>();
 				Controls.onSelect(button, $ -> {
-					var file = FileChooser.open(".xlsx");
+					var file = FileChooser.open("*.xlsx");
 					if (file == null)
 						return;
 					text.setText(file.getName());

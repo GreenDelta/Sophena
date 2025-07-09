@@ -25,6 +25,7 @@ class SubstrateSection {
 
 	private BiogasPlantEditor editor;
 	private TableViewer table;
+	private MethaneChart chart;
 
 	private SubstrateSection() {
 	}
@@ -41,8 +42,11 @@ class SubstrateSection {
 
 	void create(Composite body, FormToolkit tk) {
 		var section = UI.section(body, tk, "Substrate");
-		var composite = UI.sectionClient(section, tk);
-		table = createTable(composite);
+		var comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1);
+		table = createTable(comp);
+		chart = new MethaneChart(comp, 200);
+		chart.setInput(plant().substrateProfiles);
 
 		var add = Actions.create(M.Add, Icon.ADD_16.des(), this::onAdd);
 		var remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::onRemove);
@@ -74,10 +78,9 @@ class SubstrateSection {
 	private void onAdd() {
 		var profile = new SubstrateProfile();
 		profile.id = UUID.randomUUID().toString();
-		int code = SubstrateWizard.open(profile);
 		profile.monthlyPercentages = new double[]{
 				8.5, 7.7, 8.5, 8.2, 8.5, 8.2, 8.5, 8.5, 8.2, 8.5, 8.2, 8.5};
-		if (code == Window.OK) {
+		if (SubstrateWizard.open(profile) == Window.OK) {
 			plant().substrateProfiles.add(profile);
 			updateUI();
 		}
@@ -102,7 +105,9 @@ class SubstrateSection {
 	}
 
 	private void updateUI() {
-		table.setInput(plant().substrateProfiles);
+		var profiles = plant().substrateProfiles;
+		table.setInput(profiles);
+		chart.setInput(profiles);
 		editor.setDirty();
 	}
 
