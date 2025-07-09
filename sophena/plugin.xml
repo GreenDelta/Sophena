@@ -267,35 +267,42 @@
 				icon="icons/home.png"
 				id="sophena.StartPage"
 				name="Start page" />
+
 		<editor
 				class="sophena.rcp.editors.basedata.solarcollectors.SolarCollectorEditor"
 				default="false"
 				id="sophena.SolarCollectorEditor"
 				name="Solarthermische Anlagen">
 		</editor>
+
 		<editor
 				class="sophena.rcp.editors.basedata.heatpumps.HeatPumpEditor"
 				default="false"
 				id="sophena.HeatPumpEditor"
 				name="Wärmepumpen">
 		</editor>
+
 		<editor
 				class="sophena.rcp.editors.biogas.substrate.SubstrateEditor"
 				default="false"
 				id="sophena.SubstrateEditor"
+				icon="icons/biogas_substrate_16.png"
 				name="Biogassubstrate">
 		</editor>
+
 		<editor
 				class="sophena.rcp.editors.biogas.plant.BiogasPlantTable"
 				default="false"
 				id="sophena.BiogasPlantTable"
 				name="Biogasanlagen">
 		</editor>
+
 		<editor
 				class="sophena.rcp.editors.biogas.plant.BiogasPlantEditor"
 				default="false"
 				id="sophena.BiogasPlantEditor"
 				name="Biogasanlage">
 		</editor>
+
 	</extension>
 </plugin>

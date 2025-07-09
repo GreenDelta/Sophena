@@ -1,10 +1,13 @@
 package sophena.rcp.editors.biogas.plant;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import sophena.io.excel.Excel;
+import sophena.model.Stats;
 import sophena.model.biogas.SubstrateProfile;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
@@ -40,4 +43,19 @@ class SubstrateProfileIO {
 		}
 	}
 
+	static Optional<double[]> read(File file) {
+		if (file == null || !file.exists())
+			return Optional.empty();
+		try (var wb = WorkbookFactory.create(file)) {
+			var sheet = wb.getSheetAt(0);
+			var values = new double[Stats.HOURS];
+			for (int i = 0; i < Stats.HOURS; i++) {
+				values[i] = Excel.getDouble(sheet, i+1, 1);
+			}
+			return Optional.of(values);
+		} catch (Exception e) {
+			MsgBox.error("Fehler beim Lesen der Profildaten: " + e.getMessage());
+			return Optional.empty();
+		}
+	}
 }

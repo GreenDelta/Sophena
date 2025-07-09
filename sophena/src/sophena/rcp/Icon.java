@@ -3,11 +3,14 @@ package sophena.rcp;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
+/// Common icon color is: #4472a2
 public enum Icon {
 
 	ADD_16("add_16.png"),
 
 	BAR_CHART_16("bar_chart_16.png"),
+
+	BIOGAS_SUBSTRATE_16("biogas_substrate_16.png"),
 
 	BOILER_16("boiler_16.png"),
 
@@ -35,6 +38,8 @@ public enum Icon {
 
 	COSTS_16("costs_16.png"),
 
+	DATA_TABLE_16("data_table_16.png"),
+
 	DELETE_16("delete_16.png"),
 
 	DELETE_DISABLED_16("delete_disabled_16.png"),
@@ -42,6 +47,8 @@ public enum Icon {
 	DISABLED_16("disabled_16.png"),
 
 	EDIT_16("edit_16.png"),
+
+	ELECTRICITY_16("electricity_16.png"),
 
 	ENABLED_16("enabled_16.png"),
 
@@ -110,7 +117,7 @@ public enum Icon {
 	WARNING_16("warning_16.png"),
 
 	WEBLINK_16("weblink_16.png"),
-	
+
 	SOLARTHERM_16("solartherm_16.png");
 
 	private final String fileName;

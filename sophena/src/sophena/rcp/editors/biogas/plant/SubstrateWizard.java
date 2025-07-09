@@ -1,5 +1,7 @@
 package sophena.rcp.editors.biogas.plant;
 
+import java.io.File;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -17,6 +19,7 @@ import sophena.model.biogas.SubstrateProfile;
 import sophena.rcp.App;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -71,12 +74,16 @@ class SubstrateWizard extends Wizard {
 		}
 
 		// from Excel file
-		var data = page.excelPanel.data();
-		if (data == null) {
-			MsgBox.error("Keine Daten ausgewählt",
+		var file = page.excelPanel.file();
+		if (file == null) {
+			MsgBox.error("Keine Datei",
 					"Es wurde keine Excel-Datei mit Daten ausgewählt.");
 			return false;
 		}
+		var data = SubstrateProfileIO.read(file).orElse(null);
+		if (data == null)
+			return false;
+
 		var mass = Stats.sum(data);
 		if (mass <= 0) {
 			MsgBox.error("Keine Masse", "Der Lastgang summiert zu 0.");
@@ -197,7 +204,7 @@ class SubstrateWizard extends Wizard {
 			return combo;
 		}
 
-		private record ExcelPanel(Text text, Button button, Ref<double[]> dataRef) {
+		private record ExcelPanel(Text text, Button button, Ref<File> fileRef) {
 
 			static ExcelPanel create(Composite comp) {
 				var group = new Group(comp, SWT.NONE);
@@ -208,7 +215,17 @@ class SubstrateWizard extends Wizard {
 				var text = UI.formText(group, "Datei");
 				var button = new Button(group, SWT.PUSH);
 				button.setText("Durchsuchen...");
-				return new ExcelPanel(text, button, new Ref<>());
+
+				var ref = new Ref<File>();
+				Controls.onSelect(button, $ -> {
+					var file = FileChooser.open(".xlsx");
+					if (file == null)
+						return;
+					text.setText(file.getName());
+					ref.set(file);
+				});
+
+				return new ExcelPanel(text, button, ref);
 			}
 
 			void setEnabled(boolean b) {
@@ -216,8 +233,8 @@ class SubstrateWizard extends Wizard {
 				button.setEnabled(b);
 			}
 
-			double[] data() {
-				return dataRef != null ? dataRef.get() : null;
+			File file() {
+				return fileRef != null ? fileRef.get() : null;
 			}
 		}
 	}

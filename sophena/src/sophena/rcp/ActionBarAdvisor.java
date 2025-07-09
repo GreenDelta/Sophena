@@ -120,11 +120,17 @@ public class ActionBarAdvisor extends
 	private void fillBiogasMenu(IMenuManager man) {
 		var m = new MenuManager("Biogasanlagenkonfigurator");
 		man.add(m);
-		m.add(Actions.create("Neue Biogasanlage", BiogasPlantEditor::createNew));
-		m.add(Actions.create("Biogasanlagen verwalten", BiogasPlantTable::open));
-		m.add(Actions.create("Substrate", SubstrateEditor::open));
-		m.add(Actions.create("Strompreise", () -> {}));
-		m.add(Actions.create("Marktwerte", () -> {}));
+		m.add(Actions.create(
+				"Neue Biogasanlage", Icon.BOILER_16.des(), BiogasPlantEditor::createNew));
+		m.add(Actions.create(
+				"Biogasanlagen verwalten", Icon.DATA_TABLE_16.des(), BiogasPlantTable::open));
+		m.add(Actions.create(
+				"Substrate", Icon.BIOGAS_SUBSTRATE_16.des(), SubstrateEditor::open));
+		m.add(Actions.create(
+				"Strompreise", Icon.ELECTRICITY_16.des(), () -> {
+				}));
+		m.add(Actions.create("Marktwerte", () -> {
+		}));
 	}
 
 	private ImageDescriptor img(ProductType type) {

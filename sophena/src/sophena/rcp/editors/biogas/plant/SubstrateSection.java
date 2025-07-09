@@ -111,7 +111,9 @@ class SubstrateSection {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return col == 0 ? Icon.PRODUCT_16.img() : null;
+			return col == 0
+					? Icon.BIOGAS_SUBSTRATE_16.img()
+					: null;
 		}
 
 		@Override
