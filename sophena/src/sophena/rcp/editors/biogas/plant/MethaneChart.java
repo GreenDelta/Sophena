@@ -23,7 +23,6 @@ import sophena.rcp.utils.UI;
 
 public class MethaneChart {
 
-	private final List<CircularBufferDataProvider> buffers = new ArrayList<>();
 	private final List<Trace> traces = new ArrayList<>();
 	public final XYGraph graph;
 
@@ -43,7 +42,6 @@ public class MethaneChart {
 			graph.removeTrace(trace);
 		}
 		traces.clear();
-		buffers.clear();
 
 		var ds = ProfileData.allOf(profiles);
 		double[] top = ProfileData.sum(ds);
@@ -56,7 +54,6 @@ public class MethaneChart {
 
 			var buffer = Charts.dataProvider();
 			buffer.setCurrentYDataArray(top);
-			buffers.add(buffer);
 			d.subtractFrom(top);
 
 			var color = Colors.of(colors.variant(d.index));

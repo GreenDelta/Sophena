@@ -10,6 +10,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
@@ -45,9 +46,16 @@ class SubstrateSection {
 		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
 		table = createTable(comp);
-		chart = new MethaneChart(comp, 200);
-		chart.setInput(plant().substrateProfiles);
+		addSubstrateActions(section);
 
+		var chartSection = UI.section(body, tk, "Erzeugtes Methan");
+		var chartComp = UI.sectionClient(chartSection, tk);
+		UI.gridLayout(chartComp, 1);
+		chart = new MethaneChart(chartComp, 200);
+		chart.setInput(plant().substrateProfiles);
+	}
+
+	private void addSubstrateActions(Section section) {
 		var add = Actions.create(M.Add, Icon.ADD_16.des(), this::onAdd);
 		var remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::onRemove);
 		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::onEdit);
@@ -63,7 +71,7 @@ class SubstrateSection {
 	}
 
 	private TableViewer createTable(Composite composite) {
-		TableViewer table = Tables.createViewer(composite,
+		var table = Tables.createViewer(composite,
 				"Substrat",
 				"Menge (t/a)",
 				"Kosten (€/t)",
