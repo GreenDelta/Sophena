@@ -133,7 +133,7 @@ class SubstrateWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 1);
 			createSubstratePanel(comp);
-			monthPanel = WizardMonthPanel.create(parent, profile);
+			monthPanel = WizardMonthPanel.create(comp, profile);
 			excelPanel = ExcelPanel.create(comp);
 			getShell().pack();
 

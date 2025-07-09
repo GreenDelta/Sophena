@@ -3,7 +3,6 @@ package sophena.rcp.editors.biogas.plant;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -44,14 +43,19 @@ class SubstrateSection {
 		var section = UI.section(body, tk, "Substrate");
 		var composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
-		Action add = Actions.create(M.Add,
-				Icon.ADD_16.des(), this::onAdd);
-		Action remove = Actions.create(M.Remove,
-				Icon.DELETE_16.des(), this::onRemove);
-		Action edit = Actions.create(M.Edit,
-				Icon.EDIT_16.des(), this::onEdit);
+
+		var add = Actions.create(M.Add, Icon.ADD_16.des(), this::onAdd);
+		var remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::onRemove);
+		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::onEdit);
+		var xls = Actions.create("Profilexport", Icon.EXCEL_16.des(), () -> {
+			SubstrateProfile p = Viewers.getFirstSelected(table);
+			if (p != null) {
+				SubstrateProfileIO.write(p);
+			}
+		});
+
 		Actions.bind(section, add, edit, remove);
-		Actions.bind(table, add, edit, remove);
+		Actions.bind(table, add, edit, xls, remove);
 	}
 
 	private TableViewer createTable(Composite composite) {
