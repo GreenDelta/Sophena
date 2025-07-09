@@ -1,7 +1,6 @@
 package sophena;
 
 import java.io.File;
-import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.ZipUtil;
@@ -27,8 +26,12 @@ public class BuildDb {
 		try {
 
 			// create empty database in temp. folder
-			var tmpDir = Files.createTempDirectory("__sophena_db__");
-			var dbDir = new File(tmpDir.toFile(), "database");
+			var testWorkspace = new File("build/test-workspace");
+			if (testWorkspace.exists()) {
+				FileUtils.deleteDirectory(testWorkspace);
+			}
+			FileUtils.forceMkdirParent(testWorkspace);
+			var dbDir = new File(testWorkspace, "database");
 			System.out.println("generate database in: " + dbDir);
 			var db = new Database(dbDir);
 
@@ -47,11 +50,7 @@ public class BuildDb {
 				FileUtils.forceDelete(zip);
 			}
 			System.out.println("package new database");
-			ZipUtil.pack(tmpDir.toFile(), zip);
-
-			// cleanup
-			System.out.println("delete temporary folder");
-			FileUtils.deleteDirectory(tmpDir.toFile());
+			ZipUtil.pack(testWorkspace, zip);
 
 			System.out.println("all done!");
 		} catch (Exception e) {

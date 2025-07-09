@@ -66,7 +66,7 @@ CREATE TABLE tbl_biogas_substrate_profiles (
     id                     CHAR(36),
     f_biogas_plant         CHAR(36),
     f_substrate            CHAR(36),
-    annual_amount          DOUBLE,
+    annual_mass            DOUBLE,
     substrate_costs        DOUBLE,
     monthly_percentages    BLOB (120),
     hourly_values          BLOB (80 K),

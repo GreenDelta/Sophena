@@ -17,7 +17,7 @@ class MonthPanel {
 
 	private final double[] values;
 	private final Text[] texts;
-	private final Text amountText;
+	private final Text massText;
 
 	private MonthPanel(Composite parent, SubstrateProfile profile) {
 		this.profile = profile;
@@ -34,9 +34,9 @@ class MonthPanel {
 		var top = new Composite(g, SWT.NONE);
 		UI.fillHorizontal(top);
 		UI.gridLayout(top, 3);
-		amountText = UI.formText(top, "Jährliche Menge");
-		Texts.on(amountText)
-				.init(profile.annualAmount)
+		massText = UI.formText(top, "Jährliche Menge");
+		Texts.on(massText)
+				.init(profile.annualMass)
 				.required()
 				.decimal();
 		UI.formLabel(top, "t/a");
@@ -58,15 +58,23 @@ class MonthPanel {
 		return new MonthPanel(parent, profile);
 	}
 
-	double[] values() {
+	double[] percentages() {
 		return values;
 	}
 
+	double mass() {
+		return Texts.getDouble(massText);
+	}
+
 	void setEnabled(boolean b) {
-		amountText.setEnabled(b);
+		massText.setEnabled(b);
 		for (var text : texts) {
 			text.setEnabled(b);
 		}
+	}
+
+	private void bindValues() {
+
 	}
 
 	private Text cell(int index, String label, Composite parent) {

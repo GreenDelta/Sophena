@@ -20,8 +20,8 @@ public class SubstrateProfile extends AbstractEntity {
 	@JoinColumn(name = "f_substrate")
 	public Substrate substrate;
 
-	@Column(name = "annual_amount")
-	public double annualAmount; // in t/a
+	@Column(name = "annual_mass")
+	public double annualMass; // in t/a
 
 	@Column(name = "substrate_costs")
 	public double substrateCosts; // in €/t
@@ -39,7 +39,7 @@ public class SubstrateProfile extends AbstractEntity {
 		var clone = new SubstrateProfile();
 		clone.id = UUID.randomUUID().toString();
 		clone.substrate = substrate;
-		clone.annualAmount = annualAmount;
+		clone.annualMass = annualMass;
 		clone.substrateCosts = substrateCosts;
 		clone.monthlyPercentages = Stats.copy(monthlyPercentages);
 		clone.hourlyValues = Stats.copy(hourlyValues);

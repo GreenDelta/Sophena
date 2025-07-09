@@ -101,7 +101,7 @@ class SubstrateSection {
 		editor.setDirty();
 	}
 
-	private class Label extends LabelProvider
+	private static class Label extends LabelProvider
 			implements ITableLabelProvider {
 
 		@Override
@@ -115,7 +115,7 @@ class SubstrateSection {
 				return null;
 			return switch (col) {
 				case 0 -> profile.substrate != null ? profile.substrate.name : null;
-				case 1 -> Num.str(profile.annualAmount);
+				case 1 -> Num.str(profile.annualMass);
 				case 2 -> Num.str(profile.substrateCosts);
 				case 3 -> getDistributionInfo(profile);
 				default -> null;

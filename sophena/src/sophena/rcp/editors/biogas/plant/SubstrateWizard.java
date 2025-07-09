@@ -65,7 +65,6 @@ class SubstrateWizard extends Wizard {
 		private final DataBinding data = new DataBinding();
 
 		private EntityCombo<Substrate> substrateCombo;
-		private Text annualAmountText;
 		private Text costsText;
 
 		private Button monthlyRadio;
@@ -126,7 +125,7 @@ class SubstrateWizard extends Wizard {
 			hourlyRadio.setText("Excel-Datei mit Stundenwerten");
 
 			// monthly section
-			monthPanel = MonthPanel.create(group);
+			monthPanel = MonthPanel.create(group, profile);
 
 			// hourly section
 			createHourlySection(group);
@@ -172,12 +171,11 @@ class SubstrateWizard extends Wizard {
 
 			void bindToModel() {
 				profile.substrate = substrateCombo.getSelected();
-				profile.annualAmount = Texts.getDouble(annualAmountText);
 				profile.substrateCosts = Texts.getDouble(costsText);
 
 				if (monthlyRadio.getSelection()) {
 					// bind monthly values
-					profile.monthlyPercentages = monthPanel.values();
+					profile.monthlyPercentages = monthPanel.percentages();
 					profile.hourlyValues = null;
 				} else {
 					// hourly values - for now just initialize empty array
@@ -190,7 +188,6 @@ class SubstrateWizard extends Wizard {
 			void bindToUI() {
 				initSubstrates();
 
-				Texts.set(annualAmountText, profile.annualAmount);
 				Texts.set(costsText, profile.substrateCosts);
 
 				// determine distribution type
@@ -233,7 +230,7 @@ class SubstrateWizard extends Wizard {
 				if (substrate == null)
 					return error("Bitte wählen Sie ein Substrat aus");
 
-				if (Strings.nullOrEmpty(annualAmountText.getText()))
+				if (monthPanel.mass() <= 0)
 					return error("Bitte geben Sie die jährliche Menge an");
 
 				if (Strings.nullOrEmpty(costsText.getText()))
@@ -242,7 +239,7 @@ class SubstrateWizard extends Wizard {
 				if (monthlyRadio.getSelection()) {
 					// validate monthly percentages
 					double sum = 0;
-					for (double d : monthPanel.values()) {
+					for (double d : monthPanel.percentages()) {
 							sum += d;
 					}
 					if (Math.abs(sum - 100.0) > 0.1) {
