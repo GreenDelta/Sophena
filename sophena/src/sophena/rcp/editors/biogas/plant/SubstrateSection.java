@@ -11,7 +11,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
@@ -32,7 +31,7 @@ class SubstrateSection {
 	}
 
 	static SubstrateSection of(BiogasPlantEditor editor) {
-		SubstrateSection section = new SubstrateSection();
+		var section = new SubstrateSection();
 		section.editor = editor;
 		return section;
 	}
@@ -42,8 +41,8 @@ class SubstrateSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Substrate");
-		Composite composite = UI.sectionClient(section, tk);
+		var section = UI.section(body, tk, "Substrate");
+		var composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		Action add = Actions.create(M.Add,
 				Icon.ADD_16.des(), this::onAdd);
@@ -69,9 +68,11 @@ class SubstrateSection {
 	}
 
 	private void onAdd() {
-		SubstrateProfile profile = new SubstrateProfile();
+		var profile = new SubstrateProfile();
 		profile.id = UUID.randomUUID().toString();
 		int code = SubstrateWizard.open(profile);
+		profile.monthlyPercentages = new double[]{
+				8.5, 7.7, 8.5, 8.2, 8.5, 8.2, 8.5, 8.5, 8.2, 8.5, 8.2, 8.5};
 		if (code == Window.OK) {
 			plant().substrateProfiles.add(profile);
 			updateUI();
@@ -125,9 +126,9 @@ class SubstrateSection {
 		private String getDistributionInfo(SubstrateProfile profile) {
 			if (profile == null)
 				return null;
-			if (profile.monthlyPercentages != null && profile.monthlyPercentages.length > 0)
+			if (profile.monthlyPercentages != null)
 				return "Monatswerte";
-			if (profile.hourlyValues != null && profile.hourlyValues.length > 0)
+			if (profile.hourlyValues != null)
 				return "Stundenwerte";
 			return "Nicht definiert";
 		}

@@ -11,16 +11,13 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
-class MonthPanel {
-
-	private final SubstrateProfile profile;
+class WizardMonthPanel {
 
 	private final double[] values;
 	private final Text[] texts;
 	private final Text massText;
 
-	private MonthPanel(Composite parent, SubstrateProfile profile) {
-		this.profile = profile;
+	private WizardMonthPanel(Composite parent, SubstrateProfile profile) {
 		this.values = profile.monthlyPercentages != null
 				? Stats.copy(profile.monthlyPercentages)
 				: new double[]{
@@ -33,7 +30,7 @@ class MonthPanel {
 
 		var top = new Composite(g, SWT.NONE);
 		UI.fillHorizontal(top);
-		UI.gridLayout(top, 3);
+		UI.innerGrid(top, 3);
 		massText = UI.formText(top, "Jährliche Menge");
 		Texts.on(massText)
 				.init(profile.annualMass)
@@ -54,8 +51,8 @@ class MonthPanel {
 		};
 	}
 
-	static MonthPanel create(Composite parent, SubstrateProfile profile) {
-		return new MonthPanel(parent, profile);
+	static WizardMonthPanel create(Composite parent, SubstrateProfile profile) {
+		return new WizardMonthPanel(parent, profile);
 	}
 
 	double[] percentages() {
@@ -71,10 +68,6 @@ class MonthPanel {
 		for (var text : texts) {
 			text.setEnabled(b);
 		}
-	}
-
-	private void bindValues() {
-
 	}
 
 	private Text cell(int index, String label, Composite parent) {

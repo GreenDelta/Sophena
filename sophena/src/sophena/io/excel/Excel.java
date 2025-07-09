@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Helper methods for Excel exports. */
-class Excel {
+public class Excel {
 
 	private Excel() {
 	}
