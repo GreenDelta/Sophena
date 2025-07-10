@@ -46,11 +46,10 @@ CREATE TABLE tbl_fuels (
 
 CREATE TABLE tbl_biogas_substrates (
 
-    id          CHAR(36),
-    name        VARCHAR(255),
-    description CLOB(64 K),
-
-    is_protected BOOLEAN,
+    id                  CHAR(36),
+    name                VARCHAR(255),
+    description         CLOB(64 K),
+    is_protected        BOOLEAN,
 
     dry_matter          DOUBLE,
     organic_dry_matter  DOUBLE,
@@ -63,15 +62,10 @@ CREATE TABLE tbl_biogas_substrates (
 
 
 CREATE TABLE tbl_electricity_price_curves (
-
-    id          CHAR(36),
-    name        VARCHAR(255),
-    description CLOB(64 K),
-
-    is_protected BOOLEAN,
-
-    values      BLOB (80 K),
-
+    id           CHAR(36),
+    name         VARCHAR(255),
+    description  CLOB(64 K),
+    data         BLOB (80 K),
     PRIMARY KEY (id)
 );
 

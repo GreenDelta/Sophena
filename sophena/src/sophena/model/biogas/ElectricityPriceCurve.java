@@ -15,7 +15,7 @@ import sophena.model.Stats;
 public class ElectricityPriceCurve extends RootEntity {
 
 	/// hourly electricity prices in ct/kWh (8760 values)
-	@Column(name = "values")
+	@Column(name = "data")
 	@Convert(converter = DoubleArrayConverter.class)
 	public double[] values;
 

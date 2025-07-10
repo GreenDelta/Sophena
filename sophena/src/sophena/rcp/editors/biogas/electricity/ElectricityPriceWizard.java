@@ -6,6 +6,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.internal.messages.Msg;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -19,6 +20,7 @@ import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Ref;
@@ -28,21 +30,47 @@ public class ElectricityPriceWizard extends Wizard {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
-	private ElectricityPriceCurve curve;
+	private final ElectricityPriceCurve curve;
 
 	public static int open(ElectricityPriceCurve curve) {
 		if (curve == null)
 			return Window.CANCEL;
-		ElectricityPriceWizard wiz = new ElectricityPriceWizard();
+		var wiz = new ElectricityPriceWizard(curve);
 		wiz.setWindowTitle("Strompreiskurve");
-		wiz.curve = curve;
-		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
+		var dialog = new WizardDialog(UI.shell(), wiz);
 		return dialog.open();
+	}
+
+	private ElectricityPriceWizard(ElectricityPriceCurve curve) {
+		super();
+		this.curve = curve;
 	}
 
 	@Override
 	public boolean performFinish() {
 		try {
+
+			var name = page.nameText.getText();
+			if (Strings.nullOrEmpty(name)) {
+				MsgBox.error("Kein Name angegen", "Der Name darf nicht leer sein.");
+				return false;
+			}
+
+			if (curve.values == null && page.file == null) {
+				MsgBox.error("Keine Datei ausgewählt",
+						"Bitte wählen Sie eine Datei mit Strompreisen aus.");
+				return false;
+			}
+
+			if (page.file != null) {
+				var data = ElectricityPriceIO.read(page.file).orElse(null);
+				if (data == null)
+					return false;
+				curve.values = data;
+			}
+			curve.name = name;
+			curve.description =
+
 
 
 			curve.name = page.nameText.getText();
@@ -64,7 +92,7 @@ public class ElectricityPriceWizard extends Wizard {
 
 			return true;
 		} catch (Exception e) {
-			log.error("failed to set electricity price curve data " + curve, e);
+			log.error("failed to set electricity price curve data {}", curve, e);
 			return false;
 		}
 	}
@@ -79,90 +107,41 @@ public class ElectricityPriceWizard extends Wizard {
 
 		private Text nameText;
 		private Text descriptionText;
-		private ExcelPanel excelPanel;
+		private File file;
 
 		Page() {
 			super("ElectricityPriceWizardPage", "Strompreiskurve", null);
-			setMessage("Geben Sie die Informationen für die Strompreiskurve ein");
 		}
 
 		@Override
 		public void createControl(Composite parent) {
 			var comp = new Composite(parent, SWT.NONE);
 			setControl(comp);
-			UI.gridLayout(comp, 1);
-			createBasicFields(comp);
-			createExcelSection(comp);
-			bindToUI();
-		}
+			UI.gridLayout(comp, 3);
 
-		private void createBasicFields(Composite parent) {
-			Group group = new Group(parent, SWT.NONE);
-			group.setText("Grunddaten");
-			UI.gridData(group, true, false);
-			UI.gridLayout(group, 2);
+			nameText = UI.formText(comp, M.Name);
+			Texts.on(nameText)
+					.init(curve.name)
+					.required();
+			UI.filler(comp);
 
-			nameText = UI.formText(group, M.Name);
-			Texts.on(nameText).required();
-			nameText.addModifyListener(e -> validate());
+			descriptionText = UI.formMultiText(comp, M.Description);
+			Texts.on(descriptionText).init(curve.description);
+			UI.filler(comp);
 
-			descriptionText = UI.formMultiText(group, M.Description);
-		}
+			UI.formLabel(comp, "Datei");
+			var text = UI.formText(comp, "");
+			text.setEditable(false);
+			var button = new Button(comp, SWT.PUSH);
+			button.setText("Durchsuchen...");
 
-		private void createExcelSection(Composite parent) {
-			excelPanel = ExcelPanel.create(parent);
-		}
-
-		private void bindToUI() {
-			if (curve.name != null) {
-				nameText.setText(curve.name);
-			}
-			if (curve.description != null) {
-				descriptionText.setText(curve.description);
-			}
-			validate();
-		}
-
-		private void validate() {
-			if (Strings.nullOrEmpty(nameText.getText())) {
-				setErrorMessage("Bitte geben Sie einen Namen ein");
-				setPageComplete(false);
-				return;
-			}
-			setErrorMessage(null);
-			setPageComplete(true);
-		}
-
-		private record ExcelPanel(Text text, Button button, Ref<File> fileRef) {
-
-			static ExcelPanel create(Composite comp) {
-				var group = new Group(comp, SWT.NONE);
-				group.setText("Excel-Datei mit Strompreisen");
-				UI.gridData(group, true, false);
-				UI.gridLayout(group, 3);
-
-				UI.formLabel(group, "Datei (optional):");
-				var text = UI.formText(group, "");
-				text.setEditable(false);
-
-				var button = new Button(group, SWT.PUSH);
-				button.setText("Durchsuchen...");
-
-				var ref = new Ref<File>();
-				Controls.onSelect(button, $ -> {
-					var file = FileChooser.open("*.xlsx");
-					if (file == null)
-						return;
-					text.setText(file.getName());
-					ref.set(file);
-				});
-
-				return new ExcelPanel(text, button, ref);
-			}
-
-			File file() {
-				return fileRef != null ? fileRef.get() : null;
-			}
+			Controls.onSelect(button, $ -> {
+				var f = FileChooser.open("*.xlsx");
+				if (f == null)
+					return;
+				file = f;
+				text.setText(file.getName());
+			});
 		}
 	}
 }
