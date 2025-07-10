@@ -294,6 +294,7 @@
 				class="sophena.rcp.editors.biogas.plant.BiogasPlantTable"
 				default="false"
 				id="sophena.BiogasPlantTable"
+				icon="icons/data_table_16.png"
 				name="Biogasanlagen">
 		</editor>
 
@@ -301,7 +302,16 @@
 				class="sophena.rcp.editors.biogas.plant.BiogasPlantEditor"
 				default="false"
 				id="sophena.BiogasPlantEditor"
+				icon="icons/boiler_16.png"
 				name="Biogasanlage">
+		</editor>
+
+		<editor
+				class="sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor"
+				default="false"
+				id="sophena.ElectricityPriceEditor"
+				icon="icons/electricity_16.png"
+				name="Strompreise">
 		</editor>
 
 	</extension>
