@@ -34,6 +34,10 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_product_group")
 	public ProductGroup productGroup;
 
+	@OneToOne
+	@JoinColumn(name = "f_electricity_price_curve")
+	public ElectricityPriceCurve electricityPrices;
+
 	/// rated power in kW
 	@Column(name = "rated_power")
 	public double ratedPower;
@@ -60,6 +64,7 @@ public class BiogasPlant extends RootEntity {
 		clone.producedElectricity = producedElectricity;
 		clone.product = product;
 		clone.productGroup = productGroup;
+		clone.electricityPrices = electricityPrices;
 		clone.ratedPower = ratedPower;
 		clone.minimumRuntime = minimumRuntime;
 		clone.costs = costs != null ? costs.copy() : null;

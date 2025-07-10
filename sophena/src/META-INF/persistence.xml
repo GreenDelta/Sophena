@@ -9,6 +9,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
 		<class>sophena.model.biogas.BiogasPlant</class>
+		<class>sophena.model.biogas.ElectricityPriceCurve</class>
 		<class>sophena.model.biogas.Substrate</class>
 		<class>sophena.model.biogas.SubstrateProfile</class>
 		<class>sophena.model.Boiler</class>

@@ -15,13 +15,13 @@ public class FuelUsage {
 
 	static FuelUsage calculate(ProjectResult r) {
 		FuelUsage usage = new FuelUsage();
-		r.calcLog.h3("Brennstoffverbräuche");
 		if (r == null || r.project == null)
 			return usage;
 		if (r.energyResult == null) {
 			r.calcLog.println("FEHLER: kein energetisches Ergebnis\n");
 			return usage;
 		}
+		r.calcLog.h3("Brennstoffverbräuche");
 		for (Producer p : r.project.producers) {
 			r.calcLog.println("=> Erzeuger: " + p.name);
 			double inKWh = calcKWh(r, p);
@@ -43,15 +43,16 @@ public class FuelUsage {
 				return Qgen / jaz;
 			return 0;
 		}
+
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
-			double ur = UtilisationRate.get(r.project, producer,
-					r.energyResult);
+			double ur = UtilisationRate.get(r.project, producer, r.energyResult);
 			r.calcLog.value("ur: Nutzungsgrad", ur, "");
 			double val = ur == 0 ? 0 : Qgen / ur;
 			r.calcLog.value("E: Benötigte Brennstoffenergie: E = Qgen / ur",
 					val, "kWh");
 			return val;
+
 		} else {
 			double tf = Producers.fullLoadHours(producer, Qgen);
 			r.calcLog.value("tf: Volllaststunden", tf, "h");
