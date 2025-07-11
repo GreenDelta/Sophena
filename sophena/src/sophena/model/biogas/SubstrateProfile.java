@@ -45,25 +45,4 @@ public class SubstrateProfile extends AbstractEntity {
 		clone.hourlyValues = Stats.copy(hourlyValues);
 		return clone;
 	}
-
-	public double[] getMethaneProfile() {
-		var profile = new double[Stats.HOURS];
-		if (hourlyValues == null || substrate == null)
-			return profile;
-		double f = (substrate.dryMatter / 100)
-				* (substrate.organicDryMatter / 100)
-				* substrate.biogasProduction
-				* (substrate.methaneContent / 100);
-		if (f <= 0)
-			return profile;
-		for (var i = 0; i < hourlyValues.length; i++) {
-			if (i >= Stats.HOURS)
-				break;
-			double mass = hourlyValues[i];
-			if (mass <= 0)
-				continue;
-			profile[i] = mass * f;
-		}
-		return profile;
-	}
 }

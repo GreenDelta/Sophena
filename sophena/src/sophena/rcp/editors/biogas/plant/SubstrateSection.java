@@ -26,7 +26,6 @@ class SubstrateSection {
 
 	private final BiogasPlantEditor editor;
 	private TableViewer table;
-	private MethaneChart chart;
 
 	private SubstrateSection(BiogasPlantEditor editor) {
 		this.editor = editor;
@@ -47,11 +46,10 @@ class SubstrateSection {
 		table = createTable(comp);
 		addSubstrateActions(section);
 
-		var chartSection = UI.section(body, tk, "Erzeugtes Methan");
+		var chartSection = UI.section(body, tk, "Erzeugtes Biogas & Methangehalt");
 		var chartComp = UI.sectionClient(chartSection, tk);
 		UI.gridLayout(chartComp, 1);
-		chart = new MethaneChart(chartComp, 200);
-		chart.setInput(plant().substrateProfiles);
+		new BiogasChart(editor, chartComp, 200);
 	}
 
 	private void addSubstrateActions(Section section) {
@@ -114,7 +112,6 @@ class SubstrateSection {
 	private void fireUpdate() {
 		var profiles = plant().substrateProfiles;
 		table.setInput(profiles);
-		chart.setInput(profiles);
 		editor.setDirty();
 		editor.calculate();
 	}
