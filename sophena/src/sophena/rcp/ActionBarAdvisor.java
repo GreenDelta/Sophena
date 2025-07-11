@@ -34,6 +34,7 @@ import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
 import sophena.rcp.editors.biogas.plant.BiogasPlantTable;
 import sophena.rcp.editors.biogas.substrate.SubstrateEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
+import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
@@ -154,6 +155,7 @@ public class ActionBarAdvisor extends
 		var m = new MenuManager(M.Help);
 		man.add(m);
 		m.add(Actions.create("Ergebnisfarben ...", ColorConfigDialog::show));
+		m.add(Actions.create("SQL", SqlEditor::open));  // TODO only for dev
 		m.add(aboutAction);
 	}
 
