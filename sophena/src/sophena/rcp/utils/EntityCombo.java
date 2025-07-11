@@ -19,27 +19,27 @@ public class EntityCombo<T extends RootEntity> {
 	private ComboViewer viewer;
 	private Function<T, String> labelFn;
 
-	public void create(String label, Composite parent) {
-		create(label, parent, null);
+	public  EntityCombo<T> create(String label, Composite parent) {
+		return create(label, parent, null);
 	}
 
-	public void create(String label, Composite parent, FormToolkit toolkit) {
-		Combo combo = null;
-		if (toolkit == null)
-			combo = UI.formCombo(parent, label);
-		else
-			combo = UI.formCombo(parent, toolkit, label);
+	public  EntityCombo<T> create(String label, Composite comp, FormToolkit tk) {
+		var combo = tk == null
+				? UI.formCombo(comp, label)
+				: UI.formCombo(comp, tk, label);
 		viewer = new ComboViewer(combo);
 		viewer.setLabelProvider(new Label());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
+		return this;
 	}
 
 	public void setLabelProvider(Function<T, String> labelFn) {
 		this.labelFn = labelFn;
 	}
 
-	public void setInput(List<T> entities) {
+	public EntityCombo<T> setInput(List<T> entities) {
 		viewer.setInput(entities);
+		return this;
 	}
 
 	public void onSelect(Consumer<T> listener) {
@@ -50,10 +50,11 @@ public class EntityCombo<T extends RootEntity> {
 		});
 	}
 
-	public void select(T entity) {
+	public EntityCombo<T> select(T entity) {
 		if (entity == null)
-			return;
+			return this;
 		viewer.setSelection(new StructuredSelection(entity));
+		return this;
 	}
 
 	public T getSelected() {

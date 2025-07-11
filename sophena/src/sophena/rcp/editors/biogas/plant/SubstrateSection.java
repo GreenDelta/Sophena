@@ -24,17 +24,16 @@ import sophena.utils.Num;
 
 class SubstrateSection {
 
-	private BiogasPlantEditor editor;
+	private final BiogasPlantEditor editor;
 	private TableViewer table;
 	private MethaneChart chart;
 
-	private SubstrateSection() {
+	private SubstrateSection(BiogasPlantEditor editor) {
+		this.editor = editor;
 	}
 
 	static SubstrateSection of(BiogasPlantEditor editor) {
-		var section = new SubstrateSection();
-		section.editor = editor;
-		return section;
+		return new SubstrateSection(editor);
 	}
 
 	private BiogasPlant plant() {

@@ -83,6 +83,9 @@ class BiogasPlantInfoPage extends FormPage {
 		// substrate section
 		var substrateSection = SubstrateSection.of(editor);
 		substrateSection.create(body, tk);
+
+		// electricity section
+		ElectricitySection.of(editor).create(body, tk);
 	}
 
 	private void boilerCombo(
