@@ -57,6 +57,16 @@ public final class Stats {
 		return max;
 	}
 
+	public static double avg(double[] vals) {
+		if (vals == null || vals.length == 0)
+			return 0;
+		double sum = 0;
+		for (double v : vals) {
+			sum += v;
+		}
+		return sum / vals.length;
+	}
+
 	public static int nextStep(double value) {
 		double v = Math.abs(value);
 		double p = Math.floor(Math.log10(v));

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.Database;
+import sophena.model.Stats;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
@@ -103,32 +104,30 @@ public class ElectricityPriceEditor extends Editor {
 			var export = Actions.create("Export", Icon.EXPORT_16.des(),
 					() -> exportCurve(table));
 
-			Actions.bind(section, add, edit, copy, delete, export);
-			Actions.bind(table, add, edit, copy, delete);
+			Actions.bind(section, add, edit, copy, delete);
+			Actions.bind(table, add, edit, copy, export, delete);
 			Tables.onDoubleClick(table, e -> editCurve(table));
 		}
 
 		private void addCurve(TableViewer table) {
 			var curve = new ElectricityPriceCurve();
 			curve.id = UUID.randomUUID().toString();
-			var code = ElectricityPriceWizard.open(curve);
-			if (code == Window.OK) {
-				curves.add(curve);
-				db.insert(curve);
-				table.setInput(curves);
-				setSaved();
-			}
+			if (ElectricityPriceWizard.open(curve) != Window.OK)
+				return;
+			db.insert(curve);
+			curves.add(curve);
+			table.setInput(curves);
 		}
 
 		private void editCurve(TableViewer table) {
 			ElectricityPriceCurve curve = Viewers.getFirstSelected(table);
-			if (curve == null)
+			if (curve == null || ElectricityPriceWizard.open(curve) != Window.OK)
 				return;
-			var code = ElectricityPriceWizard.open(curve);
-			if (code == Window.OK) {
-				db.update(curve);
+			int idx = curves.indexOf(curve);
+			var next = db.update(curve);
+			if (idx >= 0) {
+				curves.set(idx, next);
 				table.refresh();
-				setSaved();
 			}
 		}
 
@@ -138,13 +137,11 @@ public class ElectricityPriceEditor extends Editor {
 				return;
 			var copy = curve.copy();
 			copy.name = curve.name + " - Kopie";
-			var code = ElectricityPriceWizard.open(copy);
-			if (code == Window.OK) {
-				curves.add(copy);
-				db.insert(copy);
-				table.setInput(curves);
-				setSaved();
-			}
+			if (ElectricityPriceWizard.open(copy) != Window.OK)
+				return;
+			curves.add(copy);
+			db.insert(copy);
+			table.setInput(curves);
 		}
 
 		private void deleteCurve(TableViewer table) {
@@ -169,7 +166,6 @@ public class ElectricityPriceEditor extends Editor {
 			curves.remove(curve);
 			db.delete(curve);
 			table.setInput(curves);
-			setSaved();
 		}
 
 		private void exportCurve(TableViewer table) {
@@ -188,41 +184,11 @@ public class ElectricityPriceEditor extends Editor {
 				return switch (col) {
 					case 0 -> curve.name;
 					case 1 -> curve.description;
-					case 2 -> getMinPrice(curve);
-					case 3 -> getMaxPrice(curve);
-					case 4 -> getAvgPrice(curve);
+					case 2 -> Num.str(Stats.min(curve.values));
+					case 3 -> Num.str(Stats.max(curve.values));
+					case 4 -> Num.str(Stats.avg(curve.values));
 					default -> null;
 				};
-			}
-
-			private String getMinPrice(ElectricityPriceCurve curve) {
-				if (curve.values == null || curve.values.length == 0)
-					return "-";
-				double min = Double.MAX_VALUE;
-				for (double value : curve.values) {
-					if (value < min) min = value;
-				}
-				return Num.str(min);
-			}
-
-			private String getMaxPrice(ElectricityPriceCurve curve) {
-				if (curve.values == null || curve.values.length == 0)
-					return "-";
-				double max = Double.MIN_VALUE;
-				for (double value : curve.values) {
-					if (value > max) max = value;
-				}
-				return Num.str(max);
-			}
-
-			private String getAvgPrice(ElectricityPriceCurve curve) {
-				if (curve.values == null || curve.values.length == 0)
-					return "-";
-				double sum = 0;
-				for (double value : curve.values) {
-					sum += value;
-				}
-				return Num.str(sum / curve.values.length);
 			}
 		}
 	}

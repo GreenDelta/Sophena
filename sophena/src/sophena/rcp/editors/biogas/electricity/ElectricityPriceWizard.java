@@ -6,16 +6,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osgi.internal.messages.Msg;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.model.Stats;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.rcp.M;
 import sophena.rcp.utils.Controls;
@@ -23,7 +20,6 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Ref;
 import sophena.utils.Strings;
 
 public class ElectricityPriceWizard extends Wizard {
@@ -69,28 +65,9 @@ public class ElectricityPriceWizard extends Wizard {
 				curve.values = data;
 			}
 			curve.name = name;
-			curve.description =
-
-
-
-			curve.name = page.nameText.getText();
 			curve.description = page.descriptionText.getText();
-
-			var file = page.excelPanel.file();
-			if (file != null) {
-				var values = ElectricityPriceIO.read(file);
-				if (values.isPresent()) {
-					curve.values = values.get();
-				} else {
-					// Initialize empty values if reading failed
-					curve.values = new double[Stats.HOURS];
-				}
-			} else if (curve.values == null) {
-				// Initialize empty values if no file selected
-				curve.values = new double[Stats.HOURS];
-			}
-
 			return true;
+
 		} catch (Exception e) {
 			log.error("failed to set electricity price curve data {}", curve, e);
 			return false;
@@ -129,8 +106,7 @@ public class ElectricityPriceWizard extends Wizard {
 			Texts.on(descriptionText).init(curve.description);
 			UI.filler(comp);
 
-			UI.formLabel(comp, "Datei");
-			var text = UI.formText(comp, "");
+			var text = UI.formText(comp, "Datei");
 			text.setEditable(false);
 			var button = new Button(comp, SWT.PUSH);
 			button.setText("Durchsuchen...");
