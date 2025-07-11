@@ -89,7 +89,7 @@ class SubstrateSection {
 				8.5, 7.7, 8.5, 8.2, 8.5, 8.2, 8.5, 8.5, 8.2, 8.5, 8.2, 8.5};
 		if (SubstrateWizard.open(profile) == Window.OK) {
 			plant().substrateProfiles.add(profile);
-			updateUI();
+			fireUpdate();
 		}
 	}
 
@@ -98,7 +98,7 @@ class SubstrateSection {
 		if (list == null || list.isEmpty())
 			return;
 		plant().substrateProfiles.removeAll(list);
-		updateUI();
+		fireUpdate();
 	}
 
 	private void onEdit() {
@@ -107,15 +107,16 @@ class SubstrateSection {
 			return;
 		int code = SubstrateWizard.open(profile);
 		if (code == Window.OK) {
-			updateUI();
+			fireUpdate();
 		}
 	}
 
-	private void updateUI() {
+	private void fireUpdate() {
 		var profiles = plant().substrateProfiles;
 		table.setInput(profiles);
 		chart.setInput(profiles);
 		editor.setDirty();
+		editor.calculate();
 	}
 
 	private static class Label extends LabelProvider

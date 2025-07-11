@@ -86,6 +86,7 @@ class BiogasPlantInfoPage extends FormPage {
 
 		// electricity section
 		ElectricitySection.of(editor).create(body, tk);
+		editor.calculate();
 	}
 
 	private void boilerCombo(

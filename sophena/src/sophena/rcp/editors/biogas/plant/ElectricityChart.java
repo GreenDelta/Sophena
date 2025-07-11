@@ -14,14 +14,18 @@ class ElectricityChart {
 	private final XYGraph graph;
 	private final CircularBufferDataProvider priceData;
 
-	ElectricityChart(Composite parent, int height) {
+	ElectricityChart(BiogasPlantEditor editor, Composite parent, int height) {
 		graph = Charts.initHoursGraph(parent, height);
 		graph.getPrimaryYAxis().setTitle("Strompreis [ct/kWh]");
 		priceData = Charts.dataProvider();
 		Charts.lineTraceOf(graph, "price", Colors.getChartBlue(), priceData);
+		editor.onResult(r -> {
+			System.out.println("gas storage: " + r.gasStorage());
+			setInput(r.plant());
+		});
 	}
 
-	void setInput(BiogasPlant plant) {
+	private void setInput(BiogasPlant plant) {
 		var prices = pricesOf(plant);
 		var max = Stats.max(prices);
 		if (max == 0) {

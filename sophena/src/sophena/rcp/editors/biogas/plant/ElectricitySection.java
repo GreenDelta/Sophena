@@ -37,12 +37,11 @@ class ElectricitySection {
 				.setInput(App.getDb().getAll(ElectricityPriceCurve.class))
 				.select(plant().electricityPrices);
 
-		var chart = new ElectricityChart(root, 250);
-		chart.setInput(plant());
+		new ElectricityChart(editor, root, 250);
 		combo.onSelect(c -> {
 			plant().electricityPrices = c;
-			chart.setInput(plant());
 			editor.setDirty();
+			editor.calculate();
 		});
 	}
 }

@@ -1,11 +1,16 @@
 package sophena.rcp.editors.biogas.plant;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantResult;
 import sophena.rcp.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
@@ -15,6 +20,7 @@ import sophena.rcp.utils.KeyEditorInput;
 public class BiogasPlantEditor extends Editor {
 
 	private BiogasPlant plant;
+	private final List<Consumer<BiogasPlantResult>> resultFns = new ArrayList<>();
 
 	public static void createNew() {
 		BiogasPlantWizard.open().ifPresent(BiogasPlantEditor::open);
@@ -29,6 +35,19 @@ public class BiogasPlantEditor extends Editor {
 
 	BiogasPlant plant() {
 		return plant;
+	}
+
+	void calculate() {
+		var result = BiogasPlantResult.calculate(plant);
+		for (var fn : resultFns) {
+			fn.accept(result);
+		}
+	}
+
+	void onResult(Consumer<BiogasPlantResult> fn) {
+		if (fn != null) {
+			resultFns.add(fn);
+		}
 	}
 
 	@Override
