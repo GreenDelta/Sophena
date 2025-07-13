@@ -1,6 +1,7 @@
-package sophena.model.biogas;
+package sophena.calc.biogas;
 
 import sophena.model.Stats;
+import sophena.model.biogas.BiogasPlant;
 
 public record BiogasPlantResult(
 		BiogasPlant plant,

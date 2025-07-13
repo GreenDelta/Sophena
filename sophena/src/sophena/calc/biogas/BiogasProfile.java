@@ -1,8 +1,9 @@
-package sophena.model.biogas;
+package sophena.calc.biogas;
 
 import java.util.List;
 
 import sophena.model.Stats;
+import sophena.model.biogas.SubstrateProfile;
 
 public record BiogasProfile(double[] volume, double[] methaneContent) {
 
@@ -50,13 +51,12 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 		return p;
 	}
 
-
 	public double volumeAt(int h) {
-		return Stats.get(volume, h);
+		return volume[h];
 	}
 
 	public double methaneContentAt(int h) {
-		return Stats.get(methaneContent, h);
+		return methaneContent[h];
 	}
 
 	private record Trace(
