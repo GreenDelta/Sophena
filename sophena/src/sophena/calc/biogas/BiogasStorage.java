@@ -30,6 +30,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		this.P = boiler.maxPowerElectric / boiler.efficiencyRateElectric;
 	}
 
+	public double size() {
+		return size;
+	}
+
 	/// Returns the filled volume of storage in m3.
 	public double filledVolume() {
 		return filled;
