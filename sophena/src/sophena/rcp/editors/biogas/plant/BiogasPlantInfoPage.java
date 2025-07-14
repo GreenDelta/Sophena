@@ -111,6 +111,7 @@ class BiogasPlantInfoPage extends FormPage {
 			ProductCosts.copy(bi, plant().costs);
 			costs.refresh();
 			editor.setDirty();
+			editor.calculate();
 		});
 		UI.filler(comp, tk);
 	}

@@ -6,7 +6,8 @@ import sophena.model.biogas.BiogasPlant;
 public record BiogasPlantResult(
 		BiogasPlant plant,
 		BiogasProfile biogasProfile,
-		double gasStorage
+		double gasStorageSize,
+		boolean[] runFlags
 ) {
 
 	public static BiogasPlantResult calculate(BiogasPlant plant) {
@@ -20,89 +21,114 @@ public record BiogasPlantResult(
 	}
 
 	private static BiogasPlantResult emptyOf(BiogasPlant plant) {
-		return new BiogasPlantResult(plant, BiogasProfile.empty(), 0);
+		return new BiogasPlantResult(
+				plant,
+				BiogasProfile.empty(),
+				0,
+				new boolean[Stats.HOURS]
+		);
 	}
 
 	private static class Calculator {
 
 		private final BiogasPlant plant;
 
+		private final int minRunTime = 2;  // todo: configure it!
+		private final BiogasProfile profile;
+		private final BiogasStorage storage;
+		private final ElectricityPriceSchedule priceSchedule;
+
+		private final boolean[] runFlags = new boolean[Stats.HOURS];
+		private int runTime = 0;
+
+
 		Calculator(BiogasPlant plant) {
 			this.plant = plant;
+			profile = BiogasProfile.of(plant.substrateProfiles);
+			var storageSize = BiogasStorage.defaultSizeOf(profile);
+			storage = new BiogasStorage(storageSize, plant.product);
+			priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
+		}
+
+		private void runAt(int hour) {
+			storage.runOneHour();
+			runTime++;
+			runFlags[hour] = true;
+		}
+
+		private void stop() {
+			runTime = 0;
 		}
 
 		BiogasPlantResult run() {
-			var profile = BiogasProfile.of(plant.substrateProfiles);
-			var store = new GasStorage(profile, plant);
-			return new BiogasPlantResult(plant, profile, store.size);
-		}
 
+			for (int hour = 0; hour < Stats.HOURS; hour++) {
 
-	}
+				storage.add(profile, hour);
 
-	private static class GasStorage {
-
-		private final double size;
-		private final BiogasProfile profile;
-		private final BiogasPlant plant;
-		private final int minHours = 2; // TODO take from plant
-
-		private final double[] track = new double[Stats.HOURS];
-		private double filled;
-		private double methaneContent;
-
-		GasStorage(BiogasProfile profile, BiogasPlant plant) {
-			size = sizeOf(profile);
-			this.profile = profile;
-			this.plant = plant;
-		}
-
-		/// The default size of the gas storage is the maximum amount of biogas
-		/// that is produced over a day.
-		private double sizeOf(BiogasProfile profile) {
-			var vol = profile.volume();
-			double storage = 0;
-			for (int day = 0; day < 365; day++) {
-				double daySum = 0;
-				int offset = day * 24;
-				for (int h = offset; h < offset + 24; h++) {
-					daySum += vol[h];
+				// the storage is empty
+				if (!storage.canRunOneHour()) {
+					stop();
+					continue;
 				}
-				storage = Math.max(storage, daySum);
+
+				// the storage is full!
+				if (hour < (Stats.HOURS - 1)) {
+					if (!storage.canAdd(profile, hour + 1)) {
+						runAt(hour);
+						continue;
+					}
+				}
+
+				boolean priceOk = priceSchedule.shouldRunAt(hour);
+
+				// if it is not running, start it only if the price is good and
+				// if it can run for the minimum runtime
+				if (runTime == 0) {
+					if (priceOk && canStartAt(hour)) {
+						runAt(hour);
+					}
+					continue;
+				}
+
+				// if it did not run for the minimum runtime or if the price is good,
+				// keep it running
+				if (priceOk || runTime < minRunTime) {
+					runAt(hour);
+					continue;
+				}
+
+				// also, keep it running if the price is good in the next hour
+				int nextHour = hour + 1;
+				if (nextHour < Stats.HOURS && priceSchedule.shouldRunAt(nextHour)) {
+					var s = storage.copy();
+					s.runOneHour();
+					s.add(profile, nextHour);
+					if (s.canRunOneHour()) {
+						runAt(hour);
+						continue;
+					}
+				}
+
+				// otherwise stop it
+				stop();
 			}
-			return storage;
+
+			return new BiogasPlantResult(plant, profile, storage.size(), runFlags);
 		}
 
-		void fill(int hour) {
-			double deltaVol = profile.volumeAt(hour);
-			double deltaMet = profile.methaneContentAt(hour);
-			double nextVol = filled + deltaVol;
-			if (nextVol == 0)
-				return ;
-			methaneContent = (methaneContent * filled + deltaMet * deltaVol) / nextVol;
-			filled = nextVol;
+		private boolean canStartAt(int hour) {
+			int end = hour + minRunTime;
+			if (end >= Stats.HOURS)
+				return false;
+			var s = storage.copy();
+			for (int h = hour + 1; h < end; h++) {
+				s.runOneHour();
+				s.add(profile, h);
+				if (!s.canRunOneHour())
+					return false;
+			}
+			return true;
 		}
-
-		/// With the current methane content, which amount of biogas is required
-		/// to run the plant under full load for one hour. A value `< 0` means that
-		/// the storage is empty
-		double demandPerHour() {
-			if (methaneContent <= 0)
-				return -1;
-			double q = plant.product.maxPowerElectric
-					/ plant.product.efficiencyRateElectric;
-			return (q / 9.97) / methaneContent;
-		}
-
-		///
-		boolean canRun() {
-			return filled >= demandPerHour();
-		}
-
-		boolean canStart() {
-			return false; // look ahead min-time!
-		}
-
-
 	}
 }

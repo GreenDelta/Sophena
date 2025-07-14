@@ -30,6 +30,25 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		this.P = boiler.maxPowerElectric / boiler.efficiencyRateElectric;
 	}
 
+	/// The default size of the gas storage is the maximum amount of biogas
+	/// that is produced over a day.
+	public static double defaultSizeOf(BiogasProfile profile) {
+		if (profile == null || profile.volume() == null)
+			throw new IllegalArgumentException("invalid profile");
+
+		var vol = profile.volume();
+		double storage = 0;
+		for (int day = 0; day < 365; day++) {
+			double daySum = 0;
+			int offset = day * 24;
+			for (int h = offset; h < offset + 24; h++) {
+				daySum += vol[h];
+			}
+			storage = Math.max(storage, daySum);
+		}
+		return storage;
+	}
+
 	public double size() {
 		return size;
 	}
@@ -73,6 +92,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		return add(profile.volumeAt(hour), profile.methaneContentAt(hour));
 	}
 
+	public boolean canAdd(BiogasProfile profile, int hour) {
+		return (filled + profile.volumeAt(hour)) <= size;
+	}
+
 	/// Returns the number of hours it takes to complete empty the storage when
 	/// running the boiler under full load.
 	public double hoursToEmpty() {
@@ -103,6 +126,6 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		var copy = new BiogasStorage(size, boiler);
 		copy.filled = filled;
 		copy.methaneContent = methaneContent;
-		return null;
+		return copy;
 	}
 }
