@@ -6,6 +6,8 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -58,7 +60,22 @@ public class Charts {
 		y.setMinorTicksVisible(false);
 		y.setFormatPattern("###,###,###,###");
 
+		addZoom(g, canvas);
+
 		return g;
+	}
+
+	private static void addZoom(XYGraph chart, Canvas canvas) {
+		var ctrlKey = new CtrlKey();
+		canvas.addKeyListener(ctrlKey);
+		canvas.addMouseWheelListener(e -> {
+			if (!ctrlKey.pressed)
+				return;
+			var xAxis = chart.getPrimaryXAxis();
+			double valuePos = xAxis.getPositionValue(e.x, false);
+			double factor = e.count < 0 ? -0.1 : 0.1;
+			chart.getPrimaryXAxis().zoomInOut(valuePos, factor);
+		});
 	}
 
 	public static Trace areaTraceOf(
@@ -84,6 +101,25 @@ public class Charts {
 		trace.setTraceColor(color);
 		g.addTrace(trace);
 		return trace;
+	}
+
+	private static class CtrlKey implements KeyListener {
+
+		boolean pressed;
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.keyCode == SWT.CTRL) {
+				pressed = true;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.keyCode == SWT.CTRL) {
+				pressed = false;
+			}
+		}
 	}
 
 }
