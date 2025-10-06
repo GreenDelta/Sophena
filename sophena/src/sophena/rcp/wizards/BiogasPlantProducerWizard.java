@@ -19,9 +19,11 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.calc.biogas.BiogasPlantResult;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
@@ -162,6 +164,14 @@ public class BiogasPlantProducerWizard extends Wizard {
 			p.biogasPlant = plant;
 			if (plant != null) {
 				p.productGroup = plant.productGroup;
+				var r = BiogasPlantResult.calculate(plant);
+				p.profile = r.asProducerProfile();
+				p.profileMaxPower = plant.product != null
+					? plant.product.maxPower
+					: Stats.max(p.profile.maxPower);
+				p.profileMaxPowerElectric = plant.product != null
+					? plant.product.maxPowerElectric
+					: 0;
 			}
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);

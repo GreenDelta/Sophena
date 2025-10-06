@@ -1,46 +1,66 @@
 package sophena.calc.biogas;
 
+import java.util.UUID;
+
+import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
 public record BiogasPlantResult(
-		BiogasPlant plant,
-		BiogasProfile biogasProfile,
-		double gasStorageSize,
-		boolean[] runFlags
-) {
+	BiogasPlant plant,
+	BiogasProfile biogasProfile,
+	double gasStorageSize,
+	boolean[] runFlags) {
 
 	public static BiogasPlantResult calculate(BiogasPlant plant) {
 		if (plant == null
-				|| plant.product == null
-				|| plant.product.maxPowerElectric <= 0
-				|| plant.product.efficiencyRateElectric <= 0
-				|| plant.substrateProfiles.isEmpty())
+			|| plant.product == null
+			|| plant.product.maxPowerElectric <= 0
+			|| plant.product.efficiencyRateElectric <= 0
+			|| plant.substrateProfiles.isEmpty())
 			return emptyOf(plant);
 		return new Calculator(plant).run();
 	}
 
 	private static BiogasPlantResult emptyOf(BiogasPlant plant) {
 		return new BiogasPlantResult(
-				plant,
-				BiogasProfile.empty(),
-				0,
-				new boolean[Stats.HOURS]
-		);
+			plant,
+			BiogasProfile.empty(),
+			0,
+			new boolean[Stats.HOURS]);
+	}
+
+	public ProducerProfile asProducerProfile() {
+		var profile = new ProducerProfile();
+		profile.id = UUID.randomUUID().toString();
+		profile.minPower = new double[Stats.HOURS];
+		profile.maxPower = new double[Stats.HOURS];
+		profile.temperaturLevel = new double[Stats.HOURS];
+		double power = plant.product != null
+			? plant.product.maxPower
+			: 0;
+		if (power > 0 && runFlags != null) {
+			for (int h = 0; h < runFlags.length; h++) {
+				if (!runFlags[h])
+					continue;
+				profile.minPower[h] = power;
+				profile.maxPower[h] = power;
+			}
+		}
+		return profile;
 	}
 
 	private static class Calculator {
 
 		private final BiogasPlant plant;
 
-		private final int minRunTime = 2;  // todo: configure it!
+		private final int minRunTime = 2; // TODO: configure it!
 		private final BiogasProfile profile;
 		private final BiogasStorage storage;
 		private final ElectricityPriceSchedule priceSchedule;
 
 		private final boolean[] runFlags = new boolean[Stats.HOURS];
 		private int runTime = 0;
-
 
 		Calculator(BiogasPlant plant) {
 			this.plant = plant;
