@@ -3,7 +3,6 @@ package sophena.rcp.wizards;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -63,10 +62,10 @@ public class ProducerWizard extends Wizard {
 	public static void open(Project project) {
 		if (project == null)
 			return;
-		ProducerWizard wiz = new ProducerWizard();
+		var wiz = new ProducerWizard();
 		wiz.setWindowTitle(M.CreateNewProducer);
 		wiz.project = project;
-		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
+		var dialog = new WizardDialog(UI.shell(), wiz);
 		dialog.setPageSize(150, 450);
 		if (dialog.open() == Window.OK) {
 			Navigator.refresh();
@@ -141,12 +140,11 @@ public class ProducerWizard extends Wizard {
 		}
 
 		private ProductGroup[] getGroups() {
-			List<ProductGroup> list = new ArrayList<>();
+			var list = new ArrayList<ProductGroup>();
 			list.add(null);
-			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			java.util.List<ProductGroup> groups = dao.getAll();
+			var groups = new ProductGroupDao(App.getDb()).getAll();
 			Sorters.productGroups(groups);
-			EnumSet<ProductType> types = EnumSet.of(
+			var types = EnumSet.of(
 					ProductType.BIOMASS_BOILER,
 					ProductType.FOSSIL_FUEL_BOILER,
 					ProductType.HEAT_PUMP,

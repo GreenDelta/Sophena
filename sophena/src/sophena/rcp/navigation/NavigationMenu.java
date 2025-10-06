@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.navigator.CommonActionProvider;
 
 import sophena.rcp.navigation.actions.AddAction;
+import sophena.rcp.navigation.actions.AddBiogasPlantAction;
 import sophena.rcp.navigation.actions.AddConsumerProfileAction;
 import sophena.rcp.navigation.actions.AddFlueGasCleaning;
 import sophena.rcp.navigation.actions.AddProducerProfileAction;
@@ -27,24 +28,25 @@ import sophena.rcp.utils.Viewers;
 public class NavigationMenu extends CommonActionProvider {
 
 	private final NavigationAction[][] actionGroups = {
-			{
-					new OpenAction(),
-					new CompareAction(),
-					new AddAction(),
-					new AddConsumerProfileAction(),
-					new ConsumerImportAction(),
-					new AddProducerProfileAction(),
-					new AddFlueGasCleaning(),
-					new DuplicateAction(),
-					new RenameAction(),
-					new DisableAction(),
-					new SaveAsAction(),
-					new DeleteAction(),
-					new ExportAction()
-			},
-			{
-					new CalculateAction()
-			}
+		{
+			new OpenAction(),
+			new CompareAction(),
+			new AddAction(),
+			new AddConsumerProfileAction(),
+			new ConsumerImportAction(),
+			new AddProducerProfileAction(),
+			new AddFlueGasCleaning(),
+			new AddBiogasPlantAction(),
+			new DuplicateAction(),
+			new RenameAction(),
+			new DisableAction(),
+			new SaveAsAction(),
+			new DeleteAction(),
+			new ExportAction()
+		},
+		{
+			new CalculateAction()
+		}
 	};
 
 	@Override

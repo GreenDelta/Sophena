@@ -77,20 +77,7 @@ public class AppConfig {
 		save();
 	}
 
-	/**
-	 * Deletes the configuration file from the file system and returns true if
-	 * the file could be deleted.
-	 */
-	public static boolean delete() {
-		File f = getFile();
-		if (f == null || !f.exists())
-			return false;
-		else
-			return f.delete();
-	}
-
 	private static File getFile() {
 		return new File("sophena_config.json");
 	}
-
 }

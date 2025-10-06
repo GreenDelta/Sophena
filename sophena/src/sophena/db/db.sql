@@ -594,6 +594,7 @@ CREATE TABLE tbl_producers (
     f_project                     CHAR(36),
     f_product_group               CHAR(36),
     f_boiler                      CHAR(36),
+    f_biogas_plant                CHAR(36),
     f_profile                     CHAR(36),
     profile_max_power             DOUBLE,
     profile_max_power_electric    DOUBLE,

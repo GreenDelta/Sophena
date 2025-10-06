@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
@@ -19,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import sophena.model.biogas.BiogasPlant;
 import sophena.model.descriptors.ProducerDescriptor;
 
 @Entity
@@ -42,6 +42,10 @@ public class Producer extends RootEntity {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_profile")
 	public ProducerProfile profile;
+
+	@OneToOne
+	@JoinColumn(name = "f_biogas_plant")
+	public BiogasPlant biogasPlant;
 
 	/**
 	 * This field is only relevant for producers with a producer profile (so
@@ -154,6 +158,7 @@ public class Producer extends RootEntity {
 		clone.disabled = disabled;
 		clone.productGroup = productGroup;
 		clone.boiler = boiler;
+		clone.biogasPlant = biogasPlant;
 		clone.function = function;
 		clone.rank = rank;
 		clone.solarCollector = solarCollector;

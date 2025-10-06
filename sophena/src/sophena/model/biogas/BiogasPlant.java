@@ -54,7 +54,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-
 	@Override
 	public BiogasPlant copy() {
 		var clone = new BiogasPlant();

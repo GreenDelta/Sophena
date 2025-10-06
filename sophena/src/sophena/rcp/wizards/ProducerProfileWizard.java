@@ -52,7 +52,7 @@ public class ProducerProfileWizard extends Wizard {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
-		ProjectDao dao = new ProjectDao(App.getDb());
+		var dao = new ProjectDao(App.getDb());
 		open(dao.get(d.id));
 	}
 
