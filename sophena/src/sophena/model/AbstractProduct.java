@@ -16,6 +16,9 @@ public abstract class AbstractProduct extends BaseDataEntity {
 	@Column(name = "url")
 	public String url;
 
+	@Column(name = "product_line")
+	public String productLine;
+
 	@OneToOne
 	@JoinColumn(name = "f_manufacturer")
 	public Manufacturer manufacturer;
@@ -36,6 +39,7 @@ public abstract class AbstractProduct extends BaseDataEntity {
 		to.isProtected = from.isProtected;
 		to.purchasePrice = from.purchasePrice;
 		to.url = from.url;
+		to.productLine = from.productLine;
 		to.manufacturer = from.manufacturer;
 		to.type = from.type;
 		to.group = from.group;

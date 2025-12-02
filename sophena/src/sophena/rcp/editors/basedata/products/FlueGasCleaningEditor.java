@@ -79,13 +79,13 @@ public class FlueGasCleaningEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung",
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie",
 					"Hersteller", "Brennstoff (Erz.)", "Max. Leistung (Erz.)",
 					"Max. Volumenstrom");
 			table.setLabelProvider(new Label());
 			table.setInput(cleanings);
-			double x = 1.0 / 6.0;
-			Tables.bindColumnWidths(table, x, x, x, x, x, x);
+			double x = 1.0 / 7.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
@@ -175,14 +175,14 @@ public class FlueGasCleaningEditor extends Editor {
 			if (!(obj instanceof FlueGasCleaning))
 				return null;
 			FlueGasCleaning c = (FlueGasCleaning) obj;
-			if (col < 3)
+			if (col < 4)
 				return ProductTables.getText(c, col);
 			switch (col) {
-			case 3:
-				return c.fuel;
 			case 4:
-				return Num.str(c.maxProducerPower) + " KW";
+				return c.fuel;
 			case 5:
+				return Num.str(c.maxProducerPower) + " KW";
+			case 6:
 				return Num.str(c.maxVolumeFlow) + " m3/h";
 			default:
 				return null;

@@ -403,6 +403,7 @@ CREATE TABLE tbl_products (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -423,6 +424,7 @@ CREATE TABLE tbl_boilers (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -450,6 +452,7 @@ CREATE TABLE tbl_pipes (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -478,6 +481,7 @@ CREATE TABLE tbl_buffer_tanks (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -501,6 +505,7 @@ CREATE TABLE tbl_transfer_stations (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -526,6 +531,7 @@ CREATE TABLE tbl_flue_gas_cleaning (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -567,6 +573,7 @@ CREATE TABLE tbl_heat_recovery (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -667,6 +674,7 @@ CREATE TABLE tbl_solar_collectors (
 
     purchase_price DOUBLE,
     url VARCHAR(255),
+    product_line VARCHAR(255),
     product_type VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer CHAR(36),
@@ -709,6 +717,7 @@ CREATE TABLE tbl_heat_pumps (
 
     purchase_price 	DOUBLE,
     url 			VARCHAR(255),
+    product_line VARCHAR(255),
     product_type 	VARCHAR(50),
     f_product_group CHAR(36),
     f_manufacturer 	CHAR(36),

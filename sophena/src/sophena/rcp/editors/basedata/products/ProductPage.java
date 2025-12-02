@@ -68,12 +68,12 @@ class ProductPage extends FormPage {
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
-		TableViewer table = Tables.createViewer(comp, "Bezeichnung",
+		TableViewer table = Tables.createViewer(comp, "Bezeichnung", "Produktlinie",
 				"Produktgruppe", "Link", "Preis");
 		table.setLabelProvider(new ProductLabel());
 		table.setInput(products);
-		double x = 1 / 4d;
-		Tables.bindColumnWidths(table, x, x, x, x);
+		double x = 1 / 5d;
+		Tables.bindColumnWidths(table, x, x, x, x, x);
 		bindProductActions(section, table);
 	}
 
@@ -176,10 +176,12 @@ class ProductPage extends FormPage {
 			case 0:
 				return product.name;
 			case 1:
-				return product.group != null ? product.group.name : null;
+				return product.productLine;
 			case 2:
-				return product.url;
+				return product.group != null ? product.group.name : null;
 			case 3:
+				return product.url;
+			case 4:
 				return Num.str(product.purchasePrice) + " EUR";
 			default:
 				return null;

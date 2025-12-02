@@ -62,6 +62,7 @@ public class ProductWizard extends Wizard {
 		DataBinding data = new DataBinding();
 
 		Text nameText;
+		Text productLineText;
 		EntityCombo<ProductGroup> groupCombo;
 		private EntityCombo<Manufacturer> manufacturerCombo;
 		Text urlText;
@@ -88,6 +89,9 @@ public class ProductWizard extends Wizard {
 			UI.gridLayout(c, 3);
 			nameText = UI.formText(c, M.Name);
 			Texts.on(nameText).required().validate(data::validate);
+			UI.formLabel(c, "");
+
+			productLineText = UI.formText(c, "Produktlinie");
 			UI.formLabel(c, "");
 
 			createGroupCombo(c);
@@ -163,6 +167,7 @@ public class ProductWizard extends Wizard {
 
 			void bindToUI() {
 				Texts.set(nameText, product.name);
+				Texts.set(productLineText, product.productLine);
 				groupCombo.select(product.group);
 				manufacturerCombo.select(product.manufacturer);
 				Texts.set(urlText, product.url);
@@ -173,6 +178,7 @@ public class ProductWizard extends Wizard {
 
 			void bindToModel() {
 				product.name = nameText.getText();
+				product.productLine = productLineText.getText();
 				product.group = groupCombo.getSelected();
 				product.manufacturer = manufacturerCombo.getSelected();
 				product.description = descriptionText.getText();

@@ -83,13 +83,13 @@ public class HeatPumpEditor extends Editor {
 			TableViewer table = Tables.createViewer(comp, getColumns());
 			table.setLabelProvider(new Label());
 			table.setInput(heatPumps);
-			double x = 1 / 4.0;
-			Tables.bindColumnWidths(table, x, x, x, x);
+			double x = 1 / 5.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
 		private String[] getColumns() {
-				return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
+				return new String[] { "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller",
 						"Nennleistung" };
 		}
 
@@ -179,10 +179,10 @@ public class HeatPumpEditor extends Editor {
 				if (!(obj instanceof HeatPump))
 					return null;
 				HeatPump heatPump = (HeatPump) obj;
-				if (col < 3)
+				if (col < 4)
 					return ProductTables.getText(heatPump, col);
 				switch (col) {
-				case 3:
+				case 4:
 					return s(heatPump.ratedPower, "kW");
 				default:
 					return null;

@@ -72,11 +72,11 @@ class EditorPage extends FormPage {
 		table.setLabelProvider(new BoilerLabel());
 		table.setInput(boilers);
 		if (type == ProductType.COGENERATION_PLANT) {
-			double x = 1 / 7.0;
-			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
+			double x = 1 / 8.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x);
 		} else {
-			double x = 1 / 5.0;
-			Tables.bindColumnWidths(table, x, x, x, x, x);
+			double x = 1 / 6.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 		}
 		bindBoilerActions(section, table);
 	}
@@ -84,12 +84,12 @@ class EditorPage extends FormPage {
 	private String[] getColumns() {
 		String erLabel = "Wirkungsgrad";
 		if (type == ProductType.COGENERATION_PLANT)
-			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
+			return new String[] { "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller",
 					"Max. Leistung el.", "Wirkungsgrad el.",
 					"Max. Leistung th.",
 					"Wirkungsgrad th." };
 		else
-			return new String[] { "Produktgruppe", "Bezeichnung", "Hersteller",
+			return new String[] { "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller",
 					"Maximale Leistung", erLabel };
 	}
 
@@ -179,20 +179,20 @@ class EditorPage extends FormPage {
 		public String getColumnText(Object obj, int col) {
 			if (!(obj instanceof Boiler boiler))
 				return null;
-			if (col < 3)
+			if (col < 4)
 				return ProductTables.getText(boiler, col);
 			boolean coGen = type == ProductType.COGENERATION_PLANT;
 			return switch (col) {
-				case 3 -> coGen
+				case 4 -> coGen
 						? s(boiler.maxPowerElectric, "kW")
 						: s(boiler.maxPower, "kW");
-				case 4 -> coGen
+				case 5 -> coGen
 						? s(boiler.efficiencyRateElectric * 100d, "%")
 						: s(boiler.efficiencyRate * 100d, "%");
-				case 5 -> coGen
+				case 6 -> coGen
 						? s(boiler.maxPower, "kW")
 						: null;
-				case 6 -> coGen
+				case 7 -> coGen
 						? s(boiler.efficiencyRate * 100d, "%")
 						: null;
 				default -> null;

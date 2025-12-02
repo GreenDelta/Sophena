@@ -79,12 +79,12 @@ public class TransferStationEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Hersteller", "Leistung",
+			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller", "Leistung",
 					"Gebäudetyp");
 			table.setLabelProvider(new Label());
 			table.setInput(stations);
-			double x = 1.0 / 5.0;
-			Tables.bindColumnWidths(table, x, x, x, x, x);
+			double x = 1.0 / 6.0;
+			Tables.bindColumnWidths(table, x, x, x, x, x, x);
 			bindActions(section, table);
 		}
 
@@ -175,12 +175,12 @@ public class TransferStationEditor extends Editor {
 			if (!(obj instanceof TransferStation))
 				return null;
 			TransferStation s = (TransferStation) obj;
-			if (col < 3)
+			if (col < 4)
 				return ProductTables.getText(s, col);
 			switch (col) {
-			case 3:
-				return Num.str(s.outputCapacity) + " kW";
 			case 4:
+				return Num.str(s.outputCapacity) + " kW";
+			case 5:
 				return s.buildingType;
 			default:
 				return null;

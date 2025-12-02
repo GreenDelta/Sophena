@@ -16,6 +16,8 @@ public class ProductTables {
 		case 1:
 			return product.name;
 		case 2:
+			return product.productLine;
+		case 3:
 			return product.manufacturer != null ? product.manufacturer.name : null;
 		default:
 			return null;
