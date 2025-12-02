@@ -45,14 +45,15 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. max_power
-8. min_power
-9. eff. rate
-10. description
-11. key
+4. product line
+5. name
+6. url
+7. price
+8. max_power
+9. min_power
+10. eff. rate
+11. description
+12. key
 ```
 
 ### `boilers_cogen_plants.csv`
@@ -62,17 +63,18 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. max_power
-8. min_power
-9. eff. rate
-10. max_power_el
-11. min_power_el
-12. eff. rate el
-13. description
-14. key
+4. product line
+5. name
+6. url
+7. price
+8. max_power
+9. min_power
+10. eff. rate
+11. max_power_el
+12. min_power_el
+13. eff. rate el
+14. description
+15. key
 ```
 
 ### `buffer_tanks.csv`
@@ -82,15 +84,16 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. volume
-8. diameter
-9. height
-10. insulation
-11. description
-12. key
+4. product line
+5. name
+6. url
+7. price
+8. volume
+9. diameter
+10. height
+11. insulation
+12. description
+13. key
 ```
 
 ### `building_states.csv`
@@ -114,18 +117,19 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. max. volume flow
-8. fuel
-9. max. producer power
-10. el. demand
-11. kind
-12. type
-13. separation rate
-14. description
-15. key
+4. product line
+5. name
+6. url
+7. price
+8. max. volume flow
+9. fuel
+10. max. producer power
+11. el. demand
+12. kind
+13. type
+14. separation rate
+15. description
+16. key
 ```
 
 ### `fuels.csv`
@@ -141,20 +145,22 @@ when generating the data packages.
 8. ash content
 ```
 
-### `heat_pumps`
+### `heat_pumps.csv`
+
 ```
 0. id
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. max_power
-8. min_power
-9. eff. rate
-10. description
-11. key
+4. product line
+5. name
+6. url
+7. price
+8. max_power
+9. min_power
+10. eff. rate
+11. description
+12. key
 ```
 
 ### `heat_recoveries.csv`
@@ -164,15 +170,16 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. power
-8. producer type
-9. fuel
-10. producer power
-11. description
-12. key
+4. product line
+5. name
+6. url
+7. price
+8. power
+9. producer type
+10. fuel
+11. producer power
+12. description
+13. key
 ```
 
 ### `manufacturers.csv`
@@ -194,20 +201,21 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. material
-8. type
-9. u_value
-10. inner diameter
-11. outer diameter
-12. total diameter
-13. delivery type
-14. max. temperature
-15. max. pressure
-16. description
-17. key
+4. product line
+5. name
+6. url
+7. price
+8. material
+9. type
+10. u_value
+11. inner diameter
+12. outer diameter
+13. total diameter
+14. delivery type
+15. max. temperature
+16. max. pressure
+17. description
+18. key
 ```
 
 ### `product_groups.csv`
@@ -231,15 +239,16 @@ when generating the data packages.
 1. product type
 2. product group
 3. manufacturer
-4. name
-5. url
-6. price
-7. building_type
-8. power
-9. type
-10. material
-11. hot water
-12. control
-13. description
-14. key
+4. product line
+5. name
+6. url
+7. price
+8. building_type
+9. power
+10. type
+11. material
+12. hot water
+13. control
+14. description
+15. key
 ```
