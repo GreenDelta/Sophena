@@ -55,6 +55,7 @@ type Product struct {
 	BaseDataEntity
 	PurchasePrice *float64    `json:"purchasePrice,omitempty"`
 	URL           string      `json:"url,omitempty"`
+	ProductLine   string      `json:"productLine,omitempty"`
 	Type          string      `json:"type"`
 	ProductGroup  *RootEntity `json:"group"`
 	Manufacturer  *RootEntity `json:"manufacturer"`

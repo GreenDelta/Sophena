@@ -124,18 +124,18 @@ func (model *CsvModel) readBoilers() {
 		b := Boiler{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &b.Product, productType)
-		b.MaxPower = cFlo(row, 7)
-		b.MinPower = cFlo(row, 8)
-		b.EfficiencyRate = cFlo(row, 9)
+		b.MaxPower = cFlo(row, 8)
+		b.MinPower = cFlo(row, 9)
+		b.EfficiencyRate = cFlo(row, 10)
 		if productType != "COGENERATION_PLANT" {
 			b.IsCoGenPlant = false
-			b.Description = cStr(row, 10)
+			b.Description = cStr(row, 11)
 		} else {
 			b.IsCoGenPlant = true
-			b.MaxPowerElectric = cFlo(row, 10)
-			b.MinPowerElectric = cFlo(row, 11)
-			b.EfficiencyRateElectric = cFlo(row, 12)
-			b.Description = cStr(row, 13)
+			b.MaxPowerElectric = cFlo(row, 11)
+			b.MinPowerElectric = cFlo(row, 12)
+			b.EfficiencyRateElectric = cFlo(row, 13)
+			b.Description = cStr(row, 14)
 		}
 		model.Boilers = append(model.Boilers, &b)
 	}
@@ -148,11 +148,11 @@ func (model *CsvModel) readBufferTanks() {
 	fn := func(row []string) {
 		b := BufferTank{}
 		model.mapProductData(row, &b.Product, "BUFFER_TANK")
-		b.Volume = cFlo(row, 7)
-		b.Diameter = cFloPtr(row, 8)
-		b.Height = cFloPtr(row, 9)
-		b.InsulationThickness = cFloPtr(row, 10)
-		b.Description = cStr(row, 11)
+		b.Volume = cFlo(row, 8)
+		b.Diameter = cFloPtr(row, 9)
+		b.Height = cFloPtr(row, 10)
+		b.InsulationThickness = cFloPtr(row, 11)
+		b.Description = cStr(row, 12)
 		model.BufferTanks = append(model.BufferTanks, &b)
 	}
 	eachCsvRow("data/csv/buffer_tanks.csv", fn)
@@ -163,16 +163,16 @@ func (model *CsvModel) readPipes() {
 	fn := func(row []string) {
 		p := Pipe{}
 		model.mapProductData(row, &p.Product, "PIPE")
-		p.Material = cStr(row, 7)
-		p.PipeType = strings.ToUpper(cStr(row, 8))
-		p.UValue = cFlo(row, 9)
-		p.InnerDiameter = cFlo(row, 10)
-		p.OuterDiameter = cFlo(row, 11)
-		p.TotalDiameter = cFlo(row, 12)
-		p.DeliveryType = cStr(row, 13)
-		p.MaxTemperature = cFloPtr(row, 14)
-		p.MaxPressure = cFloPtr(row, 15)
-		p.Description = cStr(row, 16)
+		p.Material = cStr(row, 8)
+		p.PipeType = strings.ToUpper(cStr(row, 9))
+		p.UValue = cFlo(row, 10)
+		p.InnerDiameter = cFlo(row, 11)
+		p.OuterDiameter = cFlo(row, 12)
+		p.TotalDiameter = cFlo(row, 13)
+		p.DeliveryType = cStr(row, 14)
+		p.MaxTemperature = cFloPtr(row, 15)
+		p.MaxPressure = cFloPtr(row, 16)
+		p.Description = cStr(row, 17)
 		model.Pipes = append(model.Pipes, &p)
 	}
 	eachCsvRow("data/csv/pipes.csv", fn)
@@ -183,11 +183,11 @@ func (model *CsvModel) readHeatRecoveries() {
 	fn := func(row []string) {
 		h := HeatRecovery{}
 		model.mapProductData(row, &h.Product, "HEAT_RECOVERY")
-		h.Power = cFlo(row, 7)
-		h.HeatRecoveryType = cStr(row, 8)
-		h.Fuel = cStr(row, 9)
-		h.ProducerPower = cFlo(row, 10)
-		h.Description = cStr(row, 11)
+		h.Power = cFlo(row, 8)
+		h.HeatRecoveryType = cStr(row, 9)
+		h.Fuel = cStr(row, 10)
+		h.ProducerPower = cFlo(row, 11)
+		h.Description = cStr(row, 12)
 		model.HeatRecoveries = append(model.HeatRecoveries, &h)
 	}
 	eachCsvRow("data/csv/heat_recoveries.csv", fn)
@@ -198,14 +198,14 @@ func (model *CsvModel) readFlueGasCleanings() {
 	fn := func(row []string) {
 		c := FlueGasCleaning{}
 		model.mapProductData(row, &c.Product, "FLUE_GAS_CLEANING")
-		c.MaxVolumeFlow = cFlo(row, 7)
-		c.Fuel = cStr(row, 8)
-		c.MaxProducerPower = cFlo(row, 9)
-		c.MaxElectricityConsumption = cFlo(row, 10)
-		c.CleaningMethod = cStr(row, 11)
-		c.CleaningType = cStr(row, 12)
-		c.SeparationEfficiency = cFlo(row, 13)
-		c.Description = cStr(row, 14)
+		c.MaxVolumeFlow = cFlo(row, 8)
+		c.Fuel = cStr(row, 9)
+		c.MaxProducerPower = cFlo(row, 10)
+		c.MaxElectricityConsumption = cFlo(row, 11)
+		c.CleaningMethod = cStr(row, 12)
+		c.CleaningType = cStr(row, 13)
+		c.SeparationEfficiency = cFlo(row, 14)
+		c.Description = cStr(row, 15)
 		model.FlueGasCleanings = append(model.FlueGasCleanings, &c)
 	}
 	eachCsvRow("data/csv/flue_gas_cleanings.csv", fn)
@@ -216,13 +216,13 @@ func (model *CsvModel) readTransferStations() {
 	fn := func(row []string) {
 		t := TransferStation{}
 		model.mapProductData(row, &t.Product, "TRANSFER_STATION")
-		t.BuildingType = cStr(row, 7)
-		t.OutputCapacity = cFlo(row, 8)
-		t.StationType = cStr(row, 9)
-		t.Material = cStr(row, 10)
-		t.WaterHeating = cStr(row, 11)
-		t.Control = cStr(row, 12)
-		t.Description = cStr(row, 13)
+		t.BuildingType = cStr(row, 8)
+		t.OutputCapacity = cFlo(row, 9)
+		t.StationType = cStr(row, 10)
+		t.Material = cStr(row, 11)
+		t.WaterHeating = cStr(row, 12)
+		t.Control = cStr(row, 13)
+		t.Description = cStr(row, 14)
 		model.TransferStations = append(model.TransferStations, &t)
 	}
 	eachCsvRow("data/csv/transfer_stations.csv", fn)
@@ -234,31 +234,31 @@ func (model *CsvModel) readSolarCollectors() {
 		s := SolarCollector{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &s.Product, productType)
-		s.CollectorArea = cFlo(row, 7)
-		s.EfficiencyRateRadiation = cFlo(row, 8)
-		s.CorrectionFactor = cFlo(row, 9)
-		s.HeatTransferCoefficient1 = cFlo(row, 10)
-		s.HeatTransferCoefficient2 = cFlo(row, 11)
-		s.HeatCapacity = cFlo(row, 12)
-		s.AngleIncidenceEW10 = cFlo(row, 13)
-		s.AngleIncidenceEW20 = cFlo(row, 14)
-		s.AngleIncidenceEW30 = cFlo(row, 15)
-		s.AngleIncidenceEW40 = cFlo(row, 16)
-		s.AngleIncidenceEW50 = cFlo(row, 17)
-		s.AngleIncidenceEW60 = cFlo(row, 18)
-		s.AngleIncidenceEW70 = cFlo(row, 19)
-		s.AngleIncidenceEW80 = cFlo(row, 20)
-		s.AngleIncidenceEW90 = cFlo(row, 21)
-		s.AngleIncidenceNS10 = cFlo(row, 22)
-		s.AngleIncidenceNS20 = cFlo(row, 23)
-		s.AngleIncidenceNS30 = cFlo(row, 24)
-		s.AngleIncidenceNS40 = cFlo(row, 25)
-		s.AngleIncidenceNS50 = cFlo(row, 26)
-		s.AngleIncidenceNS60 = cFlo(row, 27)
-		s.AngleIncidenceNS70 = cFlo(row, 28)
-		s.AngleIncidenceNS80 = cFlo(row, 29)
-		s.AngleIncidenceNS90 = cFlo(row, 30)
-		s.Description = cStr(row, 31)
+		s.CollectorArea = cFlo(row, 8)
+		s.EfficiencyRateRadiation = cFlo(row, 9)
+		s.CorrectionFactor = cFlo(row, 10)
+		s.HeatTransferCoefficient1 = cFlo(row, 11)
+		s.HeatTransferCoefficient2 = cFlo(row, 12)
+		s.HeatCapacity = cFlo(row, 13)
+		s.AngleIncidenceEW10 = cFlo(row, 14)
+		s.AngleIncidenceEW20 = cFlo(row, 15)
+		s.AngleIncidenceEW30 = cFlo(row, 16)
+		s.AngleIncidenceEW40 = cFlo(row, 17)
+		s.AngleIncidenceEW50 = cFlo(row, 18)
+		s.AngleIncidenceEW60 = cFlo(row, 19)
+		s.AngleIncidenceEW70 = cFlo(row, 20)
+		s.AngleIncidenceEW80 = cFlo(row, 21)
+		s.AngleIncidenceEW90 = cFlo(row, 22)
+		s.AngleIncidenceNS10 = cFlo(row, 23)
+		s.AngleIncidenceNS20 = cFlo(row, 24)
+		s.AngleIncidenceNS30 = cFlo(row, 25)
+		s.AngleIncidenceNS40 = cFlo(row, 26)
+		s.AngleIncidenceNS50 = cFlo(row, 27)
+		s.AngleIncidenceNS60 = cFlo(row, 28)
+		s.AngleIncidenceNS70 = cFlo(row, 29)
+		s.AngleIncidenceNS80 = cFlo(row, 30)
+		s.AngleIncidenceNS90 = cFlo(row, 31)
+		s.Description = cStr(row, 32)
 
 		model.SolarCollectors = append(model.SolarCollectors, &s)
 	}
@@ -271,13 +271,13 @@ func (model *CsvModel) readHeatPumps() {
 		h := HeatPump{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &h.Product, productType)
-		h.MinPower = cFlo(row, 7)
-		h.RatedPower = cFlo(row, 7)              // TODO
+		h.MinPower = cFlo(row, 8)
+		h.RatedPower = cFlo(row, 8)              // TODO
 		h.MaxPower = make([]float64, 0)          // TODO
 		h.Cop = make([]float64, 0)               // TODO
 		h.TargetTemperature = make([]float64, 0) // TODO
 		h.SourceTemperature = make([]float64, 0) // TODO
-		h.Description = cStr(row, 10)
+		h.Description = cStr(row, 11)
 
 		model.HeatPumps = append(model.HeatPumps, &h)
 	}
@@ -340,6 +340,7 @@ func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
 	e.Name = cStr(row, 4)
 	e.URL = cStr(row, 5)
 	e.PurchasePrice = cFloPtr(row, 6)
+	e.ProductLine = cStr(row, 7)
 	e.Type = pType
 }
 
