@@ -1,23 +1,29 @@
 import csv
 import os
-import sys
 
+from pathlib import Path
 
 def main():
-    args = sys.argv
+    csv_dir = Path(__file__).parent.parent / "data" / "csv"
+    for f in os.listdir(csv_dir):
+        path = csv_dir / f
+        format(path)
+
+    """
     if len(args) < 2:
         print('you need to pass the file name in the CSV folder that you ' +
               'want to format')
         return
     path = '../data/csv/' + args[1]
+
     if not os.path.isfile(path):
         print('The file %s does not exist' % path)
         return
     format(path)
+    """
 
-
-def format(file_path: str):
-    print('format file: ' + file_path)
+def format(file_path: Path):
+    print(f"format file: {file_path}")
     rows = read_rows(file_path)
     print('  %s lines' % len(rows))
     schema = get_schema(rows)
@@ -30,7 +36,7 @@ def format(file_path: str):
     print('  all done\n')
 
 
-def read_rows(file_path: str) -> list:
+def read_rows(file_path: Path) -> list:
     rows = []
     with open(file_path, 'r', encoding='utf-8', newline='\n') as f:
         reader = csv.reader(f, delimiter=';')

@@ -337,10 +337,10 @@ func (model *CsvModel) mapProductData(row []string, e *Product, pType string) {
 	e.IsProtected = true
 	e.ProductGroup = model.refProductGroup(row, 2)
 	e.Manufacturer = model.refManufacturer(row, 3)
-	e.Name = cStr(row, 4)
-	e.URL = cStr(row, 5)
-	e.PurchasePrice = cFloPtr(row, 6)
-	e.ProductLine = cStr(row, 7)
+	e.ProductLine = cStr(row, 4)
+	e.Name = cStr(row, 5)
+	e.URL = cStr(row, 6)
+	e.PurchasePrice = cFloPtr(row, 7)
 	e.Type = pType
 }
 
