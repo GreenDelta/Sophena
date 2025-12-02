@@ -1,4 +1,5 @@
 import csv
+import re
 
 from pathlib import Path
 
@@ -14,6 +15,10 @@ PRODUCT_CSVS = [
     "transfer_stations.csv",
 ]
 
+# if infer is set to true, it will try to infer the name
+# of the product line from the product name
+INFER = True
+
 
 def add_col(path: Path) -> None:
     print(f"  . add column to: {path.name}")
@@ -22,10 +27,18 @@ def add_col(path: Path) -> None:
         r = csv.reader(f, delimiter=";")
         i = 0
         for row in r:
-            val = "product line" if i == 0 else ""
+            if len(row) == 0:
+                continue
+            if i == 0:
+                val = "product line"
+            elif INFER:
+                val = re.sub(r"\d.*", "", row[4])
+            else:
+                val = ""
             row.insert(4, val)
             rows.append(row)
             i += 1
+
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter=";")
         w.writerows(rows)
