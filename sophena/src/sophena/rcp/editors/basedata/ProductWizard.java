@@ -77,7 +77,7 @@ public class ProductWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+			var sc = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 			sc.setExpandVertical(true);
 			sc.setExpandHorizontal(true);
 			Composite cParent = new Composite(sc, SWT.NULL);
@@ -149,7 +149,7 @@ public class ProductWizard extends Wizard {
 			Sorters.productGroups(list);
 			groupCombo.setInput(list);
 			if (!list.isEmpty())
-				groupCombo.select(list.get(0));
+				groupCombo.select(list.getFirst());
 			UI.formLabel(c, "");
 		}
 

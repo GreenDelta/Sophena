@@ -1,7 +1,5 @@
 package sophena.rcp.editors.basedata.products;
 
-import java.util.List;
-
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -28,7 +26,7 @@ import sophena.rcp.utils.UI;
 
 class ProductWizard extends Wizard {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private Page page;
 	private Product product;
 
@@ -48,7 +46,7 @@ class ProductWizard extends Wizard {
 			page.data.bindToModel();
 			return true;
 		} catch (Exception e) {
-			log.error("failed to set product data " + product, e);
+			log.error("failed to set product data {}", product, e);
 			return false;
 		}
 	}
@@ -61,9 +59,10 @@ class ProductWizard extends Wizard {
 
 	private class Page extends WizardPage {
 
-		private DataBinding data = new DataBinding();
+		private final DataBinding data = new DataBinding();
 
 		private Text nameText;
+		private Text productLineText;
 		private EntityCombo<ProductGroup> groupCombo;
 		private Text linkText;
 		private Text priceText;
@@ -87,14 +86,17 @@ class ProductWizard extends Wizard {
 			nameText = UI.formText(c, "Bezeichnung");
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
+			productLineText = UI.formText(c, "Produktlinie");
+			UI.formLabel(c, "");
+
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
-			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			List<ProductGroup> list = dao.getAll(product.type);
+			var dao = new ProductGroupDao(App.getDb());
+			var list = dao.getAll(product.type);
 			Sorters.byName(list);
 			groupCombo.setInput(list);
 			if (!list.isEmpty())
-				groupCombo.select(list.get(0));
+				groupCombo.select(list.getFirst());
 			UI.formLabel(c, "");
 		}
 
@@ -113,6 +115,7 @@ class ProductWizard extends Wizard {
 
 			private void bindToModel() {
 				product.name = nameText.getText();
+				product.productLine = productLineText.getText();
 				product.group = groupCombo.getSelected();
 				product.url = linkText.getText();
 				if (Texts.hasNumber(priceText))
@@ -123,6 +126,7 @@ class ProductWizard extends Wizard {
 
 			private void bindToUI() {
 				Texts.set(nameText, product.name);
+				Texts.set(productLineText, product.productLine);
 				groupCombo.select(product.group);
 				Texts.set(linkText, product.url);
 				Texts.set(priceText, product.purchasePrice);
