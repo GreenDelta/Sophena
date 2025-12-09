@@ -1,6 +1,7 @@
 package sophena.rcp.editors.basedata;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -114,7 +115,7 @@ public class ProductWizard extends Wizard {
 
 		private void createPriceText(Composite c) {
 			priceText = UI.formText(c, "Preis");
-			priceText.setEditable(!product.isProtected);
+			Texts.on(priceText).decimal().validate(data::validate);
 			if (product instanceof Pipe) {
 				UI.formLabel(c, "EUR/m");
 			} else {
@@ -184,6 +185,14 @@ public class ProductWizard extends Wizard {
 			}
 
 			void bindToModel() {
+				if (product.isProtected) {
+					if (Texts.hasNumber(priceText)) {
+						product.purchasePrice = Texts.getDouble(priceText);
+					} else {
+						product.purchasePrice = null;
+					}
+					return;
+				}
 				product.name = nameText.getText();
 				product.productLine = productLineText.getText();
 				product.group = groupCombo.getSelected();
@@ -199,16 +208,29 @@ public class ProductWizard extends Wizard {
 			}
 
 			boolean validate() {
+				if (product.isProtected) {
+					boolean changed = hasPriceChanged();
+					setPageComplete(changed);
+					setErrorMessage(null);
+					return changed;
+				}
+
 				if (Texts.isEmpty(nameText))
 					return error("Es muss ein Name angegeben werden.");
-				String message = content.validate();
+				var message = content.validate();
 				if (message != null)
 					return error(message);
-				else {
-					setPageComplete(!product.isProtected);
-					setErrorMessage(null);
-					return true;
-				}
+				setPageComplete(true);
+				setErrorMessage(null);
+				return true;
+			}
+
+			private boolean hasPriceChanged() {
+				Double next = Texts.hasNumber(priceText)
+						? Texts.getDouble(priceText)
+						: null;
+				var origin = product.purchasePrice;
+				return !Objects.equals(next, origin);
 			}
 
 			boolean error(String message) {
