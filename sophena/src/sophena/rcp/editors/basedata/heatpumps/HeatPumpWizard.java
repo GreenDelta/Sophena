@@ -70,23 +70,23 @@ public class HeatPumpWizard implements IContent {
 		t.setBackground(c.getBackground());
 		Composite comp = new Composite(c.getParent(), SWT.NONE);
 		UI.gridData(comp, true, true);
-		UI.gridLayout(comp, 1);		
+		UI.gridLayout(comp, 1);
 		table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(new Label());
 
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.3, 0.2);
 		var toolBar = bindActions(c.getParent(), table);
 		toolBar.moveAbove(comp);
-		
+
 		Button btn = new Button(comp, SWT.NONE);
 		btn.setText("Betriebspunkte importieren");
 		Controls.onSelect(btn, e -> onSelectFile());
-		
+
 		if(heatPump.targetTemperature != null)
 			for(var i = 0; i < heatPump.targetTemperature.length; i++)
 				heatPumpDataList.add(new HeatPumpData(heatPump.targetTemperature[i], heatPump.sourceTemperature[i], heatPump.maxPower[i], heatPump.cop[i]));
 	}
-	
+
 	private void onSelectFile() {
 		var file = FileChooser.open("*.csv", "*.txt");
 		if (file == null)
@@ -125,19 +125,19 @@ public class HeatPumpWizard implements IContent {
 				() -> edit(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 				() -> delete(table));
-		Action info = Actions.create(M.Information,	Icon.INFO_16.des(), 
+		Action info = Actions.create(M.Information,	Icon.INFO_16.des(),
 				() -> info(table));
 		var control = Actions.bind(comp, add, edit, del, info);
 		Actions.bind(table, add, edit, del);
 		Tables.onDoubleClick(table, e -> edit(table));
 		return control;
 	}
-	
+
 	private void add(TableViewer table) {
 		HeatPumpData heatPumpData = new HeatPumpData(0, 0, 0, 0);
 		if (HeatPumpDataWizard.open(heatPumpData) != Window.OK)
 			return;
-		heatPumpDataList.add(heatPumpData);		
+		heatPumpDataList.add(heatPumpData);
 		table.setInput(heatPumpDataList);
 		wizard.validate();
 	}
@@ -145,9 +145,9 @@ public class HeatPumpWizard implements IContent {
 	private void edit(TableViewer table) {
 		HeatPumpData heatPumpData = Viewers.getFirstSelected(table);
 		if(heatPumpData == null)
-			return;		
+			return;
 		if (HeatPumpDataWizard.open(heatPumpData) != Window.OK)
-			return;	
+			return;
 		table.setInput(heatPumpDataList);
 		wizard.validate();
 	}
@@ -155,28 +155,30 @@ public class HeatPumpWizard implements IContent {
 	private void delete(TableViewer table) {
 		HeatPumpData heatPumpData = Viewers.getFirstSelected(table);
 		if(heatPumpData == null)
-			return;		
+			return;
 		if (!MsgBox.ask(M.Delete, "Soll der ausgewählte Eintrag wirklich gelöscht werden?"))
 			return;
-		heatPumpDataList.remove(heatPumpData);		
+		heatPumpDataList.remove(heatPumpData);
 		table.setInput(heatPumpDataList);
 		wizard.validate();
 	}
-	
+
 	private void info(TableViewer table)
 	{
 		HelpBox.show(M.OperatingData, H.OperatingData);
 	}
-	
+
 	private String[] getColumns() {
 		return new String[] { M.TargetTemperature, M.SourceTemperature, M.MaxPower, M.Cop };
 	}
-	
+
 	private void createTexts(Composite c) {
 		minText = UI.formText(c, M.MinPower);
+		minText.setEditable(!heatPump.isProtected);
 		Texts.on(minText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 		ratedPowerText = UI.formText(c, M.RatedPower);
+		ratedPowerText.setEditable(!heatPump.isProtected);
 		Texts.on(ratedPowerText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}
@@ -185,7 +187,7 @@ public class HeatPumpWizard implements IContent {
 	public void bindToUI() {
 		Texts.set(minText, heatPump.minPower);
 		Texts.set(ratedPowerText, heatPump.ratedPower);
-		table.setInput(heatPumpDataList);		
+		table.setInput(heatPumpDataList);
 	}
 
 	@Override
@@ -227,8 +229,8 @@ public class HeatPumpWizard implements IContent {
 	private boolean checkEveryValueExistsAlteastTwice(List<HeatPumpData> list)
 	{
 		Map<Double, Boolean> doubleToBool = new HashMap<>();
-		for (var i = 0; i < list.size(); i++) 
-		{			
+		for (var i = 0; i < list.size(); i++)
+		{
 			var v = list.get(i).targetTemperature;
 			if(doubleToBool.containsKey(v))
 				doubleToBool.put(v, true);
@@ -236,7 +238,7 @@ public class HeatPumpWizard implements IContent {
 				doubleToBool.put(v, false);
 		}
 		if(doubleToBool.values().stream().anyMatch(x -> x == false))
-			return false;			
+			return false;
 		return true;
 	}
 
@@ -276,22 +278,22 @@ public class HeatPumpWizard implements IContent {
 			return Num.str(val) + " " + unit;
 		}
 	}
-	
+
 	public static class HeatPumpData
 	{
 		public double maxPower;
 		public double cop;
 		public double targetTemperature;
 		public double sourceTemperature;
-		
-		public HeatPumpData(double targetTemperature, double sourceTemperature, double maxPower, double cop) 
-		{			
+
+		public HeatPumpData(double targetTemperature, double sourceTemperature, double maxPower, double cop)
+		{
 			this.targetTemperature = targetTemperature;
 			this.sourceTemperature = sourceTemperature;
 			this.maxPower = maxPower;
 			this.cop = cop;
 		}
-			
+
 	}
-	
+
 }

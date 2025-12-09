@@ -24,24 +24,24 @@ public class SolarCollectorWizard implements IContent{
 	private Text heatTransferCoefficient1Text;
 	private Text heatTransferCoefficient2Text;
 	private Text heatCapacityText;
-	private Text angleIncidenceEW10Text; 
-	private Text angleIncidenceEW20Text; 
-	private Text angleIncidenceEW30Text; 
-	private Text angleIncidenceEW40Text; 
-	private Text angleIncidenceEW50Text; 
-	private Text angleIncidenceEW60Text; 
-	private Text angleIncidenceEW70Text; 
-	private Text angleIncidenceEW80Text; 
-	private Text angleIncidenceEW90Text; 
-	private Text angleIncidenceNS10Text; 
-	private Text angleIncidenceNS20Text; 
-	private Text angleIncidenceNS30Text; 
-	private Text angleIncidenceNS40Text; 
-	private Text angleIncidenceNS50Text; 
-	private Text angleIncidenceNS60Text; 
-	private Text angleIncidenceNS70Text; 
-	private Text angleIncidenceNS80Text; 
-	private Text angleIncidenceNS90Text; 
+	private Text angleIncidenceEW10Text;
+	private Text angleIncidenceEW20Text;
+	private Text angleIncidenceEW30Text;
+	private Text angleIncidenceEW40Text;
+	private Text angleIncidenceEW50Text;
+	private Text angleIncidenceEW60Text;
+	private Text angleIncidenceEW70Text;
+	private Text angleIncidenceEW80Text;
+	private Text angleIncidenceEW90Text;
+	private Text angleIncidenceNS10Text;
+	private Text angleIncidenceNS20Text;
+	private Text angleIncidenceNS30Text;
+	private Text angleIncidenceNS40Text;
+	private Text angleIncidenceNS50Text;
+	private Text angleIncidenceNS60Text;
+	private Text angleIncidenceNS70Text;
+	private Text angleIncidenceNS80Text;
+	private Text angleIncidenceNS90Text;
 
 	private SolarCollectorWizard(SolarCollector solarCollector) {
 		this.solarCollector = solarCollector;
@@ -53,106 +53,130 @@ public class SolarCollectorWizard implements IContent{
 		SolarCollectorWizard content = new SolarCollectorWizard(solarCollector);
 		ProductWizard w = new ProductWizard(solarCollector, content);
 		content.wizard = w;
-		w.setWindowTitle(Labels.get(solarCollector.type));		
+		w.setWindowTitle(Labels.get(solarCollector.type));
 		WizardDialog dialog = new WizardDialog(UI.shell(), w);
 		return dialog.open();
 	}
 
 	@Override
-	public void render(Composite c) {		
+	public void render(Composite c) {
 		collectorAreaText = UI.formText(c, M.CollectorArea);
+		collectorAreaText.setEditable(!solarCollector.isProtected);
 		Texts.on(collectorAreaText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "m2");
-		
+
 		efficiencyRateRadiationText = UI.formText(c, "Wirkungsgrad bzgl. Direktstrahlung");
+		efficiencyRateRadiationText.setEditable(!solarCollector.isProtected);
 		Texts.on(efficiencyRateRadiationText).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		correctionFactorText = UI.formText(c, "Korrekturfaktor für Diffusstrahlung");
+		correctionFactorText.setEditable(!solarCollector.isProtected);
 		Texts.on(correctionFactorText).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		heatTransferCoefficient1Text = UI.formText(c, "Wärmedurchgangskoeffizient 1");
+		heatTransferCoefficient1Text.setEditable(!solarCollector.isProtected);
 		Texts.on(heatTransferCoefficient1Text).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "W/(m2*K)");
-		
+
 		heatTransferCoefficient2Text = UI.formText(c, "Wärmedurchgangskoeffizient 2");
+		heatTransferCoefficient2Text.setEditable(!solarCollector.isProtected);
 		Texts.on(heatTransferCoefficient2Text).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "W/(m2*K2)");
-		
+
 		heatCapacityText = UI.formText(c, "Wärmekapazität des Kollektors");
+		heatCapacityText.setEditable(!solarCollector.isProtected);
 		Texts.on(heatCapacityText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "Wh/(m2*K)");
-		
+
 		angleIncidenceEW10Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 10°");
+		angleIncidenceEW10Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW10Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW20Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 20°");
+		angleIncidenceEW20Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW20Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW30Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 30°");
+		angleIncidenceEW30Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW30Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW40Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 40°");
+		angleIncidenceEW40Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW40Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW50Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 50°");
+		angleIncidenceEW50Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW50Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW60Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 60°");
+		angleIncidenceEW60Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW60Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW70Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 70°");
+		angleIncidenceEW70Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW70Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW80Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 80°");
+		angleIncidenceEW80Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW80Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceEW90Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 90°");
+		angleIncidenceEW90Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceEW90Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS10Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 10°");
+		angleIncidenceNS10Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS10Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS20Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 20°");
+		angleIncidenceNS20Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS20Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS30Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 30°");
+		angleIncidenceNS30Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS30Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS40Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 40°");
+		angleIncidenceNS40Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS40Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS50Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 50°");
+		angleIncidenceNS50Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS50Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS60Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 60°");
+		angleIncidenceNS60Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS60Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS70Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 70°");
+		angleIncidenceNS70Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS70Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS80Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 80°");
+		angleIncidenceNS80Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS80Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
-		
+
 		angleIncidenceNS90Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 90°");
+		angleIncidenceNS90Text.setEditable(!solarCollector.isProtected);
 		Texts.on(angleIncidenceNS90Text).required().decimal().validate(wizard::validate);
 		UI.filler(c);
 	}

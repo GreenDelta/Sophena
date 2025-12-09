@@ -56,18 +56,22 @@ class BoilerWizard implements IContent {
 
 	private void createMinMaxTexts(Composite c) {
 		minText = UI.formText(c, "Minimale Leistung th.");
+		minText.setEditable(!boiler.isProtected);
 		Texts.on(minText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 		maxText = UI.formText(c, "Maximale Leistung th.");
+		maxText.setEditable(!boiler.isProtected);
 		Texts.on(maxText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}
 
 	private void createMinMaxElTexts(Composite c) {
 		minElText = UI.formText(c, "Minimale Leistung el.");
+		minElText.setEditable(!boiler.isProtected);
 		Texts.on(minElText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 		maxElText = UI.formText(c, "Maximale Leistung el.");
+		maxElText.setEditable(!boiler.isProtected);
 		Texts.on(maxElText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}
@@ -77,6 +81,7 @@ class BoilerWizard implements IContent {
 		label = M.EfficiencyRate + " th.";
 		unit = "%";
 		efficiencyText = UI.formText(c, label);
+		efficiencyText.setEditable(!boiler.isProtected);
 		Texts.on(efficiencyText).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, unit);
@@ -85,6 +90,7 @@ class BoilerWizard implements IContent {
 	private void createEfficiencyElText(Composite c) {
 		efficiencyElText = UI.formText(c,
 				M.EfficiencyRate + " el.");
+		efficiencyElText.setEditable(!boiler.isProtected);
 		Texts.on(efficiencyElText).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "%");

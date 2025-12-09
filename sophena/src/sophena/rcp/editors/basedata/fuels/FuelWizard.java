@@ -95,6 +95,7 @@ class FuelWizard extends Wizard {
 
 		private void createNameText(Composite comp) {
 			nameText = UI.formText(comp, M.Name);
+			nameText.setEditable(!fuel.isProtected);
 			Texts.on(nameText)
 					.init(fuel.name)
 					.required()
@@ -104,12 +105,14 @@ class FuelWizard extends Wizard {
 
 		private void createDescriptionText(Composite comp) {
 			descriptionText = UI.formMultiText(comp, M.Description);
+			descriptionText.setEditable(!fuel.isProtected);
 			Texts.set(descriptionText, fuel.description);
 			UI.formLabel(comp, "");
 		}
 
 		private void createUnitText(Composite comp) {
 			unitText = UI.formText(comp, M.Unit);
+			unitText.setEditable(!fuel.isProtected);
 			Texts.on(unitText)
 					.init(fuel.unit)
 					.required()
@@ -124,6 +127,7 @@ class FuelWizard extends Wizard {
 
 		private void createCalText(Composite comp) {
 			calText = UI.formText(comp, M.CalorificValue);
+			calText.setEditable(!fuel.isProtected);
 			Texts.on(calText)
 					.init(fuel.calorificValue)
 					.required()
@@ -136,6 +140,7 @@ class FuelWizard extends Wizard {
 
 		private void createCO2Text(Composite comp) {
 			co2Text = UI.formText(comp, "CO2 Emissionen");
+			co2Text.setEditable(!fuel.isProtected);
 			Texts.on(co2Text)
 					.init(fuel.co2Emissions)
 					.required()
@@ -146,6 +151,7 @@ class FuelWizard extends Wizard {
 
 		private void createEnergyFactorText(Composite comp) {
 			energyFactorText = UI.formText(comp, "Primärenergiefaktor");
+			energyFactorText.setEditable(!fuel.isProtected);
 			Texts.on(energyFactorText)
 					.init(fuel.primaryEnergyFactor)
 					.required()
@@ -156,6 +162,7 @@ class FuelWizard extends Wizard {
 
 		private void createAshContentText(Composite comp) {
 			ashContentText = UI.formText(comp, "Aschegehalt");
+			ashContentText.setEditable(!fuel.isProtected);
 			Texts.on(ashContentText)
 					.init(fuel.ashContent)
 					.decimal()

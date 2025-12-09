@@ -48,37 +48,46 @@ class PipeWizard implements IContent {
 	public void render(Composite c) {
 
 		materialText = UI.formText(c, "Material");
+		materialText.setEditable(!pipe.isProtected);
 		Texts.on(materialText).required().validate(wizard::validate);
 		UI.filler(c);
 
 		typeCombo = UI.formCombo(c, "Art");
 		typeCombo.setItems(new String[] { "UNO", "DUO" });
 		typeCombo.select(0);
+		typeCombo.setEnabled(!pipe.isProtected);
 		UI.filler(c);
 
 		uValueText = UI.formText(c, "U-Wert");
+		uValueText.setEditable(!pipe.isProtected);
 		Texts.on(uValueText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "W/(m*K)");
 
 		innerDiamText = UI.formText(c, "Innend. Medienrohr");
+		innerDiamText.setEditable(!pipe.isProtected);
 		Texts.on(innerDiamText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "mm");
 
 		outerDiamText = UI.formText(c, "Außend. Medienrohr");
+		outerDiamText.setEditable(!pipe.isProtected);
 		Texts.on(outerDiamText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "mm");
 
 		totalDiamText = UI.formText(c, "Außend. Gesamt");
+		totalDiamText.setEditable(!pipe.isProtected);
 		Texts.on(totalDiamText).required().decimal().validate(wizard::validate);
 		UI.formLabel(c, "mm");
 
 		deliveryTypeText = UI.formText(c, "Lieferausführung");
+		deliveryTypeText.setEditable(!pipe.isProtected);
 		UI.formLabel(c, "");
 
 		maxTempText = UI.formText(c, "Maximale Temperatur");
+		maxTempText.setEditable(!pipe.isProtected);
 		UI.formLabel(c, "°C");
 
 		maxPressureText = UI.formText(c, "Maximaler Druck");
+		maxPressureText.setEditable(!pipe.isProtected);
 		UI.formLabel(c, "Bar");
 	}
 

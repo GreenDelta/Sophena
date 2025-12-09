@@ -78,30 +78,35 @@ public class ProductWizard extends Wizard {
 		@Override
 		public void createControl(Composite parent) {
 			var sc = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+
 			sc.setExpandVertical(true);
 			sc.setExpandHorizontal(true);
-			Composite cParent = new Composite(sc, SWT.NULL);
+			var cParent = new Composite(sc, SWT.NULL);
 			UI.gridLayout(cParent, 1);
 			sc.setContent(cParent);
 			setControl(cParent);
-			Composite c = new Composite(cParent, SWT.NULL);
-			UI.gridData(c, true, false);
-			UI.gridLayout(c, 3);
-			nameText = UI.formText(c, M.Name);
+
+			var comp = new Composite(cParent, SWT.NULL);
+			UI.gridData(comp, true, false);
+			UI.gridLayout(comp, 3);
+			nameText = UI.formText(comp, M.Name);
+			nameText.setEditable(!product.isProtected);
 			Texts.on(nameText).required().validate(data::validate);
-			UI.formLabel(c, "");
+			UI.formLabel(comp, "");
 
-			productLineText = UI.formText(c, "Produktlinie");
-			UI.formLabel(c, "");
+			productLineText = UI.formText(comp, "Produktlinie");
+			productLineText.setEditable(!product.isProtected);
+			UI.formLabel(comp, "");
 
-			createGroupCombo(c);
-			createManufacturerCombo(c);
-			createWebLink(c);
-			createPriceText(c);
+			createGroupCombo(comp);
+			createManufacturerCombo(comp);
+			createWebLink(comp);
+			createPriceText(comp);
 
-			content.render(c);
-			descriptionText = UI.formMultiText(c, "Zusatzinformation");
-			UI.formLabel(c, "");
+			content.render(comp);
+			descriptionText = UI.formMultiText(comp, "Zusatzinformation");
+			descriptionText.setEditable(!product.isProtected);
+			UI.formLabel(comp, "");
 			data.bindToUI();
 
 			sc.setMinSize(cParent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -109,6 +114,7 @@ public class ProductWizard extends Wizard {
 
 		private void createPriceText(Composite c) {
 			priceText = UI.formText(c, "Preis");
+			priceText.setEditable(!product.isProtected);
 			if (product instanceof Pipe) {
 				UI.formLabel(c, "EUR/m");
 			} else {
@@ -120,14 +126,15 @@ public class ProductWizard extends Wizard {
 			if (!product.isProtected) {
 				urlText = UI.formText(c, "Web-Link");
 				Texts.on(urlText).required();
-				ImageHyperlink link = new ImageHyperlink(c, SWT.NONE);
+				var link = new ImageHyperlink(c, SWT.NONE);
 				link.setImage(Icon.WEBLINK_16.img());
 				Controls.onClick(link,
 						e -> Desktop.browse(urlText.getText()));
 				return;
 			}
+
 			UI.formLabel(c, "Web-Link");
-			Hyperlink link = new Hyperlink(c, SWT.NONE);
+			var link = new Hyperlink(c, SWT.NONE);
 			link.setForeground(Colors.getLinkBlue());
 			if (product.url == null) {
 				link.setText(""); // SWT throws a NullPointer otherwise
@@ -136,16 +143,15 @@ public class ProductWizard extends Wizard {
 				link.setToolTipText(product.url);
 			}
 			UI.filler(c);
-			Controls.onClick(link, e -> {
-				Desktop.browse(product.url);
-			});
+			Controls.onClick(link, e -> Desktop.browse(product.url));
 		}
 
 		private void createGroupCombo(Composite c) {
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
-			ProductGroupDao dao = new ProductGroupDao(App.getDb());
-			List<ProductGroup> list = dao.getAll(content.getProductType());
+			groupCombo.getControl().setEnabled(!product.isProtected);
+			var dao = new ProductGroupDao(App.getDb());
+			var list = dao.getAll(content.getProductType());
 			Sorters.productGroups(list);
 			groupCombo.setInput(list);
 			if (!list.isEmpty())
@@ -156,6 +162,7 @@ public class ProductWizard extends Wizard {
 		private void createManufacturerCombo(Composite c) {
 			manufacturerCombo = new EntityCombo<>();
 			manufacturerCombo.create("Hersteller", c);
+			manufacturerCombo.getControl().setEnabled(!product.isProtected);
 			Dao<Manufacturer> dao = new Dao<>(Manufacturer.class, App.getDb());
 			List<Manufacturer> list = dao.getAll();
 			Sorters.byName(list);

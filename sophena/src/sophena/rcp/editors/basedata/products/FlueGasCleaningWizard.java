@@ -46,30 +46,37 @@ public class FlueGasCleaningWizard implements IContent {
 	public void render(Composite c) {
 
 		maxVolumeFlowText = UI.formText(c, "Max. reinigbarer Volumenstrom");
+		maxVolumeFlowText.setEditable(!cleaning.isProtected);
 		Texts.on(maxVolumeFlowText).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "m3/h");
 
 		fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
+		fuelText.setEditable(!cleaning.isProtected);
 		Texts.on(fuelText).required().validate(wizard::validate);
 		UI.filler(c);
 
 		maxProducerPowerText = UI.formText(c, "Max. Leistung Wärmeerzeuger");
+		maxProducerPowerText.setEditable(!cleaning.isProtected);
 		Texts.on(maxProducerPowerText).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "kW");
 
 		maxElectricityConsumptionText = UI.formText(c, "Eigenstrombedarf");
+		maxElectricityConsumptionText.setEditable(!cleaning.isProtected);
 		Texts.on(maxElectricityConsumptionText).decimal();
 		UI.formLabel(c, "kW");
 
 		cleaningMethodText = UI.formText(c, "Art der Reinigung");
+		cleaningMethodText.setEditable(!cleaning.isProtected);
 		UI.filler(c);
 
 		cleaningTypeText = UI.formText(c, "Typ der Reinigung");
+		cleaningTypeText.setEditable(!cleaning.isProtected);
 		UI.filler(c);
 
 		separationEfficiencyText = UI.formText(c, "Max. Abscheidegrad");
+		separationEfficiencyText.setEditable(!cleaning.isProtected);
 		Texts.on(separationEfficiencyText).decimal();
 		UI.formLabel(c, "%");
 	}

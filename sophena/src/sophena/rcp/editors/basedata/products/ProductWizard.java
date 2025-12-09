@@ -84,13 +84,16 @@ class ProductWizard extends Wizard {
 
 		private void createNameAndGroup(Composite c) {
 			nameText = UI.formText(c, "Bezeichnung");
+			nameText.setEditable(!product.isProtected);
 			Texts.on(nameText).required().validate(data::validate);
 			UI.formLabel(c, "");
 			productLineText = UI.formText(c, "Produktlinie");
+			productLineText.setEditable(!product.isProtected);
 			UI.formLabel(c, "");
 
 			groupCombo = new EntityCombo<>();
 			groupCombo.create("Produktgruppe", c);
+			groupCombo.getControl().setEnabled(!product.isProtected);
 			var dao = new ProductGroupDao(App.getDb());
 			var list = dao.getAll(product.type);
 			Sorters.byName(list);
@@ -102,11 +105,13 @@ class ProductWizard extends Wizard {
 
 		private void createLinkAndPrice(Composite c) {
 			linkText = UI.formText(c, "Web-Link");
+			linkText.setEditable(!product.isProtected);
 			ImageHyperlink link = new ImageHyperlink(c, SWT.NONE);
 			link.setImage(Icon.WEBLINK_16.img());
 			Controls.onClick(link,
 					e -> Desktop.browse(linkText.getText()));
 			priceText = UI.formText(c, "Preis");
+			priceText.setEditable(!product.isProtected);
 			Texts.on(priceText).decimal();
 			UI.formLabel(c, "EUR");
 		}
@@ -138,7 +143,7 @@ class ProductWizard extends Wizard {
 					return error("Es muss ein Name angegeben werden.");
 
 				else {
-					setPageComplete(true);
+					setPageComplete(!product.isProtected);
 					setErrorMessage(null);
 					return true;
 				}
