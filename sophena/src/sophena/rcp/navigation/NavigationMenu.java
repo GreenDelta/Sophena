@@ -23,6 +23,7 @@ import sophena.rcp.navigation.actions.NewProjectAction;
 import sophena.rcp.navigation.actions.OpenAction;
 import sophena.rcp.navigation.actions.RenameAction;
 import sophena.rcp.navigation.actions.SaveAsAction;
+import sophena.rcp.navigation.actions.SetTransferStationsAction;
 import sophena.rcp.utils.Viewers;
 
 public class NavigationMenu extends CommonActionProvider {
@@ -34,6 +35,7 @@ public class NavigationMenu extends CommonActionProvider {
 			new AddAction(),
 			new AddConsumerProfileAction(),
 			new ConsumerImportAction(),
+			new SetTransferStationsAction(),
 			new AddProducerProfileAction(),
 			new AddFlueGasCleaning(),
 			new AddBiogasPlantAction(),

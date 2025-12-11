@@ -46,7 +46,7 @@ public class AddAction extends NavigationAction {
 			log.trace("call {} with {}", handler, elem);
 			handler.invoke(this);
 		} catch (Exception e) {
-			log.error("failed to call " + handler + " with " + elem, e);
+			log.error("failed to call {} with {}", handler, elem, e);
 		}
 	}
 
