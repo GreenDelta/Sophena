@@ -54,8 +54,8 @@ public class HeatPumpEditor extends Editor {
 
 	class Page extends FormPage {
 
-		private RootEntityDao<HeatPump> dao;
-		private List<HeatPump> heatPumps;
+		private final RootEntityDao<HeatPump> dao;
+		private final List<HeatPump> heatPumps;
 
 		public Page() {
 			super(HeatPumpEditor.this, "HeatPumpEditorPage", Labels.getPlural(ProductType.HEAT_PUMP));
@@ -80,11 +80,15 @@ public class HeatPumpEditor extends Editor {
 			UI.gridData(section, true, true);
 			Composite comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
+
+			var label = new Label();
 			TableViewer table = Tables.createViewer(comp, getColumns());
-			table.setLabelProvider(new Label());
+			table.setLabelProvider(label);
 			table.setInput(heatPumps);
 			double x = 1 / 5.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x);
+			Tables.sortByLabel(HeatPump.class, table, label, 0, 1, 2, 3);
+			Tables.sortByNumber(HeatPump.class, table, h -> h.ratedPower, 4);
 			bindActions(section, table);
 		}
 
@@ -131,7 +135,7 @@ public class HeatPumpEditor extends Editor {
 				heatPumps.set(idx, heatPump);
 				table.setInput(heatPumps);
 			} catch (Exception e) {
-				log.error("failed to update boiler ", heatPump, e);
+				log.error("failed to update heatpump {}", heatPump, e);
 			}
 		}
 
@@ -167,30 +171,23 @@ public class HeatPumpEditor extends Editor {
 				heatPumps.remove(heatPump);
 				table.setInput(heatPumps);
 			} catch (Exception e) {
-				log.error("failed to delete heat pump " + heatPump, e);
+				log.error("failed to delete heat pump {}", heatPump, e);
 			}
 		}
 	}
 
-		private class Label extends BaseTableLabel {
+		private static class Label extends BaseTableLabel {
 
 			@Override
 			public String getColumnText(Object obj, int col) {
-				if (!(obj instanceof HeatPump))
+				if (!(obj instanceof HeatPump heatPump))
 					return null;
-				HeatPump heatPump = (HeatPump) obj;
 				if (col < 4)
 					return ProductTables.getText(heatPump, col);
-				switch (col) {
-				case 4:
-					return s(heatPump.ratedPower, "kW");
-				default:
-					return null;
+				if (col == 4) {
+					return Num.str(heatPump.ratedPower) + " kW";
 				}
-			}
-
-			private String s(double val, String unit) {
-				return Num.str(val) + " " + unit;
+				return null;
 			}
 		}
 }

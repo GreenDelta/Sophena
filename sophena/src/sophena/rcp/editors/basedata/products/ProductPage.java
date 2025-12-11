@@ -41,11 +41,10 @@ import sophena.utils.Num;
  */
 class ProductPage extends FormPage {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-
-	private ProductType type;
-	private ProductDao dao;
-	private List<Product> products;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final ProductType type;
+	private final ProductDao dao;
+	private final List<Product> products;
 
 	public ProductPage(Editor editor, ProductType type) {
 		super(editor, "ProductEditorPage", Labels.get(type));
@@ -70,10 +69,13 @@ class ProductPage extends FormPage {
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, "Bezeichnung", "Produktlinie",
 				"Produktgruppe", "Link", "Preis");
-		table.setLabelProvider(new ProductLabel());
+		var label = new ProductLabel();
+		table.setLabelProvider(label);
 		table.setInput(products);
 		double x = 1 / 5d;
 		Tables.bindColumnWidths(table, x, x, x, x, x);
+		Tables.sortByLabel(Product.class, table, label, 0, 1, 2, 3);
+		Tables.sortByNumber(Product.class, table, p -> p.purchasePrice, 4);
 		bindProductActions(section, table);
 	}
 
@@ -117,7 +119,7 @@ class ProductPage extends FormPage {
 			products.set(idx, product);
 			table.setInput(products);
 		} catch (Exception e) {
-			log.error("failed to update Product ", product, e);
+			log.error("failed to update Product {}", product, e);
 		}
 	}
 
@@ -153,11 +155,11 @@ class ProductPage extends FormPage {
 			products.remove(product);
 			table.setInput(products);
 		} catch (Exception e) {
-			log.error("failed to delete Product " + product, e);
+			log.error("failed to delete Product {}", product, e);
 		}
 	}
 
-	private class ProductLabel extends LabelProvider
+	private static class ProductLabel extends LabelProvider
 			implements ITableLabelProvider {
 
 		@Override
@@ -169,23 +171,16 @@ class ProductPage extends FormPage {
 
 		@Override
 		public String getColumnText(Object element, int col) {
-			if (!(element instanceof Product))
+			if (!(element instanceof Product product))
 				return null;
-			Product product = (Product) element;
-			switch (col) {
-			case 0:
-				return product.name;
-			case 1:
-				return product.productLine;
-			case 2:
-				return product.group != null ? product.group.name : null;
-			case 3:
-				return product.url;
-			case 4:
-				return Num.str(product.purchasePrice) + " EUR";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> product.name;
+				case 1 -> product.productLine;
+				case 2 -> product.group != null ? product.group.name : null;
+				case 3 -> product.url;
+				case 4 -> Num.str(product.purchasePrice) + " EUR";
+				default -> null;
+			};
 		}
 	}
 }

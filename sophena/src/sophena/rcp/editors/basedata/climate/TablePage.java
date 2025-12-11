@@ -40,8 +40,8 @@ import sophena.utils.Num;
 
 class TablePage extends FormPage {
 
-	private WeatherStationDao dao = new WeatherStationDao(App.getDb());
-	private List<WeatherStationDescriptor> weatherStationsList; 
+	private final WeatherStationDao dao = new WeatherStationDao(App.getDb());
+	private List<WeatherStationDescriptor> weatherStationsList;
 
 	public TablePage(ClimateDataEditor editor) {
 		super(editor, "ClimateDataEditor.Page",
@@ -59,11 +59,17 @@ class TablePage extends FormPage {
 		UI.gridLayout(comp, 1);
 		TableViewer table = Tables.createViewer(comp, "Wetterstation",
 				"Längengrad", "Breitengrad", "Höhe");
-		table.setLabelProvider(new Label());
+
+		var label = new Label();
+		table.setLabelProvider(label);
 		weatherStationsList = dao.getDescriptors();
 		Sorters.byName(weatherStationsList);
 		table.setInput(weatherStationsList);
 		Tables.bindColumnWidths(table, 0.25, 0.25, 0.25, 0.25);
+		Tables.sortByLabel(WeatherStationDescriptor.class, table, label, 0);
+		Tables.sortByNumber(WeatherStationDescriptor.class, table, d -> d.longitude, 1);
+		Tables.sortByNumber(WeatherStationDescriptor.class, table, d -> d.latitude, 2);
+		Tables.sortByNumber(WeatherStationDescriptor.class, table, d -> d.altitude, 3);
 		bindActions(section, table);
 		form.reflow(true);
 	}
@@ -94,7 +100,7 @@ class TablePage extends FormPage {
 		weatherStationsList.add(weatherStation.toDescriptor());
 		table.setInput(weatherStationsList);
 	}
-	
+
 	private void editWeatherStation(TableViewer table) {
 		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
 		if (d == null)
@@ -107,7 +113,7 @@ class TablePage extends FormPage {
 		weatherStationsList.set(idx, station.toDescriptor());
 		table.setInput(weatherStationsList);
 	}
-	
+
 	private void deleteWeatherStation(TableViewer table) {
 		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
 		if (d == null)
@@ -128,7 +134,7 @@ class TablePage extends FormPage {
 		weatherStationsList.remove(d);
 		table.setInput(weatherStationsList);
 	}
-	
+
 	private void openClimateCurve(TableViewer table) {
 		WeatherStationDescriptor d = Viewers.getFirstSelected(table);
 		if (d == null)
@@ -156,23 +162,21 @@ class TablePage extends FormPage {
 		);
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
 			if (col != 0)
 				return null;
-			if (!(obj instanceof WeatherStationDescriptor))
+			if (!(obj instanceof WeatherStationDescriptor entity))
 				return null;
-			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
 			return entity.isProtected ? Icon.LOCK_16.img() : Icon.CLIMATE_16.img();
 		}
-		
+
 		@Override
 		public Font getFont(Object obj) {
-			if (!(obj instanceof WeatherStationDescriptor))
+			if (!(obj instanceof WeatherStationDescriptor entity))
 				return null;
-			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
 			if (entity.isProtected)
 				return UI.italicFont();
 			return null;
@@ -180,9 +184,8 @@ class TablePage extends FormPage {
 
 		@Override
 		public Color getForeground(Object obj) {
-			if (!(obj instanceof WeatherStationDescriptor))
+			if (!(obj instanceof WeatherStationDescriptor entity))
 				return null;
-			WeatherStationDescriptor entity = (WeatherStationDescriptor) obj;
 			if (entity.isProtected)
 				return Colors.getDarkGray();
 			return null;
@@ -190,21 +193,15 @@ class TablePage extends FormPage {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof WeatherStationDescriptor))
+			if (!(obj instanceof WeatherStationDescriptor d))
 				return null;
-			WeatherStationDescriptor d = (WeatherStationDescriptor) obj;
-			switch (col) {
-			case 0:
-				return d.name;
-			case 1:
-				return Double.toString(d.longitude);
-			case 2:
-				return Double.toString(d.latitude);
-			case 3:
-				return Num.str(d.altitude) + " m";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> d.name;
+				case 1 -> Double.toString(d.longitude);
+				case 2 -> Double.toString(d.latitude);
+				case 3 -> Num.str(d.altitude) + " m";
+				default -> null;
+			};
 		}
 	}
 

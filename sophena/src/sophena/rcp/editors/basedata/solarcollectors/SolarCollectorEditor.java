@@ -53,8 +53,8 @@ public class SolarCollectorEditor extends Editor {
 
 	private class Page extends FormPage {
 
-		private RootEntityDao<SolarCollector> dao;
-		private List<SolarCollector> solarCollectors;
+		private final RootEntityDao<SolarCollector> dao;
+		private final List<SolarCollector> solarCollectors;
 
 		public Page() {
 			super(SolarCollectorEditor.this, "SolarCollectorEditorPage", M.SolarThermalPlant);
@@ -159,27 +159,24 @@ public class SolarCollectorEditor extends Editor {
 				solarCollectors.remove(s);
 				table.setInput(solarCollectors);
 			} catch (Exception e) {
-				log.error("failed to delete solar collector " + s, e);
+				log.error("failed to delete solar collector {}", s, e);
 			}
 		}
 
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object e, int col) {
-			if (!(e instanceof SolarCollector))
+			if (!(e instanceof SolarCollector s))
 				return null;
-			SolarCollector s = (SolarCollector) e;
 			if (col < 4)
 				return ProductTables.getText(s, col);
-			switch (col) {
-			case 4:
+			if (col == 4) {
 				return Num.str(s.collectorArea) + " m2";
-			default:
-				return null;
 			}
+			return null;
 		}
 	}
 }

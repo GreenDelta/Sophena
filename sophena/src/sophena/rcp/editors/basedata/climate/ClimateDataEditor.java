@@ -16,7 +16,7 @@ import sophena.rcp.utils.UI;
 
 public class ClimateDataEditor extends Editor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public static void open() {
 		KeyEditorInput input = new KeyEditorInput("climate.data",
@@ -34,7 +34,7 @@ public class ClimateDataEditor extends Editor {
 		}
 	}
 
-	private class MapPage extends FormPage {
+	private static class MapPage extends FormPage {
 
 		public MapPage(ClimateDataEditor editor) {
 			super(editor, "climate.MapPage", "Karte");

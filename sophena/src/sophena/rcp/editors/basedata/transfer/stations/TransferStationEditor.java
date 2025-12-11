@@ -81,10 +81,14 @@ public class TransferStationEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller", "Leistung",
 					"Gebäudetyp");
-			table.setLabelProvider(new Label());
+
+			var label = new Label();
+			table.setLabelProvider(label);
 			table.setInput(stations);
 			double x = 1.0 / 6.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
+			Tables.sortByLabel(TransferStation.class, table, label, 0, 1, 2, 3, 5);
+			Tables.sortByNumber(TransferStation.class, table, s -> s.outputCapacity, 4);
 			bindActions(section, table);
 		}
 
@@ -162,29 +166,25 @@ public class TransferStationEditor extends Editor {
 				stations.remove(s);
 				table.setInput(stations);
 			} catch (Exception e) {
-				log.error("failed to delete transfer station " + s, e);
+				log.error("failed to delete transfer station {}", s, e);
 			}
 		}
 
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof TransferStation))
+			if (!(obj instanceof TransferStation s))
 				return null;
-			TransferStation s = (TransferStation) obj;
 			if (col < 4)
 				return ProductTables.getText(s, col);
-			switch (col) {
-			case 4:
-				return Num.str(s.outputCapacity) + " kW";
-			case 5:
-				return s.buildingType;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> Num.str(s.outputCapacity) + " kW";
+				case 5 -> s.buildingType;
+				default -> null;
+			};
 		}
 	}
 }

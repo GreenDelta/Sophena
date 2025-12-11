@@ -93,10 +93,17 @@ public class FuelEditor extends Editor {
 			TableViewer table = Tables.createViewer(comp, M.Fuel,
 					M.CalorificValue, "CO2 Emissionen",
 					"Primärenergiefaktor", "Aschegehalt");
-			table.setLabelProvider(TableLabel.getForNonWood());
+
+			var label = TableLabel.getForNonWood();
+			table.setLabelProvider(label);
 			table.setInput(fuels);
 			double w = 1d / 5d;
 			Tables.bindColumnWidths(table, w, w, w, w, w);
+			Tables.sortByLabel(Fuel.class, table, label, 0);
+			Tables.sortByNumber(Fuel.class, table, f -> f.calorificValue, 1);
+			Tables.sortByNumber(Fuel.class, table, f -> f.co2Emissions, 2);
+			Tables.sortByNumber(Fuel.class, table, f -> f.primaryEnergyFactor, 3);
+			Tables.sortByNumber(Fuel.class, table, f -> f.ashContent, 4);
 			bindFuelActions(section, table);
 		}
 
@@ -199,10 +206,17 @@ public class FuelEditor extends Editor {
 			var table = Tables.createViewer(comp, M.WoodFuel,
 					"Dichte", "Heizwert", "CO2 Emissionen",
 					"Primärenergiefaktor", "Aschegehalt");
-			table.setLabelProvider(TableLabel.getForWood());
+			var label = TableLabel.getForWood();
+			table.setLabelProvider(label);
 			double w = 1d / 6d;
 			Tables.bindColumnWidths(table, w, w, w, w, w, w);
 			table.setInput(woodFuels);
+			Tables.sortByLabel(Fuel.class, table, label, 0);
+			Tables.sortByNumber(Fuel.class, table, f -> f.density, 1);
+			Tables.sortByNumber(Fuel.class, table, f -> f.calorificValue, 2);
+			Tables.sortByNumber(Fuel.class, table, f -> f.co2Emissions, 3);
+			Tables.sortByNumber(Fuel.class, table, f -> f.primaryEnergyFactor, 4);
+			Tables.sortByNumber(Fuel.class, table, f -> f.ashContent, 5);
 			bindWoodActions(section, table);
 		}
 

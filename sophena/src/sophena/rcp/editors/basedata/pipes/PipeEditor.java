@@ -55,8 +55,8 @@ public class PipeEditor extends Editor {
 
 	private class Page extends FormPage {
 
-		private RootEntityDao<Pipe> dao;
-		private List<Pipe> pipes;
+		private final RootEntityDao<Pipe> dao;
+		private final List<Pipe> pipes;
 
 		public Page() {
 			super(PipeEditor.this, "PipeEditorPage", "Wärmeleitungen");
@@ -82,10 +82,14 @@ public class PipeEditor extends Editor {
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe",
 					"Bezeichnung", "Produktlinie",
 					"Hersteller", "Art", "Außend. Medienrohr", "U-Wert");
-			table.setLabelProvider(new Label());
+			var label = new Label();
+			table.setLabelProvider(label);
 			table.setInput(pipes);
 			double x = 1.0 / 7.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
+			Tables.sortByLabel(Pipe.class, table, label, 0, 1, 2, 3, 4);
+			Tables.sortByNumber(Pipe.class, table, p -> p.outerDiameter, 5);
+			Tables.sortByNumber(Pipe.class, table, p -> p.uValue, 6);
 			bindActions(section, table);
 		}
 
@@ -163,32 +167,27 @@ public class PipeEditor extends Editor {
 				pipes.remove(p);
 				table.setInput(pipes);
 			} catch (Exception e) {
-				log.error("failed to delete pipe " + p, e);
+				log.error("failed to delete pipe {}", p, e);
 			}
 		}
 
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object e, int col) {
 			DecimalFormat df = new DecimalFormat("#.####");
-			if (!(e instanceof Pipe))
+			if (!(e instanceof Pipe p))
 				return null;
-			Pipe p = (Pipe) e;
 			if (col < 4)
 				return ProductTables.getText(p, col);
-			switch (col) {
-			case 4:
-				return p.pipeType != null ? p.pipeType.name() : null;
-			case 5:
-				return Num.str(p.outerDiameter) + " mm";
-			case 6:
-				return df.format(p.uValue) + "W/(m*K)";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> p.pipeType != null ? p.pipeType.name() : null;
+				case 5 -> Num.str(p.outerDiameter) + " mm";
+				case 6 -> df.format(p.uValue) + "W/(m*K)";
+				default -> null;
+			};
 		}
 	}
 }

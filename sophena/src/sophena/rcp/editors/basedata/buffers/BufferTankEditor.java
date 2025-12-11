@@ -80,10 +80,16 @@ public class BufferTankEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller", "Volumen",
 					"Durchmesser", "Höhe");
-			table.setLabelProvider(new Label());
+
+			var label = new Label();
+			table.setLabelProvider(label);
 			table.setInput(buffers);
 			double x = 1.0 / 7.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
+			Tables.sortByLabel(BufferTank.class, table, label, 0, 1, 2, 3);
+			Tables.sortByNumber(BufferTank.class, table, b -> b.volume, 4);
+			Tables.sortByNumber(BufferTank.class, table, b -> b.diameter, 5);
+			Tables.sortByNumber(BufferTank.class, table, b -> b.height, 6);
 			bindActions(section, table);
 		}
 
@@ -161,30 +167,29 @@ public class BufferTankEditor extends Editor {
 				buffers.remove(b);
 				table.setInput(buffers);
 			} catch (Exception e) {
-				log.error("failed to delete buffer " + b, e);
+				log.error("failed to delete buffer {}", b, e);
 			}
 		}
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof BufferTank))
+			if (!(obj instanceof BufferTank b))
 				return null;
-			BufferTank b = (BufferTank) obj;
 			if (col < 4)
 				return ProductTables.getText(b, col);
-			switch (col) {
-			case 4:
-				return Num.str(b.volume) + " L";
-			case 5:
-				return Num.str(b.diameter) != null ? Num.str(b.diameter) + " mm" : null;
-			case 6:
-				return Num.str(b.height) != null ? Num.str(b.height) + " mm" : null;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> Num.str(b.volume) + " L";
+				case 5 ->	Num.str(b.diameter) != null
+						? Num.str(b.diameter) + " mm"
+						: null;
+				case 6 -> Num.str(b.height) != null
+						? Num.str(b.height) + " mm"
+						: null;
+				default -> null;
+			};
 		}
 	}
 
