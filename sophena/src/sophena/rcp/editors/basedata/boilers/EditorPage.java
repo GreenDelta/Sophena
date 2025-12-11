@@ -52,21 +52,17 @@ class EditorPage extends FormPage {
 	}
 
 	@Override
-	protected void createFormContent(IManagedForm managedForm) {
-		var form = UI.formHeader(managedForm, Labels.getPlural(type));
-		var toolkit = managedForm.getToolkit();
-		Composite body = UI.formBody(form, toolkit);
-		createBoilerSection(body, toolkit);
-		// disable form scrolling - the table has its own scrollbars
-		form.setAlwaysShowScrollBars(false);
-		form.setExpandHorizontal(true);
-		form.setExpandVertical(false);
+	protected void createFormContent(IManagedForm manForm) {
+		var form = UI.formHeader(manForm, Labels.getPlural(type));
+		var tk = manForm.getToolkit();
+		var body = UI.formBody(form, tk);
+		createBoilerSection(body, tk);
 	}
 
 	private void createBoilerSection(Composite parent, FormToolkit toolkit) {
 		var section = UI.section(parent, toolkit,	Labels.getPlural(type));
 		UI.gridData(section, true, true);
-		Composite comp = UI.sectionClient(section, toolkit);
+		var comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
 		var label = new BoilerLabel();
 		var table = Tables.createViewer(comp, getColumns());

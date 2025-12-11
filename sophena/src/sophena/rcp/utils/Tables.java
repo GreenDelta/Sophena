@@ -39,15 +39,23 @@ public class Tables {
 	 */
 	public static TableViewer createViewer(Composite parent,
 			String... properties) {
-		TableViewer viewer = new TableViewer(parent, SWT.BORDER
+
+		var viewer = new TableViewer(parent, SWT.BORDER
 				| SWT.FULL_SELECTION | SWT.VIRTUAL | SWT.MULTI);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setColumnProperties(properties);
 		Table table = viewer.getTable();
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
+
+		var data = UI.gridData(table, true, true);
+		data.minimumHeight = 150;
+		// workaround for this bug:
+		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=215997
+		Point p = parent.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		data.heightHint = Math.max(p.y, 150);
+
 		createColumns(table, properties);
-		UI.gridData(table, true, true).minimumHeight = 150;
 		return viewer;
 	}
 
