@@ -56,7 +56,7 @@ class BoilerWizard implements IContent {
 
 	private void createMinMaxTexts(Composite c) {
 		minText = UI.formText(c, "Minimale Leistung th.");
-		minText.setEditable(!boiler.isProtected);
+		minText.setEnabled(!boiler.isProtected);
 		Texts.on(minText).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 		maxText = UI.formText(c, "Maximale Leistung th.");

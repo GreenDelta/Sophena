@@ -82,10 +82,15 @@ public class HeatRecoveryEditor extends Editor {
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie",
 					"Hersteller", "Leistung", "Wärmeerzeuger", "Brennstoff (Erz.)",
 					"Leistung (Erz.)");
-			table.setLabelProvider(new Label());
+
+			var label = new Label();
+			table.setLabelProvider(label);
 			table.setInput(recoveries);
 			double x = 1.0 / 8.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x);
+			Tables.sortByLabel(HeatRecovery.class, table, label, 0, 1, 2, 3, 5, 6);
+			Tables.sortByNumber(HeatRecovery.class, table, r -> r.power, 4);
+			Tables.sortByNumber(HeatRecovery.class, table, r -> r.producerPower, 7);
 			bindActions(section, table);
 		}
 
@@ -163,32 +168,26 @@ public class HeatRecoveryEditor extends Editor {
 				recoveries.remove(r);
 				table.setInput(recoveries);
 			} catch (Exception e) {
-				log.error("failed to delete " + r, e);
+				log.error("failed to delete {}", r, e);
 			}
 		}
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof HeatRecovery))
+			if (!(obj instanceof HeatRecovery hrc))
 				return null;
-			HeatRecovery hrc = (HeatRecovery) obj;
 			if (col < 4)
 				return ProductTables.getText(hrc, col);
-			switch (col) {
-			case 4:
-				return Num.str(hrc.power) + " kW";
-			case 5:
-				return hrc.heatRecoveryType;
-			case 6:
-				return hrc.fuel;
-			case 7:
-				return Num.str(hrc.producerPower) + " kW";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> Num.str(hrc.power) + " kW";
+				case 5 -> hrc.heatRecoveryType;
+				case 6 -> hrc.fuel;
+				case 7 -> Num.str(hrc.producerPower) + " kW";
+				default -> null;
+			};
 		}
 	}
 }

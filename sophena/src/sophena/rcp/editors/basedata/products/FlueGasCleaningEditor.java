@@ -82,10 +82,14 @@ public class FlueGasCleaningEditor extends Editor {
 			TableViewer table = Tables.createViewer(comp, "Produktgruppe", "Bezeichnung", "Produktlinie",
 					"Hersteller", "Brennstoff (Erz.)", "Max. Leistung (Erz.)",
 					"Max. Volumenstrom");
-			table.setLabelProvider(new Label());
+			var label = new Label();
+			table.setLabelProvider(label);
 			table.setInput(cleanings);
 			double x = 1.0 / 7.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x);
+			Tables.sortByLabel(FlueGasCleaning.class, table, label, 0, 1, 2, 3, 4);
+			Tables.sortByNumber(FlueGasCleaning.class, table, c -> c.maxProducerPower, 5);
+			Tables.sortByNumber(FlueGasCleaning.class, table, c -> c.maxVolumeFlow, 6);
 			bindActions(section, table);
 		}
 
@@ -163,30 +167,25 @@ public class FlueGasCleaningEditor extends Editor {
 				cleanings.remove(c);
 				table.setInput(cleanings);
 			} catch (Exception e) {
-				log.error("failed to delete flue gas cleaning " + c, e);
+				log.error("failed to delete flue gas cleaning {}", c, e);
 			}
 		}
 	}
 
-	private class Label extends BaseTableLabel {
+	private static class Label extends BaseTableLabel {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof FlueGasCleaning))
+			if (!(obj instanceof FlueGasCleaning c))
 				return null;
-			FlueGasCleaning c = (FlueGasCleaning) obj;
 			if (col < 4)
 				return ProductTables.getText(c, col);
-			switch (col) {
-			case 4:
-				return c.fuel;
-			case 5:
-				return Num.str(c.maxProducerPower) + " KW";
-			case 6:
-				return Num.str(c.maxVolumeFlow) + " m3/h";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> c.fuel;
+				case 5 -> Num.str(c.maxProducerPower) + " KW";
+				case 6 -> Num.str(c.maxVolumeFlow) + " m3/h";
+				default -> null;
+			};
 		}
 	}
 }
