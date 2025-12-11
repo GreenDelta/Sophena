@@ -255,6 +255,10 @@ public final class Texts {
 			return this;
 		}
 
+		public Text get() {
+			return text;
+		}
+
 	}
 
 	private static class ChangeListener implements ModifyListener {

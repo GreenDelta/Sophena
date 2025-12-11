@@ -39,20 +39,33 @@ class BufferTankWizard implements IContent {
 
 	@Override
 	public void render(Composite c) {
-		volText = UI.formText(c, "Volumen");
-		Texts.on(volText).disableWhen(buffer.isProtected).required().decimal().validate(wizard::validate);
+		volText = Texts.on(UI.formText(c, "Volumen"))
+			.disableWhen(buffer.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "L");
 
-		diameterText = UI.formText(c, "Durchmesser");
-		Texts.on(diameterText).disableWhen(buffer.isProtected).decimal().required();
+		diameterText = Texts.on(UI.formText(c, "Durchmesser"))
+			.disableWhen(buffer.isProtected)
+			.decimal()
+			.required()
+			.get();
 		UI.formLabel(c, "mm");
 
-		heightText = UI.formText(c, "Höhe");
-		Texts.on(heightText).disableWhen(buffer.isProtected).decimal().required();
+		heightText = Texts.on(UI.formText(c, "Höhe"))
+			.disableWhen(buffer.isProtected)
+			.decimal()
+			.required()
+			.get();
 		UI.formLabel(c, "mm");
 
-		insulationText = UI.formText(c, "Isolierung");
-		Texts.on(insulationText).disableWhen(buffer.isProtected).decimal().required();
+		insulationText = Texts.on(UI.formText(c, "Isolierung"))
+			.disableWhen(buffer.isProtected)
+			.decimal()
+			.required()
+			.get();
 		UI.formLabel(c, "mm");
 	}
 

@@ -45,34 +45,49 @@ public class FlueGasCleaningWizard implements IContent {
 	@Override
 	public void render(Composite c) {
 
-		maxVolumeFlowText = UI.formText(c, "Max. reinigbarer Volumenstrom");
-		Texts.on(maxVolumeFlowText).disableWhen(cleaning.isProtected).decimal().required()
-				.validate(wizard::validate);
+		maxVolumeFlowText = Texts.on(UI.formText(c, "Max. reinigbarer Volumenstrom"))
+			.disableWhen(cleaning.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "m3/h");
 
-		fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
-		Texts.on(fuelText).disableWhen(cleaning.isProtected).required().validate(wizard::validate);
+		fuelText = Texts.on(UI.formText(c, "Brennstoff (Wärmeerzeuger)"))
+			.disableWhen(cleaning.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		maxProducerPowerText = UI.formText(c, "Max. Leistung Wärmeerzeuger");
-		Texts.on(maxProducerPowerText).disableWhen(cleaning.isProtected).decimal().required()
-				.validate(wizard::validate);
+		maxProducerPowerText = Texts.on(UI.formText(c, "Max. Leistung Wärmeerzeuger"))
+			.disableWhen(cleaning.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
 
-		maxElectricityConsumptionText = UI.formText(c, "Eigenstrombedarf");
-		Texts.on(maxElectricityConsumptionText).disableWhen(cleaning.isProtected).decimal();
+		maxElectricityConsumptionText = Texts.on(UI.formText(c, "Eigenstrombedarf"))
+			.disableWhen(cleaning.isProtected)
+			.decimal()
+			.get();
 		UI.formLabel(c, "kW");
 
-		cleaningMethodText = UI.formText(c, "Art der Reinigung");
-		Texts.on(cleaningMethodText).disableWhen(cleaning.isProtected);
+		cleaningMethodText = Texts.on(UI.formText(c, "Art der Reinigung"))
+			.disableWhen(cleaning.isProtected)
+			.get();
 		UI.filler(c);
 
-		cleaningTypeText = UI.formText(c, "Typ der Reinigung");
-		Texts.on(cleaningTypeText).disableWhen(cleaning.isProtected);
+		cleaningTypeText = Texts.on(UI.formText(c, "Typ der Reinigung"))
+			.disableWhen(cleaning.isProtected)
+			.get();
 		UI.filler(c);
 
-		separationEfficiencyText = UI.formText(c, "Max. Abscheidegrad");
-		Texts.on(separationEfficiencyText).disableWhen(cleaning.isProtected).decimal();
+		separationEfficiencyText = Texts.on(UI.formText(c, "Max. Abscheidegrad"))
+			.disableWhen(cleaning.isProtected)
+			.decimal()
+			.get();
 		UI.formLabel(c, "%");
 	}
 

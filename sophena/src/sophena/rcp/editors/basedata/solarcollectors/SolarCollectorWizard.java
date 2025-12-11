@@ -14,7 +14,7 @@ import sophena.rcp.editors.basedata.ProductWizard.IContent;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 
-public class SolarCollectorWizard implements IContent{
+public class SolarCollectorWizard implements IContent {
 	private final SolarCollector solarCollector;
 
 	private ProductWizard wizard;
@@ -60,100 +60,196 @@ public class SolarCollectorWizard implements IContent{
 
 	@Override
 	public void render(Composite c) {
-		collectorAreaText = UI.formText(c, M.CollectorArea);
-		Texts.on(collectorAreaText).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		collectorAreaText = Texts.on(UI.formText(c, M.CollectorArea))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "m2");
 
-		efficiencyRateRadiationText = UI.formText(c, "Wirkungsgrad bzgl. Direktstrahlung");
-		Texts.on(efficiencyRateRadiationText).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		efficiencyRateRadiationText = Texts.on(UI.formText(c, "Wirkungsgrad bzgl. Direktstrahlung"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		correctionFactorText = UI.formText(c, "Korrekturfaktor für Diffusstrahlung");
-		Texts.on(correctionFactorText).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		correctionFactorText = Texts.on(UI.formText(c, "Korrekturfaktor für Diffusstrahlung"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		heatTransferCoefficient1Text = UI.formText(c, "Wärmedurchgangskoeffizient 1");
-		Texts.on(heatTransferCoefficient1Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		heatTransferCoefficient1Text = Texts.on(UI.formText(c, "Wärmedurchgangskoeffizient 1"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "W/(m2*K)");
 
-		heatTransferCoefficient2Text = UI.formText(c, "Wärmedurchgangskoeffizient 2");
-		Texts.on(heatTransferCoefficient2Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		heatTransferCoefficient2Text = Texts.on(UI.formText(c, "Wärmedurchgangskoeffizient 2"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "W/(m2*K2)");
 
-		heatCapacityText = UI.formText(c, "Wärmekapazität des Kollektors");
-		Texts.on(heatCapacityText).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		heatCapacityText = Texts.on(UI.formText(c, "Wärmekapazität des Kollektors"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "Wh/(m2*K)");
 
-		angleIncidenceEW10Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 10°");
-		Texts.on(angleIncidenceEW10Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW10Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 10°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW20Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 20°");
-		Texts.on(angleIncidenceEW20Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW20Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 20°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW30Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 30°");
-		Texts.on(angleIncidenceEW30Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW30Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 30°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW40Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 40°");
-		Texts.on(angleIncidenceEW40Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW40Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 40°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW50Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 50°");
-		Texts.on(angleIncidenceEW50Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW50Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 50°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW60Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 60°");
-		Texts.on(angleIncidenceEW60Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW60Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 60°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW70Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 70°");
-		Texts.on(angleIncidenceEW70Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW70Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 70°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW80Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 80°");
-		Texts.on(angleIncidenceEW80Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW80Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 80°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceEW90Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 90°");
-		Texts.on(angleIncidenceEW90Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceEW90Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Ost-West 90°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS10Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 10°");
-		Texts.on(angleIncidenceNS10Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS10Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 10°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS20Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 20°");
-		Texts.on(angleIncidenceNS20Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS20Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 20°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS30Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 30°");
-		Texts.on(angleIncidenceNS30Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS30Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 30°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS40Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 40°");
-		Texts.on(angleIncidenceNS40Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS40Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 40°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS50Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 50°");
-		Texts.on(angleIncidenceNS50Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS50Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 50°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS60Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 60°");
-		Texts.on(angleIncidenceNS60Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS60Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 60°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS70Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 70°");
-		Texts.on(angleIncidenceNS70Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS70Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 70°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS80Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 80°");
-		Texts.on(angleIncidenceNS80Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS80Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 80°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		angleIncidenceNS90Text = UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 90°");
-		Texts.on(angleIncidenceNS90Text).disableWhen(solarCollector.isProtected).required().decimal().validate(wizard::validate);
+		angleIncidenceNS90Text = Texts.on(UI.formText(c, "Einfallswinkel-Korrekturfaktor Nord-Süd 90°"))
+			.disableWhen(solarCollector.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 	}
 
@@ -216,7 +312,7 @@ public class SolarCollectorWizard implements IContent{
 
 	@Override
 	public String validate() {
-			return validSolarCollector();
+		return validSolarCollector();
 	}
 
 	private String validSolarCollector() {

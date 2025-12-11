@@ -47,8 +47,11 @@ class PipeWizard implements IContent {
 	@Override
 	public void render(Composite c) {
 
-		materialText = UI.formText(c, "Material");
-		Texts.on(materialText).disableWhen(pipe.isProtected).required().validate(wizard::validate);
+		materialText = Texts.on(UI.formText(c, "Material"))
+			.disableWhen(pipe.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
 		typeCombo = UI.formCombo(c, "Art");
@@ -57,32 +60,51 @@ class PipeWizard implements IContent {
 		typeCombo.setEnabled(!pipe.isProtected);
 		UI.filler(c);
 
-		uValueText = UI.formText(c, "U-Wert");
-		Texts.on(uValueText).disableWhen(pipe.isProtected).required().decimal().validate(wizard::validate);
+		uValueText = Texts.on(UI.formText(c, "U-Wert"))
+			.disableWhen(pipe.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "W/(m*K)");
 
-		innerDiamText = UI.formText(c, "Innend. Medienrohr");
-		Texts.on(innerDiamText).disableWhen(pipe.isProtected).required().decimal().validate(wizard::validate);
+		innerDiamText = Texts.on(UI.formText(c, "Innend. Medienrohr"))
+			.disableWhen(pipe.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "mm");
 
-		outerDiamText = UI.formText(c, "Außend. Medienrohr");
-		Texts.on(outerDiamText).disableWhen(pipe.isProtected).required().decimal().validate(wizard::validate);
+		outerDiamText = Texts.on(UI.formText(c, "Außend. Medienrohr"))
+			.disableWhen(pipe.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "mm");
 
-		totalDiamText = UI.formText(c, "Außend. Gesamt");
-		Texts.on(totalDiamText).disableWhen(pipe.isProtected).required().decimal().validate(wizard::validate);
+		totalDiamText = Texts.on(UI.formText(c, "Außend. Gesamt"))
+			.disableWhen(pipe.isProtected)
+			.required()
+			.decimal()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "mm");
 
-		deliveryTypeText = UI.formText(c, "Lieferausführung");
-		Texts.on(deliveryTypeText).disableWhen(pipe.isProtected);
+		deliveryTypeText = Texts.on(UI.formText(c, "Lieferausführung"))
+			.disableWhen(pipe.isProtected)
+			.get();
 		UI.formLabel(c, "");
 
-		maxTempText = UI.formText(c, "Maximale Temperatur");
-		Texts.on(maxTempText).disableWhen(pipe.isProtected);
+		maxTempText = Texts.on(UI.formText(c, "Maximale Temperatur"))
+			.disableWhen(pipe.isProtected)
+			.get();
 		UI.formLabel(c, "°C");
 
-		maxPressureText = UI.formText(c, "Maximaler Druck");
-		Texts.on(maxPressureText).disableWhen(pipe.isProtected);
+		maxPressureText = Texts.on(UI.formText(c, "Maximaler Druck"))
+			.disableWhen(pipe.isProtected)
+			.get();
 		UI.formLabel(c, "Bar");
 	}
 

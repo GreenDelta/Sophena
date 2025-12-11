@@ -43,28 +43,42 @@ public class TransferStationWizard implements IContent {
 	@Override
 	public void render(Composite c) {
 
-		buildingTypeText = UI.formText(c, M.BuildingType);
-		Texts.on(buildingTypeText).disableWhen(station.isProtected).required().validate(wizard::validate);
+		buildingTypeText = Texts.on(UI.formText(c, M.BuildingType))
+			.disableWhen(station.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		capacityText = UI.formText(c, "Leistung");
-		Texts.on(capacityText).disableWhen(station.isProtected).required().validate(wizard::validate);
+		capacityText = Texts.on(UI.formText(c, "Leistung"))
+			.disableWhen(station.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
 
-		typeText = UI.formMultiText(c, "Art");
-		Texts.on(typeText).disableWhen(station.isProtected).required().validate(wizard::validate);
+		typeText = Texts.on(UI.formMultiText(c, "Art"))
+			.disableWhen(station.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		materialText = UI.formMultiText(c, "Material");
-		Texts.on(materialText).disableWhen(station.isProtected).required().validate(wizard::validate);
+		materialText = Texts.on(UI.formMultiText(c, "Material"))
+			.disableWhen(station.isProtected)
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.filler(c);
 
-		waterHeatingText = UI.formMultiText(c, "Warmwasserbereitung");
-		Texts.on(waterHeatingText).disableWhen(station.isProtected);
+		waterHeatingText = Texts.on(UI.formMultiText(c, "Warmwasserbereitung"))
+			.disableWhen(station.isProtected)
+			.get();
 		UI.filler(c);
 
-		controlText = UI.formMultiText(c, "Regelung");
-		Texts.on(controlText).disableWhen(station.isProtected);
+		controlText = Texts.on(UI.formMultiText(c, "Regelung"))
+			.disableWhen(station.isProtected)
+			.get();
 		UI.filler(c);
 
 	}

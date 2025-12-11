@@ -55,43 +55,58 @@ class BoilerWizard implements IContent {
 	}
 
 	private void createMinMaxTexts(Composite c) {
-		minText = UI.formText(c, "Minimale Leistung th.");
-		Texts.on(minText).disableWhen(boiler.isProtected).decimal().required().validate(wizard::validate);
+		minText = Texts.on(UI.formText(c, "Minimale Leistung th."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
-		maxText = UI.formText(c, "Maximale Leistung th.");
-		Texts.on(maxText).disableWhen(boiler.isProtected).decimal().required().validate(wizard::validate);
+
+		maxText = Texts.on(UI.formText(c, "Maximale Leistung th."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
 	}
 
 	private void createMinMaxElTexts(Composite c) {
-		minElText = UI.formText(c, "Minimale Leistung el.");
-		Texts.on(minElText)
-				.disableWhen(boiler.isProtected)
-				.decimal()
-				.required()
-				.validate(wizard::validate);
+		minElText = Texts.on(UI.formText(c, "Minimale Leistung el."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
 
-		maxElText = UI.formText(c, "Maximale Leistung el.");
-		Texts.on(maxElText).disableWhen(boiler.isProtected).decimal().required().validate(wizard::validate);
+		maxElText = Texts.on(UI.formText(c, "Maximale Leistung el."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "kW");
 	}
 
 	private void createEfficiencyText(Composite c) {
-		String label, unit;
-		label = M.EfficiencyRate + " th.";
-		unit = "%";
-		efficiencyText = UI.formText(c, label);
-		Texts.on(efficiencyText).disableWhen(boiler.isProtected).decimal().required()
-				.validate(wizard::validate);
-		UI.formLabel(c, unit);
+		efficiencyText = Texts.on(UI.formText(c, M.EfficiencyRate + " th."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
+		UI.formLabel(c, "%");
 	}
 
 	private void createEfficiencyElText(Composite c) {
-		efficiencyElText = UI.formText(c,
-				M.EfficiencyRate + " el.");
-		Texts.on(efficiencyElText).disableWhen(boiler.isProtected).decimal().required()
-				.validate(wizard::validate);
+		efficiencyElText = Texts.on(UI.formText(c, M.EfficiencyRate + " el."))
+			.disableWhen(boiler.isProtected)
+			.decimal()
+			.required()
+			.validate(wizard::validate)
+			.get();
 		UI.formLabel(c, "%");
 	}
 

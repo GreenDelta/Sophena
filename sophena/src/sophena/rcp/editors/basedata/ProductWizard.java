@@ -90,12 +90,16 @@ public class ProductWizard extends Wizard {
 			var comp = new Composite(cParent, SWT.NULL);
 			UI.gridData(comp, true, false);
 			UI.gridLayout(comp, 3);
-			nameText = UI.formText(comp, M.Name);
-			Texts.on(nameText).disableWhen(product.isProtected).required().validate(data::validate);
+			nameText = Texts.on(UI.formText(comp, M.Name))
+				.disableWhen(product.isProtected)
+				.required()
+				.validate(data::validate)
+				.get();
 			UI.formLabel(comp, "");
 
-			productLineText = UI.formText(comp, "Produktlinie");
-			Texts.on(productLineText).disableWhen(product.isProtected);
+			productLineText = Texts.on(UI.formText(comp, "Produktlinie"))
+				.disableWhen(product.isProtected)
+				.get();
 			UI.formLabel(comp, "");
 
 			createGroupCombo(comp);
@@ -104,8 +108,9 @@ public class ProductWizard extends Wizard {
 			createPriceText(comp);
 
 			content.render(comp);
-			descriptionText = UI.formMultiText(comp, "Zusatzinformation");
-			Texts.on(descriptionText).disableWhen(product.isProtected);
+			descriptionText = Texts.on(UI.formMultiText(comp, "Zusatzinformation"))
+				.disableWhen(product.isProtected)
+				.get();
 			UI.formLabel(comp, "");
 			data.bindToUI();
 
@@ -113,8 +118,10 @@ public class ProductWizard extends Wizard {
 		}
 
 		private void createPriceText(Composite c) {
-			priceText = UI.formText(c, "Preis");
-			Texts.on(priceText).decimal().validate(data::validate);
+			priceText = Texts.on(UI.formText(c, "Preis"))
+				.decimal()
+				.validate(data::validate)
+				.get();
 			if (product instanceof Pipe) {
 				UI.formLabel(c, "EUR/m");
 			} else {
