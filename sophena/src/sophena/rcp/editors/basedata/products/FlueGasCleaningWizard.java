@@ -46,38 +46,33 @@ public class FlueGasCleaningWizard implements IContent {
 	public void render(Composite c) {
 
 		maxVolumeFlowText = UI.formText(c, "Max. reinigbarer Volumenstrom");
-		maxVolumeFlowText.setEditable(!cleaning.isProtected);
-		Texts.on(maxVolumeFlowText).decimal().required()
+		Texts.on(maxVolumeFlowText).disableWhen(cleaning.isProtected).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "m3/h");
 
 		fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
-		fuelText.setEditable(!cleaning.isProtected);
-		Texts.on(fuelText).required().validate(wizard::validate);
+		Texts.on(fuelText).disableWhen(cleaning.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		maxProducerPowerText = UI.formText(c, "Max. Leistung Wärmeerzeuger");
-		maxProducerPowerText.setEditable(!cleaning.isProtected);
-		Texts.on(maxProducerPowerText).decimal().required()
+		Texts.on(maxProducerPowerText).disableWhen(cleaning.isProtected).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "kW");
 
 		maxElectricityConsumptionText = UI.formText(c, "Eigenstrombedarf");
-		maxElectricityConsumptionText.setEditable(!cleaning.isProtected);
-		Texts.on(maxElectricityConsumptionText).decimal();
+		Texts.on(maxElectricityConsumptionText).disableWhen(cleaning.isProtected).decimal();
 		UI.formLabel(c, "kW");
 
 		cleaningMethodText = UI.formText(c, "Art der Reinigung");
-		cleaningMethodText.setEditable(!cleaning.isProtected);
+		Texts.on(cleaningMethodText).disableWhen(cleaning.isProtected);
 		UI.filler(c);
 
 		cleaningTypeText = UI.formText(c, "Typ der Reinigung");
-		cleaningTypeText.setEditable(!cleaning.isProtected);
+		Texts.on(cleaningTypeText).disableWhen(cleaning.isProtected);
 		UI.filler(c);
 
 		separationEfficiencyText = UI.formText(c, "Max. Abscheidegrad");
-		separationEfficiencyText.setEditable(!cleaning.isProtected);
-		Texts.on(separationEfficiencyText).decimal();
+		Texts.on(separationEfficiencyText).disableWhen(cleaning.isProtected).decimal();
 		UI.formLabel(c, "%");
 	}
 

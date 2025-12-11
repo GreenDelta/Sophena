@@ -10,7 +10,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.ProductCosts;
 import sophena.rcp.utils.Texts;
-import sophena.rcp.utils.Texts.TextDispatch;
+import sophena.rcp.utils.Texts.TextBox;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
@@ -72,10 +72,10 @@ public class ProductCostSection {
 		return this;
 	}
 
-	private TextDispatch t(String label, String unit, double initial) {
+	private TextBox t(String label, String unit, double initial) {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
-		TextDispatch disp = Texts.on(t).init(initial).decimal();
+		TextBox disp = Texts.on(t).init(initial).decimal();
 		if (editor != null) {
 			disp.onChanged(s -> editor.setDirty());
 		}
@@ -83,10 +83,10 @@ public class ProductCostSection {
 		return disp;
 	}
 
-	private TextDispatch t(String label, String unit, int initial) {
+	private TextBox t(String label, String unit, int initial) {
 		Text t = UI.formText(composite, toolkit, label);
 		UI.formLabel(composite, toolkit, unit);
-		TextDispatch disp = Texts.on(t).init(initial).integer();
+		TextBox disp = Texts.on(t).init(initial).integer();
 		if (editor != null) {
 			disp.onChanged(s -> editor.setDirty());
 		}

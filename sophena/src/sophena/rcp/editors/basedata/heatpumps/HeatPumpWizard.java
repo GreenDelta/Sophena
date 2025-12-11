@@ -174,12 +174,10 @@ public class HeatPumpWizard implements IContent {
 
 	private void createTexts(Composite c) {
 		minText = UI.formText(c, M.MinPower);
-		minText.setEditable(!heatPump.isProtected);
-		Texts.on(minText).decimal().required().validate(wizard::validate);
+		Texts.on(minText).disableWhen(heatPump.isProtected).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 		ratedPowerText = UI.formText(c, M.RatedPower);
-		ratedPowerText.setEditable(!heatPump.isProtected);
-		Texts.on(ratedPowerText).decimal().required().validate(wizard::validate);
+		Texts.on(ratedPowerText).disableWhen(heatPump.isProtected).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}
 

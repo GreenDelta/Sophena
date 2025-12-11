@@ -40,23 +40,19 @@ public class HeatRecoveryWizard implements IContent {
 	@Override
 	public void render(Composite c) {
 		powerText = UI.formText(c, "Thermische Leistung");
-		powerText.setEditable(!recovery.isProtected);
-		Texts.on(powerText).decimal().required().validate(wizard::validate);
+		Texts.on(powerText).disableWhen(recovery.isProtected).decimal().required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 
 		typeText = UI.formText(c, "Art des Wärmeerzeugers");
-		typeText.setEditable(!recovery.isProtected);
-		Texts.on(typeText).required().validate(wizard::validate);
+		Texts.on(typeText).disableWhen(recovery.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		fuelText = UI.formText(c, "Brennstoff (Wärmeerzeuger)");
-		fuelText.setEditable(!recovery.isProtected);
-		Texts.on(fuelText).required().validate(wizard::validate);
+		Texts.on(fuelText).disableWhen(recovery.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		producerPowerText = UI.formText(c, "Leistung des Wärmeerzeugers");
-		producerPowerText.setEditable(!recovery.isProtected);
-		Texts.on(producerPowerText).decimal().required()
+		Texts.on(producerPowerText).disableWhen(recovery.isProtected).decimal().required()
 				.validate(wizard::validate);
 		UI.formLabel(c, "kW");
 	}

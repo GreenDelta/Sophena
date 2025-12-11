@@ -55,7 +55,7 @@ public final class Texts {
 			return;
 		text.setText(Num.str(d, decimalPlaces));
 	}
-	
+
 	public static void set(Text text, Double d) {
 		if (text == null)
 			return;
@@ -106,7 +106,7 @@ public final class Texts {
 		else
 			return Num.read(text.getText(), decimalPlaces);
 	}
-	
+
 	public static int getInt(Text text) {
 		if (text == null)
 			return 0;
@@ -128,19 +128,29 @@ public final class Texts {
 		return min <= d && d <= max;
 	}
 
-	public static TextDispatch on(Text text) {
-		return new TextDispatch(text);
+	public static TextBox on(Text text) {
+		return new TextBox(text);
 	}
 
-	public static class TextDispatch {
+	public static class TextBox {
 
 		public final Text text;
 
-		TextDispatch(Text text) {
+		TextBox(Text text) {
 			this.text = text;
 		}
 
-		public TextDispatch required() {
+		public TextBox disableWhen(boolean b) {
+			if (text == null)
+				return this;
+			if (b) {
+				// text.setEditable(false);
+				text.setEnabled(false);
+			}
+			return this;
+		}
+
+		public TextBox required() {
 			if (text == null)
 				return this;
 			text.setBackground(Colors.forRequiredField());
@@ -153,7 +163,7 @@ public final class Texts {
 			return this;
 		}
 
-		public TextDispatch calculated() {
+		public TextBox calculated() {
 			if (text == null)
 				return this;
 			text.setBackground(Colors.forCalculatedField());
@@ -161,7 +171,7 @@ public final class Texts {
 			return this;
 		}
 
-		public TextDispatch decimal() {
+		public TextBox decimal() {
 			if (text == null)
 				return this;
 			text.addListener(SWT.Verify, (e) -> {
@@ -180,7 +190,7 @@ public final class Texts {
 			return this;
 		}
 
-		public TextDispatch integer() {
+		public TextBox integer() {
 			if (text == null)
 				return this;
 			text.addListener(SWT.Verify, (e) -> {
@@ -199,48 +209,48 @@ public final class Texts {
 			return this;
 		}
 
-		public TextDispatch validate(Runnable fn) {
+		public TextBox validate(Runnable fn) {
 			if (text == null || fn == null)
 				return this;
 			text.addModifyListener((e) -> fn.run());
 			return this;
 		}
 
-		public TextDispatch onChanged(Consumer<String> fn) {
+		public TextBox onChanged(Consumer<String> fn) {
 			if (text == null || fn == null)
 				return this;
 			text.addModifyListener(new ChangeListener(text, fn));
 			return this;
 		}
 
-		public TextDispatch readOnly() {
+		public TextBox readOnly() {
 			if (text == null)
 				return this;
 			text.setEditable(false);
 			return this;
 		}
 
-		public TextDispatch init(String s) {
+		public TextBox init(String s) {
 			set(text, s);
 			return this;
 		}
 
-		public TextDispatch init(int i) {
+		public TextBox init(int i) {
 			set(text, i);
 			return this;
 		}
 
-		public TextDispatch init(Integer i) {
+		public TextBox init(Integer i) {
 			set(text, i);
 			return this;
 		}
 
-		public TextDispatch init(double d) {
+		public TextBox init(double d) {
 			set(text, d);
 			return this;
 		}
 
-		public TextDispatch init(Double d) {
+		public TextBox init(Double d) {
 			set(text, d);
 			return this;
 		}

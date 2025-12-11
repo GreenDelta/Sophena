@@ -15,7 +15,7 @@ import sophena.rcp.utils.UI;
 
 public class TransferStationWizard implements IContent {
 
-	private TransferStation station;
+	private final TransferStation station;
 	private ProductWizard wizard;
 
 	private Text buildingTypeText;
@@ -44,25 +44,27 @@ public class TransferStationWizard implements IContent {
 	public void render(Composite c) {
 
 		buildingTypeText = UI.formText(c, M.BuildingType);
-		Texts.on(buildingTypeText).required().validate(wizard::validate);
+		Texts.on(buildingTypeText).disableWhen(station.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		capacityText = UI.formText(c, "Leistung");
-		Texts.on(capacityText).required().validate(wizard::validate);
+		Texts.on(capacityText).disableWhen(station.isProtected).required().validate(wizard::validate);
 		UI.formLabel(c, "kW");
 
 		typeText = UI.formMultiText(c, "Art");
-		Texts.on(typeText).required().validate(wizard::validate);
+		Texts.on(typeText).disableWhen(station.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		materialText = UI.formMultiText(c, "Material");
-		Texts.on(materialText).required().validate(wizard::validate);
+		Texts.on(materialText).disableWhen(station.isProtected).required().validate(wizard::validate);
 		UI.filler(c);
 
 		waterHeatingText = UI.formMultiText(c, "Warmwasserbereitung");
+		Texts.on(waterHeatingText).disableWhen(station.isProtected);
 		UI.filler(c);
 
 		controlText = UI.formMultiText(c, "Regelung");
+		Texts.on(controlText).disableWhen(station.isProtected);
 		UI.filler(c);
 
 	}

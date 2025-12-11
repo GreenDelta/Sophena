@@ -25,7 +25,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
-import sophena.rcp.utils.Texts.TextDispatch;
+import sophena.rcp.utils.Texts.TextBox;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
@@ -128,16 +128,16 @@ public class CostSettingsPanel {
 			t(c, "Einmalige Anschlusskosten", "EUR", costs().connectionFees)
 			.onChanged(s -> costs().connectionFees = Num.read(s));
 			t(c, "Investitionsförderung absolut", "EUR", costs().funding)
-					.onChanged(s -> costs().funding = Num.read(s));					
+					.onChanged(s -> costs().funding = Num.read(s));
 			t(c, "Investitionsförderung prozentual", "%",
 					costs().fundingPercent).onChanged(
 							s ->{
-								costs().fundingPercent = Num.read(s);	
+								costs().fundingPercent = Num.read(s);
 								setInnerGridVisible(costs().fundingPercent > 0);
 							});
 			if(costs().fundingPercent == 0)
-				costs().fundingTypes = FundingType.BiomassBoiler.getValue() | FundingType.SolarThermalPlant.getValue() | FundingType.BoilerAccessories.getValue() | FundingType.HeatRecovery.getValue() | FundingType.FlueGasCleaning.getValue() | FundingType.BufferTank.getValue() 
-				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue() 
+				costs().fundingTypes = FundingType.BiomassBoiler.getValue() | FundingType.SolarThermalPlant.getValue() | FundingType.BoilerAccessories.getValue() | FundingType.HeatRecovery.getValue() | FundingType.FlueGasCleaning.getValue() | FundingType.BufferTank.getValue()
+				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue()
 				| FundingType.TransferStation.getValue() | FundingType.Planning.getValue() | FundingType.HeatPump.getValue();
 			createCheckSection(body);
 			setInnerGridVisible(costs().fundingPercent > 0);
@@ -147,7 +147,7 @@ public class CostSettingsPanel {
 	private void createCheckSection(Composite c)
 	{
 		inner = tk.createComposite(c);
-		UI.gridLayout(inner, 4);	
+		UI.gridLayout(inner, 4);
 		dataInner = new GridData(SWT.FILL, SWT.FILL, false, false);
 	    inner.setLayoutData(dataInner);
 	    setCheckBox(tk.createButton(inner, M.BiomassBoiler, SWT.CHECK), FundingType.BiomassBoiler.getValue());
@@ -168,9 +168,9 @@ public class CostSettingsPanel {
 	    setCheckBox(tk.createButton(inner, M.HeatingNetTechnology, SWT.CHECK), FundingType.HeatingNetTechnology.getValue());
 	    setCheckBox(tk.createButton(inner, M.HeatingNetConstruction, SWT.CHECK), FundingType.HeatingNetConstruction.getValue());
 	    setCheckBox(tk.createButton(inner, M.TransferStation, SWT.CHECK), FundingType.TransferStation.getValue());
-	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());	    
+	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());
 	}
-	
+
 	private void setCheckBox(Button check, int fundingTypeValue)
 	{
 		check.setSelection((costs().fundingTypes & fundingTypeValue) > 0);
@@ -182,16 +182,16 @@ public class CostSettingsPanel {
 			editor.setDirty();
 		});
 	}
-	
+
 	private void setInnerGridVisible(Boolean visible)
 	{
 		inner.setVisible(visible);
-		dataInner.exclude = !visible;	
+		dataInner.exclude = !visible;
 		inner.requestLayout();
-		
+
 		updateScrolledForm.run();
 	}
-	
+
 	private void createOtherSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Sonstige Kosten");
 		UI.gridLayout(c, 3);
@@ -225,13 +225,13 @@ public class CostSettingsPanel {
 						s -> costs().electricityRevenuesFactor = Num.read(s));
 	}
 
-	private TextDispatch t(Composite comp, String label, String unit,
-			double initial) {
+	private TextBox t(Composite comp, String label, String unit,
+                      double initial) {
 		return t(comp, label, unit, Num.str(initial));
 	}
 
-	private TextDispatch t(Composite comp, String label, String unit,
-			String initial) {
+	private TextBox t(Composite comp, String label, String unit,
+                      String initial) {
 		Label lab = UI.formLabel(comp, tk, label);
 		UI.gridData(lab, false, false).widthHint = 250;
 		Text text = tk.createText(comp, null, SWT.BORDER);

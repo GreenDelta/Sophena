@@ -91,12 +91,11 @@ public class ProductWizard extends Wizard {
 			UI.gridData(comp, true, false);
 			UI.gridLayout(comp, 3);
 			nameText = UI.formText(comp, M.Name);
-			nameText.setEditable(!product.isProtected);
-			Texts.on(nameText).required().validate(data::validate);
+			Texts.on(nameText).disableWhen(product.isProtected).required().validate(data::validate);
 			UI.formLabel(comp, "");
 
 			productLineText = UI.formText(comp, "Produktlinie");
-			productLineText.setEditable(!product.isProtected);
+			Texts.on(productLineText).disableWhen(product.isProtected);
 			UI.formLabel(comp, "");
 
 			createGroupCombo(comp);
@@ -106,7 +105,7 @@ public class ProductWizard extends Wizard {
 
 			content.render(comp);
 			descriptionText = UI.formMultiText(comp, "Zusatzinformation");
-			descriptionText.setEditable(!product.isProtected);
+			Texts.on(descriptionText).disableWhen(product.isProtected);
 			UI.formLabel(comp, "");
 			data.bindToUI();
 
