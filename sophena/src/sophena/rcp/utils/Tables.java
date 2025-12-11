@@ -86,8 +86,8 @@ public class Tables {
 		});
 	}
 
-	public static <T> void makeSortable(Class<T> contentType,
-			TableViewer viewer, ITableLabelProvider labelProvider, int... cols) {
+	public static <T> void sortByLabel(Class<T> contentType,
+																		 TableViewer viewer, ITableLabelProvider labelProvider, int... cols) {
 		TableColumnSorter<?>[] sorters = new TableColumnSorter<?>[cols.length];
 		for (int i = 0; i < cols.length; i++) {
 			sorters[i] = new TableColumnSorter<>(contentType, cols[i],

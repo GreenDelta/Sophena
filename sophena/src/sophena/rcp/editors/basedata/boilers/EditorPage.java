@@ -55,53 +55,66 @@ class EditorPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 		ScrolledForm form = UI.formHeader(managedForm,
-				Labels.getPlural(type));
+			Labels.getPlural(type));
 		FormToolkit toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createBoilerSection(body, toolkit);
-		form.reflow(true);
+		// disable form scrolling - the table has its own scrollbars
+		// form.setExpandHorizontal(true);
+		// form.setExpandVertical(true);
 	}
 
 	private void createBoilerSection(Composite parent, FormToolkit toolkit) {
 		Section section = UI.section(parent, toolkit,
-				Labels.getPlural(type));
+			Labels.getPlural(type));
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
+		var label = new BoilerLabel();
 		TableViewer table = Tables.createViewer(comp, getColumns());
-		table.setLabelProvider(new BoilerLabel());
+		table.setLabelProvider(label);
 		table.setInput(boilers);
 		if (type == ProductType.COGENERATION_PLANT) {
 			double x = 1 / 8.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x);
+			Tables.sortByLabel(Boiler.class, table, label, 0, 1, 2, 3, 4, 5, 6, 7);
 		} else {
 			double x = 1 / 6.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
+			Tables.sortByLabel(Boiler.class, table, label, 0, 1, 2, 3, 4, 5);
 		}
 		bindBoilerActions(section, table);
 	}
 
 	private String[] getColumns() {
-		String erLabel = "Wirkungsgrad";
-		if (type == ProductType.COGENERATION_PLANT)
-			return new String[] { "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller",
-					"Max. Leistung el.", "Wirkungsgrad el.",
-					"Max. Leistung th.",
-					"Wirkungsgrad th." };
-		else
-			return new String[] { "Produktgruppe", "Bezeichnung", "Produktlinie", "Hersteller",
-					"Maximale Leistung", erLabel };
+		var headers = type == ProductType.COGENERATION_PLANT
+			? new String[8]
+			: new String[6];
+		headers[0] = "Produktgruppe";
+		headers[1] = "Bezeichnung";
+		headers[2] = "Produktlinie";
+		headers[3] = "Hersteller";
+		if (type == ProductType.COGENERATION_PLANT) {
+			headers[4] = "Max. Leistung el.";
+			headers[5] = "Wirkungsgrad el.";
+			headers[6] = "Max. Leistung th.";
+			headers[7] = "Wirkungsgrad th.";
+		} else {
+			headers[4] = "Maximale Leistung";
+			headers[5] = "Wirkungsgrad";
+		}
+		return headers;
 	}
 
 	private void bindBoilerActions(Section section, TableViewer table) {
 		Action add = Actions.create(M.Add, Icon.ADD_16.des(),
-				() -> addBoiler(table));
+			() -> addBoiler(table));
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
-				() -> editBoiler(table));
+			() -> editBoiler(table));
 		Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
-				() -> saveAs(table));
+			() -> saveAs(table));
 		Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
-				() -> deleteBoiler(table));
+			() -> deleteBoiler(table));
 		Actions.bind(section, add, edit, saveAs, del);
 		Actions.bind(table, add, edit, saveAs, del);
 		Tables.onDoubleClick(table, e -> editBoiler(table));
@@ -156,7 +169,7 @@ class EditorPage extends FormPage {
 		if (boiler == null || boiler.isProtected)
 			return;
 		boolean doIt = MsgBox.ask(M.Delete,
-				"Soll das ausgewählte Produkt wirklich gelöscht werden?");
+			"Soll das ausgewählte Produkt wirklich gelöscht werden?");
 		if (!doIt)
 			return;
 		List<SearchResult> usage = new UsageSearch(App.getDb()).of(boiler);
@@ -183,19 +196,19 @@ class EditorPage extends FormPage {
 				return ProductTables.getText(boiler, col);
 			boolean coGen = type == ProductType.COGENERATION_PLANT;
 			return switch (col) {
-				case 4 -> coGen
-						? s(boiler.maxPowerElectric, "kW")
-						: s(boiler.maxPower, "kW");
-				case 5 -> coGen
-						? s(boiler.efficiencyRateElectric * 100d, "%")
-						: s(boiler.efficiencyRate * 100d, "%");
-				case 6 -> coGen
-						? s(boiler.maxPower, "kW")
-						: null;
-				case 7 -> coGen
-						? s(boiler.efficiencyRate * 100d, "%")
-						: null;
-				default -> null;
+			case 4 -> coGen
+				? s(boiler.maxPowerElectric, "kW")
+				: s(boiler.maxPower, "kW");
+			case 5 -> coGen
+				? s(boiler.efficiencyRateElectric * 100d, "%")
+				: s(boiler.efficiencyRate * 100d, "%");
+			case 6 -> coGen
+				? s(boiler.maxPower, "kW")
+				: null;
+			case 7 -> coGen
+				? s(boiler.efficiencyRate * 100d, "%")
+				: null;
+			default -> null;
 			};
 		}
 
