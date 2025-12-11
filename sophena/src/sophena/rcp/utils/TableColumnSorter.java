@@ -7,10 +7,10 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import sophena.utils.Strings;
 
 public class TableColumnSorter<T> extends ViewerComparator {
-	private Class<T> contentType;
-	private int column;
+	private final Class<T> contentType;
+	private final int column;
 	private boolean ascending = true;
-	private ITableLabelProvider labelProvider;
+	private final ITableLabelProvider labelProvider;
 
 	public TableColumnSorter(Class<T> contentType, int column) {
 		this(contentType, column, null);

@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,35 +53,41 @@ class EditorPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		ScrolledForm form = UI.formHeader(managedForm,
-			Labels.getPlural(type));
-		FormToolkit toolkit = managedForm.getToolkit();
+		var form = UI.formHeader(managedForm, Labels.getPlural(type));
+		var toolkit = managedForm.getToolkit();
 		Composite body = UI.formBody(form, toolkit);
 		createBoilerSection(body, toolkit);
 		// disable form scrolling - the table has its own scrollbars
-		// form.setExpandHorizontal(true);
-		// form.setExpandVertical(true);
+		form.setAlwaysShowScrollBars(false);
+		form.setExpandHorizontal(true);
+		form.setExpandVertical(false);
 	}
 
 	private void createBoilerSection(Composite parent, FormToolkit toolkit) {
-		Section section = UI.section(parent, toolkit,
-			Labels.getPlural(type));
+		var section = UI.section(parent, toolkit,	Labels.getPlural(type));
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, toolkit);
 		UI.gridLayout(comp, 1);
 		var label = new BoilerLabel();
-		TableViewer table = Tables.createViewer(comp, getColumns());
+		var table = Tables.createViewer(comp, getColumns());
 		table.setLabelProvider(label);
 		table.setInput(boilers);
+		Tables.sortByLabel(Boiler.class, table, label, 0, 1, 2, 3);
+
 		if (type == ProductType.COGENERATION_PLANT) {
 			double x = 1 / 8.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x);
-			Tables.sortByLabel(Boiler.class, table, label, 0, 1, 2, 3, 4, 5, 6, 7);
+			Tables.sortByNumber(Boiler.class, table, b -> b.maxPowerElectric, 4);
+			Tables.sortByNumber(Boiler.class, table, b -> b.efficiencyRateElectric, 5);
+			Tables.sortByNumber(Boiler.class, table, b -> b.maxPower, 6);
+			Tables.sortByNumber(Boiler.class, table, b -> b.efficiencyRate, 7);
 		} else {
 			double x = 1 / 6.0;
 			Tables.bindColumnWidths(table, x, x, x, x, x, x);
-			Tables.sortByLabel(Boiler.class, table, label, 0, 1, 2, 3, 4, 5);
+			Tables.sortByNumber(Boiler.class, table, b -> b.maxPower, 4);
+			Tables.sortByNumber(Boiler.class, table, b -> b.efficiencyRate, 5);
 		}
+
 		bindBoilerActions(section, table);
 	}
 

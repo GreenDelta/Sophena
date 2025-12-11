@@ -1,10 +1,13 @@
 package sophena.rcp.utils;
 
 import java.util.function.Consumer;
+import java.util.function.ToDoubleFunction;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -86,26 +89,60 @@ public class Tables {
 		});
 	}
 
-	public static <T> void sortByLabel(Class<T> contentType,
-																		 TableViewer viewer, ITableLabelProvider labelProvider, int... cols) {
-		TableColumnSorter<?>[] sorters = new TableColumnSorter<?>[cols.length];
+	public static <T> void sortByLabel(
+			Class<T> contentType, TableViewer viewer,
+			ITableLabelProvider label, int... cols) {
+		var sorters = new TableColumnSorter<?>[cols.length];
 		for (int i = 0; i < cols.length; i++) {
-			sorters[i] = new TableColumnSorter<>(contentType, cols[i],
-					labelProvider);
+			sorters[i] = new TableColumnSorter<>(contentType, cols[i], label);
 		}
 		registerSorters(viewer, sorters);
 	}
 
-	public static void registerSorters(final TableViewer viewer,
-			TableColumnSorter<?>... sorters) {
+	public static <T> void sortByNumber(
+			Class<T> type, TableViewer viewer, ToDoubleFunction<T> fn, int col) {
+		if (viewer == null || fn == null)
+			return;
+		var table = viewer.getTable();
+		if (col >= table.getColumnCount())
+			return;
+		var column = table.getColumn(col);
+		var ascending = new boolean[]{true};
+
+		column.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (column == table.getSortColumn()) {
+					ascending[0] = !ascending[0];
+				} else {
+					ascending[0] = true;
+				}
+				table.setSortDirection(ascending[0] ? SWT.UP : SWT.DOWN);
+				table.setSortColumn(column);
+				viewer.setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer v, Object a, Object b) {
+						double d1 = fn.applyAsDouble(type.cast(a));
+						double d2 = fn.applyAsDouble(type.cast(b));
+						int cmp = Double.compare(d1, d2);
+						return ascending[0] ? cmp : -cmp;
+					}
+				});
+				viewer.refresh();
+			}
+		});
+	}
+
+	private static void registerSorters(
+			TableViewer viewer, TableColumnSorter<?>... sorters) {
 		if (viewer == null || sorters == null)
 			return;
-		final Table table = viewer.getTable();
+		var table = viewer.getTable();
 		int count = table.getColumnCount();
-		for (final TableColumnSorter<?> sorter : sorters) {
+		for (var sorter : sorters) {
 			if (sorter.getColumn() >= count)
 				continue;
-			final TableColumn column = table.getColumn(sorter.getColumn());
+			var column = table.getColumn(sorter.getColumn());
 			column.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -135,7 +172,7 @@ public class Tables {
 		});
 	}
 
-	/** Add an event handler for double clicks on the given table viewer. */
+	/** Add an event handler for double-clicks on the given table viewer. */
 	public static void onDoubleClick(TableViewer viewer,
 			Consumer<MouseEvent> handler) {
 		if (viewer == null || viewer.getTable() == null || handler == null)
