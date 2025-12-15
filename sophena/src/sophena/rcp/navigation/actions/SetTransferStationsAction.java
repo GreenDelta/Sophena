@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.db.daos.ProjectDao;
 import sophena.model.Manufacturer;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.TransferStation;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -100,9 +102,34 @@ public class SetTransferStationsAction extends NavigationAction {
 				return false;
 			}
 
-			// TODO: apply stations to consumers
-			// The logic for which station to assign to which consumer
-			// will be added later
+			stations.sort(Comparator.comparingDouble(s -> s.outputCapacity));
+			for (var consumer : project.consumers) {
+				if (!overwrite && consumer.transferStation != null)
+					continue;
+
+				TransferStation station = null;
+				for (var s : stations) {
+					if (s.outputCapacity >= consumer.heatingLoad) {
+						station = s;
+						break;
+					}
+				}
+
+				if (station == null) {
+					MsgBox.error("Keine passende Übergabestation",
+						"Die Heizleistung von " + Math.round(consumer.heatingLoad)
+							+ " kW vom Abnehmer '" + consumer.name + "' kann von keiner"
+							+ " Übergabestation erbracht werden.");
+					return false;
+				}
+
+
+				consumer.transferStation = station;
+				if (consumer.transferStationCosts == null) {
+					consumer.transferStationCosts = new ProductCosts();
+				}
+				ProductCosts.copy(station, consumer.transferStationCosts);
+			}
 
 			var dao = new ProjectDao(App.getDb());
 			dao.update(project);
