@@ -1,5 +1,4 @@
 import csv
-import re
 
 from pathlib import Path
 
@@ -20,6 +19,48 @@ PRODUCT_CSVS = [
 INFER = True
 
 
+def strip_line(s: str) -> str:
+    if not s:
+        return ""
+    r = s.strip()
+    while len(r) > 0:
+        last = r[-1]
+        if last.isalpha() or last == ")":
+            break
+        r = r[:-1]
+    return r
+
+
+def infer(name: str) -> str:
+    """Infer the product line from the product name"""
+    # find the position of the first letter
+    first_letter = -1
+    for i, c in enumerate(name):
+        if c.isalpha():
+            first_letter = i
+            break
+    if first_letter == -1:
+        return name
+
+    # find the first number after the first letter
+    first_num_after_letter = -1
+    for i in range(first_letter + 1, len(name)):
+        if name[i].isdigit():
+            first_num_after_letter = i
+            break
+
+    if first_num_after_letter == -1:
+        result = name
+    else:
+        result = name[:first_num_after_letter]
+
+    # trim trailing non-letter characters
+    while result and not result[-1].isalpha():
+        result = result[:-1]
+
+    return result
+
+
 def add_col(path: Path) -> None:
     print(f"  . add column to: {path.name}")
     rows = []
@@ -32,7 +73,7 @@ def add_col(path: Path) -> None:
             if i == 0:
                 val = "product line"
             elif INFER:
-                val = re.sub(r"\d.*", "", row[4])
+                val = infer(row[4])
             else:
                 val = ""
             row.insert(4, val)
