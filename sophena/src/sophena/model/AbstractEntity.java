@@ -1,5 +1,7 @@
 package sophena.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
@@ -20,10 +22,9 @@ public abstract class AbstractEntity implements Copyable<AbstractEntity> {
 
 	@Override
 	public int hashCode() {
-		if (id == null)
-			return super.hashCode();
-		else
-			return id.hashCode();
+		return id != null
+			? id.hashCode()
+			: super.hashCode();
 	}
 
 	@Override
@@ -34,10 +35,9 @@ public abstract class AbstractEntity implements Copyable<AbstractEntity> {
 			return true;
 		if (!obj.getClass().equals(this.getClass()))
 			return false;
-		AbstractEntity other = (AbstractEntity) obj;
-		if (this.id == null || other.id == null)
-			return false;
-		else
-			return this.id.equals(other.id);
+		var other = (AbstractEntity) obj;
+		return this.id != null
+			&& other.id != null
+			&& Objects.equals(this.id, other.id);
 	}
 }
