@@ -26,7 +26,7 @@ public class ConsumerImportAction extends NavigationAction {
 
 	@Override
 	public boolean accept(List<NavigationElement> elements) {
-		if (elements == null || elements.isEmpty())
+		if (elements == null || elements.size() != 1)
 			return false;
 		var e = elements.getFirst();
 		if (!(e instanceof SubFolderElement folder))
