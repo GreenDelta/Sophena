@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,10 @@ public class DeleteAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		handler = Handlers.find(element, this);
 		if (handler == null) {
 			elem = null;

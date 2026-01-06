@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.slf4j.Logger;
@@ -24,7 +25,10 @@ public class AddAction extends NavigationAction {
 	private Method handler;
 
 	@Override
-	public boolean accept(NavigationElement e) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var e = elements.getFirst();
 		handler = Handlers.find(e, this);
 		if (handler == null) {
 			elem = null;

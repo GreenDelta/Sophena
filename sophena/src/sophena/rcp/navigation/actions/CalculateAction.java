@@ -1,5 +1,7 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.rcp.Icon;
@@ -13,7 +15,10 @@ public class CalculateAction extends NavigationAction {
 	private SubFolderElement elem;
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		if (!(element instanceof SubFolderElement))
 			return false;
 		SubFolderElement e = (SubFolderElement) element;

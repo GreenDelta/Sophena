@@ -1,5 +1,7 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
+
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
@@ -18,7 +20,10 @@ public class AddBiogasPlantAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement elem) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var elem = elements.getFirst();
 		if (elem instanceof ProducerElement prodElem) {
 			project = prodElem.getProject();
 			return true;

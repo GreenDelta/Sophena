@@ -1,5 +1,7 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.slf4j.Logger;
@@ -25,7 +27,10 @@ public class SaveAsAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		if (!(element instanceof ProjectElement))
 			return false;
 		ProjectElement e = (ProjectElement) element;

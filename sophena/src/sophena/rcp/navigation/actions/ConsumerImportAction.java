@@ -25,7 +25,10 @@ public class ConsumerImportAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement e) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var e = elements.getFirst();
 		if (!(e instanceof SubFolderElement folder))
 			return false;
 		if (folder.getType() != SubFolderType.CONSUMPTION)

@@ -1,5 +1,7 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,10 @@ public class DisableAction extends NavigationAction {
 	private NavigationElement elem;
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		if (element instanceof ConsumerElement) {
 			ConsumerElement e = (ConsumerElement) element;
 			updateUI(e.content.disabled);

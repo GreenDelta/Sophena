@@ -1,5 +1,7 @@
 package sophena.rcp.navigation;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -62,11 +64,18 @@ public class NavigationMenu extends CommonActionProvider {
 			menu.add(new NewFolderAction());
 			return;
 		}
-		NavigationElement element = Viewers.getFirst(selection);
+
+		var elements = new ArrayList<NavigationElement>();
+		for (var i : selection) {
+			if (i instanceof NavigationElement elem) {
+				elements.add(elem);
+			}
+		}
+
 		for (var group : actionGroups) {
 			int count = 0;
 			for (var action : group) {
-				if (!action.accept(element))
+				if (!action.accept(elements))
 					continue;
 				menu.add(action);
 				count++;
@@ -75,6 +84,7 @@ public class NavigationMenu extends CommonActionProvider {
 				menu.add(new Separator());
 			}
 		}
+
 		menu.add(new NewProjectAction());
 		menu.add(new NewFolderAction());
 	}

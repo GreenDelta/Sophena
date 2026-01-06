@@ -34,7 +34,10 @@ public class DuplicateAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		handler = Handlers.find(element, this);
 		if (handler == null) {
 			elem = null;

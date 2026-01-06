@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import sophena.rcp.navigation.SubFolderType;
 
 public class OpenAction extends NavigationAction {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NavigationElement elem;
 	private Method handler;
@@ -33,7 +34,10 @@ public class OpenAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		handler = Handlers.find(element, this);
 		if (handler == null) {
 			elem = null;
@@ -50,7 +54,7 @@ public class OpenAction extends NavigationAction {
 			log.trace("call {} with {}", handler, elem);
 			handler.invoke(this);
 		} catch (Exception e) {
-			log.error("failed to call " + handler + " with " + elem, e);
+			log.error("failed to call {} with {}", handler, elem, e);
 		}
 	}
 
@@ -78,13 +82,17 @@ public class OpenAction extends NavigationAction {
 		Cleanings.open(e);
 	}
 
-	@Handler(type = SubFolderElement.class, title = "Öffne Wärmenetzinformationen", folderType = SubFolderType.DISTRIBUTION)
+	@Handler(type = SubFolderElement.class,
+		title = "Öffne Wärmenetzinformationen",
+		folderType = SubFolderType.DISTRIBUTION)
 	private void openDistributionInfo() {
 		SubFolderElement e = (SubFolderElement) elem;
 		HeatNetEditor.open(e.getProject());
 	}
 
-	@Handler(type = SubFolderElement.class, title = "Öffne Investitionen", folderType = SubFolderType.COSTS)
+	@Handler(type = SubFolderElement.class,
+		title = "Öffne Investitionen",
+		folderType = SubFolderType.COSTS)
 	private void openCostEditor() {
 		SubFolderElement e = (SubFolderElement) elem;
 		CostEditor.open(e.getProject());

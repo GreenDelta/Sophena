@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.io.File;
+import java.util.List;
 
 import sophena.db.daos.ProjectDao;
 import sophena.io.datapack.DataPack;
@@ -25,7 +26,10 @@ public class ExportAction extends NavigationAction {
 	}
 
 	@Override
-	public boolean accept(NavigationElement elem) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var elem = elements.getFirst();
 		if (elem instanceof ProjectElement) {
 			this.elem = (ProjectElement) elem;
 			return true;

@@ -1,5 +1,6 @@
 package sophena.rcp.navigation.actions;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -15,7 +16,10 @@ public class CompareAction extends NavigationAction {
 	private ProjectElement elem;
 
 	@Override
-	public boolean accept(NavigationElement e) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var e = elements.getFirst();
 		if (!(e instanceof ProjectElement))
 			return false;
 		elem = (ProjectElement) e;

@@ -1,6 +1,7 @@
 package sophena.rcp.navigation.actions;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.jface.dialogs.InputDialog;
@@ -25,7 +26,10 @@ public class RenameAction extends NavigationAction {
 	private Method handler;
 
 	@Override
-	public boolean accept(NavigationElement element) {
+	public boolean accept(List<NavigationElement> elements) {
+		if (elements == null || elements.isEmpty())
+			return false;
+		var element = elements.getFirst();
 		handler = Handlers.find(element, this);
 		if (handler == null) {
 			elem = null;
