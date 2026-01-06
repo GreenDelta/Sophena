@@ -8,14 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectDao;
 import sophena.db.daos.ProjectFolderDao;
-import sophena.model.Consumer;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.navigation.CleaningElement;
-import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -98,32 +96,6 @@ public class DeleteAction extends NavigationAction {
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
 			log.error("failed to delete folder", e);
-		}
-	}
-
-	@Handler(type = ConsumerElement.class,
-			title = "Lösche Wärmeabnehmer")
-	private void deleteConsumer() {
-		boolean del = MsgBox.ask("Abnehmer löschen?",
-				"Soll der ausgewählte Abnehmer wirklich gelöscht werden?");
-		if (!del)
-			return;
-		try {
-			ConsumerElement e = (ConsumerElement) elem;
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(e.getProject().id);
-			if (p == null)
-				return;
-			Consumer c = Util.find(p.consumers, e.content);
-			if (c == null)
-				return;
-			p.consumers.remove(c);
-			dao.update(p);
-			Editors.close(c.id);
-			Navigator.refresh();
-		} catch (Exception e) {
-			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to delete consumer", e);
 		}
 	}
 

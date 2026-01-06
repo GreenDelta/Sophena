@@ -16,6 +16,7 @@ import sophena.rcp.navigation.actions.CalculateAction;
 import sophena.rcp.navigation.actions.CompareAction;
 import sophena.rcp.navigation.actions.ConsumerImportAction;
 import sophena.rcp.navigation.actions.DeleteAction;
+import sophena.rcp.navigation.actions.DeleteConsumerAction;
 import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
 import sophena.rcp.navigation.actions.ExportAction;
@@ -27,7 +28,6 @@ import sophena.rcp.navigation.actions.RenameAction;
 import sophena.rcp.navigation.actions.SaveAsAction;
 import sophena.rcp.navigation.actions.SetTransferStationsAction;
 import sophena.rcp.navigation.actions.ThermosImportAction;
-import sophena.rcp.utils.Viewers;
 
 public class NavigationMenu extends CommonActionProvider {
 
@@ -48,6 +48,7 @@ public class NavigationMenu extends CommonActionProvider {
 			new DisableAction(),
 			new SaveAsAction(),
 			new DeleteAction(),
+			new DeleteConsumerAction(),
 			new ExportAction()
 		},
 		{
