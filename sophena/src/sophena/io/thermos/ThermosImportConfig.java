@@ -1,12 +1,23 @@
 package sophena.io.thermos;
 
+import sophena.model.Project;
+
 public class ThermosImportConfig {
 
+	private final Project project;
 	private ThermosFile thermosFile;
 	private boolean withConsumers = true;
 	private boolean withStations = true;
 	private boolean withPipes = true;
 	private boolean updateExisting = true;
+
+	public ThermosImportConfig(Project project) {
+		this.project = project;
+	}
+
+	public Project project() {
+		return project;
+	}
 
 	public ThermosFile thermosFile() {
 		return thermosFile;
