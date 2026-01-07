@@ -1,26 +1,16 @@
 package sophena.io.datapack;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import sophena.db.Database;
-import sophena.db.daos.Dao;
 import sophena.model.AbstractEntity;
-import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -36,11 +26,10 @@ import sophena.model.Product;
 import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.ProjectFolder;
-import sophena.model.RootEntity;
 import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
-import sophena.utils.Strings;
+import sophena.model.biogas.Substrate;
 
 public class Import implements Runnable {
 
@@ -61,11 +50,12 @@ public class Import implements Runnable {
 	public void run() {
 		try (var pack = DataPack.open(packFile)) {
 			this.pack = pack;
-			PackInfo info = pack.readInfo();
+			var info = pack.readInfo();
 			if (info.version < 2) {
 				upgrades.add(new Upgrade2(db));
 			}
-			// order is important for reference resolving
+
+			// order is important for resolving dataset references
 			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
 			importEntities(ModelType.MANUFACTURER, Manufacturer.class);
 			importEntities(ModelType.PIPE, Pipe.class);
@@ -81,22 +71,19 @@ public class Import implements Runnable {
 			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
-
 			importEntities(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
-
 			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
 			importEntities(ModelType.PROJECT, Project.class);
+
 		} catch (Exception e) {
 			log.error("failed to import data pack {}", pack, e);
 		}
 	}
 
 	private <T extends AbstractEntity> void importEntities(
-			ModelType type, Class<T> clazz
-	) {
+		ModelType type, Class<T> clazz) {
 		try {
-			Gson gson = getGson(clazz);
-
+			var gson = ImportGson.create(db, clazz);
 			for (String id : pack.getIds(type)) {
 				if (db.contains(clazz, id)) {
 					log.info("{} with id={} is already exists: not imported", clazz, id);
@@ -117,69 +104,6 @@ public class Import implements Runnable {
 			return;
 		for (Upgrade upgrade : upgrades) {
 			upgrade.on(type, obj);
-		}
-	}
-
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private Gson getGson(Class<?> rootType) {
-		GsonBuilder builder = new GsonBuilder();
-		Class<?>[] refTypes = {
-				Boiler.class, BufferTank.class, BuildingState.class,
-				Fuel.class, Pipe.class, Product.class, ProductGroup.class,
-				WeatherStation.class, TransferStation.class,
-				FlueGasCleaning.class, ProjectFolder.class,
-				HeatRecovery.class, Manufacturer.class, SolarCollector.class, HeatPump.class
-		};
-		for (Class<?> refType : refTypes) {
-			if (refType.equals(rootType))
-				continue;
-			Deserializer<?> ed = new Deserializer(refType);
-			builder.registerTypeAdapter(refType, ed);
-		}
-		return builder.create();
-	}
-
-	private class Deserializer<T extends RootEntity>
-			implements JsonDeserializer<T> {
-
-		private final Class<T> type;
-
-		Deserializer(Class<T> type) {
-			this.type = type;
-		}
-
-		@Override
-		public T deserialize(JsonElement json, Type type,
-												 JsonDeserializationContext context) throws JsonParseException {
-			if (json == null || !json.isJsonObject())
-				return null;
-			if (Objects.equals(this.type, Product.class))
-				return handleProduct(json);
-			else
-				return loadReference(json);
-		}
-
-		/**
-		 * See also the documentation in the export for more information about
-		 * how products are stored.
-		 */
-		private T handleProduct(JsonElement json) {
-			JsonElement projectIdElem = json.getAsJsonObject().get("projectId");
-			if (projectIdElem == null)
-				return loadReference(json);
-			String projectId = projectIdElem.getAsString();
-			if (Strings.nullOrEmpty(projectId))
-				return loadReference(json);
-			Gson gson = getGson(type);
-			return gson.fromJson(json, type);
-		}
-
-		private T loadReference(JsonElement json) {
-			JsonElement idElem = json.getAsJsonObject().get("id");
-			if (idElem == null)
-				return null;
-			Dao<T> dao = new Dao<>(this.type, db);
-			return dao.get(idElem.getAsString());
 		}
 	}
 }
