@@ -6,7 +6,7 @@ import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
-import sophena.rcp.wizards.ThermosImportWizard;
+import sophena.io.thermos.wizard.ThermosImportWizard;
 
 public class ThermosImportAction extends NavigationAction {
 

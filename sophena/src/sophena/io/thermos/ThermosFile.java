@@ -4,12 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import org.openlca.commons.Res;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import sophena.db.Database;
+import sophena.io.Json;
 import sophena.io.datapack.ImportGson;
 import sophena.model.Consumer;
 
@@ -23,11 +28,27 @@ public record ThermosFile(List<Consumer> consumers) {
 
 		try (var is = new GZIPInputStream(new FileInputStream(gz));
 				 var reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-			var gson = ImportGson.create(db, ThermosFile.class);
-			ThermosFile file = gson.fromJson(reader, ThermosFile.class);
-			return Res.ok(file);
+			var gson = ImportGson.create(db, Consumer.class);
+			var obj = gson.fromJson(reader, JsonObject.class);
+			var consumers = readConsumers(gson, obj);
+			var thermos = new ThermosFile(consumers);
+			return Res.ok(thermos);
 		} catch (Exception e) {
 			return Res.error("Failed to read data file", e);
 		}
+	}
+
+	private static List<Consumer> readConsumers(Gson gson, JsonObject obj) {
+		var array = Json.getArray(obj, "consumers");
+		if (array == null)
+			return List.of();
+		var consumers = new ArrayList<Consumer>(array.size());
+		for (var e : array) {
+			var consumer = gson.fromJson(e, Consumer.class);
+			if (consumer != null) {
+				consumers.add(consumer);
+			}
+		}
+		return consumers;
 	}
 }
