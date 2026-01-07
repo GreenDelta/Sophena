@@ -1,5 +1,6 @@
 package sophena.io.thermos.wizard;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -7,17 +8,18 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.io.thermos.ThermosImport;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.navigation.Navigator;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
 public class ThermosImportWizard extends Wizard {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final Project project;
 	private final ThermosImportConfig config;
 
 	private OptionsPage optionsPage;
@@ -41,7 +43,6 @@ public class ThermosImportWizard extends Wizard {
 	}
 
 	private ThermosImportWizard(Project project) {
-		this.project = project;
 		this.config = new ThermosImportConfig(project);
 		setNeedsProgressMonitor(false);
 	}
@@ -75,18 +76,15 @@ public class ThermosImportWizard extends Wizard {
 		if (!config.canRunImport())
 			return false;
 		try {
-
-			log.info("ThermosImportWizard: performFinish called");
-			log.info("  Project: {}", project.name);
-			log.info("  File: {}", config.thermosFile());
-			log.info("  Consumers: {}", config.isWithConsumers());
-			log.info("  Transfer Stations: {}", config.isWithStations());
-			log.info("  Pipes: {}", config.isWithPipes());
-			log.info("  Mode: {}", config.isUpdateExisting() ? "update" : "add");
-			// TODO: Actual import logic to be implemented later
+			getContainer().run(true, false, monitor -> {
+				monitor.beginTask("Importiere Daten ...", IProgressMonitor.UNKNOWN);
+				new ThermosImport(App.getDb(), config).run();
+				monitor.done();
+			});
 			return true;
 		} catch (Exception e) {
-			log.error("Failed to import from BioHeating-Tool", e);
+			MsgBox.error("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
+			log.error("Import failed", e);
 			return false;
 		}
 	}
