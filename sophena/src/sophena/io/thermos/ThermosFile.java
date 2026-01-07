@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
 import org.openlca.commons.Res;
@@ -19,6 +20,14 @@ import sophena.io.datapack.ImportGson;
 import sophena.model.Consumer;
 
 public record ThermosFile(List<Consumer> consumers) {
+
+	public ThermosFile {
+		Objects.requireNonNull(consumers);
+	}
+
+	public boolean isEmpty() {
+		return consumers.isEmpty();
+	}
 
 	public static Res<ThermosFile> readFrom(File gz, Database db) {
 		if (gz == null || !gz.isFile())

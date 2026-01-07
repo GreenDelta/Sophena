@@ -1,7 +1,5 @@
 package sophena.io.thermos.wizard;
 
-import java.io.File;
-
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -9,21 +7,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.io.thermos.ThermosFile;
+import sophena.io.thermos.ThermosImportConfig;
+import sophena.rcp.App;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
-public class OptionsPage extends WizardPage {
+class OptionsPage extends WizardPage {
 
-	private final ImportConfig config;
+	private final ThermosImportConfig config;
 
 	private Button consumersCheck;
-	private Button transferStationsCheck;
+	private Button stationsCheck;
 	private Button pipesCheck;
 	private Button updateRadio;
-	private Button addRadio;
 	private Text fileText;
 
-	public OptionsPage(ImportConfig config) {
+	OptionsPage(ThermosImportConfig config) {
 		super("OptionsPage", "Import aus BioHeating-Tool", null);
 		this.config = config;
 		setMessage("Wählen Sie die zu importierenden Daten und die Importdatei.");
@@ -31,54 +33,56 @@ public class OptionsPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
-		Composite root = new Composite(parent, SWT.NONE);
+		var root = new Composite(parent, SWT.NONE);
 		setControl(root);
 		UI.gridLayout(root, 1, 10, 10);
-
 		createImportOptionsGroup(root);
 		createDataModeGroup(root);
 		createFileGroup(root);
-
-		initData();
-		validate();
+		setPageComplete(false);
 	}
 
 	private void createImportOptionsGroup(Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
+		var group = new Group(parent, SWT.NONE);
 		group.setText("Was möchten Sie hinzufügen?");
 		UI.gridData(group, true, false);
 		UI.gridLayout(group, 1, 5, 10);
 
 		consumersCheck = new Button(group, SWT.CHECK);
 		consumersCheck.setText("Abnehmer");
-		consumersCheck.addListener(SWT.Selection, e -> onSelectionChanged());
+		consumersCheck.setSelection(config.isWithConsumers());
+		Controls.onSelect(consumersCheck, $ -> onSelectionChanged());
 
-		transferStationsCheck = new Button(group, SWT.CHECK);
-		transferStationsCheck.setText("Hausübergabestationen");
-		transferStationsCheck.addListener(SWT.Selection, e -> onSelectionChanged());
+		stationsCheck = new Button(group, SWT.CHECK);
+		stationsCheck.setText("Hausübergabestationen");
+		stationsCheck.setSelection(config.isWithStations());
+		Controls.onSelect(stationsCheck, $ -> onSelectionChanged());
 
 		pipesCheck = new Button(group, SWT.CHECK);
 		pipesCheck.setText("Wärmeleitungen");
-		pipesCheck.addListener(SWT.Selection, e -> onSelectionChanged());
+		pipesCheck.setSelection(config.isWithPipes());
+		Controls.onSelect(pipesCheck, $ -> onSelectionChanged());
 	}
 
 	private void createDataModeGroup(Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
+		var group = new Group(parent, SWT.NONE);
 		group.setText("Bereits vorhandene Daten");
 		UI.gridData(group, true, false);
 		UI.gridLayout(group, 1, 5, 10);
 
 		updateRadio = new Button(group, SWT.RADIO);
 		updateRadio.setText("aktualisieren");
-		updateRadio.addListener(SWT.Selection, e -> onSelectionChanged());
+		updateRadio.setSelection(config.isUpdateExisting());
+		Controls.onSelect(updateRadio, $ -> onSelectionChanged());
 
-		addRadio = new Button(group, SWT.RADIO);
-		addRadio.setText("ergänzen");
-		addRadio.addListener(SWT.Selection, e -> onSelectionChanged());
+		var appendRadio = new Button(group, SWT.RADIO);
+		appendRadio.setText("ergänzen");
+		appendRadio.setSelection(!config.isUpdateExisting());
+		Controls.onSelect(appendRadio, $ -> onSelectionChanged());
 	}
 
 	private void createFileGroup(Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
+		var group = new Group(parent, SWT.NONE);
 		group.setText("Importdatei");
 		UI.gridData(group, true, false);
 		UI.gridLayout(group, 2, 5, 10);
@@ -86,66 +90,43 @@ public class OptionsPage extends WizardPage {
 		fileText = new Text(group, SWT.BORDER | SWT.READ_ONLY);
 		UI.gridData(fileText, true, false);
 
-		Button browseBtn = new Button(group, SWT.PUSH);
+		var browseBtn = new Button(group, SWT.PUSH);
 		browseBtn.setText("Durchsuchen...");
 		browseBtn.addListener(SWT.Selection, e -> onBrowse());
 	}
 
 	private void onBrowse() {
-		File file = FileChooser.open("*.json", "*.xlsx", "*.*");
-		if (file != null) {
-			config.setFile(file);
-			fileText.setText(file.getAbsolutePath());
-			onSelectionChanged();
+		var file = FileChooser.open("*.gz");
+		if (file == null)
+			return;
+		var result = ThermosFile.readFrom(file, App.getDb());
+		if (result.isError()) {
+			MsgBox.error(result.error());
+			return;
 		}
-	}
-
-	private void initData() {
-		if (config.getFile() != null) {
-			fileText.setText(config.getFile().getAbsolutePath());
+		var tf = result.value();
+		if (tf.isEmpty()) {
+			MsgBox.error("Leere Datei", "Die ausgewählte Datei ist leer.");
+			return;
 		}
-		consumersCheck.setSelection(config.isImportConsumers());
-		transferStationsCheck.setSelection(config.isImportTransferStations());
-		pipesCheck.setSelection(config.isImportPipes());
-		updateRadio.setSelection(config.isUpdateExisting());
-		addRadio.setSelection(!config.isUpdateExisting());
+		config.withThermosFile(result.value());
+		fileText.setText(file.getAbsolutePath());
+		onSelectionChanged();
 	}
 
 	private void onSelectionChanged() {
-		updateConfig();
-		validate();
-		getContainer().updateButtons();
-	}
-
-	private void updateConfig() {
-		config.setImportConsumers(consumersCheck.getSelection());
-		config.setImportTransferStations(transferStationsCheck.getSelection());
-		config.setImportPipes(pipesCheck.getSelection());
+		config.withConsumers(consumersCheck.getSelection());
+		config.withStations(stationsCheck.getSelection());
+		config.withPipes(pipesCheck.getSelection());
 		config.setUpdateExisting(updateRadio.getSelection());
-	}
-
-	private void validate() {
-		if (config.getFile() == null) {
-			setErrorMessage("Bitte wählen Sie eine Importdatei.");
-			setPageComplete(false);
-			return;
-		}
-		if (!config.isImportConsumers()
-				&& !config.isImportTransferStations()
-				&& !config.isImportPipes()) {
-			setErrorMessage("Bitte wählen Sie mindestens eine Importoption.");
-			setPageComplete(false);
-			return;
-		}
-		setErrorMessage(null);
-		setPageComplete(true);
+		setPageComplete(config.canRunImport());
+		getContainer().updateButtons();
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (config.getFile() == null)
+		if (config.thermosFile() == null)
 			return false;
-		// Can flip to next page only if transfer stations or pipes is selected
-		return config.isImportTransferStations() || config.isImportPipes();
+		return config.isWithStations() || config.isWithPipes();
 	}
 }

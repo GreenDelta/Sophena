@@ -7,6 +7,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
@@ -15,7 +16,7 @@ public class ThermosImportWizard extends Wizard {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final ProjectDescriptor project;
-	private final ImportConfig config;
+	private final ThermosImportConfig config;
 
 	private OptionsPage optionsPage;
 	private TransferStationsPage transferStationsPage;
@@ -35,7 +36,7 @@ public class ThermosImportWizard extends Wizard {
 
 	private ThermosImportWizard(ProjectDescriptor project) {
 		this.project = project;
-		this.config = new ImportConfig();
+		this.config = new ThermosImportConfig();
 		setNeedsProgressMonitor(false);
 	}
 
@@ -51,35 +52,16 @@ public class ThermosImportWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
-		if (page == optionsPage) {
-			if (config.isImportTransferStations()) {
-				return transferStationsPage;
-			}
-			if (config.isImportPipes()) {
-				return pipesPage;
-			}
-			return null;
-		}
-		if (page == transferStationsPage) {
-			if (config.isImportPipes()) {
-				return pipesPage;
-			}
-			return null;
-		}
-		return null;
+		if (page == optionsPage && config.isWithStations())
+			return transferStationsPage;
+		return page != pipesPage && config.isWithPipes()
+			? pipesPage
+			: null;
 	}
 
 	@Override
 	public boolean canFinish() {
-		// Can finish if file is selected and at least one option is checked
-		if (config.getFile() == null)
-			return false;
-		if (!config.isImportConsumers()
-				&& !config.isImportTransferStations()
-				&& !config.isImportPipes()) {
-			return false;
-		}
-		return true;
+		return config.canRunImport();
 	}
 
 	@Override
@@ -87,10 +69,10 @@ public class ThermosImportWizard extends Wizard {
 		try {
 			log.info("ThermosImportWizard: performFinish called");
 			log.info("  Project: {}", project.name);
-			log.info("  File: {}", config.getFile());
-			log.info("  Consumers: {}", config.isImportConsumers());
-			log.info("  Transfer Stations: {}", config.isImportTransferStations());
-			log.info("  Pipes: {}", config.isImportPipes());
+			log.info("  File: {}", config.thermosFile());
+			log.info("  Consumers: {}", config.isWithConsumers());
+			log.info("  Transfer Stations: {}", config.isWithStations());
+			log.info("  Pipes: {}", config.isWithPipes());
 			log.info("  Mode: {}", config.isUpdateExisting() ? "update" : "add");
 			// TODO: Actual import logic to be implemented later
 			return true;

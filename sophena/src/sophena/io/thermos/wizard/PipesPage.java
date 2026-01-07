@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.rcp.utils.UI;
 
-public class PipesPage extends WizardPage {
+class PipesPage extends WizardPage {
 
 	public PipesPage() {
 		super("PipesPage", "Wärmeleitungen", null);

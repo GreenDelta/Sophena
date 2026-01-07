@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.rcp.utils.UI;
 
-public class TransferStationsPage extends WizardPage {
+class TransferStationsPage extends WizardPage {
 
 	public TransferStationsPage() {
 		super("TransferStationsPage", "Hausübergabestationen", null);
