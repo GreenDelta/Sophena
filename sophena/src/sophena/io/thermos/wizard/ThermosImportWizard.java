@@ -86,6 +86,8 @@ public class ThermosImportWizard extends Wizard {
 			MsgBox.error("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
 			log.error("Import failed", e);
 			return false;
+		} finally {
+			Navigator.refresh();
 		}
 	}
 }
