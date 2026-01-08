@@ -1,5 +1,7 @@
 package sophena.io.thermos.wizard;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -8,7 +10,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import sophena.io.thermos.ThermosImport;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Project;
@@ -77,32 +78,10 @@ public class ThermosImportWizard extends Wizard {
 	public boolean performFinish() {
 		if (!config.canRunImport())
 			return false;
-
-		if (config.isWithConsumers() && config.isWithStations()) {
-			var consumers = config.thermosFile().consumers();
-			var manufacturer = config.stationManufacturer();
-			var productLine = config.stationProductLine();
-			var stations = App.getDb().getAll(TransferStation.class).stream()
-				.filter(s -> Objects.equals(s.manufacturer, manufacturer)
-					&& Objects.equals(s.productLine, productLine))
-				.toList();
-			double maxCapacity = stations.stream()
-				.mapToDouble(s -> s.outputCapacity)
-				.max()
-				.orElse(0);
-
-			boolean missing = consumers.stream()
-				.anyMatch(c -> c.heatingLoad > maxCapacity);
-
-			if (missing) {
-				var question = "Die ausgewählte Produktlinie für die Wärmeübergabestationen "
-					+ "enthält nicht für jede Heizlast der Abnehmer in der Importdatei "
-					+ "ein passendes Produkt. Soll der Import trotzdem fortgesetzt werden?";
-				if (!MsgBox.ask("Passendes Produkt fehlt", question)) {
-					return false;
-				}
-			}
-		}
+		if (config.isWithConsumers()
+			&& config.isWithStations()
+			&& hasMissingStations())
+			return false;
 
 		try {
 			getContainer().run(true, false, monitor -> {
@@ -118,5 +97,29 @@ public class ThermosImportWizard extends Wizard {
 		} finally {
 			Navigator.refresh();
 		}
+	}
+
+	private boolean hasMissingStations() {
+		var consumers = config.thermosFile().consumers();
+		var manufacturer = config.stationManufacturer();
+		var productLine = config.stationProductLine();
+		var stations = App.getDb().getAll(TransferStation.class).stream()
+			.filter(s -> Objects.equals(s.manufacturer, manufacturer)
+				&& Objects.equals(s.productLine, productLine))
+			.toList();
+		double maxCapacity = stations.stream()
+			.mapToDouble(s -> s.outputCapacity)
+			.max()
+			.orElse(0);
+
+		boolean missing = consumers.stream()
+			.anyMatch(c -> c.heatingLoad > maxCapacity);
+		if (!missing)
+			return false;
+
+		var question = "Die ausgewählte Produktlinie für die Wärmeübergabestationen "
+			+ "enthält nicht für jede Heizlast der Abnehmer in der Importdatei "
+			+ "ein passendes Produkt. Soll der Import trotzdem fortgesetzt werden?";
+		return !MsgBox.ask("Passendes Produkt fehlt", question);
 	}
 }

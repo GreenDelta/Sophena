@@ -56,6 +56,7 @@ class OptionsPage extends WizardPage {
 		stationsCheck = new Button(group, SWT.CHECK);
 		stationsCheck.setText("Hausübergabestationen");
 		stationsCheck.setSelection(config.isWithStations());
+		stationsCheck.setEnabled(config.isWithConsumers());
 		Controls.onSelect(stationsCheck, $ -> onSelectionChanged());
 
 		pipesCheck = new Button(group, SWT.CHECK);
@@ -115,7 +116,13 @@ class OptionsPage extends WizardPage {
 	}
 
 	private void onSelectionChanged() {
-		config.withConsumers(consumersCheck.getSelection());
+		boolean withConsumers = consumersCheck.getSelection();
+		stationsCheck.setEnabled(withConsumers);
+		if (!withConsumers) {
+			stationsCheck.setSelection(false);
+		}
+
+		config.withConsumers(withConsumers);
 		config.withStations(stationsCheck.getSelection());
 		config.withPipes(pipesCheck.getSelection());
 		config.updateExisting(updateRadio.getSelection());
