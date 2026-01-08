@@ -11,6 +11,11 @@ public class ThermosImportConfig {
 	private boolean withPipes = true;
 	private boolean updateExisting = true;
 
+	private sophena.model.Manufacturer stationManufacturer;
+	private String stationProductLine;
+	private sophena.model.Manufacturer pipeManufacturer;
+	private String pipeProductLine;
+
 	public ThermosImportConfig(Project project) {
 		this.project = project;
 	}
@@ -62,6 +67,42 @@ public class ThermosImportConfig {
 	public boolean canRunImport() {
 		if (thermosFile == null || thermosFile().isEmpty())
 			return false;
+		if (withStations && stationProductLine == null)
+			return false;
+		if (withPipes && pipeProductLine == null)
+			return false;
 		return withConsumers || withStations || withPipes;
+	}
+
+	public sophena.model.Manufacturer getStationManufacturer() {
+		return stationManufacturer;
+	}
+
+	public void setStationManufacturer(sophena.model.Manufacturer stationManufacturer) {
+		this.stationManufacturer = stationManufacturer;
+	}
+
+	public String getStationProductLine() {
+		return stationProductLine;
+	}
+
+	public void setStationProductLine(String stationProductLine) {
+		this.stationProductLine = stationProductLine;
+	}
+
+	public sophena.model.Manufacturer getPipeManufacturer() {
+		return pipeManufacturer;
+	}
+
+	public void setPipeManufacturer(sophena.model.Manufacturer pipeManufacturer) {
+		this.pipeManufacturer = pipeManufacturer;
+	}
+
+	public String getPipeProductLine() {
+		return pipeProductLine;
+	}
+
+	public void setPipeProductLine(String pipeProductLine) {
+		this.pipeProductLine = pipeProductLine;
 	}
 }

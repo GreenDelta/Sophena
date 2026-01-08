@@ -50,8 +50,8 @@ public class ThermosImportWizard extends Wizard {
 	@Override
 	public void addPages() {
 		optionsPage = new OptionsPage(config);
-		transferStationsPage = new TransferStationsPage();
-		pipesPage = new PipesPage();
+		transferStationsPage = new TransferStationsPage(config);
+		pipesPage = new PipesPage(config);
 		addPage(optionsPage);
 		addPage(transferStationsPage);
 		addPage(pipesPage);
