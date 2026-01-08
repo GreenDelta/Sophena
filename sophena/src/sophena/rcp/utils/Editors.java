@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class Editors {
 
-	private static Logger log = LoggerFactory.getLogger(Editors.class);
+	private static final Logger log = LoggerFactory.getLogger(Editors.class);
 
 	private Editors() {
 	}
@@ -50,15 +50,13 @@ public class Editors {
 			return;
 		try {
 			for (IEditorReference ref : Editors.getReferences()) {
-				IEditorInput input = ref.getEditorInput();
-				if (!(input instanceof KeyEditorInput))
+				if (!(ref.getEditorInput() instanceof KeyEditorInput ki))
 					continue;
-				KeyEditorInput ki = (KeyEditorInput) input;
 				if (Objects.equals(ki.getKey(), key))
 					Editors.close(ref);
 			}
 		} catch (Exception e) {
-			log.error("failed to search and close editor with input " + key, e);
+			log.error("failed to search and close editor with input {}", key, e);
 		}
 
 	}
@@ -93,8 +91,8 @@ public class Editors {
 
 	private static class OpenInUIJob extends UIJob {
 
-		private IEditorInput input;
-		private String editorId;
+		private final IEditorInput input;
+		private final String editorId;
 
 		public OpenInUIJob(IEditorInput input, String editorId) {
 			super("Open editor");

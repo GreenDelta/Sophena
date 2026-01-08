@@ -13,7 +13,6 @@ import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.App;
 import sophena.rcp.Icon;
-import sophena.rcp.M;
 import sophena.rcp.navigation.ConsumerElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
@@ -59,7 +58,7 @@ public class DeleteConsumerAction extends NavigationAction {
 
 		String msg = consumers.size() == 1
 				? "Soll der ausgewählte Abnehmer wirklich gelöscht werden?"
-				: "Sollen die " + consumers.size() 
+				: "Sollen die " + consumers.size()
 				+ " ausgewählten Abnehmer wirklich gelöscht werden?";
 		if (!MsgBox.ask("Abnehmer löschen?", msg))
 			return;

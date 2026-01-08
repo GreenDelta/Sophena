@@ -24,7 +24,7 @@ import sophena.rcp.utils.MsgBox;
 
 public class DeleteAction extends NavigationAction {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NavigationElement elem;
 	private Method handler;
