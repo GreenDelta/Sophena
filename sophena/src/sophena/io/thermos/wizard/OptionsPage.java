@@ -118,7 +118,7 @@ class OptionsPage extends WizardPage {
 		config.withConsumers(consumersCheck.getSelection());
 		config.withStations(stationsCheck.getSelection());
 		config.withPipes(pipesCheck.getSelection());
-		config.setUpdateExisting(updateRadio.getSelection());
+		config.updateExisting(updateRadio.getSelection());
 		setPageComplete(config.canRunImport());
 		getContainer().updateButtons();
 	}

@@ -1,5 +1,6 @@
 package sophena.io.thermos;
 
+import sophena.model.Manufacturer;
 import sophena.model.Project;
 
 public class ThermosImportConfig {
@@ -60,8 +61,40 @@ public class ThermosImportConfig {
 		return updateExisting;
 	}
 
-	public void setUpdateExisting(boolean updateExisting) {
+	public void updateExisting(boolean updateExisting) {
 		this.updateExisting = updateExisting;
+	}
+
+	public Manufacturer stationManufacturer() {
+		return stationManufacturer;
+	}
+
+	public void stationManufacturer(Manufacturer manufacturer) {
+		this.stationManufacturer = manufacturer;
+	}
+
+	public String stationProductLine() {
+		return stationProductLine;
+	}
+
+	public void stationProductLine(String productLine) {
+		this.stationProductLine = productLine;
+	}
+
+	public Manufacturer pipeManufacturer() {
+		return pipeManufacturer;
+	}
+
+	public void pipeManufacturer(Manufacturer manufacturer) {
+		this.pipeManufacturer = manufacturer;
+	}
+
+	public String pipeProductLine() {
+		return pipeProductLine;
+	}
+
+	public void pipeProductLine(String productLine) {
+		this.pipeProductLine = productLine;
 	}
 
 	public boolean canRunImport() {
@@ -72,37 +105,5 @@ public class ThermosImportConfig {
 		if (withPipes && pipeProductLine == null)
 			return false;
 		return withConsumers || withStations || withPipes;
-	}
-
-	public sophena.model.Manufacturer getStationManufacturer() {
-		return stationManufacturer;
-	}
-
-	public void setStationManufacturer(sophena.model.Manufacturer stationManufacturer) {
-		this.stationManufacturer = stationManufacturer;
-	}
-
-	public String getStationProductLine() {
-		return stationProductLine;
-	}
-
-	public void setStationProductLine(String stationProductLine) {
-		this.stationProductLine = stationProductLine;
-	}
-
-	public sophena.model.Manufacturer getPipeManufacturer() {
-		return pipeManufacturer;
-	}
-
-	public void setPipeManufacturer(sophena.model.Manufacturer pipeManufacturer) {
-		this.pipeManufacturer = pipeManufacturer;
-	}
-
-	public String getPipeProductLine() {
-		return pipeProductLine;
-	}
-
-	public void setPipeProductLine(String pipeProductLine) {
-		this.pipeProductLine = pipeProductLine;
 	}
 }

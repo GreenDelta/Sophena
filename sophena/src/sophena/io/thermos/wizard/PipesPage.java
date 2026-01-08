@@ -57,15 +57,16 @@ class PipesPage extends WizardPage {
 
 		Controls.onSelect(manCombo, $ -> {
 			int i = manCombo.getSelectionIndex();
-			config.setPipeManufacturer(manufacturers.get(i));
-			var pls = productLinesOf(config.getPipeManufacturer());
+			config.pipeManufacturer(manufacturers.get(i));
+			var pls = productLinesOf(config.pipeManufacturer());
 			lineCombo.setItems(pls);
-			config.setPipeProductLine(null);
+			config.pipeProductLine(null);
 			validate();
 		});
 
 		Controls.onSelect(lineCombo, $ -> {
-			config.setPipeProductLine(lineCombo.getItem(lineCombo.getSelectionIndex()));
+			int idx = lineCombo.getSelectionIndex();
+			config.pipeProductLine(lineCombo.getItem(idx));
 			validate();
 		});
 
@@ -82,6 +83,6 @@ class PipesPage extends WizardPage {
 	}
 
 	private void validate() {
-		setPageComplete(Strings.isNotBlank(config.getPipeProductLine()));
+		setPageComplete(Strings.isNotBlank(config.pipeProductLine()));
 	}
 }

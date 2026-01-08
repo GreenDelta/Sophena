@@ -57,15 +57,16 @@ class TransferStationsPage extends WizardPage {
 
 		Controls.onSelect(manCombo, $ -> {
 			int i = manCombo.getSelectionIndex();
-			config.setStationManufacturer(manufacturers.get(i));
-			var pls = productLinesOf(config.getStationManufacturer());
+			config.stationManufacturer(manufacturers.get(i));
+			var pls = productLinesOf(config.stationManufacturer());
 			lineCombo.setItems(pls);
-			config.setStationProductLine(null);
+			config.stationProductLine(null);
 			validate();
 		});
 
 		Controls.onSelect(lineCombo, $ -> {
-			config.setStationProductLine(lineCombo.getItem(lineCombo.getSelectionIndex()));
+			int idx = lineCombo.getSelectionIndex();
+			config.stationProductLine(lineCombo.getItem(idx));
 			validate();
 		});
 
@@ -82,6 +83,6 @@ class TransferStationsPage extends WizardPage {
 	}
 
 	private void validate() {
-		setPageComplete(Strings.isNotBlank(config.getStationProductLine()));
+		setPageComplete(Strings.isNotBlank(config.stationProductLine()));
 	}
 }
