@@ -17,7 +17,6 @@ public class NavigationLabel extends ColumnLabelProvider implements
 
 	private Font boldFont;
 	private Font italicFont;
-	private FontRegistry fontReg;
 
 	@Override
 	public String getText(Object element) {
@@ -50,7 +49,7 @@ public class NavigationLabel extends ColumnLabelProvider implements
 
 	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
-		fontReg = new FontRegistry();
+		var fontReg = new FontRegistry();
 		Display display = Display.getCurrent();
 		if (display == null)
 			return;
@@ -66,13 +65,11 @@ public class NavigationLabel extends ColumnLabelProvider implements
 			return boldFont;
 		if (obj instanceof SubFolderElement)
 			return boldFont;
-		if (obj instanceof ConsumerElement) {
-			ConsumerElement e = (ConsumerElement) obj;
+		if (obj instanceof ConsumerElement e) {
 			boolean dis = e.content.disabled;
 			return dis ? italicFont : null;
 		}
-		if (obj instanceof ProducerElement) {
-			ProducerElement e = (ProducerElement) obj;
+		if (obj instanceof ProducerElement e) {
 			boolean dis = e.content.disabled;
 			return dis ? italicFont : null;
 		}
@@ -81,13 +78,11 @@ public class NavigationLabel extends ColumnLabelProvider implements
 
 	@Override
 	public Color getForeground(Object obj) {
-		if (obj instanceof ConsumerElement) {
-			ConsumerElement e = (ConsumerElement) obj;
+		if (obj instanceof ConsumerElement e) {
 			boolean dis = e.content.disabled;
 			return dis ? Colors.getGray() : null;
 		}
-		if (obj instanceof ProducerElement) {
-			ProducerElement e = (ProducerElement) obj;
+		if (obj instanceof ProducerElement e) {
 			boolean dis = e.content.disabled;
 			return dis ? Colors.getGray() : null;
 		}

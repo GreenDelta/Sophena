@@ -16,6 +16,7 @@ import sophena.rcp.navigation.actions.CalculateAction;
 import sophena.rcp.navigation.actions.CompareAction;
 import sophena.rcp.navigation.actions.ConsumerImportAction;
 import sophena.rcp.navigation.actions.DeleteAction;
+import sophena.rcp.navigation.actions.DeleteAllConsumersAction;
 import sophena.rcp.navigation.actions.DeleteConsumerAction;
 import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
@@ -49,6 +50,7 @@ public class NavigationMenu extends CommonActionProvider {
 			new SaveAsAction(),
 			new DeleteAction(),
 			new DeleteConsumerAction(),
+			new DeleteAllConsumersAction(),
 			new ExportAction()
 		},
 		{

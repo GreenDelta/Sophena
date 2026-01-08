@@ -11,7 +11,7 @@ abstract class ContentElement<T extends RootEntity> implements
 		NavigationElement {
 
 	public T content;
-	private NavigationElement parent;
+	private final NavigationElement parent;
 
 	public ContentElement(NavigationElement parent, T descriptor) {
 		this.content = descriptor;
@@ -32,9 +32,8 @@ abstract class ContentElement<T extends RootEntity> implements
 	public int compareTo(NavigationElement other) {
 		if (other == null)
 			return 1;
-		if (!(other instanceof ContentElement))
+		if (!(other instanceof ContentElement<?> otherElem))
 			return 1;
-		ContentElement<?> otherElem = ContentElement.class.cast(other);
 		RootEntity otherDes = otherElem.content;
 		if (this.content == null || otherDes == null)
 			return 0;
@@ -63,7 +62,7 @@ abstract class ContentElement<T extends RootEntity> implements
 			return true;
 		if (!obj.getClass().equals(this.getClass()))
 			return false;
-		ContentElement<?> other = ContentElement.class.cast(obj);
+		ContentElement<?> other = (ContentElement<?>) obj;
 		return Objects.equals(this.content, other.content);
 	}
 
