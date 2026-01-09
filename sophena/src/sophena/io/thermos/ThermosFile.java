@@ -19,7 +19,7 @@ import sophena.io.Json;
 import sophena.io.datapack.ImportGson;
 import sophena.model.Consumer;
 
-public record ThermosFile(List<Consumer> consumers) {
+public record ThermosFile(List<Consumer> consumers, NetworkTree network) {
 
 	public ThermosFile {
 		Objects.requireNonNull(consumers);
@@ -40,8 +40,13 @@ public record ThermosFile(List<Consumer> consumers) {
 			var gson = ImportGson.create(db, Consumer.class);
 			var obj = gson.fromJson(reader, JsonObject.class);
 			var consumers = readConsumers(gson, obj);
-			var thermos = new ThermosFile(consumers);
-			return Res.ok(thermos);
+			var nodes = Json.getArray(obj, "network");
+			if (nodes == null)
+				return Res.error("No network found in file");
+			var network = NetworkTree.parse(nodes);
+			return network.isError()
+				? network.wrapError("Failed to parse network tree")
+				: Res.ok(new ThermosFile(consumers, network.value()));
 		} catch (Exception e) {
 			return Res.error("Failed to read data file", e);
 		}
