@@ -55,6 +55,15 @@ public class Json {
 			: null;
 	}
 
+	public static JsonObject getObject(JsonObject obj, String member) {
+		if (obj == null || member == null)
+			return null;
+		var elem = obj.get(member);
+		return elem != null && elem.isJsonObject()
+			? elem.getAsJsonObject()
+			: null;
+	}
+
 	public static String getRefId(JsonObject obj, String member) {
 		if (obj == null || member == null)
 			return null;

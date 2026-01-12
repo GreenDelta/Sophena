@@ -3,6 +3,7 @@ package sophena.io.thermos;
 import java.util.List;
 
 import sophena.model.Pipe;
+import sophena.model.Project;
 
 /// Configuration parameters for pipe dimensioning calculations.
 ///
@@ -26,6 +27,34 @@ record PipeConfig(
 	double groundTemperature,
 	List<Pipe> pipes
 ) {
+
+	static PipeConfig of(Project project, List<Pipe> pipes) {
+		var builder = new Builder();
+		if (project != null) {
+			if (project.costSettings != null) {
+				var cs = project.costSettings;
+				builder.withMaxPressureLoss(cs.maxPressureLoss)
+					.withMaxFlowVelocity(cs.maxFlowVelocity)
+					.withFittingSurcharge(cs.fittingSurcharge);
+
+				double roughness = cs.roughnessPlastic;
+				if (pipes != null && !pipes.isEmpty()) {
+					var p = pipes.get(0);
+					if (p.material != null && (p.material.toLowerCase().contains("stahl")
+						|| p.material.toLowerCase().contains("steel"))) {
+						roughness = cs.roughnessSteel;
+					}
+				}
+				builder.withRoughness(roughness * 1e-3);
+			}
+			if (project.heatNet != null) {
+				var hn = project.heatNet;
+				builder.withFlowTemperature(hn.supplyTemperature)
+					.withReturnTemperature(hn.returnTemperature);
+			}
+		}
+		return builder.withPipes(pipes).get();
+	}
 
 	static Builder forPlastic() {
 		return new Builder().withRoughness(0.002e-3);

@@ -40,10 +40,10 @@ public record ThermosFile(List<Consumer> consumers, NetworkTree network) {
 			var gson = ImportGson.create(db, Consumer.class);
 			var obj = gson.fromJson(reader, JsonObject.class);
 			var consumers = readConsumers(gson, obj);
-			var nodes = Json.getArray(obj, "network");
-			if (nodes == null)
+			var networkObj = Json.getObject(obj, "network");
+			if (networkObj == null)
 				return Res.error("No network found in file");
-			var network = NetworkTree.parse(nodes);
+			var network = NetworkTree.parse(networkObj);
 			return network.isError()
 				? network.wrapError("Failed to parse network tree")
 				: Res.ok(new ThermosFile(consumers, network.value()));
