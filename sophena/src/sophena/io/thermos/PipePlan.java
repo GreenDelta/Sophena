@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.openlca.commons.Res;
 
+import sophena.io.thermos.NetworkTree.Building;
 import sophena.io.thermos.NetworkTree.Junction;
+import sophena.io.thermos.NetworkTree.Node;
 import sophena.io.thermos.NetworkTree.Segment;
 import sophena.model.Pipe;
 
@@ -45,15 +47,13 @@ class PipePlan {
 		return s != null ? s.peakLoad() : 0;
 	}
 
-	public double peakLoadOf(Junction junction) {
-		if (junction == null)
+	public double peakLoadOf(Node node) {
+		if (node == null)
 			return 0;
-		var j = junctions.get(junction.id());
-		if (j != null)
-			return j.peakLoad();
-		return junction.isBuilding()
-			? junction.building().peakLoad()
-			: 0;
+		if (node instanceof Building b)
+			return b.peakLoad();
+		var junction = junctions.get(node.id());
+		return junction != null ? junction.peakLoad() : 0;
 	}
 
 	public Pipe pipeOf(Segment segment) {
@@ -69,10 +69,10 @@ class PipePlan {
 			var target = s.target();
 
 			// segment that connects a single building
-			if (target.isBuilding()) {
-				double load = target.building().peakLoad();
-				var sub = new PipeJunction(target.id(), 0, load, 1, List.of());
-				junctions.put(target.id(), sub);
+			if (target instanceof Building building) {
+				double load = building.peakLoad();
+				var sub = new PipeJunction(building.id(), 0, load, 1, List.of());
+				junctions.put(building.id(), sub);
 				var segment = segmentOf(s, sub);
 				if (segment.isError())
 					return segment.castError();
@@ -81,13 +81,15 @@ class PipePlan {
 			}
 
 			// segment to an inner node
-			var sub = traverse(s.target());
-			if (sub.isError())
-				return sub.castError();
-			var segment = segmentOf(s, sub.value());
-			if (segment.isError())
-				return segment.castError();
-			segments.add(segment.value());
+			if (target instanceof Junction subJunction) {
+				var sub = traverse(subJunction);
+				if (sub.isError())
+					return sub.castError();
+				var segment = segmentOf(s, sub.value());
+				if (segment.isError())
+					return segment.castError();
+				segments.add(segment.value());
+			}
 		}
 		return junctionOf(junction, segments);
 	}
@@ -119,13 +121,13 @@ class PipePlan {
 			// pipe heat loss: Q_loss = U * L * ΔT
 			// U in W/(m·K), length in m, ΔT in K => pipeLoss in W
 			// convert to kW by dividing by 1000
-			double pipeLoss = p.uValue() * s.length() * deltaT / 1000;
+			double pipeLoss = p.uValue * s.length() * deltaT / 1000;
 
 			// totalLoad in kW (peakLoad in kW + pipeLoss in kW)
 			double totalLoad = peakLoad + pipeLoss;
 
 			// inner diameter in m (converted from mm)
-			double di = p.innerDiameter() / 1000;
+			double di = p.innerDiameter / 1000;
 			double massFlow = Pipes.massFlowOf(
 				config.flowTemperature(), config.returnTemperature(), totalLoad);
 			double velocity = Pipes.flowVelocityOf(
