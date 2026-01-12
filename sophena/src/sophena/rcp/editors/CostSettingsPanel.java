@@ -40,7 +40,9 @@ public class CostSettingsPanel {
 	private GridData dataInner;
 	private final Runnable updateScrolledForm;
 
-	public CostSettingsPanel(Editor editor, Supplier<CostSettings> fn, Runnable updateScrolledForm) {
+	public CostSettingsPanel(
+		Editor editor, Supplier<CostSettings> fn, Runnable updateScrolledForm
+	) {
 		this.editor = editor;
 		this.fn = fn;
 		this.updateScrolledForm = updateScrolledForm;
@@ -58,8 +60,8 @@ public class CostSettingsPanel {
 			createOtherSection(body);
 			if (isForProject) {
 				AnnualCostsTable
-						.on(editor, fn)
-						.render(body, tk);
+					.on(editor, fn)
+					.render(body, tk);
 			}
 			createPriceChangeSection(body);
 			pipeNetworkSection(body);
@@ -71,25 +73,25 @@ public class CostSettingsPanel {
 		UI.gridLayout(c, 4);
 
 		t(c, "Mittlerer Stundenlohn", "EUR", costs().hourlyWage)
-				.onChanged(s -> costs().hourlyWage = Num.read(s));
+			.onChanged(s -> costs().hourlyWage = Num.read(s));
 		UI.filler(c);
 
 		t(c, "Strompreis", "EUR/kWh", costs().electricityPrice)
-				.onChanged(s -> costs().electricityPrice = Num.read(s));
+			.onChanged(s -> costs().electricityPrice = Num.read(s));
 		UI.filler(c);
 
 		t(c, "Eigenstrombedarf", "%", costs().electricityDemandShare)
-				.onChanged(s -> costs().electricityDemandShare = Num.read(s));
+			.onChanged(s -> costs().electricityDemandShare = Num.read(s));
 		HelpLink.create(c, tk, "Eigenstrombedarf",
-				H.ElectricityDemandShare);
+			H.ElectricityDemandShare);
 		EntityCombo<Fuel> combo = new EntityCombo<>();
 		combo.create("Verbrauchter Strom", c, tk);
 		UI.gridData(combo.getControl(), false, false).widthHint = 235;
 		List<Fuel> fuels = new FuelDao(App.getDb())
-				.getAll().stream()
-				.filter(f -> f.group == FuelGroup.ELECTRICITY)
-				.sorted(Sorters.byName())
-				.collect(Collectors.toList());
+			.getAll().stream()
+			.filter(f -> f.group == FuelGroup.ELECTRICITY)
+			.sorted(Sorters.byName())
+			.collect(Collectors.toList());
 		combo.setInput(fuels);
 		combo.select(costs().projectElectricityMix);
 		combo.onSelect(e -> {
@@ -101,16 +103,16 @@ public class CostSettingsPanel {
 
 		if (isForProject) {
 			String heatRevenues = costs().heatRevenues == 0
-					? "0"
-					: Num.str(costs().heatRevenues, 2);
+				? "0"
+				: Num.str(costs().heatRevenues, 2);
 			t(c, "Mittlere Wärmeerlöse", "EUR/MWh", heatRevenues).onChanged(
-					s -> costs().heatRevenues = Num.read(s));
+				s -> costs().heatRevenues = Num.read(s));
 			UI.filler(c);
 			t(c, "Mittlere Stromerlöse", "EUR/kWh",
-					Num.str(costs().electricityRevenues, 4)).onChanged(
-							s -> costs().electricityRevenues = Num.read(s));
+				Num.str(costs().electricityRevenues, 4)).onChanged(
+				s -> costs().electricityRevenues = Num.read(s));
 			HelpLink.create(c, tk, "Mittlere Stromerlöse",
-					H.ElectricityRevenues);
+				H.ElectricityRevenues);
 		}
 	}
 
@@ -118,65 +120,74 @@ public class CostSettingsPanel {
 		Composite c = UI.formSection(body, tk, "Finanzierung");
 		UI.gridLayout(c, 3);
 		t(c, "Kapital-Mischzinssatz (ohne Förderung)", "%",
-				costs().interestRate)
-						.onChanged(s -> costs().interestRate = Num.read(s));
+			costs().interestRate)
+			.onChanged(s -> costs().interestRate = Num.read(s));
 
 		t(c, "Kapital-Mischzinssatz (mit Förderung)", "%",
-				costs().interestRateFunding)
-						.onChanged(s -> costs().interestRateFunding = Num
-								.read(s));
+			costs().interestRateFunding)
+			.onChanged(s -> costs().interestRateFunding = Num
+				.read(s));
 		if (isForProject) {
 			t(c, "Einmalige Anschlusskosten", "EUR", costs().connectionFees)
-			.onChanged(s -> costs().connectionFees = Num.read(s));
+				.onChanged(s -> costs().connectionFees = Num.read(s));
 			t(c, "Investitionsförderung absolut", "EUR", costs().funding)
-					.onChanged(s -> costs().funding = Num.read(s));
+				.onChanged(s -> costs().funding = Num.read(s));
 			t(c, "Investitionsförderung prozentual", "%",
-					costs().fundingPercent).onChanged(
-							s ->{
-								costs().fundingPercent = Num.read(s);
-								setInnerGridVisible(costs().fundingPercent > 0);
-							});
-			if(costs().fundingPercent == 0)
-				costs().fundingTypes = FundingType.BiomassBoiler.getValue() | FundingType.SolarThermalPlant.getValue() | FundingType.BoilerAccessories.getValue() | FundingType.HeatRecovery.getValue() | FundingType.FlueGasCleaning.getValue() | FundingType.BufferTank.getValue()
-				| FundingType.BoilerHouseTechnology.getValue() | FundingType.Building.getValue() | FundingType.Pipe.getValue() | FundingType.HeatingNetTechnology.getValue() | FundingType.HeatingNetConstruction.getValue()
-				| FundingType.TransferStation.getValue() | FundingType.Planning.getValue() | FundingType.HeatPump.getValue();
+				costs().fundingPercent).onChanged(
+				s -> {
+					costs().fundingPercent = Num.read(s);
+					setInnerGridVisible(costs().fundingPercent > 0);
+				});
+			if (costs().fundingPercent == 0)
+				costs().fundingTypes = FundingType.BiomassBoiler.getValue()
+					| FundingType.SolarThermalPlant.getValue()
+					| FundingType.BoilerAccessories.getValue()
+					| FundingType.HeatRecovery.getValue()
+					| FundingType.FlueGasCleaning.getValue()
+					| FundingType.BufferTank.getValue()
+					| FundingType.BoilerHouseTechnology.getValue()
+					| FundingType.Building.getValue()
+					| FundingType.Pipe.getValue()
+					| FundingType.HeatingNetTechnology.getValue()
+					| FundingType.HeatingNetConstruction.getValue()
+					| FundingType.TransferStation.getValue()
+					| FundingType.Planning.getValue()
+					| FundingType.HeatPump.getValue();
 			createCheckSection(body);
 			setInnerGridVisible(costs().fundingPercent > 0);
 		}
 	}
 
-	private void createCheckSection(Composite c)
-	{
+	private void createCheckSection(Composite c) {
 		inner = tk.createComposite(c);
 		UI.gridLayout(inner, 4);
 		dataInner = new GridData(SWT.FILL, SWT.FILL, false, false);
-	    inner.setLayoutData(dataInner);
-	    setCheckBox(tk.createButton(inner, M.BiomassBoiler, SWT.CHECK), FundingType.BiomassBoiler.getValue());
-	    setCheckBox(tk.createButton(inner, M.FossilFuelBoiler, SWT.CHECK), FundingType.FossilFuelBoiler.getValue());
-	    setCheckBox(tk.createButton(inner, M.HeatPump, SWT.CHECK), FundingType.HeatPump.getValue());
-	    setCheckBox(tk.createButton(inner, M.CogenerationPlant, SWT.CHECK), FundingType.CogenerationPlant.getValue());
-	    setCheckBox(tk.createButton(inner, M.SolarThermalPlant, SWT.CHECK), FundingType.SolarThermalPlant.getValue());
-	    setCheckBox(tk.createButton(inner, M.ElectricHeatGenerator, SWT.CHECK), FundingType.ElectricHeatGenerator.getValue());
-	    setCheckBox(tk.createButton(inner, M.OtherHeatSource, SWT.CHECK), FundingType.OtherHeatSource.getValue());
-	    setCheckBox(tk.createButton(inner, M.BoilerAccessories, SWT.CHECK), FundingType.BoilerAccessories.getValue());
-	    setCheckBox(tk.createButton(inner, M.OtherEquipment, SWT.CHECK), FundingType.OtherEquipment.getValue());
-	    setCheckBox(tk.createButton(inner, M.HeatRecovery, SWT.CHECK), FundingType.HeatRecovery.getValue());
-	    setCheckBox(tk.createButton(inner, M.FlueGasCleaning, SWT.CHECK), FundingType.FlueGasCleaning.getValue());
-	    setCheckBox(tk.createButton(inner, M.BufferTank, SWT.CHECK), FundingType.BufferTank.getValue());
-	    setCheckBox(tk.createButton(inner, M.BoilerHouseTechnology, SWT.CHECK), FundingType.BoilerHouseTechnology.getValue());
-	    setCheckBox(tk.createButton(inner, M.Building, SWT.CHECK), FundingType.Building.getValue());
-	    setCheckBox(tk.createButton(inner, M.Pipe, SWT.CHECK), FundingType.Pipe.getValue());
-	    setCheckBox(tk.createButton(inner, M.HeatingNetTechnology, SWT.CHECK), FundingType.HeatingNetTechnology.getValue());
-	    setCheckBox(tk.createButton(inner, M.HeatingNetConstruction, SWT.CHECK), FundingType.HeatingNetConstruction.getValue());
-	    setCheckBox(tk.createButton(inner, M.TransferStation, SWT.CHECK), FundingType.TransferStation.getValue());
-	    setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());
+		inner.setLayoutData(dataInner);
+		setCheckBox(tk.createButton(inner, M.BiomassBoiler, SWT.CHECK), FundingType.BiomassBoiler.getValue());
+		setCheckBox(tk.createButton(inner, M.FossilFuelBoiler, SWT.CHECK), FundingType.FossilFuelBoiler.getValue());
+		setCheckBox(tk.createButton(inner, M.HeatPump, SWT.CHECK), FundingType.HeatPump.getValue());
+		setCheckBox(tk.createButton(inner, M.CogenerationPlant, SWT.CHECK), FundingType.CogenerationPlant.getValue());
+		setCheckBox(tk.createButton(inner, M.SolarThermalPlant, SWT.CHECK), FundingType.SolarThermalPlant.getValue());
+		setCheckBox(tk.createButton(inner, M.ElectricHeatGenerator, SWT.CHECK), FundingType.ElectricHeatGenerator.getValue());
+		setCheckBox(tk.createButton(inner, M.OtherHeatSource, SWT.CHECK), FundingType.OtherHeatSource.getValue());
+		setCheckBox(tk.createButton(inner, M.BoilerAccessories, SWT.CHECK), FundingType.BoilerAccessories.getValue());
+		setCheckBox(tk.createButton(inner, M.OtherEquipment, SWT.CHECK), FundingType.OtherEquipment.getValue());
+		setCheckBox(tk.createButton(inner, M.HeatRecovery, SWT.CHECK), FundingType.HeatRecovery.getValue());
+		setCheckBox(tk.createButton(inner, M.FlueGasCleaning, SWT.CHECK), FundingType.FlueGasCleaning.getValue());
+		setCheckBox(tk.createButton(inner, M.BufferTank, SWT.CHECK), FundingType.BufferTank.getValue());
+		setCheckBox(tk.createButton(inner, M.BoilerHouseTechnology, SWT.CHECK), FundingType.BoilerHouseTechnology.getValue());
+		setCheckBox(tk.createButton(inner, M.Building, SWT.CHECK), FundingType.Building.getValue());
+		setCheckBox(tk.createButton(inner, M.Pipe, SWT.CHECK), FundingType.Pipe.getValue());
+		setCheckBox(tk.createButton(inner, M.HeatingNetTechnology, SWT.CHECK), FundingType.HeatingNetTechnology.getValue());
+		setCheckBox(tk.createButton(inner, M.HeatingNetConstruction, SWT.CHECK), FundingType.HeatingNetConstruction.getValue());
+		setCheckBox(tk.createButton(inner, M.TransferStation, SWT.CHECK), FundingType.TransferStation.getValue());
+		setCheckBox(tk.createButton(inner, M.Planning, SWT.CHECK), FundingType.Planning.getValue());
 	}
 
-	private void setCheckBox(Button check, int fundingTypeValue)
-	{
+	private void setCheckBox(Button check, int fundingTypeValue) {
 		check.setSelection((costs().fundingTypes & fundingTypeValue) > 0);
 		Controls.onSelect(check, (e) -> {
-			if(check.getSelection())
+			if (check.getSelection())
 				costs().fundingTypes |= fundingTypeValue;
 			else
 				costs().fundingTypes &= ~fundingTypeValue;
@@ -184,8 +195,7 @@ public class CostSettingsPanel {
 		});
 	}
 
-	private void setInnerGridVisible(Boolean visible)
-	{
+	private void setInnerGridVisible(Boolean visible) {
 		inner.setVisible(visible);
 		dataInner.exclude = !visible;
 		inner.requestLayout();
@@ -197,68 +207,66 @@ public class CostSettingsPanel {
 		Composite c = UI.formSection(body, tk, "Sonstige Kosten");
 		UI.gridLayout(c, 3);
 		t(c, "Versicherung", "%", costs().insuranceShare)
-				.onChanged(s -> costs().insuranceShare = Num.read(s));
+			.onChanged(s -> costs().insuranceShare = Num.read(s));
 		t(c, "Sonstige Abgaben (Steuern, Pacht, …)", "%", costs().otherShare)
-				.onChanged(s -> costs().otherShare = Num.read(s));
+			.onChanged(s -> costs().otherShare = Num.read(s));
 		t(c, "Verwaltung", "%", costs().administrationShare)
-				.onChanged(s -> costs().administrationShare = Num.read(s));
+			.onChanged(s -> costs().administrationShare = Num.read(s));
 	}
 
 	private void createPriceChangeSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Preisänderungsfaktoren");
 		UI.gridLayout(c, 3);
 		t(c, "Investitionen", "", costs().investmentFactor)
-				.onChanged(s -> costs().investmentFactor = Num.read(s));
+			.onChanged(s -> costs().investmentFactor = Num.read(s));
 		t(c, "Biomasse-Brennstoff", "", costs().bioFuelFactor)
-				.onChanged(s -> costs().bioFuelFactor = Num.read(s));
+			.onChanged(s -> costs().bioFuelFactor = Num.read(s));
 		t(c, "Fossiler Brennstoff", "", costs().fossilFuelFactor)
-				.onChanged(s -> costs().fossilFuelFactor = Num.read(s));
+			.onChanged(s -> costs().fossilFuelFactor = Num.read(s));
 		t(c, "Strom", "", costs().electricityFactor)
-				.onChanged(s -> costs().electricityFactor = Num.read(s));
+			.onChanged(s -> costs().electricityFactor = Num.read(s));
 		t(c, "Lohnkosten und sonstige Kosten", "", costs().operationFactor)
-				.onChanged(s -> costs().operationFactor = Num.read(s));
+			.onChanged(s -> costs().operationFactor = Num.read(s));
 		t(c, "Instandhaltung", "", costs().maintenanceFactor)
-				.onChanged(s -> costs().maintenanceFactor = Num.read(s));
+			.onChanged(s -> costs().maintenanceFactor = Num.read(s));
 		t(c, "Wärmeerlöse", "", costs().heatRevenuesFactor)
-				.onChanged(s -> costs().heatRevenuesFactor = Num.read(s));
+			.onChanged(s -> costs().heatRevenuesFactor = Num.read(s));
 		t(c, "Stromerlöse", "", costs().electricityRevenuesFactor)
-				.onChanged(
-						s -> costs().electricityRevenuesFactor = Num.read(s));
+			.onChanged(
+				s -> costs().electricityRevenuesFactor = Num.read(s));
 	}
 
 	private void pipeNetworkSection(Composite body) {
 		Composite c = UI.formSection(body, tk, "Parameter für Rohrnetzauslegung");
 		UI.gridLayout(c, 3);
 		t(c, "Maximaler Druckverlust", "Pa/m", costs().maxPressureLoss)
-				.onChanged(s -> costs().maxPressureLoss = Num.read(s));
+			.onChanged(s -> costs().maxPressureLoss = Num.read(s));
 		t(c, "Maximale Strömungsgeschwindigkeit", "m/s", costs().maxFlowVelocity)
-				.onChanged(s -> costs().maxFlowVelocity = Num.read(s));
+			.onChanged(s -> costs().maxFlowVelocity = Num.read(s));
 		t(c, "Aufschlag auf Druckverlust für Einbauten", "%",
-				costs().fittingSurcharge * 100)
-				.onChanged(s -> costs().fittingSurcharge = Num.read(s) / 100);
-		t(c, "Rauigkeit Kunststoffrohre", "mm", costs().roughnessPlastic)
-				.onChanged(s -> costs().roughnessPlastic = Num.read(s));
-		t(c, "Rauigkeit Stahlrohre glatt", "mm", costs().roughnessSteel)
-				.onChanged(s -> costs().roughnessSteel = Num.read(s));
+			costs().fittingSurcharge * 100)
+			.onChanged(s -> costs().fittingSurcharge = Num.read(s) / 100);
+		t(c, "Rauigkeit Kunststoffrohre", "mm", Num.str(costs().roughnessPlastic, 3))
+			.onChanged(s -> costs().roughnessPlastic = Num.read(s));
+		t(c, "Rauigkeit Stahlrohre", "mm", Num.str(costs().roughnessSteel, 3))
+			.onChanged(s -> costs().roughnessSteel = Num.read(s));
 	}
 
-	private TextBox t(Composite comp, String label, String unit,
-                      double initial) {
+	private TextBox t(Composite comp, String label, String unit, double initial) {
 		return t(comp, label, unit, Num.str(initial));
 	}
 
-	private TextBox t(Composite comp, String label, String unit,
-                      String initial) {
+	private TextBox t(Composite comp, String label, String unit, String initial) {
 		Label lab = UI.formLabel(comp, tk, label);
 		UI.gridData(lab, false, false).widthHint = 250;
 		Text text = tk.createText(comp, null, SWT.BORDER);
 		UI.gridData(text, false, false).widthHint = 250;
 		UI.formLabel(comp, tk, unit);
 		return Texts.on(text)
-				.required()
-				.decimal()
-				.init(initial)
-				.onChanged(s -> editor.setDirty());
+			.required()
+			.decimal()
+			.init(initial)
+			.onChanged(s -> editor.setDirty());
 	}
 
 }

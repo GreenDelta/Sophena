@@ -98,7 +98,7 @@ public class ActionBarAdvisor extends
 				FuelEditor::open));
 		m.add(Actions.create("Produktgruppen", Icon.PRODUCT_16.des(),
 				ProductGroupEditor::open));
-		m.add(Actions.create("Kosteneinstellungen", Icon.COSTS_16.des(),
+		m.add(Actions.create("Basiseinstellungen", Icon.SETTINGS_16.des(),
 				BaseCostEditor::open));
 	}
 

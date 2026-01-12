@@ -3,7 +3,7 @@ package sophena.model;
 public enum FundingType {
 
 	BiomassBoiler(1),
-	FossilFuelBoiler(2), 
+	FossilFuelBoiler(2),
 	CogenerationPlant(4),
 	SolarThermalPlant(8),
 	ElectricHeatGenerator(16),
@@ -21,15 +21,14 @@ public enum FundingType {
 	TransferStation(65536),
 	Planning(131072),
 	HeatPump(262144);
-	
-	private int value;
-	private FundingType(int value)
-	{
+
+	private final int value;
+
+	FundingType(int value) {
 		this.value = value;
 	}
-	 
-	public int getValue()
-	{
+
+	public int getValue() {
 		return value;
 	}
 }

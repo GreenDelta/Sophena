@@ -112,6 +112,8 @@ public enum Icon {
 
 	SEARCH_16("search_16.png"),
 
+	SETTINGS_16("settings_16.png"),
+
 	SORTING_16("sorting_16.png"),
 
 	WARNING_16("warning_16.png"),
