@@ -62,6 +62,7 @@ public class CostSettingsPanel {
 						.render(body, tk);
 			}
 			createPriceChangeSection(body);
+			pipeNetworkSection(body);
 		}
 	}
 
@@ -223,6 +224,22 @@ public class CostSettingsPanel {
 		t(c, "Stromerlöse", "", costs().electricityRevenuesFactor)
 				.onChanged(
 						s -> costs().electricityRevenuesFactor = Num.read(s));
+	}
+
+	private void pipeNetworkSection(Composite body) {
+		Composite c = UI.formSection(body, tk, "Parameter für Rohrnetzauslegung");
+		UI.gridLayout(c, 3);
+		t(c, "Maximaler Druckverlust", "Pa/m", costs().maxPressureLoss)
+				.onChanged(s -> costs().maxPressureLoss = Num.read(s));
+		t(c, "Maximale Strömungsgeschwindigkeit", "m/s", costs().maxFlowVelocity)
+				.onChanged(s -> costs().maxFlowVelocity = Num.read(s));
+		t(c, "Aufschlag auf Druckverlust für Einbauten", "%",
+				costs().fittingSurcharge * 100)
+				.onChanged(s -> costs().fittingSurcharge = Num.read(s) / 100);
+		t(c, "Rauigkeit Kunststoffrohre", "mm", costs().roughnessPlastic)
+				.onChanged(s -> costs().roughnessPlastic = Num.read(s));
+		t(c, "Rauigkeit Stahlrohre glatt", "mm", costs().roughnessSteel)
+				.onChanged(s -> costs().roughnessSteel = Num.read(s));
 	}
 
 	private TextBox t(Composite comp, String label, String unit,

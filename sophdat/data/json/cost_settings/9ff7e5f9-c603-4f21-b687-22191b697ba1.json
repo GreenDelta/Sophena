@@ -33,5 +33,11 @@
     "operationFactor": 1.02,
     "maintenanceFactor": 1.02,
     "heatRevenuesFactor": 1.02,
-    "electricityRevenuesFactor": 1.00
+    "electricityRevenuesFactor": 1.00,
+
+    "maxPressureLoss": 100,
+    "maxFlowVelocity": 3,
+    "fittingSurcharge": 0.2,
+    "roughnessPlastic": 0.002,
+    "roughnessSteel": 0.01
 }

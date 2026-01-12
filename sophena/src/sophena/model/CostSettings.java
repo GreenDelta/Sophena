@@ -129,6 +129,29 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "electricity_revenues_factor")
 	public double electricityRevenuesFactor;
 
+	// pipe network design parameters
+	// these fields are used for pipe assignments in network calculations
+
+	/** Maximum allowed pressure loss in Pa/m */
+	@Column(name = "max_pressure_loss")
+	public double maxPressureLoss;
+
+	/** Maximum allowed flow velocity in m/s */
+	@Column(name = "max_flow_velocity")
+	public double maxFlowVelocity;
+
+	/** Surcharge factor for fittings/installations, e.g. 0.2 for 20% */
+	@Column(name = "fitting_surcharge")
+	public double fittingSurcharge;
+
+	/** Pipe wall roughness for plastic pipes in mm */
+	@Column(name = "roughness_plastic")
+	public double roughnessPlastic;
+
+	/** Pipe wall roughness for smooth steel pipes in mm */
+	@Column(name = "roughness_steel")
+	public double roughnessSteel;
+
 	@Override
 	public CostSettings copy() {
 		var clone = new CostSettings();
@@ -171,6 +194,14 @@ public class CostSettings extends AbstractEntity {
 				clone.annualCosts.add(ace.copy());
 			}
 		}
+
+		// pipe network design parameters
+		clone.maxPressureLoss = maxPressureLoss;
+		clone.maxFlowVelocity = maxFlowVelocity;
+		clone.fittingSurcharge = fittingSurcharge;
+		clone.roughnessPlastic = roughnessPlastic;
+		clone.roughnessSteel = roughnessSteel;
+
 		return clone;
 	}
 }
