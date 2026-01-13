@@ -16,7 +16,7 @@ import sophena.io.Json;
 public record NetworkTree(Junction root) {
 
 	public static Res<NetworkTree> parse(JsonObject obj) {
-		if (obj == null || obj.size() == 0)
+		if (obj == null)
 			return Res.error("Network object is empty");
 
 		var array = Json.getArray(obj, "nodes");
@@ -45,7 +45,9 @@ public record NetworkTree(Junction root) {
 		try {
 			var state = new ParseState(nodes);
 			var root = state.parse(rootId);
-			return root instanceof Junction junction
+			if (root.isError())
+				return root.wrapError("Failed to parse network tree");
+			return root.value() instanceof Junction junction
 				? Res.ok(new NetworkTree(junction))
 				: Res.error("Root node " + rootId + " is not a junction");
 		} catch (Exception e) {
@@ -55,37 +57,37 @@ public record NetworkTree(Junction root) {
 
 	private static class ParseState {
 		private final Map<Long, JsonObject> nodeMap;
-		private final Map<Long, Node> memo = new HashMap<>();
+		private final Map<Long, Res<Node>> memo = new HashMap<>();
 		private final Set<Long> visiting = new HashSet<>();
 
 		ParseState(Map<Long, JsonObject> nodeMap) {
 			this.nodeMap = nodeMap;
 		}
 
-		Node parse(long id) {
+		Res<Node> parse(long id) {
 			var cached = memo.get(id);
-			if (cached != null) {
+			if (cached != null)
 				return cached;
-			}
-			if (visiting.contains(id))
-				throw new IllegalStateException("Cycle detected at node " + id);
 
+			if (visiting.contains(id))
+				return Res.error("Cycle detected at node " + id);
 			visiting.add(id);
+
 			try {
 				var obj = nodeMap.get(id);
 				if (obj == null)
-					throw new IllegalArgumentException(
-						"Node " + id + " not found in network");
+					return Res.error("Node " + id + " not found in network");
 
 				var consumerId = Json.getString(obj, "consumerId");
 				if (consumerId != null) {
-					var building = new Building(
+					Node building = new Building(
 						id,
 						consumerId,
 						Json.getDouble(obj, "heatDemand", 0.0),
 						Json.getDouble(obj, "peakLoad", 0.0));
-					memo.put(id, building);
-					return building;
+					var res = Res.ok(building);
+					memo.put(id, res);
+					return res;
 				}
 
 				var segments = new ArrayList<Segment>();
@@ -103,13 +105,16 @@ public record NetworkTree(Junction root) {
 						if (targetId == -1)
 							continue;
 						var target = parse(targetId);
-						segments.add(new Segment(segId, length, target));
+						if (target.isError())
+							return target;
+						segments.add(new Segment(segId, length, target.value()));
 					}
 				}
 
-				var junction = new Junction(id, segments);
-				memo.put(id, junction);
-				return junction;
+				Node junction = new Junction(id, segments);
+				var res = Res.ok(junction);
+				memo.put(id, res);
+				return res;
 			} finally {
 				visiting.remove(id);
 			}
