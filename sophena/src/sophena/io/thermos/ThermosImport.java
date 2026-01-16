@@ -6,13 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import sophena.db.Database;
 import sophena.model.Consumer;
-import sophena.model.HeatNet;
-import sophena.model.HeatNetPipe;
-import sophena.model.Pipe;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.TransferStation;
@@ -60,9 +56,8 @@ public class ThermosImport implements Runnable {
 			if (config.isWithConsumers()) {
 				syncConsumers();
 			}
-
 			if (config.isWithPipes()) {
-				syncPipes();
+				new PipeSync(db, config).run();
 			}
 
 			db.update(project);
@@ -155,116 +150,6 @@ public class ThermosImport implements Runnable {
 		for (var fc : update.fuelConsumptions) {
 			c.fuelConsumptions.add(fc.copy());
 		}
-	}
-
-	private void syncPipes() {
-		if (file.network() == null)
-			return;
-
-		var availablePipes = new ArrayList<Pipe>();
-		var manufacturer = config.pipeManufacturer();
-		var productLine = config.pipeProductLine();
-		for (var p : db.getAll(Pipe.class)) {
-			if (Objects.equals(p.manufacturer, manufacturer)
-				&& Objects.equals(p.productLine, productLine)) {
-				availablePipes.add(p);
-			}
-		}
-
-		var pipeConfig = PipeConfig.of(project, availablePipes);
-		var planRes = PipePlan.of(pipeConfig, file.network());
-		if (planRes.isError())
-			return;
-
-		var pipeSum = PipeSum.of(file.network(), planRes.value());
-		if (project.heatNet == null) {
-			project.heatNet = new HeatNet();
-			project.heatNet.id = UUID.randomUUID().toString();
-		}
-
-		if (config.isUpdateExisting()) {
-			syncPipesInUpdateMode(pipeSum.segments());
-		} else {
-			syncPipesInAppendMode(pipeSum.segments());
-		}
-	}
-
-	private void syncPipesInUpdateMode(List<PipeSum.Seg> segments) {
-		var pipes = project.heatNet.pipes;
-		var usedDimensions = new HashSet<Double>();
-
-		for (var seg : segments) {
-			double dim = seg.pipe().innerDiameter;
-			usedDimensions.add(dim);
-
-			HeatNetPipe existing = null;
-			for (var hnp : pipes) {
-				if (hnp.pipe != null && hnp.pipe.innerDiameter == dim) {
-					existing = hnp;
-					break;
-				}
-			}
-
-			if (existing != null) {
-				if (Objects.equals(existing.pipe.manufacturer, config.pipeManufacturer())
-					&& Objects.equals(existing.pipe.productLine, config.pipeProductLine())) {
-					// dimension and manufacturer/product line match -> update length
-					existing.length = seg.length();
-				} else {
-					// dimension matches but other manufacturer/line -> replace
-					existing.pipe = seg.pipe();
-					existing.length = seg.length();
-					existing.name = seg.pipe().name;
-					if (existing.costs == null) {
-						existing.costs = new ProductCosts();
-					}
-					ProductCosts.copy(seg.pipe(), existing.costs);
-					existing.pricePerMeter = seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
-				}
-			} else {
-				// new dimension -> add
-				addNewHeatNetPipe(seg);
-			}
-		}
-
-		// remove unused dimensions
-		pipes.removeIf(p -> p.pipe == null || !usedDimensions.contains(p.pipe.innerDiameter));
-	}
-
-	private void syncPipesInAppendMode(List<PipeSum.Seg> segments) {
-		var pipes = project.heatNet.pipes;
-		for (var seg : segments) {
-			HeatNetPipe existing = null;
-			for (var hnp : pipes) {
-				if (hnp.pipe != null
-					&& hnp.pipe.innerDiameter == seg.pipe().innerDiameter
-					&& Objects.equals(hnp.pipe.manufacturer, config.pipeManufacturer())
-					&& Objects.equals(hnp.pipe.productLine, config.pipeProductLine())) {
-					existing = hnp;
-					break;
-				}
-			}
-
-			if (existing != null) {
-				// dimension and manufacturer/line match -> add length
-				existing.length += seg.length();
-			} else {
-				// new record
-				addNewHeatNetPipe(seg);
-			}
-		}
-	}
-
-	private void addNewHeatNetPipe(PipeSum.Seg seg) {
-		var hnp = new HeatNetPipe();
-		hnp.id = UUID.randomUUID().toString();
-		hnp.pipe = seg.pipe();
-		hnp.length = seg.length();
-		hnp.name = seg.pipe().name;
-		hnp.costs = new ProductCosts();
-		ProductCosts.copy(seg.pipe(), hnp.costs);
-		hnp.pricePerMeter = seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
-		project.heatNet.pipes.add(hnp);
 	}
 
 	private void assignStation(Consumer c, List<TransferStation> stations) {

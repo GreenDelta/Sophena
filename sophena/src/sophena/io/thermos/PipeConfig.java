@@ -1,5 +1,6 @@
 package sophena.io.thermos;
 
+import java.util.Collections;
 import java.util.List;
 
 import sophena.model.Pipe;
@@ -61,8 +62,8 @@ record PipeConfig(
 			return false;
 		}
 		var first = pipes.getFirst();
-		var g = first != null && first.productGroup
-	 		? first.productGroup.name
+		var g = first != null && first.group != null
+	 		? first.group.name
 			: null;
 		if (g == null) {
 			return false;
@@ -83,7 +84,9 @@ record PipeConfig(
 		private double groundTemperature = 10;
 
 		private Builder(List<Pipe> pipes) {
-			this.pipes = pipes != null ? pipes : Collections.emptyList();
+			this.pipes = pipes != null 
+					? pipes 
+					: Collections.emptyList();
 			pipes.sort((pi, pj) -> Double.compare(pi.innerDiameter, pj.innerDiameter));
 		}
 
