@@ -35,7 +35,7 @@ record PipeConfig(
 
 		if (project.heatNet != null) {
 			var hn = project.heatNet;
-			Builder.withFlowTemperature(hn.supplyTemperature)
+			builder.withFlowTemperature(hn.supplyTemperature)
 				.withReturnTemperature(hn.returnTemperature);
 		}
 
@@ -50,6 +50,7 @@ record PipeConfig(
 				: cs.roughnessPlastic;
 			builder.withRoughness(r * 1e-3); // mm -> m
 		}
+		return builder.get();
 	}
 
 	/// We can determine if the pipes are made from steel from the product group.
