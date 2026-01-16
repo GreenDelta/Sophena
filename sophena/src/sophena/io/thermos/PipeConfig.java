@@ -29,43 +29,50 @@ record PipeConfig(
 ) {
 
 	static PipeConfig of(Project project, List<Pipe> pipes) {
-		var builder = new Builder();
-		if (project != null) {
-			if (project.costSettings != null) {
-				var cs = project.costSettings;
-				builder.withMaxPressureLoss(cs.maxPressureLoss)
-					.withMaxFlowVelocity(cs.maxFlowVelocity)
-					.withFittingSurcharge(cs.fittingSurcharge);
+		var builder = new Builder(pipes);
+		if (project == null)
+			return builder.get();
 
-				double roughness = cs.roughnessPlastic;
-				if (pipes != null && !pipes.isEmpty()) {
-					var p = pipes.get(0);
-					if (p.material != null && (p.material.toLowerCase().contains("stahl")
-						|| p.material.toLowerCase().contains("steel"))) {
-						roughness = cs.roughnessSteel;
-					}
-				}
-				builder.withRoughness(roughness * 1e-3);
-			}
-			if (project.heatNet != null) {
-				var hn = project.heatNet;
-				builder.withFlowTemperature(hn.supplyTemperature)
-					.withReturnTemperature(hn.returnTemperature);
-			}
+		if (project.heatNet != null) {
+			var hn = project.heatNet;
+			Builder.withFlowTemperature(hn.supplyTemperature)
+				.withReturnTemperature(hn.returnTemperature);
 		}
-		return builder.withPipes(pipes).get();
+
+		if (project.costSettings != null) {
+			var cs = project.costSettings;
+			builder.withMaxPressureLoss(cs.maxPressureLoss)
+				.withMaxFlowVelocity(cs.maxFlowVelocity)
+				.withFittingSurcharge(cs.fittingSurcharge);
+
+			double r = isSteel(pipes)
+				? cs.roughnessSteel
+				: cs.roughnessPlastic;
+			builder.withRoughness(r * 1e-3); // mm -> m
+		}
 	}
 
-	static Builder forPlastic() {
-		return new Builder().withRoughness(0.002e-3);
-	}
-
-	static Builder forSteel() {
-		return new Builder().withRoughness(0.01e-3);
+	/// We can determine if the pipes are made from steel from the product group.
+	/// As the selected pipes should be from the same product line, we can just
+	/// test the first best pipe we find.
+	private static boolean isSteel(List<Pipe> pipes) {
+		if (pipes == null || pipes.isEmpty()) {
+			return false;
+		}
+		var first = pipes.getFirst();
+		var g = first != null && first.productGroup
+	 		? first.productGroup.name
+			: null;
+		if (g == null) {
+			return false;
+		}
+		var s = g.toLowerCase();
+		return s.contains("stahl") || s.contains("steel");
 	}
 
 	static class Builder {
 
+		private final List<Pipe> pipes;
 		private double maxPressureLoss = 100;
 		private double maxFlowVelocity = 3.0;
 		private double fittingSurcharge = 0.2;
@@ -73,7 +80,11 @@ record PipeConfig(
 		private double returnTemperature = 50;
 		private double roughness = 0.002e-3;
 		private double groundTemperature = 10;
-		private List<Pipe> pipes;
+
+		private Builder(List<Pipe> pipes) {
+			this.pipes = pipes != null ? pipes : Collections.emptyList();
+			pipes.sort((pi, pj) -> Double.compare(pi.innerDiameter, pj.innerDiameter));
+		}
 
 		Builder withMaxPressureLoss(double maxPressureLoss) {
 			this.maxPressureLoss = maxPressureLoss;
@@ -107,11 +118,6 @@ record PipeConfig(
 
 		Builder withGroundTemperature(double groundTemperature) {
 			this.groundTemperature = groundTemperature;
-			return this;
-		}
-
-		Builder withPipes(List<Pipe> pipes) {
-			this.pipes = pipes;
 			return this;
 		}
 

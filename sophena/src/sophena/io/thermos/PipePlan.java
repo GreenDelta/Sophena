@@ -8,7 +8,6 @@ import org.openlca.commons.Res;
 
 import sophena.io.thermos.NetworkTree.Building;
 import sophena.io.thermos.NetworkTree.Junction;
-import sophena.io.thermos.NetworkTree.Node;
 import sophena.io.thermos.NetworkTree.Segment;
 import sophena.model.Pipe;
 
@@ -40,27 +39,12 @@ class PipePlan {
 		}
 	}
 
-	public double peakLoadOf(Segment segment) {
-		if (segment == null)
-			return 0;
-		var s = segments.get(segment.id());
-		return s != null ? s.peakLoad() : 0;
-	}
-
-	public double peakLoadOf(Node node) {
-		if (node == null)
-			return 0;
-		if (node instanceof Building b)
-			return b.peakLoad();
-		var junction = junctions.get(node.id());
-		return junction != null ? junction.peakLoad() : 0;
-	}
-
-	public Pipe pipeOf(Segment segment) {
-		if (segment == null)
+	Pipe pipeOf(Segment segment) {
+		if (segment == null) {
 			return null;
-		var s = segments.get(segment.id());
-		return s != null ? s.pipe : null;
+		}
+		var ps = segments.get(segment.id());
+		return ps != null ? ps.pipe : null;
 	}
 
 	private Res<PipeJunction> traverse(Junction junction) {
@@ -160,7 +144,7 @@ class PipePlan {
 		return Res.ok(segment);
 	}
 
-	public record PipeJunction(
+	record PipeJunction(
 		long id,
 		double netLoad,
 		double buildingLoad,
@@ -172,7 +156,7 @@ class PipePlan {
 		}
 	}
 
-	public record PipeSegment(
+	record PipeSegment(
 		long id,
 		double length,
 		double netLoad,
