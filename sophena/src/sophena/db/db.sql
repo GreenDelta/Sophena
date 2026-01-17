@@ -301,6 +301,9 @@ CREATE TABLE tbl_heat_nets (
 	return_temperature_summer DOUBLE,
 	target_charge_level DOUBLE,
 	use_heating_curve BOOLEAN,
+	fitting_count INTEGER,
+	price_per_fitting DOUBLE,
+	fitting_surcharge DOUBLE,
 
     PRIMARY KEY (id)
 );

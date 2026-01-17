@@ -63,44 +63,56 @@ public class HeatNet extends AbstractEntity {
 	@JoinColumn(name = "f_heat_net")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
-	
+
 	@Column(name = "maximum_performance")
 	public double maximumPerformance;
-	
+
 	@Column(name = "is_seasonal_driving_style")
 	public boolean isSeasonalDrivingStyle;
-	
+
 	@JoinColumn(name = "f_interval_winter")
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	public TimeInterval intervalWinter;
-	
+
 	@JoinColumn(name = "f_interval_summer")
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	public TimeInterval intervalSummer;
-	
+
 	@Column(name = "target_charge_level_winter")
 	public double targetChargeLevelWinter;
-	
+
 	@Column(name = "target_charge_level_summer")
 	public double targetChargeLevelSummer;
-	
+
 	@Column(name = "flow_temperature_winter")
 	public double flowTemperatureWinter;
-	
+
 	@Column(name = "flow_temperature_summer")
 	public double flowTemperatureSummer;
-	
+
 	@Column(name = "return_temperature_winter")
 	public double returnTemperatureWinter;
-	
+
 	@Column(name = "return_temperature_summer")
 	public double returnTemperatureSummer;
-	
+
 	@Column(name = "target_charge_level")
 	public double targetChargeLevel;
-	
+
 	@Column(name = "use_heating_curve")
 	public boolean useHeatingCurve;
+
+	/// The number of fittings.
+	@Column(name = "fitting_count")
+	public int fittingCount;
+
+	/// The price per fitting in [EUR].
+	@Column(name = "price_per_fitting")
+	public double pricePerFitting;
+
+	/// The percentage surcharge for fittings in [%].
+	@Column(name = "fitting_surcharge")
+	public double fittingSurcharge;
 
 	public static void addDefaultTo(Project p) {
 		if (p == null)
@@ -136,8 +148,11 @@ public class HeatNet extends AbstractEntity {
 		intervalSummer.end = MonthDay.of(9, 15).toString();
 		net.intervalSummer = intervalSummer;
 		net.useHeatingCurve = false;
+		net.fittingCount = 0;
+		net.pricePerFitting = 0;
+		net.fittingSurcharge = 0;
 	}
-	
+
 	@Override
 	public HeatNet copy() {
 		var clone = new HeatNet();
@@ -175,7 +190,10 @@ public class HeatNet extends AbstractEntity {
 			clone.intervalSummer = intervalSummer.copy();
 		}
 		clone.useHeatingCurve = useHeatingCurve;
-		
+		clone.fittingCount = fittingCount;
+		clone.pricePerFitting = pricePerFitting;
+		clone.fittingSurcharge = fittingSurcharge;
+
 		for (var p : pipes) {
 			clone.pipes.add(p.copy());
 		}
