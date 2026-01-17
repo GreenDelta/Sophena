@@ -74,10 +74,10 @@ class PipeSync {
 	private void updateAll(List<PipeSum.Seg> segments) {
 		var used = new HashSet<String>();
 		for (var seg : segments) {
-			var match = BestMatch.of(seg.pipe, project.heatNet);
+			var match = BestMatch.of(seg.pipe(), project.heatNet);
 			HeatNetPipe pipe;
 			if (match == null) {
-				pipe = addNew(seg)
+				pipe = addNew(seg);
 			} else if (match.isSame) {
 				pipe = match.existing;
 				pipe.length = seg.length();
@@ -103,7 +103,7 @@ class PipeSync {
 
 	private void appendNew(List<PipeSum.Seg> segments) {
 		for (var seg : segments) {
-			var match = BestMatch.of(seg.pipe, project.heatNet);
+			var match = BestMatch.of(seg.pipe(), project.heatNet);
 			if (match != null && match.isSame) {
 				match.existing.length += seg.length();
 			} else {
@@ -112,7 +112,7 @@ class PipeSync {
 		}
 	}
 
-	private void addNew(PipeSum.Seg seg) {
+	private HeatNetPipe addNew(PipeSum.Seg seg) {
 		var hnp = new HeatNetPipe();
 		hnp.id = UUID.randomUUID().toString();
 		hnp.pipe = seg.pipe();
@@ -124,6 +124,7 @@ class PipeSync {
 			? seg.pipe().purchasePrice
 			: 0;
 		project.heatNet.pipes.add(hnp);
+		return hnp;
 	}
 
 	private record BestMatch(HeatNetPipe existing, boolean isSame) {
@@ -141,7 +142,9 @@ class PipeSync {
 					candidate = hnp;
 				}
 			}
-			return candidate;
+			return candidate != null
+				? new BestMatch(candidate, false)
+				: null;
 		}
 
 		private static boolean eq(Pipe a, Pipe b) {
