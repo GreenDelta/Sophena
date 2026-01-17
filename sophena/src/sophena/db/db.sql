@@ -207,6 +207,11 @@ CREATE TABLE tbl_cost_settings (
     insurance_share DOUBLE,
     other_share DOUBLE,
     administration_share DOUBLE,
+    max_pressure_loss DOUBLE,
+    max_flow_velocity DOUBLE,
+    fitting_surcharge DOUBLE,
+    roughness_plastic DOUBLE,
+    roughness_steel DOUBLE,
 
     PRIMARY KEY (id)
 );
