@@ -9,26 +9,23 @@ public class HeatNets {
 	private HeatNets() {
 	}
 
-	public static double getSupplyLength(HeatNetPipe pipe) {
-		if (pipe == null)
-			return 0;
-		if (pipe.pipe != null && pipe.pipe.pipeType == PipeType.UNO)
-			return pipe.length / 2;
-		else
-			return pipe.length;
-	}
-
-	/**
-	 * Calculates the length of the heating net from the pipes that are used.
-	 */
-	public static double getTotalSupplyLength(HeatNet net) {
+	/// Calculates the trench length of the heating net from the pipe lengths.	
+	public static double getTrenchLengthOf(HeatNet net) {
 		if (net == null)
 			return 0;
 		double sum = 0;
-		for (HeatNetPipe p : net.pipes) {
-			sum += getSupplyLength(p);
+		for (var p : net.pipes) {
+			sum += trenchLengthOf(p);
 		}
 		return sum;
+	}
+	
+	private static double trenchLengthOf(HeatNetPipe pipe) {
+		if (pipe == null)
+			return 0;
+		return pipe.pipe != null && pipe.pipe.pipeType == PipeType.UNO
+			? pipe.length / 2
+			: pipe.length;
 	}
 
 	/**
@@ -37,7 +34,7 @@ public class HeatNets {
 	public static double calculatePowerLoss(HeatNet net) {
 		if (net == null)
 			return 0;
-		double supplyLength = getTotalSupplyLength(net);
+		double supplyLength = getTrenchLengthOf(net);
 		if (supplyLength <= 0)
 			return 0;
 		double sum = 0;

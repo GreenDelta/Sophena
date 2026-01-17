@@ -30,7 +30,7 @@ public class HeatNetTest {
 	@Test
 	public void testCalculateLength() {
 		HeatNet net = buildHeatNet();
-		double length = HeatNets.getTotalSupplyLength(net);
+		double length = HeatNets.getTrenchLengthOf(net);
 		Assert.assertEquals(60, length, 1e-16);
 	}
 
@@ -87,7 +87,7 @@ public class HeatNetTest {
 		Assert.assertEquals(12d, HeatNets.getPowerLoss(hDuo, net), 1e-16);
 
 		// net length is 2000m
-		Assert.assertEquals(2000d, HeatNets.getTotalSupplyLength(net), 1e-16);
+		Assert.assertEquals(2000d, HeatNets.getTrenchLengthOf(net), 1e-16);
 
 		// net loss = (2000m * 8W/m + 1000m * 12W/m) / 2000m = 14W/m
 		Assert.assertEquals(14d, HeatNets.calculatePowerLoss(net), 1e-16);

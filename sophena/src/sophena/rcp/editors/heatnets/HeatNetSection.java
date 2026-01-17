@@ -112,7 +112,7 @@ class HeatNetSection {
 	private void updateLengthPowerLoss()
 	{
 		HeatNet net = net();
-		net.length = HeatNets.getTotalSupplyLength(net);
+		net.length = HeatNets.getTrenchLengthOf(net);
 		net.powerLoss = HeatNets.calculatePowerLoss(net);
 		Texts.set(lengthText, net.length);
 		Texts.set(powerLossText, net.powerLoss);

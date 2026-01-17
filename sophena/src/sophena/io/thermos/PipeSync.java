@@ -9,9 +9,11 @@ import java.util.UUID;
 import org.openlca.commons.Res;
 
 import sophena.db.Database;
+import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;
+import sophena.model.PipeType;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 
@@ -51,6 +53,8 @@ class PipeSync {
 			} else {
 				appendNew(sum.segments());
 			}
+			project.heatNet.fittingCount = sum.fittingsCount();
+			project.heatNet.length = HeatNets.getTrenchLengthOf(project.heatNet);
 			return Res.ok();
 		} catch (Exception e) {
 			return Res.error("Failed to sync pipes", e);
@@ -80,11 +84,11 @@ class PipeSync {
 				pipe = addNew(seg);
 			} else if (match.isSame) {
 				pipe = match.existing;
-				pipe.length = seg.length();
+				pipe.length = materialLengthOf(seg);
 			} else {
 				pipe = match.existing;
 				pipe.pipe = seg.pipe();
-				pipe.length = seg.length();
+				pipe.length = materialLengthOf(seg);
 				pipe.name = seg.pipe().name;
 				if (pipe.costs == null) {
 					pipe.costs = new ProductCosts();
@@ -105,7 +109,7 @@ class PipeSync {
 		for (var seg : segments) {
 			var match = BestMatch.of(seg.pipe(), project.heatNet);
 			if (match != null && match.isSame) {
-				match.existing.length += seg.length();
+				match.existing.length += materialLengthOf(seg);
 			} else {
 				addNew(seg);
 			}
@@ -116,7 +120,7 @@ class PipeSync {
 		var hnp = new HeatNetPipe();
 		hnp.id = UUID.randomUUID().toString();
 		hnp.pipe = seg.pipe();
-		hnp.length = seg.length();
+		hnp.length = materialLengthOf(seg);
 		hnp.name = seg.pipe().name;
 		hnp.costs = new ProductCosts();
 		ProductCosts.copy(seg.pipe(), hnp.costs);
@@ -125,6 +129,14 @@ class PipeSync {
 			: 0;
 		project.heatNet.pipes.add(hnp);
 		return hnp;
+	}
+
+	private double materialLengthOf(PipeSum.Seg seg) {
+		if (seg == null || seg.pipe() == null)
+			return 0;
+		return seg.pipe().pipeType == PipeType.UNO
+			? seg.length() * 2
+			: seg.length();
 	}
 
 	private record BestMatch(HeatNetPipe existing, boolean isSame) {
