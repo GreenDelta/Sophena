@@ -4,14 +4,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import sophena.io.thermos.NetworkTree.Junction;
 import sophena.model.Pipe;
 
 record PipeSum(List<Seg> segments, int fittingsCount) {
-
-	record Seg(Pipe pipe, double length) {
-	}
+	record Seg(Pipe pipe, double length) {}
 
 	static PipeSum of(NetworkTree tree, PipePlan plan) {
 		if (tree == null || plan == null) {
@@ -35,12 +32,13 @@ record PipeSum(List<Seg> segments, int fittingsCount) {
 					continue;
 				}
 
-				segs.compute(pipe.id, (pipeId, old) -> old == null
-					? new Seg(pipe, s.length())
-					: new Seg(pipe, old.length + s.length()));
+				segs.compute(pipe.id, (pipeId, old) ->
+					old == null
+						? new Seg(pipe, s.length())
+						: new Seg(pipe, old.length + s.length())
+				);
 			}
 		}
 		return new PipeSum(new ArrayList<>(segs.values()), fittingsCount);
 	}
-
 }

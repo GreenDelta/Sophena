@@ -2,7 +2,6 @@ package sophena.io.thermos;
 
 import java.util.Collections;
 import java.util.List;
-
 import sophena.model.Pipe;
 import sophena.model.Project;
 
@@ -28,27 +27,25 @@ record PipeConfig(
 	double groundTemperature,
 	List<Pipe> pipes
 ) {
-
 	static PipeConfig of(Project project, List<Pipe> pipes) {
 		var builder = new Builder(pipes);
-		if (project == null)
-			return builder.get();
+		if (project == null) return builder.get();
 
 		if (project.heatNet != null) {
 			var hn = project.heatNet;
-			builder.withFlowTemperature(hn.supplyTemperature)
+			builder
+				.withFlowTemperature(hn.supplyTemperature)
 				.withReturnTemperature(hn.returnTemperature);
 		}
 
 		if (project.costSettings != null) {
 			var cs = project.costSettings;
-			builder.withMaxPressureLoss(cs.maxPressureLoss)
+			builder
+				.withMaxPressureLoss(cs.maxPressureLoss)
 				.withMaxFlowVelocity(cs.maxFlowVelocity)
 				.withFittingSurcharge(cs.fittingSurcharge);
 
-			double r = isSteel(pipes)
-				? cs.roughnessSteel
-				: cs.roughnessPlastic;
+			double r = isSteel(pipes) ? cs.roughnessSteel : cs.roughnessPlastic;
 			builder.withRoughness(r * 1e-3); // mm -> m
 		}
 		return builder.get();
@@ -62,9 +59,7 @@ record PipeConfig(
 			return false;
 		}
 		var first = pipes.getFirst();
-		var g = first != null && first.group != null
-	 		? first.group.name
-			: null;
+		var g = first != null && first.group != null ? first.group.name : null;
 		if (g == null) {
 			return false;
 		}
@@ -84,10 +79,10 @@ record PipeConfig(
 		private double groundTemperature = 10;
 
 		private Builder(List<Pipe> pipes) {
-			this.pipes = pipes != null 
-					? pipes 
-					: Collections.emptyList();
-			pipes.sort((pi, pj) -> Double.compare(pi.innerDiameter, pj.innerDiameter));
+			this.pipes = pipes != null ? pipes : Collections.emptyList();
+			pipes.sort((pi, pj) ->
+				Double.compare(pi.innerDiameter, pj.innerDiameter)
+			);
 		}
 
 		Builder withMaxPressureLoss(double maxPressureLoss) {

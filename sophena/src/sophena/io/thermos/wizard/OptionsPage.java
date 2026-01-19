@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-
 import sophena.io.thermos.ThermosFile;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.rcp.App;
@@ -98,8 +97,7 @@ class OptionsPage extends WizardPage {
 
 	private void onBrowse() {
 		var file = FileChooser.open("*.gz");
-		if (file == null)
-			return;
+		if (file == null) return;
 		var result = ThermosFile.readFrom(file, App.getDb());
 		if (result.isError()) {
 			MsgBox.error(result.error());
@@ -132,8 +130,7 @@ class OptionsPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (config.thermosFile() == null)
-			return false;
+		if (config.thermosFile() == null) return false;
 		return config.isWithStations() || config.isWithPipes();
 	}
 }

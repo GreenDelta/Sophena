@@ -3,12 +3,10 @@ package sophena.io.thermos.wizard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Manufacturer;
 import sophena.model.Pipe;
@@ -49,7 +47,8 @@ class PipesPage extends WizardPage {
 		UI.gridData(comp, true, false);
 
 		var manCombo = UI.formCombo(comp, "Hersteller");
-		var manItems = manufacturers.stream()
+		var manItems = manufacturers
+			.stream()
 			.map(m -> m != null ? m.name : "")
 			.toArray(String[]::new);
 		manCombo.setItems(manItems);
@@ -74,7 +73,8 @@ class PipesPage extends WizardPage {
 	}
 
 	private String[] productLinesOf(Manufacturer manufacturer) {
-		return pipes.stream()
+		return pipes
+			.stream()
 			.filter(p -> Objects.equals(p.manufacturer, manufacturer))
 			.map(p -> p.productLine)
 			.distinct()

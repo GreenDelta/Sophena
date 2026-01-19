@@ -98,12 +98,9 @@ public class ThermosImportConfig {
 	}
 
 	public boolean canRunImport() {
-		if (thermosFile == null || thermosFile().isEmpty())
-			return false;
-		if (withStations && stationProductLine == null)
-			return false;
-		if (withPipes && pipeProductLine == null)
-			return false;
+		if (thermosFile == null || thermosFile().isEmpty()) return false;
+		if (withStations && stationProductLine == null) return false;
+		if (withPipes && pipeProductLine == null) return false;
 		return withConsumers || withStations || withPipes;
 	}
 }

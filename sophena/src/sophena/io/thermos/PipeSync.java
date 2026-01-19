@@ -5,9 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.openlca.commons.Res;
-
 import sophena.db.Database;
 import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
@@ -32,15 +30,15 @@ class PipeSync {
 	}
 
 	Res<Void> run() {
-		if (file.network() == null)
-			return Res.error("No network provided");
+		if (file.network() == null) return Res.error("No network provided");
 
 		try {
 			var pipes = getAvailablePipes();
 			var pipeConfig = PipeConfig.of(project, pipes);
 			var plan = PipePlan.of(pipeConfig, file.network());
-			if (plan.isError())
-				return plan.wrapError("Failed to calculate pipe plan");
+			if (plan.isError()) return plan.wrapError(
+				"Failed to calculate pipe plan"
+			);
 
 			var sum = PipeSum.of(file.network(), plan.value());
 			if (project.heatNet == null) {
@@ -67,8 +65,10 @@ class PipeSync {
 		var manu = config.pipeManufacturer();
 		var line = config.pipeProductLine();
 		for (var p : db.getAll(Pipe.class)) {
-			if (Objects.equals(p.manufacturer, manu)
-				&& Objects.equals(p.productLine, line)) {
+			if (
+				Objects.equals(p.manufacturer, manu) &&
+				Objects.equals(p.productLine, line)
+			) {
 				pipes.add(p);
 			}
 		}
@@ -94,15 +94,13 @@ class PipeSync {
 					pipe.costs = new ProductCosts();
 				}
 				ProductCosts.copy(seg.pipe(), pipe.costs);
-				pipe.pricePerMeter = seg.pipe().purchasePrice != null
-					? seg.pipe().purchasePrice
-					: 0;
+				pipe.pricePerMeter =
+					seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
 			}
 			used.add(pipe.id);
 		}
 
-		project.heatNet.pipes.removeIf(
-			p -> p.pipe == null || !used.contains(p.id));
+		project.heatNet.pipes.removeIf(p -> p.pipe == null || !used.contains(p.id));
 	}
 
 	private void appendNew(List<PipeSum.Seg> segments) {
@@ -124,39 +122,31 @@ class PipeSync {
 		hnp.name = seg.pipe().name;
 		hnp.costs = new ProductCosts();
 		ProductCosts.copy(seg.pipe(), hnp.costs);
-		hnp.pricePerMeter = seg.pipe().purchasePrice != null
-			? seg.pipe().purchasePrice
-			: 0;
+		hnp.pricePerMeter =
+			seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
 		project.heatNet.pipes.add(hnp);
 		return hnp;
 	}
 
 	private double materialLengthOf(PipeSum.Seg seg) {
-		if (seg == null || seg.pipe() == null)
-			return 0;
+		if (seg == null || seg.pipe() == null) return 0;
 		return seg.pipe().pipeType == PipeType.UNO
 			? seg.length() * 2
 			: seg.length();
 	}
 
 	private record BestMatch(HeatNetPipe existing, boolean isSame) {
-
 		static BestMatch of(Pipe pipe, HeatNet net) {
-			if (net.pipes.isEmpty())
-				return null;
+			if (net.pipes.isEmpty()) return null;
 			HeatNetPipe candidate = null;
 			for (var hnp : net.pipes) {
-				if (hnp.pipe == null)
-					continue;
-				if (Objects.equals(pipe, hnp.pipe))
-					return new BestMatch(hnp, true);
+				if (hnp.pipe == null) continue;
+				if (Objects.equals(pipe, hnp.pipe)) return new BestMatch(hnp, true);
 				if (candidate == null && eq(pipe, hnp.pipe)) {
 					candidate = hnp;
 				}
 			}
-			return candidate != null
-				? new BestMatch(candidate, false)
-				: null;
+			return candidate != null ? new BestMatch(candidate, false) : null;
 		}
 
 		private static boolean eq(Pipe a, Pipe b) {

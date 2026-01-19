@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
 import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.model.ProductCosts;
@@ -45,8 +44,10 @@ public class ThermosImport implements Runnable {
 				var manufacturer = config.stationManufacturer();
 				var productLine = config.stationProductLine();
 				for (var s : db.getAll(TransferStation.class)) {
-					if (Objects.equals(s.manufacturer, manufacturer)
-						&& Objects.equals(s.productLine, productLine)) {
+					if (
+						Objects.equals(s.manufacturer, manufacturer) &&
+						Objects.equals(s.productLine, productLine)
+					) {
 						stations.add(s);
 					}
 				}
@@ -75,7 +76,6 @@ public class ThermosImport implements Runnable {
 	}
 
 	private void syncConsumersInUpdateMode(List<Consumer> consumers) {
-
 		var existingMap = new HashMap<String, Consumer>();
 		for (var consumer : project.consumers) {
 			existingMap.put(consumer.id, consumer);
@@ -102,8 +102,7 @@ public class ThermosImport implements Runnable {
 			ids.add(old.id);
 		}
 		for (var c : consumers) {
-			if (ids.contains(c.id))
-				continue;
+			if (ids.contains(c.id)) continue;
 			addNewConsumer(c);
 		}
 	}
@@ -128,8 +127,7 @@ public class ThermosImport implements Runnable {
 		c.loadHours = update.loadHours;
 		c.floorSpace = update.floorSpace;
 
-		if (config.isWithStations()
-			&& (c.transferStation == null || loadChanged)) {
+		if (config.isWithStations() && (c.transferStation == null || loadChanged)) {
 			assignStation(c, stations);
 		}
 
@@ -153,8 +151,7 @@ public class ThermosImport implements Runnable {
 	}
 
 	private void assignStation(Consumer c, List<TransferStation> stations) {
-		if (stations == null || stations.isEmpty())
-			return;
+		if (stations == null || stations.isEmpty()) return;
 		TransferStation station = null;
 		for (var s : stations) {
 			if (s.outputCapacity >= c.heatingLoad) {
