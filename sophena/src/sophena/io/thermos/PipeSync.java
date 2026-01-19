@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 import org.openlca.commons.Res;
+
 import sophena.db.Database;
 import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
@@ -51,7 +53,6 @@ class PipeSync {
 			} else {
 				appendNew(sum.segments());
 			}
-			project.heatNet.fittingCount = sum.fittingsCount();
 			project.heatNet.length = HeatNets.getTrenchLengthOf(project.heatNet);
 			return Res.ok();
 		} catch (Exception e) {

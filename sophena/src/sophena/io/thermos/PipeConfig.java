@@ -9,7 +9,7 @@ import sophena.model.Project;
 ///
 /// @param maxPressureLoss maximum allowed pressure loss in Pa/m
 /// @param maxFlowVelocity maximum allowed flow velocity in m/s
-/// @param fittingSurcharge surcharge factor for fittings/installations (e.g., 0.2 for 20%)
+/// @param fittingSurchargePressure surcharge factor for fittings pressure loss (e.g., 0.2 for 20%)
 /// @param flowTemperature flow (supply) temperature in °C
 /// @param returnTemperature return temperature in °C
 /// @param averageTemperature average of flow and return temperature in °C
@@ -19,7 +19,7 @@ import sophena.model.Project;
 record PipeConfig(
 	double maxPressureLoss,
 	double maxFlowVelocity,
-	double fittingSurcharge,
+	double fittingSurchargePressure,
 	double flowTemperature,
 	double returnTemperature,
 	double averageTemperature,
@@ -43,7 +43,7 @@ record PipeConfig(
 			builder
 				.withMaxPressureLoss(cs.maxPressureLoss)
 				.withMaxFlowVelocity(cs.maxFlowVelocity)
-				.withFittingSurcharge(cs.fittingSurcharge);
+				.withFittingSurchargePressure(cs.fittingSurchargePressure);
 
 			double r = isSteel(pipes) ? cs.roughnessSteel : cs.roughnessPlastic;
 			builder.withRoughness(r * 1e-3); // mm -> m
@@ -72,7 +72,7 @@ record PipeConfig(
 		private final List<Pipe> pipes;
 		private double maxPressureLoss = 100;
 		private double maxFlowVelocity = 3.0;
-		private double fittingSurcharge = 0.2;
+		private double fittingSurchargePressure = 0.2;
 		private double flowTemperature = 80;
 		private double returnTemperature = 50;
 		private double roughness = 0.002e-3;
@@ -95,8 +95,8 @@ record PipeConfig(
 			return this;
 		}
 
-		Builder withFittingSurcharge(double fittingSurcharge) {
-			this.fittingSurcharge = fittingSurcharge;
+		Builder withFittingSurchargePressure(double fittingSurchargePressure) {
+			this.fittingSurchargePressure = fittingSurchargePressure;
 			return this;
 		}
 
@@ -124,7 +124,7 @@ record PipeConfig(
 			return new PipeConfig(
 				maxPressureLoss,
 				maxFlowVelocity,
-				fittingSurcharge,
+				fittingSurchargePressure,
 				flowTemperature,
 				returnTemperature,
 				(flowTemperature + returnTemperature) / 2,

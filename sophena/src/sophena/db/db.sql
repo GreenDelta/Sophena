@@ -209,7 +209,9 @@ CREATE TABLE tbl_cost_settings (
     administration_share DOUBLE,
     max_pressure_loss DOUBLE,
     max_flow_velocity DOUBLE,
-    fitting_surcharge DOUBLE,
+    price_per_fitting DOUBLE,
+    fitting_surcharge_cost DOUBLE,
+    fitting_surcharge_pressure DOUBLE,
     roughness_plastic DOUBLE,
     roughness_steel DOUBLE,
 
@@ -306,9 +308,6 @@ CREATE TABLE tbl_heat_nets (
 	return_temperature_summer DOUBLE,
 	target_charge_level DOUBLE,
 	use_heating_curve BOOLEAN,
-	fitting_count INTEGER,
-	price_per_fitting DOUBLE,
-	fitting_surcharge DOUBLE,
 
     PRIMARY KEY (id)
 );

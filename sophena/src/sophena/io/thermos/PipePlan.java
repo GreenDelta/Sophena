@@ -128,7 +128,7 @@ class PipePlan {
 					config.roughness(),
 					config.averageTemperature()
 				) *
-				(1 + config.fittingSurcharge());
+				(1 + config.fittingSurchargePressure());
 			if (pressureLoss < config.maxPressureLoss()) {
 				pipe = p;
 				segmentLoad = pipeLoss;

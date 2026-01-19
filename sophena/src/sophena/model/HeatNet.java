@@ -102,18 +102,6 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "use_heating_curve")
 	public boolean useHeatingCurve;
 
-	/// The number of fittings.
-	@Column(name = "fitting_count")
-	public int fittingCount;
-
-	/// The price per fitting in [EUR].
-	@Column(name = "price_per_fitting")
-	public double pricePerFitting;
-
-	/// The percentage surcharge for fittings in [%].
-	@Column(name = "fitting_surcharge")
-	public double fittingSurcharge;
-
 	public static void addDefaultTo(Project p) {
 		if (p == null)
 			return;
@@ -148,9 +136,6 @@ public class HeatNet extends AbstractEntity {
 		intervalSummer.end = MonthDay.of(9, 15).toString();
 		net.intervalSummer = intervalSummer;
 		net.useHeatingCurve = false;
-		net.fittingCount = 0;
-		net.pricePerFitting = 0;
-		net.fittingSurcharge = 0;
 	}
 
 	@Override
@@ -190,9 +175,6 @@ public class HeatNet extends AbstractEntity {
 			clone.intervalSummer = intervalSummer.copy();
 		}
 		clone.useHeatingCurve = useHeatingCurve;
-		clone.fittingCount = fittingCount;
-		clone.pricePerFitting = pricePerFitting;
-		clone.fittingSurcharge = fittingSurcharge;
 
 		for (var p : pipes) {
 			clone.pipes.add(p.copy());

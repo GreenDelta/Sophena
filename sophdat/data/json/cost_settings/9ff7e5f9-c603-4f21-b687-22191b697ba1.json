@@ -37,7 +37,9 @@
 
     "maxPressureLoss": 100,
     "maxFlowVelocity": 3,
-    "fittingSurcharge": 0.2,
+    "pricePerFitting": 0,
+    "fittingSurchargeCost": 0.15,
+    "fittingSurchargePressure": 0.2,
     "roughnessPlastic": 0.002,
     "roughnessSteel": 0.01
 }

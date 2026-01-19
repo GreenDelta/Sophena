@@ -77,14 +77,14 @@ public class CostSettings extends AbstractEntity {
 
 	@Column(name = "connection_fees")
 	public double connectionFees;
-	
+
 	/** General investment funding in EUR */
 	@Column(name = "funding")
 	public double funding;
 
 	@Column(name = "funding_percent")
 	public double fundingPercent;
-	
+
 	@Column(name = "funding_types")
 	public int fundingTypes;
 
@@ -140,9 +140,17 @@ public class CostSettings extends AbstractEntity {
 	@Column(name = "max_flow_velocity")
 	public double maxFlowVelocity;
 
-	/** Surcharge factor for fittings/installations, e.g. 0.2 for 20% */
-	@Column(name = "fitting_surcharge")
-	public double fittingSurcharge;
+	/** Price per fitting in EUR */
+	@Column(name = "price_per_fitting")
+	public double pricePerFitting;
+
+	/** Surcharge factor for fittings costs, e.g. 0.15 for 15% */
+	@Column(name = "fitting_surcharge_cost")
+	public double fittingSurchargeCost;
+
+	/** Surcharge factor for fittings pressure loss, e.g. 0.2 for 20% */
+	@Column(name = "fitting_surcharge_pressure")
+	public double fittingSurchargePressure;
 
 	/** Pipe wall roughness for plastic pipes in mm */
 	@Column(name = "roughness_plastic")
@@ -198,7 +206,9 @@ public class CostSettings extends AbstractEntity {
 		// pipe network design parameters
 		clone.maxPressureLoss = maxPressureLoss;
 		clone.maxFlowVelocity = maxFlowVelocity;
-		clone.fittingSurcharge = fittingSurcharge;
+		clone.pricePerFitting = pricePerFitting;
+		clone.fittingSurchargeCost = fittingSurchargeCost;
+		clone.fittingSurchargePressure = fittingSurchargePressure;
 		clone.roughnessPlastic = roughnessPlastic;
 		clone.roughnessSteel = roughnessSteel;
 
