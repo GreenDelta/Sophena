@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -13,7 +12,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.Labels;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
@@ -31,7 +29,7 @@ import sophena.utils.Num;
 /** Cost section where the cost entries are only displayed but not edited. */
 class DisplaySection<T> {
 
-	private ProductType type;
+	private final ProductType type;
 
 	Supplier<List<T>> content;
 	Function<T, String> label;
@@ -51,15 +49,18 @@ class DisplaySection<T> {
 		} else {
 			section = UI.section(body, tk, Labels.getPlural(type));
 		}
+
 		Composite composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		table.setLabelProvider(new Label());
 		Tables.onDoubleClick(table, e -> doOpen(table));
-		Action open = Actions.create("Öffnen", Icon.OPEN_16.des(),
-				() -> doOpen(table));
+		Action open = Actions.create("Öffnen", Icon.OPEN_16.des(), () ->
+			doOpen(table)
+		);
 		if (type == ProductType.COGENERATION_PLANT) {
-			Action help = Actions.create("Hilfe", Icon.INFO_16.des(),
-					() -> HelpBox.show("KWK-Anlagen", H.CoGenPlants));
+			Action help = Actions.create("Hilfe", Icon.INFO_16.des(), () ->
+				HelpBox.show("KWK-Anlagen", H.CoGenPlants)
+			);
 			Actions.bind(section, help);
 		}
 		Actions.bind(table, open);
@@ -74,19 +75,23 @@ class DisplaySection<T> {
 	}
 
 	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Produkt",
-				"Investitionskosten", "Nutzungsdauer", "Instandsetzung",
-				"Wartung und Inspektion", "Aufwand für Bedienen");
+		TableViewer table = Tables.createViewer(
+			comp,
+			"Produkt",
+			"Investitionskosten",
+			"Nutzungsdauer",
+			"Instandsetzung",
+			"Wartung und Inspektion",
+			"Aufwand für Bedienen"
+		);
 		Tables.bindColumnWidths(table, 0.2, 0.16, 0.16, 0.16, 0.16, 0.16);
 		return table;
 	}
 
 	void refresh() {
-		if (content == null)
-			return;
+		if (content == null) return;
 		List<T> list = content.get();
-		if (list == null)
-			return;
+		if (list == null) return;
 		table.setInput(content.get());
 	}
 
@@ -100,28 +105,19 @@ class DisplaySection<T> {
 		@Override
 		@SuppressWarnings("unchecked")
 		public String getColumnText(Object obj, int col) {
-			if (costs == null || label == null)
-				return "no label def!";
+			if (costs == null || label == null) return "no label def!";
 			T t = (T) obj;
 			ProductCosts c = costs.apply(t);
-			if (c == null)
-				return null;
-			switch (col) {
-			case 0:
-				return label.apply(t);
-			case 1:
-				return Num.str(c.investment) + " EUR";
-			case 2:
-				return Num.intStr(c.duration) + " a";
-			case 3:
-				return Num.str(c.repair) + " %";
-			case 4:
-				return Num.str(c.maintenance) + " %";
-			case 5:
-				return Num.str(c.operation) + " h/a";
-			default:
-				return null;
-			}
+			if (c == null) return null;
+			return switch (col) {
+				case 0 -> label.apply(t);
+				case 1 -> Num.str(c.investment) + " EUR";
+				case 2 -> Num.intStr(c.duration) + " a";
+				case 3 -> Num.str(c.repair) + " %";
+				case 4 -> Num.str(c.maintenance) + " %";
+				case 5 -> Num.str(c.operation) + " h/a";
+				default -> null;
+			};
 		}
 	}
 }

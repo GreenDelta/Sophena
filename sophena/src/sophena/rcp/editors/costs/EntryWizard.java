@@ -1,7 +1,6 @@
 package sophena.rcp.editors.costs;
 
 import java.util.List;
-
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -10,7 +9,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
-
 import sophena.Labels;
 import sophena.db.daos.ProductDao;
 import sophena.db.daos.ProductGroupDao;
@@ -44,10 +42,12 @@ class EntryWizard extends Wizard {
 	private ProductEntry entry;
 	private int projectDuration;
 
-	public static int open(ProductEntry entry, ProductType type,
-			int projectDuration) {
-		if (entry == null)
-			return Window.CANCEL;
+	public static int open(
+		ProductEntry entry,
+		ProductType type,
+		int projectDuration
+	) {
+		if (entry == null) return Window.CANCEL;
 		EntryWizard w = new EntryWizard();
 		w.setWindowTitle(Labels.get(type));
 		w.entry = entry;
@@ -95,26 +95,26 @@ class EntryWizard extends Wizard {
 			Composite comp = new Composite(parent, SWT.NONE);
 			setControl(comp);
 			UI.gridLayout(comp, 3);
-			if (entry.product == null || entry.product.projectId == null)
-				createGlobalProductLink(comp);
+			if (
+				entry.product == null || entry.product.projectId == null
+			) createGlobalProductLink(comp);
 			else {
 				privateNameText(comp);
 				privateGroupCombo(comp);
 			}
 			createPriceText(comp);
 			createCountText(comp);
-			costSection = new ProductCostSection(() -> entry.costs)
-					.createFields(comp);
+			costSection = new ProductCostSection(() -> entry.costs).createFields(
+				comp
+			);
 			Texts.on(costSection.investmentText).calculated();
 		}
 
 		private void createGlobalProductLink(Composite comp) {
 			UI.formLabel(comp, "Produkt");
 			ImageHyperlink link = new ImageHyperlink(comp, SWT.TOP);
-			if (entry.product != null)
-				link.setText(entry.product.name);
-			else
-				link.setText("(kein Produkt ausgewählt)");
+			if (entry.product != null) link.setText(entry.product.name);
+			else link.setText("(kein Produkt ausgewählt)");
 			link.setImage(Icon.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
 			Controls.onClick(link, e -> searchGlobalProduct(link));
@@ -124,9 +124,10 @@ class EntryWizard extends Wizard {
 		private void searchGlobalProduct(ImageHyperlink link) {
 			ProductDao dao = new ProductDao(App.getDb());
 			Product p = SearchDialog.open(
-					Labels.get(type),
-					dao.getAllGlobal(type),
-					SearchLabel::forProduct);
+				Labels.get(type),
+				dao.getAllGlobal(type),
+				SearchLabel::forProduct
+			);
 			if (p == null) {
 				noProduct(true);
 				return;
@@ -147,30 +148,29 @@ class EntryWizard extends Wizard {
 
 		private void privateNameText(Composite comp) {
 			Text t = UI.formText(comp, "Bezeichnung");
-			if (entry.product != null)
-				Texts.set(t, entry.product.name);
-			Texts.on(t).required().onChanged(s -> {
-				if (entry.product != null) {
-					entry.product.name = s;
-				}
-			});
+			if (entry.product != null) Texts.set(t, entry.product.name);
+			Texts.on(t)
+				.required()
+				.onChanged(s -> {
+					if (entry.product != null) {
+						entry.product.name = s;
+					}
+				});
 			UI.filler(comp);
 		}
 
 		private void privateGroupCombo(Composite comp) {
-			if (entry.product == null)
-				return;
+			if (entry.product == null) return;
 			EntityCombo<ProductGroup> combo = new EntityCombo<>();
 			combo.create("Produktgruppe", comp);
 			ProductGroupDao dao = new ProductGroupDao(App.getDb());
 			List<ProductGroup> list = dao.getAll(type);
 			Sorters.byName(list);
 			combo.setInput(list);
-			if (entry.product.group != null)
-				combo.select(entry.product.group);
-			else if (list.size() > 0) {
-				entry.product.group = list.get(0);
-				combo.select(list.get(0));
+			if (entry.product.group != null) combo.select(entry.product.group);
+			else if (!list.isEmpty()) {
+				entry.product.group = list.getFirst();
+				combo.select(list.getFirst());
 			}
 			combo.onSelect(group -> {
 				entry.product.group = group;
@@ -185,20 +185,27 @@ class EntryWizard extends Wizard {
 
 		private void createCountText(Composite comp) {
 			Text t = UI.formText(comp, "Anzahl");
-			Texts.on(t).init(entry.count).decimal().required().onChanged(s -> {
-				entry.count = Texts.getDouble(t);
-				updateCosts();
-			});
+			Texts.on(t)
+				.init(entry.count)
+				.decimal()
+				.required()
+				.onChanged(s -> {
+					entry.count = Texts.getDouble(t);
+					updateCosts();
+				});
 			UI.formLabel(comp, "Stück");
 		}
 
 		private void createPriceText(Composite comp) {
 			priceText = UI.formText(comp, "Preis pro Stück");
-			Texts.on(priceText).init(entry.pricePerPiece).decimal().required()
-					.onChanged(s -> {
-						entry.pricePerPiece = Texts.getDouble(priceText);
-						updateCosts();
-					});
+			Texts.on(priceText)
+				.init(entry.pricePerPiece)
+				.decimal()
+				.required()
+				.onChanged(s -> {
+					entry.pricePerPiece = Texts.getDouble(priceText);
+					updateCosts();
+				});
 			UI.formLabel(comp, "EUR/Stück");
 		}
 

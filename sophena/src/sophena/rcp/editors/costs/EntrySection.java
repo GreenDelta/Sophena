@@ -3,14 +3,12 @@ package sophena.rcp.editors.costs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import sophena.Labels;
 import sophena.model.Product;
 import sophena.model.ProductCosts;
@@ -27,11 +25,11 @@ import sophena.utils.Strings;
 
 class EntrySection {
 
-	private CostEditor editor;
-	private ProductType type;
+	private final CostEditor editor;
+	private final ProductType type;
 
 	private TableViewer table;
-	private List<ProductEntry> entries = new ArrayList<>();
+	private final List<ProductEntry> entries = new ArrayList<>();
 
 	EntrySection(CostEditor editor, ProductType type) {
 		this.editor = editor;
@@ -54,23 +52,33 @@ class EntrySection {
 		table = createTable(composite);
 		fillEntries(); // to fill the table
 		Action addGlobal = Actions.create(
-				"Produkt aus Produktdatenbank hinzufügen",
-				Icon.SEARCH_16.des(), this::addGlobal);
-		Action addPrivate = Actions.create("Neues Produkt erstellen",
-				Icon.ADD_16.des(), this::addPrivate);
+			"Produkt aus Produktdatenbank hinzufügen",
+			Icon.SEARCH_16.des(),
+			this::addGlobal
+		);
+		Action addPrivate = Actions.create(
+			"Neues Produkt erstellen",
+			Icon.ADD_16.des(),
+			this::addPrivate
+		);
 		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
-		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
-				this::delete);
+		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(), this::delete);
 		Actions.bind(section, addGlobal, addPrivate, edit, del);
 		Actions.bind(table, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
 
 	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(comp, "Produkt",
-				"Anzahl", "Investitionskosten", "Nutzungsdauer",
-				"Instandsetzung",
-				"Wartung und Inspektion", "Aufwand für Bedienen");
+		TableViewer table = Tables.createViewer(
+			comp,
+			"Produkt",
+			"Anzahl",
+			"Investitionskosten",
+			"Nutzungsdauer",
+			"Instandsetzung",
+			"Wartung und Inspektion",
+			"Aufwand für Bedienen"
+		);
 		double w = 1d / 7d;
 		Tables.bindColumnWidths(table, w, w, w, w, w, w, w);
 		table.setLabelProvider(new EntryLabel(type));
@@ -83,8 +91,7 @@ class EntrySection {
 		entry.id = UUID.randomUUID().toString();
 		entry.costs = new ProductCosts();
 		entry.count = 1;
-		if (EntryWizard.open(entry, type, project().duration) != Window.OK)
-			return;
+		if (EntryWizard.open(entry, type, project().duration) != Window.OK) return;
 		project().productEntries.add(entry);
 		fillEntries();
 		editor.setDirty();
@@ -101,8 +108,7 @@ class EntrySection {
 		product.projectId = project().id;
 		product.type = type;
 		entry.product = product;
-		if (EntryWizard.open(entry, type, project().duration) != Window.OK)
-			return;
+		if (EntryWizard.open(entry, type, project().duration) != Window.OK) return;
 		project().productEntries.add(entry);
 		project().ownProducts.add(entry.product);
 		fillEntries();
@@ -111,14 +117,11 @@ class EntrySection {
 
 	private void edit() {
 		ProductEntry entry = Viewers.getFirstSelected(table);
-		if (entry == null)
-			return;
+		if (entry == null) return;
 		ProductEntry clone = copy(entry); // copy allows cancel options
-		if (EntryWizard.open(clone, type, project().duration) != Window.OK)
-			return;
+		if (EntryWizard.open(clone, type, project().duration) != Window.OK) return;
 		ProductEntry managed = getJpaManaged(entry.id);
-		if (managed == null)
-			return;
+		if (managed == null) return;
 		copy(clone, managed);
 		fillEntries();
 		editor.setDirty();
@@ -142,22 +145,20 @@ class EntrySection {
 			managed.product = copy.product;
 			return;
 		}
-		if (managed.product == null)
-			return;
+		if (managed.product == null) return;
 		managed.product.name = copy.product.name;
 		managed.product.group = copy.product.group;
 	}
 
 	private void delete() {
 		ProductEntry entry = Viewers.getFirstSelected(table);
-		if (entry == null)
-			return;
+		if (entry == null) return;
 		ProductEntry managed = getJpaManaged(entry.id);
-		if (managed == null)
-			return;
+		if (managed == null) return;
 		project().productEntries.remove(managed);
-		if (managed.product != null && managed.product.projectId != null)
-			project().ownProducts.remove(managed.product);
+		if (
+			managed.product != null && managed.product.projectId != null
+		) project().ownProducts.remove(managed.product);
 		fillEntries();
 		editor.setDirty();
 	}
@@ -176,10 +177,10 @@ class EntrySection {
 
 	private ProductEntry getJpaManaged(String id) {
 		for (ProductEntry e : project().productEntries) {
-			if (Strings.nullOrEqual(id, e.id))
+			if (Strings.nullOrEqual(id, e.id)) {
 				return e;
+			}
 		}
 		return null;
 	}
-
 }
