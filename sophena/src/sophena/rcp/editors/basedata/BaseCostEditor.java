@@ -1,15 +1,12 @@
 package sophena.rcp.editors.basedata;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import sophena.db.daos.CostSettingsDao;
 import sophena.model.CostSettings;
 import sophena.rcp.App;
@@ -24,17 +21,16 @@ public class BaseCostEditor extends Editor {
 	private CostSettings costs;
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.costsettings",
-				"Kosteneinstellungen");
+		var input = new KeyEditorInput("data.costsettings", "Basiseinstellungen");
 		Editors.open(input, "sophena.BaseCostEditor");
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+		throws PartInitException {
 		super.init(site, input);
 		try {
-			CostSettingsDao dao = new CostSettingsDao(App.getDb());
+			var dao = new CostSettingsDao(App.getDb());
 			costs = dao.getGlobal();
 			if (costs == null) {
 				log.warn("did not found global cost settings -> create new");
@@ -59,7 +55,7 @@ public class BaseCostEditor extends Editor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
-			CostSettingsDao dao = new CostSettingsDao(App.getDb());
+			var dao = new CostSettingsDao(App.getDb());
 			dao.update(costs);
 			setSaved();
 		} catch (Exception e) {
@@ -73,22 +69,19 @@ public class BaseCostEditor extends Editor {
 		private FormToolkit toolkit;
 
 		Page(Editor editor) {
-			super(editor, "CostSettingsPage", "Kosteneinstellungen");
+			super(editor, "CostSettingsPage", "Basiseinstellungen");
 			this.editor = editor;
 		}
 
 		@Override
 		protected void createFormContent(IManagedForm mform) {
-			String title = "Kosteneinstellungen";
-			ScrolledForm form = UI.formHeader(mform, title);
+			var form = UI.formHeader(mform, "Basiseinstellungen");
 			toolkit = mform.getToolkit();
-			Composite body = UI.formBody(form, toolkit);
-			CostSettingsPanel panel = new CostSettingsPanel(editor,
-					() -> costs, () -> {});
+			var body = UI.formBody(form, toolkit);
+			var panel = new CostSettingsPanel(editor, () -> costs, () -> {});
 			panel.isForProject = false;
 			panel.render(toolkit, body);
 			form.reflow(true);
 		}
-
 	}
 }

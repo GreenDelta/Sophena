@@ -1,124 +1,103 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <plugin>
 
-	<extension
-			id="product"
-			point="org.eclipse.core.runtime.products">
-		<product
-				application="sophena.application"
-				name="Sophena">
-			<property name="appName" value="Sophena"/>
-			<property
-					name="aboutImage"
-					value="icons/AboutDialogLogo.png">
+	<extension id="product" point="org.eclipse.core.runtime.products">
+		<product application="sophena.application" name="Sophena">
+			<property name="appName" value="Sophena" />
+			<property name="aboutImage" value="icons/AboutDialogLogo.png">
    </property>
 			<property
-         name="aboutText"
-         value="Sophena - Version 3.0.1&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de&#x0A;&#x0A;Technische Umsetzung: &#x0A;GreenDelta GmbH:: https://www.greendelta.com&#x0A;AVS GmbH: https://www.alzinger-vogel.de">
+				name="aboutText"
+				value="Sophena - Version 3.0.1&#x0A;&#x0A;Sophena wird Ihnen von C.A.R.M.E.N. e.V. unter der Mozilla Public License Version 2.0 zur Verfügung gestellt.&#x0A;&#x0A;C.A.R.M.E.N. e.V.&#x0A;Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.&#x0A;http://www.carmen-ev.de - contact@carmen-ev.de&#x0A;&#x0A;Technische Umsetzung: &#x0A;GreenDelta GmbH:: https://www.greendelta.com&#x0A;AVS GmbH: https://www.alzinger-vogel.de">
 			</property>
 			<property
-					name="windowImages"
-					value="icons/WindowImages/16x16.png,icons/WindowImages/32x32.png,icons/WindowImages/48x48.png,icons/WindowImages/64x64.png,icons/WindowImages/128x128.png,icons/WindowImages/256x256.png">
+				name="windowImages"
+				value="icons/WindowImages/16x16.png,icons/WindowImages/32x32.png,icons/WindowImages/48x48.png,icons/WindowImages/64x64.png,icons/WindowImages/128x128.png,icons/WindowImages/256x256.png">
 			</property>
 		</product>
 	</extension>
 
-	<extension
-			id="application"
-			point="org.eclipse.core.runtime.applications">
-		<application
-				cardinality="singleton-global"
-				thread="main"
-				visible="true">
-			<run class="sophena.rcp.Application"/>
+	<extension id="application" point="org.eclipse.core.runtime.applications">
+		<application cardinality="singleton-global" thread="main" visible="true">
+			<run class="sophena.rcp.Application" />
 		</application>
 	</extension>
 
-	<extension
-			point="org.eclipse.ui.perspectives">
+	<extension point="org.eclipse.ui.perspectives">
 		<perspective
-				name="Perspective"
-				class="sophena.rcp.Perspective"
-				id="perspectives.standard"/>
+			name="Perspective"
+			class="sophena.rcp.Perspective"
+			id="perspectives.standard" />
 	</extension>
 
 	<!-- Navigation -->
-	<extension
-		point="org.eclipse.ui.views">
+	<extension point="org.eclipse.ui.views">
 		<view
-				allowMultiple="false"
-				class="sophena.rcp.navigation.Navigator"
-				id="sophena.Navigator"
-				name="Navigation"
-				icon="icons/navigation_16.png"/>
+			allowMultiple="false"
+			class="sophena.rcp.navigation.Navigator"
+			id="sophena.Navigator"
+			name="Navigation"
+			icon="icons/navigation_16.png" />
 	</extension>
 
 	<extension point="org.eclipse.ui.navigator.viewer">
 
 		<viewer viewerId="sophena.Navigator">
 			<options>
-				<property
-						name="org.eclipse.ui.navigator.hideLinkWithEditorAction"
-						value="true">
+				<property name="org.eclipse.ui.navigator.hideLinkWithEditorAction" value="true">
+				</property>
+				<property name="org.eclipse.ui.navigator.hideCollapseAllAction" value="true">
 				</property>
 				<property
-						name="org.eclipse.ui.navigator.hideCollapseAllAction"
-						value="true">
-				</property>
-				<property
-						name="org.eclipse.ui.navigator.hideAvailableCustomizationsDialog"
-						value="true">
+					name="org.eclipse.ui.navigator.hideAvailableCustomizationsDialog"
+					value="true">
 				</property>
 			</options>
 		</viewer>
 		<viewerContentBinding viewerId="sophena.Navigator">
 			<includes>
-				<contentExtension
-						isRoot="true"
-						pattern="sophena.NavigationContent"/>
+				<contentExtension isRoot="true" pattern="sophena.NavigationContent" />
 			</includes>
 		</viewerContentBinding>
 		<viewerActionBinding viewerId="sophena.Navigator">
 			<includes>
-				<actionExtension pattern="sophena.NavigationMenu"/>
+				<actionExtension pattern="sophena.NavigationMenu" />
 			</includes>
 		</viewerActionBinding>
 		<dragAssistant
-				viewerId="sophena.Navigator"
-				class="sophena.rcp.navigation.Dragger">
+			viewerId="sophena.Navigator"
+			class="sophena.rcp.navigation.Dragger">
 		</dragAssistant>
 	</extension>
 
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
 
 		<navigatorContent
-				activeByDefault="true"
-				contentProvider="sophena.rcp.navigation.NavigationContent"
-				id="sophena.NavigationContent"
-				labelProvider="sophena.rcp.navigation.NavigationLabel"
-				name="#Navigation content"
-				priority="normal">
+			activeByDefault="true"
+			contentProvider="sophena.rcp.navigation.NavigationContent"
+			id="sophena.NavigationContent"
+			labelProvider="sophena.rcp.navigation.NavigationLabel"
+			name="#Navigation content"
+			priority="normal">
 			<triggerPoints>
-				<instanceof value="sophena.rcp.navigation.NavigationElement"/>
+				<instanceof value="sophena.rcp.navigation.NavigationElement" />
 			</triggerPoints>
-			<commonSorter class="sophena.rcp.navigation.NavigationSorter"/>
+			<commonSorter class="sophena.rcp.navigation.NavigationSorter" />
 			<possibleChildren>
-				<instanceof value="sophena.rcp.navigation.NavigationElement"/>
+				<instanceof value="sophena.rcp.navigation.NavigationElement" />
 			</possibleChildren>
-			<dropAssistant
-					id="sophena.navi.drop"
-					class="sophena.rcp.navigation.Dropper">
-				<possibleDropTargets >
+			<dropAssistant id="sophena.navi.drop" class="sophena.rcp.navigation.Dropper">
+				<possibleDropTargets>
 					<instanceof value="sophena.rcp.navigation.NavigationElement" />
 				</possibleDropTargets>
 			</dropAssistant>
 		</navigatorContent>
 
 		<actionProvider
-				class="sophena.rcp.navigation.NavigationMenu"
-				id="sophena.NavigationMenu"
-				priority="normal">
-			<enablement></enablement>
+			class="sophena.rcp.navigation.NavigationMenu"
+			id="sophena.NavigationMenu"
+			priority="normal">
+			<enablement />
 		</actionProvider>
 
 	</extension>
@@ -126,192 +105,192 @@
 	<!-- Wizards -->
 	<extension point="org.eclipse.ui.newWizards">
 		<wizard
-				class="sophena.rcp.wizards.ProjectWizard"
-				id="sophena.ProjectWizard"
-				name="#Projekt"/>
+			class="sophena.rcp.wizards.ProjectWizard"
+			id="sophena.ProjectWizard"
+			name="#Projekt" />
 	</extension>
 
 	<!-- Editors -->
 	<extension point="org.eclipse.ui.editors">
 		<editor
-				class="sophena.rcp.editors.projects.ProjectEditor"
-				id="sophena.ProjectEditor"
-				name="Projekt"
-				icon="icons/project_16.png" />
+			class="sophena.rcp.editors.projects.ProjectEditor"
+			id="sophena.ProjectEditor"
+			name="Projekt"
+			icon="icons/project_16.png" />
 
 		<editor
-				class="sophena.rcp.editors.consumers.ConsumerEditor"
-				id="sophena.ConsumerEditor"
-				name="Abnehmer"
-				icon="icons/consumer_16.png" />
+			class="sophena.rcp.editors.consumers.ConsumerEditor"
+			id="sophena.ConsumerEditor"
+			name="Abnehmer"
+			icon="icons/consumer_16.png" />
 
 		<editor
-				class="sophena.rcp.editors.producers.ProducerEditor"
-				id="sophena.ProducerEditor"
-				name="Erzeuger"
-				icon="icons/producer_16.png" />
+			class="sophena.rcp.editors.producers.ProducerEditor"
+			id="sophena.ProducerEditor"
+			name="Erzeuger"
+			icon="icons/producer_16.png" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.climate.ClimateDataEditor"
-				icon="icons/climate_16.png"
-				id="sophena.ClimateDataEditor"
-				name="Klimadaten" />
+			class="sophena.rcp.editors.basedata.climate.ClimateDataEditor"
+			icon="icons/climate_16.png"
+			id="sophena.ClimateDataEditor"
+			name="Klimadaten" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.fuels.FuelEditor"
-				icon="icons/fuel_16.png"
-				id="sophena.FuelEditor"
-				name="Energieträger" />
+			class="sophena.rcp.editors.basedata.fuels.FuelEditor"
+			icon="icons/fuel_16.png"
+			id="sophena.FuelEditor"
+			name="Energieträger" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor"
-				icon="icons/manufacturer_16.png"
-				id="sophena.ManufacturerEditor"
-				name="Hersteller" />
+			class="sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor"
+			icon="icons/manufacturer_16.png"
+			id="sophena.ManufacturerEditor"
+			name="Hersteller" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.ProductGroupEditor"
-				icon="icons/product_16.png"
-				id="sophena.ProductGroupEditor"
-				name="Produktgruppen" />
+			class="sophena.rcp.editors.basedata.ProductGroupEditor"
+			icon="icons/product_16.png"
+			id="sophena.ProductGroupEditor"
+			name="Produktgruppen" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.boilers.BoilerEditor"
-				icon="icons/boiler_16.png"
-				id="sophena.BoilerEditor"
-				name="Heizkessel" />
+			class="sophena.rcp.editors.basedata.boilers.BoilerEditor"
+			icon="icons/boiler_16.png"
+			id="sophena.BoilerEditor"
+			name="Heizkessel" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.buildings.BuildingStateEditor"
-				icon="icons/building_type_16.png"
-				id="sophena.BuildingStateEditor"
-				name="Gebäudetypen" />
+			class="sophena.rcp.editors.basedata.buildings.BuildingStateEditor"
+			icon="icons/building_type_16.png"
+			id="sophena.BuildingStateEditor"
+			name="Gebäudetypen" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.pipes.PipeEditor"
-				icon="icons/pipe_16.png"
-				id="sophena.PipeEditor"
-				name="Wärmeleitungen" />
+			class="sophena.rcp.editors.basedata.pipes.PipeEditor"
+			icon="icons/pipe_16.png"
+			id="sophena.PipeEditor"
+			name="Wärmeleitungen" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.buffers.BufferTankEditor"
-				icon="icons/buffer_16.png"
-				id="sophena.BufferEditor"
-				name="Pufferspeicher" />
+			class="sophena.rcp.editors.basedata.buffers.BufferTankEditor"
+			icon="icons/buffer_16.png"
+			id="sophena.BufferEditor"
+			name="Pufferspeicher" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor"
-				icon="icons/consumer_16.png"
-				id="sophena.TransferStationEditor"
-				name="Wärmeübergabestationen" />
+			class="sophena.rcp.editors.basedata.transfer.stations.TransferStationEditor"
+			icon="icons/consumer_16.png"
+			id="sophena.TransferStationEditor"
+			name="Wärmeübergabestationen" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.BaseCostEditor"
-				icon="icons/costs_16.png"
-				id="sophena.BaseCostEditor"
-				name="Kosteneinstellungen" />
+			class="sophena.rcp.editors.basedata.BaseCostEditor"
+			icon="icons/settings_16.png"
+			id="sophena.BaseCostEditor"
+			name="Basiseinstellungen" />
 
 		<editor
-				class="sophena.rcp.editors.heatnets.HeatNetEditor"
-				icon="icons/pump_16.png"
-				id="sophena.HeatNetEditor"
-				name="Wärmeverteilung" />
+			class="sophena.rcp.editors.heatnets.HeatNetEditor"
+			icon="icons/pump_16.png"
+			id="sophena.HeatNetEditor"
+			name="Wärmeverteilung" />
 
 		<editor
-				class="sophena.rcp.editors.results.single.ResultEditor"
-				icon="icons/load_profile_16.png"
-				id="sophena.ResultEditor"
-				name="Ergebnisse"
-				contributorClass="sophena.rcp.editors.results.single.ResultToolBar"/>
+			class="sophena.rcp.editors.results.single.ResultEditor"
+			icon="icons/load_profile_16.png"
+			id="sophena.ResultEditor"
+			name="Ergebnisse"
+			contributorClass="sophena.rcp.editors.results.single.ResultToolBar" />
 
 		<editor
-				id="sophena.ComparisonView"
-				icon="icons/bar_chart_16.png"
-				class="sophena.rcp.editors.results.compare.ComparisonView"
-				name="Ergebnisvergleich"
-				contributorClass="sophena.rcp.editors.results.compare.ComparisonToolBar" />
+			id="sophena.ComparisonView"
+			icon="icons/bar_chart_16.png"
+			class="sophena.rcp.editors.results.compare.ComparisonView"
+			name="Ergebnisvergleich"
+			contributorClass="sophena.rcp.editors.results.compare.ComparisonToolBar" />
 
 		<editor
-				class="sophena.rcp.editors.costs.CostEditor"
-				icon="icons/costs_16.png"
-				id="sophena.CostEditor"
-				name="Kosten" />
+			class="sophena.rcp.editors.costs.CostEditor"
+			icon="icons/costs_16.png"
+			id="sophena.CostEditor"
+			name="Kosten" />
 
 		<editor
-				class="sophena.rcp.editors.sql.SqlEditor"
-				icon="icons/run_16.png"
-				id="SqlEditor"
-				name="SQL" />
+			class="sophena.rcp.editors.sql.SqlEditor"
+			icon="icons/run_16.png"
+			id="SqlEditor"
+			name="SQL" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.products.ProductEditor"
-				id="sophena.products.ProductEditor"
-				name="Products"
-				icon="icons/product_16.png"/>
+			class="sophena.rcp.editors.basedata.products.ProductEditor"
+			id="sophena.products.ProductEditor"
+			name="Products"
+			icon="icons/product_16.png" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
-				id="sophena.products.HeatRecoveryEditor"
-				icon="icons/heat_recovery_16.png"
-				name="Wärmerückgewinnung" />
+			class="sophena.rcp.editors.basedata.products.HeatRecoveryEditor"
+			id="sophena.products.HeatRecoveryEditor"
+			icon="icons/heat_recovery_16.png"
+			name="Wärmerückgewinnung" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.products.FlueGasCleaningEditor"
-				id="sophena.products.FlueGasCleaningEditor"
-				name="Rauchgasreinigung"
-				icon="icons/flue_gas_16.png" />
+			class="sophena.rcp.editors.basedata.products.FlueGasCleaningEditor"
+			id="sophena.products.FlueGasCleaningEditor"
+			name="Rauchgasreinigung"
+			icon="icons/flue_gas_16.png" />
 
 		<editor
-				class="sophena.rcp.editors.StartPage"
-				default="false"
-				icon="icons/home.png"
-				id="sophena.StartPage"
-				name="Start page" />
+			class="sophena.rcp.editors.StartPage"
+			default="false"
+			icon="icons/home.png"
+			id="sophena.StartPage"
+			name="Start page" />
 
 		<editor
-				class="sophena.rcp.editors.basedata.solarcollectors.SolarCollectorEditor"
-				default="false"
-				id="sophena.SolarCollectorEditor"
-				name="Solarthermische Anlagen">
+			class="sophena.rcp.editors.basedata.solarcollectors.SolarCollectorEditor"
+			default="false"
+			id="sophena.SolarCollectorEditor"
+			name="Solarthermische Anlagen">
 		</editor>
 
 		<editor
-				class="sophena.rcp.editors.basedata.heatpumps.HeatPumpEditor"
-				default="false"
-				id="sophena.HeatPumpEditor"
-				name="Wärmepumpen">
+			class="sophena.rcp.editors.basedata.heatpumps.HeatPumpEditor"
+			default="false"
+			id="sophena.HeatPumpEditor"
+			name="Wärmepumpen">
 		</editor>
 
 		<editor
-				class="sophena.rcp.editors.biogas.substrate.SubstrateEditor"
-				default="false"
-				id="sophena.SubstrateEditor"
-				icon="icons/biogas_substrate_16.png"
-				name="Biogassubstrate">
+			class="sophena.rcp.editors.biogas.substrate.SubstrateEditor"
+			default="false"
+			id="sophena.SubstrateEditor"
+			icon="icons/biogas_substrate_16.png"
+			name="Biogassubstrate">
 		</editor>
 
 		<editor
-				class="sophena.rcp.editors.biogas.plant.BiogasPlantTable"
-				default="false"
-				id="sophena.BiogasPlantTable"
-				icon="icons/data_table_16.png"
-				name="Biogasanlagen">
+			class="sophena.rcp.editors.biogas.plant.BiogasPlantTable"
+			default="false"
+			id="sophena.BiogasPlantTable"
+			icon="icons/data_table_16.png"
+			name="Biogasanlagen">
 		</editor>
 
 		<editor
-				class="sophena.rcp.editors.biogas.plant.BiogasPlantEditor"
-				default="false"
-				id="sophena.BiogasPlantEditor"
-				icon="icons/boiler_16.png"
-				name="Biogasanlage">
+			class="sophena.rcp.editors.biogas.plant.BiogasPlantEditor"
+			default="false"
+			id="sophena.BiogasPlantEditor"
+			icon="icons/boiler_16.png"
+			name="Biogasanlage">
 		</editor>
 
 		<editor
-				class="sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor"
-				default="false"
-				id="sophena.ElectricityPriceEditor"
-				icon="icons/electricity_16.png"
-				name="Strompreise">
+			class="sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor"
+			default="false"
+			id="sophena.ElectricityPriceEditor"
+			icon="icons/electricity_16.png"
+			name="Strompreise">
 		</editor>
 
 	</extension>
