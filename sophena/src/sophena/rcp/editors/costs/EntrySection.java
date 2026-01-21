@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Labels;
@@ -49,6 +51,13 @@ class EntrySection {
 		var comp = UI.sectionClient(section, tk);
 		table = createTable(comp);
 		table.setInput(entries);
+
+		if (type == ProductType.HEATING_NET_CONSTRUCTION) {
+			var btn = new Button(comp, SWT.NONE);
+			btn.setText("Formteile aktualisieren");
+			btn.setImage(Icon.CALCULATE_16.img());
+
+		}
 
 		// create and bind the actions
 		var addGlobal = Actions.create(
@@ -161,10 +170,13 @@ class EntrySection {
 		man.count = copy.count;
 		man.pricePerPiece = copy.pricePerPiece;
 
+		// updating global products
 		if (copy.product == null || copy.product.projectId == null) {
 			man.product = copy.product;
 			return;
 		}
+
+		// updating private products
 		if (man.product == null) {
 			return;
 		}
