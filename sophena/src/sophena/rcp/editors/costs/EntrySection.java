@@ -3,12 +3,10 @@ package sophena.rcp.editors.costs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import sophena.Labels;
 import sophena.model.Product;
 import sophena.model.ProductCosts;
@@ -23,6 +21,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Strings;
 
+/// A section to edit cost properties of a prodcut entry.
 class EntrySection {
 
 	private final CostEditor editor;
@@ -41,35 +40,36 @@ class EntrySection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		fillEntries(); // to collapse the section if necessary
-		Section section;
-		if (entries.isEmpty()) {
-			section = UI.collapsedSection(body, tk, Labels.getPlural(type));
-		} else {
-			section = UI.section(body, tk, Labels.getPlural(type));
-		}
-		Composite composite = UI.sectionClient(section, tk);
-		table = createTable(composite);
-		fillEntries(); // to fill the table
-		Action addGlobal = Actions.create(
+
+		// select the matching entries and create the section
+		fillEntries();
+		var section = entries.isEmpty()
+			? UI.collapsedSection(body, tk, Labels.getPlural(type))
+			: UI.section(body, tk, Labels.getPlural(type));
+		var comp = UI.sectionClient(section, tk);
+		table = createTable(comp);
+		table.setInput(entries);
+
+		// create and bind the actions
+		var addGlobal = Actions.create(
 			"Produkt aus Produktdatenbank hinzufügen",
 			Icon.SEARCH_16.des(),
 			this::addGlobal
 		);
-		Action addPrivate = Actions.create(
+		var addPrivate = Actions.create(
 			"Neues Produkt erstellen",
 			Icon.ADD_16.des(),
 			this::addPrivate
 		);
-		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
-		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(), this::delete);
+		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
+		var del = Actions.create(M.Remove, Icon.DELETE_16.des(), this::delete);
 		Actions.bind(section, addGlobal, addPrivate, edit, del);
 		Actions.bind(table, addGlobal, addPrivate, edit, del);
 		Tables.onDoubleClick(table, e -> edit());
 	}
 
 	private TableViewer createTable(Composite comp) {
-		TableViewer table = Tables.createViewer(
+		var table = Tables.createViewer(
 			comp,
 			"Produkt",
 			"Anzahl",
@@ -85,50 +85,63 @@ class EntrySection {
 		return table;
 	}
 
-	/** Add a product from the product database. */
+	/// Add a product from the product database.
 	private void addGlobal() {
-		ProductEntry entry = new ProductEntry();
-		entry.id = UUID.randomUUID().toString();
-		entry.costs = new ProductCosts();
-		entry.count = 1;
-		if (EntryWizard.open(entry, type, project().duration) != Window.OK) return;
-		project().productEntries.add(entry);
+		var e = new ProductEntry();
+		e.id = UUID.randomUUID().toString();
+		e.costs = new ProductCosts();
+		e.count = 1;
+		if (EntryWizard.open(e, type, project().duration) != Window.OK) {
+		 	return;
+		}
+		project().productEntries.add(e);
 		fillEntries();
 		editor.setDirty();
 	}
 
-	/** Add a project-private product. */
+	/// Add a project-private product, that is a product that only exists
+	/// in this project.
 	private void addPrivate() {
-		ProductEntry entry = new ProductEntry();
-		entry.id = UUID.randomUUID().toString();
-		entry.costs = new ProductCosts();
-		entry.count = 1;
-		Product product = new Product();
-		product.id = UUID.randomUUID().toString();
-		product.projectId = project().id;
-		product.type = type;
-		entry.product = product;
-		if (EntryWizard.open(entry, type, project().duration) != Window.OK) return;
-		project().productEntries.add(entry);
-		project().ownProducts.add(entry.product);
+		var p = new Product();
+		p.id = UUID.randomUUID().toString();
+		p.projectId = project().id;
+		p.type = type;
+
+		var e = new ProductEntry();
+		e.id = UUID.randomUUID().toString();
+		e.costs = new ProductCosts();
+		e.count = 1;
+		e.product = p;
+		if (EntryWizard.open(e, type, project().duration) != Window.OK) {
+		 	return;
+		}
+
+		project().productEntries.add(e);
+		project().ownProducts.add(e.product);
 		fillEntries();
 		editor.setDirty();
 	}
 
+	/// Edit the currently selected product entry
 	private void edit() {
 		ProductEntry entry = Viewers.getFirstSelected(table);
-		if (entry == null) return;
-		ProductEntry clone = copy(entry); // copy allows cancel options
-		if (EntryWizard.open(clone, type, project().duration) != Window.OK) return;
-		ProductEntry managed = getJpaManaged(entry.id);
-		if (managed == null) return;
-		copy(clone, managed);
+		if (entry == null) {
+			return;
+		}
+
+		// create a copy to allow to cancel it
+		var clone = copy(entry);
+		if (EntryWizard.open(clone, type, project().duration) != Window.OK) {
+		 	return;
+		}
+		copyToManaged(clone);
+
 		fillEntries();
 		editor.setDirty();
 	}
 
 	private ProductEntry copy(ProductEntry entry) {
-		ProductEntry clone = entry.copy();
+		var clone = entry.copy();
 		if (clone.product != null && clone.product.projectId != null) {
 			// clone the private product
 			clone.product = entry.product.copy();
@@ -137,35 +150,49 @@ class EntrySection {
 		return clone;
 	}
 
-	private void copy(ProductEntry copy, ProductEntry managed) {
-		managed.costs = copy.costs;
-		managed.count = copy.count;
-		managed.pricePerPiece = copy.pricePerPiece;
-		if (copy.product == null || copy.product.projectId == null) {
-			managed.product = copy.product;
+	/// Copy the values of the given copied entry to the JPA managed
+	/// instance of that entry.
+	private void copyToManaged(ProductEntry copy) {
+		var man = getJpaManaged(copy.id);
+		if (man == null) {
 			return;
 		}
-		if (managed.product == null) return;
-		managed.product.name = copy.product.name;
-		managed.product.group = copy.product.group;
+		man.costs = copy.costs;
+		man.count = copy.count;
+		man.pricePerPiece = copy.pricePerPiece;
+
+		if (copy.product == null || copy.product.projectId == null) {
+			man.product = copy.product;
+			return;
+		}
+		if (man.product == null) {
+			return;
+		}
+		man.product.name = copy.product.name;
+		man.product.group = copy.product.group;
 	}
 
 	private void delete() {
 		ProductEntry entry = Viewers.getFirstSelected(table);
-		if (entry == null) return;
-		ProductEntry managed = getJpaManaged(entry.id);
-		if (managed == null) return;
-		project().productEntries.remove(managed);
-		if (
-			managed.product != null && managed.product.projectId != null
-		) project().ownProducts.remove(managed.product);
+		if (entry == null) {
+			return;
+		}
+		var man = getJpaManaged(entry.id);
+		if (man == null) {
+			return;
+		}
+
+		project().productEntries.remove(man);
+		if (man.product != null && man.product.projectId != null) {
+			project().ownProducts.remove(man.product);
+		}
 		fillEntries();
 		editor.setDirty();
 	}
 
 	private void fillEntries() {
 		entries.clear();
-		for (ProductEntry e : project().productEntries) {
+		for (var e : project().productEntries) {
 			if (e.product != null && e.product.type == type) {
 				entries.add(e);
 			}
@@ -176,7 +203,7 @@ class EntrySection {
 	}
 
 	private ProductEntry getJpaManaged(String id) {
-		for (ProductEntry e : project().productEntries) {
+		for (var e : project().productEntries) {
 			if (Strings.nullOrEqual(id, e.id)) {
 				return e;
 			}

@@ -26,7 +26,7 @@ import sophena.rcp.utils.Viewers;
 import sophena.utils.Lists;
 import sophena.utils.Num;
 
-/** Cost section where the cost entries are only displayed but not edited. */
+/// A cost section where the cost entries are only displayed but not edited.
 class DisplaySection<T> {
 
 	private final ProductType type;
@@ -43,22 +43,20 @@ class DisplaySection<T> {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		Section section;
-		if (content != null && Lists.nullOrEmpty(content.get())) {
-			section = UI.collapsedSection(body, tk, Labels.getPlural(type));
-		} else {
-			section = UI.section(body, tk, Labels.getPlural(type));
-		}
+		var section = content != null && Lists.nullOrEmpty(content.get())
+			? UI.collapsedSection(body, tk, Labels.getPlural(type))
+			: UI.section(body, tk, Labels.getPlural(type));
 
-		Composite composite = UI.sectionClient(section, tk);
+		var composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		table.setLabelProvider(new Label());
 		Tables.onDoubleClick(table, e -> doOpen(table));
-		Action open = Actions.create("Öffnen", Icon.OPEN_16.des(), () ->
+		var open = Actions.create("Öffnen", Icon.OPEN_16.des(), () ->
 			doOpen(table)
 		);
+
 		if (type == ProductType.COGENERATION_PLANT) {
-			Action help = Actions.create("Hilfe", Icon.INFO_16.des(), () ->
+			var help = Actions.create("Hilfe", Icon.INFO_16.des(), () ->
 				HelpBox.show("KWK-Anlagen", H.CoGenPlants)
 			);
 			Actions.bind(section, help);
@@ -105,10 +103,16 @@ class DisplaySection<T> {
 		@Override
 		@SuppressWarnings("unchecked")
 		public String getColumnText(Object obj, int col) {
-			if (costs == null || label == null) return "no label def!";
+			if (costs == null || label == null) {
+				return "no label def!";
+			}
+
 			T t = (T) obj;
 			ProductCosts c = costs.apply(t);
-			if (c == null) return null;
+			if (c == null) {
+				return null;
+			}
+
 			return switch (col) {
 				case 0 -> label.apply(t);
 				case 1 -> Num.str(c.investment) + " EUR";

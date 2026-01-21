@@ -10,10 +10,8 @@ import jakarta.persistence.Table;
 @Table(name = "tbl_products")
 public class Product extends AbstractProduct {
 
-	/**
-	 * Contains only a value for project-private products. Products from the
-	 * product database are globally visible to all projects.
-	 */
+	/// Contains only a value for project-private products. Products from the
+	/// product database are globally visible to all projects.
 	@Column(name = "f_project")
 	public String projectId;
 

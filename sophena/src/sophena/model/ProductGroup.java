@@ -16,31 +16,29 @@ public class ProductGroup extends BaseDataEntity {
 	@Column(name = "product_type")
 	public ProductType type;
 
-	/**
-	 * Product groups that contain heat producers must have a fuel group
-	 * assigned.
-	 */
+	/// Product groups that contain heat producers must have a fuel group
+	/// assigned.
 	@Enumerated(EnumType.STRING)
 	@Column(name = "fuel_group")
 	public FuelGroup fuelGroup;
 
-	/** This is just for ordering the groups in the user interface. */
+	/// This is just for ordering the groups in the user interface.
 	@Column(name = "idx")
 	public int index;
 
-	/** Default usage duration of this product group given in years. */
+	/// Default usage duration of this product group given in years.
 	@Column(name = "duration")
 	public int duration;
 
-	/** Default fraction [%] of the investment that is used for repair. */
+	/// Default fraction [%] of the investment that is used for repair.
 	@Column(name = "repair")
 	public double repair;
 
-	/** Default fraction [%] of the investment that is used for maintenance . */
+	/// Default fraction [%] of the investment that is used for maintenance.
 	@Column(name = "maintenance")
 	public double maintenance;
 
-	/** Default amount of hours that are used for operation in one year. */
+	/// Default amount of hours that are used for operation in one year.
 	@Column(name = "operation")
 	public double operation;
 
