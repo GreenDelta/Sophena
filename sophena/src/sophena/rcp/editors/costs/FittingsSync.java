@@ -41,29 +41,139 @@ class FittingsSync {
 	}
 
 	private Res<Void> run() {
-		return Res.error("Not yet implemented");
+		if (settings.pricePerFitting <= 0 && settings.fittingSurchargeCost <= 0) {
+			if (mode == Mode.REPLACE) {
+				removeEntry();
+			}
+			return Res.ok();
+		}
+		return settings.pricePerFitting > 0
+			? runPricePerFitting()
+			: runSurcharge();
 	}
 
-	private ProductEntry surchargeEntry() {
-		var keyBytes = (
-			project.id +
-			"/27a3d81b-0056-45e4-a13c-688296858c53"
-		).getBytes(StandardCharsets.UTF_8);
-		var id = UUID.nameUUIDFromBytes(keyBytes).toString();
+	private void handleCount() {
+		var entry = FittingsEntry.of(project, EntryType.SURCHARGE);
+		double p = settings.pricePerFitting;
+		if (count <= 0 || p <= 0) {
+			if (mode == Mode.REPLACE) {
+				entry.remove();
+			}
+			return;
+		}
 
-		for (var e : project.productEntries) {
-			if (Objects.equals(e.id, id)) {
-				return e;
+		var e = entry.ensure(group);
+		e.count = mode == Mode.REPLACE ? count : e.count + count;
+		entry.pricePerPiece = p;
+		entry.costs.investment += count * p;  // TODO: not sure with this
+		if (mode == Model.REPLACE) {
+			avgCostParams(e);
+		}
+	}
+
+	private void handleSurcharge() {
+		var entry = FittingsEntry.of(project, EntryType.SURCHARGE);
+		double f = settings.fittingSurchargeCost;
+		if (pipes.isEmpty() || f <= 1e-7) {
+			if (mode == Mode.REPLACE) {
+				entry.remove();
+			}
+			return;
+		}
+
+		var e = entry.ensure(group);
+		double n = pipes.size();
+		double totalInvest = 0;
+		double repairSum = 0;
+		double maintenanceSum = 0;
+		double operationSum = 0;
+		double durationSum = 0;
+
+		for (var pipe : pipes) {
+			var c = pipe.costs;
+			if (pipe.costs == null) {
+				continue;
+			}
+			double invest = c.investment;
+			if (invest <= 0)
+				continue;
+			totalInvest += f * invest;
+			repairSum += c.repair;
+			maintenanceSum += c.maintenance;
+			operationSum += c.operation;
+			durationSum += c.duration;
+		}
+
+		e.count = 1;
+		if (mode == Mode.APPEND) {
+			e.pricePerPiece += totalInvest;
+			e.costs.investment = e.pricePerPiece;
+		} else {
+			e.pricePerPiece = totalInvest;
+			e.costs.investment = totalInvest;
+			e.costs.repair = repairSum / n;
+			e.costs.maintenance = maintenanceSum / n;
+			e.costs.operation = operationSum / n;
+			e.costs.duration = (int) Math.round(durationSum / n);
+		}
+	}
+
+	private enum EntryType {
+		COUNT, SURCHARGE
+	}
+
+	private record FittingsEntry(
+		ProductEntry value, EntryType type, Project project, boolean exists
+	) {
+
+		static FittingsEntry of(Project project, EntryType type) {
+			var salt = "27a3d81b-0056-45e4-a13c-688296858c53";
+			var keyBytes = (project.id + salt + type.toString()).getBytes(StandardCharsets.UTF_8);
+			var id = UUID.nameUUIDFromBytes(keyBytes).toString();
+
+			for (var e : project.productEntries) {
+				if (Objects.equals(id, e.id)) {
+					return new FittingsEntry(e, type, project, true);
+				}
+			}
+
+			var e = new ProductEntry();
+			entry.id = id;
+		}
+
+		ProductEntry ensure(ProductGroup group) {
+			if (!exists) {
+				project.productEntries.add(value);
+			}
+			if (value.costs == null) {
+				value.costs = new ProductCosts();
+				ProductCosts.copy(group, value.costs);
+			}
+			if (value.product == null) {
+				var p = new Product();
+				p.id = UUID.nameUUIDFromBytes(
+					(value.id + "/product").getBytes(StandardCharsets.UTF_8)).toString();
+				p.projectId = project.id;
+				p.name = type == COUNT
+				  ? "Formteile"
+					: "Formteile - Zuschlag";
+				p.type = ProductType.HEATING_NET_CONSTRUCTION;
+				p.group = group;
+				project.ownProducts.add(p);
+			}
+			return value;
+		}
+
+		void remove() {
+			if (!exists) {
+				return;
+			}
+			project.productEntries.remove(value);
+			if (value.product != null) {
+				project.ownProducts.remove(value.product);
 			}
 		}
 
-		var e = new ProductEntry();
-		e.id = id;
-		e.count = 1;
-		e.costs = new ProductCosts();
-
-		// TODO
-		return e;
 	}
 
 	public enum Mode {
