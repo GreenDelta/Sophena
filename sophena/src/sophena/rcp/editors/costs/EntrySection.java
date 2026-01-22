@@ -10,20 +10,25 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.Labels;
+import sophena.math.costs.FittingsCostSync;
+import sophena.math.costs.FittingsCostSync.Mode;
 import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductType;
 import sophena.model.Project;
+import sophena.rcp.App;
 import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.utils.Actions;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Strings;
 
-/// A section to edit cost properties of a prodcut entry.
+/// A section to edit cost properties of a product entry.
 class EntrySection {
 
 	private final CostEditor editor;
@@ -42,13 +47,13 @@ class EntrySection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-
 		// select the matching entries and create the section
 		fillEntries();
 		var section = entries.isEmpty()
 			? UI.collapsedSection(body, tk, Labels.getPlural(type))
 			: UI.section(body, tk, Labels.getPlural(type));
 		var comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1);
 		table = createTable(comp);
 		table.setInput(entries);
 
@@ -56,7 +61,21 @@ class EntrySection {
 			var btn = new Button(comp, SWT.NONE);
 			btn.setText("Formteile aktualisieren");
 			btn.setImage(Icon.CALCULATE_16.img());
-
+			Controls.onSelect(btn, $ -> {
+				var b = MsgBox.ask(
+					"Kosten für Formteile aktualisieren?",
+					"Sollen die Kosten für Formteile neu aus den " +
+						"Wohrleitungen abgeschätzt werden?"
+				);
+				if (!b) return;
+				var res = FittingsCostSync.of(project(), App.getDb())
+					.withUpdate(Mode.REPLACE)
+					.run();
+				if (res.isError()) {
+					MsgBox.error("Unerwarteter Fehler", res.error());
+				}
+				fillEntries();
+			});
 		}
 
 		// create and bind the actions
@@ -101,7 +120,7 @@ class EntrySection {
 		e.costs = new ProductCosts();
 		e.count = 1;
 		if (EntryWizard.open(e, type, project().duration) != Window.OK) {
-		 	return;
+			return;
 		}
 		project().productEntries.add(e);
 		fillEntries();
@@ -122,7 +141,7 @@ class EntrySection {
 		e.count = 1;
 		e.product = p;
 		if (EntryWizard.open(e, type, project().duration) != Window.OK) {
-		 	return;
+			return;
 		}
 
 		project().productEntries.add(e);
@@ -141,7 +160,7 @@ class EntrySection {
 		// create a copy to allow to cancel it
 		var clone = copy(entry);
 		if (EntryWizard.open(clone, type, project().duration) != Window.OK) {
-		 	return;
+			return;
 		}
 		copyToManaged(clone);
 

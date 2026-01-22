@@ -1,4 +1,4 @@
-package sophena.rcp.editors.costs;
+package sophena.math.costs;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.openlca.commons.Res;
 import sophena.db.Database;
 import sophena.model.CostSettings;
 import sophena.model.HeatNetPipe;
+import sophena.model.Product;
 import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
@@ -16,7 +17,7 @@ import sophena.model.Project;
 
 /// Updates the cost entries for fittings of a project. It will not update
 /// the project in the database, this has to be done after the sync.
-class FittingsSync {
+public class FittingsCostSync {
 
 	private final Project project;
 	private final ProductGroup group;
@@ -26,7 +27,7 @@ class FittingsSync {
 	private final List<HeatNetPipe> pipes;
 	private final double count;
 
-	private FittingsSync(Config config, ProductGroup group) {
+	private FittingsCostSync(Config config, ProductGroup group) {
 		this.project = config.project;
 		this.group = group;
 		this.settings = config.project.costSettings;
@@ -40,16 +41,9 @@ class FittingsSync {
 		return new Config(project, db);
 	}
 
-	private Res<Void> run() {
-		if (settings.pricePerFitting <= 0 && settings.fittingSurchargeCost <= 0) {
-			if (mode == Mode.REPLACE) {
-				removeEntry();
-			}
-			return Res.ok();
-		}
-		return settings.pricePerFitting > 0
-			? runPricePerFitting()
-			: runSurcharge();
+	private void run() {
+		handleCount();
+		handleSurcharge();
 	}
 
 	private void handleCount() {
@@ -64,9 +58,9 @@ class FittingsSync {
 
 		var e = entry.ensure(group);
 		e.count = mode == Mode.REPLACE ? count : e.count + count;
-		entry.pricePerPiece = p;
-		entry.costs.investment += count * p;  // TODO: not sure with this
-		if (mode == Model.REPLACE) {
+		e.pricePerPiece = p;
+		e.costs.investment += count * p; // TODO: not sure with this
+		if (mode == Mode.REPLACE) {
 			avgCostParams(e);
 		}
 	}
@@ -82,53 +76,72 @@ class FittingsSync {
 		}
 
 		var e = entry.ensure(group);
-		double n = pipes.size();
-		double totalInvest = 0;
-		double repairSum = 0;
-		double maintenanceSum = 0;
-		double operationSum = 0;
-		double durationSum = 0;
-
+		double invest = 0;
 		for (var pipe : pipes) {
-			var c = pipe.costs;
-			if (pipe.costs == null) {
-				continue;
-			}
-			double invest = c.investment;
-			if (invest <= 0)
-				continue;
-			totalInvest += f * invest;
-			repairSum += c.repair;
-			maintenanceSum += c.maintenance;
-			operationSum += c.operation;
-			durationSum += c.duration;
+			if (pipe.costs == null) continue;
+			double i = pipe.costs.investment;
+			if (i <= 0) continue;
+			invest += f * i;
 		}
 
 		e.count = 1;
 		if (mode == Mode.APPEND) {
-			e.pricePerPiece += totalInvest;
+			e.pricePerPiece += invest;
 			e.costs.investment = e.pricePerPiece;
 		} else {
-			e.pricePerPiece = totalInvest;
-			e.costs.investment = totalInvest;
-			e.costs.repair = repairSum / n;
-			e.costs.maintenance = maintenanceSum / n;
-			e.costs.operation = operationSum / n;
-			e.costs.duration = (int) Math.round(durationSum / n);
+			e.pricePerPiece = invest;
+			e.costs.investment = invest;
+			avgCostParams(e);
 		}
 	}
 
+	/// For other cost parameters than investment costs, calculate them
+	/// as a weighted average based on the pipe lengths. This should be
+	/// only called in replace mode.
+	private void avgCostParams(ProductEntry e) {
+		if (pipes.isEmpty()) return;
+
+		double repair = 0;
+		double maintenance = 0;
+		double operation = 0;
+		double duration = 0;
+		double totalLen = 0;
+
+		for (var pipe : pipes) {
+			if (pipe.costs == null || pipe.length == 0) {
+				continue;
+			}
+			var c = pipe.costs;
+			double len = pipe.length;
+			totalLen += len;
+			repair += (c.repair * len);
+			maintenance += (c.maintenance * len);
+			operation += (c.operation * len);
+			duration += (c.duration * len);
+		}
+
+		e.costs.repair = repair / totalLen;
+		e.costs.maintenance = maintenance / totalLen;
+		e.costs.operation = operation / totalLen;
+		e.costs.duration = (int) Math.round(duration / totalLen);
+	}
+
 	private enum EntryType {
-		COUNT, SURCHARGE
+		COUNT,
+		SURCHARGE,
 	}
 
 	private record FittingsEntry(
-		ProductEntry value, EntryType type, Project project, boolean exists
+		ProductEntry value,
+		EntryType type,
+		Project project,
+		boolean exists
 	) {
-
 		static FittingsEntry of(Project project, EntryType type) {
 			var salt = "27a3d81b-0056-45e4-a13c-688296858c53";
-			var keyBytes = (project.id + salt + type.toString()).getBytes(StandardCharsets.UTF_8);
+			var keyBytes = (project.id + salt + type.toString()).getBytes(
+				StandardCharsets.UTF_8
+			);
 			var id = UUID.nameUUIDFromBytes(keyBytes).toString();
 
 			for (var e : project.productEntries) {
@@ -138,7 +151,8 @@ class FittingsSync {
 			}
 
 			var e = new ProductEntry();
-			entry.id = id;
+			e.id = id;
+			return new FittingsEntry(e, type, project, false);
 		}
 
 		ProductEntry ensure(ProductGroup group) {
@@ -152,11 +166,10 @@ class FittingsSync {
 			if (value.product == null) {
 				var p = new Product();
 				p.id = UUID.nameUUIDFromBytes(
-					(value.id + "/product").getBytes(StandardCharsets.UTF_8)).toString();
+					(value.id + "/product").getBytes(StandardCharsets.UTF_8)
+				).toString();
 				p.projectId = project.id;
-				p.name = type == COUNT
-				  ? "Formteile"
-					: "Formteile - Zuschlag";
+				p.name = type == EntryType.COUNT ? "Formteile" : "Formteile - Zuschlag";
 				p.type = ProductType.HEATING_NET_CONSTRUCTION;
 				p.group = group;
 				project.ownProducts.add(p);
@@ -173,7 +186,6 @@ class FittingsSync {
 				project.ownProducts.remove(value.product);
 			}
 		}
-
 	}
 
 	public enum Mode {
@@ -240,10 +252,14 @@ class FittingsSync {
 					)
 					.findAny()
 					.orElse(null);
+				if (group == null) {
+					return Res.error(
+						"Die Produktgruppe 'Formteile' wurde nicht gefunden"
+					);
+				}
 
-				return group == null
-					? Res.error("Die Produktgruppe 'Formteile' wurde nicht gefunden")
-					: new FittingsSync(this, group).run();
+				new FittingsCostSync(this, group).run();
+				return Res.ok();
 			} catch (Exception e) {
 				return Res.error("An unexpected error occured", e);
 			}
