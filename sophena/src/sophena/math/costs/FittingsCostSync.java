@@ -47,7 +47,7 @@ public class FittingsCostSync {
 	}
 
 	private void handleCount() {
-		var entry = FittingsEntry.of(project, EntryType.SURCHARGE);
+		var entry = FittingsEntry.of(project, EntryType.COUNT);
 		double p = settings.pricePerFitting;
 		if (count <= 0 || p <= 0) {
 			if (mode == Mode.REPLACE) {
@@ -172,6 +172,7 @@ public class FittingsCostSync {
 				p.name = type == EntryType.COUNT ? "Formteile" : "Formteile - Zuschlag";
 				p.type = ProductType.HEATING_NET_CONSTRUCTION;
 				p.group = group;
+				value.product = p;
 				project.ownProducts.add(p);
 			}
 			return value;
