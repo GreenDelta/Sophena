@@ -57,10 +57,13 @@ public class FittingsCostSync {
 		}
 
 		var e = entry.ensure(group);
-		e.count = mode == Mode.REPLACE ? count : e.count + count;
 		e.pricePerPiece = p;
-		e.costs.investment += count * p; // TODO: not sure with this
-		if (mode == Mode.REPLACE) {
+		if (mode == Mode.APPEND) {
+			e.count += count;
+			e.costs.investment += count * p;
+		} else {
+			e.count = count;
+			e.costs.investment = count * p;
 			avgCostParams(e);
 		}
 	}
@@ -118,6 +121,10 @@ public class FittingsCostSync {
 			maintenance += (c.maintenance * len);
 			operation += (c.operation * len);
 			duration += (c.duration * len);
+		}
+
+		if (totalLen <= 0) {
+			return;
 		}
 
 		e.costs.repair = repair / totalLen;
@@ -262,7 +269,7 @@ public class FittingsCostSync {
 				new FittingsCostSync(this, group).run();
 				return Res.ok();
 			} catch (Exception e) {
-				return Res.error("An unexpected error occured", e);
+				return Res.error("An unexpected error occurred", e);
 			}
 		}
 	}
