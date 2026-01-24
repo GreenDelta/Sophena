@@ -12,7 +12,7 @@ public class CapitalCosts {
 
 	/**
 	 * Get the capital costs for the given component.
-	 * 
+	 *
 	 * @param item
 	 *            The component for which the capital costs should be
 	 *            calculated.
@@ -42,7 +42,7 @@ public class CapitalCosts {
 	/**
 	 * Low level function to calculate the capital costs of a component
 	 * according to VDI 2067.
-	 * 
+	 *
 	 * @param A
 	 *            Investment amount (in EUR)
 	 * @param Tu
@@ -80,8 +80,10 @@ public class CapitalCosts {
 			sum -= Rv;
 		}
 
-		// apply the annuity factor
-		double a = (q - 1) / (1 - pow(q, -T));
+		// apply the annuity factor; if q = 1 -> 1/T
+		double a = Math.abs(q - 1) < 1e-10
+			? 1.0 / T
+			: (q - 1) / (1 - pow(q, -T));
 		return sum * a;
 	}
 }

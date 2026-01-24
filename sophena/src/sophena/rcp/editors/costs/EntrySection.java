@@ -75,6 +75,7 @@ class EntrySection {
 					MsgBox.error("Unerwarteter Fehler", res.error());
 				}
 				fillEntries();
+				editor.setDirty();
 			});
 		}
 
