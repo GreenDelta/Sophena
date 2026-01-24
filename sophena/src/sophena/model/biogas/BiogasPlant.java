@@ -1,9 +1,5 @@
 package sophena.model.biogas;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -14,6 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import sophena.model.AnnualCostEntry;
 import sophena.model.Boiler;
 import sophena.model.Fuel;
@@ -27,7 +26,7 @@ public class BiogasPlant extends RootEntity {
 
 	/// The duration of the biogas plant in years. This can be different
 	/// from the duration of the project in which the biogas plant is used.
-	@Column(name = "duration")
+	@Column(name = "plant_duration")
 	public int duration;
 
 	@OneToOne
@@ -113,7 +112,10 @@ public class BiogasPlant extends RootEntity {
 
 	/// Other annual costs in EUR/a, such as administration costs, laboratory costs, etc.
 	@ElementCollection
-	@CollectionTable(name = "tbl_biogas_annual_costs", joinColumns = @JoinColumn(name = "f_biogas_plant"))
+	@CollectionTable(
+		name = "tbl_biogas_annual_costs",
+		joinColumns = @JoinColumn(name = "f_biogas_plant")
+	)
 	public List<AnnualCostEntry> otherAnnualCosts = new ArrayList<>();
 
 	// price change factors

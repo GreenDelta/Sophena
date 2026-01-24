@@ -54,7 +54,7 @@ public class CapitalCosts {
 	 * @param r
 	 *            price change factor (e.g. 1.02)
 	 */
-	private static double calculate(
+	public static double calculate(
 			double A,
 			int Tu,
 			int T,
