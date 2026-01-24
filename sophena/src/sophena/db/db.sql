@@ -92,6 +92,7 @@ CREATE TABLE tbl_biogas_plants (
     f_product                   CHAR(36),
     f_product_group             CHAR(36),
     f_electricity_price_curve   CHAR(36),
+    f_demand_electricity_mix    CHAR(36),
     rated_power                 DOUBLE,
     minimum_runtime             INTEGER,
 
@@ -101,7 +102,31 @@ CREATE TABLE tbl_biogas_plants (
     maintenance                 DOUBLE,
     operation                   DOUBLE,
 
+    hourly_wage                 DOUBLE,
+    electricity_price           DOUBLE,
+    electricity_demand          DOUBLE,
+    is_full_feed_in             BOOLEAN,
+    transmission_losses         DOUBLE,
+    heat_loss                   DOUBLE,
+    interest_rate               DOUBLE,
+    insurance_share             DOUBLE,
+
+    investment_factor           DOUBLE,
+    bio_fuel_factor             DOUBLE,
+    fossil_fuel_factor          DOUBLE,
+    electricity_factor          DOUBLE,
+    operation_factor            DOUBLE,
+    maintenance_factor          DOUBLE,
+    electricity_revenues_factor DOUBLE,
+
     PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_biogas_annual_costs (
+    f_biogas_plant  CHAR(36),
+    label           VARCHAR(255),
+    cost_entry      DOUBLE
 );
 
 
