@@ -135,18 +135,14 @@ class PipeSync {
 			} else if (match.isSame) {
 				pipe = match.existing;
 				pipe.length = materialLengthOf(seg);
+				updateCosts(pipe);
 				result.add(pipe);
 			} else {
 				pipe = match.existing;
 				pipe.pipe = seg.pipe();
 				pipe.length = materialLengthOf(seg);
 				pipe.name = seg.pipe().name;
-				if (pipe.costs == null) {
-					pipe.costs = new ProductCosts();
-				}
-				ProductCosts.copy(seg.pipe(), pipe.costs);
-				pipe.pricePerMeter =
-					seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
+				updateCosts(pipe);
 				result.add(pipe);
 			}
 			used.add(pipe.id);
@@ -161,6 +157,7 @@ class PipeSync {
 			if (match != null && match.isSame) {
 				double len = materialLengthOf(seg);
 				match.existing.length += len;
+				updateCosts(match.existing);
 				result.add(match.existing, len);
 			} else {
 				addNew(seg);
@@ -174,13 +171,24 @@ class PipeSync {
 		hnp.pipe = seg.pipe();
 		hnp.length = materialLengthOf(seg);
 		hnp.name = seg.pipe().name;
-		hnp.costs = new ProductCosts();
-		ProductCosts.copy(seg.pipe(), hnp.costs);
-		hnp.pricePerMeter =
-			seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
+		updateCosts(hnp);
 		project.heatNet.pipes.add(hnp);
 		result.add(hnp);
 		return hnp;
+	}
+
+	private void updateCosts(HeatNetPipe hnp) {
+		if (hnp == null || hnp.pipe == null) {
+			return;
+		}
+		if (hnp.costs == null) {
+			hnp.costs = new ProductCosts();
+			ProductCosts.copy(hnp.pipe, hnp.costs);
+		}
+		if (hnp.pricePerMeter == 0 && hnp.pipe.purchasePrice != null) {
+			hnp.pricePerMeter = hnp.pipe.purchasePrice;
+		}
+		hnp.costs.investment = hnp.pricePerMeter * hnp.length;
 	}
 
 	private double materialLengthOf(PipeSum.Seg seg) {
@@ -206,8 +214,7 @@ class PipeSync {
 
 		private static boolean eq(Pipe a, Pipe b) {
 			return Objects.equals(a.group, b.group)
-				? Math.abs(a.innerDiameter - b.innerDiameter) < 1e-6
-				: false;
+				&& Math.abs(a.innerDiameter - b.innerDiameter) < 1e-6;
 		}
 	}
 }

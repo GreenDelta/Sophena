@@ -4,7 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 import org.openlca.commons.Res;
+
 import sophena.db.Database;
 import sophena.model.CostSettings;
 import sophena.model.HeatNetPipe;
@@ -34,7 +36,7 @@ public class FittingsCostSync {
 
 		this.mode = config.mode != null ? config.mode : Mode.REPLACE;
 		this.pipes = config.pipes != null ? config.pipes : project.heatNet.pipes;
-		this.count = config.count != null ? config.count : 1.1 * this.pipes.size();
+		this.count = config.count();
 	}
 
 	public static Config of(Project project, Database db) {
@@ -238,6 +240,21 @@ public class FittingsCostSync {
 			return this;
 		}
 
+		private double count() {
+			if (count != null) {
+				return count;
+			}
+			if (mode == Mode.REPLACE && !project.consumers.isEmpty()) {
+				return 1.1 * project.consumers.size();
+			}
+			if (pipes != null && !pipes.isEmpty()) {
+				return 1 + pipes.size();
+			}
+			return project.heatNet != null
+				? 1 + project.heatNet.pipes.size()
+				: 0;
+		}
+
 		public Res<Void> run() {
 			if (db == null || project == null) {
 				return Res.error("No valid database or project provided");
@@ -255,8 +272,8 @@ public class FittingsCostSync {
 					.filter(
 						g ->
 							g.type == ProductType.HEATING_NET_CONSTRUCTION &&
-							g.name != null &&
-							g.name.equalsIgnoreCase("Formteile")
+								g.name != null &&
+								g.name.equalsIgnoreCase("Formteile")
 					)
 					.findAny()
 					.orElse(null);
