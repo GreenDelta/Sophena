@@ -74,11 +74,22 @@ class BiogasPlantInfoPage extends FormPage {
 				});
 		UI.formLabel(comp, tk, "kW el.");
 
-		// product costs
+		Texts.on(UI.formText(comp, tk, "Laufzeit (Jahre)"))
+				.init(plant().duration)
+				.integer()
+				.onChanged(s -> {
+					plant().duration = Num.readInt(s);
+					editor.setDirty();
+				});
+		UI.filler(comp, tk);
+
+		// product section
+		var productComp = UI.formSection(body, tk, "Produkt");
+		UI.gridLayout(productComp, 3);
 		var costs = new ProductCostSection(() -> plant().costs)
 				.withEditor(editor);
-		boilerCombo(tk, comp, costs);
-		costs.createFields(comp, tk);
+		boilerCombo(tk, productComp, costs);
+		costs.createFields(productComp, tk);
 
 		// substrate section
 		var substrateSection = SubstrateSection.of(editor);

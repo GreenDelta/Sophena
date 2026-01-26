@@ -34,8 +34,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		var form = UI.formHeader(mForm, "Kosteneinstellungen - " + plant().name);
 		tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
-
-		createProductCostSection(body);
 		createGeneralSection(body);
 		createLossesSection(body);
 		createOtherCostsSection(body);
@@ -43,14 +41,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		createPriceChangeSection(body);
 
 		form.reflow(true);
-	}
-
-	private void createProductCostSection(Composite body) {
-		var comp = UI.formSection(body, tk, "Produktkosten");
-		UI.gridLayout(comp, 3);
-		new ProductCostSection(() -> plant().costs)
-				.withEditor(editor)
-				.createFields(comp, tk);
 	}
 
 	private void createGeneralSection(Composite body) {
