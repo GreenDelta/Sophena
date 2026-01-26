@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import sophena.db.Database;
+import sophena.math.costs.FittingsCostSync;
+import sophena.math.costs.FittingsCostSync.Mode;
 import sophena.model.Consumer;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
@@ -57,8 +59,14 @@ public class ThermosImport implements Runnable {
 			if (config.isWithConsumers()) {
 				syncConsumers();
 			}
+
 			if (config.isWithPipes()) {
-				new PipeSync(db, config).run();
+				var res = new PipeSync(db, config).run();
+				if (res.isError()) {
+					error = res.error();
+					return;
+				}
+				syncFittingsCosts(res.value());
 			}
 
 			db.update(project);
@@ -166,5 +174,20 @@ public class ThermosImport implements Runnable {
 			}
 			ProductCosts.copy(station, c.transferStationCosts);
 		}
+	}
+
+	private void syncFittingsCosts(PipeSyncResult r) {
+		if (project.heatNet == null || project.costSettings == null) {
+			return;
+		}
+		var sync = FittingsCostSync.of(project, db)
+			.withCount(r.fittingsCount().get());
+		if (config.isUpdateExisting()) {
+			sync.withUpdate(Mode.REPLACE);
+		} else {
+			sync.withUpdate(Mode.APPEND)
+				.withPipes(r.pipeDiffs());
+		}
+		sync.run();
 	}
 }

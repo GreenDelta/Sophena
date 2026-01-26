@@ -7,6 +7,9 @@ import java.util.List;
 import sophena.io.thermos.NetworkTree.Junction;
 import sophena.model.Pipe;
 
+/// An aggregation of the pipe-plan of a network. For every pipe (identified
+/// by ID) there is only one entry in this aggregation. The number of fittings
+/// are estimated by the number of nodes in the tree.
 record PipeSum(List<Seg> segments, int fittingsCount) {
 	record Seg(Pipe pipe, double length) {}
 

@@ -1,10 +1,13 @@
 package sophena.io.thermos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openlca.commons.Res;
 
@@ -17,36 +20,82 @@ import sophena.model.PipeType;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 
+/// Tracks the added length for a pipe during the sync. For new pipes, this is
+/// the full length. For modified pipes, this is the positive length delta.
+record PipeDiff(HeatNetPipe pipe, double length) {}
+
+/// The result of a pipe sync operation, containing the pipe diffs. When the
+/// sync is running in `replace` mode, it will contain all pipes that were
+/// added; in `append` mode, it will only contain the newly added lengths of
+/// the respective pipes.
+record PipeSyncResult(Map<String, PipeDiff> diffs, AtomicInteger fittingsCount) {
+
+	PipeSyncResult() {
+		this(new HashMap<>(), new AtomicInteger(0));
+	}
+
+	void add(HeatNetPipe hnp) {
+		if (hnp != null) {
+			add(hnp, hnp.length);
+		}
+	}
+
+	void add(HeatNetPipe hnp, double length) {
+		if (hnp == null || hnp.pipe == null || length <= 0) {
+			return;
+		}
+		diffs.compute(hnp.pipe.id,
+			($, old) -> old == null
+			? new PipeDiff(hnp, length)
+			: new PipeDiff(hnp, old.length() + length));
+	}
+
+	List<HeatNetPipe> pipeDiffs() {
+		var list = new ArrayList<HeatNetPipe>();
+		for (var diff : diffs.values()) {
+			var pipe = diff.pipe().copy();
+			pipe.length = diff.length();
+			list.add(pipe);
+		}
+		return list;
+	}
+}
+
 class PipeSync {
 
 	private final Database db;
 	private final ThermosImportConfig config;
 	private final Project project;
 	private final ThermosFile file;
+	private final PipeSyncResult result;
 
 	PipeSync(Database db, ThermosImportConfig config) {
 		this.db = db;
 		this.config = config;
 		this.project = config.project();
 		this.file = config.thermosFile();
+		this.result = new PipeSyncResult();
 	}
 
-	Res<Void> run() {
-		if (file.network() == null) return Res.error("No network provided");
+	Res<PipeSyncResult> run() {
+		if (file.network() == null) {
+			return Res.error("No network provided");
+		}
 
 		try {
 			var pipes = getAvailablePipes();
 			var pipeConfig = PipeConfig.of(project, pipes);
 			var plan = PipePlan.of(pipeConfig, file.network());
-			if (plan.isError()) return plan.wrapError(
-				"Failed to calculate pipe plan"
-			);
+			if (plan.isError()) {
+				return plan.wrapError("Failed to calculate pipe plan");
+			}
 
 			var sum = PipeSum.of(file.network(), plan.value());
 			if (project.heatNet == null) {
 				project.heatNet = new HeatNet();
 				project.heatNet.id = UUID.randomUUID().toString();
 			}
+			result.fittingsCount().set(sum.fittingsCount());
 
 			if (config.isUpdateExisting()) {
 				updateAll(sum.segments());
@@ -54,7 +103,7 @@ class PipeSync {
 				appendNew(sum.segments());
 			}
 			project.heatNet.length = HeatNets.getTrenchLengthOf(project.heatNet);
-			return Res.ok();
+			return Res.ok(result);
 		} catch (Exception e) {
 			return Res.error("Failed to sync pipes", e);
 		}
@@ -86,6 +135,7 @@ class PipeSync {
 			} else if (match.isSame) {
 				pipe = match.existing;
 				pipe.length = materialLengthOf(seg);
+				result.add(pipe);
 			} else {
 				pipe = match.existing;
 				pipe.pipe = seg.pipe();
@@ -97,6 +147,7 @@ class PipeSync {
 				ProductCosts.copy(seg.pipe(), pipe.costs);
 				pipe.pricePerMeter =
 					seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
+				result.add(pipe);
 			}
 			used.add(pipe.id);
 		}
@@ -108,7 +159,9 @@ class PipeSync {
 		for (var seg : segments) {
 			var match = BestMatch.of(seg.pipe(), project.heatNet);
 			if (match != null && match.isSame) {
-				match.existing.length += materialLengthOf(seg);
+				double len = materialLengthOf(seg);
+				match.existing.length += len;
+				result.add(match.existing, len);
 			} else {
 				addNew(seg);
 			}
@@ -126,6 +179,7 @@ class PipeSync {
 		hnp.pricePerMeter =
 			seg.pipe().purchasePrice != null ? seg.pipe().purchasePrice : 0;
 		project.heatNet.pipes.add(hnp);
+		result.add(hnp);
 		return hnp;
 	}
 
