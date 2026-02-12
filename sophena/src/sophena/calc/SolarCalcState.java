@@ -136,7 +136,7 @@ public class SolarCalcState {
 		double EWFNS = getEWFNS(Math.toDegrees(EWNS));
 		
 		// 1
-		double KOF = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
+		double KOF = Math.toDegrees(SZW) < 89 && Math.toDegrees(EWK) < 89
 				? Math.cos(EWK) / Math.cos(SZW)
 				: 0;
 			
