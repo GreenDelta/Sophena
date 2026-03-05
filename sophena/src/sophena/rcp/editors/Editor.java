@@ -55,7 +55,7 @@ abstract public class Editor extends FormEditor implements IEditor {
 		IWorkbenchSite site = getSite();
 		if (site == null || site.getPage() == null)
 			return;
-		getSite().getPage().addPartListener(new PartAdapter() {
+		getSite().getPage().addPartListener(new IPartListener2() {
 			@Override
 			public void partClosed(IWorkbenchPartReference ref) {
 				try {
@@ -65,40 +65,5 @@ abstract public class Editor extends FormEditor implements IEditor {
 				}
 			}
 		});
-	}
-
-	private static class PartAdapter implements IPartListener2 {
-
-		@Override
-		public void partActivated(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partBroughtToTop(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partClosed(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partDeactivated(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partOpened(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partHidden(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partVisible(IWorkbenchPartReference partRef) {
-		}
-
-		@Override
-		public void partInputChanged(IWorkbenchPartReference partRef) {
-		}
 	}
 }
