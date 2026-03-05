@@ -56,13 +56,18 @@ abstract public class Editor extends FormEditor implements IEditor {
 		IWorkbenchSite site = getSite();
 		if (site == null || site.getPage() == null)
 			return;
-		getSite().getPage().addPartListener(new IPartListener2() {
+		var page = getSite().getPage();
+		page.addPartListener(new IPartListener2() {
 			@Override
 			public void partClosed(IWorkbenchPartReference ref) {
+				if (ref.getPart(false) != Editor.this)
+					return;
 				try {
 					fn.run();
 				} catch (Exception e) {
 					log.error("failed to call after editor closed", e);
+				} finally {
+					page.removePartListener(this);
 				}
 			}
 		});

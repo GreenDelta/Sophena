@@ -45,8 +45,7 @@ public class CostEditor extends Editor {
 		Runnable reload = () ->
 			project = App.getDb().get(Project.class, project.id);
 		App.events().subscribe(project, reload);
-		
-
+		onClosed(() -> App.events().unsubscribe(reload));
 	}
 
 	public Project getProject() {
