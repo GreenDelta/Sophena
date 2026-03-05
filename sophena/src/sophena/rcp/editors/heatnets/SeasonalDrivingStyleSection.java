@@ -36,12 +36,12 @@ public class SeasonalDrivingStyleSection {
 	private Text tReturnTemperatureWinter;
 	private Text tReturnTemperatureSummer;
 	private Button useHeatingCurve;
-	
+
 	private static String summerStart = "--02-15";
 	private static String summerEnd = "--09-15";
 	private static String winterStart = "--11-15";
 	private static String winterEnd = "--03-15";
-	
+
 	SeasonalDrivingStyleSection(HeatNetEditor editor) {
 		this.editor = editor;
 	}
@@ -79,20 +79,20 @@ public class SeasonalDrivingStyleSection {
 		endBoxSummer.setEnabled(enableBox);
 		useHeatingCurve.setEnabled(enable);
 	}
-	
+
 	private void createUseHeatingCurveCheck(FormToolkit tk, Composite comp) {
 		useHeatingCurve = tk.createButton(comp, M.UseHeatingCurve, SWT.CHECK);
 		useHeatingCurve.setSelection(heatNet().useHeatingCurve);
 		Controls.onSelect(useHeatingCurve, (e) -> {
 			heatNet().useHeatingCurve = useHeatingCurve.getSelection();
 			enableControls(heatNet().isSeasonalDrivingStyle);
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		HelpLink.create(comp, tk, "Heizkurve",
 				H.UseHeatingCurve);
-	}	
-	
+	}
+
 	private void createCheck(FormToolkit tk, Composite comp) {
 		var check = tk.createButton(comp, M.Activate, SWT.CHECK);
 		check.setSelection(heatNet().isSeasonalDrivingStyle);
@@ -100,19 +100,19 @@ public class SeasonalDrivingStyleSection {
 			boolean enabled = check.getSelection();
 			enableControls(enabled);
 			heatNet().isSeasonalDrivingStyle = enabled;
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
-	}	
-	
+	}
+
 	private void createHeaderRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.Period);
 		UI.formLabel(comp, tk, M.Winter);
 		UI.filler(comp);
 		UI.formLabel(comp, tk, M.Summer);
 		UI.filler(comp);
-	}	
-	
+	}
+
 	private void initBoxValue(MonthDayBox box, String monthDay) {
 		if (box == null || monthDay == null)
 			return;
@@ -124,7 +124,7 @@ public class SeasonalDrivingStyleSection {
 			log.error("failed to parse MonthDay " + monthDay, e);
 		}
 	}
-	
+
 	private void createBoxRows(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.Start);
 		startBoxWinter = new MonthDayBox("", comp, tk);
@@ -147,7 +147,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.start = monthDay.toString();
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
@@ -171,7 +171,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.start = monthDay.toString();
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		HelpLink.create(comp, tk, "Zwischenzeiten",
@@ -185,7 +185,7 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.end = monthDay.toString();
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
@@ -196,12 +196,12 @@ public class SeasonalDrivingStyleSection {
 			if (i == null || monthDay == null)
 				return;
 			i.end = monthDay.toString();
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.filler(comp);
 	}
-	
+
 	private void createTargetChargeLevelRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.TargetChargeLevel);
 		tTargetChargeWinter = UI.formText(comp, tk, null);
@@ -221,7 +221,7 @@ public class SeasonalDrivingStyleSection {
 		});
 		UI.formLabel(comp, tk, "%");
 	}
-	
+
 	private void createFlowTemperatureRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.FlowTemperature);
 		tFlowTemperatureWinter = UI.formText(comp, tk, null);
@@ -229,7 +229,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().flowTemperatureWinter)
 		.onChanged((s) -> {
 			heatNet().flowTemperatureWinter = Texts.getDouble(tFlowTemperatureWinter);
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
@@ -238,12 +238,12 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().flowTemperatureSummer)
 		.onChanged((s) -> {
 			heatNet().flowTemperatureSummer = Texts.getDouble(tFlowTemperatureSummer);
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
 	}
-	
+
 	private void createReturnTemperatureRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.ReturnTemperature);
 		tReturnTemperatureWinter = UI.formText(comp, tk, null);
@@ -251,7 +251,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().returnTemperatureWinter)
 		.onChanged((s) -> {
 			heatNet().returnTemperatureWinter = Texts.getDouble(tReturnTemperatureWinter);
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");
@@ -260,7 +260,7 @@ public class SeasonalDrivingStyleSection {
 		.init(heatNet().returnTemperatureSummer)
 		.onChanged((s) -> {
 			heatNet().returnTemperatureSummer = Texts.getDouble(tReturnTemperatureSummer);
-			editor.bus.notify("seasonal-driving-changed");
+			editor.bus.emit("seasonal-driving-changed");
 			editor.setDirty();
 		});
 		UI.formLabel(comp, tk, "°C");

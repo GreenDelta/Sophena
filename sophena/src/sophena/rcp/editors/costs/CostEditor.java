@@ -41,6 +41,12 @@ public class CostEditor extends Editor {
 		ProjectDao dao = new ProjectDao(App.getDb());
 		project = dao.get(i.projectId);
 		setPartName(project.name + " - Investitionen");
+
+		Runnable reload = () ->
+			project = App.getDb().get(Project.class, project.id);
+		App.events().subscribe(project, reload);
+		
+
 	}
 
 	public Project getProject() {

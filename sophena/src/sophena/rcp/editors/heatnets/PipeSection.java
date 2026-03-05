@@ -94,9 +94,9 @@ class PipeSection {
 			net().pipes.add(pipe);
 			table.setInput(net().pipes);
 			editor.setDirty();
-			editor.bus.notify("length-powerloss-changed");
+			editor.bus.emit("length-powerloss-changed");
 		}
-		editor.bus.notify("pipes");
+		editor.bus.emit("pipes");
 	}
 
 	private void edit() {
@@ -114,8 +114,8 @@ class PipeSection {
 		pipe.pricePerMeter = clone.pricePerMeter;
 		table.setInput(net().pipes);
 		editor.setDirty();
-		editor.bus.notify("pipes");
-		editor.bus.notify("length-powerloss-changed");
+		editor.bus.emit("pipes");
+		editor.bus.emit("length-powerloss-changed");
 	}
 
 	private void del() {
@@ -126,8 +126,8 @@ class PipeSection {
 		net().pipes.remove(pipe);
 		table.setInput(net().pipes);
 		editor.setDirty();
-		editor.bus.notify("pipes");
-		editor.bus.notify("length-powerloss-changed");
+		editor.bus.emit("pipes");
+		editor.bus.emit("length-powerloss-changed");
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider {

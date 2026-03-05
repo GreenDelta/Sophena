@@ -12,6 +12,7 @@ public class App {
 
 	private static Database db;
 	private static final HashMap<String, Object> cache = new HashMap<>();
+	private static final EventBus events = new EventBus();
 
 	private App() {
 	}
@@ -35,6 +36,10 @@ public class App {
 
 	public static Database getDb() {
 		return db;
+	}
+
+	public static EventBus events() {
+		return events;
 	}
 
 	/**
@@ -72,7 +77,7 @@ public class App {
 			return (T) obj;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(App.class);
-			log.error("failed to get " + key + " from cache", e);
+			log.error("failed to get {} from cache", key, e);
 			return null;
 		}
 	}

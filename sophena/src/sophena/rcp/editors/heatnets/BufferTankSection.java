@@ -5,7 +5,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
-
 import sophena.calc.ProjectLoad;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BufferTank;
@@ -56,7 +55,6 @@ class BufferTankSection {
 		createTargetChargeLevelText(comp, tk);
 		createMaxPerfText(comp, tk);
 		createMaxTempText(comp, tk);
-		createLowerTempText(comp, tk);
 		createLamdaText(comp, tk);
 		if (net().bufferTankCosts == null)
 			net().bufferTankCosts = new ProductCosts();
@@ -64,7 +62,8 @@ class BufferTankSection {
 				.withEditor(editor)
 				.createFields(comp, tk);
 		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
-		editor.bus.on("seasonal-driving-changed", this::seasonalDrivingChanged);
+		editor.bus.subscribe("seasonal-driving-changed", 
+			() -> targetChargeText.setEnabled(!net().isSeasonalDrivingStyle) );
 	}
 
 	private void createVolText(Composite comp, FormToolkit tk) {
@@ -78,7 +77,7 @@ class BufferTankSection {
 		UI.formLabel(comp, tk, "L");
 		UI.filler(comp, tk);
 	}
-	
+
 	private void createMaxPerfText(Composite comp, FormToolkit tk) {
 		maximumPerformanceText = UI.formText(comp, tk, M.MaxPerformance);
 		Texts.on(maximumPerformanceText).init(net().maximumPerformance)
@@ -101,28 +100,6 @@ class BufferTankSection {
 		UI.filler(comp, tk);
 	}
 
-	private void createLowerTempText(Composite comp, FormToolkit tk) {
-		/*
-		Text t = UI.formText(comp, tk, "Untere Ladetemperatur");
-		double initial = net().supplyTemperature;
-		Double lowerBuffTemp = net().lowerBufferLoadTemperature;
-		if (lowerBuffTemp != null) {
-			initial = lowerBuffTemp;
-		}
-		Texts.on(t).init(initial).decimal().required().onChanged(s -> {
-			net().lowerBufferLoadTemperature = Texts.getDouble(t);
-			editor.setDirty();
-		});
-		editor.bus.on("supplyTemperature", () -> {
-			if (net().lowerBufferLoadTemperature == null) {
-				Texts.set(t, net().supplyTemperature);
-			}
-		});
-		UI.formLabel(comp, tk, "°C");
-		UI.filler(comp, tk);
-		*/
-	}
-
 	private void createLamdaText(Composite comp, FormToolkit tk) {
 		Text t = UI.formText(comp, tk, "λ-Wert der Dämmung");
 		Texts.on(t).init(net().bufferLambda)
@@ -133,8 +110,8 @@ class BufferTankSection {
 		UI.formLabel(comp, tk, "W/m*K");
 		HelpLink.create(comp, tk, "λ-Wert der Dämmung", H.BufferLambda);
 	}
-	
-	private void createTargetChargeLevelText(Composite comp, FormToolkit tk) {		
+
+	private void createTargetChargeLevelText(Composite comp, FormToolkit tk) {
 		targetChargeText = UI.formText(comp, tk, "Ziel-Ladestand");
 		Texts.on(targetChargeText).decimal().required()
 		.init(net().targetChargeLevel)
@@ -173,11 +150,6 @@ class BufferTankSection {
 		UI.filler(comp, tk);
 		UI.filler(comp, tk);
 	}
-	
-	private void seasonalDrivingChanged()
-	{
-		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
-	}
 
 	private void selectBufferTank(ImageHyperlink link) {
 		BufferTank b = SearchDialog.forBuffers();
@@ -195,7 +167,7 @@ class BufferTankSection {
 		updateMaximumPerformance();
 		editor.setDirty();
 	}
-	
+
 	private void updateMaximumPerformance()
 	{
 		if (net().bufferTank != null)
@@ -204,7 +176,7 @@ class BufferTankSection {
 			net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
 		}
 	}
-	
+
 	private double calculateMaxSimLoad() {
 		HeatNet net = net();
 		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
@@ -231,5 +203,5 @@ class BufferTankSection {
 			return 0;
 		}
 	}
-	
+
 }

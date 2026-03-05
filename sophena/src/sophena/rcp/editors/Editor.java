@@ -8,6 +8,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.rcp.EventBus;
 import sophena.rcp.utils.IEditor;
 
 abstract public class Editor extends FormEditor implements IEditor {

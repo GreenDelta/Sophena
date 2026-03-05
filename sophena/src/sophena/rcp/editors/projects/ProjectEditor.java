@@ -51,19 +51,20 @@ public class ProjectEditor extends Editor {
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			log.info("update project {}", project);
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project dbProject = dao.get(project.id);
-			dbProject.description = project.description;
-			dbProject.name = project.name;
-			dbProject.duration = project.duration;
-			dbProject.weatherStation = project.weatherStation;
-			dbProject.costSettings = project.costSettings;
-			project = dao.update(dbProject);
-			setPartName(project.name);
+			var dao = new ProjectDao(App.getDb());
+			var p = dao.get(project.id);
+			p.description = project.description;
+			p.name = project.name;
+			p.duration = project.duration;
+			p.weatherStation = project.weatherStation;
+			p.costSettings = project.costSettings;
+			project = dao.update(p);
+			setPartName(p.name);
 			Navigator.refresh();
 			setSaved();
+			App.events().emit(p);
 		} catch (Exception e) {
-			log.error("failed to update project " + project, e);
+			log.error("failed to update project {}", project, e);
 		}
 	}
 
