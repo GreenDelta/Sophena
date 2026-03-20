@@ -26,7 +26,7 @@ public class ProjectLoad {
 		if (net != null && net.maxLoad != null)
 			return net.maxLoad;
 		double load = getMaxNetLoad(project);
-		
+
 		for (Consumer c : project.consumers) {
 			if (c.disabled)
 				continue;
@@ -93,7 +93,7 @@ public class ProjectLoad {
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
-	
+
 	public static double[] getStaticCurve(Project project) {
 		double[] staticData = new double[Stats.HOURS];
 		if (project == null)
@@ -108,7 +108,7 @@ public class ProjectLoad {
 		applyInterruption(staticData, project.heatNet);
 		return staticData;
 	}
-	
+
 	/**
 	 * Calculates the load curve of the project without applying smoothing on the
 	 * dynamic part of the data.
@@ -134,7 +134,7 @@ public class ProjectLoad {
 	public static double getMaxNetLoad(Project project) {
 		if(project == null)
 			return 0;
-		
+
 		double[] netLoadCurve = getNetLoadCurve(project);
 		double max = 0;
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
@@ -146,14 +146,19 @@ public class ProjectLoad {
 
 	public static double[] getNetLoadCurve(Project project) {
 		double[] curve = new double[Stats.HOURS];
+		if (project == null) return curve;
 		HeatNet net = project.heatNet;
-		if (net == null)
+		if (net == null) return curve;
+		if (project.weatherStation == null) {
+			Arrays.fill(curve, net.length * net.powerLoss / 1000.0);
+			applyInterruption(curve, net);
 			return curve;
-		
+		}
+
 		Arrays.fill(curve, net.powerLoss);
 		applyInterruption(curve, net);
 
-		double minWeatherStationTemperature = project.weatherStation.minTemperature(); 
+		double minWeatherStationTemperature = project.weatherStation.minTemperature();
 		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
@@ -161,10 +166,10 @@ public class ProjectLoad {
 					? project.weatherStation.data[hour]
 					: 0;
 			SeasonalItem seasonalItem = SeasonalItem.calc(net, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
-	
+
 			double TV = seasonalItem.flowTemperature;
 			double TR = seasonalItem.returnTemperature;
-			// Multiply W per K with temperature difference between pipes (TV-TR)/2 and ground 10°C  
+			// Multiply W per K with temperature difference between pipes (TV-TR)/2 and ground 10°C
 			curve[hour] *= ((TV + TR) / 2.0 - 10.0);
 			// W to kW
 			curve[hour] /= 1000.0;
