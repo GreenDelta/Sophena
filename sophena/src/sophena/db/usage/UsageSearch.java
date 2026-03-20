@@ -148,10 +148,10 @@ public class UsageSearch {
 	public List<SearchResult> of(Substrate substrate) {
 		if (substrate == null || substrate.id == null)
 			return Collections.emptyList();
-		// BiogasSubstrate may be used in biogas plants or other biogas-related producers
-		// For now, we'll return an empty list since there's no direct usage in the current schema
-		// This method can be extended when BiogasSubstrate is integrated with other entities
-		return Collections.emptyList();
+		String sql = "select distinct p.id, p.name from tbl_biogas_substrate_profiles s "
+				+ "inner join tbl_biogas_plants p on s.f_biogas_plant = p.id "
+				+ "where s.f_substrate = '" + substrate.id + "'";
+		return query(sql, ModelType.BIOGAS_PLANT);
 	}
 
 	public List<SearchResult> of(ElectricityPriceCurve curve) {
