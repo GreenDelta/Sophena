@@ -2,9 +2,8 @@ package sophena.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousServerSocketChannel;
-import java.nio.channels.AsynchronousSocketChannel;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +27,8 @@ public class SocketMirror {
 
 	private final Map<String, Handler> handlers = new HashMap<>();
 	private int port = 0;
+	private volatile boolean running;
+	private ServerSocket server;
 
 	public SocketMirror withPort(int port) {
 		this.port = port;
@@ -45,23 +46,47 @@ public class SocketMirror {
 		if (handlers.isEmpty()) {
 			return Res.error("No handlers registered");
 		}
-
-		try (var server = AsynchronousServerSocketChannel.open()) {
+		if (running) {
+			return Res.ok();
+		}
+		try {
+			server = new ServerSocket();
 			server.bind(new InetSocketAddress(port));
-			log.info("start socket mirror on {}", server.getLocalAddress());
-
-			while (true) {
-				try (var channel = server.accept().get()) {
-					next(channel);
-				}
-			}
+			running = true;
+			var thread = new Thread(this::loop, "SocketMirror");
+			thread.setDaemon(true);
+			thread.start();
+			log.info("start socket mirror on {}", server.getLocalSocketAddress());
+			return Res.ok();
 		} catch (Exception e) {
-			return Res.error("Server error: " + e.getMessage());
+			running = false;
+			return Res.error("Failed to start server: " + e.getMessage());
 		}
 	}
 
-	private void next(AsynchronousSocketChannel chan) {
-		var json = readJsonFrom(chan);
+	private void loop() {
+		while (running) {
+			try (var socket = server.accept()) {
+				handleRequest(socket);
+			} catch (Exception e) {
+				log.error("Failed to accept connection", e);
+			}
+		}
+	}
+
+	public void stop() {
+		running = false;
+		try {
+			if (server != null) {
+				server.close();
+			}
+		} catch (Exception e) {
+			log.error("Failed to close server", e);
+		}
+	}
+
+	private void handleRequest(Socket socket) {
+		var json = readJsonFrom(socket);
 		Res<JsonElement> res = json.isError()
 			? json.castError()
 			: callHandler(json.value());
@@ -74,28 +99,37 @@ public class SocketMirror {
 		}
 
 		try {
-			var bytes = new Gson()
-				.toJson(response)
-				.getBytes(StandardCharsets.UTF_8);
-			var buffer = ByteBuffer.wrap(bytes);
-			chan.write(buffer).get();
+			var out = socket.getOutputStream();
+			var string = new Gson().toJson(response) + "\n";
+			var bytes = string.getBytes(StandardCharsets.UTF_8);
+			out.write(bytes);
+			out.flush();
 		} catch (Exception e) {
-			log.error("Failed to write response to channel", e);
+			log.error("Failed to write response to socket", e);
 		}
 	}
 
-	private Res<String> readJsonFrom(AsynchronousSocketChannel chan) {
-		var buf = ByteBuffer.allocate(1024);
+	private Res<String> readJsonFrom(Socket socket) {
+		byte[] buf = new byte[1024];
 		try (var out = new ByteArrayOutputStream()) {
+			var in = socket.getInputStream();
 			while (true) {
-				buf.clear();
-				int n = chan.read(buf).get();
+				int n = in.read(buf);
 				if (n < 0) break;
-				out.write(buf.array(), 0, n);
+
+				for (int i = 0; i < n; i++) {
+					byte b = buf[i];
+					if (b == '\n') {
+						return Res.ok(out.toString(StandardCharsets.UTF_8));
+					}
+					if (b != '\r') {
+						out.write(b);
+					}
+				}
 			}
 			return Res.ok(out.toString(StandardCharsets.UTF_8));
 		} catch (Exception e) {
-			return Res.error("Failed to read request from channel", e);
+			return Res.error("Failed to read request from socket", e);
 		}
 	}
 
@@ -131,10 +165,4 @@ public class SocketMirror {
 	public interface Handler {
 		Res<JsonElement> exec(JsonElement parameters);
 	}
-
-	public static void main(String[] args) {
-		var a = new InetSocketAddress(0);
-		System.out.println(a.getPort());
-	}
-
 }
