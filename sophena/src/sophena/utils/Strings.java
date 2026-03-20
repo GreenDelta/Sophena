@@ -1,13 +1,5 @@
 package sophena.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 public class Strings {
 	private Strings() {
 	}
@@ -33,20 +25,6 @@ public class Strings {
 		default:
 			return str.substring(0, length - 3).concat("...");
 		}
-	}
-
-	public static String[] readLines(InputStream is) throws IOException {
-		if (is == null)
-			return new String[0];
-		List<String> list = new ArrayList<>();
-		InputStreamReader reader = new InputStreamReader(is);
-		try (BufferedReader buffer = new BufferedReader(reader)) {
-			String line = null;
-			while ((line = buffer.readLine()) != null) {
-				list.add(line);
-			}
-		}
-		return list.toArray(new String[list.size()]);
 	}
 
 	/**
@@ -94,27 +72,4 @@ public class Strings {
 		return str1.compareToIgnoreCase(str2);
 	}
 
-	public static <T> String join(Collection<T> values, char delimiter) {
-		String[] stringValues = new String[values.size()];
-		int i = 0;
-		for (T value : values)
-			if (value != null)
-				stringValues[i++] = value.toString();
-		return join(stringValues, delimiter);
-	}
-
-	public static String join(String[] values, char delimiter) {
-		int length = 0;
-		for (String v : values)
-			if (v != null)
-				length += v.length();
-		StringBuilder b = new StringBuilder(length + values.length - 1);
-		for (int i = 0; i < values.length; i++) {
-			if (i != 0)
-				b.append(delimiter);
-			if (values[i] != null)
-				b.append(values[i]);
-		}
-		return b.toString();
-	}
 }
