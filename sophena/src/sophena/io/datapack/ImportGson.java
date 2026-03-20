@@ -42,10 +42,6 @@ public class ImportGson {
 		this.db = db;
 	}
 
-	public static Gson create(Database db) {
-		return new ImportGson(db).build(null);
-	}
-
 	public static Gson create(Database db, Class<?> rootType) {
 		return new ImportGson(db).build(rootType);
 	}

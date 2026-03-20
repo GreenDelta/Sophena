@@ -35,19 +35,19 @@ public class SocketMirror {
 		return this;
 	}
 
-	public void on(String method, Handler handler) {
-		if (Strings.isBlank(method) || handler == null) {
-			return;
+	public SocketMirror on(String method, Handler handler) {
+		if (Strings.isNotBlank(method) || handler != null) {
+			handlers.put(method, handler);
 		}
-		handlers.put(method, handler);
+		return this;
 	}
 
-	public Res<Void> start() {
+	public Res<SocketMirror> start() {
 		if (handlers.isEmpty()) {
 			return Res.error("No handlers registered");
 		}
 		if (running) {
-			return Res.ok();
+			return Res.ok(this);
 		}
 		try {
 			server = new ServerSocket();
@@ -57,7 +57,7 @@ public class SocketMirror {
 			thread.setDaemon(true);
 			thread.start();
 			log.info("start socket mirror on {}", server.getLocalSocketAddress());
-			return Res.ok();
+			return Res.ok(this);
 		} catch (Exception e) {
 			running = false;
 			return Res.error("Failed to start server: " + e.getMessage());
