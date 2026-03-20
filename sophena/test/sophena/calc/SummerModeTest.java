@@ -12,8 +12,11 @@ import sophena.model.HeatNet;
 import sophena.model.LoadProfile;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
+import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.WeatherStation;
 
 public class SummerModeTest {
 
@@ -22,6 +25,8 @@ public class SummerModeTest {
 
 		Project project = new Project();
 		project.costSettings = new CostSettings();
+		project.weatherStation = new WeatherStation();
+		project.weatherStation.data = new double[Stats.HOURS];
 		HeatNet net = new HeatNet();
 		project.heatNet = net;
 		net.supplyTemperature = 80;
@@ -45,6 +50,8 @@ public class SummerModeTest {
 		prod.name = "prod";
 		prod.rank = 1;
 		prod.function = ProducerFunction.BASE_LOAD;
+		prod.productGroup = new ProductGroup();
+		prod.productGroup.type = ProductType.FOSSIL_FUEL_BOILER;
 		Boiler boiler = new Boiler();
 		prod.boiler = boiler;
 		boiler.minPower = 50;
