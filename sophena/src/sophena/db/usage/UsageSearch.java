@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.Database;
 import sophena.db.NativeSql;
-import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.BuildingState;
@@ -23,13 +22,15 @@ import sophena.model.Product;
 import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
+import sophena.model.biogas.ElectricityPriceCurve;
+import sophena.model.biogas.Substrate;
 
 /**
  * Searches for the usage of entities in other entities.
  */
 public class UsageSearch {
 
-	private Database database;
+	private final Database database;
 
 	public UsageSearch(Database database) {
 		this.database = database;
@@ -153,6 +154,14 @@ public class UsageSearch {
 		return Collections.emptyList();
 	}
 
+	public List<SearchResult> of(ElectricityPriceCurve curve) {
+		if (curve == null || curve.id == null)
+			return Collections.emptyList();
+		String sql = "select p.id, p.name from tbl_biogas_plants p "
+				+ "where p.f_electricity_price_curve = '" + curve.id + "'";
+		return query(sql, ModelType.BIOGAS_PLANT);
+	}
+
 	private List<SearchResult> query(String sql, ModelType type) {
 		try {
 			List<SearchResult> results = new ArrayList<>();
@@ -167,7 +176,7 @@ public class UsageSearch {
 			return results;
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
-			log.error("failed to execute query: " + sql, e);
+			log.error("failed to execute query: {}", sql, e);
 			return Collections.emptyList();
 		}
 	}

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.Database;
+import sophena.db.usage.UsageSearch;
 import sophena.model.Stats;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.rcp.App;
@@ -22,6 +23,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.M;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.editors.basedata.UsageError;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -149,13 +151,11 @@ public class ElectricityPriceEditor extends Editor {
 			if (curve == null)
 				return;
 
-			/* TODO: we need to implement usage search!
-			var usage = UsageSearch.of(curve, db);
-			if (usage.isUsed()) {
-				UsageError.show(curve.name, usage);
+			var usage = new UsageSearch(db).of(curve);
+			if (!usage.isEmpty()) {
+				UsageError.show(usage);
 				return;
 			}
-			*/
 
 			boolean b = MsgBox.ask("Löschen?",
 					"Möchten Sie die Strompreiskurve '"

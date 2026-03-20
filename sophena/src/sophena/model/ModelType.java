@@ -1,5 +1,7 @@
 package sophena.model;
 
+import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 
 /**
@@ -47,6 +49,10 @@ public enum ModelType {
 	SOLAR_COLLECTOR(SolarCollector.class),
 
 	HEAT_PUMP(HeatPump.class),
+
+	BIOGAS_PLANT(BiogasPlant.class),
+
+	ELECTRICITY_PRICE_CURVE(ElectricityPriceCurve.class),
 
 	BIOGAS_SUBSTRATE(Substrate.class);
 

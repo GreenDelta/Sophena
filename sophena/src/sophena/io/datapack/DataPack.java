@@ -153,8 +153,10 @@ public class DataPack implements Closeable {
 			case BOILER -> "boilers";
 			case BUFFER -> "buffers";
 			case BUILDING_STATE -> "building_states";
+			case BIOGAS_PLANT -> "biogas_plants";
 			case CONSUMER -> "consumers";
 			case COST_SETTINGS -> "cost_settings";
+			case ELECTRICITY_PRICE_CURVE -> "electricity_price_curves";
 			case FLUE_GAS_CLEANING -> "flue_gas_cleaning";
 			case FUEL -> "fuels";
 			case HEAT_RECOVERY -> "heat_recovery";

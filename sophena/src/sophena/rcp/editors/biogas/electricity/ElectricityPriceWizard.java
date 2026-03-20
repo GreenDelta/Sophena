@@ -88,6 +88,7 @@ public class ElectricityPriceWizard extends Wizard {
 
 		Page() {
 			super("ElectricityPriceWizardPage", "Strompreiskurve", null);
+			setDescription("Importieren Sie eine Excel-Datei mit stündlichen Preisen");
 		}
 
 		@Override

@@ -18,8 +18,8 @@ class ElectricityPriceIO {
 		if (curve == null || curve.values == null)
 			return;
 		var name = curve.name != null
-				? curve.name + " - Strompreise.xlsx"
-				: "Strompreise.xlsx";
+			? curve.name + " - Strompreise.xlsx"
+			: "Strompreise.xlsx";
 		var file = FileChooser.save(name, "xlsx");
 		if (file == null)
 			return;
@@ -50,7 +50,7 @@ class ElectricityPriceIO {
 			var sheet = wb.getSheetAt(0);
 			var values = new double[Stats.HOURS];
 			for (int i = 0; i < Stats.HOURS; i++) {
-				values[i] = Excel.getDouble(sheet, i+1, 1);
+				values[i] = Excel.getDouble(sheet, i + 1, 1);
 			}
 			return Optional.of(values);
 		} catch (Exception e) {

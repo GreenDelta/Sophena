@@ -18,8 +18,8 @@ import sophena.model.Producer;
 
 public class BoilerUsageTest {
 
-	private Database db = Tests.getDb();
-	private BoilerDao dao = new BoilerDao(Tests.getDb());
+	private final Database db = Tests.getDb();
+	private final BoilerDao dao = new BoilerDao(Tests.getDb());
 	private Boiler boiler;
 
 	@Before
@@ -49,7 +49,7 @@ public class BoilerUsageTest {
 		pDao.insert(p);
 		List<SearchResult> list = new UsageSearch(db).of(boiler);
 		Assert.assertEquals(1, list.size());
-		SearchResult r = list.get(0);
+		SearchResult r = list.getFirst();
 		Assert.assertEquals(p.id, r.id);
 		Assert.assertEquals(p.name, r.name);
 		Assert.assertEquals(ModelType.PRODUCER, r.type);

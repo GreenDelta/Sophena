@@ -19,8 +19,8 @@ import sophena.model.Project;
 
 public class BufferUsageTest {
 
-	private Database db = Tests.getDb();
-	private Dao<BufferTank> dao = new Dao<>(BufferTank.class, Tests.getDb());
+	private final Database db = Tests.getDb();
+	private final Dao<BufferTank> dao = new Dao<>(BufferTank.class, Tests.getDb());
 	private BufferTank tank;
 
 	@Before

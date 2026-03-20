@@ -29,6 +29,8 @@ import sophena.model.ProjectFolder;
 import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
+import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 
 public class Import implements Runnable {
@@ -71,7 +73,9 @@ public class Import implements Runnable {
 			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
 			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
+			importEntities(ModelType.ELECTRICITY_PRICE_CURVE, ElectricityPriceCurve.class);
 			importEntities(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
+			importEntities(ModelType.BIOGAS_PLANT, BiogasPlant.class);
 			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
 			importEntities(ModelType.PROJECT, Project.class);
 

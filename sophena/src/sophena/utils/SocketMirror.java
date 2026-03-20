@@ -56,7 +56,7 @@ public class SocketMirror {
 			var thread = new Thread(this::loop, "SocketMirror");
 			thread.setDaemon(true);
 			thread.start();
-			log.info("start socket mirror on {}", server.getLocalSocketAddress());
+			log.info("Socket mirror started on port {}", server.getLocalPort());
 			return Res.ok(this);
 		} catch (Exception e) {
 			running = false;
@@ -69,7 +69,9 @@ public class SocketMirror {
 			try (var socket = server.accept()) {
 				handleRequest(socket);
 			} catch (Exception e) {
-				log.error("Failed to accept connection", e);
+				if (running) {
+					log.error("Failed to accept connection", e);
+				}
 			}
 		}
 	}
@@ -80,12 +82,14 @@ public class SocketMirror {
 			if (server != null) {
 				server.close();
 			}
+			log.info("Socket mirror stopped");
 		} catch (Exception e) {
 			log.error("Failed to close server", e);
 		}
 	}
 
 	private void handleRequest(Socket socket) {
+		log.info("handle new request");
 		var json = readJsonFrom(socket);
 		Res<JsonElement> res = json.isError()
 			? json.castError()
@@ -150,6 +154,7 @@ public class SocketMirror {
 			if (handler == null) {
 				return Res.error("No handler registered for method: " + method);
 			}
+			log.info("call handler for method: {}", method);
 
 			var params = reqObj.get("params");
 			if (params == null) {
