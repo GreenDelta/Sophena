@@ -79,11 +79,18 @@ public class ThermosImportWizard extends Wizard {
 		) return false;
 
 		try {
+			var imp = new ThermosImport(App.getDb(), config);
 			getContainer().run(true, false, monitor -> {
 				monitor.beginTask("Importiere Daten ...", IProgressMonitor.UNKNOWN);
-				new ThermosImport(App.getDb(), config).run();
+				imp.run();
 				monitor.done();
 			});
+			
+			if (imp.hasError()) {
+				MsgBox.error("Beim Import ist ein Fehler aufgetreten", imp.error());
+				return false;
+			}		
+			
 			return true;
 		} catch (Exception e) {
 			MsgBox.error(
