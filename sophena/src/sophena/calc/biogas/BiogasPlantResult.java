@@ -30,7 +30,7 @@ public record BiogasPlantResult(
 			new boolean[Stats.HOURS]);
 	}
 
-	public ProducerProfile asProducerProfile() {
+	public ProducerProfile asProducerProfile(double temperature) {
 		var profile = new ProducerProfile();
 		profile.id = UUID.randomUUID().toString();
 		profile.minPower = new double[Stats.HOURS];
@@ -43,8 +43,9 @@ public record BiogasPlantResult(
 			for (int h = 0; h < runFlags.length; h++) {
 				if (!runFlags[h])
 					continue;
-				profile.minPower[h] = power;
+				// profile.minPower[h] = power;
 				profile.maxPower[h] = power;
+				profile.temperaturLevel[h] = temperature;
 			}
 		}
 		return profile;

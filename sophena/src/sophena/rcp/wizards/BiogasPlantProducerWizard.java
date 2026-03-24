@@ -72,11 +72,10 @@ public class BiogasPlantProducerWizard extends Wizard {
 		try {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
-			page.bindToModel(producer);
+			page.bindToModel(producer, project);
 			Wizards.initFuelSpec(producer, project);
 			Wizards.initCosts(producer);
 			Wizards.initElectricity(producer, project);
-			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
@@ -157,7 +156,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			functionCombo = UI.formCombo(composite, M.BufferTank);
 		}
 
-		private void bindToModel(Producer p) {
+		private void bindToModel(Producer p, Project project) {
 			if (p == null)
 				return;
 			BiogasPlant plant = Viewers.getFirstSelected(biogasPlantTable);
@@ -165,7 +164,11 @@ public class BiogasPlantProducerWizard extends Wizard {
 			if (plant != null) {
 				p.productGroup = plant.productGroup;
 				var r = BiogasPlantResult.calculate(plant);
-				p.profile = r.asProducerProfile();
+				double temperature = project.heatNet != null
+					&& project.heatNet.maxBufferLoadTemperature > 0
+					? project.heatNet.maxBufferLoadTemperature
+					: 95;
+				p.profile = r.asProducerProfile(temperature);
 				p.profileMaxPower = plant.product != null
 					? plant.product.maxPower
 					: Stats.max(p.profile.maxPower);
@@ -176,13 +179,15 @@ public class BiogasPlantProducerWizard extends Wizard {
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
 			p.function = Wizards.getProducerFunction(functionCombo);
+			project.producers.add(p);
 		}
 
 		private void bindToUI() {
 			Texts.set(rankText, Wizards.nextProducerRank(project));
 			Wizards.fillProducerFunctions(project, functionCombo);
-			if (functionCombo.getItemCount() > 0)
+			if (functionCombo.getItemCount() > 0) {
 				functionCombo.select(0);
+			}
 			setPageComplete(false);
 		}
 
@@ -198,10 +203,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 		}
 
 		private void updateBiogasPlants() {
-			var input = new ArrayList<BiogasPlant>();
-			for (BiogasPlant plant : App.getDb().getAll(BiogasPlant.class)) {
-				input.add(plant);
-			}
+			var input = new ArrayList<>(App.getDb().getAll(BiogasPlant.class));
 			Sorters.byName(input);
 			biogasPlantTable.setInput(input);
 			setPageComplete(false);
@@ -213,7 +215,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			int rank = Texts.getInt(rankText);
 			if (Wizards.producerRankExists(project, rank)) {
 				return err("Es besteht bereits ein Wärmeerzeuger mit"
-						+ " dem angegebenen Rang.");
+					+ " dem angegebenen Rang.");
 			}
 			setErrorMessage(null);
 			if (Viewers.getFirstSelected(biogasPlantTable) == null) {
