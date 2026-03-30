@@ -20,6 +20,7 @@ import sophena.rcp.navigation.actions.DeleteAllConsumersAction;
 import sophena.rcp.navigation.actions.DeleteConsumerAction;
 import sophena.rcp.navigation.actions.DisableAction;
 import sophena.rcp.navigation.actions.DuplicateAction;
+import sophena.rcp.navigation.actions.PeakBoilerAction;
 import sophena.rcp.navigation.actions.ExportAction;
 import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.navigation.actions.NewFolderAction;
@@ -44,6 +45,7 @@ public class NavigationMenu extends CommonActionProvider {
 			new AddProducerProfileAction(),
 			new AddFlueGasCleaning(),
 			new AddBiogasPlantAction(),
+			new PeakBoilerAction(),
 			new DuplicateAction(),
 			new RenameAction(),
 			new DisableAction(),
