@@ -1,11 +1,17 @@
 package sophena.rcp.editors.heatnets;
 
 import org.openlca.commons.Res;
+import sophena.calc.ProjectResult;
 import sophena.db.Database;
 import sophena.model.BufferTank;
+import sophena.model.HeatNet;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.rcp.utils.MsgBox;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +49,8 @@ class BufferEstimator {
 			.toList();
 		if (buffers.isEmpty()) {
 			MsgBox.info("Keine Pufferspeicherkosten gefunden",
-				"Die Produktdatenbank enthält keine Pufferspeicher mit "
-					+ "Kostenangaben.");
+				"Es sind keine Pufferspeicher mit Kostenangaben in der "
+					+ "Produktdatenbank enthalten.");
 			return Optional.empty();
 		}
 
@@ -60,7 +66,53 @@ class BufferEstimator {
 	}
 
 	private Res<List<BufferCosts>> estimate() {
-		return Res.error("Not yet implemented");
+		if (project.heatNet == null)
+			return Res.error("Das Projekt enthält kein Wärmenetz.");
+
+		var results = new ArrayList<BufferCosts>();
+		for (var buffer : buffers) {
+			try {
+				var variant = project.copy();
+				prepare(variant, buffer);
+				var result = ProjectResult.calculate(variant);
+				double costs = result.costResultFunding.dynamicTotal.heatGenerationCosts;
+				double uncoveredHeat = uncoveredHeat(result);
+				results.add(new BufferCosts(buffer, costs, uncoveredHeat));
+			} catch (Exception e) {
+				String name = buffer != null && buffer.name != null
+						? buffer.name
+						: "(ohne Namen)";
+				return Res.error(
+					"Die Berechnung für den Pufferspeicher \"" + name + "\" ist fehlgeschlagen.",
+					e);
+			}
+		}
+
+		results.sort(Comparator.comparingDouble(BufferCosts::costs));
+		return Res.ok(results);
+	}
+
+	private void prepare(Project variant, BufferTank buffer) {
+		HeatNet net = variant.heatNet;
+		net.bufferTank = buffer;
+		if (net.bufferTankCosts == null)
+			net.bufferTankCosts = new ProductCosts();
+		ProductCosts.copy(buffer, net.bufferTankCosts);
+		if (buffer.purchasePrice != null)
+			net.bufferTankCosts.investment = buffer.purchasePrice;
+	}
+
+	private double uncoveredHeat(ProjectResult result) {
+		if (result == null || result.energyResult == null)
+			return 0;
+		var energy = result.energyResult;
+		double uncovered = 0;
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			double load = Stats.get(energy.loadCurve, hour);
+			double supplied = Stats.get(energy.suppliedPower, hour);
+			uncovered += Math.max(0, load - supplied);
+		}
+		return uncovered;
 	}
 
 }
