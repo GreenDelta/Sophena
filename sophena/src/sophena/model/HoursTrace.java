@@ -37,7 +37,7 @@ public class HoursTrace {
 			return new int[] { startHour, endHour };
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(HoursTrace.class);
-			log.error("Failed to parse time span " + time, e);
+			log.error("Failed to parse time span {}", time, e);
 			return new int[] { -1, -1 };
 		}
 	}
@@ -56,7 +56,7 @@ public class HoursTrace {
 			return new int[] { getHour(start), getHour(end) };
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(HoursTrace.class);
-			log.error("Failed to parse time span " + time, e);
+			log.error("Failed to parse time span {}", time, e);
 			return new int[] { -1, -1 };
 		}
 	}
