@@ -18,7 +18,7 @@ import sophena.rcp.navigation.ProducerElement;
 
 public class DisableAction extends NavigationAction {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NavigationElement elem;
 
@@ -27,14 +27,12 @@ public class DisableAction extends NavigationAction {
 		if (elements == null || elements.size() != 1)
 			return false;
 		var element = elements.getFirst();
-		if (element instanceof ConsumerElement) {
-			ConsumerElement e = (ConsumerElement) element;
+		if (element instanceof ConsumerElement e) {
 			updateUI(e.content.disabled);
 			elem = e;
 			return true;
 		}
-		if (element instanceof ProducerElement) {
-			ProducerElement e = (ProducerElement) element;
+		if (element instanceof ProducerElement e) {
 			updateUI(e.content.disabled);
 			elem = e;
 			return true;
@@ -54,10 +52,10 @@ public class DisableAction extends NavigationAction {
 
 	@Override
 	public void run() {
-		if (elem instanceof ConsumerElement)
-			updateConsumer((ConsumerElement) elem);
-		else if (elem instanceof ProducerElement)
-			updateProducer((ProducerElement) elem);
+		if (elem instanceof ConsumerElement e)
+			updateConsumer(e);
+		else if (elem instanceof ProducerElement e)
+			updateProducer(e);
 	}
 
 	private void updateConsumer(ConsumerElement e) {

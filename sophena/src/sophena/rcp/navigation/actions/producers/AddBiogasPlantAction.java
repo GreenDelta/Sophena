@@ -1,4 +1,4 @@
-package sophena.rcp.navigation.actions;
+package sophena.rcp.navigation.actions.producers;
 
 import java.util.List;
 
@@ -8,15 +8,16 @@ import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
-import sophena.rcp.wizards.ProducerProfileWizard;
+import sophena.rcp.navigation.actions.NavigationAction;
+import sophena.rcp.wizards.BiogasPlantProducerWizard;
 
-public class AddProducerProfileAction extends NavigationAction {
+public class AddBiogasPlantAction extends NavigationAction {
 
 	private ProjectDescriptor project;
 
-	public AddProducerProfileAction() {
-		setText("Neuer Erzeugerlastgang");
-		setImageDescriptor(Icon.LOAD_PROFILE_16.des());
+	public AddBiogasPlantAction() {
+		setText("Biogasanlage hinzufügen");
+		setImageDescriptor(Icon.BIOGAS_SUBSTRATE_16.des());
 	}
 
 	@Override
@@ -39,8 +40,8 @@ public class AddProducerProfileAction extends NavigationAction {
 
 	@Override
 	public void run() {
-		if (project == null)
-			return;
-		ProducerProfileWizard.open(project);
+		if (project != null) {
+			BiogasPlantProducerWizard.open(project);
+		}
 	}
 }

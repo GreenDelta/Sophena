@@ -1,4 +1,4 @@
-package sophena.rcp.navigation.actions;
+package sophena.rcp.navigation.actions.producers;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ import sophena.rcp.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.SubFolderElement;
 import sophena.rcp.navigation.SubFolderType;
+import sophena.rcp.navigation.actions.NavigationAction;
 import sophena.rcp.utils.MsgBox;
 import sophena.utils.Num;
 
