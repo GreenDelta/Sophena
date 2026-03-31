@@ -39,11 +39,12 @@ class BoilerChart {
 	private XYGraph chart;
 	private Trace loadTrace;
 
-	BoilerChart(EnergyResult result, ResultColors colors, double maxY, double maxLoad) {
+	BoilerChart(EnergyResult result, ResultColors colors, double maxLoad) {
 		this.result = result;
 		this.colors = colors;
-		this.maxY = maxY;
 		this.maxLoad = maxLoad;
+		this.maxY = Math.max(maxLoad,	Math.max(
+			Stats.max(result.loadCurve), Stats.max(result.suppliedPower)));
 	}
 
 	BoilerChart sorted(boolean sorted) {

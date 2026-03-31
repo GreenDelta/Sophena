@@ -66,7 +66,7 @@ public class DisableAction extends NavigationAction {
 			dao.update(c);
 			Navigator.refresh();
 		} catch (Exception ex) {
-			log.error("failed to disable/enable consumer", e);
+			log.error("failed to disable/enable consumer", ex);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class DisableAction extends NavigationAction {
 			dao.update(p);
 			Navigator.refresh();
 		} catch (Exception ex) {
-			log.error("failed to disable/enable producer", e);
+			log.error("failed to disable/enable producer", ex);
 		}
 	}
 }
