@@ -62,7 +62,7 @@ class BufferTankSection {
 				.withEditor(editor)
 				.createFields(comp, tk);
 		targetChargeText.setEnabled(!net().isSeasonalDrivingStyle);
-		editor.bus.subscribe("seasonal-driving-changed", 
+		editor.bus.subscribe("seasonal-driving-changed",
 			() -> targetChargeText.setEnabled(!net().isSeasonalDrivingStyle) );
 	}
 
@@ -126,7 +126,7 @@ class BufferTankSection {
 	private void createProductRow(Composite comp, FormToolkit tk) {
 		UI.formLabel(comp, tk, "Produkt");
 		Composite inner = tk.createComposite(comp);
-		UI.innerGrid(inner, 2);
+		UI.innerGrid(inner, 3);
 		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		if (net().bufferTank != null) {
 			link.setText(net().bufferTank.name);
@@ -136,16 +136,12 @@ class BufferTankSection {
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
 		Controls.onClick(link, e -> selectBufferTank(link));
+		var estimateButton = tk.createButton(inner, "Abschätzen", SWT.PUSH);
+		Controls.onSelect(estimateButton, e -> estimateBufferTank(link));
 		DeleteLink.on(inner, () -> {
 			if (net().bufferTank == null)
 				return;
-			net().bufferTank = null;
-			link.setText("(kein Pufferspeicher ausgewählt)");
-			link.getParent().pack();
-			Texts.set(volText, "0");
-			ProductCosts.clear(net().bufferTankCosts);
-			costSection.refresh();
-			editor.setDirty();
+			clearBufferTank(link);
 		});
 		UI.filler(comp, tk);
 		UI.filler(comp, tk);
@@ -155,6 +151,15 @@ class BufferTankSection {
 		BufferTank b = SearchDialog.forBuffers();
 		if (b == null)
 			return;
+		applyBufferTank(link, b);
+	}
+
+	private void estimateBufferTank(ImageHyperlink link) {
+		BufferEstimator.run(project(), App.getDb())
+			.ifPresent(buffer -> applyBufferTank(link, buffer));
+	}
+
+	private void applyBufferTank(ImageHyperlink link, BufferTank b) {
 		net().bufferTank = b;
 		Texts.set(volText, Num.intStr(b.volume));
 		link.setText(b.name);
@@ -165,6 +170,16 @@ class BufferTankSection {
 			costs.investment = b.purchasePrice;
 		costSection.refresh();
 		updateMaximumPerformance();
+		editor.setDirty();
+	}
+
+	private void clearBufferTank(ImageHyperlink link) {
+		net().bufferTank = null;
+		link.setText("(kein Pufferspeicher ausgewählt)");
+		link.getParent().pack();
+		Texts.set(volText, "0");
+		ProductCosts.clear(net().bufferTankCosts);
+		costSection.refresh();
 		editor.setDirty();
 	}
 
