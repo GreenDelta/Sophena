@@ -56,11 +56,12 @@ public class PeakBoilerAction extends NavigationAction {
 			return;
 
 		double demand = PeakDemandEstimator.estimate(project);
-
-		MsgBox.info(
-			"Spitzenlastkessel abschätzen",
-			"Vorläufige Abschätzung der benötigten Spitzenlastkessel-Leistung: "
-				+ Num.str(demand) + " kW. Die konkrete Folgeaktion wird "
-				+ "im nächsten Schritt ergänzt.");
+		if (demand < 0.1) {
+			MsgBox.info("Kein weiterer Spitzenlastkessel erforderlich",
+				"Aus dem Abgleich des Wärmebedarfs mit der Erzeugerleistung ergibt " +
+					"sich kein Bedarf für einen zusätzlichen Spitzenlastkessel.");
+			return;
+		}
+		PeakBoilerDialog.open(project, demand);
 	}
 }
