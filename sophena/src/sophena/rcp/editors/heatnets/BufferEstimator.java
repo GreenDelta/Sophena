@@ -8,6 +8,7 @@ import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.MsgBox;
 
 import java.util.ArrayList;
@@ -55,8 +56,7 @@ class BufferEstimator {
 		}
 
 		var estimator = new BufferEstimator(project.copy(), buffers);
-		// TODO run in non-ui thread
-		var costs = estimator.estimate();
+		var costs = App.exec("Berechne Varianten", estimator::estimate);
 		if (costs.isError()) {
 			MsgBox.error("Fehler in der Projektberechnung", costs.error());
 			return Optional.empty();
