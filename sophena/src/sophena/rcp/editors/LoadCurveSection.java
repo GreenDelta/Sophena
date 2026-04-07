@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 import sophena.io.LoadProfileWriter;
 import sophena.math.LoadSorting;
 import sophena.model.LoadProfile;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.Icon;
+import sophena.rcp.app.Rcp;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Actions;
-import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.UI;
 
 /**

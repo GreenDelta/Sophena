@@ -3,7 +3,7 @@ package sophena.rcp.navigation.actions;
 import java.util.List;
 
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
 import sophena.io.thermos.wizard.ThermosImportWizard;

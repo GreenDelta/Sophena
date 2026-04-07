@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.editors.results.single.ResultEditor;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.SubFolderElement;

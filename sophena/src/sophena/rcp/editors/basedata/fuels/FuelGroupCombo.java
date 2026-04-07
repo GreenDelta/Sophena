@@ -10,7 +10,7 @@ import sophena.db.daos.ProducerDao;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.Producer;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.UI;
 
 class FuelGroupCombo {

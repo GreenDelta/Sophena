@@ -19,14 +19,14 @@
 
 	<extension id="application" point="org.eclipse.core.runtime.applications">
 		<application cardinality="singleton-global" thread="main" visible="true">
-			<run class="sophena.rcp.Application" />
+			<run class="sophena.rcp.app.Application" />
 		</application>
 	</extension>
 
 	<extension point="org.eclipse.ui.perspectives">
 		<perspective
 			name="Perspective"
-			class="sophena.rcp.Perspective"
+			class="sophena.rcp.app.Perspective"
 			id="perspectives.standard" />
 	</extension>
 

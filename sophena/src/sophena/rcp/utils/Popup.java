@@ -8,7 +8,7 @@ import org.eclipse.nebula.widgets.opal.notifier.NotifierColorsFactory.NotifierTh
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
 
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 
 public class Popup {
 

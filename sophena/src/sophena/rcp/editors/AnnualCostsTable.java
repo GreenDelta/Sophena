@@ -15,8 +15,8 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;

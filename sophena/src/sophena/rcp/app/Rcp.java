@@ -1,6 +1,4 @@
-package sophena.rcp.utils;
-
-import sophena.rcp.App;
+package sophena.rcp.app;
 
 public final class Rcp {
 

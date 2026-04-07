@@ -19,7 +19,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.calc.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.ColorKey;

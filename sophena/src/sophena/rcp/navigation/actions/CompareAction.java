@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;

@@ -24,6 +24,7 @@ import sophena.model.HeatRecovery;
 import sophena.model.Pipe;
 import sophena.model.RootEntity;
 import sophena.model.TransferStation;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

@@ -15,10 +15,10 @@ import org.eclipse.swtchart.Chart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
+import sophena.rcp.app.Rcp;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Popup;
-import sophena.rcp.utils.Rcp;
 import sophena.utils.Ref;
 
 public class ImageExport extends Action {

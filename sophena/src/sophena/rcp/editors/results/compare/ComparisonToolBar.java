@@ -7,12 +7,12 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
 import sophena.io.excel.ComparisonExport;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
+import sophena.rcp.app.Rcp;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Popup;
-import sophena.rcp.utils.Rcp;
 
 public class ComparisonToolBar extends EditorActionBarContributor {
 

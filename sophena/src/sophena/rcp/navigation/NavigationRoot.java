@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.db.daos.ProjectFolderDao;
 import sophena.model.ModelType;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 
 public class NavigationRoot implements NavigationElement {
 

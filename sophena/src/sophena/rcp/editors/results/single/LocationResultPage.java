@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import sophena.model.Consumer;
 import sophena.model.Location;
 import sophena.rcp.M;
-import sophena.rcp.Workspace;
+import sophena.rcp.app.Workspace;
 import sophena.rcp.utils.UI;
 
 public class LocationResultPage extends FormPage {

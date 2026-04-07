@@ -12,7 +12,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
-import sophena.rcp.Workspace;
+import sophena.rcp.app.Workspace;
 
 class EnergyCalculator {
 

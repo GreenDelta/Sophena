@@ -12,7 +12,7 @@ import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.descriptors.CleaningDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.navigation.CleaningElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.MsgBox;

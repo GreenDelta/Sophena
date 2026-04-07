@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.CleaningDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 
 public class CleaningElement extends ContentElement<CleaningDescriptor> {
 

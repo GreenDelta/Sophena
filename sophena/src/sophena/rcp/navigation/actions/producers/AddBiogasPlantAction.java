@@ -3,7 +3,7 @@ package sophena.rcp.navigation.actions.producers;
 import java.util.List;
 
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProducerElement;
 import sophena.rcp.navigation.SubFolderElement;

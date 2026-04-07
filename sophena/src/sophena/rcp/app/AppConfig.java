@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import java.io.File;
 import java.io.FileInputStream;

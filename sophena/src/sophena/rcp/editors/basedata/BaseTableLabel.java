@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.BaseDataEntity;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.UI;
 

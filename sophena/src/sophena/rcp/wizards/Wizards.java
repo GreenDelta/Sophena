@@ -22,7 +22,7 @@ import sophena.model.SolarCollector;
 import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.SolarCollectorSpec;
 import sophena.model.WoodAmountType;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 
 /**
  * Some utility functions for the wizards.

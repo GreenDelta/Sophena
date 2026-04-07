@@ -26,7 +26,7 @@ import com.google.gson.JsonObject;
 import sophena.io.Json;
 import sophena.model.Copyable;
 import sophena.model.ProductType;
-import sophena.rcp.Workspace;
+import sophena.rcp.app.Workspace;
 
 public class ColorConfig implements Copyable<ColorConfig> {
 

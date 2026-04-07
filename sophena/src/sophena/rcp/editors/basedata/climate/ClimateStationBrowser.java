@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import sophena.db.daos.WeatherStationDao;
-import sophena.rcp.App;
-import sophena.rcp.Workspace;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Workspace;
 import sophena.rcp.utils.UI;
 
 public class ClimateStationBrowser {

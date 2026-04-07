@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.Icon;
 import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.costs.CostEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;

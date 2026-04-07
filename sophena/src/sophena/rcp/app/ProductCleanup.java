@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;

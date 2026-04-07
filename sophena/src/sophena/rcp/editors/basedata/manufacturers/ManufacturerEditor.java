@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.Dao;
 import sophena.model.Manufacturer;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.utils.Actions;

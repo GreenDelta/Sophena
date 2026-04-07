@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import sophena.io.thermos.ThermosFile;
 import sophena.io.thermos.ThermosImportConfig;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;

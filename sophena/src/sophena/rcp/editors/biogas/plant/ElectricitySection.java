@@ -5,7 +5,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.ElectricityPriceCurve;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.UI;
 

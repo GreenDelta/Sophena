@@ -23,7 +23,7 @@ import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.model.descriptors.ConsumerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.LocationPage;
 import sophena.rcp.navigation.Navigator;

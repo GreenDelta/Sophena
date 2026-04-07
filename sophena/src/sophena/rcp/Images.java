@@ -3,6 +3,7 @@ package sophena.rcp;
 import org.eclipse.swt.graphics.Image;
 
 import sophena.model.ProductType;
+import sophena.rcp.app.Icon;
 
 public final class Images {
 

@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Manufacturer;
 import sophena.model.TransferStation;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;

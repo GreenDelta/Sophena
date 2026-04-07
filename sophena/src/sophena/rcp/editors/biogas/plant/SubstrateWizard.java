@@ -16,7 +16,7 @@ import sophena.model.HoursTrace;
 import sophena.model.Stats;
 import sophena.model.biogas.Substrate;
 import sophena.model.biogas.SubstrateProfile;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.FileChooser;

@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.ProducerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 
 public class ProducerElement extends ContentElement<ProducerDescriptor> {
 

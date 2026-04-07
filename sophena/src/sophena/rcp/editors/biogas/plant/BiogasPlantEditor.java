@@ -13,7 +13,7 @@ import org.openlca.commons.Res;
 import sophena.calc.biogas.BiogasPlantResult;
 import sophena.io.datapack.ExportGson;
 import sophena.model.biogas.BiogasPlant;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;

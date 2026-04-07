@@ -15,7 +15,7 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import sophena.rcp.Workspace;
+import sophena.rcp.app.Workspace;
 
 /**
  * The configuration of the HTML log file.

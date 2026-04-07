@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;

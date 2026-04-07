@@ -14,8 +14,8 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;

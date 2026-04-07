@@ -19,8 +19,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.rcp.App;
-import sophena.rcp.Icon;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;

@@ -2,8 +2,8 @@ package sophena.rcp.navigation.actions;
 
 import org.eclipse.jface.action.Action;
 
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.Icon;
 import sophena.rcp.wizards.ProjectWizard;
 
 public class NewProjectAction extends Action {

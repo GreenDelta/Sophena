@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import java.util.ArrayList;
 import java.util.List;

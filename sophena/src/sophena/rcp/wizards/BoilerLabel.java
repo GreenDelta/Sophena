@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.Boiler;
 import sophena.model.HeatPump;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.utils.Num;
 
 class BoilerLabel extends LabelProvider

@@ -17,7 +17,7 @@ import sophena.model.Producer;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.SolarCollector;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;

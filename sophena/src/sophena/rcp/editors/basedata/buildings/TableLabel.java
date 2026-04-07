@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import sophena.Labels;
 import sophena.model.BuildingState;
 import sophena.model.BuildingType;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.utils.Num;
 

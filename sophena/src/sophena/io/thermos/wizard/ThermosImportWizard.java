@@ -13,7 +13,7 @@ import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Project;
 import sophena.model.TransferStation;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;

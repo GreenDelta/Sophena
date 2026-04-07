@@ -8,8 +8,8 @@ import org.eclipse.swt.graphics.Image;
 import sophena.db.daos.ProjectFolderDao;
 import sophena.model.ModelType;
 import sophena.model.ProjectFolder;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 
 public class FolderElement extends ContentElement<ProjectFolder> {
 

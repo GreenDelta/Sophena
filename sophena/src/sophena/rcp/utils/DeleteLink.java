@@ -6,7 +6,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 
 public class DeleteLink {
 

@@ -10,7 +10,7 @@ import org.eclipse.ui.PartInitException;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;

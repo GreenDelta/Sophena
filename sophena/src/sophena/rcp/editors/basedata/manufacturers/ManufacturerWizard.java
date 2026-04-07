@@ -11,7 +11,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.Manufacturer;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;

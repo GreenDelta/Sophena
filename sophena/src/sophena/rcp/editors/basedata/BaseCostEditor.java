@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.db.daos.CostSettingsDao;
 import sophena.model.CostSettings;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 import sophena.rcp.editors.CostSettingsPanel;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;

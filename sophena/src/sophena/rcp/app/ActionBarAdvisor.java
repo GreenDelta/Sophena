@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import java.io.File;
 import java.util.Optional;
@@ -21,6 +21,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import sophena.Labels;
 import sophena.io.datapack.Import;
 import sophena.model.ProductType;
+import sophena.rcp.M;
 import sophena.rcp.colors.ColorConfigDialog;
 import sophena.rcp.editors.basedata.BaseCostEditor;
 import sophena.rcp.editors.basedata.ProductGroupEditor;
@@ -38,7 +39,6 @@ import sophena.rcp.editors.sql.SqlEditor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Rcp;
 import sophena.rcp.utils.UI;
 import sophena.rcp.wizards.ProjectWizard;
 

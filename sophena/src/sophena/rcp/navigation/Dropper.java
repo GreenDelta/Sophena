@@ -18,7 +18,7 @@ import sophena.db.daos.ProjectDao;
 import sophena.model.Project;
 import sophena.model.ProjectFolder;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
 
 public class Dropper extends CommonDropAdapterAssistant {
 

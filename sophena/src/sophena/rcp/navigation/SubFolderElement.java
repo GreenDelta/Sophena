@@ -11,9 +11,9 @@ import sophena.db.daos.ProducerDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.ModelType;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
 import sophena.rcp.M;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 
 public class SubFolderElement implements NavigationElement {
 

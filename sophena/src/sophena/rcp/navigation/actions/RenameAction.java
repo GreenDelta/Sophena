@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.ProjectFolderDao;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;

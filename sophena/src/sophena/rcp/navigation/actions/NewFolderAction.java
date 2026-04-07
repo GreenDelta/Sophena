@@ -8,8 +8,8 @@ import org.eclipse.jface.window.Window;
 
 import sophena.db.daos.ProjectFolderDao;
 import sophena.model.ProjectFolder;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
 import sophena.utils.Strings;

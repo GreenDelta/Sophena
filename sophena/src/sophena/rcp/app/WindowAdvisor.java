@@ -1,4 +1,4 @@
-package sophena.rcp;
+package sophena.rcp.app;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -32,13 +32,20 @@ public class WindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public void postWindowOpen() {
-		StartPage.open();
-		StartPage.open();
-	}
 
-	@Override
-	public boolean preWindowShellClose() {
-		return super.preWindowShellClose();
+		// close old editors that may are still
+		var config = getWindowConfigurer();
+		if (config != null) {
+			var window = config.getWindow();
+			if (window != null) {
+				var page = window.getActivePage();
+				if (page != null) {
+					page.closeAllEditors(false);
+				}
+			}
+		}
+
+		StartPage.open();
 	}
 
 	@Override

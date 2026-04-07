@@ -8,13 +8,13 @@ import sophena.io.datapack.DataPack;
 import sophena.io.datapack.Export;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
-import sophena.rcp.Icon;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
+import sophena.rcp.app.Rcp;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Log;
-import sophena.rcp.utils.Rcp;
 
 public class ExportAction extends NavigationAction {
 

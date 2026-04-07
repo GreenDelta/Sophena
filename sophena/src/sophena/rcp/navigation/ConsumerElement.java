@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import sophena.model.descriptors.ConsumerDescriptor;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 
 public class ConsumerElement extends ContentElement<ConsumerDescriptor> {
 

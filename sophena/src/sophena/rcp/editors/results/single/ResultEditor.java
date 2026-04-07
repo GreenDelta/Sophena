@@ -13,13 +13,13 @@ import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
-import sophena.rcp.App;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Rcp;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.rcp.utils.Rcp;
 import sophena.utils.Strings;
 
 public class ResultEditor extends Editor {

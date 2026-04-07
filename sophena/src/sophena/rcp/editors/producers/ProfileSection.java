@@ -11,7 +11,7 @@ import sophena.io.ProducerProfiles;
 import sophena.math.energetic.Producers;
 import sophena.model.Producer;
 import sophena.model.Stats;
-import sophena.rcp.Icon;
+import sophena.rcp.app.Icon;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.charts.ProducerProfileChart;
 import sophena.rcp.utils.Actions;
