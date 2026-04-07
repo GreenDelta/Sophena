@@ -15,8 +15,8 @@ import sophena.io.LoadProfileWriter;
 import sophena.math.LoadSorting;
 import sophena.model.LoadProfile;
 import sophena.rcp.M;
+import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.charts.LoadProfileChart;
 import sophena.rcp.utils.Actions;
@@ -97,7 +97,7 @@ public class LoadCurveSection {
 			dialog.setText("Jahresdauerlinie speichern");
 			String path = dialog.open();
 			if (path != null) {
-				Rcp.run("Exportiere...", () -> doExport(path));
+				App.run("Exportiere...", () -> doExport(path));
 			}
 		}
 

@@ -7,8 +7,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
 import sophena.io.excel.ComparisonExport;
+import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.FileChooser;
@@ -31,7 +31,7 @@ public class ComparisonToolBar extends EditorActionBarContributor {
 		if (file == null)
 			return;
 		ComparisonExport export = new ComparisonExport(editor.comparison, file);
-		Rcp.run("Exportiere Ergebnisse ...", export, () -> {
+		App.run("Exportiere Ergebnisse ...", export, () -> {
 			Popup.info("Ergebnisse wurden exportiert");
 		});
 	}

@@ -7,8 +7,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
 import sophena.io.excel.ExcelExport;
+import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.FileChooser;
@@ -32,7 +32,7 @@ public class ResultToolBar extends EditorActionBarContributor {
 			return;
 		ExcelExport export = new ExcelExport(editor.project, editor.result,
 				file);
-		Rcp.run("Exportiere Ergebnisse ...", export, () -> {
+		App.run("Exportiere Ergebnisse ...", export, () -> {
 			Popup.info("Ergebnisse wurden exportiert");
 		});
 	}

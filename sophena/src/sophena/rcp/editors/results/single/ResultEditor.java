@@ -14,7 +14,6 @@ import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.app.App;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
@@ -31,27 +30,26 @@ public class ResultEditor extends Editor {
 	public static void open(ProjectDescriptor d) {
 		if (d == null)
 			return;
+
 		PlatformUI.getWorkbench().saveAllEditors(true);
-		Editors.closeIf(editor -> {
-			if (!(editor instanceof ResultEditor e))
-				return false;
-			return Strings.nullOrEqual(d.id, e.project.id);
-		});
+		Editors.closeIf(e -> e instanceof ResultEditor editor
+			&& Strings.nullOrEqual(d.id, editor.project.id));
+
 		Project p = new ProjectDao(App.getDb()).get(d.id);
 		if (!CalculationCheck.canCalculate(p))
 			return;
-		Rcp.run("Berechne...", () -> {
-			ProjectResult result = ProjectResult.calculate(p);
-			Object[] data = new Object[] { p, result };
-			String key = App.stash(data);
-			KeyEditorInput input = new KeyEditorInput(key, p.name);
+
+		App.runInUI("Berechne...", () -> {
+			var result = ProjectResult.calculate(p);
+			var key = App.stash(new Object[]{p, result});
+			var input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");
 		});
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+		throws PartInitException {
 		super.init(site, input);
 		onClosed(() -> {
 			// cache the last opened page when the editor closes

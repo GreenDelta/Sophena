@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import sophena.model.Location;
 import sophena.model.Project;
 import sophena.rcp.M;
-import sophena.rcp.app.Rcp;
+import sophena.rcp.app.App;
 import sophena.rcp.app.Workspace;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -27,9 +27,9 @@ import sophena.utils.Num;
 
 public class LocationPage extends FormPage {
 
-	private Supplier<Location> loc;
-	private Supplier<Project> proj;
-	private Editor editor;
+	private final Supplier<Location> loc;
+	private final Supplier<Project> proj;
+	private final Editor editor;
 	private FormToolkit toolkit;
 
 	private Text latText;
@@ -110,7 +110,7 @@ public class LocationPage extends FormPage {
 		UI.bindFunction(browser, "locationChanged", objs -> {
 			if (objs == null || objs.length == 0)
 				return null;
-			Rcp.runInUI("update texts", () -> {
+			App.runInUI("update texts", () -> {
 				try {
 					var gson = new Gson();
 					var json = objs[0].toString();
@@ -122,7 +122,7 @@ public class LocationPage extends FormPage {
 					editor.setDirty();
 				} catch (Exception e) {
 					var log = LoggerFactory.getLogger(getClass());
-					log.error("failed to parse location: " + objs[0], e);
+					log.error("failed to parse location: {}", objs[0], e);
 				}
 			});
 			return null;
@@ -179,7 +179,7 @@ public class LocationPage extends FormPage {
 
 	private void updateMarker() {
 		Location l = loc.get();
-		Rcp.runInUI("update marker", () -> {
+		App.runInUI("update marker", () -> {
 			try {
 				if (l == null || l.latitude == null || l.longitude == null)
 					browser.execute("removeMarker()");
@@ -199,12 +199,12 @@ public class LocationPage extends FormPage {
 	}
 
 	@SuppressWarnings("unused")
-	private class InitData {
+	private static class InitData {
 		boolean withMarker;
 		final LatLng latlng = new LatLng();
 	}
 
-	private class LatLng {
+	private static class LatLng {
 		double lat;
 		double lng;
 	}
@@ -213,7 +213,7 @@ public class LocationPage extends FormPage {
 		public void locationChanged(String json) {
 			if (json == null)
 				return;
-			Rcp.runInUI("update texts", () -> {
+			App.runInUI("update texts", () -> {
 				Gson gson = new Gson();
 				LatLng latlng = gson.fromJson(json, LatLng.class);
 				Texts.set(latText, Num.str(latlng.lat, 6));

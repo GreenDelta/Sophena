@@ -219,7 +219,7 @@ public class ActionBarAdvisor extends
 		var file = new File(path);
 		try {
 			var in = new Import(file, App.getDb());
-			Rcp.run("Importiere Daten ...", in, Navigator::refresh);
+			App.run("Importiere Daten ...", in, Navigator::refresh);
 		} catch (Exception e) {
 			MsgBox.error("Datei konnte nicht gelesen werden");
 		}

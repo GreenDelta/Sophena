@@ -10,7 +10,6 @@ import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.ProjectElement;
 import sophena.rcp.utils.FileChooser;
@@ -45,7 +44,7 @@ public class ExportAction extends NavigationAction {
 		File file = FileChooser.save(d.name + ".sophena", "*.sophena");
 		if (file == null)
 			return;
-		Rcp.run("Exportiere Projekt ...", () -> tryExport(d, file));
+		App.run("Exportiere Projekt ...", () -> tryExport(d, file));
 	}
 
 	private void tryExport(ProjectDescriptor d, File file) {

@@ -15,8 +15,8 @@ import org.eclipse.swtchart.Chart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.Popup;
 import sophena.utils.Ref;
@@ -70,7 +70,7 @@ public class ImageExport extends Action {
 			return;
 		ImageData data = image.get().getImageData();
 		Ref<Throwable> err = new Ref<>();
-		Rcp.run("Speichere Bild",
+		App.run("Speichere Bild",
 				() -> doIt(data, file, err),
 				() -> showMessage(err));
 	}

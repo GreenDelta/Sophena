@@ -27,7 +27,6 @@ import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.app.Rcp;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
@@ -116,7 +115,7 @@ public class ComparisonDialog extends FormDialog {
 		if (!CalculationCheck.canCalculate(list))
 			return;
 		Ref<Comparison> ref = new Ref<>();
-		Rcp.run("Vergleiche Projekte",
+		App.run("Vergleiche Projekte",
 				() -> ref.set(Comparison.calculate(list)),
 				() -> ComparisonView.open(ref.get()));
 		close();

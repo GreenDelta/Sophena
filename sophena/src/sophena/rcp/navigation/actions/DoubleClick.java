@@ -22,7 +22,7 @@ import sophena.rcp.navigation.SubFolderType;
 
 public class DoubleClick extends Action {
 
-	private NavigationElement elem;
+	private final NavigationElement elem;
 
 	private DoubleClick(NavigationElement elem) {
 		this.elem = elem;
@@ -41,47 +41,57 @@ public class DoubleClick extends Action {
 			log.trace("call {} with {}", m, elem);
 			m.invoke(this);
 		} catch (Exception e) {
-			log.error("failed to call " + m + " with " + elem, e);
+			log.error("failed to call {} with {}", m, elem, e);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Handler(type = ProjectElement.class, title = "Open project")
 	private void openProject() {
 		ProjectElement e = (ProjectElement) elem;
 		ProjectEditor.open(e.content);
 	}
 
+	@SuppressWarnings("unused")
 	@Handler(type = ConsumerElement.class, title = "Open consumer")
 	private void openConsumer() {
 		ConsumerElement e = (ConsumerElement) elem;
 		ConsumerEditor.open(e.getProject(), e.content);
 	}
 
+	@SuppressWarnings("unused")
 	@Handler(type = ProducerElement.class, title = "Open producer")
 	private void openProducer() {
 		ProducerElement e = (ProducerElement) elem;
 		ProducerEditor.open(e.getProject(), e.content);
 	}
 
+	@SuppressWarnings("unused")
 	@Handler(type = CleaningElement.class, title = "Open cleaning")
 	private void openCleaning() {
 		CleaningElement e = (CleaningElement) elem;
 		Cleanings.open(e);
 	}
 
-	@Handler(type = SubFolderElement.class, title = "Open heat distribution", folderType = SubFolderType.DISTRIBUTION)
+	@SuppressWarnings("unused")
+	@Handler(type = SubFolderElement.class, title = "Open heat distribution",
+		folderType = SubFolderType.DISTRIBUTION)
 	private void openDistribution() {
 		SubFolderElement e = (SubFolderElement) elem;
 		HeatNetEditor.open(e.getProject());
 	}
 
-	@Handler(type = SubFolderElement.class, title = "Open energy results", folderType = SubFolderType.RESULTS)
+	@SuppressWarnings("unused")
+	@Handler(type = SubFolderElement.class, title = "Open energy results",
+		folderType = SubFolderType.RESULTS)
 	private void openEnergyResults() {
 		SubFolderElement e = (SubFolderElement) elem;
 		ResultEditor.open(e.getProject());
 	}
 
-	@Handler(type = SubFolderElement.class, title = "Öffne Kosten", folderType = SubFolderType.COSTS)
+	@SuppressWarnings("unused")
+	@Handler(type = SubFolderElement.class, title = "Öffne Kosten",
+		folderType = SubFolderType.COSTS)
 	private void openCostEditor() {
 		SubFolderElement e = (SubFolderElement) elem;
 		CostEditor.open(e.getProject());
