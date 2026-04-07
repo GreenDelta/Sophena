@@ -216,8 +216,7 @@ class BufferTankSection {
 			ProjectDao dao = new ProjectDao(App.getDb());
 			Project p = dao.get(editor.project.id);
 			for (Consumer c : p.consumers) {
-				if (c.disabled)
-					continue;
+				if (c.disabled) continue;
 				load += c.heatingLoad;
 			}
 			return Math.ceil(load);

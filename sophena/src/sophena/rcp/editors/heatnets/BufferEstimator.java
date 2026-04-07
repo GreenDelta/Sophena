@@ -1,20 +1,20 @@
 package sophena.rcp.editors.heatnets;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 import org.openlca.commons.Res;
+
 import sophena.calc.ProjectResult;
 import sophena.db.Database;
 import sophena.model.BufferTank;
-import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.rcp.app.App;
 import sophena.rcp.utils.MsgBox;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 class BufferEstimator {
 
@@ -79,27 +79,30 @@ class BufferEstimator {
 				double uncoveredHeat = uncoveredHeat(result);
 				results.add(new BufferCosts(buffer, costs, uncoveredHeat));
 			} catch (Exception e) {
-				String name = buffer != null && buffer.name != null
-						? buffer.name
-						: "(ohne Namen)";
-				return Res.error(
-					"Die Berechnung für den Pufferspeicher \"" + name + "\" ist fehlgeschlagen.",
-					e);
+				var name = buffer != null && buffer.name != null
+					? buffer.name
+					: "(ohne Namen)";
+				return Res.error("Die Berechnung für den Pufferspeicher \""
+					+ name + "\" ist fehlgeschlagen.", e);
 			}
 		}
 
-		results.sort(Comparator.comparingDouble(BufferCosts::costs));
+		results.sort(Comparator
+			.comparingDouble(BufferCosts::costs)
+			.thenComparingDouble(BufferCosts::uncoveredHeat));
 		return Res.ok(results);
 	}
 
 	private void prepare(Project variant, BufferTank buffer) {
-		HeatNet net = variant.heatNet;
+		var net = variant.heatNet;
 		net.bufferTank = buffer;
-		if (net.bufferTankCosts == null)
+		if (net.bufferTankCosts == null) {
 			net.bufferTankCosts = new ProductCosts();
+		}
 		ProductCosts.copy(buffer, net.bufferTankCosts);
-		if (buffer.purchasePrice != null)
+		if (buffer.purchasePrice != null) {
 			net.bufferTankCosts.investment = buffer.purchasePrice;
+		}
 	}
 
 	private double uncoveredHeat(ProjectResult result) {
