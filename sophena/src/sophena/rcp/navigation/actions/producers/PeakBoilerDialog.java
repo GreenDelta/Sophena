@@ -13,7 +13,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -52,7 +51,6 @@ class PeakBoilerDialog extends FormDialog {
 	private final List<Candidate> candidates;
 	private final ProductGroup[] groups;
 
-	private Text demandText;
 	private Text nameText;
 	private Combo groupCombo;
 	private TableViewer table;
@@ -61,27 +59,55 @@ class PeakBoilerDialog extends FormDialog {
 	static void open(Project project, double peakDemand) {
 		if (project == null || peakDemand <= 0)
 			return;
-		var dialog = new PeakBoilerDialog(project, peakDemand);
-		if (dialog.candidates.isEmpty()) {
+
+		var candidates = new BoilerDao(App.getDb()).getAll().stream()
+			.filter(b -> isSelectable(b, peakDemand))
+			.map(Candidate::new)
+			.sorted()
+			.toList();
+
+		if (candidates.isEmpty()) {
 			MsgBox.info(
 				"Keine passenden Erzeuger gefunden",
 				"Für eine benötigte Spitzenlast von " + Num.str(peakDemand)
 					+ " kW wurden keine passenden Erzeuger in den Stammdaten gefunden.");
 			return;
 		}
+
+		var dialog = new PeakBoilerDialog(project, peakDemand, candidates);
 		dialog.open();
 	}
 
-	private PeakBoilerDialog(Project project, double peakDemand) {
+	private static boolean isSelectable(Boiler boiler, double peakDemand) {
+		if (boiler == null
+			|| boiler.maxPower < peakDemand
+			|| boiler.group == null
+			|| boiler.group.type == null)
+			return false;
+		var type = boiler.group.type;
+		return type == ProductType.BIOMASS_BOILER
+			|| type == ProductType.FOSSIL_FUEL_BOILER
+			|| type == ProductType.COGENERATION_PLANT;
+	}
+
+	private PeakBoilerDialog(
+		Project project, double peakDemand, List<Candidate> candidates
+	) {
 		super(UI.shell());
 		this.project = project;
 		this.peakDemand = peakDemand;
-		this.candidates = new BoilerDao(App.getDb()).getAll().stream()
-			.filter(this::isSelectable)
-			.map(Candidate::new)
-			.sorted()
-			.toList();
+		this.candidates = candidates;
 		this.groups = collectGroups();
+	}
+
+	private ProductGroup[] collectGroups() {
+		var set = new HashSet<ProductGroup>();
+		for (var c : candidates) {
+			set.add(c.boiler.group);
+		}
+		var groups = new ArrayList<>(set);
+		groups.sort((gi, gj) -> Strings.compare(gi.name, gj.name));
+		return groups.toArray(new ProductGroup[0]);
 	}
 
 	@Override
@@ -95,7 +121,8 @@ class PeakBoilerDialog extends FormDialog {
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		var tk = mform.getToolkit();
-		UI.formHeader(mform, "Spitzenlastkessel hinzufügen");
+		UI.formHeader(mform, "Spitzenkessel mit benötigter Leistung von "
+				+ Num.intStr(peakDemand) + " kW");
 		var body = UI.formBody(mform.getForm(), tk);
 		var form = UI.formComposite(body, tk);
 		UI.gridData(form, true, false);
@@ -105,8 +132,6 @@ class PeakBoilerDialog extends FormDialog {
 	}
 
 	private void createFields(Composite parent, FormToolkit tk) {
-		demandText = UI.formText(parent, tk, "Benötigte Leistung");
-		demandText.setEditable(false);
 		nameText = UI.formText(parent, tk, "Name");
 		Texts.on(nameText).required().onChanged(t -> {
 			var selected = getSelectedCandidate();
@@ -142,8 +167,6 @@ class PeakBoilerDialog extends FormDialog {
 	}
 
 	private void bindToUi() {
-		demandText.setText(Num.str(peakDemand) + " kW");
-
 		nameEdited = false;
 		groupCombo.setItems(groupLabels());
 		groupCombo.select(0);
@@ -206,25 +229,7 @@ class PeakBoilerDialog extends FormDialog {
 
 	@Override
 	protected Point getInitialSize() {
-		int width = 700;
-		int height = 620;
-		Rectangle shellBounds = getShell().getDisplay().getBounds();
-		int shellWidth = shellBounds.x;
-		int shellHeight = shellBounds.y;
-		if (shellWidth > 0 && shellWidth < width)
-			width = shellWidth;
-		if (shellHeight > 0 && shellHeight < height)
-			height = shellHeight;
-		return new Point(width, height);
-	}
-
-	@Override
-	protected Point getInitialLocation(Point initialSize) {
-		Point loc = super.getInitialLocation(initialSize);
-		int marginTop = (getParentShell().getSize().y - initialSize.y) / 3;
-		if (marginTop < 0)
-			marginTop = 0;
-		return new Point(loc.x, loc.y + marginTop);
+		return new Point(700, 620);
 	}
 
 	private ProductGroup selectedGroup() {
@@ -255,28 +260,6 @@ class PeakBoilerDialog extends FormDialog {
 		return max;
 	}
 
-	private boolean isSelectable(Boiler boiler) {
-		if (boiler == null
-			|| boiler.maxPower < peakDemand
-			|| boiler.group == null
-			|| boiler.group.type == null)
-			return false;
-		var type = boiler.group.type;
-		return type == ProductType.BIOMASS_BOILER
-			|| type == ProductType.FOSSIL_FUEL_BOILER
-			|| type == ProductType.COGENERATION_PLANT;
-	}
-
-	private ProductGroup[] collectGroups() {
-		var set = new HashSet<ProductGroup>();
-		for (var c : candidates) {
-			set.add(c.boiler.group);
-		}
-		var groups = new ArrayList<>(set);
-		groups.sort((gi, gj) -> Strings.compare(gi.name, gj.name));
-		return groups.toArray(new ProductGroup[0]);
-	}
-
 	private record Candidate(Boiler boiler)	implements Comparable<Candidate> {
 
 		Candidate {
@@ -284,7 +267,7 @@ class PeakBoilerDialog extends FormDialog {
 		}
 
 		boolean matches(ProductGroup group) {
-			return Objects.equals(group, boiler.group);
+			return group == null || Objects.equals(group, boiler.group);
 		}
 
 		String manufacturer() {
@@ -327,7 +310,7 @@ class PeakBoilerDialog extends FormDialog {
 				return null;
 			return switch (col) {
 				case 0 -> c.fullName();
-				case 1 -> Num.str(c.boiler.maxPower);
+				case 1 -> Num.str(c.boiler.maxPower) + " kW";
 				default -> null;
 			};
 		}
