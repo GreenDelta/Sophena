@@ -24,16 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
-import sophena.db.daos.FuelDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
-import sophena.model.CostSettings;
-import sophena.model.Fuel;
-import sophena.model.FuelGroup;
-import sophena.model.FuelSpec;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
@@ -48,6 +42,7 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
+import sophena.utils.Producers;
 import sophena.utils.Strings;
 
 class PeakBoilerDialog extends FormDialog {
@@ -173,7 +168,6 @@ class PeakBoilerDialog extends FormDialog {
 		updateOkButton();
 	}
 
-
 	private void updateOkButton() {
 		var ok = getButton(IDialogConstants.OK_ID);
 		if (ok != null) {
@@ -198,9 +192,10 @@ class PeakBoilerDialog extends FormDialog {
 			producer.function = ProducerFunction.PEAK_LOAD;
 			producer.productGroup = candidate.boiler().group;
 			producer.boiler = candidate.boiler;
-			initFuelSpec(producer);
-			initCosts(producer);
-			initElectricity(producer);
+
+			Producers.initFuelSpec(producer, project);
+			Producers.initCosts(producer);
+			Producers.initElectricity(producer, project);
 
 			project.producers.add(producer);
 			new ProjectDao(App.getDb()).update(project);
@@ -285,57 +280,6 @@ class PeakBoilerDialog extends FormDialog {
 		groups.sort((gi, gj) -> Strings.compare(gi.name, gj.name));
 		return groups.toArray(new ProductGroup[0]);
 	}
-
-	private void initFuelSpec(Producer producer) {
-		producer.fuelSpec = new FuelSpec();
-		if (producer.productGroup == null || producer.productGroup.fuelGroup == null)
-			return;
-		FuelGroup group = producer.productGroup.fuelGroup;
-		if (group == FuelGroup.ELECTRICITY) {
-			CostSettings settings = project.costSettings;
-			if (settings != null && settings.electricityMix != null) {
-				producer.fuelSpec.fuel = settings.electricityMix;
-				return;
-			}
-		}
-		for (Fuel fuel : new FuelDao(App.getDb()).getAll()) {
-			if (fuel.group != group)
-				continue;
-			producer.fuelSpec.fuel = fuel;
-			if (fuel.isProtected)
-				break;
-		}
-	}
-
-	private void initCosts(Producer producer) {
-		producer.costs = new ProductCosts();
-		if (producer.boiler != null) {
-			ProductCosts.copy(producer.boiler, producer.costs);
-		} else if (producer.heatPump != null) {
-			ProductCosts.copy(producer.heatPump, producer.costs);
-		} else if (producer.productGroup != null) {
-			ProductCosts.copy(producer.productGroup, producer.costs);
-		}
-		producer.heatRecoveryCosts = new ProductCosts();
-	}
-
-	private void initElectricity(Producer producer) {
-		if (producer.productGroup == null
-			|| producer.productGroup.type != ProductType.COGENERATION_PLANT) {
-			return;
-		}
-		if (project.costSettings != null
-			&& project.costSettings.replacedElectricityMix != null) {
-			producer.producedElectricity = project.costSettings.replacedElectricityMix;
-			return;
-		}
-		producer.producedElectricity = new FuelDao(App.getDb())
-			.getAll().stream()
-			.filter(fuel -> fuel.group == FuelGroup.ELECTRICITY)
-			.findFirst()
-			.orElse(null);
-	}
-
 
 	private record Candidate(Boiler boiler)	implements Comparable<Candidate> {
 

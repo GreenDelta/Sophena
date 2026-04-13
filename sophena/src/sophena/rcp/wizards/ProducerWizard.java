@@ -44,6 +44,7 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Producers;
 import sophena.utils.Strings;
 
 public class ProducerWizard extends Wizard {
@@ -78,9 +79,11 @@ public class ProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer);
-			Wizards.initFuelSpec(producer, project);
-			Wizards.initCosts(producer);
-			Wizards.initElectricity(producer, project);
+
+			Producers.initFuelSpec(producer, project);
+			Producers.initCosts(producer);
+			Producers.initElectricity(producer, project);
+
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
 				Wizards.initSolarCollectorSpec(producer);
 				producer.utilisationRate = 0.85;
@@ -127,12 +130,12 @@ public class ProducerWizard extends Wizard {
 		private Combo powerCombo;
 		private PowerFilter powerFilter;
 		private final ProductGroup[] groupFilter;
-		
+
 		private final StackLayout layout = new StackLayout();
 		private Composite compBoiler;
 		private Composite compSolarCollector;
 		private Composite parentTable;
-		
+
 		private Page() {
 			super("ProducerWizardPage", M.CreateNewProducer, null);
 			setMessage(" ");
@@ -149,7 +152,7 @@ public class ProducerWizard extends Wizard {
 					ProductType.FOSSIL_FUEL_BOILER,
 					ProductType.HEAT_PUMP,
 					ProductType.COGENERATION_PLANT,
-					ProductType.SOLAR_THERMAL_PLANT);					
+					ProductType.SOLAR_THERMAL_PLANT);
 			for (ProductGroup g : groups) {
 				if (g.name == null || g.type == null)
 					continue;
@@ -170,7 +173,7 @@ public class ProducerWizard extends Wizard {
 			nameField(comp);
 			groupCombo(comp);
 			powerCombo(comp);
-			tables(root);			
+			tables(root);
 			functionFields(root);
 			bindToUI();
 		}
@@ -263,17 +266,17 @@ public class ProducerWizard extends Wizard {
 			parentTable = new Composite(root, SWT.NONE);
 			UI.gridData(parentTable, true, true);
 			UI.gridLayout(parentTable, 1);
-			parentTable.setLayout(layout); 
+			parentTable.setLayout(layout);
 			compBoiler = new Composite(parentTable, SWT.NONE);
-			
+
 			boilerTable(compBoiler);
 			layout.topControl = compBoiler;
 			parentTable.layout();
 			compSolarCollector = new Composite(parentTable, SWT.NONE);
 			solarCollectorTable(compSolarCollector);
 		}
-		
-		private void boilerTable(Composite comp) {			
+
+		private void boilerTable(Composite comp) {
 			UI.gridData(comp, true, true);
 			UI.gridLayout(comp, 1);
 			boilerTable = Tables.createViewer(comp, "Hersteller",
@@ -286,7 +289,7 @@ public class ProducerWizard extends Wizard {
 				validate();
 			});
 		}
-		
+
 		private void solarCollectorTable(Composite comp) {
 			UI.gridData(comp, true, true);
 			UI.gridLayout(comp, 1);
@@ -320,7 +323,7 @@ public class ProducerWizard extends Wizard {
 				if (s != null) {
 					p.productGroup = s.group;
 				}
-			} 
+			}
 			else if (group != null && group.type == ProductType.HEAT_PUMP)
 			{
 				HeatPump h = Viewers.getFirstSelected(boilerTable);
@@ -342,7 +345,7 @@ public class ProducerWizard extends Wizard {
 		}
 
 		private void bindToUI() {
-			Texts.set(rankText, Wizards.nextProducerRank(project));			
+			Texts.set(rankText, Wizards.nextProducerRank(project));
 			Wizards.fillProducerFunctions(project, functionCombo);
 			updateTables();
 			setPageComplete(false);
@@ -382,18 +385,18 @@ public class ProducerWizard extends Wizard {
 				Texts.set(nameText, s.name);
 			}
 		}
-		
+
 		private void updateTables() {
 			ProductGroup group = getGroup();
 			if (group != null && group.type == ProductType.SOLAR_THERMAL_PLANT) {
 				layout.topControl = compSolarCollector;
 				parentTable.layout();
 				updateSolarCollectors();
-				if (functionCombo.getItemCount() > 2)				
-					functionCombo.select(2);				
+				if (functionCombo.getItemCount() > 2)
+					functionCombo.select(2);
 			} else {
 				layout.topControl = compBoiler;
-				parentTable.layout();				
+				parentTable.layout();
 				updateBoilers();
 				if(group != null && (group.type == ProductType.HEAT_PUMP || group.type == ProductType.BIOMASS_BOILER || group.type == ProductType.COGENERATION_PLANT))
 					if(functionCombo.getItemCount() > 0)
@@ -402,7 +405,7 @@ public class ProducerWizard extends Wizard {
 					functionCombo.select(1);
 			}
 		}
-		
+
 		private void updateBoilers() {
 			ProductGroup group = getGroup();
 			if (group != null && group.type == ProductType.HEAT_PUMP)
@@ -437,7 +440,7 @@ public class ProducerWizard extends Wizard {
 			}
 			setPageComplete(false);
 		}
-		
+
 		private void updateSolarCollectors() {
 			SolarCollectorDao dao = new SolarCollectorDao(App.getDb());
 			ArrayList<SolarCollector> input = new ArrayList<>();
@@ -470,7 +473,7 @@ public class ProducerWizard extends Wizard {
 					setPageComplete(false);
 					return false;
 				}
-			} else {		
+			} else {
 				if (Viewers.getFirstSelected(boilerTable) == null) {
 					setPageComplete(false);
 					return false;
@@ -589,7 +592,7 @@ public class ProducerWizard extends Wizard {
 			double[] range = filter.ranges[i];
 			return matches(solarCollector.collectorArea, range);
 		}
-		
+
 		static boolean matches(HeatPump heatPump, PowerFilter filter, int i) {
 			if (heatPump == null)
 				return false;
@@ -598,7 +601,7 @@ public class ProducerWizard extends Wizard {
 			double[] range = filter.ranges[i];
 			return matches(heatPump.ratedPower, range);
 		}
-		
+
 		static boolean matches(double value, double[] range) {
 			if (range == null || range.length < 2)
 				return true;

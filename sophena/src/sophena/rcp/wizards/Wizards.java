@@ -6,23 +6,12 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Combo;
 
 import sophena.Labels;
-import sophena.db.daos.FuelDao;
-import sophena.model.Boiler;
-import sophena.model.CostSettings;
-import sophena.model.Fuel;
-import sophena.model.FuelGroup;
-import sophena.model.FuelSpec;
-import sophena.model.HeatPump;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
-import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.Project;
-import sophena.model.SolarCollector;
 import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.SolarCollectorSpec;
-import sophena.model.WoodAmountType;
-import sophena.rcp.app.App;
 
 /**
  * Some utility functions for the wizards.
@@ -86,74 +75,12 @@ class Wizards {
 		return false;
 	}
 
-	/**
-	 * Initializes the fuel specification of the producer (or producer profile)
-	 * based on the fuel group in the product group of the producer.
-	 */
-	static void initFuelSpec(Producer p, Project project) {
-		FuelSpec spec = new FuelSpec();
-		p.fuelSpec = spec;
-		if (p.productGroup == null)
-			return;
-		FuelGroup group = p.productGroup.fuelGroup;
-		if (group == null)
-			return;
-
-		// set the electricity mix from project settings if applicable
-		if (group == FuelGroup.ELECTRICITY && project != null) {
-			CostSettings settings = project.costSettings;
-			if (settings != null && settings.electricityMix != null) {
-				spec.fuel = settings.electricityMix;
-				return;
-			}
-		}
-
-		// find a matching fuel from the base data
-		FuelDao dao = new FuelDao(App.getDb());
-		for (Fuel fuel : dao.getAll()) {
-			if (fuel.group != group)
-				continue;
-			spec.fuel = fuel;
-			if (fuel.isProtected)
-				break;
-		}
-		if (group == FuelGroup.WOOD) {
-			spec.waterContent = 20d;
-			spec.woodAmountType = WoodAmountType.CHIPS;
-		}
-	}
-
-	/**
-	 * Set the type of produced electricity for producers that are co-generation
-	 * plants.
-	 */
-	static void initElectricity(Producer p, Project project) {
-		if (p == null || p.productGroup == null)
-			return;
-		if (p.productGroup.type != ProductType.COGENERATION_PLANT)
-			return;
-
-		// take replaced electricity mix from settings if available
-		if (project != null) {
-			CostSettings settings = project.costSettings;
-			if (settings != null && settings.replacedElectricityMix != null) {
-				p.producedElectricity = settings.replacedElectricityMix;
-				return;
-			}
-		}
-
-		p.producedElectricity = new FuelDao(App.getDb())
-				.getAll().stream()
-				.filter(e -> e.group == FuelGroup.ELECTRICITY)
-				.findFirst().orElse(null);
-	}
-	
 	static void initSolarCollectorSpec(Producer p) {
 		if (p == null || p.productGroup == null)
 			return;
 		if (p.productGroup.type != ProductType.SOLAR_THERMAL_PLANT)
 			return;
-		
+
 		SolarCollectorSpec solarCollectorSpec = new SolarCollectorSpec();
 		solarCollectorSpec.solarCollectorArea = p.solarCollector.collectorArea;
 		solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
@@ -164,30 +91,4 @@ class Wizards {
 		p.solarCollectorSpec = solarCollectorSpec;
 	}
 
-	static void initCosts(Producer p) {
-		if (p == null)
-			return;
-		ProductCosts costs = new ProductCosts();
-		p.costs = costs;
-		Boiler b = p.boiler;
-		HeatPump h = p.heatPump;
-		SolarCollector sc = p.solarCollector;
-		if (b != null) {
-			ProductCosts.copy(b, costs);
-		}
-        else if(h != null)
-		{
-			ProductCosts.copy(h, costs);
-		}
-        else if(sc != null)
-		{
-			ProductCosts.copy(sc, costs);
-		}
-        else {
-			ProductCosts.copy(p.productGroup, costs);
-		}
-		if (!p.hasProfile()) {
-			p.heatRecoveryCosts = new ProductCosts();
-		}
-	}
 }

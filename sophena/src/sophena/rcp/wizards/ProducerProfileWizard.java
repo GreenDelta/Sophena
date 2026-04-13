@@ -39,6 +39,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Producers;
 import sophena.utils.Strings;
 
 public class ProducerProfileWizard extends Wizard {
@@ -91,9 +92,11 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
 				producer.productGroup = groups[groupIdx];
-				Wizards.initFuelSpec(producer, project);
-				Wizards.initCosts(producer);
-				Wizards.initElectricity(producer, project);
+
+				Producers.initFuelSpec(producer, project);
+				Producers.initCosts(producer);
+				Producers.initElectricity(producer, project);
+
 			}
 			project.producers.add(producer);
 			ProjectDao dao = new ProjectDao(App.getDb());

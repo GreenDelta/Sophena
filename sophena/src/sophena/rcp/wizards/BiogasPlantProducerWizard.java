@@ -36,6 +36,7 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
+import sophena.utils.Producers;
 import sophena.utils.Strings;
 
 public class BiogasPlantProducerWizard extends Wizard {
@@ -73,9 +74,11 @@ public class BiogasPlantProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer, project);
-			Wizards.initFuelSpec(producer, project);
-			Wizards.initCosts(producer);
-			Wizards.initElectricity(producer, project);
+
+			Producers.initFuelSpec(producer, project);
+			Producers.initCosts(producer);
+			Producers.initElectricity(producer, project);
+
 			ProjectDao dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
