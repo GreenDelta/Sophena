@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
-import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -192,13 +191,10 @@ class PeakBoilerDialog extends FormDialog {
 			producer.function = ProducerFunction.PEAK_LOAD;
 			producer.productGroup = candidate.boiler().group;
 			producer.boiler = candidate.boiler;
-
-			Producers.initFuelSpec(producer, project);
-			Producers.initCosts(producer);
-			Producers.initElectricity(producer, project);
+			Producers.initFuelAndCosts(producer, project);
 
 			project.producers.add(producer);
-			new ProjectDao(App.getDb()).update(project);
+			App.getDb().update(project);
 			Navigator.refresh();
 			ProducerEditor.open(project.toDescriptor(), producer.toDescriptor());
 			close();

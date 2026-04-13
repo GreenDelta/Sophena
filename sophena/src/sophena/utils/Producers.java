@@ -13,9 +13,15 @@ import sophena.rcp.app.App;
 
 public class Producers {
 
+	public static void initFuelAndCosts(Producer p, Project project) {
+		initFuelSpec(p, project);
+		initCosts(p);
+		initElectricity(p, project);
+	}
+
 	/// Initializes the fuel specification of a producer (or producer profile)
 	/// based on the fuel group of the product group of the producer.
-	public static void initFuelSpec(Producer p, Project project) {
+	private static void initFuelSpec(Producer p, Project project) {
 		if (p == null || project == null)
 			return;
 
@@ -60,7 +66,7 @@ public class Producers {
 		return null;
 	}
 
-	public static void initCosts(Producer p) {
+	private static void initCosts(Producer p) {
 		if (p == null)
 			return;
 		var costs = new ProductCosts();
@@ -89,7 +95,7 @@ public class Producers {
 
 	/// Set the type of produced electricity for producers that are co-generation
 	/// plants.
-	public static void initElectricity(Producer p, Project project) {
+	private static void initElectricity(Producer p, Project project) {
 		if (p == null
 			|| p.productGroup == null
 			|| p.productGroup.type != ProductType.COGENERATION_PLANT)

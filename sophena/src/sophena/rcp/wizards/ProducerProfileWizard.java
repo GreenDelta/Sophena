@@ -92,14 +92,10 @@ public class ProducerProfileWizard extends Wizard {
 			ProductGroup[] groups = page.productGroups;
 			if (groups != null && groups.length > groupIdx) {
 				producer.productGroup = groups[groupIdx];
-
-				Producers.initFuelSpec(producer, project);
-				Producers.initCosts(producer);
-				Producers.initElectricity(producer, project);
-
+				Producers.initFuelAndCosts(producer, project);
 			}
 			project.producers.add(producer);
-			ProjectDao dao = new ProjectDao(App.getDb());
+			var dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
 			ProducerEditor.open(
@@ -209,9 +205,8 @@ public class ProducerProfileWizard extends Wizard {
 			Wizards.fillProducerFunctions(project, function);
 			function.select(2);
 			producer.function = ProducerFunction.MAX_LOAD;
-			Controls.onSelect(function, e -> {
-				producer.function = Wizards.getProducerFunction(function);
-			});
+			Controls.onSelect(function,
+				e -> producer.function = Wizards.getProducerFunction(function));
 		}
 
 		private void fileFields(Composite comp) {
@@ -263,23 +258,23 @@ public class ProducerProfileWizard extends Wizard {
 			}
 		}
 
-		private boolean validate() {
+		private void validate() {
 			if (Strings.nullOrEmpty(producer.name)) {
-				return err("Der Name darf nicht leer sein.");
+				err("Der Name darf nicht leer sein.");
+				return;
 			}
 			if (Wizards.producerRankExists(project, producer.rank)) {
-				return err("Es besteht bereits ein Wärmeerzeuger mit"
-						+ " dem angegebenen Rang.");
+				err("Es besteht bereits ein Wärmeerzeuger mit"
+					+ " dem angegebenen Rang.");
+				return;
 			}
 			setErrorMessage(null);
 			setPageComplete(true);
-			return true;
 		}
 
-		private boolean err(String msg) {
+		private void err(String msg) {
 			setPageComplete(false);
 			setErrorMessage(msg);
-			return false;
 		}
 	}
 

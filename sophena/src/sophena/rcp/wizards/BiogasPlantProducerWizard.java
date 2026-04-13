@@ -74,12 +74,8 @@ public class BiogasPlantProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer, project);
-
-			Producers.initFuelSpec(producer, project);
-			Producers.initCosts(producer);
-			Producers.initElectricity(producer, project);
-
-			ProjectDao dao = new ProjectDao(App.getDb());
+			Producers.initFuelAndCosts(producer, project);
+			var dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();
 			ProducerEditor.open(project.toDescriptor(), producer.toDescriptor());

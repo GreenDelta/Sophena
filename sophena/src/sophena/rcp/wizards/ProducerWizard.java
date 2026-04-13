@@ -79,10 +79,7 @@ public class ProducerWizard extends Wizard {
 			Producer producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer);
-
-			Producers.initFuelSpec(producer, project);
-			Producers.initCosts(producer);
-			Producers.initElectricity(producer, project);
+			Producers.initFuelAndCosts(producer, project);
 
 			if (producer.productGroup != null && producer.productGroup.type == ProductType.SOLAR_THERMAL_PLANT) {
 				Wizards.initSolarCollectorSpec(producer);
