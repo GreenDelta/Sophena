@@ -1,10 +1,9 @@
 package sophena.rcp.navigation.actions.producers;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -26,15 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.BoilerDao;
 import sophena.db.daos.FuelDao;
-import sophena.db.daos.HeatPumpDao;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Boiler;
 import sophena.model.CostSettings;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
-import sophena.model.HeatPump;
-import sophena.model.HeatPumpMode;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.ProductCosts;
@@ -63,8 +59,6 @@ class PeakBoilerDialog extends FormDialog {
 	private final ProductGroup[] groups;
 
 	private Text demandText;
-	private Text rankText;
-	private Text functionText;
 	private Text nameText;
 	private Combo groupCombo;
 	private TableViewer table;
@@ -88,16 +82,20 @@ class PeakBoilerDialog extends FormDialog {
 		super(UI.shell());
 		this.project = project;
 		this.peakDemand = peakDemand;
-		this.candidates = collectCandidates();
+		this.candidates = new BoilerDao(App.getDb()).getAll().stream()
+			.filter(this::isSelectable)
+			.map(Candidate::new)
+			.sorted()
+			.toList();
 		this.groups = collectGroups();
 	}
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, false).setEnabled(false);
+			IDialogConstants.OK_LABEL, false).setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, true);
+			IDialogConstants.CANCEL_LABEL, true);
 	}
 
 	@Override
@@ -115,15 +113,11 @@ class PeakBoilerDialog extends FormDialog {
 	private void createFields(Composite parent, FormToolkit tk) {
 		demandText = UI.formText(parent, tk, "Benötigte Leistung");
 		demandText.setEditable(false);
-		rankText = UI.formText(parent, tk, "Rang");
-		rankText.setEditable(false);
-		functionText = UI.formText(parent, tk, "Pufferspeicher");
-		functionText.setEditable(false);
 		nameText = UI.formText(parent, tk, "Name");
 		Texts.on(nameText).required().onChanged(t -> {
 			var selected = getSelectedCandidate();
 			nameEdited = selected == null
-					|| !Strings.nullOrEqual(t, selected.name);
+				|| !Strings.nullOrEqual(t, selected.boiler.name);
 			updateOkButton();
 		});
 		groupCombo = UI.formCombo(parent, tk, "Produktgruppe");
@@ -131,9 +125,11 @@ class PeakBoilerDialog extends FormDialog {
 	}
 
 	private void createTable(Composite body) {
-		table = Tables.createViewer(body, "Hersteller", "Nennleistung", "Bezeichnung");
-		Tables.bindColumnWidths(table, 0.3, 0.25, 0.45);
+		table = Tables.createViewer(
+			body, "Hersteller / Bezeichnung", "Nennleistung");
+		Tables.bindColumnWidths(table, 0.75, 0.25);
 		table.setLabelProvider(new CandidateLabel());
+
 		table.addSelectionChangedListener(e -> {
 			suggestName();
 			updateOkButton();
@@ -145,10 +141,15 @@ class PeakBoilerDialog extends FormDialog {
 		});
 	}
 
+	private void suggestName() {
+		if (nameEdited && !Texts.isEmpty(nameText)) return;
+		var c = getSelectedCandidate();
+		nameText.setText(c != null ? c.boiler.name : "");
+	}
+
 	private void bindToUi() {
 		demandText.setText(Num.str(peakDemand) + " kW");
-		rankText.setText(Integer.toString(maxProducerRank() + 1));
-		functionText.setText("Spitzenlast");
+
 		nameEdited = false;
 		groupCombo.setItems(groupLabels());
 		groupCombo.select(0);
@@ -156,10 +157,13 @@ class PeakBoilerDialog extends FormDialog {
 	}
 
 	private void updateTableInput() {
-		var filtered = filteredCandidates();
+		var group = selectedGroup();
+		var filtered = candidates.stream()
+			.filter(c -> c.matches(group))
+			.toList();
 		table.setInput(filtered);
 		if (!filtered.isEmpty()) {
-			table.setSelection(new StructuredSelection(filtered.get(0)), true);
+			table.setSelection(new StructuredSelection(filtered.getFirst()), true);
 		} else {
 			table.setSelection(StructuredSelection.EMPTY);
 			if (!nameEdited) {
@@ -169,25 +173,6 @@ class PeakBoilerDialog extends FormDialog {
 		updateOkButton();
 	}
 
-	private List<Candidate> filteredCandidates() {
-		var group = selectedGroup();
-		if (group == null)
-			return candidates;
-		var filtered = new ArrayList<Candidate>();
-		for (var candidate : candidates) {
-			if (candidate.group == group) {
-				filtered.add(candidate);
-			}
-		}
-		return filtered;
-	}
-
-	private void suggestName() {
-		if (nameEdited && !Texts.isEmpty(nameText))
-			return;
-		var selected = getSelectedCandidate();
-		nameText.setText(selected != null ? selected.name : "");
-	}
 
 	private void updateOkButton() {
 		var ok = getButton(IDialogConstants.OK_ID);
@@ -211,13 +196,12 @@ class PeakBoilerDialog extends FormDialog {
 			producer.name = nameText.getText().trim();
 			producer.rank = maxProducerRank() + 1;
 			producer.function = ProducerFunction.PEAK_LOAD;
-			producer.productGroup = candidate.group;
+			producer.productGroup = candidate.boiler().group;
 			producer.boiler = candidate.boiler;
-			producer.heatPump = candidate.heatPump;
 			initFuelSpec(producer);
 			initCosts(producer);
 			initElectricity(producer);
-			initHeatPump(producer);
+
 			project.producers.add(producer);
 			new ProjectDao(App.getDb()).update(project);
 			Navigator.refresh();
@@ -280,57 +264,26 @@ class PeakBoilerDialog extends FormDialog {
 		return max;
 	}
 
-	private List<Candidate> collectCandidates() {
-		var candidates = new ArrayList<Candidate>();
-		for (var boiler : new BoilerDao(App.getDb()).getAll()) {
-			if (boiler == null || boiler.group == null || boiler.group.type == null)
-				continue;
-			if (!isSelectableBoilerGroup(boiler.group.type))
-				continue;
-			double power = Math.max(0, boiler.maxPower);
-			if (power < peakDemand)
-				continue;
-			candidates.add(Candidate.of(boiler, power));
-		}
-		for (var heatPump : new HeatPumpDao(App.getDb()).getAll()) {
-			if (heatPump == null || heatPump.group == null)
-				continue;
-			if (heatPump.group.type != ProductType.HEAT_PUMP)
-				continue;
-			double power = Math.max(0, heatPump.ratedPower);
-			if (power < peakDemand)
-				continue;
-			candidates.add(Candidate.of(heatPump, power));
-		}
-		candidates.sort(Comparator
-				.comparingDouble((Candidate candidate) -> candidate.power)
-				.thenComparing(candidate -> Strings.nullOrEmpty(candidate.manufacturer)
-						? ""
-						: candidate.manufacturer)
-				.thenComparing(candidate -> Strings.nullOrEmpty(candidate.name)
-						? ""
-						: candidate.name));
-		return candidates;
+	private boolean isSelectable(Boiler boiler) {
+		if (boiler == null
+			|| boiler.maxPower < peakDemand
+			|| boiler.group == null
+			|| boiler.group.type == null)
+			return false;
+		var type = boiler.group.type;
+		return type == ProductType.BIOMASS_BOILER
+			|| type == ProductType.FOSSIL_FUEL_BOILER
+			|| type == ProductType.COGENERATION_PLANT;
 	}
 
 	private ProductGroup[] collectGroups() {
 		var set = new HashSet<ProductGroup>();
-		for (var candidate : candidates) {
-			if (candidate.group != null) {
-				set.add(candidate.group);
-			}
+		for (var c : candidates) {
+			set.add(c.boiler.group);
 		}
 		var groups = new ArrayList<>(set);
-		groups.sort(Comparator.comparing(group -> Strings.nullOrEmpty(group.name)
-				? ""
-				: group.name));
+		groups.sort((gi, gj) -> Strings.compare(gi.name, gj.name));
 		return groups.toArray(new ProductGroup[0]);
-	}
-
-	private boolean isSelectableBoilerGroup(ProductType type) {
-		return type == ProductType.BIOMASS_BOILER
-				|| type == ProductType.FOSSIL_FUEL_BOILER
-				|| type == ProductType.COGENERATION_PLANT;
 	}
 
 	private void initFuelSpec(Producer producer) {
@@ -368,86 +321,73 @@ class PeakBoilerDialog extends FormDialog {
 
 	private void initElectricity(Producer producer) {
 		if (producer.productGroup == null
-				|| producer.productGroup.type != ProductType.COGENERATION_PLANT) {
+			|| producer.productGroup.type != ProductType.COGENERATION_PLANT) {
 			return;
 		}
 		if (project.costSettings != null
-				&& project.costSettings.replacedElectricityMix != null) {
+			&& project.costSettings.replacedElectricityMix != null) {
 			producer.producedElectricity = project.costSettings.replacedElectricityMix;
 			return;
 		}
 		producer.producedElectricity = new FuelDao(App.getDb())
-				.getAll().stream()
-				.filter(fuel -> fuel.group == FuelGroup.ELECTRICITY)
-				.findFirst()
-				.orElse(null);
+			.getAll().stream()
+			.filter(fuel -> fuel.group == FuelGroup.ELECTRICITY)
+			.findFirst()
+			.orElse(null);
 	}
 
-	private void initHeatPump(Producer producer) {
-		if (producer.productGroup == null
-				|| producer.productGroup.type != ProductType.HEAT_PUMP) {
-			return;
-		}
-		if (producer.productGroup.name != null
-				&& producer.productGroup.name.contains("Luft")) {
-			producer.heatPumpMode = HeatPumpMode.OUTODOOR_TEMPERATURE_MODE;
-		} else {
-			producer.heatPumpMode = HeatPumpMode.USER_TEMPERATURE_MODE;
-			producer.sourceTemperatureUser = 0d;
-		}
-	}
 
-	private static class Candidate {
+	private record Candidate(Boiler boiler)	implements Comparable<Candidate> {
 
-		final Boiler boiler;
-		final HeatPump heatPump;
-		final ProductGroup group;
-		final String manufacturer;
-		final String name;
-		final double power;
-
-		private Candidate(Boiler boiler, HeatPump heatPump, ProductGroup group,
-				String manufacturer, String name, double power) {
-			this.boiler = boiler;
-			this.heatPump = heatPump;
-			this.group = group;
-			this.manufacturer = manufacturer;
-			this.name = name;
-			this.power = power;
+		Candidate {
+			Objects.requireNonNull(boiler);
 		}
 
-		static Candidate of(Boiler boiler, double power) {
-			String manufacturer = boiler.manufacturer != null
-					? boiler.manufacturer.name
-					: null;
-			return new Candidate(boiler, null, boiler.group, manufacturer,
-					boiler.name, power);
+		boolean matches(ProductGroup group) {
+			return Objects.equals(group, boiler.group);
 		}
 
-		static Candidate of(HeatPump heatPump, double power) {
-			String manufacturer = heatPump.manufacturer != null
-					? heatPump.manufacturer.name
-					: null;
-			return new Candidate(null, heatPump, heatPump.group, manufacturer,
-					heatPump.name, power);
+		String manufacturer() {
+			return boiler.manufacturer != null
+				? boiler.manufacturer.name
+				: null;
 		}
-	}
 
-	private static class CandidateLabel extends LabelProvider implements ITableLabelProvider {
+		String fullName() {
+			var man = manufacturer();
+			return man != null
+				? man + " / " + boiler.name
+				: boiler.name;
+		}
 
 		@Override
-		public Image getColumnImage(Object elem, int col) {
+		public int compareTo(Candidate o) {
+			if (o == null) return 1;
+			if (o == this) return 0;
+			int c = Double.compare(boiler.maxPower, o.boiler.maxPower);
+			if (c != 0) return c;
+			c = Strings.compare(manufacturer(), o.manufacturer());
+			return c == 0
+				? Strings.compare(boiler.name, o.boiler.name)
+				: c;
+		}
+	}
+
+	private static class CandidateLabel
+		extends LabelProvider implements ITableLabelProvider {
+
+		@Override
+		public Image getColumnImage(Object obj, int col) {
 			return col == 0 ? Icon.BOILER_16.img() : null;
 		}
 
 		@Override
 		public String getColumnText(Object elem, int col) {
-			if (!(elem instanceof Candidate candidate))
+			if (!(elem instanceof Candidate c))
 				return null;
 			return switch (col) {
-				case 0 -> candidate.manufacturer;
-				case 1 -> Num.str(candidate.power) + " kW";
-				case 2 -> candidate.name;
+				case 0 -> c.fullName();
+				case 1 -> Num.str(c.boiler.maxPower);
 				default -> null;
 			};
 		}
