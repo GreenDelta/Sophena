@@ -14,8 +14,8 @@ public record BiogasPlantResult(
 
 	public static BiogasPlantResult calculate(BiogasPlant plant) {
 		if (plant == null
-			|| !plant.hasValidBoilers()
-			|| plant.totalElectricPower() <= 0
+			|| !BiogasPlants.hasValidBoilers(plant)
+			|| BiogasPlants.totalElectricPower(plant) <= 0
 			|| plant.substrateProfiles.isEmpty())
 			return emptyOf(plant);
 		return new Calculator(plant).run();
@@ -35,7 +35,7 @@ public record BiogasPlantResult(
 		profile.minPower = new double[Stats.HOURS];
 		profile.maxPower = new double[Stats.HOURS];
 		profile.temperaturLevel = new double[Stats.HOURS];
-		double power = plant.totalThermalPower();
+		double power = BiogasPlants.totalThermalPower(plant);
 		if (power > 0 && runFlags != null) {
 			for (int h = 0; h < runFlags.length; h++) {
 				if (!runFlags[h])
@@ -64,7 +64,7 @@ public record BiogasPlantResult(
 			this.plant = plant;
 			profile = BiogasProfile.of(plant.substrateProfiles);
 			var storageSize = BiogasStorage.defaultSizeOf(profile);
-			storage = new BiogasStorage(storageSize, plant.fullLoadFuelPower());
+			storage = new BiogasStorage(storageSize, BiogasPlants.fullLoadFuelPower(plant));
 			priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
 		}
 

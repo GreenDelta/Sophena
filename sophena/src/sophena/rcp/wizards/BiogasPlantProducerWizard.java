@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasPlants;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -168,10 +169,10 @@ public class BiogasPlantProducerWizard extends Wizard {
 					? project.heatNet.maxBufferLoadTemperature
 					: 95;
 				p.profile = r.asProducerProfile(temperature);
-				p.profileMaxPower = plant.totalThermalPower() > 0
-					? plant.totalThermalPower()
+				p.profileMaxPower = BiogasPlants.totalThermalPower(plant) > 0
+					? BiogasPlants.totalThermalPower(plant)
 					: Stats.max(p.profile.maxPower);
-				p.profileMaxPowerElectric = plant.totalElectricPower();
+				p.profileMaxPowerElectric = BiogasPlants.totalElectricPower(plant);
 			}
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
@@ -246,7 +247,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 				case 1 -> plant.boilers.size() == 1 && plant.boilers.get(0).boiler != null
 						? plant.boilers.get(0).boiler.name
 						: plant.boilers.size() + " Blöcke";
-				case 2 -> Num.str(plant.totalElectricPower()) + " kW el.";
+				case 2 -> Num.str(BiogasPlants.totalElectricPower(plant)) + " kW el.";
 				default -> null;
 			};
 		}

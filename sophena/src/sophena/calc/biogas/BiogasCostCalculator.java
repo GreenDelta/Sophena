@@ -45,7 +45,7 @@ public class BiogasCostCalculator {
 		}
 
 		// Initial investment recorded for reference
-		fs.investments = plant.totalInvestment();
+		fs.investments = BiogasPlants.totalInvestment(plant);
 
 		// 1. Capital Costs: The annual annuity of the investment
 		fs.capitalCosts = calculateCapitalCosts();
@@ -127,7 +127,7 @@ public class BiogasCostCalculator {
 	 * Calculates operation-related costs including maintenance and labor.
 	 */
 	private double calculateOperationCosts() {
-		double investment = plant.totalInvestment();
+		double investment = BiogasPlants.totalInvestment(plant);
 
 		// Maintenance/Repair: sum of all block-specific maintenance shares
 		double maintBase = 0;
@@ -140,7 +140,7 @@ public class BiogasCostCalculator {
 		double maintAnnuity = maintBase * annuityFactor(plant.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
-		double operBase = plant.totalOperationHours() * plant.hourlyWage;
+		double operBase = BiogasPlants.totalOperationHours(plant) * plant.hourlyWage;
 		double operAnnuity = operBase * annuityFactor(plant.operationFactor);
 
 		// Insurance: fixed percentage of investment (assumed constant price level)
@@ -170,7 +170,7 @@ public class BiogasCostCalculator {
 		double hourlyRevenuesSum = 0;
 
 		// Net electrical power available for feed-in
-		double netPower = Math.max(0, plant.totalElectricPower() - plant.transmissionLosses);
+		double netPower = Math.max(0, BiogasPlants.totalElectricPower(plant) - plant.transmissionLosses);
 
 		// Subtract internal demand from production if not in full feed-in mode (surplus feed-in)
 		if (!plant.isFullFeedIn) {

@@ -21,7 +21,7 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 		if (plant.electricityPrices == null
 				|| plant.electricityPrices.values == null)
 			return schedule;
-		double fuelPower = plant.fullLoadFuelPower();
+		double fuelPower = BiogasPlants.fullLoadFuelPower(plant);
 		if (fuelPower <= 0)
 			return schedule;
 
