@@ -34,6 +34,10 @@ public class BiogasPlantManager extends Editor {
 		Editors.open(input, "sophena.BiogasPlantManager");
 	}
 
+	public static void createNew() {
+		BiogasPlantWizard.open().ifPresent(BiogasPlantEditor::open);
+	}
+
 	@Override
 	protected void addPages() {
 		try {
@@ -97,6 +101,7 @@ public class BiogasPlantManager extends Editor {
 				return;
 			plants.add(plant);
 			table.setInput(plants);
+			BiogasPlantEditor.open(plant);
 		}
 
 		private void editPlant(TableViewer table) {

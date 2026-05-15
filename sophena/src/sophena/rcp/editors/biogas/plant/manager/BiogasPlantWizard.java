@@ -31,14 +31,14 @@ public class BiogasPlantWizard extends Wizard {
 		ProductGroup group = null;
 		for (var g : App.getDb().getAll(ProductGroup.class)) {
 			if (g.type == ProductType.COGENERATION_PLANT
-					&& g.fuelGroup == FuelGroup.BIOGAS) {
+				&& g.fuelGroup == FuelGroup.BIOGAS) {
 				group = g;
 				break;
 			}
 		}
 		if (group == null) {
 			MsgBox.error("Produktgruppe Biogas-BHKW nicht gefunden",
-					"Die Produktgruppe Biogas-BHKW wurde nicht in der Datenbank gefunden");
+				"Die Produktgruppe Biogas-BHKW wurde nicht in der Datenbank gefunden");
 			return Optional.empty();
 		}
 
@@ -50,9 +50,10 @@ public class BiogasPlantWizard extends Wizard {
 		wizard.setWindowTitle("Neue Biogasanlage");
 		var dialog = new WizardDialog(UI.shell(), wizard);
 		dialog.setPageSize(150, 450);
+
 		return dialog.open() == Window.OK
-				? Optional.of(wizard.plant)
-				: Optional.empty();
+			? Optional.of(wizard.plant)
+			: Optional.empty();
 	}
 
 	private BiogasPlantWizard(BiogasPlant plant) {
@@ -62,7 +63,7 @@ public class BiogasPlantWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		page = new Page(plant);
+		page = new Page();
 		addPage(page);
 	}
 
@@ -75,15 +76,13 @@ public class BiogasPlantWizard extends Wizard {
 
 	private static class Page extends WizardPage {
 
-		private final BiogasPlant plant;
 		private Text nameText;
 		private Text durationText;
 		private Text descriptionText;
 
-		private Page(BiogasPlant plant) {
+		private Page() {
 			super("BiogasPlantWizardPage", "Neue Biogasanlage", null);
 			setMessage(" ");
-			this.plant = plant;
 			setPageComplete(false);
 		}
 
@@ -97,45 +96,27 @@ public class BiogasPlantWizard extends Wizard {
 		public void createControl(Composite parent) {
 			var comp = UI.formComposite(parent);
 			setControl(comp);
-			UI.gridLayout(comp, 3);
-			nameField(comp);
-			durationField(comp);
-			descriptionField(comp);
-		}
+			UI.gridLayout(comp, 2);
 
-		private void nameField(Composite comp) {
 			nameText = UI.formText(comp, M.Name);
 			Texts.on(nameText).required().validate(this::validate);
-			UI.filler(comp);
-		}
 
-		private void durationField(Composite comp) {
 			durationText = UI.formText(comp, "Laufzeit (Jahre)");
 			Texts.on(durationText).required().integer().validate(this::validate);
-			UI.filler(comp);
-		}
 
-		private void descriptionField(Composite comp) {
 			descriptionText = UI.formMultiText(comp, M.Description);
-			UI.filler(comp);
+			UI.gridData(descriptionText, true, false).heightHint = 150;
 		}
 
 		private void validate() {
-			if (Texts.isEmpty(nameText)) {
-				error("Name darf nicht leer sein");
+			if (Texts.isEmpty(nameText)
+				|| !Texts.hasNumber(durationText)
+				|| Texts.getInt(durationText) <= 0) {
+				setPageComplete(false);
 				return;
 			}
-			if (!Texts.hasNumber(durationText) || Texts.getInt(durationText) <= 0) {
-				error("Bitte geben Sie eine gültige Laufzeit an");
-				return;
-			}
-			setErrorMessage(null);
 			setPageComplete(true);
 		}
 
-		private void error(String message) {
-			setErrorMessage(message);
-			setPageComplete(false);
-		}
 	}
 }
