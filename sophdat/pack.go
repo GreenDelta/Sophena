@@ -3,7 +3,6 @@ package main
 import (
 	"archive/zip"
 	"encoding/json"
-	"io/ioutil"
 	"os"
 )
 
@@ -103,12 +102,12 @@ func pack() {
 }
 
 func packJSONFolder(folder string, w *PackWriter) {
-	files, err := ioutil.ReadDir("data/json/" + folder)
+	files, err := os.ReadDir("data/json/" + folder)
 	check(err)
 	for _, file := range files {
 		name := file.Name()
 		p := "data/json/" + folder + "/" + name
-		bytes, err := ioutil.ReadFile(p)
+		bytes, err := os.ReadFile(p)
 		check(err)
 		w.PutBytes(folder+"/"+name, bytes)
 	}
@@ -116,7 +115,7 @@ func packJSONFolder(folder string, w *PackWriter) {
 
 func packMeta(w *PackWriter) {
 	path := "data/json/meta.json"
-	bytes, err := ioutil.ReadFile(path)
+	bytes, err := os.ReadFile(path)
 	check(err)
 	w.PutBytes("meta.json", bytes)
 }

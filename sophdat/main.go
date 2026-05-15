@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -15,7 +14,7 @@ func main() {
 		check(os.Mkdir("gen", os.ModePerm))
 	} else {
 		fmt.Println("Delete files in `gen` folder")
-		files, err := ioutil.ReadDir("gen")
+		files, err := os.ReadDir("gen")
 		check(err)
 		for _, file := range files {
 			fmt.Println("  .. delete file", file.Name())
