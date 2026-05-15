@@ -48,9 +48,9 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	 * in this class.
 	 */
 	public static <T extends RootEntity> T open(
-			String title,
-			List<T> list,
-			Function<T, String> labelFn) {
+		String title,
+		List<T> list,
+		Function<T, String> labelFn) {
 		if (list == null)
 			return null;
 		var dialog = new SearchDialog<T>();
@@ -58,58 +58,43 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		dialog.title = title;
 		dialog.labelFn = labelFn;
 		return dialog.open() == OK
-				? dialog.selection
-				: null;
+			? dialog.selection
+			: null;
 	}
 
 	public static BufferTank forBuffers() {
 		var buffers = new RootEntityDao<>(
-				BufferTank.class, App.getDb()).getAll();
+			BufferTank.class, App.getDb()).getAll();
 		Sorters.buffers(buffers);
-		return open(
-				"Pufferspeicher",
-				buffers,
-				ProductLabel::forBufferTank);
+		return open("Pufferspeicher", buffers, ProductLabel::of);
 	}
 
 	public static TransferStation forTransferStations() {
 		var stations = new RootEntityDao<>(
-				TransferStation.class, App.getDb()).getAll();
+			TransferStation.class, App.getDb()).getAll();
 		Sorters.transferStations(stations);
-		return open(
-				"Hausübergabestationen",
-				stations,
-				ProductLabel::forTransferStation);
+		return open("Hausübergabestationen", stations, ProductLabel::of);
 	}
 
 	public static Pipe forPipes() {
 		var pipes = new RootEntityDao<>(
-				Pipe.class, App.getDb()).getAll();
+			Pipe.class, App.getDb()).getAll();
 		Sorters.pipes(pipes);
-		return open(
-				"Wärmeleitungen",
-				pipes,
-				ProductLabel::forPipe);
+		return open("Wärmeleitungen", pipes, ProductLabel::of);
 	}
 
 	public static HeatRecovery forHeatRecoveries() {
 		var recoveries = new RootEntityDao<>(
-				HeatRecovery.class, App.getDb()).getAll();
+			HeatRecovery.class, App.getDb()).getAll();
 		Sorters.heatRecoveries(recoveries);
-		return open(
-				"Wärmerückgewinnungen",
-				recoveries,
-				ProductLabel::forHeatRecovery);
+		return open("Wärmerückgewinnungen", recoveries, ProductLabel::of);
 	}
 
 	public static FlueGasCleaning forFlueGasCleanings() {
 		var cleanings = new RootEntityDao<>(
-				FlueGasCleaning.class, App.getDb()).getAll();
+			FlueGasCleaning.class, App.getDb()).getAll();
 		Sorters.flueGasCleanings(cleanings);
-		return open(
-				"Rauchgasreinigungen",
-				cleanings,
-				ProductLabel::forFlueGasCleaning);
+		return open("Rauchgasreinigungen", cleanings, ProductLabel::of);
 	}
 
 	private SearchDialog() {
@@ -119,9 +104,9 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, false).setEnabled(false);
+			IDialogConstants.OK_LABEL, false).setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, true);
+			IDialogConstants.CANCEL_LABEL, true);
 	}
 
 	@Override
@@ -204,7 +189,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 			if (Strings.nullOrEmpty(label))
 				return false;
 			String[] parts = filterText.getText().trim().toLowerCase()
-					.split(" ");
+				.split(" ");
 			String n = label.toLowerCase();
 			for (String part : parts) {
 				if (!n.contains(part))

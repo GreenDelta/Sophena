@@ -48,7 +48,7 @@ class TransferStationSection {
 		UI.innerGrid(inner, 2);
 		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		if (consumer().transferStation != null) {
-			link.setText(ProductLabel.forTransferStation(consumer().transferStation));
+			link.setText(ProductLabel.of(consumer().transferStation));
 		} else {
 			link.setText("(keine Hausübergabestation ausgewählt)");
 		}
@@ -77,7 +77,7 @@ class TransferStationSection {
 		if (s == null)
 			return;
 		consumer().transferStation = s;
-		link.setText(ProductLabel.forTransferStation(s));
+		link.setText(ProductLabel.of(s));
 		link.getParent().pack();
 		ProductCosts costs = consumer().transferStationCosts;
 		ProductCosts.copy(s, costs);

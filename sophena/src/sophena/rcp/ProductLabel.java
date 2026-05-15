@@ -9,14 +9,25 @@ import sophena.model.Pipe;
 import sophena.model.TransferStation;
 import sophena.utils.Num;
 
-public class ProductLabel {
+public final class ProductLabel {
 
 	private ProductLabel() {
 	}
 
-	public static String forProduct(AbstractProduct product) {
-		if (product == null)
-			return "";
+	public static String of(AbstractProduct product) {
+		return switch (product) {
+			case Boiler boiler -> ofBoiler(boiler);
+			case HeatRecovery recovery -> ofHeatRecovery(recovery);
+			case FlueGasCleaning cleaning -> ofFlueGasCleaning(cleaning);
+			case BufferTank bufferTank -> ofBufferTank(bufferTank);
+			case Pipe pipe -> ofPipe(pipe);
+			case TransferStation station -> ofTransferStation(station);
+			case null -> "";
+			default -> ofProduct(product);
+		};
+	}
+
+	private static String ofProduct(AbstractProduct product) {
 		String label = "";
 		if (product.manufacturer != null) {
 			label += product.manufacturer.name + " · ";
@@ -25,47 +36,45 @@ public class ProductLabel {
 		return label;
 	}
 
-	public static String forBoiler(Boiler b) {
+	private static String ofBoiler(Boiler b) {
 		String power = b.isCoGenPlant
 				? Num.intStr(b.maxPowerElectric)
 				: Num.intStr(b.maxPower);
-		return forProduct(b, power + " kW");
+		return withKeyFigure(b, power + " kW");
 	}
 
-	public static String forHeatRecovery(HeatRecovery hrc) {
+	private static String ofHeatRecovery(HeatRecovery hrc) {
 		String power = Num.intStr(hrc.producerPower);
-		String label = forProduct(hrc, power + " kW");
+		String label = withKeyFigure(hrc, power + " kW");
 		label += " · " + hrc.heatRecoveryType + " · ";
 		label += hrc.fuel;
 		return label;
 	}
 
-	public static String forFlueGasCleaning(FlueGasCleaning fgc) {
+	private static String ofFlueGasCleaning(FlueGasCleaning fgc) {
 		String power = Num.intStr(fgc.maxProducerPower);
-		return forProduct(fgc, power + " kW");
+		return withKeyFigure(fgc, power + " kW");
 	}
 
-	public static String forBufferTank(BufferTank bt) {
+	private static String ofBufferTank(BufferTank bt) {
 		String volume = Num.intStr(bt.volume);
-		return forProduct(bt, volume + " l");
+		return withKeyFigure(bt, volume + " l");
 	}
 
-	public static String forPipe(Pipe pipe) {
+	private static String ofPipe(Pipe pipe) {
 		var type = pipe.pipeType != null
 				? pipe.pipeType.name()
 				: "?";
 		var diameter = Num.intStr(pipe.outerDiameter) + " mm";
-		return type + " · " + forProduct(pipe, diameter);
+		return type + " · " + withKeyFigure(pipe, diameter);
 	}
 
-	public static String forTransferStation(TransferStation ts) {
+	private static String ofTransferStation(TransferStation ts) {
 		var capacity = Num.intStr(ts.outputCapacity);
-		return forProduct(ts, capacity + " kW");
+		return withKeyFigure(ts, capacity + " kW");
 	}
 
-	private static String forProduct(AbstractProduct product, String keyFigure) {
-		if (product == null)
-			return "";
+	private static String withKeyFigure(AbstractProduct product, String keyFigure) {
 		String label = keyFigure;
 		if (product.manufacturer != null) {
 			label += " · " + product.manufacturer.name;

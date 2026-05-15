@@ -126,7 +126,7 @@ class EntryWizard extends Wizard {
 			Product p = SearchDialog.open(
 				Labels.get(type),
 				dao.getAllGlobal(type),
-				ProductLabel::forProduct
+				ProductLabel::of
 			);
 			if (p == null) {
 				noProduct(true);
