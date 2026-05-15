@@ -1,6 +1,5 @@
 package sophena.calc.biogas;
 
-import sophena.model.Boiler;
 import sophena.model.Copyable;
 
 public class BiogasStorage implements Copyable<BiogasStorage> {
@@ -8,26 +7,21 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	/// The calorific value of biomethane in kWh/m3
 	private final double CAL = 9.97;
 
-	/// The power consumption of the boiler in kW.
-	private final double P;
-	private final Boiler boiler;
+	/// The fuel power demand of the plant in kW under full load.
+	private final double fuelPower;
 	private final double size;
 	private double filled;
 	private double methaneContent;
 
 	/// Creates a new biogas storage of the given size in m3 that is used by
-	/// the given cogen-boiler (the max. electric power & electric efficiency
-	/// rate must be provided).
-	public BiogasStorage(double size, Boiler boiler) {
+	/// the biogas plant under full load.
+	public BiogasStorage(double size, double fuelPower) {
 		if (size <= 0)
 			throw new IllegalArgumentException("size is <= 0: " + size);
-		if (boiler == null
-				|| boiler.maxPowerElectric <= 0
-				|| boiler.efficiencyRateElectric <= 0)
+		if (fuelPower <= 0)
 			throw new IllegalArgumentException("invalid boiler configuration");
-		this.boiler = boiler;
 		this.size = size;
-		this.P = boiler.maxPowerElectric / boiler.efficiencyRateElectric;
+		this.fuelPower = fuelPower;
 	}
 
 	/// The default size of the gas storage is the maximum amount of biogas
@@ -100,20 +94,20 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	/// running the boiler under full load.
 	public double hoursToEmpty() {
 		double q = filled * methaneContent * CAL;
-		return q / P;
+		return q / fuelPower;
 	}
 
 	/// Returns true if the boiler can run at least one hour under full load with
 	/// the biogas that is currently in the storage.
 	public boolean canRunOneHour() {
 		double q = filled * methaneContent * CAL;
-		return q > P;
+		return q > fuelPower;
 	}
 
 	/// Reduces the stored biogas by the amount that is required to run the linked
 	/// boiler under full load for one hour.
 	public void runOneHour() {
-		double vol = (P / CAL) / methaneContent;
+		double vol = (fuelPower / CAL) / methaneContent;
 		filled = filled > vol ? filled - vol : 0;
 	}
 
@@ -123,7 +117,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 
 	@Override
 	public BiogasStorage copy() {
-		var copy = new BiogasStorage(size, boiler);
+		var copy = new BiogasStorage(size, fuelPower);
 		copy.filled = filled;
 		copy.methaneContent = methaneContent;
 		return copy;

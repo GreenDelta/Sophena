@@ -4,7 +4,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -14,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import sophena.model.AnnualCostEntry;
-import sophena.model.Boiler;
 import sophena.model.Fuel;
-import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 
@@ -34,10 +31,6 @@ public class BiogasPlant extends RootEntity {
 	public Fuel producedElectricity;
 
 	@OneToOne
-	@JoinColumn(name = "f_product")
-	public Boiler product;
-
-	@OneToOne
 	@JoinColumn(name = "f_product_group")
 	public ProductGroup productGroup;
 
@@ -53,9 +46,9 @@ public class BiogasPlant extends RootEntity {
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
 
-	/// product costs for this biogas plant
-	@Embedded
-	public ProductCosts costs;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_biogas_plant")
+	public final List<BiogasPlantBoiler> boilers = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_biogas_plant")
@@ -156,12 +149,15 @@ public class BiogasPlant extends RootEntity {
 		clone.description = description;
 		clone.duration = duration;
 		clone.producedElectricity = producedElectricity;
-		clone.product = product;
 		clone.productGroup = productGroup;
 		clone.electricityPrices = electricityPrices;
 		clone.ratedPower = ratedPower;
 		clone.minimumRuntime = minimumRuntime;
-		clone.costs = costs != null ? costs.copy() : null;
+		for (var boiler : boilers) {
+			if (boiler != null) {
+				clone.boilers.add(boiler.copy());
+			}
+		}
 		for (var p : substrateProfiles) {
 			clone.substrateProfiles.add(p.copy());
 		}
@@ -187,5 +183,72 @@ public class BiogasPlant extends RootEntity {
 		clone.maintenanceFactor = maintenanceFactor;
 		clone.electricityRevenuesFactor = electricityRevenuesFactor;
 		return clone;
+	}
+
+	public boolean hasValidBoilers() {
+		if (boilers.isEmpty())
+			return false;
+		for (var entry : boilers) {
+			if (entry == null
+					|| entry.boiler == null
+					|| entry.boiler.maxPowerElectric <= 0
+					|| entry.boiler.efficiencyRateElectric <= 0)
+				return false;
+		}
+		return true;
+	}
+
+	public double totalThermalPower() {
+		double sum = 0;
+		for (var entry : boilers) {
+			if (entry == null || entry.boiler == null)
+				continue;
+			sum += entry.boiler.maxPower;
+		}
+		return sum;
+	}
+
+	public double totalElectricPower() {
+		double sum = 0;
+		for (var entry : boilers) {
+			if (entry == null || entry.boiler == null)
+				continue;
+			sum += entry.boiler.maxPowerElectric;
+		}
+		return sum;
+	}
+
+	public double fullLoadFuelPower() {
+		double sum = 0;
+		for (var entry : boilers) {
+			if (entry == null
+					|| entry.boiler == null
+					|| entry.boiler.maxPowerElectric <= 0
+					|| entry.boiler.efficiencyRateElectric <= 0)
+				continue;
+			sum += entry.boiler.maxPowerElectric
+					/ entry.boiler.efficiencyRateElectric;
+		}
+		return sum;
+	}
+
+	public double totalInvestment() {
+		double sum = 0;
+		for (var entry : boilers) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.investment;
+		}
+		return sum;
+	}
+
+	public double totalOperationHours() {
+		double sum = 0;
+		for (var entry : boilers) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.operation;
+		}
+		return sum;
 	}
 }

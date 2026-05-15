@@ -1,7 +1,7 @@
 CREATE TABLE sophena_version (
     version SMALLINT
 );
-INSERT INTO sophena_version (version) VALUES (3);
+INSERT INTO sophena_version (version) VALUES (4);
 
 
 CREATE TABLE tbl_weather_stations (
@@ -90,18 +90,11 @@ CREATE TABLE tbl_biogas_plants (
 
     plant_duration              INTEGER,
     f_produced_electricity      CHAR(36),
-    f_product                   CHAR(36),
     f_product_group             CHAR(36),
     f_electricity_price_curve   CHAR(36),
     f_demand_electricity_mix    CHAR(36),
     rated_power                 DOUBLE,
     minimum_runtime             INTEGER,
-
-    investment                  DOUBLE,
-    duration                    INTEGER,
-    repair                      DOUBLE,
-    maintenance                 DOUBLE,
-    operation                   DOUBLE,
 
     hourly_wage                 DOUBLE,
     electricity_price           DOUBLE,
@@ -119,6 +112,22 @@ CREATE TABLE tbl_biogas_plants (
     operation_factor            DOUBLE,
     maintenance_factor          DOUBLE,
     electricity_revenues_factor DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_biogas_plant_boilers (
+
+    id              CHAR(36),
+    f_biogas_plant  CHAR(36),
+    f_boiler        CHAR(36),
+
+    investment      DOUBLE,
+    duration        INTEGER,
+    repair          DOUBLE,
+    maintenance     DOUBLE,
+    operation       DOUBLE,
 
     PRIMARY KEY (id)
 );

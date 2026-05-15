@@ -143,7 +143,9 @@ public class BiogasPlantTable extends Editor {
 				return null;
 			return switch (col) {
 				case 0 -> p.name;
-				case 1 -> p.product != null ? p.product.name : null;
+				case 1 -> p.boilers.size() == 1 && p.boilers.get(0).boiler != null
+						? p.boilers.get(0).boiler.name
+						: p.boilers.size() + " Blöcke";
 				case 2 -> Num.str(p.ratedPower);
 				default -> null;
 			};

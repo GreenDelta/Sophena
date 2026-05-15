@@ -21,9 +21,12 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 		if (plant.electricityPrices == null
 				|| plant.electricityPrices.values == null)
 			return schedule;
+		double fuelPower = plant.fullLoadFuelPower();
+		if (fuelPower <= 0)
+			return schedule;
 
 		var storage = new BiogasStorage(
-				Stats.sum(profile.volume()), plant.product);
+				Stats.sum(profile.volume()), fuelPower);
 		if (storage.size() == 0)
 			return schedule;
 

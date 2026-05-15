@@ -168,12 +168,10 @@ public class BiogasPlantProducerWizard extends Wizard {
 					? project.heatNet.maxBufferLoadTemperature
 					: 95;
 				p.profile = r.asProducerProfile(temperature);
-				p.profileMaxPower = plant.product != null
-					? plant.product.maxPower
+				p.profileMaxPower = plant.totalThermalPower() > 0
+					? plant.totalThermalPower()
 					: Stats.max(p.profile.maxPower);
-				p.profileMaxPowerElectric = plant.product != null
-					? plant.product.maxPowerElectric
-					: 0;
+				p.profileMaxPowerElectric = plant.totalElectricPower();
 			}
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
@@ -245,7 +243,9 @@ public class BiogasPlantProducerWizard extends Wizard {
 				return null;
 			return switch (col) {
 				case 0 -> plant.name;
-				case 1 -> plant.product != null ? plant.product.name : null;
+				case 1 -> plant.boilers.size() == 1 && plant.boilers.get(0).boiler != null
+						? plant.boilers.get(0).boiler.name
+						: plant.boilers.size() + " Blöcke";
 				case 2 -> Num.str(plant.ratedPower) + " kW";
 				default -> null;
 			};

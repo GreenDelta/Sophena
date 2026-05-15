@@ -4,6 +4,7 @@ import sophena.calc.CostResult;
 import sophena.model.AnnualCostEntry;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.SubstrateProfile;
 import sophena.math.costs.CapitalCosts;
 
@@ -39,12 +40,12 @@ public class BiogasCostCalculator {
 	public CostResult.FieldSet calculate() {
 		var fs = new CostResult.FieldSet();
 
-		if (plant == null || plant.costs == null) {
+		if (plant == null) {
 			return fs;
 		}
 
 		// Initial investment recorded for reference
-		fs.investments = plant.costs.investment;
+		fs.investments = plant.totalInvestment();
 
 		// 1. Capital Costs: The annual annuity of the investment
 		fs.capitalCosts = calculateCapitalCosts();
@@ -76,13 +77,23 @@ public class BiogasCostCalculator {
 	 */
 	private double calculateCapitalCosts() {
 		double q = 1 + plant.interestRate / 100;
-		// calculate(Investment, service_life, observation_period, interest_factor, price_change_factor)
-		return CapitalCosts.calculate(
-				plant.costs.investment,
-				plant.duration,
-				plant.duration,
-				q,
-				plant.investmentFactor);
+		double sum = 0;
+		for (BiogasPlantBoiler entry : plant.boilers) {
+			if (entry == null || entry.costs == null || entry.costs.investment <= 0)
+				continue;
+			int duration = entry.costs.duration > 0
+					? entry.costs.duration
+					: plant.duration;
+			if (duration <= 0)
+				continue;
+			sum += CapitalCosts.calculate(
+					entry.costs.investment,
+					duration,
+					plant.duration,
+					q,
+					plant.investmentFactor);
+		}
+		return sum;
 	}
 
 	/**
@@ -116,16 +127,24 @@ public class BiogasCostCalculator {
 	 * Calculates operation-related costs including maintenance and labor.
 	 */
 	private double calculateOperationCosts() {
-		// Maintenance/Repair: percentage of total investment
-		double maintBase = plant.costs.investment * (plant.costs.maintenance + plant.costs.repair) / 100;
+		double investment = plant.totalInvestment();
+
+		// Maintenance/Repair: sum of all block-specific maintenance shares
+		double maintBase = 0;
+		for (BiogasPlantBoiler entry : plant.boilers) {
+			if (entry == null || entry.costs == null)
+				continue;
+			maintBase += entry.costs.investment
+					* (entry.costs.maintenance + entry.costs.repair) / 100;
+		}
 		double maintAnnuity = maintBase * annuityFactor(plant.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
-		double operBase = plant.costs.operation * plant.hourlyWage;
+		double operBase = plant.totalOperationHours() * plant.hourlyWage;
 		double operAnnuity = operBase * annuityFactor(plant.operationFactor);
 
 		// Insurance: fixed percentage of investment (assumed constant price level)
-		double insurance = plant.costs.investment * (plant.insuranceShare / 100);
+		double insurance = investment * (plant.insuranceShare / 100);
 
 		return maintAnnuity + operAnnuity + insurance;
 	}

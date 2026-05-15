@@ -9,7 +9,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
-import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;

@@ -1,33 +1,28 @@
 package sophena.rcp.editors.biogas.plant;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.model.Boiler;
 import sophena.model.FuelGroup;
-import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
+import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.MsgBox;
-import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
@@ -76,42 +71,37 @@ public class BiogasPlantWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		page = new Page(plant.productGroup);
+		page = new Page(plant);
 		addPage(page);
 	}
 
 	@Override
 	public boolean performFinish() {
 		page.update(plant);
-		plant.costs = new ProductCosts();
-		if (plant.product != null) {
-			ProductCosts.copy(plant.product, plant.costs);
-		}
 		App.getDb().insert(plant);
 		return true;
 	}
 
 	private static class Page extends WizardPage {
 
-		private final ProductGroup group;
+		private final BiogasPlant plant;
 		private Text nameText;
 		private boolean nameEdited;
 		private TableViewer table;
-		private Text powerFilter;
+		private Text ratedPowerText;
 
-		private Page(ProductGroup group) {
+		private Page(BiogasPlant plant) {
 			super("BiogasPlantWizardPage", "Neue Biogasanlage", null);
 			setMessage(" ");
-			this.group = group;
+			this.plant = plant;
 			setPageComplete(false);
 		}
 
 		private void update(BiogasPlant plant) {
 			plant.name = nameText.getText();
-			plant.product = Viewers.getFirstSelected(table);
-			plant.ratedPower = Texts.getDouble(powerFilter);
-			if (plant.ratedPower == 0 && plant.product != null) {
-				plant.ratedPower = plant.product.maxPowerElectric;
+			plant.ratedPower = Texts.getDouble(ratedPowerText);
+			if (plant.ratedPower == 0) {
+				plant.ratedPower = plant.totalElectricPower();
 			}
 		}
 
@@ -123,71 +113,113 @@ public class BiogasPlantWizard extends Wizard {
 			var comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
 			nameField(comp);
-			powerFilter(comp);
+			ratedPowerField(comp);
+			boilerToolbar(root);
 			boilerTable(root);
-			updateBoilers();
 		}
 
 		private void nameField(Composite comp) {
 			nameText = UI.formText(comp, M.Name);
 			nameEdited = false;
 			Texts.on(nameText).required().onChanged(t -> {
-				Boiler b = Viewers.getFirstSelected(table);
-				if (b == null || !Objects.equals(b.name, t)) {
+				var first = firstBoiler();
+				if (first == null || !java.util.Objects.equals(first.name, t)) {
 					nameEdited = true;
 				}
 				validate();
 			});
 		}
 
-		private void powerFilter(Composite comp) {
-			powerFilter = UI.formText(comp, "Bemessungsleistung [kWel]");
-			Texts.on(powerFilter).decimal().onChanged(s -> {
-				updateBoilers();
-				validate();
-			});
+		private void ratedPowerField(Composite comp) {
+			ratedPowerText = UI.formText(comp, "Bemessungsleistung [kWel]");
+			Texts.on(ratedPowerText).decimal().onChanged(s -> validate());
+		}
+
+		private void boilerToolbar(Composite root) {
+			var comp = new Composite(root, SWT.NONE);
+			UI.gridLayout(comp, 2);
+			UI.gridData(comp, true, false);
+			UI.formLabel(comp, "BHKW-Blöcke");
+			Action add = Actions.create(M.Add, Icon.ADD_16.des(), this::addBoiler);
+			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::editBoiler);
+			Action remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::removeBoiler);
+			Actions.bind(comp, add, edit, remove);
 		}
 
 		private void boilerTable(Composite root) {
 			table = Tables.createViewer(root,
 					"Bezeichnung",
 					"Hersteller",
-					"Min. Leistung el.",
-					"Max. Leistung el."
+					"Max. Wärmeleistung",
+					"Max. Leistung el.",
+					"Investition"
 			);
-			Tables.bindColumnWidths(table, 0.3, 0.3, 0.2, 0.2);
-			table.setContentProvider(ArrayContentProvider.getInstance());
+			Tables.bindColumnWidths(table, 0.30, 0.20, 0.18, 0.18, 0.14);
 			table.setLabelProvider(new BoilerLabel());
 			table.addSelectionChangedListener(e -> {
 				suggestName();
 				validate();
 			});
+			Tables.onDoubleClick(table, e -> editBoiler());
+			table.setInput(plant.boilers);
 		}
 
-		private void updateBoilers() {
-			var input = new ArrayList<Boiler>();
-			double filter = Texts.getDouble(powerFilter);
-			for (var b : App.getDb().getAll(Boiler.class)) {
-				if (!Objects.equals(b.group, group) || !b.isCoGenPlant)
-					continue;
-				if (filter != 0
-						&& (filter < b.minPowerElectric
-						|| filter > (b.maxPowerElectric * 1.2)))
-					continue;
-				input.add(b);
+		private void addBoiler() {
+			var entry = new BiogasPlantBoiler();
+			entry.id = UUID.randomUUID().toString();
+			if (BiogasPlantBoilerWizard.open(entry, plant.productGroup) != Window.OK)
+				return;
+			plant.boilers.add(entry);
+			if (Texts.getDouble(ratedPowerText) == 0) {
+				Texts.set(ratedPowerText, plant.totalElectricPower());
 			}
-			Sorters.boilers(input);
-			table.setInput(input);
+			table.setInput(plant.boilers);
+			suggestName();
+			validate();
+		}
+
+		private void editBoiler() {
+			BiogasPlantBoiler entry = Viewers.getFirstSelected(table);
+			entry = sophena.utils.Lists.find(entry, plant.boilers);
+			if (entry == null)
+				return;
+			var clone = entry.copy();
+			if (BiogasPlantBoilerWizard.open(clone, plant.productGroup) != Window.OK)
+				return;
+			entry.boiler = clone.boiler;
+			entry.costs = clone.costs;
+			table.setInput(plant.boilers);
+			suggestName();
+			validate();
+		}
+
+		private void removeBoiler() {
+			var entries = sophena.utils.Lists.findAll(
+					Viewers.getAllSelected(table), plant.boilers);
+			if (entries.isEmpty())
+				return;
+			plant.boilers.removeAll(entries);
+			table.setInput(plant.boilers);
+			validate();
+		}
+
+		private sophena.model.Boiler firstBoiler() {
+			if (plant.boilers.isEmpty())
+				return null;
+			var first = plant.boilers.get(0);
+			return first != null ? first.boiler : null;
 		}
 
 		private void suggestName() {
 			if (nameEdited && !Texts.isEmpty(nameText))
 				return;
-			Boiler b = Viewers.getFirstSelected(table);
-			if (b == null) {
+			var boiler = firstBoiler();
+			if (boiler == null) {
 				nameText.setText("");
+			} else if (plant.boilers.size() == 1) {
+				Texts.set(nameText, boiler.name);
 			} else {
-				Texts.set(nameText, b.name);
+				Texts.set(nameText, "Biogasanlage");
 			}
 		}
 
@@ -196,8 +228,8 @@ public class BiogasPlantWizard extends Wizard {
 				error("Name darf nicht leer sein");
 				return;
 			}
-			if (Viewers.getFirstSelected(table) == null) {
-				error("Bitte wählen Sie ein Biogas-BHKW aus");
+			if (plant.boilers.isEmpty()) {
+				error("Bitte fügen Sie mindestens einen BHKW-Block hinzu");
 				return;
 			}
 			setErrorMessage(null);
@@ -210,25 +242,28 @@ public class BiogasPlantWizard extends Wizard {
 		}
 	}
 
-	private static class BoilerLabel extends LabelProvider
-			implements ITableLabelProvider {
+	private static class BoilerLabel extends org.eclipse.jface.viewers.LabelProvider
+			implements org.eclipse.jface.viewers.ITableLabelProvider {
 
 		@Override
-		public Image getColumnImage(Object obj, int col) {
+		public org.eclipse.swt.graphics.Image getColumnImage(Object obj, int col) {
 			return null;
 		}
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Boiler b))
+			if (!(obj instanceof BiogasPlantBoiler entry) || entry.boiler == null)
 				return null;
 			return switch (col) {
-				case 0 -> b.name;
-				case 1 -> b.manufacturer != null
-						? b.manufacturer.name
+				case 0 -> entry.boiler.name;
+				case 1 -> entry.boiler.manufacturer != null
+						? entry.boiler.manufacturer.name
 						: null;
-				case 2 -> Num.str(b.minPowerElectric) + " kW";
-				case 3 -> Num.str(b.maxPowerElectric) + " kW";
+				case 2 -> Num.str(entry.boiler.maxPower) + " kW";
+				case 3 -> Num.str(entry.boiler.maxPowerElectric) + " kW";
+				case 4 -> entry.costs != null
+						? Num.str(entry.costs.investment) + " EUR"
+						: null;
 				default -> null;
 			};
 		}

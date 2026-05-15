@@ -1,21 +1,11 @@
 package sophena.rcp.editors.biogas.plant;
 
-import java.util.Objects;
-
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.model.Boiler;
-import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
-import sophena.rcp.app.App;
-import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.Controls;
-import sophena.rcp.utils.EntityCombo;
-import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -83,13 +73,7 @@ class BiogasPlantInfoPage extends FormPage {
 				});
 		UI.filler(comp, tk);
 
-		// product section
-		var productComp = UI.formSection(body, tk, "Produkt");
-		UI.gridLayout(productComp, 3);
-		var costs = new ProductCostSection(() -> plant().costs)
-				.withEditor(editor);
-		boilerCombo(tk, productComp, costs);
-		costs.createFields(productComp, tk);
+		BiogasPlantBoilerTable.of(editor).render(body, tk);
 
 		// substrate section
 		var substrateSection = SubstrateSection.of(editor);
@@ -99,32 +83,4 @@ class BiogasPlantInfoPage extends FormPage {
 		ElectricitySection.of(editor).create(body, tk);
 		editor.calculate();
 	}
-
-	private void boilerCombo(
-			FormToolkit tk, Composite comp, ProductCostSection costs
-	) {
-		var combo = new EntityCombo<Boiler>();
-		combo.create("Produkt", comp, tk);
-		combo.setLabelProvider(bi -> bi.name + " ("
-				+ Num.str(bi.maxPowerElectric) + " kW el.)");
-		var b = plant().product;
-		if (b == null || b.group == null)
-			return;
-		var boilers = App.getDb().getAll(Boiler.class)
-				.stream()
-				.filter(bi -> Objects.equals(bi.group, b.group))
-				.sorted(Sorters.byName())
-				.toList();
-		combo.setInput(boilers);
-		combo.select(b);
-		combo.onSelect(bi -> {
-			plant().product = bi;
-			ProductCosts.copy(bi, plant().costs);
-			costs.refresh();
-			editor.setDirty();
-			editor.calculate();
-		});
-		UI.filler(comp, tk);
-	}
-
 }
