@@ -50,11 +50,15 @@ public class BiogasPlantManager extends Editor {
 	private class Page extends FormPage {
 
 		private final List<BiogasPlant> plants;
+		private TableViewer table;
 
 		Page() {
 			super(BiogasPlantManager.this, "PlantEditorPage", "Biogasanlagen");
 			plants = new ArrayList<>(App.getDb().getAll(BiogasPlant.class));
 			Sorters.byName(plants);
+			Runnable reload = this::reload;
+			App.events().subscribe(BiogasPlant.class, reload);
+			onClosed(() -> App.events().unsubscribe(reload));
 		}
 
 		@Override
@@ -71,7 +75,7 @@ public class BiogasPlantManager extends Editor {
 			UI.gridData(section, true, true);
 			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
-			var table = Tables.createViewer(comp,
+			table = Tables.createViewer(comp,
 					"Name",
 					"Bemessungsleistung"
 			);
@@ -137,6 +141,17 @@ public class BiogasPlantManager extends Editor {
 			return plant != null
 					? App.getDb().get(BiogasPlant.class, plant.id)
 					: null;
+		}
+
+		private void reload() {
+			plants.clear();
+			plants.addAll(App.getDb().getAll(BiogasPlant.class));
+			Sorters.byName(plants);
+			if (table != null && table.getControl() != null
+					&& !table.getControl().isDisposed()) {
+				table.setInput(plants);
+				table.refresh();
+			}
 		}
 	}
 

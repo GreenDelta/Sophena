@@ -8,17 +8,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlantResult;
-import sophena.io.datapack.ExportGson;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.utils.SocketMirror;
 
 public class BiogasPlantEditor extends Editor {
 
@@ -57,13 +54,6 @@ public class BiogasPlantEditor extends Editor {
 		if (plant == null)
 			throw new PartInitException("biogas plant does not exists: " + keyInp.getKey());
 		setPartName(plant.name);
-
-		var mirror = new SocketMirror()
-			.withPort(55958)
-			.on("call", $ -> Res.ok(ExportGson.create(plant).toJsonTree(plant)))
-			.start()
-			.orElseThrow();
-		onClosed(mirror::stop);
 	}
 
 	@Override
@@ -83,6 +73,7 @@ public class BiogasPlantEditor extends Editor {
 			setPartName(plant.name);
 			Navigator.refresh();
 			setSaved();
+			App.events().emit(plant);
 		} catch (Exception e) {
 			log.error("failed to save biogas plant", e);
 		}
