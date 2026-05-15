@@ -13,20 +13,22 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 	}
 
 	static ElectricityPriceSchedule calculate(
-			BiogasPlant plant, BiogasProfile profile
+		BiogasPlant plant, BiogasProfile profile
 	) {
 
 		var flags = new boolean[Stats.HOURS];
 		var schedule = new ElectricityPriceSchedule(flags);
-		if (plant.electricityPrices == null
-				|| plant.electricityPrices.values == null)
+		if (plant == null
+			|| plant.electricityPrices == null
+			|| plant.electricityPrices.values == null
+			|| plant.gasStorageSize <= 0)
 			return schedule;
+
 		double fuelPower = BiogasPlants.fullLoadFuelPower(plant);
 		if (fuelPower <= 0)
 			return schedule;
 
-		var storage = new BiogasStorage(
-				Stats.sum(profile.volume()), fuelPower);
+		var storage = new BiogasStorage(plant.gasStorageSize, fuelPower);
 		if (storage.size() == 0)
 			return schedule;
 
@@ -46,7 +48,7 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 			}
 
 			int hs = (int) Math.floor(storage.hoursToEmpty());
-			if ( hs > 23) {
+			if (hs > 23) {
 				Arrays.fill(flags, offset, end, true);
 				continue;
 			}

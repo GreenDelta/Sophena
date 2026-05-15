@@ -38,6 +38,10 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_electricity_price_curve")
 	public ElectricityPriceCurve electricityPrices;
 
+	/// Configured size of the gas storage in m3.
+	@Column(name = "gas_storage_size")
+	public double gasStorageSize;
+
 	/// minimum runtime in hours
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
@@ -147,6 +151,7 @@ public class BiogasPlant extends RootEntity {
 		copy.producedElectricity = producedElectricity;
 		copy.productGroup = productGroup;
 		copy.electricityPrices = electricityPrices;
+		copy.gasStorageSize = gasStorageSize;
 		copy.minimumRuntime = minimumRuntime;
 		for (var boiler : boilers) {
 			if (boiler != null) {

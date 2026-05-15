@@ -13,8 +13,7 @@ public record BiogasPlantResult(
 	boolean[] runFlags) {
 
 	public static BiogasPlantResult calculate(BiogasPlant plant) {
-		if (plant == null
-			|| !BiogasPlants.hasValidBoilers(plant)
+		if (!BiogasPlants.hasValidBoilers(plant)
 			|| BiogasPlants.totalElectricPower(plant) <= 0
 			|| plant.substrateProfiles.isEmpty())
 			return emptyOf(plant);
@@ -52,7 +51,7 @@ public record BiogasPlantResult(
 
 		private final BiogasPlant plant;
 
-		private final int minRunTime = 2; // TODO: configure it!
+		private final int minRunTime;
 		private final BiogasProfile profile;
 		private final BiogasStorage storage;
 		private final ElectricityPriceSchedule priceSchedule;
@@ -62,9 +61,10 @@ public record BiogasPlantResult(
 
 		Calculator(BiogasPlant plant) {
 			this.plant = plant;
+			minRunTime = Math.max(1, plant.minimumRuntime);
 			profile = BiogasProfile.of(plant.substrateProfiles);
-			var storageSize = BiogasStorage.defaultSizeOf(profile);
-			storage = new BiogasStorage(storageSize, BiogasPlants.fullLoadFuelPower(plant));
+			storage = new BiogasStorage(
+				plant.gasStorageSize, BiogasPlants.fullLoadFuelPower(plant));
 			priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
 		}
 

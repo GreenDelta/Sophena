@@ -1,7 +1,9 @@
 package sophena.rcp.editors.biogas.plant;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
@@ -60,6 +62,8 @@ class BiogasPlantInfoPage extends FormPage {
 			});
 		UI.filler(comp, tk);
 
+		createSettingsSection(body, tk);
+
 		// biogas boilers
 		BiogasPlantBoilerTable.of(editor).render(body, tk);
 
@@ -70,5 +74,32 @@ class BiogasPlantInfoPage extends FormPage {
 		// electricity section
 		ElectricitySection.of(editor).create(body, tk);
 		editor.calculate();
+	}
+
+	private void createSettingsSection(Composite body, FormToolkit tk) {
+		var comp = UI.formSection(body, tk, "Allgemeine Einstellungen");
+		UI.gridLayout(comp, 3);
+
+		var storageText = UI.formText(comp, tk, "Gasspeichergröße");
+		Texts.on(storageText)
+			.decimal()
+			.init(plant().gasStorageSize)
+			.onChanged(s -> {
+				plant().gasStorageSize = Num.read(s);
+				editor.setDirty();
+				editor.calculate();
+			});
+		UI.formLabel(comp, tk, "m3");
+
+		var runtimeText = UI.formText(comp, tk, "Mindestlaufzeit");
+		Texts.on(runtimeText)
+			.integer()
+			.init(plant().minimumRuntime)
+			.onChanged(s -> {
+				plant().minimumRuntime = Num.readInt(s);
+				editor.setDirty();
+				editor.calculate();
+			});
+		UI.formLabel(comp, tk, "h");
 	}
 }

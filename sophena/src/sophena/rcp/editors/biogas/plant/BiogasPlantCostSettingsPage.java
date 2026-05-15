@@ -79,7 +79,7 @@ class BiogasPlantCostSettingsPage extends FormPage {
 			editor.setDirty();
 		});
 	}
-
+	
 	private void createLossesSection(Composite body) {
 		var comp = UI.formSection(body, tk, "Verluste");
 		UI.gridLayout(comp, 3);

@@ -45,6 +45,7 @@ public class BiogasPlantWizard extends Wizard {
 		var plant = new BiogasPlant();
 		plant.id = UUID.randomUUID().toString();
 		plant.productGroup = group;
+		plant.minimumRuntime = 2;
 
 		var wizard = new BiogasPlantWizard(plant);
 		wizard.setWindowTitle("Neue Biogasanlage");

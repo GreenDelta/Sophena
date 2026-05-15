@@ -93,6 +93,7 @@ CREATE TABLE tbl_biogas_plants (
     f_product_group             CHAR(36),
     f_electricity_price_curve   CHAR(36),
     f_demand_electricity_mix    CHAR(36),
+    gas_storage_size            DOUBLE,
     minimum_runtime             INTEGER,
 
     hourly_wage                 DOUBLE,

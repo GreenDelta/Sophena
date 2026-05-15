@@ -24,25 +24,6 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		this.fuelPower = fuelPower;
 	}
 
-	/// The default size of the gas storage is the maximum amount of biogas
-	/// that is produced over a day.
-	public static double defaultSizeOf(BiogasProfile profile) {
-		if (profile == null || profile.volume() == null)
-			throw new IllegalArgumentException("invalid profile");
-
-		var vol = profile.volume();
-		double storage = 0;
-		for (int day = 0; day < 365; day++) {
-			double daySum = 0;
-			int offset = day * 24;
-			for (int h = offset; h < offset + 24; h++) {
-				daySum += vol[h];
-			}
-			storage = Math.max(storage, daySum);
-		}
-		return storage;
-	}
-
 	public double size() {
 		return size;
 	}
