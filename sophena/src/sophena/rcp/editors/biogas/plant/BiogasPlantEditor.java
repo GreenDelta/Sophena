@@ -15,6 +15,7 @@ import sophena.io.datapack.ExportGson;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
+import sophena.rcp.editors.biogas.plant.manager.BiogasPlantWizard;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;

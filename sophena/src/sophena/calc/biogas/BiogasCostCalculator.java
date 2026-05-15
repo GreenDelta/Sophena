@@ -170,7 +170,7 @@ public class BiogasCostCalculator {
 		double hourlyRevenuesSum = 0;
 
 		// Net electrical power available for feed-in
-		double netPower = Math.max(0, plant.ratedPower - plant.transmissionLosses);
+		double netPower = Math.max(0, plant.totalElectricPower() - plant.transmissionLosses);
 
 		// Subtract internal demand from production if not in full feed-in mode (surplus feed-in)
 		if (!plant.isFullFeedIn) {

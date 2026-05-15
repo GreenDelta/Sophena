@@ -38,10 +38,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_electricity_price_curve")
 	public ElectricityPriceCurve electricityPrices;
 
-	/// rated power in kW
-	@Column(name = "rated_power")
-	public double ratedPower;
-
 	/// minimum runtime in hours
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
@@ -143,46 +139,45 @@ public class BiogasPlant extends RootEntity {
 
 	@Override
 	public BiogasPlant copy() {
-		var clone = new BiogasPlant();
-		clone.id = UUID.randomUUID().toString();
-		clone.name = name;
-		clone.description = description;
-		clone.duration = duration;
-		clone.producedElectricity = producedElectricity;
-		clone.productGroup = productGroup;
-		clone.electricityPrices = electricityPrices;
-		clone.ratedPower = ratedPower;
-		clone.minimumRuntime = minimumRuntime;
+		var copy = new BiogasPlant();
+		copy.id = UUID.randomUUID().toString();
+		copy.name = name;
+		copy.description = description;
+		copy.duration = duration;
+		copy.producedElectricity = producedElectricity;
+		copy.productGroup = productGroup;
+		copy.electricityPrices = electricityPrices;
+		copy.minimumRuntime = minimumRuntime;
 		for (var boiler : boilers) {
 			if (boiler != null) {
-				clone.boilers.add(boiler.copy());
+				copy.boilers.add(boiler.copy());
 			}
 		}
 		for (var p : substrateProfiles) {
-			clone.substrateProfiles.add(p.copy());
+			copy.substrateProfiles.add(p.copy());
 		}
-		clone.hourlyWage = hourlyWage;
-		clone.electricityPrice = electricityPrice;
-		clone.electricityDemand = electricityDemand;
-		clone.demandElectricityMix = demandElectricityMix;
-		clone.isFullFeedIn = isFullFeedIn;
-		clone.transmissionLosses = transmissionLosses;
-		clone.heatLoss = heatLoss;
-		clone.interestRate = interestRate;
-		clone.insuranceShare = insuranceShare;
+		copy.hourlyWage = hourlyWage;
+		copy.electricityPrice = electricityPrice;
+		copy.electricityDemand = electricityDemand;
+		copy.demandElectricityMix = demandElectricityMix;
+		copy.isFullFeedIn = isFullFeedIn;
+		copy.transmissionLosses = transmissionLosses;
+		copy.heatLoss = heatLoss;
+		copy.interestRate = interestRate;
+		copy.insuranceShare = insuranceShare;
 		for (var entry : otherAnnualCosts) {
 			if (entry != null) {
-				clone.otherAnnualCosts.add(entry.copy());
+				copy.otherAnnualCosts.add(entry.copy());
 			}
 		}
-		clone.investmentFactor = investmentFactor;
-		clone.bioFuelFactor = bioFuelFactor;
-		clone.fossilFuelFactor = fossilFuelFactor;
-		clone.electricityFactor = electricityFactor;
-		clone.operationFactor = operationFactor;
-		clone.maintenanceFactor = maintenanceFactor;
-		clone.electricityRevenuesFactor = electricityRevenuesFactor;
-		return clone;
+		copy.investmentFactor = investmentFactor;
+		copy.bioFuelFactor = bioFuelFactor;
+		copy.fossilFuelFactor = fossilFuelFactor;
+		copy.electricityFactor = electricityFactor;
+		copy.operationFactor = operationFactor;
+		copy.maintenanceFactor = maintenanceFactor;
+		copy.electricityRevenuesFactor = electricityRevenuesFactor;
+		return copy;
 	}
 
 	public boolean hasValidBoilers() {

@@ -32,7 +32,7 @@ import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
 import sophena.rcp.editors.basedata.products.ProductEditor;
 import sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor;
 import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
-import sophena.rcp.editors.biogas.plant.BiogasPlantTable;
+import sophena.rcp.editors.biogas.plant.manager.BiogasPlantManager;
 import sophena.rcp.editors.biogas.substrate.SubstrateEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
 import sophena.rcp.editors.sql.SqlEditor;
@@ -125,7 +125,7 @@ public class ActionBarAdvisor extends
 		m.add(Actions.create("Neue Biogasanlage", Icon.BOILER_16.des(),
 				BiogasPlantEditor::createNew));
 		m.add(Actions.create("Biogasanlagen verwalten", Icon.DATA_TABLE_16.des(),
-				BiogasPlantTable::open));
+				BiogasPlantManager::open));
 		m.add(Actions.create("Substrate", Icon.BIOGAS_SUBSTRATE_16.des(),
 				SubstrateEditor::open));
 		m.add(Actions.create("Strompreise", Icon.ELECTRICITY_16.des(),

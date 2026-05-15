@@ -1,4 +1,4 @@
-package sophena.rcp.editors.biogas.plant;
+package sophena.rcp.editors.biogas.plant.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
+import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
@@ -25,11 +26,12 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 
-public class BiogasPlantTable extends Editor {
+/// This is the general page for creating, editing and deleting biogas-plants.
+public class BiogasPlantManager extends Editor {
 
 	public static void open() {
 		var input = new KeyEditorInput("data.biogas.plants", "Biogasanlagen");
-		Editors.open(input, "sophena.BiogasPlantTable");
+		Editors.open(input, "sophena.BiogasPlantManager");
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class BiogasPlantTable extends Editor {
 		private final List<BiogasPlant> plants;
 
 		Page() {
-			super(BiogasPlantTable.this, "PlantEditorPage", "Biogasanlagen");
+			super(BiogasPlantManager.this, "PlantEditorPage", "Biogasanlagen");
 			plants = new ArrayList<>(App.getDb().getAll(BiogasPlant.class));
 			Sorters.byName(plants);
 		}
@@ -67,13 +69,11 @@ public class BiogasPlantTable extends Editor {
 			UI.gridLayout(comp, 1);
 			var table = Tables.createViewer(comp,
 					"Name",
-					"Kessel",
 					"Bemessungsleistung"
 			);
 			table.setLabelProvider(new TableLabel());
 			table.setInput(plants);
-			double w = 1d / 3d;
-			Tables.bindColumnWidths(table, w, w, w);
+			Tables.bindColumnWidths(table, 0.5, 0.5);
 			bindActions(section, table);
 		}
 
@@ -141,12 +141,14 @@ public class BiogasPlantTable extends Editor {
 		public String getColumnText(Object obj, int col) {
 			if (!(obj instanceof BiogasPlant p))
 				return null;
+			double ratedPower = p.totalElectricPower();
+			String powerLabel = Num.str(ratedPower) + " kW el.";
+			if (p.boilers.size() > 1) {
+				powerLabel += " (" + p.boilers.size() + " Blöcke)";
+			}
 			return switch (col) {
 				case 0 -> p.name;
-				case 1 -> p.boilers.size() == 1 && p.boilers.get(0).boiler != null
-						? p.boilers.get(0).boiler.name
-						: p.boilers.size() + " Blöcke";
-				case 2 -> Num.str(p.ratedPower);
+				case 1 -> powerLabel;
 				default -> null;
 			};
 		}

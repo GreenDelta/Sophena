@@ -55,15 +55,6 @@ class BiogasPlantInfoPage extends FormPage {
 				});
 		UI.filler(comp, tk);
 
-		Texts.on(UI.formText(comp, tk, "Bemessungsleistung"))
-				.init(plant().ratedPower)
-				.integer()
-				.onChanged(s -> {
-					plant().ratedPower = Num.readInt(s);
-					editor.setDirty();
-				});
-		UI.formLabel(comp, tk, "kW el.");
-
 		Texts.on(UI.formText(comp, tk, "Laufzeit (Jahre)"))
 				.init(plant().duration)
 				.integer()

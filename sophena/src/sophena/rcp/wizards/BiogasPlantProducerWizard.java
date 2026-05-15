@@ -246,7 +246,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 				case 1 -> plant.boilers.size() == 1 && plant.boilers.get(0).boiler != null
 						? plant.boilers.get(0).boiler.name
 						: plant.boilers.size() + " Blöcke";
-				case 2 -> Num.str(plant.ratedPower) + " kW";
+				case 2 -> Num.str(plant.totalElectricPower()) + " kW el.";
 				default -> null;
 			};
 		}

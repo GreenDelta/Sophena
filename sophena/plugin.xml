@@ -270,9 +270,9 @@
 		</editor>
 
 		<editor
-			class="sophena.rcp.editors.biogas.plant.BiogasPlantTable"
+			class="sophena.rcp.editors.biogas.plant.manager.BiogasPlantManager"
 			default="false"
-			id="sophena.BiogasPlantTable"
+			id="sophena.BiogasPlantManager"
 			icon="icons/data_table_16.png"
 			name="Biogasanlagen">
 		</editor>
