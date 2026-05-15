@@ -11,13 +11,13 @@ import sophena.model.Boiler;
 import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.biogas.BiogasPlantBoiler;
+import sophena.rcp.ProductLabel;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.ProductCostSection;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
 import sophena.rcp.wizards.SimpleWizard;
-import sophena.utils.Num;
 
 class BiogasPlantBoilerWizard extends SimpleWizard {
 
@@ -56,8 +56,7 @@ class BiogasPlantBoilerWizard extends SimpleWizard {
 	private void createBoilerCombo(Composite comp) {
 		var combo = new EntityCombo<Boiler>();
 		combo.create("Produkt", comp);
-		combo.setLabelProvider(boiler -> boiler.name + " ("
-				+ Num.str(boiler.maxPowerElectric) + " kW el.)");
+		combo.setLabelProvider(ProductLabel::of);
 		combo.setInput(getBoilers(group));
 		combo.select(entry.boiler);
 		combo.onSelect(boiler -> {

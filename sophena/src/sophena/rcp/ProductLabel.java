@@ -37,15 +37,15 @@ public final class ProductLabel {
 	}
 
 	private static String ofBoiler(Boiler b) {
-		String power = b.isCoGenPlant
-				? Num.intStr(b.maxPowerElectric)
-				: Num.intStr(b.maxPower);
-		return withKeyFigure(b, power + " kW");
+		var power = b.isCoGenPlant
+			? Num.intStr(b.maxPowerElectric) + " kW el."
+			: Num.intStr(b.maxPower) + " kW";
+		return withKeyFigure(b, power);
 	}
 
 	private static String ofHeatRecovery(HeatRecovery hrc) {
-		String power = Num.intStr(hrc.producerPower);
-		String label = withKeyFigure(hrc, power + " kW");
+		var power = Num.intStr(hrc.producerPower);
+		var label = withKeyFigure(hrc, power + " kW");
 		label += " · " + hrc.heatRecoveryType + " · ";
 		label += hrc.fuel;
 		return label;
@@ -63,8 +63,8 @@ public final class ProductLabel {
 
 	private static String ofPipe(Pipe pipe) {
 		var type = pipe.pipeType != null
-				? pipe.pipeType.name()
-				: "?";
+			? pipe.pipeType.name()
+			: "?";
 		var diameter = Num.intStr(pipe.outerDiameter) + " mm";
 		return type + " · " + withKeyFigure(pipe, diameter);
 	}

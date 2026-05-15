@@ -14,6 +14,7 @@ import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.rcp.M;
+import sophena.rcp.ProductLabel;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
@@ -145,7 +146,7 @@ class BufferTankSection {
 
 		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		link.setText(net().bufferTank != null
-			? net().bufferTank.name
+			? ProductLabel.of(net().bufferTank)
 			: "(kein Pufferspeicher ausgewählt)");
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
@@ -170,7 +171,7 @@ class BufferTankSection {
 	private void applyBufferTank(ImageHyperlink link, BufferTank b) {
 		net().bufferTank = b;
 		Texts.set(volText, Num.intStr(b.volume));
-		link.setText(b.name);
+		link.setText(ProductLabel.of(b));
 		link.getParent().pack();
 		ProductCosts costs = net().bufferTankCosts;
 		ProductCosts.copy(b, costs);
