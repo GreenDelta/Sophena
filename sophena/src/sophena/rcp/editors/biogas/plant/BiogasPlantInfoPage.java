@@ -5,7 +5,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -34,36 +33,34 @@ class BiogasPlantInfoPage extends FormPage {
 
 		// name
 		Texts.on(UI.formText(comp, tk, M.Name))
-				.required()
-				.init(plant().name)
-				.onChanged(s -> {
-					plant().name = s;
-					editor.setDirty();
-				});
+			.required()
+			.init(plant().name)
+			.onChanged(s -> {
+				plant().name = s;
+				editor.setDirty();
+			});
 		UI.filler(comp, tk);
 
-		// product group
-		Controls.renderGroupLink(plant().productGroup, tk, comp);
+		Texts.on(UI.formText(comp, tk, "Laufzeit (Jahre)"))
+			.required()
+			.init(plant().duration)
+			.integer()
+			.onChanged(s -> {
+				plant().duration = Num.readInt(s);
+				editor.setDirty();
+			});
 		UI.filler(comp, tk);
 
 		// description
 		Texts.on(UI.formMultiText(comp, tk, M.Description))
-				.init(plant().description)
-				.onChanged(s -> {
-					plant().description = s;
-					editor.setDirty();
-				});
+			.init(plant().description)
+			.onChanged(s -> {
+				plant().description = s;
+				editor.setDirty();
+			});
 		UI.filler(comp, tk);
 
-		Texts.on(UI.formText(comp, tk, "Laufzeit (Jahre)"))
-				.init(plant().duration)
-				.integer()
-				.onChanged(s -> {
-					plant().duration = Num.readInt(s);
-					editor.setDirty();
-				});
-		UI.filler(comp, tk);
-
+		// biogas boilers
 		BiogasPlantBoilerTable.of(editor).render(body, tk);
 
 		// substrate section

@@ -3,7 +3,6 @@ package sophena.rcp.editors.biogas.plant;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -50,11 +49,12 @@ class BiogasPlantBoilerTable {
 				"Max. Wärmeleistung",
 				"Max. el. Leistung",
 				"Investition");
+
 		Tables.bindColumnWidths(table, 0.30, 0.20, 0.18, 0.18, 0.14);
 		table.setLabelProvider(new BoilerLabel());
-		Action add = Actions.create(M.Add, Icon.ADD_16.des(), this::add);
-		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
-		Action remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::remove);
+		var add = Actions.create(M.Add, Icon.ADD_16.des(), this::add);
+		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
+		var remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::remove);
 		Actions.bind(section, add, edit, remove);
 		Actions.bind(table, add, edit, remove);
 		Tables.onDoubleClick(table, e -> edit());
@@ -68,7 +68,7 @@ class BiogasPlantBoilerTable {
 		if (BiogasPlantBoilerWizard.open(entry, plant().productGroup) != Window.OK)
 			return;
 		plant().boilers.add(entry);
-		updateUi();
+		refresh();
 	}
 
 	private void edit() {
@@ -81,7 +81,7 @@ class BiogasPlantBoilerTable {
 			return;
 		selected.boiler = clone.boiler;
 		selected.costs = clone.costs;
-		updateUi();
+		refresh();
 	}
 
 	private void remove() {
@@ -90,10 +90,10 @@ class BiogasPlantBoilerTable {
 		if (selected.isEmpty())
 			return;
 		plant().boilers.removeAll(selected);
-		updateUi();
+		refresh();
 	}
 
-	private void updateUi() {
+	private void refresh() {
 		table.setInput(plant().boilers);
 		editor.setDirty();
 		editor.calculate();
