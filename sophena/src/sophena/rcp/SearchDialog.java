@@ -69,7 +69,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open(
 				"Pufferspeicher",
 				buffers,
-				SearchLabel::forBufferTank);
+				ProductLabel::forBufferTank);
 	}
 
 	public static TransferStation forTransferStations() {
@@ -79,7 +79,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open(
 				"Hausübergabestationen",
 				stations,
-				SearchLabel::forTransferStation);
+				ProductLabel::forTransferStation);
 	}
 
 	public static Pipe forPipes() {
@@ -89,7 +89,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open(
 				"Wärmeleitungen",
 				pipes,
-				SearchLabel::forPipe);
+				ProductLabel::forPipe);
 	}
 
 	public static HeatRecovery forHeatRecoveries() {
@@ -99,7 +99,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open(
 				"Wärmerückgewinnungen",
 				recoveries,
-				SearchLabel::forHeatRecovery);
+				ProductLabel::forHeatRecovery);
 	}
 
 	public static FlueGasCleaning forFlueGasCleanings() {
@@ -109,7 +109,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open(
 				"Rauchgasreinigungen",
 				cleanings,
-				SearchLabel::forFlueGasCleaning);
+				ProductLabel::forFlueGasCleaning);
 	}
 
 	private SearchDialog() {

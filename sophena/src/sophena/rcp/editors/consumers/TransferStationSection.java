@@ -7,7 +7,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.model.Consumer;
 import sophena.model.ProductCosts;
-import sophena.model.TransferStation;
+import sophena.rcp.ProductLabel;
 import sophena.rcp.SearchDialog;
 import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
@@ -48,7 +48,7 @@ class TransferStationSection {
 		UI.innerGrid(inner, 2);
 		var link = tk.createImageHyperlink(inner, SWT.TOP);
 		if (consumer().transferStation != null) {
-			link.setText(consumer().transferStation.name);
+			link.setText(ProductLabel.forTransferStation(consumer().transferStation));
 		} else {
 			link.setText("(keine Hausübergabestation ausgewählt)");
 		}
@@ -73,11 +73,11 @@ class TransferStationSection {
 	}
 
 	private void selectTransferStation(ImageHyperlink link) {
-		TransferStation s = SearchDialog.forTransferStations();
+		var s = SearchDialog.forTransferStations();
 		if (s == null)
 			return;
 		consumer().transferStation = s;
-		link.setText(s.name);
+		link.setText(ProductLabel.forTransferStation(s));
 		link.getParent().pack();
 		ProductCosts costs = consumer().transferStationCosts;
 		ProductCosts.copy(s, costs);

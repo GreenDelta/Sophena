@@ -9,9 +9,9 @@ import sophena.model.Pipe;
 import sophena.model.TransferStation;
 import sophena.utils.Num;
 
-public class SearchLabel {
+public class ProductLabel {
 
-	private SearchLabel() {
+	private ProductLabel() {
 	}
 
 	public static String forProduct(AbstractProduct product) {
@@ -19,7 +19,7 @@ public class SearchLabel {
 			return "";
 		String label = "";
 		if (product.manufacturer != null) {
-			label += product.manufacturer.name + " \u00B7 ";
+			label += product.manufacturer.name + " · ";
 		}
 		label += product.name;
 		return label;
@@ -35,7 +35,7 @@ public class SearchLabel {
 	public static String forHeatRecovery(HeatRecovery hrc) {
 		String power = Num.intStr(hrc.producerPower);
 		String label = forProduct(hrc, power + " kW");
-		label += " \u00B7 " + hrc.heatRecoveryType + " \u00B7 ";
+		label += " · " + hrc.heatRecoveryType + " · ";
 		label += hrc.fuel;
 		return label;
 	}
@@ -55,7 +55,7 @@ public class SearchLabel {
 				? pipe.pipeType.name()
 				: "?";
 		var diameter = Num.intStr(pipe.outerDiameter) + " mm";
-		return type + " \u00B7 " + forProduct(pipe, diameter);
+		return type + " · " + forProduct(pipe, diameter);
 	}
 
 	public static String forTransferStation(TransferStation ts) {
@@ -68,9 +68,9 @@ public class SearchLabel {
 			return "";
 		String label = keyFigure;
 		if (product.manufacturer != null) {
-			label += " \u00B7 " + product.manufacturer.name;
+			label += " · " + product.manufacturer.name;
 		}
-		label += " \u00B7 " + product.name;
+		label += " · " + product.name;
 		return label;
 	}
 }

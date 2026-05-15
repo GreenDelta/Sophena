@@ -18,7 +18,7 @@ import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.rcp.SearchDialog;
-import sophena.rcp.SearchLabel;
+import sophena.rcp.ProductLabel;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
@@ -126,7 +126,7 @@ class EntryWizard extends Wizard {
 			Product p = SearchDialog.open(
 				Labels.get(type),
 				dao.getAllGlobal(type),
-				SearchLabel::forProduct
+				ProductLabel::forProduct
 			);
 			if (p == null) {
 				noProduct(true);
