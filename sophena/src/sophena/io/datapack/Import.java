@@ -58,48 +58,45 @@ public class Import implements Runnable {
 			}
 
 			// order is important for resolving dataset references
-			importEntities(ModelType.PRODUCT_GROUP, ProductGroup.class);
-			importEntities(ModelType.MANUFACTURER, Manufacturer.class);
-			importEntities(ModelType.PIPE, Pipe.class);
-			importEntities(ModelType.PRODUCT, Product.class);
-			importEntities(ModelType.FUEL, Fuel.class);
-			importEntities(ModelType.BUFFER, BufferTank.class);
-			importEntities(ModelType.BOILER, Boiler.class);
-			importEntities(ModelType.HEAT_PUMP, HeatPump.class);
-			importEntities(ModelType.SOLAR_COLLECTOR, SolarCollector.class);
-			importEntities(ModelType.BUILDING_STATE, BuildingState.class);
-			importEntities(ModelType.COST_SETTINGS, CostSettings.class);
-			importEntities(ModelType.WEATHER_STATION, WeatherStation.class);
-			importEntities(ModelType.TRANSFER_STATION, TransferStation.class);
-			importEntities(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
-			importEntities(ModelType.HEAT_RECOVERY, HeatRecovery.class);
-			importEntities(ModelType.ELECTRICITY_PRICE_CURVE, ElectricityPriceCurve.class);
-			importEntities(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
-			importEntities(ModelType.BIOGAS_PLANT, BiogasPlant.class);
-			importEntities(ModelType.PROJECT_FOLDER, ProjectFolder.class);
-			importEntities(ModelType.PROJECT, Project.class);
+			importAll(ModelType.PRODUCT_GROUP, ProductGroup.class);
+			importAll(ModelType.MANUFACTURER, Manufacturer.class);
+			importAll(ModelType.PIPE, Pipe.class);
+			importAll(ModelType.PRODUCT, Product.class);
+			importAll(ModelType.FUEL, Fuel.class);
+			importAll(ModelType.BUFFER, BufferTank.class);
+			importAll(ModelType.BOILER, Boiler.class);
+			importAll(ModelType.HEAT_PUMP, HeatPump.class);
+			importAll(ModelType.SOLAR_COLLECTOR, SolarCollector.class);
+			importAll(ModelType.BUILDING_STATE, BuildingState.class);
+			importAll(ModelType.COST_SETTINGS, CostSettings.class);
+			importAll(ModelType.WEATHER_STATION, WeatherStation.class);
+			importAll(ModelType.TRANSFER_STATION, TransferStation.class);
+			importAll(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
+			importAll(ModelType.HEAT_RECOVERY, HeatRecovery.class);
+			importAll(ModelType.ELECTRICITY_PRICE_CURVE, ElectricityPriceCurve.class);
+			importAll(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
+			importAll(ModelType.BIOGAS_PLANT, BiogasPlant.class);
+			importAll(ModelType.PROJECT_FOLDER, ProjectFolder.class);
+			importAll(ModelType.PROJECT, Project.class);
 
 		} catch (Exception e) {
 			log.error("failed to import data pack {}", pack, e);
 		}
 	}
 
-	private <T extends AbstractEntity> void importEntities(
-		ModelType type, Class<T> clazz) {
-		try {
-			var gson = ImportGson.create(db, clazz);
-			for (String id : pack.getIds(type)) {
-				if (db.contains(clazz, id)) {
-					log.info("{} with id={} is already exists: not imported", clazz, id);
-					continue;
-				}
-				var json = pack.get(type, id);
-				checkUpgrades(type, json);
-				T instance = gson.fromJson(json, clazz);
-				db.insert(instance);
+	private <T extends AbstractEntity> void importAll(
+		ModelType type, Class<T> clazz
+	) {
+		var gson = ImportGson.create(db, clazz);
+		for (String id : pack.getIds(type)) {
+			if (db.contains(clazz, id)) {
+				log.info("{} with id={} is already exists: not imported", clazz, id);
+				continue;
 			}
-		} catch (Exception e) {
-			log.error("failed to import instances of {}", clazz, e);
+			var json = pack.get(type, id);
+			checkUpgrades(type, json);
+			T instance = gson.fromJson(json, clazz);
+			db.insert(instance);
 		}
 	}
 

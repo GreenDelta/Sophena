@@ -1,5 +1,6 @@
 package sophena.rcp.editors.biogas.plant.manager;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.biogas.BiogasPlants;
+import sophena.io.datapack.DataPack;
+import sophena.io.datapack.Export;
+import sophena.io.datapack.Import;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
@@ -18,9 +22,12 @@ import sophena.rcp.app.Icon;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.basedata.BaseTableLabel;
 import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
+import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Editors;
+import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -95,8 +102,12 @@ public class BiogasPlantManager extends Editor {
 					() -> copyPlant(table));
 			var del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> deletePlant(table));
+			var exp = Actions.create("Exportieren", Icon.EXPORT_16.des(),
+					() -> exportPlant(table));
+			var imp = Actions.create("Importieren", Icon.IMPORT_16.des(),
+				this::importPlant);
 			Actions.bind(section, add, edit, copy, del);
-			Actions.bind(table, add, edit, copy, del);
+			Actions.bind(table, add, edit, copy, del, exp, imp);
 			Tables.onDoubleClick(table, (e) -> editPlant(table));
 		}
 
@@ -135,6 +146,40 @@ public class BiogasPlantManager extends Editor {
 			App.getDb().delete(plant);
 			plants.remove(plant);
 			table.setInput(plants);
+		}
+
+		private void exportPlant(TableViewer table) {
+			BiogasPlant plant = getFreshSelected(table);
+			if (plant == null) return;
+			var file = FileChooser.save(plant.name + ".sophena", "*.sophena");
+			if (file == null) return;
+
+			App.run("Exportiere Biogasanlage ...", () -> {
+				try {
+					Files.deleteIfExists(file.toPath());
+					try (var pack = new DataPack(file)) {
+						new Export(pack).write(plant);
+					}
+				} catch (Exception e) {
+					log.error("Failed to export biogas plant", e);
+					MsgBox.error("Export fehlgeschlagen", e.getMessage());
+				}
+			});
+		}
+
+		private void importPlant() {
+			var file = FileChooser.open("*.sophena");
+			if (file == null) return;
+			try {
+				var in = new Import(file, App.getDb());
+				App.run("Importiere Biogasanlage ...", in, () -> {
+					reload();
+					Navigator.refresh();
+				});
+			} catch (Exception e) {
+				log.error("Failed to import biogas plant", e);
+				MsgBox.error("Datei konnte nicht gelesen werden");
+			}
 		}
 
 		private BiogasPlant getFreshSelected(TableViewer table) {

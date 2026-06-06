@@ -28,6 +28,9 @@ import sophena.model.RootEntity;
 import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
+import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityPriceCurve;
+import sophena.model.biogas.Substrate;
 import sophena.utils.Strings;
 
 /// Creates a Gson instance configured for deserializing JSON data sets.
@@ -55,7 +58,8 @@ public class ImportGson {
 			WeatherStation.class, TransferStation.class,
 			FlueGasCleaning.class, ProjectFolder.class,
 			HeatRecovery.class, Manufacturer.class, SolarCollector.class,
-			HeatPump.class
+			HeatPump.class, BiogasPlant.class, ElectricityPriceCurve.class,
+			Substrate.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))
