@@ -15,6 +15,7 @@ public record BiogasPlantResult(
 	public static BiogasPlantResult calculate(BiogasPlant plant) {
 		if (!BiogasPlants.hasValidBoilers(plant)
 			|| BiogasPlants.totalElectricPower(plant) <= 0
+			|| plant.gasStorageSize <= 0
 			|| plant.substrateProfiles.isEmpty())
 			return emptyOf(plant);
 		return new Calculator(plant).run();

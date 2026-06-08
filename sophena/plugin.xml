@@ -131,6 +131,12 @@
 			icon="icons/producer_16.png" />
 
 		<editor
+			class="sophena.rcp.editors.producers.biogas.BiogasPlantProducerEditor"
+			id="sophena.BiogasPlantProducerEditor"
+			name="Biogasanlage"
+			icon="icons/producer_16.png" />
+
+		<editor
 			class="sophena.rcp.editors.basedata.climate.ClimateDataEditor"
 			icon="icons/climate_16.png"
 			id="sophena.ClimateDataEditor"

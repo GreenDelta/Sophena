@@ -21,48 +21,27 @@ import sophena.rcp.M;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
-import sophena.rcp.utils.Editors;
-import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
+import sophena.utils.Producers;
 
 public class ProducerEditor extends Editor {
 
 	private String projectId;
 	private Producer producer;
 
-	public static void open(
-			ProjectDescriptor project, ProducerDescriptor producer
-	) {
-		if (project == null || producer == null)
-			return;
-		var input = new EditorInput(producer.id, producer.name);
-		input.projectKey = project.id;
-		Editors.open(input, "sophena.ProducerEditor");
+	public static void open(ProjectDescriptor proj, ProducerDescriptor prod) {
+		ProducerEditorInput.open(proj, prod);
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		super.init(site, input);
-		EditorInput i = (EditorInput) input;
-		ProjectDao dao = new ProjectDao(App.getDb());
-		Project project = dao.get(i.projectKey);
-		projectId = project.id;
-		producer = findProducer(project, i.getKey());
-		if (producer == null)
-			return;
+	public void init(IEditorSite site, IEditorInput editorInput)
+		throws PartInitException {
+		super.init(site, editorInput);
+		var input = ProducerEditorInput.getFrom(editorInput).orElseThrow();
+		projectId = input.project().id;
+		producer = input.producer();
 		setPartName(producer.name);
-	}
-
-	private Producer findProducer(Project project, String producerKey) {
-		if (project == null)
-			return null;
-		for (Producer p : project.producers) {
-			if (Objects.equals(producerKey, p.id))
-				return p;
-		}
-		return null;
 	}
 
 	public Producer getProducer() {
@@ -86,11 +65,11 @@ public class ProducerEditor extends Editor {
 			if (!valid(project))
 				return;
 			log.info("update producer {} in project {}", producer, projectId);
-			Producer old = findProducer(project, producer.id);
+			var old = Producers.findById(project, producer.id);
 			project.producers.remove(old);
 			project.producers.add(producer);
 			project = dao.update(project);
-			producer = findProducer(project, producer.id);
+			producer = Producers.findById(project, producer.id);
 			setPartName(producer.name);
 			Navigator.refresh();
 			setSaved();
@@ -104,7 +83,7 @@ public class ProducerEditor extends Editor {
 		if (fuelSpec != null && fuelSpec.woodAmountType != null) {
 			if (fuelSpec.waterContent < 0 || fuelSpec.waterContent > 60) {
 				MsgBox.error("Plausibilitätsfehler",
-						"Der Wassergehalt muss zwischen 0% und 60% liegen.");
+					"Der Wassergehalt muss zwischen 0% und 60% liegen.");
 				return false;
 			}
 		}
@@ -114,20 +93,20 @@ public class ProducerEditor extends Editor {
 			if (other.rank != producer.rank)
 				continue;
 			MsgBox.error("Plausibilitätsfehler",
-					"Der Rang des Erzeugers ist bereits vergeben.");
+				"Der Rang des Erzeugers ist bereits vergeben.");
 			return false;
 		}
 		if (producer.heatRecovery != null
-				&& producer.boiler != null) {
+			&& producer.boiler != null) {
 			double recoveryPower = producer.heatRecovery.producerPower;
 			double boilerPower = producer.boiler.maxPower;
 			if (Math.abs(recoveryPower - boilerPower) > 1) {
 				MsgBox.warn("Plausibilitätswarnung",
-						"Die Leistung des Wärmeerzeugers stimmt nicht mit"
-								+ " der von der Wärmerückgewinnungsanlage benötigten"
-								+ " Leistung überein. Als Folge können fehlerhafte"
-								+ " Ergebnisse bei den energetischen Berechnungen"
-								+ " auftreten.");
+					"Die Leistung des Wärmeerzeugers stimmt nicht mit"
+						+ " der von der Wärmerückgewinnungsanlage benötigten"
+						+ " Leistung überein. Als Folge können fehlerhafte"
+						+ " Ergebnisse bei den energetischen Berechnungen"
+						+ " auftreten.");
 				return true;
 			}
 		}
@@ -175,7 +154,7 @@ public class ProducerEditor extends Editor {
 	@Override
 	public void doSaveAs() {
 		var dialog = new InputDialog(UI.shell(), "Speichern unter",
-				"Name des Erzeugers", producer.name + " - Kopie", null);
+			"Name des Erzeugers", producer.name + " - Kopie", null);
 		if (dialog.open() != Window.OK)
 			return;
 		Producer clone = producer.copy();
@@ -186,14 +165,4 @@ public class ProducerEditor extends Editor {
 		dao.update(project);
 		Navigator.refresh();
 	}
-
-	private static class EditorInput extends KeyEditorInput {
-
-		private String projectKey;
-
-		private EditorInput(String consumerKey, String name) {
-			super(consumerKey, name);
-		}
-	}
-
 }

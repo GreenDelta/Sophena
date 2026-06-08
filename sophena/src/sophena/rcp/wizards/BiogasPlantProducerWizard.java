@@ -19,12 +19,10 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.calc.biogas.BiogasPlantResult;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
-import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.M;
@@ -157,21 +155,8 @@ public class BiogasPlantProducerWizard extends Wizard {
 		private void bindToModel(Producer p, Project project) {
 			if (p == null)
 				return;
-			BiogasPlant plant = Viewers.getFirstSelected(table);
-			p.biogasPlant = plant;
-			if (plant != null) {
-				p.productGroup = plant.productGroup;
-				var r = BiogasPlantResult.calculate(plant);
-				double temperature = project.heatNet != null
-					&& project.heatNet.maxBufferLoadTemperature > 0
-					? project.heatNet.maxBufferLoadTemperature
-					: 95;
-				p.profile = r.asProducerProfile(temperature);
-				p.profileMaxPower = BiogasPlants.totalThermalPower(plant) > 0
-					? BiogasPlants.totalThermalPower(plant)
-					: Stats.max(p.profile.maxPower);
-				p.profileMaxPowerElectric = BiogasPlants.totalElectricPower(plant);
-			}
+			p.biogasPlant = Viewers.getFirstSelected(table);
+			BiogasPlants.syncProducerProfile(project, p);
 			p.name = nameText.getText();
 			p.rank = Texts.getInt(rankText);
 			p.function = Wizards.getProducerFunction(functionCombo);

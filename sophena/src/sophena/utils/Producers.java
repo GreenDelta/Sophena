@@ -1,5 +1,7 @@
 package sophena.utils;
 
+import java.util.Objects;
+
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
@@ -12,6 +14,16 @@ import sophena.model.WoodAmountType;
 import sophena.rcp.app.App;
 
 public class Producers {
+
+	public static Producer findById(Project project, String producerId) {
+		if (project == null)
+			return null;
+		for (var p : project.producers) {
+			if (Objects.equals(p.id, producerId))
+				return p;
+		}
+		return null;
+	}
 
 	public static void initFuelAndCosts(Producer p, Project project) {
 		initFuelSpec(p, project);

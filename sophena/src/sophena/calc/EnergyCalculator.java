@@ -12,6 +12,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
+import sophena.calc.biogas.BiogasPlants;
 import sophena.rcp.app.Workspace;
 
 class EnergyCalculator {
@@ -27,6 +28,9 @@ class EnergyCalculator {
 	}
 
 	private EnergyResult doIt(CalcLog log) {
+		for (var producer : project.producers) {
+			BiogasPlants.syncProducerProfile(project, producer);
+		}
 		SolarCalcLog solarCalcLog = new SolarCalcLog();
 		var bufferCalcState = new BufferCalcState(project, solarCalcLog);
 
