@@ -87,6 +87,14 @@ public final class BiogasPlants {
 		return sum;
 	}
 
+	public static boolean isFeedInAllowed(BiogasPlant plant, int hour) {
+		if (plant.electricityPrices == null
+			|| plant.electricityPrices.feedInAllowed == null)
+			return true;
+		var allowed = plant.electricityPrices.feedInAllowed;
+		return hour < 0 || hour >= allowed.length || allowed[hour];
+	}
+
 	public static void syncProducerProfile(Project project, Producer producer) {
 		if (project == null || producer == null)
 			return;
