@@ -59,10 +59,8 @@ public class ElectricityPriceWizard extends Wizard {
 			}
 
 			if (page.file != null) {
-				var data = ElectricityPriceIO.read(page.file).orElse(null);
-				if (data == null)
+				if (!ElectricityPriceIO.read(page.file, curve))
 					return false;
-				curve.values = data;
 			}
 			curve.name = name;
 			curve.description = page.descriptionText.getText();

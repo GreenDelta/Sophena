@@ -62,10 +62,11 @@ CREATE TABLE tbl_biogas_substrates (
 
 
 CREATE TABLE tbl_electricity_price_curves (
-    id           CHAR(36),
-    name         VARCHAR(255),
-    description  CLOB(64 K),
-    data         BLOB (80 K),
+    id               CHAR(36),
+    name             VARCHAR(255),
+    description      CLOB(64 K),
+    data             BLOB (80 K),
+    feed_in_allowed  BLOB (10 K),
     PRIMARY KEY (id)
 );
 

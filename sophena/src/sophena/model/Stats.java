@@ -112,4 +112,11 @@ public final class Stats {
 		return copy;
 	}
 
+	public static boolean[] copy(boolean[] source) {
+		if (source == null)
+			return null;
+		boolean[] copy = new boolean[source.length];
+		System.arraycopy(source, 0, copy, 0, source.length);
+		return copy;
+	}
 }

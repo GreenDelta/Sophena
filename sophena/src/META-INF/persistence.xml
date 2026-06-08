@@ -19,6 +19,7 @@
 		<class>sophena.model.Consumer</class>
 		<class>sophena.model.CostSettings</class>
 		<class>sophena.model.DoubleArrayConverter</class>
+		<class>sophena.model.BooleanArrayConverter</class>
 		<class>sophena.model.FlueGasCleaning</class>
 		<class>sophena.model.FlueGasCleaningEntry</class>
 		<class>sophena.model.FuelConsumption</class>

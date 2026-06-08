@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import sophena.model.BooleanArrayConverter;
 import sophena.model.DoubleArrayConverter;
 import sophena.model.RootEntity;
 import sophena.model.Stats;
@@ -14,10 +15,15 @@ import sophena.model.Stats;
 @Table(name = "tbl_electricity_price_curves")
 public class ElectricityPriceCurve extends RootEntity {
 
-	/// hourly electricity prices in ct/kWh (8760 values)
+	/// Hourly electricity prices in `ct/kWh` (8760 values)
 	@Column(name = "data")
 	@Convert(converter = DoubleArrayConverter.class)
 	public double[] values;
+
+	/// Hourly flags indicating whether feed-in is allowed (8760 values)
+	@Column(name = "feed_in_allowed")
+	@Convert(converter = BooleanArrayConverter.class)
+	public boolean[] feedInAllowed;
 
 	@Override
 	public ElectricityPriceCurve copy() {
@@ -26,6 +32,7 @@ public class ElectricityPriceCurve extends RootEntity {
 		clone.name = name;
 		clone.description = description;
 		clone.values = Stats.copy(values);
+		clone.feedInAllowed = Stats.copy(feedInAllowed);
 		return clone;
 	}
 }
