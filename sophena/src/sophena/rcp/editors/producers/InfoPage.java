@@ -42,7 +42,7 @@ class InfoPage extends FormPage {
 		var tk = mform.getToolkit();
 		var body = UI.formBody(form, tk);
 
-		var comp = UI.formSection(body, tk, "Erzeugerinformationen");
+		var comp = UI.formSection(body, tk, "Wärmeerzeuger");
 		nameText(tk, comp);
 		Controls.renderGroupLink(producer().productGroup, tk, comp);
 		descriptionText(tk, comp);
