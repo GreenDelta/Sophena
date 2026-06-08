@@ -97,7 +97,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 
 		private Text nameText;
 		private boolean nameEdited;
-		private TableViewer biogasPlantTable;
+		private TableViewer table;
 		private Text rankText;
 		private Combo functionCombo;
 
@@ -108,14 +108,12 @@ public class BiogasPlantProducerWizard extends Wizard {
 
 		@Override
 		public void createControl(Composite parent) {
-			Composite root = new Composite(parent, SWT.NONE);
+			var root = new Composite(parent, SWT.NONE);
 			setControl(root);
 			UI.gridLayout(root, 1, 5, 5);
-
-			Composite comp = UI.formComposite(root);
+			var comp = UI.formComposite(root);
 			UI.gridData(comp, true, false);
 			nameField(comp);
-
 			biogasPlantTable(root);
 			functionFields(root);
 			bindToUI();
@@ -126,7 +124,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			nameEdited = false;
 			// smart identification if the name was edited by the user
 			Texts.on(nameText).required().onChanged((t) -> {
-				BiogasPlant plant = Viewers.getFirstSelected(biogasPlantTable);
+				BiogasPlant plant = Viewers.getFirstSelected(table);
 				if (plant == null) {
 					nameEdited = true;
 				} else {
@@ -136,11 +134,11 @@ public class BiogasPlantProducerWizard extends Wizard {
 		}
 
 		private void biogasPlantTable(Composite root) {
-			biogasPlantTable = Tables.createViewer(root, "Name", "Kessel", "Bemessungsleistung");
-			Tables.bindColumnWidths(biogasPlantTable, 0.4, 0.4, 0.2);
-			biogasPlantTable.setContentProvider(ArrayContentProvider.getInstance());
-			biogasPlantTable.setLabelProvider(new BiogasPlantLabel());
-			biogasPlantTable.addSelectionChangedListener((e) -> {
+			table = Tables.createViewer(root, "Name", "Kessel", "Bemessungsleistung");
+			Tables.bindColumnWidths(table, 0.4, 0.4, 0.2);
+			table.setContentProvider(ArrayContentProvider.getInstance());
+			table.setLabelProvider(new TableLabel());
+			table.addSelectionChangedListener((e) -> {
 				suggestName();
 				validate();
 			});
@@ -148,7 +146,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 		}
 
 		private void functionFields(Composite root) {
-			Composite composite = new Composite(root, SWT.NONE);
+			var composite = new Composite(root, SWT.NONE);
 			UI.gridLayout(composite, 4);
 			UI.gridData(composite, true, false);
 			rankText = UI.formText(composite, "Rang");
@@ -159,7 +157,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 		private void bindToModel(Producer p, Project project) {
 			if (p == null)
 				return;
-			BiogasPlant plant = Viewers.getFirstSelected(biogasPlantTable);
+			BiogasPlant plant = Viewers.getFirstSelected(table);
 			p.biogasPlant = plant;
 			if (plant != null) {
 				p.productGroup = plant.productGroup;
@@ -192,7 +190,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 		private void suggestName() {
 			if (nameEdited && !Texts.isEmpty(nameText))
 				return;
-			BiogasPlant plant = Viewers.getFirstSelected(biogasPlantTable);
+			BiogasPlant plant = Viewers.getFirstSelected(table);
 			if (plant == null) {
 				nameText.setText("");
 			} else {
@@ -203,35 +201,37 @@ public class BiogasPlantProducerWizard extends Wizard {
 		private void updateBiogasPlants() {
 			var input = new ArrayList<>(App.getDb().getAll(BiogasPlant.class));
 			Sorters.byName(input);
-			biogasPlantTable.setInput(input);
+			table.setInput(input);
 			setPageComplete(false);
 		}
 
-		private boolean validate() {
-			if (!Texts.hasNumber(rankText))
-				return err("Der Rang muss ein numerischer Wert sein");
+		private void validate() {
+			if (!Texts.hasNumber(rankText)) {
+				err("Der Rang muss ein numerischer Wert sein");
+				return;
+			}
 			int rank = Texts.getInt(rankText);
 			if (Wizards.producerRankExists(project, rank)) {
-				return err("Es besteht bereits ein Wärmeerzeuger mit"
+				err("Es besteht bereits ein Wärmeerzeuger mit"
 					+ " dem angegebenen Rang.");
+				return;
 			}
 			setErrorMessage(null);
-			if (Viewers.getFirstSelected(biogasPlantTable) == null) {
+			if (Viewers.getFirstSelected(table) == null) {
 				setPageComplete(false);
-				return false;
+				return;
 			}
 			setPageComplete(true);
-			return true;
 		}
 
-		private boolean err(String msg) {
+		private void err(String msg) {
 			setPageComplete(false);
 			setErrorMessage(msg);
-			return false;
 		}
 	}
 
-	private static class BiogasPlantLabel extends LabelProvider implements ITableLabelProvider {
+	private static class TableLabel extends LabelProvider
+		implements ITableLabelProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
@@ -244,12 +244,21 @@ public class BiogasPlantProducerWizard extends Wizard {
 				return null;
 			return switch (col) {
 				case 0 -> plant.name;
-				case 1 -> plant.boilers.size() == 1 && plant.boilers.get(0).boiler != null
-						? plant.boilers.get(0).boiler.name
-						: plant.boilers.size() + " Blöcke";
+				case 1 -> blockLabelOf(plant);
 				case 2 -> Num.str(BiogasPlants.totalElectricPower(plant)) + " kW el.";
 				default -> null;
 			};
+		}
+
+		private String blockLabelOf(BiogasPlant plant) {
+			if (plant == null) return "";
+			var boilers = plant.boilers;
+			if (boilers.size() != 1)
+				return boilers.size() + " Blöcke";
+			var first = plant.boilers.getFirst();
+			return first != null && first.boiler != null
+				? first.boiler.name
+				: "";
 		}
 	}
 }

@@ -32,7 +32,8 @@ public class ProducerEditor extends Editor {
 	private Producer producer;
 
 	public static void open(
-			ProjectDescriptor project, ProducerDescriptor producer) {
+			ProjectDescriptor project, ProducerDescriptor producer
+	) {
 		if (project == null || producer == null)
 			return;
 		var input = new EditorInput(producer.id, producer.name);

@@ -16,7 +16,7 @@ import sophena.rcp.app.Workspace;
 
 class EnergyCalculator {
 
-	private Project project;
+	private final Project project;
 
 	private EnergyCalculator(Project project) {
 		this.project = project;
@@ -287,14 +287,14 @@ class EnergyCalculator {
 			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";
 			try(java.io.PrintWriter pw = new java.io.PrintWriter(filename))
 			{
-				pw.println(solarCalcLog.toString());
+				pw.println(solarCalcLog);
 			}
 
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_targetchargelevels.csv", targetChargeLevels);
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TV.csv", flowTemperatures);
 			SolarCalcLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TR.csv", returnTemperatures);
 		}
-		catch(java.io.FileNotFoundException err)
+		catch(java.io.FileNotFoundException ignored)
 		{
 		}
 
@@ -331,15 +331,11 @@ class EnergyCalculator {
 			return BufferCalcLoadType.None;
 		}
 
-		switch(producer.productGroup.type)
-		{
-		case HEAT_PUMP:
-			return heatPumpCalcState.getBufferLoadType();
-		case SOLAR_THERMAL_PLANT:
-			 return solarCalcState.getBufferLoadType();
-		default:
-			return BufferCalcLoadType.HT;
-		}
+		return switch (producer.productGroup.type) {
+			case HEAT_PUMP -> heatPumpCalcState.getBufferLoadType();
+			case SOLAR_THERMAL_PLANT -> solarCalcState.getBufferLoadType();
+			default -> BufferCalcLoadType.HT;
+		};
 	}
 
 	private double getSuppliedPower(Producer producer, int hour, SolarCalcState solarCalcState,
@@ -374,9 +370,7 @@ class EnergyCalculator {
 			boolean[] interruption = new boolean[Stats.HOURS];
 			for (TimeInterval time : p.interruptions) {
 				int[] interval = HoursTrace.getHourInterval(time);
-				HoursTrace.applyInterval(interruption, interval, (old, idx) -> {
-					return true;
-				});
+				HoursTrace.applyInterval(interruption, interval, (old, idx) -> true);
 			}
 			interruptions[i] = interruption;
 		}
