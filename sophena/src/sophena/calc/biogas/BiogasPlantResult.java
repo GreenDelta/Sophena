@@ -36,13 +36,26 @@ public record BiogasPlantResult(
 		profile.maxPower = new double[Stats.HOURS];
 		profile.temperaturLevel = new double[Stats.HOURS];
 		double power = BiogasPlants.totalThermalPower(plant);
-		if (power > 0 && runFlags != null) {
-			for (int h = 0; h < runFlags.length; h++) {
-				if (!runFlags[h])
-					continue;
-				// profile.minPower[h] = power;
+		if (power <= 0 || runFlags == null)
+			return profile;
+
+		int n = runFlags.length;
+		for (int h = 0; h < n; h++) {
+			if (runFlags[h]) {
 				profile.maxPower[h] = power;
 				profile.temperaturLevel[h] = temperature;
+			} else {
+				// if we are before a block -> 1/8 ramp-up
+				if (h < (n - 1) && runFlags[h + 1]) {
+					profile.maxPower[h + 1] += power / 8;
+					profile.temperaturLevel[h + 1] = temperature;
+				}
+
+				// if we are after a block -> 1/8 ramp-down
+				if (h > 0 && runFlags[h - 1]) {
+					profile.maxPower[h - 1] += power / 8;
+					profile.temperaturLevel[h - 1] = temperature;
+				}
 			}
 		}
 		return profile;
