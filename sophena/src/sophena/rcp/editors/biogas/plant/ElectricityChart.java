@@ -30,30 +30,36 @@ class ElectricityChart {
 		warnData = Charts.dataProvider();
 		pauseData = Charts.dataProvider();
 
-		// defaultTrace: chart-blue, hour i is the price value if it does not run and there is no break; otherwise 0
+		// default -> electricity price
 		var defaultTrace = Charts.lineTraceOf(
 			graph, "default", Colors.getChartBlue(), defaultData);
 		defaultTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// errorTrace: chart-red, hour i is the price if it runs and there is a break; otherwise 0
+		// error -> runs when it should not
 		var errorTrace = Charts.lineTraceOf(
 			graph, "error", Colors.getChartRed(), errorData);
 		errorTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// runTrace: chart-green (using hex/RGB for green), hour i is the price if it runs, there is no break and the price is > 0; otherwise 0
+		// run -> runs, and price is ok
 		var runTrace = Charts.lineTraceOf(
 			graph, "run", Colors.of("#4caf50"), runData);
 		runTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// warnTrace: chart-orange (using hex/RGB for orange), hour i is the price if it runs, there is no break and the price is <= 0; otherwise 0
+		// warn -> runs, but price is <= 0
 		var warnTrace = Charts.lineTraceOf(
 			graph, "warn", Colors.of("#ff9800"), warnData);
 		warnTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// pauseTrace: light-gray (top-trace), hour i is there is a break and it does not run; otherwise 0
+		// pause -> does not run, and it should not
 		var pauseTrace = Charts.lineTraceOf(
 			graph, "pause", Colors.of("#d3d3d3"), pauseData);
 		pauseTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
+
+		// draw a gray line at y = 0
+		var zeros = Charts.dataProvider(new double[Stats.HOURS]);
+		var zeroTrace = Charts.lineTraceOf(
+			graph, "zeros", Colors.of("#d3d3d3"), zeros);
+		zeroTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
 		editor.onResult(this::setInput);
 	}
@@ -77,40 +83,11 @@ class ElectricityChart {
 			boolean isBreak = !BiogasPlants.isFeedInAllowed(r.plant(), h);
 			double price = prices[h];
 
-			// defaultTrace: price if !isRunning && !isBreak; otherwise 0
-			if (!isRunning && !isBreak) {
-				defaultVals[h] = price;
-			} else {
-				defaultVals[h] = 0;
-			}
-
-			// errorTrace: price if isRunning && isBreak; otherwise 0
-			if (isRunning && isBreak) {
-				errorVals[h] = price;
-			} else {
-				errorVals[h] = 0;
-			}
-
-			// runTrace: price if isRunning && !isBreak && price > 0; otherwise 0
-			if (isRunning && !isBreak && price > 0) {
-				runVals[h] = price;
-			} else {
-				runVals[h] = 0;
-			}
-
-			// warnTrace: price if isRunning && !isBreak && price <= 0; otherwise 0
-			if (isRunning && !isBreak && price <= 0) {
-				warnVals[h] = price;
-			} else {
-				warnVals[h] = 0;
-			}
-
-			// pauseTrace: price if isBreak && !isRunning; otherwise 0
-			if (isBreak && !isRunning) {
-				pauseVals[h] = price;
-			} else {
-				pauseVals[h] = 0;
-			}
+			defaultVals[h] = !isRunning && !isBreak ? price : 0;
+			errorVals[h] = isRunning && isBreak ? price : 0;
+			runVals[h] = isRunning && !isBreak && price > 0 ? price : 0;
+			warnVals[h] = isRunning && !isBreak && price <= 0 ? price : 0;
+			pauseVals[h] = isBreak && !isRunning ? price : 0;
 		}
 
 		defaultData.setCurrentYDataArray(defaultVals);
