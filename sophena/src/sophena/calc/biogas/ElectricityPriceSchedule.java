@@ -6,6 +6,8 @@ import java.util.Arrays;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
+/// TODO: we should find blocks of hours and tag them instead of tagging
+/// single hours with best prices.
 public record ElectricityPriceSchedule(boolean[] flags) {
 
 	public boolean shouldRunAt(int hour) {
@@ -44,7 +46,11 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 			sortSeq.clear();
 			for (int h = offset; h < end; h++) {
 				storage.add(profile, h);
-				sortSeq.add(new SeqVal(h, prices[h]));
+				// simply sort "break" hours to the end for now
+				double sortVal = BiogasPlants.isFeedInAllowed(plant, h)
+					? prices[h]
+					: -1000.0 + prices[h];
+				sortSeq.add(new SeqVal(h, sortVal));
 			}
 
 			int hs = (int) Math.floor(storage.hoursToEmpty());
