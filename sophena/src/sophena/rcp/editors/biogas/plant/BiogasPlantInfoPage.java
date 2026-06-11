@@ -73,6 +73,10 @@ class BiogasPlantInfoPage extends FormPage {
 
 		// electricity section
 		ElectricitySection.of(editor).create(body, tk);
+
+		// producer profile section
+		ProducerProfileSection.of(editor).create(body, tk);
+
 		editor.calculate();
 	}
 
