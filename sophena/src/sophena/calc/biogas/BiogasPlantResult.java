@@ -83,12 +83,20 @@ public record BiogasPlantResult(
 		}
 
 		private void runAt(int hour) {
+			if (runTime == 0) {
+				// ramp-up
+				storage.runHours(0.125);
+			}
 			storage.runOneHour();
 			runTime++;
 			runFlags[hour] = true;
 		}
 
 		private void stop() {
+			if (runTime > 0) {
+				// ramp-down
+				storage.runHours(0.125);
+			}
 			runTime = 0;
 		}
 
@@ -105,11 +113,9 @@ public record BiogasPlantResult(
 				}
 
 				// the storage is full!
-				if (hour < (Stats.HOURS - 1)) {
-					if (!storage.canAdd(profile, hour + 1)) {
-						runAt(hour);
-						continue;
-					}
+				if (hour < (Stats.HOURS - 1) && !storage.canAdd(profile, hour + 1)) {
+					runAt(hour);
+					continue;
 				}
 
 				boolean priceOk = priceSchedule.shouldRunAt(hour);
@@ -130,18 +136,6 @@ public record BiogasPlantResult(
 					continue;
 				}
 
-				// also, keep it running if the price is good in the next hour
-				int nextHour = hour + 1;
-				if (nextHour < Stats.HOURS && priceSchedule.shouldRunAt(nextHour)) {
-					var s = storage.copy();
-					s.runOneHour();
-					s.add(profile, nextHour);
-					if (s.canRunOneHour()) {
-						runAt(hour);
-						continue;
-					}
-				}
-
 				// otherwise stop it
 				stop();
 			}
@@ -149,16 +143,22 @@ public record BiogasPlantResult(
 			return new BiogasPlantResult(plant, profile, storage.size(), runFlags);
 		}
 
-		private boolean canStartAt(int hour) {
-			int end = hour + minRunTime;
-			if (end >= Stats.HOURS)
+		private boolean canStartAt(int startHour) {
+			int endHour = startHour + minRunTime - 1;
+			if (endHour >= Stats.HOURS) {
 				return false;
+			}
 			var s = storage.copy();
-			for (int h = hour + 1; h < end; h++) {
-				s.runOneHour();
+			for (int h = startHour; h <= endHour; h++) {
 				s.add(profile, h);
-				if (!s.canRunOneHour())
+				double hours = h == startHour || h == endHour
+					? 1.125
+					: 1.0;
+				if (s.canRunHours(hours)) {
+					s.runHours(hours);
+				} else {
 					return false;
+				}
 			}
 			return true;
 		}

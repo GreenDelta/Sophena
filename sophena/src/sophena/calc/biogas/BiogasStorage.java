@@ -58,7 +58,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		}
 
 		this.methaneContent = (
-				filled * this.methaneContent + volume * methaneContent) / nextVol;
+			filled * this.methaneContent + volume * methaneContent) / nextVol;
 		filled = nextVol;
 		return 0;
 	}
@@ -78,17 +78,21 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		return q / fuelPower;
 	}
 
-	/// Returns true if the boiler can run at least one hour under full load with
-	/// the biogas that is currently in the storage.
 	public boolean canRunOneHour() {
-		double q = filled * methaneContent * CAL;
-		return q > fuelPower;
+		return canRunHours(1);
 	}
 
-	/// Reduces the stored biogas by the amount that is required to run the linked
-	/// boiler under full load for one hour.
 	public void runOneHour() {
-		double vol = (fuelPower / CAL) / methaneContent;
+		runHours(1);
+	}
+
+	public boolean canRunHours(double hours) {
+		double q = filled * methaneContent * CAL;
+		return q >= (fuelPower * hours);
+	}
+
+	public void runHours(double hours) {
+		double vol = (hours * fuelPower) / (CAL * methaneContent);
 		filled = filled > vol ? filled - vol : 0;
 	}
 
