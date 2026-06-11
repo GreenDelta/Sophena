@@ -3,9 +3,6 @@ package sophena.rcp.editors.producers.biogas;
 import java.util.Objects;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace;
-import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -21,14 +18,9 @@ import org.openlca.commons.Strings;
 
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.Producer;
-import sophena.model.ProducerProfile;
 import sophena.model.Project;
-import sophena.model.Stats;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.charts.Charts;
-import sophena.rcp.colors.ColorConfig;
-import sophena.rcp.colors.ColorKey;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.biogas.plant.BiogasPlantEditor;
@@ -86,9 +78,7 @@ public class BiogasPlantProducerEditor extends Editor {
 		private ImageHyperlink plantLink;
 		private Text thermalPowText;
 		private Text electricPowText;
-
-		private XYGraph graph;
-		private CircularBufferDataProvider data;
+		private ProducerChart producerChart;
 
 		private Page() {
 			super(BiogasPlantProducerEditor.this, "BiogasPlantProducerPage",
@@ -139,14 +129,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			UI.gridData(section, true, false);
 			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
-
-			graph = Charts.initHoursGraph(comp, 250);
-			graph.getPrimaryYAxis().setTitle("kW");
-			data = Charts.dataProvider();
-			var color = Colors.of(
-					ColorConfig.get().get(ColorKey.PRODUCER_PROFILE));
-			var trace = Charts.lineTraceOf(graph, "Max", color, data);
-			trace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
+			producerChart = ProducerChart.create(comp);
 		}
 
 		private Text readOnlyText(Composite parent, FormToolkit tk, String label) {
@@ -172,18 +155,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			}
 			Texts.set(thermalPowText, Num.intStr(producer.profileMaxPower));
 			Texts.set(electricPowText, Num.intStr(producer.profileMaxPowerElectric));
-
-			var profile = producer != null && producer.profile != null
-				? producer.profile
-				: ProducerProfile.initEmpty();
-
-			double[] max = profile.maxPower;
-			if (max != null) {
-				data.setCurrentYDataArray(max);
-				double top = Stats.nextStep(Stats.max(max));
-				graph.getPrimaryYAxis().setRange(0, top);
-			}
-
+			producerChart.update(producer.profile);
 			form.reflow(true);
 		}
 
