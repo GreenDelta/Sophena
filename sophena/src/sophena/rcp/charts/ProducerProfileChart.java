@@ -20,17 +20,11 @@ public class ProducerProfileChart {
 
 	public final XYGraph graph;
 	public final XYGraph graphTemperature;
-	private final boolean showTemperature;
 	private final CircularBufferDataProvider minData;
 	private final CircularBufferDataProvider maxData;
 	private final CircularBufferDataProvider temperatureData;
 
 	public ProducerProfileChart(Composite parent, int height) {
-		this(parent, height, true);
-	}
-
-	public ProducerProfileChart(Composite parent, int height, boolean showTemperature) {
-		this.showTemperature = showTemperature;
 		minData = Charts.dataProvider();
 		maxData = Charts.dataProvider();
 		temperatureData = Charts.dataProvider();
@@ -39,14 +33,10 @@ public class ProducerProfileChart {
 		LightweightSystem lws = new LightweightSystem(canvas);
 		graph = createGraph(lws, false);
 
-		if (showTemperature) {
-			var canvasTemp = new Canvas(parent, SWT.DOUBLE_BUFFERED);
-			UI.gridData(canvasTemp, true, true).minimumHeight = height;
-			LightweightSystem lwsTemp = new LightweightSystem(canvasTemp);
-			graphTemperature = createGraph(lwsTemp, true);
-		} else {
-			graphTemperature = null;
-		}
+		var canvasTemp = new Canvas(parent, SWT.DOUBLE_BUFFERED);
+		UI.gridData(canvasTemp, true, true).minimumHeight = height;
+		LightweightSystem lwsTemp = new LightweightSystem(canvasTemp);
+		graphTemperature = createGraph(lwsTemp, true);
 	}
 
 	public void setData(ProducerProfile profile) {
@@ -71,8 +61,8 @@ public class ProducerProfileChart {
 		double maxMax = Stats.max(max);
 		double top = Stats.nextStep(Math.max(maxMax, minMax));
 		graph.getPrimaryYAxis().setRange(0, top);
-		
-		if (showTemperature && graphTemperature != null) {
+
+		if (graphTemperature != null) {
 			graphTemperature.getPrimaryYAxis().setRange(0, Stats.nextStep(Stats.max(temp)));
 		}
 	}
