@@ -47,14 +47,14 @@ public record BiogasPlantResult(
 			} else {
 				// if we are before a block -> 1/8 ramp-up
 				if (h < (n - 1) && runFlags[h + 1]) {
-					profile.maxPower[h + 1] += power / 8;
-					profile.temperaturLevel[h + 1] = temperature;
+					profile.maxPower[h] += power / 8;
+					profile.temperaturLevel[h] = temperature;
 				}
 
 				// if we are after a block -> 1/8 ramp-down
 				if (h > 0 && runFlags[h - 1]) {
-					profile.maxPower[h - 1] += power / 8;
-					profile.temperaturLevel[h - 1] = temperature;
+					profile.maxPower[h] += power / 8;
+					profile.temperaturLevel[h] = temperature;
 				}
 			}
 		}
