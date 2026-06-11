@@ -151,11 +151,16 @@ public record BiogasPlantResult(
 			var s = storage.copy();
 			for (int h = startHour; h <= endHour; h++) {
 				s.add(profile, h);
-				double hours = h == startHour || h == endHour
-					? 1.125
-					: 1.0;
-				if (s.canRunHours(hours)) {
-					s.runHours(hours);
+				double time = 1.0;
+				// start and end could be the same when minRunTime = 1
+				if (h == startHour) {
+					time += 0.125;
+				}
+				if (h == endHour) {
+					time += 0.125;
+				}
+				if (s.canRunHours(time)) {
+					s.runHours(time);
 				} else {
 					return false;
 				}
