@@ -19,7 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/log4j-api-2.24.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback-classic-1.5.24.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback-core-1.5.24.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/olca-commons-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/olca-commons-1.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/org.eclipse.persistence.asm-9.9.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/org.eclipse.persistence.core-4.0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/org.eclipse.persistence.jpa.jpql-4.0.9.jar"/>
