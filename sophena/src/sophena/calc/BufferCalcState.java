@@ -138,28 +138,28 @@ public class BufferCalcState {
 		qLostVTInHour = 0;
 	}
 
-	public double load(int hour, double qToLoad, BufferCalcLoadType loadType, boolean useMaxTargetLoadFactor, double loadFactorTK_i)
+	public double load(int hour, double qToLoad, BufferLoadType loadType, boolean useMaxTargetLoadFactor, double loadFactorTK_i)
 	{
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
 
-		if(loadType != BufferCalcLoadType.NT && QP_NT < 0)
+		if(loadType != BufferLoadType.LOW_TEMP && QP_NT < 0)
 		{
-			loadType = BufferCalcLoadType.NT;
+			loadType = BufferLoadType.LOW_TEMP;
 		}
-		else if(loadType == BufferCalcLoadType.HT && QP_VT < 0)
+		else if(loadType == BufferLoadType.HIGH_TEMP && QP_VT < 0)
 		{
-			loadType = BufferCalcLoadType.VT;
+			loadType = BufferLoadType.FLOW_TEMP;
 		}
 
 		double Qloaded;
-		if(loadType == BufferCalcLoadType.HT)
+		if(loadType == BufferLoadType.HIGH_TEMP)
 		{
 			Qloaded = Math.min(qToLoad, CalcHTCapacity(useMaxTargetLoadFactor));
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
 		}
-		else if(loadType == BufferCalcLoadType.VT)
+		else if(loadType == BufferLoadType.FLOW_TEMP)
 		{
 			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
 			QP_VT = QP_VT + Qloaded;
@@ -190,10 +190,10 @@ public class BufferCalcState {
        return maxTargetLoadFactor < ((QP_HT + QP_VT + QP_NT - requiredLoad) / denominator);
 	}
 
-	public double unload(int hour, double qToUnload, BufferCalcLoadType loadType)
+	public double unload(int hour, double qToUnload, BufferLoadType loadType)
 	{
 		double Qunloaded;
-		if(loadType == BufferCalcLoadType.HT)
+		if(loadType == BufferLoadType.HIGH_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
@@ -201,7 +201,7 @@ public class BufferCalcState {
 
 			qUnloadedHTInHour += Qunloaded;
 		}
-		else if(loadType == BufferCalcLoadType.VT)
+		else if(loadType == BufferLoadType.FLOW_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
 			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
