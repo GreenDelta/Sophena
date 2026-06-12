@@ -9,6 +9,7 @@ import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.utils.Temperature;
 
 public class ProjectLoad {
 
@@ -171,7 +172,7 @@ public class ProjectLoad {
 		// When seasonal driving style is active, TV/TR vary per hour via
 		// SeasonalItem; otherwise they are constant from HeatNet fields.
 		var temperature = project.weatherStation.data;
-		double min = project.weatherStation.minTemperature();
+		double min = Temperature.minimumOf(project);
 		double max = project.maxConsumerHeatTemperature();
 		for (int hour = 0; hour < temperature.length; hour++) {
 			var item = SeasonalItem.calc(net, hour, min, max, temperature[hour]);

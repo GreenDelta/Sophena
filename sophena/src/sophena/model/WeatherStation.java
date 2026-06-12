@@ -71,13 +71,4 @@ public class WeatherStation extends BaseDataEntity {
 		d.isProtected = isProtected;
 		return d;
 	}
-
-	public double minTemperature() {
-		double min = Double.MAX_VALUE;
-		for (int i = 0; i < Stats.HOURS; i++) {
-			if (data[i] < min)
-				min = data[i];
-		}
-		return min;
-	}
 }

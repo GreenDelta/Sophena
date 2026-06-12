@@ -156,7 +156,7 @@ class HeatNetSection {
 		{
 			double averageFlowTemperature = 0;
 			double averageReturnTempeature = 0;
-			double minWeatherStationTemperature = editor.project.weatherStation.minTemperature();
+			double minWeatherStationTemperature = Temperature.minimumOf(editor.project);
 			double maxConsumerHeatingLimit = editor.project.maxConsumerHeatTemperature();
 			for(int hour = 0; hour < Stats.HOURS; hour++)
 			{

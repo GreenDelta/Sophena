@@ -80,12 +80,10 @@ public class BufferCalcState {
 		this.project = project;
 		this.log = log;
 
-		minWeatherStationTemperature = project.weatherStation.minTemperature();
+		minWeatherStationTemperature = Temperature.minimumOf(project);
 		maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
 
-		double temperature = project.weatherStation.data != null && 0 < project.weatherStation.data.length
-				? project.weatherStation.data[0]
-				: 0;
+		double temperature = Temperature.of(project, 0);
 		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, 0, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 		TV = seasonalItem.flowTemperature;
 		TR = seasonalItem.returnTemperature;

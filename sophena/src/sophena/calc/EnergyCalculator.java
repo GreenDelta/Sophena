@@ -267,7 +267,7 @@ class EnergyCalculator {
 		double[] targetChargeLevels = new double[Stats.HOURS];
 		double[] flowTemperatures = new double[Stats.HOURS];
 		double[] returnTemperatures = new double[Stats.HOURS];
-		double minWeatherStationTemperature = project.weatherStation.minTemperature();
+		double minWeatherStationTemperature = Temperature.minimumOf(project);
 		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			double temperature = Temperature.of(project, hour);
