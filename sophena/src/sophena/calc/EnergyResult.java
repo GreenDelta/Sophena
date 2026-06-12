@@ -34,6 +34,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 
 	HashMap<String, Double> totalHeats = new HashMap<>();
 	public double heatNetLoss;
+	public double fermenterHeatDemand;
 
 	public EnergyResult() {
 	}
@@ -174,6 +175,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		copy.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
 		copy.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
 		copy.heatNetLoss = heatNetLoss;
+		copy.fermenterHeatDemand = fermenterHeatDemand;
 		return copy;
 	}
 

@@ -13,6 +13,7 @@ public class EfficiencyResult {
 	public double producedElectrictiy;
 	public double bufferLoss;
 	public double distributionLoss;
+	public double fermenterHeatDemand;
 	public double usedHeat;
 	public double totalLoss;
 
@@ -59,10 +60,11 @@ public class EfficiencyResult {
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.energyResult.heatNetLoss;
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
+			res.fermenterHeatDemand = pr.energyResult.fermenterHeatDemand;
 			res.usedHeat = res.producedHeat - res.distributionLoss
-					- res.bufferLoss;
+					- res.bufferLoss - res.fermenterHeatDemand;
 			res.totalLoss = res.distributionLoss
-					+ res.bufferLoss;
+					+ res.bufferLoss + res.fermenterHeatDemand;
 			return res;
 		}
 	}

@@ -296,6 +296,14 @@ class EnergyCalculator {
 
 		calcTotals(r);
 
+		r.fermenterHeatDemand = 0;
+		for (var p : r.producers) {
+			if (p.biogasPlant == null)
+				continue;
+			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
+			r.fermenterHeatDemand += Stats.sum(demand);
+		}
+
 		return r;
 	}
 

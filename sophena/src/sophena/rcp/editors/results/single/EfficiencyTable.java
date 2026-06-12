@@ -18,7 +18,7 @@ import sophena.utils.Num;
 
 class EfficiencyTable {
 
-	private EfficiencyResult r;
+	private final EfficiencyResult r;
 
 	private EfficiencyTable(EfficiencyResult result) {
 		this.r = result;
@@ -47,9 +47,11 @@ class EfficiencyTable {
 		}
 		items.add(new Item("Erzeugte Wärme", r.producedHeat));
 		items.add(new Item("Pufferspeicherverluste", r.bufferLoss,
-				r.producedHeat));
+			r.producedHeat));
 		items.add(new Item("Verteilungsverluste", r.distributionLoss,
-				r.producedHeat));
+			r.producedHeat));
+		items.add(new Item("Fermenterwärmebedarf", r.fermenterHeatDemand,
+			r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));
 		items.add(new Item());
 		Item total = new Item("Gesamtverluste", r.totalLoss, r.producedHeat);
@@ -58,7 +60,7 @@ class EfficiencyTable {
 		return items;
 	}
 
-	private class Item {
+	private static class Item {
 		String label;
 		String absolute;
 		String relative;
@@ -79,14 +81,13 @@ class EfficiencyTable {
 		}
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider,
+	private static class Label extends LabelProvider implements ITableLabelProvider,
 			IFontProvider {
 
 		@Override
 		public Font getFont(Object obj) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
 			if (item.total)
 				return JFaceResources.getFontRegistry().getBold(
 						JFaceResources.DEFAULT_FONT);
@@ -100,19 +101,14 @@ class EfficiencyTable {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.label;
-			case 1:
-				return item.absolute;
-			case 2:
-				return item.relative;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.label;
+				case 1 -> item.absolute;
+				case 2 -> item.relative;
+				default -> null;
+			};
 		}
 	}
 

@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import sophena.math.Smoothing;
 import sophena.math.energetic.SeasonalItem;
-import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
 import sophena.model.Project;
@@ -25,9 +24,9 @@ public class ProjectLoad {
 		HeatNet net = project.heatNet;
 		if (net != null && net.maxLoad != null)
 			return net.maxLoad;
-		double load = getMaxNetLoad(project);
 
-		for (Consumer c : project.consumers) {
+		double load = getMaxNetLoad(project);
+		for (var c : project.consumers) {
 			if (c.disabled)
 				continue;
 			load += c.heatingLoad;
@@ -42,10 +41,10 @@ public class ProjectLoad {
 	public static double getSimultaneousMax(Project project) {
 		if (project == null)
 			return 0;
-		double max = ProjectLoad.getMax(project);
-		if (project.heatNet == null)
-			return max;
-		return Math.ceil(max * project.heatNet.simultaneityFactor);
+		double max = getMax(project);
+		return project.heatNet != null
+			? Math.ceil(max * project.heatNet.simultaneityFactor)
+			: max;
 	}
 
 	/**
@@ -62,12 +61,12 @@ public class ProjectLoad {
 			if (consumer.disabled)
 				continue;
 			var profile = ConsumerLoadCurve.calculate(
-					consumer, project.weatherStation);
+				consumer, project.weatherStation);
 			Stats.add(profile.dynamicData, dynamicData);
 			Stats.add(profile.staticData, staticData);
 		}
 		double[] data = Smoothing.on(dynamicData,
-				Smoothing.getCount(project));
+			Smoothing.getCount(project));
 		Stats.add(staticData, data);
 		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
@@ -83,11 +82,11 @@ public class ProjectLoad {
 			if (consumer.disabled)
 				continue;
 			var profile = ConsumerLoadCurve.calculate(
-					consumer, project.weatherStation);
+				consumer, project.weatherStation);
 			Stats.add(profile.dynamicData, dynamicData);
 		}
 		double[] data = Smoothing.on(dynamicData,
-				Smoothing.getCount(project));
+			Smoothing.getCount(project));
 		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
@@ -102,7 +101,7 @@ public class ProjectLoad {
 			if (consumer.disabled)
 				continue;
 			var profile = ConsumerLoadCurve.calculate(
-					consumer, project.weatherStation);
+				consumer, project.weatherStation);
 			Stats.add(profile.staticData, staticData);
 		}
 		applyInterruption(staticData, project.heatNet);
@@ -121,24 +120,24 @@ public class ProjectLoad {
 			if (consumer.disabled)
 				continue;
 			var profile = ConsumerLoadCurve.calculate(
-					consumer, project.weatherStation);
+				consumer, project.weatherStation);
 			Stats.add(profile.dynamicData, data);
 			Stats.add(profile.staticData, data);
 		}
-		double netLoad[] = getNetLoadCurve(project);
+		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
 
 	public static double getMaxNetLoad(Project project) {
-		if(project == null)
+		if (project == null)
 			return 0;
 
 		double[] netLoadCurve = getNetLoadCurve(project);
 		double max = 0;
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			if(netLoadCurve[hour] > max)
+			if (netLoadCurve[hour] > max)
 				max = netLoadCurve[hour];
 		}
 		return max;
@@ -163,8 +162,8 @@ public class ProjectLoad {
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
-					? project.weatherStation.data[hour]
-					: 0;
+				? project.weatherStation.data[hour]
+				: 0;
 			SeasonalItem seasonalItem = SeasonalItem.calc(net, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 
 			double TV = seasonalItem.flowTemperature;
