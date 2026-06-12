@@ -5,6 +5,7 @@ import java.util.List;
 
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.utils.Temperature;
 
 public class HeatPumpCalcState {
 	private SolarCalcLog log;
@@ -269,7 +270,7 @@ public class HeatPumpCalcState {
 		switch(producer.heatPumpMode)
 		{
 		case OUTODOOR_TEMPERATURE_MODE:
-			return project.weatherStation.data[hour];
+			return Temperature.of(project, hour);
 		case USER_TEMPERATURE_MODE:
 			return producer.sourceTemperatureUser;
 		case HOURLY_TEMPERATURE_MODE:

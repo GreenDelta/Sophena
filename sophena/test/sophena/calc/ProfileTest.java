@@ -26,7 +26,7 @@ public class ProfileTest {
 	private Producer producer;
 
 	@Before
-	public void setUp() {
+	public void setup() {
 
 		Project project = new Project();
 		project.id = "p";

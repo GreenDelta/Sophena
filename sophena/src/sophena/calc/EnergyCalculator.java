@@ -13,6 +13,7 @@ import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
 import sophena.rcp.app.Workspace;
+import sophena.utils.Temperature;
 
 class EnergyCalculator {
 
@@ -73,9 +74,7 @@ class EnergyCalculator {
 					heatPumpCalcState.calcPre(hour, bufferCalcState.getTR(), bufferCalcState.getTV());
 			}
 
-			double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
-				? project.weatherStation.data[hour]
-				: 0;
+			double TL_i = Temperature.of(project, hour);
 
 			// Determine if there is at least one HT producer
 			boolean haveAtLeastOneHTProducer = false;
@@ -271,9 +270,7 @@ class EnergyCalculator {
 		double minWeatherStationTemperature = project.weatherStation.minTemperature();
 		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
-				? project.weatherStation.data[hour]
-				: 0;
+			double temperature = Temperature.of(project, hour);
 			var item = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 
 			targetChargeLevels[hour] = item.targetChargeLevel;

@@ -4,6 +4,7 @@ import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.utils.Temperature;
 
 public class SolarCalcState {
 	private SolarCalcLog log;
@@ -30,7 +31,7 @@ public class SolarCalcState {
 		phase = SolarCalcPhase.Aufheiz;
 		operationMode = SolarCalcOperationMode.PreHeating;
 
-		TK_i_minus_one = project.weatherStation.data[0];
+		TK_i_minus_one = Temperature.of(project, 0);
 
 		numStagnationDays = 0;
 	}
@@ -79,9 +80,7 @@ public class SolarCalcState {
 		double MERI = -project.weatherStation.referenceLongitude;
 		
 		// °C
-		double TL_i = project.weatherStation.data != null && hour < project.weatherStation.data.length
-				? project.weatherStation.data[hour]
-				: 0;
+		double TL_i = Temperature.of(project, hour);
 		// W/m²
 		double SDI_i = project.weatherStation.directRadiation != null && hour < project.weatherStation.directRadiation.length 
 				? project.weatherStation.directRadiation[hour]

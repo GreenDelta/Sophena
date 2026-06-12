@@ -24,6 +24,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+import sophena.utils.Temperature;
 
 class HeatNetSection {
 
@@ -159,9 +160,7 @@ class HeatNetSection {
 			double maxConsumerHeatingLimit = editor.project.maxConsumerHeatTemperature();
 			for(int hour = 0; hour < Stats.HOURS; hour++)
 			{
-				double temperature = editor.project.weatherStation.data != null && hour < editor.project.weatherStation.data.length
-						? editor.project.weatherStation.data[hour]
-								: 0;
+			double temperature = Temperature.of(editor.project, hour);
 				SeasonalItem seasonalItem = SeasonalItem.calc(editor.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 				averageFlowTemperature += seasonalItem.flowTemperature;
 				averageReturnTempeature += seasonalItem.returnTemperature;

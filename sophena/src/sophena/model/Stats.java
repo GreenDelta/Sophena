@@ -92,13 +92,14 @@ public final class Stats {
 	public static double get(double[] array, int i) {
 		if (array == null)
 			return 0;
-		if (i < 0 || i >= array.length)
-			return 0;
-		else
-			return array[i];
+		return i < 0 || i >= array.length
+			? 0
+			: array[i];
 	}
 
-	/** Adds the values of the first array to the values of the second array */
+	/**
+	 * Adds the values of the first array to the values of the second array
+	 */
 	public static void add(double[] from, double[] to) {
 		for (int i = 0; i < from.length && i < to.length; i++)
 			to[i] += from[i];
