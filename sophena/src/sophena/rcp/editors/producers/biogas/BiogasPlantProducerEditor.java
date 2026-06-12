@@ -47,6 +47,7 @@ public class BiogasPlantProducerEditor extends Editor {
 		producer = input.producer();
 		Objects.requireNonNull(producer.biogasPlant);
 		setPartName(producer.name);
+		BiogasPlants.syncProducerProfile(project, producer);
 		Runnable reload = this::reload;
 		App.events().subscribe(producer.biogasPlant, reload);
 		onClosed(() -> App.events().unsubscribe(reload));
