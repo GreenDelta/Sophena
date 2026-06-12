@@ -4,14 +4,12 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.db.daos.RootEntityDao;
@@ -39,8 +37,7 @@ import sophena.utils.Num;
 public class PipeEditor extends Editor {
 
 	public static void open() {
-		KeyEditorInput input = new KeyEditorInput("data.pipes",
-				"Wärmeleitungen");
+		var input = new KeyEditorInput("data.pipes", "Wärmeleitungen");
 		Editors.open(input, "sophena.PipeEditor");
 	}
 
@@ -67,21 +64,22 @@ public class PipeEditor extends Editor {
 
 		@Override
 		protected void createFormContent(IManagedForm managedForm) {
-			ScrolledForm form = UI.formHeader(managedForm, "Wärmeleitungen");
-			FormToolkit toolkit = managedForm.getToolkit();
-			Composite body = UI.formBody(form, toolkit);
+			var form = UI.formHeader(managedForm, "Wärmeleitungen");
+			var toolkit = managedForm.getToolkit();
+			var body = UI.formBody(form, toolkit);
 			createSection(body, toolkit);
 			form.reflow(true);
 		}
 
 		private void createSection(Composite body, FormToolkit toolkit) {
-			Section section = UI.section(body, toolkit, "Wärmeleitungen");
+			var section = UI.section(body, toolkit, "Wärmeleitungen");
 			UI.gridData(section, true, true);
-			Composite comp = UI.sectionClient(section, toolkit);
+			var comp = UI.sectionClient(section, toolkit);
 			UI.gridLayout(comp, 1);
-			TableViewer table = Tables.createViewer(comp, "Produktgruppe",
+			var table = Tables.createViewer(comp, "Produktgruppe",
 					"Bezeichnung", "Produktlinie",
 					"Hersteller", "Art", "Außend. Medienrohr", "U-Wert");
+
 			var label = new Label();
 			table.setLabelProvider(label);
 			table.setInput(pipes);
@@ -94,13 +92,13 @@ public class PipeEditor extends Editor {
 		}
 
 		private void bindActions(Section section, TableViewer table) {
-			Action add = Actions.create(M.Add, Icon.ADD_16.des(),
+			var add = Actions.create(M.Add, Icon.ADD_16.des(),
 					() -> add(table));
-			Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
+			var edit = Actions.create(M.Edit, Icon.EDIT_16.des(),
 					() -> edit(table));
-			Action saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
+			var saveAs = Actions.create(M.Copy, Icon.COPY_16.des(),
 					() -> saveAs(table));
-			Action del = Actions.create(M.Delete, Icon.DELETE_16.des(),
+			var del = Actions.create(M.Delete, Icon.DELETE_16.des(),
 					() -> delete(table));
 			Actions.bind(section, add, edit, saveAs, del);
 			Actions.bind(table, add, edit, saveAs, del);
@@ -108,7 +106,7 @@ public class PipeEditor extends Editor {
 		}
 
 		private void add(TableViewer table) {
-			Pipe p = new Pipe();
+			var p = new Pipe();
 			p.type = ProductType.PIPE;
 			p.id = UUID.randomUUID().toString();
 			p.name = "Neue Wärmeleitung";
@@ -185,7 +183,7 @@ public class PipeEditor extends Editor {
 			return switch (col) {
 				case 4 -> p.pipeType != null ? p.pipeType.name() : null;
 				case 5 -> Num.str(p.outerDiameter) + " mm";
-				case 6 -> df.format(p.uValue) + "W/(m*K)";
+				case 6 -> df.format(p.uValue) + " W/(m*K)";
 				default -> null;
 			};
 		}

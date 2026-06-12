@@ -103,6 +103,7 @@ class PipeSync {
 				appendNew(sum.segments());
 			}
 			project.heatNet.length = HeatNets.getTrenchLengthOf(project.heatNet);
+			project.heatNet.powerLoss = HeatNets.heatLossCoefficientOf(project.heatNet);
 			return Res.ok(result);
 		} catch (Exception e) {
 			return Res.error("Failed to sync pipes", e);
