@@ -79,6 +79,7 @@ public class BiogasPlantProducerEditor extends Editor {
 		private Text thermalPowText;
 		private Text electricPowText;
 		private ProducerChart producerChart;
+		private HeatDemandChart heatDemandChart;
 
 		private Page() {
 			super(BiogasPlantProducerEditor.this, "BiogasPlantProducerPage",
@@ -92,6 +93,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			var body = UI.formBody(form, tk);
 			createMetaSection(body, tk);
 			createProfileSection(body, tk);
+			createHeatDemandSection(body, tk);
 			refresh();
 			form.reflow(true);
 		}
@@ -132,6 +134,14 @@ public class BiogasPlantProducerEditor extends Editor {
 			producerChart = ProducerChart.create(comp);
 		}
 
+		private void createHeatDemandSection(Composite body, FormToolkit tk) {
+			var section = UI.section(body, tk, "Wärmebedarf des Fermenters");
+			UI.gridData(section, true, false);
+			var comp = UI.sectionClient(section, tk);
+			UI.gridLayout(comp, 1);
+			heatDemandChart = HeatDemandChart.create(comp);
+		}
+
 		private Text readOnlyText(Composite parent, FormToolkit tk, String label) {
 			var text = UI.formText(parent, tk, label);
 			Texts.on(text).readOnly();
@@ -156,6 +166,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			Texts.set(thermalPowText, Num.intStr(producer.profileMaxPower));
 			Texts.set(electricPowText, Num.intStr(producer.profileMaxPowerElectric));
 			producerChart.update(producer.profile);
+			heatDemandChart.update(project, producer.biogasPlant);
 			form.reflow(true);
 		}
 

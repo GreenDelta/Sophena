@@ -15,9 +15,9 @@ public final class BiogasPlants {
 			return false;
 		for (var entry : plant.boilers) {
 			if (entry == null
-					|| entry.boiler == null
-					|| entry.boiler.maxPowerElectric <= 0
-					|| entry.boiler.efficiencyRateElectric <= 0)
+				|| entry.boiler == null
+				|| entry.boiler.maxPowerElectric <= 0
+				|| entry.boiler.efficiencyRateElectric <= 0)
 				return false;
 		}
 		return true;
@@ -53,12 +53,12 @@ public final class BiogasPlants {
 			return sum;
 		for (var entry : plant.boilers) {
 			if (entry == null
-					|| entry.boiler == null
-					|| entry.boiler.maxPowerElectric <= 0
-					|| entry.boiler.efficiencyRateElectric <= 0)
+				|| entry.boiler == null
+				|| entry.boiler.maxPowerElectric <= 0
+				|| entry.boiler.efficiencyRateElectric <= 0)
 				continue;
 			sum += entry.boiler.maxPowerElectric
-					/ entry.boiler.efficiencyRateElectric;
+				/ entry.boiler.efficiencyRateElectric;
 		}
 		return sum;
 	}
@@ -104,14 +104,33 @@ public final class BiogasPlants {
 		producer.productGroup = plant.productGroup;
 		var result = BiogasPlantResult.calculate(plant);
 		double temperature = project.heatNet != null
-				&& project.heatNet.maxBufferLoadTemperature > 0
-				? project.heatNet.maxBufferLoadTemperature
-				: 95;
+			&& project.heatNet.maxBufferLoadTemperature > 0
+			? project.heatNet.maxBufferLoadTemperature
+			: 95;
 		producer.profile = result.asProducerProfile(temperature);
 		double thermalPower = totalThermalPower(plant);
 		producer.profileMaxPower = thermalPower > 0
-				? thermalPower
-				: Stats.max(producer.profile.maxPower);
+			? thermalPower
+			: Stats.max(producer.profile.maxPower);
 		producer.profileMaxPowerElectric = totalElectricPower(plant);
 	}
+
+	public static double[] heatDemandOf(Project project, BiogasPlant plant) {
+		var demand = new double[Stats.HOURS];
+		double power = totalThermalPower(plant);
+		if (power < 0.1
+			|| project == null
+			|| project.weatherStation == null
+			|| project.weatherStation.data == null)
+			return demand;
+		var temperature = project.weatherStation.data;
+		double maxDist = 40 - Stats.min(temperature);
+		double maxDemand = 0.2 * power;
+		for (int h = 0; h < temperature.length; h++) {
+			var dist = 40 - temperature[h];
+			demand[h] = maxDemand * dist / maxDist;
+		}
+		return demand;
+	}
+
 }
