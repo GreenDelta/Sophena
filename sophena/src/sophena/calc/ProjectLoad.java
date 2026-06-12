@@ -2,6 +2,7 @@ package sophena.calc;
 
 import java.util.Arrays;
 
+import sophena.calc.biogas.BiogasPlants;
 import sophena.math.Smoothing;
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.HeatNet;
@@ -70,6 +71,7 @@ public class ProjectLoad {
 		Stats.add(staticData, data);
 		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
+		addBiogasPlantLoad(project, data);
 		applyInterruption(data, project.heatNet);
 		return data;
 	}
@@ -174,6 +176,18 @@ public class ProjectLoad {
 			curve[hour] /= 1000.0;
 		}
 		return curve;
+	}
+
+	/// Add the demand for heating the fermenters.
+	private static void addBiogasPlantLoad(Project project, double[] load) {
+		if (project == null)
+			return;
+		for (var p : project.producers) {
+			if (p.disabled || p.biogasPlant == null)
+				continue;
+			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
+			Stats.add(demand, load);
+		}
 	}
 
 	public static void applyInterruption(double[] curve, HeatNet net) {
