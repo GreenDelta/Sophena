@@ -28,8 +28,8 @@ public class HeatNets {
 			: pipe.length;
 	}
 
-	/// Calculates the total heat loss of the network per Kelvin temperature
-	/// difference in W/K.
+	/// The total heat loss coefficient of the network in W/K.
+	/// Sum of `pipe.length * pipe.uValue` over all pipes.
 	public static double heatLossCoefficientOf(HeatNet net) {
 		if (net == null)
 			return 0;
@@ -40,8 +40,8 @@ public class HeatNets {
 		return sum;
 	}
 
-
-	/// Calculates the heat loss per Kelvin of the given pipe in W/K.
+	/// The heat loss coefficient of a single pipe in W/K:
+	/// `pipe.length * pipe.pipe.uValue`.
 	public static double heatLossCoefficientOf(HeatNetPipe pipe) {
 		return pipe != null && pipe.pipe != null
 			? pipe.length * pipe.pipe.uValue

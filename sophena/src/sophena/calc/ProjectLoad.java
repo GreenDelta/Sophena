@@ -163,11 +163,13 @@ public class ProjectLoad {
 			return curve;
 		}
 
-		// we may have seasonal dependent flow and return temperatures of the net
-		// the average net temperature is the mean value of the flow and return
-		// temperature
-		// the heat-loss of is calculated with the temperature difference between
-		// the net and the soil, which we set to 10°C
+		// net.powerLoss is the total heat loss coefficient in W/K (see HeatNets).
+		// The hourly heat loss is:
+		//   (avgPipeTemp - 10 K) * powerLoss  [W]  → / 1000 → [kW]
+		// where 10°C is the assumed soil temperature.
+		//
+		// When seasonal driving style is active, TV/TR vary per hour via
+		// SeasonalItem; otherwise they are constant from HeatNet fields.
 		var temperature = project.weatherStation.data;
 		double min = project.weatherStation.minTemperature();
 		double max = project.maxConsumerHeatTemperature();
