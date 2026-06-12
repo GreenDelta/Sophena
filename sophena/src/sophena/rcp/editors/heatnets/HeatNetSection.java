@@ -27,7 +27,7 @@ import sophena.utils.Num;
 
 class HeatNetSection {
 
-	private HeatNetEditor editor;
+	private final HeatNetEditor editor;
 
 	private Composite comp;
 	private FormToolkit tk;
@@ -113,7 +113,7 @@ class HeatNetSection {
 	{
 		HeatNet net = net();
 		net.length = HeatNets.getTrenchLengthOf(net);
-		net.powerLoss = HeatNets.calculatePowerLoss(net);
+		net.powerLoss = HeatNets.heatLossCoefficientOf(net);
 		Texts.set(lengthText, net.length);
 		Texts.set(powerLossText, net.powerLoss);
 		textsUpdated();

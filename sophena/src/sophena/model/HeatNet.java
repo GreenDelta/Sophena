@@ -52,7 +52,7 @@ public class HeatNet extends AbstractEntity {
 	@Embedded
 	public ProductCosts bufferTankCosts;
 
-	/** Loss of the heating network per meter of net length in [W/K]. */
+	/// Total heat loss of the network per Kelvin temperature difference in W/K.
 	@Column(name = "power_loss")
 	public double powerLoss;
 

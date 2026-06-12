@@ -9,7 +9,7 @@ public class HeatNets {
 	private HeatNets() {
 	}
 
-	/// Calculates the trench length of the heating net from the pipe lengths.	
+	/// Calculates the trench length of the heating net from the pipe lengths.
 	public static double getTrenchLengthOf(HeatNet net) {
 		if (net == null)
 			return 0;
@@ -19,7 +19,7 @@ public class HeatNets {
 		}
 		return sum;
 	}
-	
+
 	private static double trenchLengthOf(HeatNetPipe pipe) {
 		if (pipe == null)
 			return 0;
@@ -28,29 +28,23 @@ public class HeatNets {
 			: pipe.length;
 	}
 
-	/**
-	 * Calculates the specific power loss of a heating net from the pipes.
-	 */
-	public static double calculatePowerLoss(HeatNet net) {
+	/// Calculates the total heat loss of the network per Kelvin temperature
+	/// difference in W/K.
+	public static double heatLossCoefficientOf(HeatNet net) {
 		if (net == null)
-			return 0;
-		double supplyLength = getTrenchLengthOf(net);
-		if (supplyLength <= 0)
 			return 0;
 		double sum = 0;
 		for (HeatNetPipe p : net.pipes) {
-			sum += getPowerLoss(p, net);
+			sum += heatLossCoefficientOf(p);
 		}
 		return sum;
 	}
 
-	/**
-	 * Get the power loss per K of the given pipe in the given heating net.
-	 */
-	public static double getPowerLoss(HeatNetPipe pipe, HeatNet net) {
-		if (pipe == null || pipe.pipe == null || net == null)
-			return 0;
-		return pipe.length * pipe.pipe.uValue;
-	}
 
+	/// Calculates the heat loss per Kelvin of the given pipe in W/K.
+	public static double heatLossCoefficientOf(HeatNetPipe pipe) {
+		return pipe != null && pipe.pipe != null
+			? pipe.length * pipe.pipe.uValue
+			: 0;
+	}
 }

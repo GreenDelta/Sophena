@@ -37,7 +37,7 @@ public class HeatNetTest {
 	@Test
 	public void testCalculatePowerLoss() {
 		HeatNet net = buildHeatNet();
-		double powerLoss = HeatNets.calculatePowerLoss(net);
+		double powerLoss = HeatNets.heatLossCoefficientOf(net);
 		assertEquals(7.3333333333, powerLoss, 1e-10);
 	}
 
@@ -74,7 +74,7 @@ public class HeatNetTest {
 		net.pipes.add(hUno);
 		hUno.pipe = uno;
 		hUno.length = 2000;
-		Assert.assertEquals(8d, HeatNets.getPowerLoss(hUno, net), 1e-16);
+		Assert.assertEquals(8d, HeatNets.heatLossCoefficientOf(hUno), 1e-16);
 
 		// 1000m of duo pipe with heatloss of 12W/m
 		Pipe duo = new Pipe();
@@ -84,12 +84,12 @@ public class HeatNetTest {
 		net.pipes.add(hDuo);
 		hDuo.pipe = duo;
 		hDuo.length = 1000;
-		Assert.assertEquals(12d, HeatNets.getPowerLoss(hDuo, net), 1e-16);
+		Assert.assertEquals(12d, HeatNets.heatLossCoefficientOf(hDuo), 1e-16);
 
 		// net length is 2000m
 		Assert.assertEquals(2000d, HeatNets.getTrenchLengthOf(net), 1e-16);
 
 		// net loss = (2000m * 8W/m + 1000m * 12W/m) / 2000m = 14W/m
-		Assert.assertEquals(14d, HeatNets.calculatePowerLoss(net), 1e-16);
+		Assert.assertEquals(14d, HeatNets.heatLossCoefficientOf(net), 1e-16);
 	}
 }

@@ -49,14 +49,14 @@ public class WeatherStation extends BaseDataEntity {
 		copy.altitude = altitude;
 		copy.referenceLongitude = referenceLongitude;
 		copy.data = data != null
-				? Arrays.copyOf(data, data.length)
-				: null;
+			? Arrays.copyOf(data, data.length)
+			: null;
 		copy.directRadiation = directRadiation != null
-				? Arrays.copyOf(directRadiation, directRadiation.length)
-				: null;
+			? Arrays.copyOf(directRadiation, directRadiation.length)
+			: null;
 		copy.diffuseRadiation = diffuseRadiation != null
-				? Arrays.copyOf(diffuseRadiation, diffuseRadiation.length)
-				: null;
+			? Arrays.copyOf(diffuseRadiation, diffuseRadiation.length)
+			: null;
 		return copy;
 	}
 
@@ -72,12 +72,10 @@ public class WeatherStation extends BaseDataEntity {
 		return d;
 	}
 
-	public double minTemperature()
-	{
+	public double minTemperature() {
 		double min = Double.MAX_VALUE;
-		for (int i = 0; i < Stats.HOURS; i++)
-		{
-			if(data[i] < min)
+		for (int i = 0; i < Stats.HOURS; i++) {
+			if (data[i] < min)
 				min = data[i];
 		}
 		return min;

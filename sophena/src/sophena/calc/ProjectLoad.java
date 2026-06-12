@@ -147,34 +147,36 @@ public class ProjectLoad {
 
 	public static double[] getNetLoadCurve(Project project) {
 		double[] curve = new double[Stats.HOURS];
-		if (project == null) return curve;
+		if (project == null)
+			return curve;
 		HeatNet net = project.heatNet;
-		if (net == null) return curve;
-		if (project.weatherStation == null) {
-			Arrays.fill(curve, net.length * net.powerLoss / 1000.0);
+		if (net == null || net.powerLoss <= 0)
+			return curve;
+
+		if (project.weatherStation == null
+			|| project.weatherStation.data == null) {
+			// flat curve when no there are no weather data
+			// assuming ~50 K in temperature difference between
+			// net and soil: (K * W/k) / 1000 -> kW * 1h
+			Arrays.fill(curve, 50 * net.powerLoss / 1000.0);
 			applyInterruption(curve, net);
 			return curve;
 		}
 
-		Arrays.fill(curve, net.powerLoss);
-		applyInterruption(curve, net);
-
-		double minWeatherStationTemperature = project.weatherStation.minTemperature();
-		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
-
-		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			double temperature = project.weatherStation.data != null && hour < project.weatherStation.data.length
-				? project.weatherStation.data[hour]
-				: 0;
-			SeasonalItem seasonalItem = SeasonalItem.calc(net, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
-
-			double TV = seasonalItem.flowTemperature;
-			double TR = seasonalItem.returnTemperature;
-			// Multiply W per K with temperature difference between pipes (TV-TR)/2 and ground 10°C
-			curve[hour] *= ((TV + TR) / 2.0 - 10.0);
-			// W to kW
-			curve[hour] /= 1000.0;
+		// we may have seasonal dependent flow and return temperatures of the net
+		// the average net temperature is the mean value of the flow and return
+		// temperature
+		// the heat-loss of is calculated with the temperature difference between
+		// the net and the soil, which we set to 10°C
+		var temperature = project.weatherStation.data;
+		double min = project.weatherStation.minTemperature();
+		double max = project.maxConsumerHeatTemperature();
+		for (int hour = 0; hour < temperature.length; hour++) {
+			var item = SeasonalItem.calc(net, hour, min, max, temperature[hour]);
+			double netTemp = (item.flowTemperature + item.returnTemperature) / 2;
+			curve[hour] = (netTemp - 10.0) * net.powerLoss / 1000;
 		}
+		applyInterruption(curve, net);
 		return curve;
 	}
 

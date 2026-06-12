@@ -1,6 +1,5 @@
 package sophena.rcp.editors.heatnets;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import org.eclipse.jface.action.Action;
@@ -145,8 +144,7 @@ class PipeSection {
 				case 0 -> pipe.name != null ? pipe.name : null;
 				case 1 -> pipe.pipe != null ? pipe.pipe.name : null;
 				case 2 -> Num.str(pipe.length) + " m";
-				case 3 -> Num.str(HeatNets.getPowerLoss(pipe, net()))
-					+ " W/K";
+				case 3 -> Num.str(HeatNets.heatLossCoefficientOf(pipe)) + " W/K";
 				default -> getCostLabel(pipe.costs, col);
 			};
 		}

@@ -16,6 +16,7 @@ public class Pipe extends AbstractProduct {
 	@Column(name = "pipe_type")
 	public PipeType pipeType;
 
+	/// The linear heat transfer coefficient (U-value) of the pipe in W/(m·K).
 	@Column(name = "u_value")
 	public double uValue;
 
