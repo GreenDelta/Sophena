@@ -29,7 +29,7 @@ class EnergyResultSorter {
 	}
 
 	private static EnergyResult createCopy(Integer[] hours, EnergyResult r) {
-		var s = r.clone();
+		var s = r.copy();
 		sort(hours, r.loadCurve, s.loadCurve);
 		sort(hours, r.suppliedPower, s.suppliedPower);
 		for (int i = 0; i < r.producers.length; i++) {

@@ -2,6 +2,8 @@ package sophena.model;
 
 import java.util.Objects;
 
+import org.openlca.commons.Copyable;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 

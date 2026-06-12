@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.RGB;
+import org.openlca.commons.Copyable;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
@@ -24,7 +25,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import sophena.io.Json;
-import sophena.model.Copyable;
 import sophena.model.ProductType;
 import sophena.rcp.app.Workspace;
 

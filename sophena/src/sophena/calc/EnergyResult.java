@@ -2,15 +2,18 @@ package sophena.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import org.openlca.commons.Copyable;
 
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
 
-public class EnergyResult {
+public class EnergyResult implements Copyable<EnergyResult> {
 
 	public double[] loadCurve;
 	public double totalLoad;
@@ -66,8 +69,8 @@ public class EnergyResult {
 			return 0;
 		boolean off = true;
 		int starts = 0;
-		for (int i = 0; i < vec.length; i++) {
-			if (vec[i] == 0) {
+		for (double v : vec) {
+			if (v == 0) {
 				off = true;
 				continue;
 			}
@@ -93,19 +96,18 @@ public class EnergyResult {
 			producers[i] = list.get(i);
 			producerResults[i] = new double[Stats.HOURS];
 		}
-		Arrays.sort(producers,
-				(p1, p2) -> Integer.compare(p1.rank, p2.rank));
-		
+		Arrays.sort(producers, Comparator.comparingInt(p -> p.rank));
+
 		producerStagnationDays = new int[count];
 		producerJaz = new double[count];
 	}
-	
+
 	public int stagnationDays(Producer p) {
 		if (p == null)
 			return 0;
 		for (int i = 0; i < producers.length; i++) {
 			if (Objects.equals(p, producers[i])) {
-				return producerStagnationDays[i];				
+				return producerStagnationDays[i];
 			}
 		}
 		return 0;
@@ -116,14 +118,13 @@ public class EnergyResult {
 			return 0;
 		for (int i = 0; i < producers.length; i++) {
 			if (Objects.equals(p, producers[i])) {
-				return producerJaz[i];				
+				return producerJaz[i];
 			}
 		}
 		return 0;
 	}
-	
-	public double maxPeakPowerOfAllProducers()
-	{
+
+	public double maxPeakPowerOfAllProducers() {
 		double max = 0;
 		double producerPower;
 		for (Producer p : producers) {
@@ -135,17 +136,15 @@ public class EnergyResult {
 		}
 		return max;
 	}
-	
-	public double maxPeakPower(Producer p)
-	{
+
+	public double maxPeakPower(Producer p) {
 		if (p == null)
 			return 0;
 		double max = 0;
-		double power = 0;
 		for (int i = 0; i < producers.length; i++) {
 			if (Objects.equals(p, producers[i])) {
 				for (int hour = 0; hour < Stats.HOURS; hour++) {
-					power = producerResults[i][hour];
+					double power = producerResults[i][hour];
 					if (power > max)
 						max = power;
 				}
@@ -153,30 +152,29 @@ public class EnergyResult {
 		}
 		return max;
 	}
-	
+
 	public EnergyResult sort() {
 		return EnergyResultSorter.sort(this);
 	}
 
 	@Override
-	public EnergyResult clone() {
-		EnergyResult clone = new EnergyResult();
-		clone.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);
-		clone.suppliedPower = Arrays.copyOf(suppliedPower, Stats.HOURS);
-		clone.producers = Arrays.copyOf(producers, producers.length);
-		clone.producerResults = new double[producers.length][];
+	public EnergyResult copy() {
+		var copy = new EnergyResult();
+		copy.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);
+		copy.suppliedPower = Arrays.copyOf(suppliedPower, Stats.HOURS);
+		copy.producers = Arrays.copyOf(producers, producers.length);
+		copy.producerResults = new double[producers.length][];
 		for (int i = 0; i < producers.length; i++) {
-			clone.producerResults[i] = Arrays.copyOf(producerResults[i],
-					Stats.HOURS);
+			copy.producerResults[i] = Arrays.copyOf(producerResults[i], Stats.HOURS);
 		}
-		clone.producerStagnationDays = Arrays.copyOf(producerStagnationDays,producers.length);
-		clone.producerJaz = Arrays.copyOf(producerJaz,producers.length);
-		clone.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat,
-				Stats.HOURS);
-		clone.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
-		clone.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
-		clone.heatNetLoss = heatNetLoss;
-		return clone;
+		copy.producerStagnationDays = Arrays.copyOf(
+			producerStagnationDays, producers.length);
+		copy.producerJaz = Arrays.copyOf(producerJaz, producers.length);
+		copy.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat, Stats.HOURS);
+		copy.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
+		copy.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
+		copy.heatNetLoss = heatNetLoss;
+		return copy;
 	}
 
 }

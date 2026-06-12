@@ -1,6 +1,6 @@
 package sophena.calc.biogas;
 
-import sophena.model.Copyable;
+import org.openlca.commons.Copyable;
 
 public class BiogasStorage implements Copyable<BiogasStorage> {
 

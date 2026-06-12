@@ -18,7 +18,7 @@ record HeatDemandChart(XYGraph graph, CircularBufferDataProvider buffer) {
 
 	static HeatDemandChart create(Composite comp) {
 		var graph = Charts.initHoursGraph(comp, 250);
-		graph.getPrimaryYAxis().setTitle("kW");
+		graph.getPrimaryYAxis().setTitle("kWh");
 		var buffer = Charts.dataProvider();
 		var color = Colors.of(
 			ColorConfig.get().get(ColorKey.LOAD_STATIC));

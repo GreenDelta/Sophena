@@ -6,12 +6,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.swt.graphics.RGB;
+import org.openlca.commons.Copyable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import sophena.io.Json;
-import sophena.model.Copyable;
 import sophena.model.ProductType;
 
 public class ColorGroup implements Copyable<ColorGroup> {
