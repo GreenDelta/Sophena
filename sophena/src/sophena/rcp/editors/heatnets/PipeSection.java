@@ -26,11 +26,11 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Lists;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class PipeSection {
 
-	private HeatNetEditor editor;
+	private final HeatNetEditor editor;
 
 	private TableViewer table;
 
@@ -65,14 +65,14 @@ class PipeSection {
 		Tables.bindColumnWidths(table, x, x, x, x, x, x, x, x, x);
 		bindActions(section);
 		table.setLabelProvider(new Label());
-		Collections.sort(net().pipes, (p1, p2) -> {
-			int c = Strings.compare(p1.name, p2.name);
+		net().pipes.sort((p1, p2) -> {
+			int c = Strings.compareIgnoreCase(p1.name, p2.name);
 			if (c != 0)
 				return c;
 			if (p1.pipe == null || p2.pipe == null) {
 				return 0;
 			}
-			return Strings.compare(p1.pipe.name, p2.pipe.name);
+			return Strings.compareIgnoreCase(p1.pipe.name, p2.pipe.name);
 		});
 		table.setInput(net().pipes);
 	}
@@ -139,41 +139,29 @@ class PipeSection {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof HeatNetPipe))
+			if (!(obj instanceof HeatNetPipe pipe))
 				return null;
-			HeatNetPipe pipe = (HeatNetPipe) obj;
-			switch (col) {
-			case 0:
-				return pipe.name != null ? pipe.name : null;
-			case 1:
-				return pipe.pipe != null ? pipe.pipe.name : null;
-			case 2:
-				return Num.str(pipe.length) + " m";
-			case 3:
-				return Num.str(HeatNets.getPowerLoss(pipe, net()))
-						+ " W/K";
-			default:
-				return getCostLabel(pipe.costs, col);
-			}
+			return switch (col) {
+				case 0 -> pipe.name != null ? pipe.name : null;
+				case 1 -> pipe.pipe != null ? pipe.pipe.name : null;
+				case 2 -> Num.str(pipe.length) + " m";
+				case 3 -> Num.str(HeatNets.getPowerLoss(pipe, net()))
+					+ " W/K";
+				default -> getCostLabel(pipe.costs, col);
+			};
 		}
 
 		private String getCostLabel(ProductCosts costs, int col) {
 			if (costs == null)
 				return null;
-			switch (col) {
-			case 4:
-				return Num.str(costs.investment) + " EUR";
-			case 5:
-				return costs.duration + " Jahr(e)";
-			case 6:
-				return Num.str(costs.repair) + " %";
-			case 7:
-				return Num.str(costs.maintenance) + " %";
-			case 8:
-				return Num.str(costs.operation) + " Stunden/Jahr";
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 4 -> Num.str(costs.investment) + " EUR";
+				case 5 -> costs.duration + " Jahr(e)";
+				case 6 -> Num.str(costs.repair) + " %";
+				case 7 -> Num.str(costs.maintenance) + " %";
+				case 8 -> Num.str(costs.operation) + " Stunden/Jahr";
+				default -> null;
+			};
 		}
 	}
 }

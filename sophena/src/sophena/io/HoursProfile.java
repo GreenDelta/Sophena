@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.model.Stats;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 /**
  * Reads or writes data from an hours profile. A hours profile file should have the
@@ -39,14 +39,14 @@ public final class HoursProfile {
 	public static void write(double[] profile, File file) {
 		new Writer().write(profile, file);
 	}
-	
+
 	public static void write(File file, String[] headers, double[]... profiles) {
 		new Writer().write(file, headers, profiles);
 	}
 
 	private static class Writer {
 
-		private Logger log = LoggerFactory.getLogger(getClass());
+		private final Logger log = LoggerFactory.getLogger(getClass());
 
 		@Deprecated
 		public void write(double[] profile, File file) {
@@ -56,10 +56,10 @@ public final class HoursProfile {
 				writeRows(profile, rows);
 				Files.write(file.toPath(), rows);
 			} catch (Exception e) {
-				log.error("failed to write profile to file " + file, e);
+				log.error("failed to write profile to file {}", file, e);
 			}
 		}
-		
+
 		public void write(File file, String[] headers, double[]... profiles)
 		{
 			log.info("write profiles to file {}", file);
@@ -68,7 +68,7 @@ public final class HoursProfile {
 				writeRows(rows, headers, profiles);
 				Files.write(file.toPath(), rows);
 			} catch (Exception e) {
-				log.error("failed to write profiles to file " + file, e);
+				log.error("failed to write profiles to file {}", file, e);
 			}
 		}
 
@@ -90,18 +90,18 @@ public final class HoursProfile {
 		}
 
 		private void writeRows(List<String> rows, String[] headers, double[]... profiles) {
-			
+
 			if(profiles.length != headers.length - 1)
 				throw new IllegalArgumentException("Length of headers array must be one plus length of profiles array");
-			
+
 			if(profiles.length == 0)
 				throw new IllegalArgumentException("Profiles array needs at least one element");
-			
+
 			int profileLength = profiles[0].length;
 			for (int i = 1; i < profiles.length; i++)
 				if (profiles[i] != null && profiles[i].length != profileLength)
 					throw new IllegalArgumentException("Length of all profile arrays must be identical");
-			
+
 			StringBuilder sb = new StringBuilder();
 			for(int i = 0; i < headers.length; i++)
 			{
@@ -114,13 +114,12 @@ public final class HoursProfile {
 			char s = Num.getFormat().getDecimalFormatSymbols()
 					.getDecimalSeparator();
 			StringBuilder row = new StringBuilder();
-			
+
 			for (int i = 0; i < profileLength; i++) {
 				row.append(i + 1);
-				for(int j = 0; j < profiles.length; j++)
-				{
+				for (double[] profile : profiles) {
 					row.append(';');
-					String val = profiles[j] != null ? Double.toString(profiles[j][i]) : "";
+					String val = profile != null ? Double.toString(profile[i]) : "";
 					if (s != '.')
 						val = val.replace('.', s);
 					row.append(val);
@@ -133,7 +132,7 @@ public final class HoursProfile {
 
 	private static class Reader {
 
-		private Logger log = LoggerFactory.getLogger(getClass());
+		private final Logger log = LoggerFactory.getLogger(getClass());
 
 		@Deprecated
 		public double[] read(File file) {
@@ -147,7 +146,7 @@ public final class HoursProfile {
 				}
 				readRows(rows, profile);
 			} catch (Exception e) {
-				log.error("failed to read hours profile from " + file, e);
+				log.error("failed to read hours profile from {}", file, e);
 			}
 			return profile;
 		}
@@ -165,7 +164,7 @@ public final class HoursProfile {
 			} catch (Exception e) {
 				log.error("failed to read hours profiles from " + file, e);
 			}
-			
+
 			double[][] profiles2 = new double[profiles[0].cells.length][profiles.length];
 			for(int i = 0; i < profiles.length; i++)
 				for(int j = 0; j < profiles[i].cells.length; j++)
@@ -178,7 +177,7 @@ public final class HoursProfile {
 			for (int row = 1; row < rows.size(); row++) {
 				String line = rows.get(row);
 				Entry e = Entry.read(rows.get(row));
-				if (e == null || !e.isValid()) {
+				if (!e.isValid()) {
 					log.warn("invalid entry {} at row {}", line, row);
 					continue;
 				}
@@ -190,18 +189,18 @@ public final class HoursProfile {
 			for (int row = 1; row < rows.size(); row++) {
 				String line = rows.get(row);
 				Entry e = Entry.read(rows.get(row));
-				if (e == null || !e.isValid()) {
+				if (!e.isValid()) {
 					log.warn("invalid entry {} at row {}", line, row);
 					continue;
 				}
 				profileRows[e.index] = new ProfileRow(e.values);
 			}
 		}
-		
-		class ProfileRow
+
+		static class ProfileRow
 		{
 			public double[] cells;
-			
+
 			public ProfileRow(double[] cells)
 			{
 				this.cells = cells;
@@ -222,7 +221,7 @@ public final class HoursProfile {
 			}
 
 			static Entry read(String row) {
-				if (Strings.nullOrEmpty(row))
+				if (Strings.isBlank(row))
 					return new Entry(-1, 0);
 				StringBuilder i = new StringBuilder();
 				StringBuilder v = new StringBuilder();

@@ -16,11 +16,11 @@ import sophena.rcp.navigation.FolderElement;
 import sophena.rcp.navigation.NavigationElement;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class RenameAction extends NavigationAction {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NavigationElement elem;
 	private Method handler;
@@ -66,10 +66,8 @@ public class RenameAction extends NavigationAction {
 						if (name == null || name.trim().length() == 0)
 							return "Der Name darf nicht leer sein";
 						boolean otherExists = dao.getAll().stream()
-								.filter(f -> !Objects.equals(f, e.content)
-										&& Strings.nullOrEqual(f.name, name))
-								.findFirst()
-								.isPresent();
+								.anyMatch(f -> !Objects.equals(f, e.content)
+										&& Strings.equalsIgnoreCase(f.name, name));
 						if (otherExists)
 							return "Ein anderer Ordner mit dem Namen '" + name
 									+ "' existiert bereits";

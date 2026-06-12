@@ -26,7 +26,7 @@ import sophena.rcp.app.App;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class StartPage extends FormEditor {
 
@@ -101,7 +101,7 @@ public class StartPage extends FormEditor {
 			var manufs = new Dao<>(Manufacturer.class, App.getDb())
 					.getAll()
 					.stream()
-					.filter(m -> Strings.notEmpty(m.logo))
+					.filter(m -> Strings.isNotBlank(m.logo))
 					.sorted(Comparator.comparingInt(m -> m.sponsorOrder))
 					.toList();
 			if (manufs.isEmpty())

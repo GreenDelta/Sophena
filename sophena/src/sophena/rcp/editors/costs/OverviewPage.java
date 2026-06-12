@@ -19,7 +19,7 @@ import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class OverviewPage extends FormPage {
 
@@ -31,7 +31,7 @@ class OverviewPage extends FormPage {
 		project().productEntries.sort((e1, e2) ->
 			e1.product == null || e2.product == null
 				? 0
-				: Strings.compare(e1.product.name, e2.product.name)
+				: Strings.compareIgnoreCase(e1.product.name, e2.product.name)
 		);
 	}
 
@@ -114,7 +114,7 @@ class OverviewPage extends FormPage {
 				}
 			}
 			list.sort((c1, c2) ->
-				Strings.compare(c1.transferStation.name, c2.transferStation.name)
+				Strings.compareIgnoreCase(c1.transferStation.name, c2.transferStation.name)
 			);
 			return list;
 		};
@@ -135,7 +135,7 @@ class OverviewPage extends FormPage {
 				}
 			}
 			list.sort((p1, p2) ->
-				Strings.compare(p1.heatRecovery.name, p2.heatRecovery.name)
+				Strings.compareIgnoreCase(p1.heatRecovery.name, p2.heatRecovery.name)
 			);
 			return list;
 		};
@@ -157,7 +157,7 @@ class OverviewPage extends FormPage {
 					list.add(e);
 				}
 			}
-			list.sort((e1, e2) -> Strings.compare(e1.product.name, e2.product.name));
+			list.sort((e1, e2) -> Strings.compareIgnoreCase(e1.product.name, e2.product.name));
 			return list;
 		};
 		s.costs = e -> e.costs;
@@ -207,7 +207,7 @@ class OverviewPage extends FormPage {
 		list.sort((p1, p2) -> {
 			var s1 = p1.boiler != null ? p1.boiler.name : p1.name;
 			var s2 = p2.boiler != null ? p2.boiler.name : p2.name;
-			return Strings.compare(s1, s2);
+			return Strings.compareIgnoreCase(s1, s2);
 		});
 		return list;
 	}

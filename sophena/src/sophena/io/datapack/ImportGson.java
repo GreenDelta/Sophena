@@ -31,7 +31,7 @@ import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 /// Creates a Gson instance configured for deserializing JSON data sets.
 /// References to data set entities (like Fuels, Boilers, etc.) are resolved by
@@ -99,7 +99,7 @@ public class ImportGson {
 			if (projectIdElem == null)
 				return loadReference(json);
 			String projectId = projectIdElem.getAsString();
-			if (Strings.nullOrEmpty(projectId))
+			if (Strings.isBlank(projectId))
 				return loadReference(json);
 			Gson gson = build(type);
 			return gson.fromJson(json, type);

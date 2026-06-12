@@ -36,7 +36,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 import sophena.utils.Producers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class BiogasPlantProducerWizard extends Wizard {
 
@@ -126,7 +126,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 				if (plant == null) {
 					nameEdited = true;
 				} else {
-					nameEdited = !Strings.nullOrEqual(t, plant.name);
+					nameEdited = !Strings.equalsIgnoreCase(t, plant.name);
 				}
 			});
 		}

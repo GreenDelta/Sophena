@@ -22,7 +22,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.rcp.wizards.SimpleWizard;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class BiogasAnnualCostsTable {
 
@@ -99,7 +99,7 @@ class BiogasAnnualCostsTable {
 
 	private AnnualCostEntry getJpaManaged(AnnualCostEntry e) {
 		for (AnnualCostEntry managed : plant().otherAnnualCosts) {
-			if (!Strings.nullOrEqual(managed.label, e.label))
+			if (!Strings.equalsIgnoreCase(managed.label, e.label))
 				continue;
 			if (Double.compare(managed.value, e.value) == 0)
 				return managed;
@@ -107,7 +107,7 @@ class BiogasAnnualCostsTable {
 		return null;
 	}
 
-	private class Wizard extends SimpleWizard {
+	private static class Wizard extends SimpleWizard {
 
 		final AnnualCostEntry entry;
 		private Text labelText;

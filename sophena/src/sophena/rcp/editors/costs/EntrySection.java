@@ -26,7 +26,7 @@ import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 /// A section to edit cost properties of a product entry.
 class EntrySection {
@@ -236,7 +236,7 @@ class EntrySection {
 
 	private ProductEntry getJpaManaged(String id) {
 		for (var e : project().productEntries) {
-			if (Strings.nullOrEqual(id, e.id)) {
+			if (Strings.equalsIgnoreCase(id, e.id)) {
 				return e;
 			}
 		}

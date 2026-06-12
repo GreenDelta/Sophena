@@ -14,7 +14,7 @@ import sophena.model.Consumer;
 import sophena.model.Location;
 import sophena.utils.Num;
 import sophena.utils.Result;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class ConsumerEntry {
 
@@ -109,7 +109,7 @@ class ConsumerEntry {
 					+ " hat keinen Defaultzustand in der Datenbank");
 
 		var state = states.size() == 1
-				? states.get(0)
+				? states.getFirst()
 				: states.stream()
 				.filter(s -> eq(buildingState, s.name))
 				.findAny()
@@ -117,7 +117,7 @@ class ConsumerEntry {
 
 		// sync. building state
 		if (state == null)
-			return Strings.nullOrEmpty(buildingState)
+			return Strings.isBlank(buildingState)
 					? err("es wurde kein Gebäudezustand angegeben")
 					: err("unbekannter Gebäudezustand: " + buildingState);
 

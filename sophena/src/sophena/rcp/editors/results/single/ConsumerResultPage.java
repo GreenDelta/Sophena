@@ -26,11 +26,11 @@ import sophena.rcp.utils.TableClipboard;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class ConsumerResultPage extends FormPage {
 
-	private ProjectResult result;
+	private final ProjectResult result;
 
 	ConsumerResultPage(ResultEditor editor) {
 		super(editor, "sophena.ConsumerResultPage", "Abnehmer");
@@ -55,12 +55,11 @@ class ConsumerResultPage extends FormPage {
 	}
 
 	private List<Item> createItems() {
-		List<Item> items = new ArrayList<Item>();
+		var items = new ArrayList<Item>();
 		for (ConsumerResult r : result.consumerResults) {
 			items.add(Item.of(r));
 		}
-		Collections.sort(items,
-				(i1, i2) -> Strings.compare(i1.label, i2.label));
+		items.sort((i1, i2) -> Strings.compareIgnoreCase(i1.label, i2.label));
 		items.add(Item.ofNetLoss(result));
 		items.add(Item.ofBufferLoss(result.energyResult));
 		items.add(new Item()); // empty row
@@ -135,14 +134,13 @@ class ConsumerResultPage extends FormPage {
 
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider,
+	private static class Label extends LabelProvider implements ITableLabelProvider,
 			IFontProvider {
 
 		@Override
 		public Font getFont(Object obj) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
 			if (item.isTotal)
 				return UI.boldFont();
 			return null;
@@ -155,19 +153,14 @@ class ConsumerResultPage extends FormPage {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.label;
-			case 1:
-				return item.load;
-			case 2:
-				return item.demand;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.label;
+				case 1 -> item.load;
+				case 2 -> item.demand;
+				default -> null;
+			};
 		}
 	}
 }

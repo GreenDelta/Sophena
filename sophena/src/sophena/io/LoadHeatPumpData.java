@@ -8,10 +8,10 @@ import java.util.List;
 import sophena.model.Stats;
 import sophena.rcp.editors.basedata.heatpumps.HeatPumpWizard.HeatPumpData;
 import sophena.utils.Result;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class LoadHeatPumpData {
-	
+
 	public static Result<List<HeatPumpData>> readHeatPumpData(File file) {
 		try {
 			// read all lines
@@ -25,13 +25,11 @@ public class LoadHeatPumpData {
 				return Result.error(
 						"Das Spaltentrennzeichen konnte nicht ermittelt werden");
 
-			String warning = null;
-
 			// parse the rows
 			List<HeatPumpData> list = new ArrayList<>();
 			for (int row = 1; row < rows.size(); row++) {
 				var line = rows.get(row);
-				if (Strings.nullOrEmpty(line))
+				if (Strings.isBlank(line))
 					continue;
 
 				// split the row and check the format
@@ -45,11 +43,11 @@ public class LoadHeatPumpData {
 					double targettemp = Double.parseDouble(parts[0].replace(',', '.'));
 					double sourcetemp = Double.parseDouble(parts[1].replace(',', '.'));
 					double maxPower = Double.parseDouble(parts[2].replace(',', '.'));
-					double cop = Double.parseDouble(parts[3].replace(',', '.'));;
+					double cop = Double.parseDouble(parts[3].replace(',', '.'));
 
 					if(targettemp < 5 || targettemp > 95 || targettemp % 5 != 0 || sourcetemp < -30 || sourcetemp > 100 || maxPower <= 0 || cop < 1 || cop > 10)
 						return Result.error("Ungültige Werte in Zeile " + (row + 1));
-					
+
 					var heatPumpData = new HeatPumpData(targettemp, sourcetemp, maxPower, cop);
 					list.add(heatPumpData);
 				} catch (Exception e) {
@@ -58,16 +56,14 @@ public class LoadHeatPumpData {
 				}
 			}
 
-			return warning != null
-					? Result.warning(list, warning)
-					: Result.ok(list);
+			return Result.ok(list);
 
 		} catch (Exception e) {
 			return Result.error(
 					"Die Datei konnte nicht gelesen werden: " + e.getMessage());
 		}
 	}
-	
+
 	public static Result<double[]> readHourlyTemperature(File file) {
 		try {
 			// read all lines
@@ -92,7 +88,7 @@ public class LoadHeatPumpData {
 			var hourlyTemperature = new double[Stats.HOURS];
 			for (int row = 1; row < rows.size(); row++) {
 				var line = rows.get(row);
-				if (Strings.nullOrEmpty(line))
+				if (Strings.isBlank(line))
 					continue;
 
 				// split the row and check the format
@@ -114,7 +110,7 @@ public class LoadHeatPumpData {
 					return Result.error("Die Zahlen in Zeile "
 							+ (row + 1) + " konnten nicht gelesen werden.");
 				}
-			} 
+			}
 
 			return warning != null
 					? Result.warning(hourlyTemperature, warning)

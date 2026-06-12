@@ -12,7 +12,7 @@ import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.navigation.Navigator;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class NewFolderAction extends Action {
 
@@ -26,12 +26,10 @@ public class NewFolderAction extends Action {
 		ProjectFolderDao dao = new ProjectFolderDao(App.getDb());
 		InputDialog dialog = new InputDialog(UI.shell(), "Neuer Ordner",
 				"Name des Ordners:", "Neuer Ordner", name -> {
-					if (name == null || name.trim().length() == 0)
+					if (Strings.isBlank(name))
 						return "Der Name darf nicht leer sein";
 					boolean exists = dao.getAll().stream()
-							.filter(f -> Strings.nullOrEqual(f.name, name))
-							.findFirst()
-							.isPresent();
+							.anyMatch(f -> Strings.equalsIgnoreCase(f.name, name));
 					if (exists)
 						return "Ein Ordner mit dem Namen '" + name
 								+ "' existiert bereits";

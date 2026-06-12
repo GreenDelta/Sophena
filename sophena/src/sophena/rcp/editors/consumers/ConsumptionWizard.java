@@ -29,7 +29,7 @@ import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class ConsumptionWizard extends Wizard {
 
@@ -193,14 +193,14 @@ class ConsumptionWizard extends Wizard {
 					consumption.waterContent = Texts.getDouble(waterText);
 				} else {
 					consumption.woodAmountType = null;
-					consumption.waterContent = (double) 0;
+					consumption.waterContent = 0;
 				}
 			}
 
 			public WoodAmountType getWoodType() {
 				String unit = unitCombo.getItem(unitCombo.getSelectionIndex());
 				for (WoodAmountType type : WoodAmountType.values()) {
-					if (Strings.nullOrEqual(unit, type.getUnit()))
+					if (Strings.equalsIgnoreCase(unit, type.getUnit()))
 						return type;
 				}
 				return null;
@@ -231,7 +231,7 @@ class ConsumptionWizard extends Wizard {
 				if (consumption.fuel != null)
 					f = consumption.fuel;
 				else
-					f = fuels.get(0);
+					f = fuels.getFirst();
 				fuelCombo.select(f);
 				selectFuel(f);
 			}
@@ -263,7 +263,7 @@ class ConsumptionWizard extends Wizard {
 				}
 				String unit = consumption.woodAmountType.getUnit();
 				for (int i = 0; i < units.length; i++) {
-					if (Strings.nullOrEqual(unit, units[i])) {
+					if (Strings.equalsIgnoreCase(unit, units[i])) {
 						unitCombo.select(i);
 						break;
 					}

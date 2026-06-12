@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import sophena.db.Database;
 import sophena.model.Consumer;
 import sophena.utils.Result;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ConsumerReader {
 
@@ -63,7 +63,7 @@ public class ConsumerReader {
 		while ((row = sheet.getRow(nextIdx)) != null) {
 			nextIdx++;
 			var r = RowReader.of(row).orElse(null);
-			if (r == null || Strings.nullOrEmpty(r.str(0, null)))
+			if (r == null || Strings.isBlank(r.str(0, null)))
 				continue;
 			var entry = ConsumerEntry.readFrom(r).orElse(null);
 			if (entry == null)
@@ -100,7 +100,7 @@ public class ConsumerReader {
 	private boolean isFuelContinuationRow(RowReader r) {
 		if (r == null)
 			return false;
-		return Strings.nullOrEmpty(r.str(Field.NAME))
-				&& Strings.notEmpty(r.str(Field.FUEL));
+		return Strings.isBlank(r.str(Field.NAME))
+				&& Strings.isNotBlank(r.str(Field.FUEL));
 	}
 }

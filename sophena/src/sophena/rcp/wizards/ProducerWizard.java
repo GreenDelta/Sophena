@@ -45,7 +45,7 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Producers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ProducerWizard extends Wizard {
 
@@ -186,7 +186,7 @@ public class ProducerWizard extends Wizard {
 					if (s == null) {
 						nameEdited = true;
 					} else {
-						nameEdited = !Strings.nullOrEqual(t, s.name);
+						nameEdited = !Strings.equalsIgnoreCase(t, s.name);
 					}
 				}
 				else if (group != null && group.type == ProductType.HEAT_PUMP)
@@ -195,7 +195,7 @@ public class ProducerWizard extends Wizard {
 					if (h == null) {
 						nameEdited = true;
 					} else {
-						nameEdited = !Strings.nullOrEqual(t, h.name);
+						nameEdited = !Strings.equalsIgnoreCase(t, h.name);
 					}
 				}
 				else {
@@ -203,7 +203,7 @@ public class ProducerWizard extends Wizard {
 					if (b == null) {
 						nameEdited = true;
 					} else {
-						nameEdited = !Strings.nullOrEqual(t, b.name);
+						nameEdited = !Strings.equalsIgnoreCase(t, b.name);
 					}
 				}
 			});
@@ -410,7 +410,7 @@ public class ProducerWizard extends Wizard {
 				HeatPumpDao dao = new HeatPumpDao(App.getDb());
 				ArrayList<HeatPump> input = new ArrayList<>();
 				for (HeatPump h : dao.getAll()) {
-					if (group != null && !Objects.equals(h.group, group))
+					if (!Objects.equals(h.group, group))
 						continue;
 					if (!PowerFilter.matches(h, powerFilter,
 							powerCombo.getSelectionIndex()))
@@ -487,124 +487,116 @@ public class ProducerWizard extends Wizard {
 		}
 	}
 
-	private static class PowerFilter {
-		final ProductType type;
-		final double[][] ranges;
-		final String[] labels;
-
-		PowerFilter(ProductType type, double[][] ranges, String[] labels) {
-			this.type = type;
-			this.ranges = ranges;
-			this.labels = labels;
-		}
+	private record PowerFilter(ProductType type, double[][] ranges,
+	                           String[] labels) {
 
 		int len() {
-			if (ranges == null || labels == null)
-				return 0;
-			return Math.min(ranges.length, labels.length);
-		}
+				if (ranges == null || labels == null)
+					return 0;
+				return Math.min(ranges.length, labels.length);
+			}
 
-		static PowerFilter get(ProductGroup group) {
-			if (group == null || group.type == null)
-				return null;
-			switch (group.type) {
-			case BIOMASS_BOILER:
-			case FOSSIL_FUEL_BOILER:
-				return new PowerFilter(group.type,
-						new double[][] {
+			static PowerFilter get(ProductGroup group) {
+				if (group == null || group.type == null)
+					return null;
+				switch (group.type) {
+					case BIOMASS_BOILER:
+					case FOSSIL_FUEL_BOILER:
+						return new PowerFilter(group.type,
+							new double[][]{
 								null,
-								{ 0, 100 },
-								{ 100, 250 },
-								{ 250, 500 },
-								{ 500, 1000 },
-								{ 1000, Integer.MAX_VALUE }
-						},
-						new String[] {
+								{0, 100},
+								{100, 250},
+								{250, 500},
+								{500, 1000},
+								{1000, Integer.MAX_VALUE}
+							},
+							new String[]{
 								"",
 								"bis 100 kW",
 								"100 - 250 kW",
 								"250 - 500 kW",
 								"500 - 1000 kW",
-								"über 1 MW" });
-			case HEAT_PUMP:
-				return new PowerFilter(group.type,
-						new double[][] {
+								"über 1 MW"});
+					case HEAT_PUMP:
+						return new PowerFilter(group.type,
+							new double[][]{
 								null,
-								{ 0, 50 },
-								{ 50, 250 },
-								{ 250, Integer.MAX_VALUE }
-						},
-						new String[] {
+								{0, 50},
+								{50, 250},
+								{250, Integer.MAX_VALUE}
+							},
+							new String[]{
 								"",
 								"bis 50 kW",
 								"50 - 250 kW",
-								"über 250 kW" });
-			case COGENERATION_PLANT:
-				return new PowerFilter(group.type,
-						new double[][] {
+								"über 250 kW"});
+					case COGENERATION_PLANT:
+						return new PowerFilter(group.type,
+							new double[][]{
 								null,
-								{ 0, 50 },
-								{ 50, 150 },
-								{ 150, 500 },
-								{ 500, Integer.MAX_VALUE }
-						},
-						new String[] {
+								{0, 50},
+								{50, 150},
+								{150, 500},
+								{500, Integer.MAX_VALUE}
+							},
+							new String[]{
 								"",
 								"bis 50 kW el.",
 								"50 - 150 kW el.",
 								"150 - 500 kW el.",
-								"über 500 kW el." });
-			case SOLAR_THERMAL_PLANT:
-				return new PowerFilter(group.type,
-						new double[][] {
-						null,
-						{ 0, 5 },
-						{ 5, Integer.MAX_VALUE }
-						},
-						new String[] {
+								"über 500 kW el."});
+					case SOLAR_THERMAL_PLANT:
+						return new PowerFilter(group.type,
+							new double[][]{
+								null,
+								{0, 5},
+								{5, Integer.MAX_VALUE}
+							},
+							new String[]{
 								"",
 								"bis 5 m2",
 								"über 5 m2"});
-			default:
-				return null;
+					default:
+						return null;
+				}
 			}
-		}
 
-		static boolean matches(Boiler boiler, PowerFilter filter, int i) {
-			if (boiler == null)
-				return false;
-			if (filter == null || i >= filter.len())
-				return true;
-			double[] range = filter.ranges[i];
-			if (boiler.isCoGenPlant)
-				return matches(boiler.maxPowerElectric, range);
-			return matches(boiler.maxPower, range);
-		}
+			static boolean matches(Boiler boiler, PowerFilter filter, int i) {
+				if (boiler == null)
+					return false;
+				if (filter == null || i >= filter.len())
+					return true;
+				double[] range = filter.ranges[i];
+				if (boiler.isCoGenPlant)
+					return matches(boiler.maxPowerElectric, range);
+				return matches(boiler.maxPower, range);
+			}
 
-		static boolean matches(SolarCollector solarCollector, PowerFilter filter, int i) {
-			if (solarCollector == null)
-				return false;
-			if (filter == null || i >= filter.len())
-				return true;
-			double[] range = filter.ranges[i];
-			return matches(solarCollector.collectorArea, range);
-		}
+			static boolean matches(SolarCollector solarCollector, PowerFilter filter, int i) {
+				if (solarCollector == null)
+					return false;
+				if (filter == null || i >= filter.len())
+					return true;
+				double[] range = filter.ranges[i];
+				return matches(solarCollector.collectorArea, range);
+			}
 
-		static boolean matches(HeatPump heatPump, PowerFilter filter, int i) {
-			if (heatPump == null)
-				return false;
-			if (filter == null || i >= filter.len())
-				return true;
-			double[] range = filter.ranges[i];
-			return matches(heatPump.ratedPower, range);
-		}
+			static boolean matches(HeatPump heatPump, PowerFilter filter, int i) {
+				if (heatPump == null)
+					return false;
+				if (filter == null || i >= filter.len())
+					return true;
+				double[] range = filter.ranges[i];
+				return matches(heatPump.ratedPower, range);
+			}
 
-		static boolean matches(double value, double[] range) {
-			if (range == null || range.length < 2)
-				return true;
-			return value >= range[0] && value <= range[1];
-		}
+			static boolean matches(double value, double[] range) {
+				if (range == null || range.length < 2)
+					return true;
+				return value >= range[0] && value <= range[1];
+			}
 
-	}
+		}
 
 }

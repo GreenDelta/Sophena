@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.rcp.colors.Colors;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public final class Texts {
 
@@ -83,7 +83,7 @@ public final class Texts {
 	public static boolean isEmpty(Text text) {
 		if (text == null)
 			return true;
-		return Strings.nullOrEmpty(text.getText());
+		return Strings.isBlank(text.getText());
 	}
 
 	public static boolean hasNumber(Text text) {
@@ -155,7 +155,7 @@ public final class Texts {
 				return this;
 			text.setBackground(Colors.forRequiredField());
 			text.addModifyListener((e) -> {
-				if (Strings.nullOrEmpty(text.getText()))
+				if (Strings.isBlank(text.getText()))
 					text.setBackground(Colors.getErrorColor());
 				else
 					text.setBackground(Colors.forRequiredField());

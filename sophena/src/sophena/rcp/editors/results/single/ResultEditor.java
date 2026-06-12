@@ -19,7 +19,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ResultEditor extends Editor {
 
@@ -33,7 +33,7 @@ public class ResultEditor extends Editor {
 
 		PlatformUI.getWorkbench().saveAllEditors(true);
 		Editors.closeIf(e -> e instanceof ResultEditor editor
-			&& Strings.nullOrEqual(d.id, editor.project.id));
+			&& Strings.equalsIgnoreCase(d.id, editor.project.id));
 
 		Project p = new ProjectDao(App.getDb()).get(d.id);
 		if (!CalculationCheck.canCalculate(p))
@@ -101,7 +101,7 @@ public class ResultEditor extends Editor {
 		String[] parts = pageDef.split("_@");
 		if (parts.length < 2)
 			return;
-		if (!Strings.nullOrEqual(parts[0], project.id))
+		if (!Strings.equalsIgnoreCase(parts[0], project.id))
 			return;
 		try {
 			int page = Integer.parseInt(parts[1]);

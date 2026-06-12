@@ -41,7 +41,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
 import sophena.utils.Producers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class PeakBoilerDialog extends FormDialog {
 
@@ -106,7 +106,7 @@ class PeakBoilerDialog extends FormDialog {
 			set.add(c.boiler.group);
 		}
 		var groups = new ArrayList<>(set);
-		groups.sort((gi, gj) -> Strings.compare(gi.name, gj.name));
+		groups.sort((gi, gj) -> Strings.compareIgnoreCase(gi.name, gj.name));
 		return groups.toArray(new ProductGroup[0]);
 	}
 
@@ -136,7 +136,7 @@ class PeakBoilerDialog extends FormDialog {
 		Texts.on(nameText).required().onChanged(t -> {
 			var selected = getSelectedCandidate();
 			nameEdited = selected == null
-				|| !Strings.nullOrEqual(t, selected.boiler.name);
+				|| !Strings.equalsIgnoreCase(t, selected.boiler.name);
 			updateOkButton();
 		});
 		groupCombo = UI.formCombo(parent, tk, "Produktgruppe");
@@ -289,9 +289,9 @@ class PeakBoilerDialog extends FormDialog {
 			if (o == this) return 0;
 			int c = Double.compare(boiler.maxPower, o.boiler.maxPower);
 			if (c != 0) return c;
-			c = Strings.compare(manufacturer(), o.manufacturer());
+			c = Strings.compareIgnoreCase(manufacturer(), o.manufacturer());
 			return c == 0
-				? Strings.compare(boiler.name, o.boiler.name)
+				? Strings.compareIgnoreCase(boiler.name, o.boiler.name)
 				: c;
 		}
 	}

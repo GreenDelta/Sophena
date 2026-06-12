@@ -14,7 +14,7 @@ import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class CostEditor extends Editor {
 
@@ -26,7 +26,7 @@ public class CostEditor extends Editor {
 		if (d == null) return;
 		Editors.closeIf(editor -> {
 			if (!(editor instanceof CostEditor e)) return false;
-			return Strings.nullOrEqual(d.id, e.project.id);
+			return Strings.equalsIgnoreCase(d.id, e.project.id);
 		});
 		EditorInput input = new EditorInput(d.id + "/costs", d.name);
 		input.projectId = d.id;

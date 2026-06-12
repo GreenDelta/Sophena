@@ -12,7 +12,7 @@ import sophena.calc.ProductAreaResult;
 import sophena.calc.ProjectResult;
 import sophena.model.ProductArea;
 import sophena.utils.Enums;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class CostSheet {
 
@@ -173,7 +173,7 @@ class CostSheet {
 			int c = Enums.compare(i1.productType, i2.productType);
 			if (c != 0)
 				return c;
-			return Strings.compare(i1.label, i2.label);
+			return Strings.compareIgnoreCase(i1.label, i2.label);
 		});
 
 		String category = "";
@@ -182,7 +182,7 @@ class CostSheet {
 			// write the product type only if when
 			// previous was different
 			String c = Labels.getPlural(i.productType);
-			if (Strings.nullOrEqual(c, category)) {
+			if (Strings.equalsIgnoreCase(c, category)) {
 				w.nextCol();
 			} else {
 				category = c;

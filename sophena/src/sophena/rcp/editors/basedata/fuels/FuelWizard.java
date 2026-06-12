@@ -16,7 +16,7 @@ import sophena.rcp.M;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class FuelWizard extends Wizard {
 
@@ -47,7 +47,7 @@ class FuelWizard extends Wizard {
 			fuel.group = page.groupCombo.getSelected();
 			return true;
 		} catch (Exception e) {
-			log.error("failed to set fuel data " + fuel, e);
+			log.error("failed to set fuel data {}", fuel, e);
 			return false;
 		}
 	}
@@ -173,7 +173,7 @@ class FuelWizard extends Wizard {
 		private boolean validate() {
 			if (Texts.isEmpty(nameText))
 				return error("Es muss ein Name angegeben werden.");
-			if (Strings.nullOrEmpty(unitText.getText()))
+			if (Strings.isBlank(unitText.getText()))
 				return error("Es muss eine Einheit angegeben werden.");
 			if (!Num.isNumeric(calText.getText()))
 				return error("Es muss ein Heizwert angegeben werden.");

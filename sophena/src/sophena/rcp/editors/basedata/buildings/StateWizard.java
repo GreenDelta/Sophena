@@ -21,7 +21,7 @@ import sophena.model.BuildingType;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class StateWizard extends Wizard {
 
@@ -118,7 +118,7 @@ class StateWizard extends Wizard {
 				Texts.on(nameText).required().init(state.name);
 				Texts.on(indexText).required()
 						.integer().init(state.index)
-						.validate(() -> validate());
+						.validate(this::validate);
 				Texts.on(heatingLimitText).required()
 						.decimal().init(state.heatingLimit);
 				Texts.on(antifreezingText).required()
@@ -139,7 +139,7 @@ class StateWizard extends Wizard {
 				int select = 0;
 				String[] items = typeCombo.getItems();
 				for (int i = 0; i < items.length; i++) {
-					if (Strings.nullOrEqual(label, items[i])) {
+					if (Strings.equalsIgnoreCase(label, items[i])) {
 						select = i;
 						break;
 					}

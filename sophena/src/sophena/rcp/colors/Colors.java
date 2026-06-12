@@ -13,7 +13,7 @@ import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 /**
  * Managed SWT colors: the colors are created on demand and disposed when the
@@ -75,7 +75,7 @@ public class Colors {
 	}
 
 	public static RGB rgbOf(String hex) {
-		if (Strings.nullOrEmpty(hex))
+		if (Strings.isBlank(hex))
 			return new RGB(0, 0, 0);
 		var s = hex.replace("#", "").trim();
 		if (s.length() < 6)

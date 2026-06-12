@@ -3,6 +3,7 @@ package sophena.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import sophena.model.AbstractEntity;
 
@@ -20,7 +21,7 @@ public class Lists {
 		for (T entry : list) {
 			if (entry == null)
 				continue;
-			if (Strings.nullOrEqual(entry.id, t.id))
+			if (Objects.equals(entry.id, t.id))
 				return entry;
 		}
 		return null;

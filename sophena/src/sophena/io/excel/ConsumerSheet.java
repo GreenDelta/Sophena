@@ -8,7 +8,7 @@ import sophena.calc.ConsumerResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class ConsumerSheet {
 
@@ -32,10 +32,9 @@ class ConsumerSheet {
 		double demand = 0;
 
 		// consumer results
-		Collections.sort(result.consumerResults,
-				(r1, r2) -> Strings.compare(
-						r1.consumer.name,
-						r2.consumer.name));
+		result.consumerResults.sort((r1, r2) -> Strings.compareIgnoreCase(
+			r1.consumer.name,
+			r2.consumer.name));
 		for (ConsumerResult cr : result.consumerResults) {
 			demand += cr.heatDemand;
 			load += cr.consumer.heatingLoad;

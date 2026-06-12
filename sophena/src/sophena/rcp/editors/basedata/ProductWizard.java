@@ -29,7 +29,7 @@ import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ProductWizard extends Wizard {
 
@@ -146,7 +146,7 @@ public class ProductWizard extends Wizard {
 			if (product.url == null) {
 				link.setText(""); // SWT throws a NullPointer otherwise
 			} else {
-				link.setText(Strings.cut(product.url, 60));
+				link.setText(Strings.cutEnd(product.url, 60));
 				link.setToolTipText(product.url);
 			}
 			UI.filler(c);

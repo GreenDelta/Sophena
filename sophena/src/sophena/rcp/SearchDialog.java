@@ -29,7 +29,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class SearchDialog<T extends RootEntity> extends FormDialog {
 
@@ -186,7 +186,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 			if (Texts.isEmpty(filterText))
 				return true;
 			String label = labelFn.apply((T) obj);
-			if (Strings.nullOrEmpty(label))
+			if (Strings.isBlank(label))
 				return false;
 			String[] parts = filterText.getText().trim().toLowerCase()
 				.split(" ");

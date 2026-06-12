@@ -17,7 +17,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Desktop;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class ManufacturerWizard extends Wizard {
 
@@ -96,7 +96,7 @@ class ManufacturerWizard extends Wizard {
 			if (manufacturer.url == null) {
 				link.setText(""); // SWT throws a NullPointer otherwise
 			} else {
-				link.setText(Strings.cut(manufacturer.url, 60));
+				link.setText(Strings.cutEnd(manufacturer.url, 60));
 				link.setToolTipText(manufacturer.url);
 			}
 			UI.filler(c);

@@ -3,15 +3,14 @@ package sophena.rcp.utils;
 import java.awt.Desktop.Action;
 import java.net.URI;
 
+import org.openlca.commons.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sophena.utils.Strings;
 
 public class Desktop {
 
 	public static void browse(String uri) {
-		if (Strings.nullOrEmpty(uri))
+		if (Strings.isBlank(uri))
 			return;
 		try {
 			if (java.awt.Desktop.isDesktopSupported()) {
@@ -22,7 +21,7 @@ public class Desktop {
 			}
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(Desktop.class);
-			log.error("Browse URI failed: " + uri, e);
+			log.error("Browse URI failed: {}", uri, e);
 		}
 	}
 

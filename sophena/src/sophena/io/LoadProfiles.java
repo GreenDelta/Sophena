@@ -8,7 +8,7 @@ import sophena.model.LoadProfile;
 import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.utils.Result;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public final class LoadProfiles {
 
@@ -39,7 +39,7 @@ public final class LoadProfiles {
 			var profile = LoadProfile.initEmpty();
 			for (int row = 1; row < rows.size(); row++) {
 				var line = rows.get(row);
-				if (Strings.nullOrEmpty(line))
+				if (Strings.isBlank(line))
 					continue;
 
 				// split the row and check the format
@@ -104,7 +104,7 @@ public final class LoadProfiles {
 			var profile = ProducerProfile.initEmpty();
 			for (int row = 1; row < rows.size(); row++) {
 				var line = rows.get(row);
-				if (Strings.nullOrEmpty(line))
+				if (Strings.isBlank(line))
 					continue;
 
 				// split the row and check the format
@@ -118,7 +118,7 @@ public final class LoadProfiles {
 					int idx = Integer.parseInt(parts[0], 10) - 1;
 					double max = Double.parseDouble(parts[1].replace(',', '.'));
 					double min = Double.parseDouble(parts[2].replace(',', '.'));
-					double temperature = Double.parseDouble(parts[3].replace(',', '.'));;
+					double temperature = Double.parseDouble(parts[3].replace(',', '.'));
 
 					if (idx < 0 || idx >= Stats.HOURS)
 						return Result.error("Ungültige Stunde in Zeile "
@@ -141,12 +141,12 @@ public final class LoadProfiles {
 					"Die Datei konnte nicht gelesen werden: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Identify the column separator from the content of the file.
 	 */
 	public static String getSeparator(List<String> rows) {
-		var header = rows.get(0);
+		var header = rows.getFirst();
 		boolean inQuotes = false;
 		boolean hasSemicolon = false;
 		boolean hasComma = false;

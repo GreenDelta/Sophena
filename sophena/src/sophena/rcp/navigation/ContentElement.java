@@ -5,7 +5,7 @@ import java.util.Objects;
 import sophena.model.ModelType;
 import sophena.model.RootEntity;
 import sophena.model.descriptors.Descriptor;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 abstract class ContentElement<T extends RootEntity> implements
 		NavigationElement {
@@ -42,7 +42,7 @@ abstract class ContentElement<T extends RootEntity> implements
 		// sort producers and flue gas cleanings by type
 		if (type != null && otherType != null && type != otherType)
 			return otherType.ordinal() - type.ordinal();
-		return Strings.compare(this.getLabel(), otherElem.getLabel());
+		return Strings.compareIgnoreCase(this.getLabel(), otherElem.getLabel());
 	}
 
 	static ModelType modelType(ContentElement<?> elem) {

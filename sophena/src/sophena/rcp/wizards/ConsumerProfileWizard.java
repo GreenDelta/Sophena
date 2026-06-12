@@ -28,7 +28,7 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ConsumerProfileWizard extends Wizard {
 
@@ -159,7 +159,7 @@ public class ConsumerProfileWizard extends Wizard {
 		}
 
 		private boolean isValid() {
-			if (Strings.nullOrEmpty(consumer.name)) {
+			if (Strings.isBlank(consumer.name)) {
 				return err("Der Name darf nicht leer sein.");
 			}
 			if (consumer.profile == null) {

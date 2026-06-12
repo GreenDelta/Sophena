@@ -20,7 +20,7 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ElectricityPriceWizard extends Wizard {
 
@@ -47,7 +47,7 @@ public class ElectricityPriceWizard extends Wizard {
 		try {
 
 			var name = page.nameText.getText();
-			if (Strings.nullOrEmpty(name)) {
+			if (Strings.isBlank(name)) {
 				MsgBox.error("Kein Name angegen", "Der Name darf nicht leer sein.");
 				return false;
 			}

@@ -3,7 +3,7 @@ package sophena.model;
 import java.util.Objects;
 import java.util.Optional;
 
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 /**
  * All products in Sophena have exactly one of the following types. The order in
@@ -56,7 +56,7 @@ public enum ProductType {
 	}
 
 	public static Optional<ProductType> of(String name) {
-		if (Strings.nullOrEmpty(name))
+		if (Strings.isBlank(name))
 			return Optional.empty();
 		for (var type : values()) {
 			if (Objects.equals(type.name(), name))

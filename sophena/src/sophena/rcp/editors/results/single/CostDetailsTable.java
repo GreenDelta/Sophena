@@ -23,11 +23,11 @@ import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Enums;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class CostDetailsTable {
 
-	private CostResult result;
+	private final CostResult result;
 
 	private CostDetailsTable(CostResult result) {
 		this.result = result;
@@ -74,11 +74,11 @@ class CostDetailsTable {
 			int c = Enums.compare(a.type, b.type);
 			if (c != 0)
 				return c;
-			return Strings.compare(a.product, b.product);
+			return Strings.compareIgnoreCase(a.product, b.product);
 		});
 		String last = "";
 		for (Item item : items) {
-			if (Strings.nullOrEqual(item.category, last)) {
+			if (Strings.equalsIgnoreCase(item.category, last)) {
 				item.displayCategory = false;
 			} else {
 				item.displayCategory = true;
@@ -118,9 +118,8 @@ class CostDetailsTable {
 
 		@Override
 		public Color getForeground(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
 			if (col == 2 && item.investment == 0.0)
 				return Colors.getSystemColor(SWT.COLOR_RED);
 			return null;
@@ -128,9 +127,8 @@ class CostDetailsTable {
 
 		@Override
 		public Font getFont(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
 			if (col == 0 && item.displayCategory)
 				return UI.boldFont();
 			if (col == 2 && item.investment == 0.0)
@@ -140,25 +138,17 @@ class CostDetailsTable {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.displayCategory ? item.category : null;
-			case 1:
-				return item.product;
-			case 2:
-				return s(item.investment, "EUR");
-			case 3:
-				return item.capitalCosts;
-			case 4:
-				return item.consumptionCosts;
-			case 5:
-				return item.operationCosts;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.displayCategory ? item.category : null;
+				case 1 -> item.product;
+				case 2 -> s(item.investment, "EUR");
+				case 3 -> item.capitalCosts;
+				case 4 -> item.consumptionCosts;
+				case 5 -> item.operationCosts;
+				default -> null;
+			};
 		}
 
 	}

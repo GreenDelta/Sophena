@@ -40,7 +40,7 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 import sophena.utils.Producers;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ProducerProfileWizard extends Wizard {
 
@@ -259,7 +259,7 @@ public class ProducerProfileWizard extends Wizard {
 		}
 
 		private void validate() {
-			if (Strings.nullOrEmpty(producer.name)) {
+			if (Strings.isBlank(producer.name)) {
 				err("Der Name darf nicht leer sein.");
 				return;
 			}

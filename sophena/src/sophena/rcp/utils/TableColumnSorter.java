@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class TableColumnSorter<T> extends ViewerComparator {
 	private final Class<T> contentType;
@@ -46,7 +46,7 @@ public class TableColumnSorter<T> extends ViewerComparator {
 			return 0;
 		String text1 = labelProvider.getColumnText(obj1, column);
 		String text2 = labelProvider.getColumnText(obj2, column);
-		return Strings.compare(text1, text2);
+		return Strings.compareIgnoreCase(text1, text2);
 	}
 
 	@Override

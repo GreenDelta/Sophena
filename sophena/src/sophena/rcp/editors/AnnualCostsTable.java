@@ -24,7 +24,7 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.rcp.wizards.SimpleWizard;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 class AnnualCostsTable {
 
@@ -106,7 +106,7 @@ class AnnualCostsTable {
 
 	private AnnualCostEntry getJpaManaged(AnnualCostEntry e) {
 		for (AnnualCostEntry managed : settings().annualCosts) {
-			if (!Strings.nullOrEqual(managed.label, e.label))
+			if (!Strings.equalsIgnoreCase(managed.label, e.label))
 				continue;
 			if (Double.compare(managed.value, e.value) == 0)
 				return managed;
@@ -114,7 +114,7 @@ class AnnualCostsTable {
 		return null;
 	}
 
-	private class Wizard extends SimpleWizard {
+	private static class Wizard extends SimpleWizard {
 
 		final AnnualCostEntry entry;
 		private Text labelText;
@@ -145,7 +145,7 @@ class AnnualCostsTable {
 		}
 	}
 
-	private class EntryLabel extends LabelProvider
+	private static class EntryLabel extends LabelProvider
 			implements ITableLabelProvider {
 
 		@Override
@@ -155,17 +155,13 @@ class AnnualCostsTable {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof AnnualCostEntry))
+			if (!(obj instanceof AnnualCostEntry e))
 				return null;
-			AnnualCostEntry e = (AnnualCostEntry) obj;
-			switch (col) {
-			case 0:
-				return e.label;
-			case 1:
-				return Num.str(e.value);
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> e.label;
+				case 1 -> Num.str(e.value);
+				default -> null;
+			};
 		}
 	}
 

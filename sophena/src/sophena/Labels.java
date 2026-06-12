@@ -3,6 +3,8 @@ package sophena;
 import java.time.Month;
 import java.time.MonthDay;
 
+import org.openlca.commons.Strings;
+
 import sophena.model.BuildingType;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;
@@ -12,7 +14,6 @@ import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
 import sophena.rcp.M;
-import sophena.utils.Strings;
 
 public final class Labels {
 
@@ -80,7 +81,7 @@ public final class Labels {
 		if (label == null)
 			return null;
 		for (BuildingType t : BuildingType.values()) {
-			if (Strings.nullOrEqual(label, get(t)))
+			if (Strings.equalsIgnoreCase(label, get(t)))
 				return t;
 		}
 		return BuildingType.OTHER;

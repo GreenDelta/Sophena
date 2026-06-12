@@ -36,7 +36,7 @@ import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class ConsumerWizard extends Wizard {
 
@@ -210,7 +210,7 @@ public class ConsumerWizard extends Wizard {
 		}
 
 		private void validate() {
-			if (Strings.nullOrEmpty(consumer.name)) {
+			if (Strings.isBlank(consumer.name)) {
 				setErrorMessage(M.NoEmptyNameAllowed);
 				setPageComplete(false);
 			} else {

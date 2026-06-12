@@ -24,7 +24,7 @@ import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.UI;
-import sophena.utils.Strings;
+import org.openlca.commons.Strings;
 
 public class SqlEditorPage extends FormPage {
 
@@ -81,13 +81,13 @@ public class SqlEditorPage extends FormPage {
 				results.add(result);
 			}
 			if (results.size() == 1)
-				resultText.setText(results.get(0));
+				resultText.setText(results.getFirst());
 			else {
 				String text = "Executed " + results.size() + " statements:\n";
 				int i = 1;
 				for (String result : results) {
 					text += "\n" + i + ". result: \n";
-					text += Strings.cut(result, 1500);
+					text += Strings.cutEnd(result, 1500);
 					text += "\n";
 					i++;
 				}
@@ -112,13 +112,13 @@ public class SqlEditorPage extends FormPage {
 		}
 	}
 
-	private class SyntaxStyler implements ModifyListener {
+	private static class SyntaxStyler implements ModifyListener {
 
-		private StyledText text;
+		private final StyledText text;
 
 		// complete SQL99 keywords, see
 		// http://www.sql.org/sql-database/postgresql/manual/sql-keywords-appendix.html
-		private String[] keywords = { "absolute", "action", "add", "admin",
+		private final String[] keywords = { "absolute", "action", "add", "admin",
 				"after", "aggregate", "alias", "all", "allocate", "alter",
 				"and", "any", "are", "array", "as", "asc", "assertion", "at",
 				"authorization", "before", "begin", "binary", "bit", "blob",
@@ -193,9 +193,7 @@ public class SqlEditorPage extends FormPage {
 					word.append(c);
 					continue;
 				}
-				if (word == null)
-					continue;
-				else {
+				if (word != null) {
 					setWordStyle(word, wordStart);
 					word = null;
 					wordStart = -1;
@@ -214,7 +212,7 @@ public class SqlEditorPage extends FormPage {
 		}
 
 		private boolean isKeyWord(StringBuilder word) {
-			if (word == null || word.length() == 0)
+			if (word == null || word.isEmpty())
 				return false;
 			String s = word.toString();
 			for (String keyword : keywords) {

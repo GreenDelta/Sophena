@@ -3,6 +3,8 @@ package sophena.rcp.utils;
 import java.util.Comparator;
 import java.util.List;
 
+import org.openlca.commons.Strings;
+
 import sophena.model.AbstractProduct;
 import sophena.model.BaseDataEntity;
 import sophena.model.Boiler;
@@ -16,7 +18,6 @@ import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
-import sophena.utils.Strings;
 
 public class Sorters {
 
@@ -29,7 +30,7 @@ public class Sorters {
 				return 0;
 			if (o1 == null || o2 == null)
 				return o1 == null ? -1 : 1;
-			return Strings.compare(o1.name, o2.name);
+			return Strings.compareIgnoreCase(o1.name, o2.name);
 		};
 	}
 
@@ -132,13 +133,13 @@ public class Sorters {
 			int c = byGroup(p1, p2);
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
-			c = Strings.compare(p1.heatRecoveryType, p2.heatRecoveryType);
+			c = Strings.compareIgnoreCase(p1.heatRecoveryType, p2.heatRecoveryType);
 			if (c != 0)
 				return c;
 			if (Math.abs(p1.producerPower - p2.producerPower) > 1e-6) {
 				return Double.compare(p1.producerPower, p2.producerPower);
 			}
-			c = Strings.compare(p1.fuel, p2.fuel);
+			c = Strings.compareIgnoreCase(p1.fuel, p2.fuel);
 			return c == 0 ? byManufacturer(p1, p2) : c;
 		});
 	}
@@ -153,7 +154,7 @@ public class Sorters {
 			if (Math.abs(p1.maxProducerPower - p2.maxProducerPower) > 1e-6) {
 				return Double.compare(p1.maxProducerPower, p2.maxProducerPower);
 			}
-			c = Strings.compare(p1.fuel, p2.fuel);
+			c = Strings.compareIgnoreCase(p1.fuel, p2.fuel);
 			if (c != 0)
 				return c;
 			return byManufacturer(p1, p2);
@@ -183,7 +184,7 @@ public class Sorters {
 			return 0;
 		if (p1.group == null || p2.group == null)
 			return p1.group == null ? 1 : -1;
-		return Strings.compare(p1.group.name, p2.group.name);
+		return Strings.compareIgnoreCase(p1.group.name, p2.group.name);
 	}
 
 	private static int byManufacturer(AbstractProduct p1, AbstractProduct p2) {
@@ -195,7 +196,7 @@ public class Sorters {
 			return 0;
 		if (p1.manufacturer == null || p2.manufacturer == null)
 			return p1.manufacturer == null ? 1 : -1;
-		return Strings.compare(p1.manufacturer.name, p2.manufacturer.name);
+		return Strings.compareIgnoreCase(p1.manufacturer.name, p2.manufacturer.name);
 	}
 
 	/**
@@ -212,7 +213,7 @@ public class Sorters {
 				return o1 == null ? -1 : 1;
 			if (o1.isProtected != o2.isProtected)
 				return o1.isProtected ? -1 : 1;
-			return Strings.compare(o1.name, o2.name);
+			return Strings.compareIgnoreCase(o1.name, o2.name);
 		});
 	}
 
@@ -226,7 +227,7 @@ public class Sorters {
 				return g1.type.ordinal() - g2.type.ordinal();
 			if (g1.index != g2.index)
 				return g1.index - g2.index;
-			return Strings.compare(g1.name, g2.name);
+			return Strings.compareIgnoreCase(g1.name, g2.name);
 		});
 	}
 }
