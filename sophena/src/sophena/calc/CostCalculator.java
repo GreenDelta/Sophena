@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import sophena.calc.CostResult.FieldSet;
+import sophena.calc.energy.EnergyResult;
 import sophena.math.costs.CapitalCosts;
 import sophena.math.costs.Costs;
 import sophena.math.costs.ElectricityCosts;

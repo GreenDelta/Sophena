@@ -1,6 +1,6 @@
 package sophena.math.energetic;
 
-import sophena.calc.EnergyResult;
+import sophena.calc.energy.EnergyResult;
 
 public class GeneratedHeat {
 

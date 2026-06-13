@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,9 @@ import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.utils.Temperature;
 
-public class HeatPumpCalcState {
-	private SolarCalcLog log;
+class HeatPumpState {
+	
+	private SolarLog log;
 	private Project project;
 	private Producer producer;
 	private BufferLoadType bufferLoadType;
@@ -21,7 +22,7 @@ public class HeatPumpCalcState {
 	private double Q_used;
 	private double Q_el_used;
 
-	public HeatPumpCalcState(SolarCalcLog log, Project project, Producer producer) {
+	public HeatPumpState(SolarLog log, Project project, Producer producer) {
 		this.log = log;
 		this.project = project;
 		this.producer = producer;

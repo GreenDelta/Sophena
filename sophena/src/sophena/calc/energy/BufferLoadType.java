@@ -1,8 +1,8 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 /// The buffer load-type of a producer. Means, if the producer loads the buffer
 /// with high, flow, or low temperature.
-public enum BufferLoadType {
+enum BufferLoadType {
 
 	HIGH_TEMP,
 

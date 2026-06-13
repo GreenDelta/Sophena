@@ -1,11 +1,11 @@
-package sophena.math.energetic;
+package sophena.calc.energy;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import sophena.calc.energy.BufferState;
 import sophena.model.BufferTank;
 import sophena.model.HeatNet;
-import sophena.calc.BufferCalcState;
 
 public class BuffersTest {
 
@@ -32,9 +32,9 @@ public class BuffersTest {
 		net.maxBufferLoadTemperature = 95;
 		net.supplyTemperature = 80;
 		net.bufferLambda = 0.04;
-		double lossFactor = BufferCalcState.lossFactor(net);
+		double lossFactor = BufferState.lossFactor(net);
 		Assert.assertEquals(0.6565300327471949,
-				BufferCalcState.loss(net, lossFactor, 0.5), 1e-10);
+				BufferState.loss(net, lossFactor, 0.5), 1e-10);
 	}
 
 }

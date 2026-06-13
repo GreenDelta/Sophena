@@ -1,12 +1,9 @@
 package sophena.math.energetic;
 
-import sophena.calc.HeatPumpCalcState;
 import sophena.calc.ProjectResult;
-import sophena.calc.SolarCalcState;
 import sophena.model.HeatRecovery;
 import sophena.model.Producer;
 import sophena.model.ProductType;
-import sophena.model.Stats;
 
 public class Producers {
 
@@ -34,44 +31,6 @@ public class Producers {
 		if (P_max == 0)
 			return 0;
 		return Math.ceil(generatedHeat / P_max);
-	}
-
-	/**
-	 * Get the minimum power of the given producer for the given hour (used in
-	 * energy simulations).
-	 */
-	public static double minPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
-		if (p == null)
-			return 0;
-		if (p.hasProfile()) {
-			if (p.profile == null)
-				return 0;
-			return Stats.get(p.profile.minPower, hour);
-		}
-		if (p.boiler == null)
-			return 0;
-		return p.boiler.minPower * heatRecoveryFactor(p);
-	}
-
-	/**
-	 * Get the minimum power of the given producer for the given hour (used in
-	 * energy simulations).
-	 */
-	public static double maxPower(Producer p, SolarCalcState solarCalcState, HeatPumpCalcState heatPumpCalcState, int hour) {
-		if (p == null)
-			return 0;
-		if (p.hasProfile()) {
-			if (p.profile == null)
-				return 0;
-			return Stats.get(p.profile.maxPower, hour);
-		}
-		if(p.solarCollector !=null && solarCalcState != null)
-			return solarCalcState.getAvailablePowerInKWh();
-		if(p.heatPump != null && heatPumpCalcState != null)
-			return heatPumpCalcState.getMaxPower();
-		if (p.boiler == null)
-			return 0;
-		return p.boiler.maxPower * heatRecoveryFactor(p);
 	}
 
 	public static double maxPower(Producer p) {
@@ -111,14 +70,14 @@ public class Producers {
 				? p.utilisationRate
 				: 0.0;
 	}
-
-	private static double heatRecoveryFactor(Producer p) {
+	
+	public static double heatRecoveryFactor(Producer p) {
 		if (p == null || p.heatRecovery == null)
 			return 1;
 		HeatRecovery hr = p.heatRecovery;
 		return 1 + (hr.power / hr.producerPower);
 	}
-
+	
 	/**
 	 * Returns the electric power of the given producer if it is a co-generation
 	 * plant. Otherwise, returns 0.

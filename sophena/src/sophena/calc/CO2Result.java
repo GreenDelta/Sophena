@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sophena.Defaults;
+import sophena.calc.energy.EnergyResult;
 import sophena.math.energetic.GeneratedElectricity;
 import sophena.math.energetic.UsedElectricity;
 import sophena.model.CostSettings;

@@ -5,8 +5,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.EnergyResult;
 import sophena.calc.ProjectLoad;
+import sophena.calc.energy.EnergyResult;
 import sophena.model.LoadProfile;
 import sophena.model.Project;
 import sophena.rcp.M;

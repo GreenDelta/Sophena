@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.Labels;
-import sophena.calc.EnergyResult;
 import sophena.calc.ProjectResult;
+import sophena.calc.energy.EnergyResult;
 import sophena.math.energetic.GeneratedHeat;
 import sophena.math.energetic.Producers;
 import sophena.math.energetic.UtilisationRate;

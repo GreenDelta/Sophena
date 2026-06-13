@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.openlca.commons.Copyable;
 
+import sophena.calc.ProjectLoad;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -36,9 +37,9 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	public double heatNetLoss;
 	public double fermenterHeatDemand;
 
-	public EnergyResult() {
+	private EnergyResult() {
 	}
-
+		
 	EnergyResult(Project project) {
 		loadCurve = ProjectLoad.getSmoothedCurve(project);
 		suppliedPower = new double[Stats.HOURS];
@@ -47,6 +48,10 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		bufferLoss = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
 		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
+	}
+	
+	public static EnergyResult calculate(Project project) {
+		return new EnergyCalculator(project).calculate();
 	}
 
 	public double totalHeat(Producer p) {
@@ -154,7 +159,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		return max;
 	}
 
-	public EnergyResult sort() {
+	public EnergyResult sortedCopy() {
 		return EnergyResultSorter.sort(this);
 	}
 

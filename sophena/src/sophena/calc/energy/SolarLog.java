@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -7,7 +7,8 @@ import java.util.Map;
 
 import sophena.model.Producer;
 
-public class SolarCalcLog {
+class SolarLog {
+	
 	private final int fieldWidth = 18;
 
 	private Map<Producer, StringBuilder> sbPerProducer = new HashMap<Producer, StringBuilder>();
@@ -113,7 +114,7 @@ public class SolarCalcLog {
 		return result.toString();
 	}
 	
-	public static void writeCsv(String filename, double[] values)
+	static void writeCsv(String filename, double[] values)
 	{
 		try {
 			PrintWriter printWriter = new PrintWriter(filename);

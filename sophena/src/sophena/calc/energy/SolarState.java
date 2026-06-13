@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
@@ -6,11 +6,12 @@ import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.utils.Temperature;
 
-public class SolarCalcState {
-	private SolarCalcLog log;
+class SolarState {
+	
+	private SolarLog log;
 	private Project project;
 	private Producer producer;
-	private SolarCalcPhase phase;
+	private SolarPhase phase;
 	private SolarCalcOperationMode operationMode;
 
 	private double TK_i_minus_one = 0;
@@ -23,12 +24,12 @@ public class SolarCalcState {
 
 	private int numStagnationDays;
 
-	public SolarCalcState(SolarCalcLog log, Project project, Producer producer)
+	public SolarState(SolarLog log, Project project, Producer producer)
 	{
 		this.log = log;
 		this.project = project;
 		this.producer = producer;
-		phase = SolarCalcPhase.Aufheiz;
+		phase = SolarPhase.WARM_UP;
 		operationMode = SolarCalcOperationMode.PreHeating;
 
 		TK_i_minus_one = Temperature.of(project, 0);
@@ -184,7 +185,7 @@ public class SolarCalcState {
 		}
 
 		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
-		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature && phase != SolarCalcPhase.Stagnation)
+		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature && phase != SolarPhase.STAGNATION)
 		{
 			operationMode  = SolarCalcOperationMode.HighTemperature;
 			log.message("Changing Operation Mode to " + operationMode);
@@ -246,7 +247,7 @@ public class SolarCalcState {
 				"Load type"
 			);
 
-			phase = SolarCalcPhase.Aufheiz;
+			phase = SolarPhase.WARM_UP;
 			log.message("Changing Phase to "+phase);
 
 			TK_i_minus_one = TL_i;
@@ -254,18 +255,18 @@ public class SolarCalcState {
 
 		switch(phase)
 		{
-		case Stagnation:
+		case STAGNATION:
 			QS_i = 0;
 			if(TS == 24)
 				numStagnationDays++;
 			break;
-		case Aufheiz:
+		case WARM_UP:
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 
 				if(temperatur > kollektormitteltemperatur)
 				{
-					phase = SolarCalcPhase.Betrieb;
+					phase = SolarPhase.OPERATION;
 					log.message("Changing Phase to "+phase);
 
 					TK_i_minus_one = kollektormitteltemperatur;
@@ -277,7 +278,7 @@ public class SolarCalcState {
 				QS_i = 0;
 			}
 			break;
-		case Betrieb:
+		case OPERATION:
 			{
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 
@@ -288,7 +289,7 @@ public class SolarCalcState {
 				}
 				else
 				{
-					phase = SolarCalcPhase.Aufheiz;
+					phase = SolarPhase.WARM_UP;
 					log.message("Changing Phase to "+phase);
 
 					TK_i = Math.max(temperatur, TL_i);
@@ -358,14 +359,14 @@ public class SolarCalcState {
 		boolean writeLog = false;
 		log.beginProducer(producer);
 
-		if(phase == SolarCalcPhase.Betrieb)
+		if(phase == SolarPhase.OPERATION)
 		{
 			double deltaQS = QS_i - consumedPower;
 			TK_i = TK_i_minus_one + deltaQS / (A * C);
 
 			if(TK_i > project.heatNet.maxBufferLoadTemperature && deltaQS > 0)
 			{
-				phase = SolarCalcPhase.Stagnation;
+				phase = SolarPhase.STAGNATION;
 				writeLog = true;
 			}
 		}
@@ -513,7 +514,7 @@ public class SolarCalcState {
 		return operationMode;
 	}
 
-	public SolarCalcPhase getPhase()
+	public SolarPhase getPhase()
 	{
 		return phase;
 	}

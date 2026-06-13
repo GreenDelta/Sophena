@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import sophena.calc.EnergyResult;
+import sophena.calc.energy.EnergyResult;
 import sophena.model.Producer;
 
 class SimulationSheet {

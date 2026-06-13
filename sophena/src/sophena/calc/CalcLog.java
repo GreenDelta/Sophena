@@ -63,9 +63,7 @@ public class CalcLog {
 	private String right(String prefix, String s) {
 		String pref = strip(prefix);
 		String text = strip(s);
-		int offset = PAGE_WIDTH - pref.length() - text.length();
-		if(offset < 0)
-			offset = 0;
+		int offset = Math.max(0, PAGE_WIDTH - pref.length() - text.length());
 		return pref + repeat(' ', offset) + text;
 	}
 
@@ -74,9 +72,9 @@ public class CalcLog {
 	}
 
 	public void println(String s) {
-		if (s == null)
-			writer.append('\n');
-		writer.write(s);
+		if (s != null) {
+			writer.write(s);
+		}
 		writer.append('\n');
 	}
 
@@ -93,7 +91,7 @@ public class CalcLog {
 		if (s == null)
 			return 0;
 		int len = s.trim().length();
-		return len < PAGE_WIDTH ? len : PAGE_WIDTH;
+		return Math.min(len, PAGE_WIDTH);
 	}
 
 	private String repeat(char c, int n) {

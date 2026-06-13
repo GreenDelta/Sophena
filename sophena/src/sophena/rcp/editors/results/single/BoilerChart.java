@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.EnergyResult;
+import sophena.calc.energy.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.app.Icon;
@@ -126,8 +126,9 @@ class BoilerChart {
 	private void fillData() {
 		if (result == null)
 			return;
-		if (sorted)
-			result = result.sort();
+		if (sorted) {
+			result = result.sortedCopy();
+		}
 		renderChart(result);
 	}
 

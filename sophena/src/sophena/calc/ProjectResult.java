@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import sophena.calc.energy.EnergyResult;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -28,7 +29,7 @@ public class ProjectResult {
 
 	public static ProjectResult calculate(Project project) {
 		var r = new ProjectResult(project);
-		r.energyResult = EnergyCalculator.calculate(project, r.calcLog);
+		r.energyResult = EnergyResult.calculate(project);
 		r.fuelUsage = FuelUsage.calculate(r);
 		var costCalc = new CostCalculator(r);
 		costCalc.withFunding(false);

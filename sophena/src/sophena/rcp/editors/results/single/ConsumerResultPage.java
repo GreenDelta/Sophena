@@ -18,9 +18,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.ConsumerResult;
-import sophena.calc.EnergyResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
+import sophena.calc.energy.EnergyResult;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.TableClipboard;
 import sophena.rcp.utils.Tables;

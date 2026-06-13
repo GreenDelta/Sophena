@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import java.util.Arrays;
 

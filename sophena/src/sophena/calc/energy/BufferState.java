@@ -1,4 +1,4 @@
-package sophena.calc;
+package sophena.calc.energy;
 
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.BufferTank;
@@ -6,9 +6,10 @@ import sophena.model.HeatNet;
 import sophena.model.Project;
 import sophena.utils.Temperature;
 
-public class BufferCalcState {
+class BufferState {
+	
 	private final Project project;
-	private final SolarCalcLog log;
+	private final SolarLog log;
 
 	// kWh
 	private double QP_HT;
@@ -75,7 +76,7 @@ public class BufferCalcState {
 
 	private final double maxConsumerHeatingLimit;
 
-	public BufferCalcState(Project project, SolarCalcLog log)
+	public BufferState(Project project, SolarLog log)
 	{
 		this.project = project;
 		this.log = log;

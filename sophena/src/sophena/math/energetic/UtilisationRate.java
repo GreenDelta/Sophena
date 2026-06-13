@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sophena.Defaults;
-import sophena.calc.EnergyResult;
+import sophena.calc.energy.EnergyResult;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.Project;
