@@ -21,16 +21,16 @@ class SolarState {
 
 	private SolarPhase phase;
 	private OperationMode operationMode;
+	int numStagnationDays;
+	double TK_i;
 
 	private double TK_i_minus_one;
-	private double TK_i;
 	private double A;
 	private double C;
 	private double QS_i_before_correction;
 	private double meanCollectorTemperature;
 	private double QS_i;
 
-	private int numStagnationDays;
 
 	SolarState(SolarLog log, Project project, Producer producer) {
 		this.log = log;
@@ -43,6 +43,10 @@ class SolarState {
 		operationMode = OperationMode.PRE_HEATING;
 		TK_i_minus_one = Temperature.of(project, 0);
 		numStagnationDays = 0;
+	}
+
+	boolean isNotOperating() {
+		return phase != SolarPhase.OPERATION;
 	}
 
 	void calcPre(int hour, double TE, double TV) {
@@ -339,7 +343,7 @@ class SolarState {
 
 	private double consumedPower;
 
-	public void setConsumedPower(double consumedPower) {
+	void setConsumedPower(double consumedPower) {
 		this.consumedPower = producer.utilisationRate == null || producer.utilisationRate == 0
 			? 0
 			: consumedPower / producer.utilisationRate;
@@ -419,6 +423,7 @@ class SolarState {
 		return x * x;
 	}
 
+	/// Get the incidence angle modifier for east-west.
 	private double getEWFOW(double degrees) {
 		// Valid range in UI is -180 to +180
 		int i = (int) Math.abs(degrees) / 10;
@@ -445,24 +450,34 @@ class SolarState {
 		};
 	}
 
+	/// Get the incidence angle modifier for north-south.
 	private double getEWFNS(double degrees) {
 		// Valid range in UI is 0 to +90
 		int i = (int) Math.abs(degrees) / 10;
 		double t = (Math.abs(degrees) % 10) / 10.0;
 		return switch (i) {
 			case 0 -> lerp(1, collector.angleIncidenceNS10, t);
-			case 1 -> lerp(collector.angleIncidenceNS10, collector.angleIncidenceNS20, t);
-			case 2 -> lerp(collector.angleIncidenceNS20, collector.angleIncidenceNS30, t);
-			case 3 -> lerp(collector.angleIncidenceNS30, collector.angleIncidenceNS40, t);
-			case 4 -> lerp(collector.angleIncidenceNS40, collector.angleIncidenceNS50, t);
-			case 5 -> lerp(collector.angleIncidenceNS50, collector.angleIncidenceNS60, t);
-			case 6 -> lerp(collector.angleIncidenceNS60, collector.angleIncidenceNS70, t);
-			case 7 -> lerp(collector.angleIncidenceNS70, collector.angleIncidenceNS80, t);
-			case 8 -> lerp(collector.angleIncidenceNS80, collector.angleIncidenceNS90, t);
+			case 1 ->
+				lerp(collector.angleIncidenceNS10, collector.angleIncidenceNS20, t);
+			case 2 ->
+				lerp(collector.angleIncidenceNS20, collector.angleIncidenceNS30, t);
+			case 3 ->
+				lerp(collector.angleIncidenceNS30, collector.angleIncidenceNS40, t);
+			case 4 ->
+				lerp(collector.angleIncidenceNS40, collector.angleIncidenceNS50, t);
+			case 5 ->
+				lerp(collector.angleIncidenceNS50, collector.angleIncidenceNS60, t);
+			case 6 ->
+				lerp(collector.angleIncidenceNS60, collector.angleIncidenceNS70, t);
+			case 7 ->
+				lerp(collector.angleIncidenceNS70, collector.angleIncidenceNS80, t);
+			case 8 ->
+				lerp(collector.angleIncidenceNS80, collector.angleIncidenceNS90, t);
 			default -> 0;
 		};
 	}
 
+	/// Linear interpolation between two angles.
 	private static double lerp(double a, double b, double t) {
 		return (1 - t) * a + t * b;
 	}
@@ -471,20 +486,10 @@ class SolarState {
 		return hour >= interval[0] && hour <= interval[1];
 	}
 
-	public SolarPhase getPhase() {
-		return phase;
-	}
-
-	public double getTK_i() {
-		return TK_i;
-	}
-
-	public double getAvailablePowerInKWh() {
-		return QS_i / 1000 * producer.utilisationRate;
-	}
-
-	public int getNumStagnationDays() {
-		return numStagnationDays;
+	double getAvailablePowerInKWh() {
+		return producer.utilisationRate == null || producer.utilisationRate == 0
+			? 0
+			: QS_i / 1000 * producer.utilisationRate;
 	}
 
 	private enum OperationMode {

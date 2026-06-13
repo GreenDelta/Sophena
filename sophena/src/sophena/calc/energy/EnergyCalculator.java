@@ -76,16 +76,16 @@ class EnergyCalculator {
 			for (int k = 0; k < r.producers.length; k++) {
 				var producer = r.producers[k];
 
-				var solarCalcState = solarStates.get(producer);
+				var solarState = solarStates.get(producer);
 				var heatPumpCalcState = heatPumpCalcStates.get(producer);
-				boolean isSolarProducer = solarCalcState != null;
-				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarCalcState, heatPumpCalcState, hour);
+				boolean isSolarProducer = solarState != null;
+				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarState, heatPumpCalcState, hour);
 
 				if (bufferLoadType == BufferLoadType.NONE)
 					continue;
 
 				// Check whether the collector is working for the current hour
-				if (isSolarProducer && solarCalcState.getPhase() != SolarPhase.OPERATION)
+				if (isSolarProducer && solarState.isNotOperating())
 					continue;
 
 				// Check whether the producer can be taken
@@ -107,16 +107,16 @@ class EnergyCalculator {
 
 				var producer = r.producers[k];
 
-				var solarCalcState = solarStates.get(producer);
-				var heatPumpCalcState = heatPumpCalcStates.get(producer);
-				boolean isSolarProducer = solarCalcState != null;
-				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarCalcState, heatPumpCalcState, hour);
+				var solarState = solarStates.get(producer);
+				var heatPumpState = heatPumpCalcStates.get(producer);
+				boolean isSolarProducer = solarState != null;
+				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarState, heatPumpState, hour);
 
 				if (bufferLoadType == BufferLoadType.NONE)
 					continue;
 
 				// Check whether the collector is working for the current hour
-				if (isSolarProducer && solarCalcState.getPhase() != SolarPhase.OPERATION)
+				if (isSolarProducer && solarState.isNotOperating())
 					continue;
 
 				// Check whether the producer can be taken
@@ -131,9 +131,9 @@ class EnergyCalculator {
 
 				double TK_i = TV;
 				if (isSolarProducer)
-					TK_i = solarCalcState.getTK_i();
-				if (heatPumpCalcState != null)
-					TK_i = heatPumpCalcState.getTK_i();
+					TK_i = solarState.TK_i;
+				if (heatPumpState != null)
+					TK_i = heatPumpState.getTK_i();
 				if (producer.profile != null && producer.profile.temperaturLevel != null)
 					TK_i = producer.profile.temperaturLevel[hour];
 
@@ -153,7 +153,7 @@ class EnergyCalculator {
 					bufferState.CalcNTCapacity(false, loadFactorTK_i));
 
 				// Power which can be provided by the producer
-				double power = getSuppliedPower(producer, hour, solarCalcState, heatPumpCalcState, reducedLoad, maxLoadRel);
+				double power = getSuppliedPower(producer, hour, solarState, heatPumpState, reducedLoad, maxLoadRel);
 				double unloadableNTPower = Math.min(bufferNTUnloadLimit, bufferState.totalUnloadableNTPower());
 
 				if (!isSolarProducer) {
@@ -194,10 +194,10 @@ class EnergyCalculator {
 
 				// Write back used power in order to heat up the collector with the not used part
 				if (isSolarProducer)
-					solarCalcState.setConsumedPower(power * 1000);
+					solarState.setConsumedPower(power * 1000);
 
-				if (heatPumpCalcState != null)
-					heatPumpCalcState.setConsumedPower(power * 1000);
+				if (heatPumpState != null)
+					heatPumpState.setConsumedPower(power * 1000);
 			}
 			// end producer loop
 
@@ -251,7 +251,7 @@ class EnergyCalculator {
 
 			var solarCalcState = solarStates.get(producer);
 			if (solarCalcState != null)
-				r.producerStagnationDays[k] = solarCalcState.getNumStagnationDays();
+				r.producerStagnationDays[k] = solarCalcState.numStagnationDays;
 
 			var heatPumpCalcState = heatPumpCalcStates.get(producer);
 			if (heatPumpCalcState != null)
