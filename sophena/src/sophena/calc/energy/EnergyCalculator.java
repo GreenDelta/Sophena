@@ -170,7 +170,7 @@ class EnergyCalculator {
 				// Don't limit producer unless they exceed the maximum power currently needed, allways use solar producer
 				if (power <= maxLoadAbs) {
 					if (bufferLoadType == BufferLoadType.HIGH_TEMP && producer.function == ProducerFunction.PEAK_LOAD && bufferState.totalUnloadableNTPower() > 0) {
-						double p = Math.min(unloadableNTPower, power - Util.minPower(producer, solarCalcState, heatPumpCalcState, hour));
+						double p = Math.min(unloadableNTPower, power - Util.minPower(producer, hour));
 						bufferState.unload(hour, p, BufferLoadType.LOW_TEMP);
 						totalSuppliedPower += p;
 						heatNetSuppliedPower += p;
@@ -339,7 +339,7 @@ class EnergyCalculator {
 	private double getSuppliedPower(Producer producer, int hour, SolarState solarCalcState,
 	                                HeatPumpState heatPumpCalcState,
 	                                double requiredLoad, double maxLoad) {
-		double bMin = Util.minPower(producer, solarCalcState, heatPumpCalcState, hour);
+		double bMin = Util.minPower(producer, hour);
 		double bMax = Util.maxPower(producer, solarCalcState, heatPumpCalcState, hour);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 			? requiredLoad

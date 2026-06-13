@@ -25,7 +25,7 @@ public class ProducersTest {
 	@Test
 	public void testWithoutHeatRecovery() {
 		int hour = 42;
-		Assert.assertEquals(130, Util.minPower(p, null, null, hour), 1e-10);
+		Assert.assertEquals(130, Util.minPower(p, hour), 1e-10);
 		Assert.assertEquals(200, Util.maxPower(p, null, null, hour), 1e-10);
 		Assert.assertEquals(200, Producers.maxPower(p), 1e-10);
 		Assert.assertEquals(0.35, Producers.efficiencyRate(p), 1e-10);
@@ -37,7 +37,7 @@ public class ProducersTest {
 		p.heatRecovery = new HeatRecovery();
 		p.heatRecovery.power = 100;
 		p.heatRecovery.producerPower = 250;
-		Assert.assertEquals(182, Util.minPower(p, null, null, hour), 1e-10);
+		Assert.assertEquals(182, Util.minPower(p, hour), 1e-10);
 		Assert.assertEquals(280, Util.maxPower(p, null, null, hour), 1e-10);
 		Assert.assertEquals(280, Producers.maxPower(p), 1e-10);
 		Assert.assertEquals(0.49, Producers.efficiencyRate(p), 1e-10);

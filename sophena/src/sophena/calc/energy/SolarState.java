@@ -1,47 +1,51 @@
 package sophena.calc.energy;
 
+import java.util.Objects;
+
 import sophena.model.HeatNet;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.SolarCollector;
+import sophena.model.SolarCollectorSpec;
+import sophena.model.Stats;
 import sophena.utils.Temperature;
 
 class SolarState {
-	
-	private SolarLog log;
-	private Project project;
-	private Producer producer;
-	private SolarPhase phase;
-	private SolarCalcOperationMode operationMode;
 
-	private double TK_i_minus_one = 0;
+	private final SolarLog log;
+	private final Project project;
+	private final Producer producer;
+	private final SolarCollectorSpec spec;
+	private final SolarCollector collector;
+
+	private SolarPhase phase;
+	private OperationMode operationMode;
+
+	private double TK_i_minus_one;
 	private double TK_i;
 	private double A;
 	private double C;
 	private double QS_i_before_correction;
-	private double kollektormitteltemperatur;
+	private double meanCollectorTemperature;
 	private double QS_i;
 
 	private int numStagnationDays;
 
-	public SolarState(SolarLog log, Project project, Producer producer)
-	{
+	SolarState(SolarLog log, Project project, Producer producer) {
 		this.log = log;
 		this.project = project;
 		this.producer = producer;
+		this.spec = Objects.requireNonNull(producer.solarCollectorSpec);
+		this.collector = Objects.requireNonNull(producer.solarCollector);
+
 		phase = SolarPhase.WARM_UP;
-		operationMode = SolarCalcOperationMode.PreHeating;
-
+		operationMode = OperationMode.PRE_HEATING;
 		TK_i_minus_one = Temperature.of(project, 0);
-
 		numStagnationDays = 0;
 	}
 
-	public void calcPre(int hour, double TE, double TV)
-	{
-		if(producer.solarCollector == null || producer.solarCollectorSpec == null)
-			return;
-
+	void calcPre(int hour, double TE, double TV) {
 
 		log.beginProducer(producer);
 
@@ -51,45 +55,45 @@ class SolarState {
 		double ALB = 0.2;
 
 		// m²
-		A = producer.solarCollectorSpec.solarCollectorArea;
+		A = spec.solarCollectorArea;
 		// 1
-		double ETA0 = producer.solarCollector.efficiencyRateRadiation;
+		double ETA0 = collector.efficiencyRateRadiation;
 		// 1
-		double KDF = producer.solarCollector.correctionFactor;
+		double KDF = collector.correctionFactor;
 		// W/m²/K
-		double A1 = producer.solarCollector.heatTransferCoefficient1;
+		double A1 = collector.heatTransferCoefficient1;
 		// W/m²/K²
-		double A2 = producer.solarCollector.heatTransferCoefficient2;
+		double A2 = collector.heatTransferCoefficient2;
 		// Wh/m²/K
-		C = producer.solarCollector.heatCapacity;
+		C = collector.heatCapacity;
 		// -180°..+180°
-		double NW = producer.solarCollectorSpec.solarCollectorTilt;
+		double NW = spec.solarCollectorTilt;
 		// 0°..+90°
-		double AUS = producer.solarCollectorSpec.solarCollectorAlignment;
+		double AUS = spec.solarCollectorAlignment;
 		// K
-		double UEH = producer.solarCollectorSpec.solarCollectorTemperatureIncrease;
+		double UEH = spec.solarCollectorTemperatureIncrease;
 		// K
-		double TD = producer.solarCollectorSpec.solarCollectorTemperatureDifference;
+		double TD = spec.solarCollectorTemperatureDifference;
+
+		var station = project.weatherStation;
 
 		// °
-		double BG = project.weatherStation.latitude;
+		double BG = station.latitude;
 
 		// °
-		double LG = -project.weatherStation.longitude;
+		double LG = -station.longitude;
 
 		// °
-		double MERI = -project.weatherStation.referenceLongitude;
+		double MERI = -station.referenceLongitude;
 
 		// °C
 		double TL_i = Temperature.of(project, hour);
+
 		// W/m²
-		double SDI_i = project.weatherStation.directRadiation != null && hour < project.weatherStation.directRadiation.length
-				? project.weatherStation.directRadiation[hour]
-				: 0;
+		double SDI_i = Stats.get(station.directRadiation, hour);
+
 		// W/m²
-		double SDF_i = project.weatherStation.diffuseRadiation != null && hour < project.weatherStation.diffuseRadiation.length
-				? project.weatherStation.diffuseRadiation[hour]
-				: 0;
+		double SDF_i = Stats.get(station.diffuseRadiation, hour);
 
 		// 1..365
 		int JT = 1 + hour / 24;
@@ -113,22 +117,22 @@ class SolarState {
 		double SZW = Math.acos(Math.cos(Math.toRadians(BG)) * Math.cos(Math.toRadians(HW)) * Math.cos(Math.toRadians(SD)) + Math.sin(Math.toRadians(BG)) * Math.sin(Math.toRadians(SD)));
 		// rad
 		double SAW = Math.signum(HW) * Math.acos(
-			(Math.cos(SZW) * Math.sin(Math.toRadians(BG)) - Math.sin(Math.toRadians(SD))) / ( Math.sin(SZW) * Math.cos(Math.toRadians(BG)))
+			(Math.cos(SZW) * Math.sin(Math.toRadians(BG)) - Math.sin(Math.toRadians(SD))) / (Math.sin(SZW) * Math.cos(Math.toRadians(BG)))
 		);
 		// rad
 		double EWK = Math.acos(
-				Math.cos(SZW) * Math.cos(Math.toRadians(NW)) + Math.sin(SZW) * Math.sin(Math.toRadians(NW)) * Math.cos(SAW - Math.toRadians(AUS)) + 0.0000000001
-				);
+			Math.cos(SZW) * Math.cos(Math.toRadians(NW)) + Math.sin(SZW) * Math.sin(Math.toRadians(NW)) * Math.cos(SAW - Math.toRadians(AUS)) + 0.0000000001
+		);
 
 		// rad
 		double EWOW = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-				? Math.atan(Math.sin(SZW) * Math.sin(SAW - Math.toRadians(AUS)) / Math.cos(EWK))
-				: Math.toRadians(89.999);
+			? Math.atan(Math.sin(SZW) * Math.sin(SAW - Math.toRadians(AUS)) / Math.cos(EWK))
+			: Math.toRadians(89.999);
 
 		// rad
 		double EWNS = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-				? -(Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS))) - Math.toRadians(NW))
-				: Math.toRadians(89.990);
+			? -(Math.atan(Math.tan(SZW) * Math.cos(SAW - Math.toRadians(AUS))) - Math.toRadians(NW))
+			: Math.toRadians(89.990);
 
 		// 1
 		double EWFOW = getEWFOW(Math.toDegrees(EWOW));
@@ -137,8 +141,8 @@ class SolarState {
 
 		// 1
 		double KOF = Math.toDegrees(SZW) < 90 && Math.toDegrees(EWK) < 90
-				? Math.cos(EWK) / Math.cos(SZW)
-				: 0;
+			? Math.cos(EWK) / Math.cos(SZW)
+			: 0;
 
 		// 1 (1367 is solar constant in W/m²)
 		double RAB = SDI_i / (1367.0 * (1.0 + 0.033 * Math.cos(360 * JT / 365.0 * Math.PI / 180)) * Math.cos(SZW));
@@ -160,41 +164,38 @@ class SolarState {
 		// Wh
 		QS_i = (radiation - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
 
-		operationMode = CalcOperationMode(project.heatNet, hour, radiation); //TODO
+		operationMode = operationMode(project.heatNet, hour, radiation); //TODO
 
-		double eintrittstemperatur;
-		double austrittstemperatur;
+		double inletTemperature;
+		double outletTemperature;
 
-		switch(operationMode)
-		{
-		case PreHeating:
-			eintrittstemperatur = TE + UEH;
-			austrittstemperatur = TE + UEH + TD;
-			break;
-		case TargetTemperature:
-			eintrittstemperatur = TE + UEH;
-			if(TV >= TE)
-				austrittstemperatur = TV + UEH;
-			else
-				austrittstemperatur = TE + UEH + TD;
-			break;
-		default:
-			eintrittstemperatur = 0;
-			austrittstemperatur = 0;
-			break;
+		switch (operationMode) {
+			case PRE_HEATING:
+				inletTemperature = TE + UEH;
+				outletTemperature = TE + UEH + TD;
+				break;
+			case TARGET_TEMPERATURE:
+				inletTemperature = TE + UEH;
+				if (TV >= TE)
+					outletTemperature = TV + UEH;
+				else
+					outletTemperature = TE + UEH + TD;
+				break;
+			default:
+				inletTemperature = 0;
+				outletTemperature = 0;
+				break;
 		}
 
-		kollektormitteltemperatur = (eintrittstemperatur+austrittstemperatur)*0.5;
-		if(kollektormitteltemperatur > project.heatNet.maxBufferLoadTemperature && phase != SolarPhase.STAGNATION)
-		{
-			operationMode  = SolarCalcOperationMode.HighTemperature;
+		meanCollectorTemperature = (inletTemperature + outletTemperature) * 0.5;
+		if (meanCollectorTemperature > project.heatNet.maxBufferLoadTemperature && phase != SolarPhase.STAGNATION) {
+			operationMode = OperationMode.HIGH_TEMPERATURE;
 			log.message("Changing Operation Mode to " + operationMode);
 		}
 
 		QS_i_before_correction = QS_i;
 
-		if(TS == 1)
-		{
+		if (TS == 1) {
 			log.beginDay(JT, hour,
 				"Hour",
 				"ALB",
@@ -248,49 +249,40 @@ class SolarState {
 			);
 
 			phase = SolarPhase.WARM_UP;
-			log.message("Changing Phase to "+phase);
+			log.message("Changing Phase to " + phase);
 
 			TK_i_minus_one = TL_i;
 		}
 
-		switch(phase)
-		{
-		case STAGNATION:
-			QS_i = 0;
-			if(TS == 24)
-				numStagnationDays++;
-			break;
-		case WARM_UP:
-			{
+		switch (phase) {
+			case STAGNATION:
+				QS_i = 0;
+				if (TS == 24)
+					numStagnationDays++;
+				break;
+			case WARM_UP: {
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 
-				if(temperatur > kollektormitteltemperatur)
-				{
+				if (temperatur > meanCollectorTemperature) {
 					phase = SolarPhase.OPERATION;
-					log.message("Changing Phase to "+phase);
+					log.message("Changing Phase to " + phase);
 
-					TK_i_minus_one = kollektormitteltemperatur;
-				}
-				else
-				{
+					TK_i_minus_one = meanCollectorTemperature;
+				} else {
 					TK_i = Math.max(temperatur, TL_i);
 				}
 				QS_i = 0;
 			}
 			break;
-		case OPERATION:
-			{
+			case OPERATION: {
 				double temperatur = TK_i_minus_one + QS_i / (A * C);
 
-				if(temperatur > kollektormitteltemperatur)
-				{
-					QS_i = (temperatur - kollektormitteltemperatur) * A * C;
-					TK_i = kollektormitteltemperatur;
-				}
-				else
-				{
+				if (temperatur > meanCollectorTemperature) {
+					QS_i = (temperatur - meanCollectorTemperature) * A * C;
+					TK_i = meanCollectorTemperature;
+				} else {
 					phase = SolarPhase.WARM_UP;
-					log.message("Changing Phase to "+phase);
+					log.message("Changing Phase to " + phase);
 
 					TK_i = Math.max(temperatur, TL_i);
 					QS_i = 0;
@@ -300,72 +292,68 @@ class SolarState {
 		}
 
 		log.hourValues(hour,
-				false,
-				hour,
-				ALB,
-				A,
-				ETA0,
-				KDF,
-				A1,
-				A2,
-				C,
-				NW,
-				AUS,
-				UEH,
-				TD,
-				BG,
-				-LG,
-				-MERI,
-				TL_i,
-				SDI_i,
-				SDF_i,
-				JT,
-				TS,
-				B,
-				E,
-				SZ,
-				SD,
-				HW,
-				SZW,
-				SAW,
-				EWK,
-				EWOW,
-				EWNS,
-				EWFOW,
-				EWFNS,
-				KOF,
-				RAB,
-				SGK,
-				SDIK,
-				SDFK,
-				EWF,
-				radiation
-			);
+			false,
+			hour,
+			ALB,
+			A,
+			ETA0,
+			KDF,
+			A1,
+			A2,
+			C,
+			NW,
+			AUS,
+			UEH,
+			TD,
+			BG,
+			-LG,
+			-MERI,
+			TL_i,
+			SDI_i,
+			SDF_i,
+			JT,
+			TS,
+			B,
+			E,
+			SZ,
+			SD,
+			HW,
+			SZW,
+			SAW,
+			EWK,
+			EWOW,
+			EWNS,
+			EWFOW,
+			EWFNS,
+			KOF,
+			RAB,
+			SGK,
+			SDIK,
+			SDFK,
+			EWF,
+			radiation
+		);
 
 		consumedPower = 0;
 	}
 
 	private double consumedPower;
 
-	public void setConsumedPower(double consumedPower)
-	{
+	public void setConsumedPower(double consumedPower) {
 		this.consumedPower = producer.utilisationRate == null || producer.utilisationRate == 0
 			? 0
 			: consumedPower / producer.utilisationRate;
 	}
 
-	public void calcPost(int hour)
-	{
+	public void calcPost(int hour) {
 		boolean writeLog = false;
 		log.beginProducer(producer);
 
-		if(phase == SolarPhase.OPERATION)
-		{
+		if (phase == SolarPhase.OPERATION) {
 			double deltaQS = QS_i - consumedPower;
 			TK_i = TK_i_minus_one + deltaQS / (A * C);
 
-			if(TK_i > project.heatNet.maxBufferLoadTemperature && deltaQS > 0)
-			{
+			if (TK_i > project.heatNet.maxBufferLoadTemperature && deltaQS > 0) {
 				phase = SolarPhase.STAGNATION;
 				writeLog = true;
 			}
@@ -383,144 +371,111 @@ class SolarState {
 			QS_i,
 			TK_i,
 			consumedPower,
-			kollektormitteltemperatur,
+			meanCollectorTemperature,
 			getBufferLoadType()
 		);
 
-		if(writeLog)
-			log.message("Changing Phase to "+phase);
+		if (writeLog)
+			log.message("Changing Phase to " + phase);
 
 		TK_i_minus_one = TK_i;
 	}
 
-	public BufferLoadType getBufferLoadType()
-	{
-		switch(operationMode)
-		{
-			case TargetTemperature:
-				return BufferLoadType.FLOW_TEMP;
-			case HighTemperature:
-				return BufferLoadType.HIGH_TEMP;
-			case PreHeating:
-				return BufferLoadType.LOW_TEMP;
+	BufferLoadType getBufferLoadType() {
+		return switch (operationMode) {
+			case TARGET_TEMPERATURE -> BufferLoadType.FLOW_TEMP;
+			case HIGH_TEMPERATURE -> BufferLoadType.HIGH_TEMP;
+			case PRE_HEATING -> BufferLoadType.LOW_TEMP;
+		};
+	}
+
+	private OperationMode operationMode(
+		HeatNet heatNet, int hour, double radiationPerSquareMeter
+	) {
+		if (heatNet == null || heatNet.bufferTank == null)
+			return OperationMode.TARGET_TEMPERATURE;
+
+		switch (spec.solarCollectorOperatingMode) {
+			case AUTO_RADIATION:
+				return radiationPerSquareMeter > spec.solarCollectorRadiationLimit
+					? OperationMode.TARGET_TEMPERATURE
+					: OperationMode.PRE_HEATING;
+			case AUTO_SEASON:
+				int[] interval = HoursTrace.getHourInterval(heatNet.intervalSummer);
+				if (isHourInInterval(hour, interval))
+					return OperationMode.TARGET_TEMPERATURE;
+				else
+					return OperationMode.PRE_HEATING;
+			case PREHEATING_MODE:
+				return OperationMode.PRE_HEATING;
+			case TARGET_TEMPERATURE_OPERATION:
+				return OperationMode.TARGET_TEMPERATURE;
 			default:
 				throw new UnsupportedOperationException();
 		}
 	}
 
-	private SolarCalcOperationMode CalcOperationMode(HeatNet heatNet, int hour, double radiationPerSquareMeter)
-	{
-		if (heatNet != null && heatNet.bufferTank == null)
-			return SolarCalcOperationMode.TargetTemperature;;
-
-		switch(producer.solarCollectorSpec.solarCollectorOperatingMode)
-		{
-		case AUTO_RADIATION:
-			return radiationPerSquareMeter > producer.solarCollectorSpec.solarCollectorRadiationLimit
-				? SolarCalcOperationMode.TargetTemperature
-				: SolarCalcOperationMode.PreHeating;
-		case AUTO_SEASON:
-			int[] interval = HoursTrace.getHourInterval(heatNet.intervalSummer);
-			if(isHourInInterval(hour, interval))
-				return SolarCalcOperationMode.TargetTemperature;
-			else
-				return SolarCalcOperationMode.PreHeating;
-		case PREHEATING_MODE:
-			return SolarCalcOperationMode.PreHeating;
-		case TARGET_TEMPERATURE_OPERATION:
-			return SolarCalcOperationMode.TargetTemperature;
-		default:
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private static double sqr(double x)
-	{
+	private static double sqr(double x) {
 		return x * x;
 	}
 
-	private double getEWFOW(double degrees)
-	{
+	private double getEWFOW(double degrees) {
 		// Valid range in UI is -180 to +180
-		int i = (int)Math.abs(degrees) / 10;
+		int i = (int) Math.abs(degrees) / 10;
 		double t = (Math.abs(degrees) % 10) / 10.0;
-		switch(i)
-		{
-		case 0:
-			return lerp(1, producer.solarCollector.angleIncidenceEW10, t);
-		case 1:
-			return lerp(producer.solarCollector.angleIncidenceEW10, producer.solarCollector.angleIncidenceEW20, t);
-		case 2:
-			return lerp(producer.solarCollector.angleIncidenceEW20, producer.solarCollector.angleIncidenceEW30, t);
-		case 3:
-			return lerp(producer.solarCollector.angleIncidenceEW30, producer.solarCollector.angleIncidenceEW40, t);
-		case 4:
-			return lerp(producer.solarCollector.angleIncidenceEW40, producer.solarCollector.angleIncidenceEW50, t);
-		case 5:
-			return lerp(producer.solarCollector.angleIncidenceEW50, producer.solarCollector.angleIncidenceEW60, t);
-		case 6:
-			return lerp(producer.solarCollector.angleIncidenceEW60, producer.solarCollector.angleIncidenceEW70, t);
-		case 7:
-			return lerp(producer.solarCollector.angleIncidenceEW70, producer.solarCollector.angleIncidenceEW80, t);
-		case 8:
-			return lerp(producer.solarCollector.angleIncidenceEW80, producer.solarCollector.angleIncidenceEW90, t);
-		default:
-			return 0;
-		}
+		return switch (i) {
+			case 0 -> lerp(1, collector.angleIncidenceEW10, t);
+			case 1 ->
+				lerp(collector.angleIncidenceEW10, collector.angleIncidenceEW20, t);
+			case 2 ->
+				lerp(collector.angleIncidenceEW20, collector.angleIncidenceEW30, t);
+			case 3 ->
+				lerp(collector.angleIncidenceEW30, collector.angleIncidenceEW40, t);
+			case 4 ->
+				lerp(collector.angleIncidenceEW40, collector.angleIncidenceEW50, t);
+			case 5 ->
+				lerp(collector.angleIncidenceEW50, collector.angleIncidenceEW60, t);
+			case 6 ->
+				lerp(collector.angleIncidenceEW60, collector.angleIncidenceEW70, t);
+			case 7 ->
+				lerp(collector.angleIncidenceEW70, collector.angleIncidenceEW80, t);
+			case 8 ->
+				lerp(collector.angleIncidenceEW80, collector.angleIncidenceEW90, t);
+			default -> 0;
+		};
 	}
 
-	private double getEWFNS(double degrees)
-	{
+	private double getEWFNS(double degrees) {
 		// Valid range in UI is 0 to +90
-		int i = (int)Math.abs(degrees) / 10;
+		int i = (int) Math.abs(degrees) / 10;
 		double t = (Math.abs(degrees) % 10) / 10.0;
-		switch(i)
-		{
-		case 0:
-			return lerp(1, producer.solarCollector.angleIncidenceNS10, t);
-		case 1:
-			return lerp(producer.solarCollector.angleIncidenceNS10, producer.solarCollector.angleIncidenceNS20, t);
-		case 2:
-			return lerp(producer.solarCollector.angleIncidenceNS20, producer.solarCollector.angleIncidenceNS30, t);
-		case 3:
-			return lerp(producer.solarCollector.angleIncidenceNS30, producer.solarCollector.angleIncidenceNS40, t);
-		case 4:
-			return lerp(producer.solarCollector.angleIncidenceNS40, producer.solarCollector.angleIncidenceNS50, t);
-		case 5:
-			return lerp(producer.solarCollector.angleIncidenceNS50, producer.solarCollector.angleIncidenceNS60, t);
-		case 6:
-			return lerp(producer.solarCollector.angleIncidenceNS60, producer.solarCollector.angleIncidenceNS70, t);
-		case 7:
-			return lerp(producer.solarCollector.angleIncidenceNS70, producer.solarCollector.angleIncidenceNS80, t);
-		case 8:
-			return lerp(producer.solarCollector.angleIncidenceNS80, producer.solarCollector.angleIncidenceNS90, t);
-		default:
-			return 0;
-		}
+		return switch (i) {
+			case 0 -> lerp(1, collector.angleIncidenceNS10, t);
+			case 1 -> lerp(collector.angleIncidenceNS10, collector.angleIncidenceNS20, t);
+			case 2 -> lerp(collector.angleIncidenceNS20, collector.angleIncidenceNS30, t);
+			case 3 -> lerp(collector.angleIncidenceNS30, collector.angleIncidenceNS40, t);
+			case 4 -> lerp(collector.angleIncidenceNS40, collector.angleIncidenceNS50, t);
+			case 5 -> lerp(collector.angleIncidenceNS50, collector.angleIncidenceNS60, t);
+			case 6 -> lerp(collector.angleIncidenceNS60, collector.angleIncidenceNS70, t);
+			case 7 -> lerp(collector.angleIncidenceNS70, collector.angleIncidenceNS80, t);
+			case 8 -> lerp(collector.angleIncidenceNS80, collector.angleIncidenceNS90, t);
+			default -> 0;
+		};
 	}
 
-	private static double lerp(double a, double b, double t)
-	{
+	private static double lerp(double a, double b, double t) {
 		return (1 - t) * a + t * b;
 	}
 
-	private boolean isHourInInterval(int hour, int[] interval)
-	{
+	private boolean isHourInInterval(int hour, int[] interval) {
 		return hour >= interval[0] && hour <= interval[1];
 	}
 
-	public SolarCalcOperationMode getOperationMode()
-	{
-		return operationMode;
-	}
-
-	public SolarPhase getPhase()
-	{
+	public SolarPhase getPhase() {
 		return phase;
 	}
 
-	public double getTK_i()
-	{
+	public double getTK_i() {
 		return TK_i;
 	}
 
@@ -528,8 +483,13 @@ class SolarState {
 		return QS_i / 1000 * producer.utilisationRate;
 	}
 
-	public int getNumStagnationDays()
-	{
+	public int getNumStagnationDays() {
 		return numStagnationDays;
+	}
+
+	private enum OperationMode {
+		PRE_HEATING,
+		TARGET_TEMPERATURE,
+		HIGH_TEMPERATURE
 	}
 }
