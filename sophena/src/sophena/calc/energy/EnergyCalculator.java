@@ -21,7 +21,7 @@ class EnergyCalculator {
 	EnergyCalculator(Project project) {
 		this.project = project;
 	}
-	
+
 	EnergyResult calculate() {
 
 		for (var producer : project.producers) {
@@ -327,10 +327,12 @@ class EnergyCalculator {
 			return BufferLoadType.NONE;
 		}
 
+		if (producer.productGroup == null)
+			return BufferLoadType.HIGH_TEMP;
 		return switch (producer.productGroup.type) {
 			case HEAT_PUMP -> heatPumpCalcState.getBufferLoadType();
 			case SOLAR_THERMAL_PLANT -> solarCalcState.getBufferLoadType();
-			default -> BufferLoadType.HIGH_TEMP;
+			case null, default -> BufferLoadType.HIGH_TEMP;
 		};
 	}
 

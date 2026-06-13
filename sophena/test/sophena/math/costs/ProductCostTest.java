@@ -83,6 +83,7 @@ public class ProductCostTest {
 		checkCapitalCosts(net.bufferTankCosts);
 	}
 
+	@Test
 	public void testPipe() {
 		HeatNetPipe pipe = new HeatNetPipe();
 		project.heatNet.pipes.add(pipe);
