@@ -1,15 +1,10 @@
 package sophena.calc.energy;
 
-import java.io.File;
-
 import sophena.calc.biogas.BiogasPlants;
-import sophena.math.energetic.SeasonalItem;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.rcp.app.Workspace;
-import sophena.utils.Temperature;
 
 class EnergyCalculator {
 
@@ -59,7 +54,9 @@ class EnergyCalculator {
 				double TK_i = state.getTargetTemperature(producer, hour);
 
 				// For NT producer calculate the power factor based on their temperature level
-				double loadFactorTK_i = (loadType != BufferLoadType.LOW_TEMP) ? 1 : (TK_i - TR) / (TV - TR);
+				double loadFactorTK_i = loadType != BufferLoadType.LOW_TEMP
+					? 1
+					: (TK_i - TR) / (TV - TR);
 				double reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - heatNetSuppliedPower);
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor(false) - heatNetSuppliedPower);
 
@@ -74,10 +71,10 @@ class EnergyCalculator {
 					bufferState.CalcNTCapacity(false, loadFactorTK_i));
 
 				// Power which can be provided by the producer
-				double power = getSuppliedPower(producer, hour, solarState, heatPumpState, reducedLoad, maxLoadRel);
+				double power = state.getSuppliedPower(producer, hour, reducedLoad, maxLoadRel);
 				double unloadableNTPower = Math.min(bufferNTUnloadLimit, bufferState.totalUnloadableNTPower());
 
-				if (!isSolarProducer) {
+				if (producer.solarCollector == null) {
 					double unloadablePower = bufferState.totalUnloadableHTPower() + bufferState.totalUnloadableVTPower() + (haveAtLeastOneHTProducer ? unloadableNTPower : 0);
 					// Don't use expensive peek load producer if the buffer has enough HT, VT and NT power left to satisfy the heatnet
 					if ((unloadablePower > requiredLoad) && producer.function == ProducerFunction.PEAK_LOAD)
@@ -154,61 +151,10 @@ class EnergyCalculator {
 		} // end hour loop
 
 		state.collectResultsInto(r);
-
-		double[] targetChargeLevels = new double[Stats.HOURS];
-		double[] flowTemperatures = new double[Stats.HOURS];
-		double[] returnTemperatures = new double[Stats.HOURS];
-		double minWeatherStationTemperature = Temperature.minimumOf(project);
-		double maxConsumerHeatingLimit = project.maxConsumerHeatTemperature();
-		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			double temperature = Temperature.of(project, hour);
-			var item = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
-
-			targetChargeLevels[hour] = item.targetChargeLevel;
-			flowTemperatures[hour] = item.flowTemperature;
-			returnTemperatures[hour] = item.returnTemperature;
-		}
-
-		try {
-			var logDir = new File(Workspace.dir(), "log");
-			var filename = logDir.getAbsolutePath() + "SolarCalcLog.log";
-			try (java.io.PrintWriter pw = new java.io.PrintWriter(filename)) {
-				pw.println(solarLog);
-			}
-
-			SolarLog.writeCsv(logDir.getAbsolutePath() + "seasonal_targetchargelevels.csv", targetChargeLevels);
-			SolarLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TV.csv", flowTemperatures);
-			SolarLog.writeCsv(logDir.getAbsolutePath() + "seasonal_TR.csv", returnTemperatures);
-		} catch (java.io.FileNotFoundException ignored) {
-		}
-
+		state.writeSolarLog();
 		calcTotals(r);
-
-		r.fermenterHeatDemand = 0;
-		for (var p : r.producers) {
-			if (p.biogasPlant == null)
-				continue;
-			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
-			r.fermenterHeatDemand += Stats.sum(demand);
-		}
-
 		return r;
 	}
-
-
-
-	// extracted in: SimulationState.getSuppliedPower()
-	private double getSuppliedPower(Producer producer, int hour, SolarState solarCalcState,
-	                                HeatPumpState heatPumpCalcState,
-	                                double requiredLoad, double maxLoad) {
-		double bMin = Util.minPower(producer, hour);
-		double bMax = Util.maxPower(producer, solarCalcState, heatPumpCalcState, hour);
-		double load = producer.function == ProducerFunction.PEAK_LOAD
-			? requiredLoad
-			: maxLoad;
-		return Math.min(Math.max(load, bMin), bMax);
-	}
-	// end: SimulationState.getSuppliedPower()
 
 	private void calcTotals(EnergyResult r) {
 		r.totalLoad = Stats.sum(r.loadCurve);
@@ -220,5 +166,13 @@ class EnergyCalculator {
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
 		r.totalBufferLoss = Stats.sum(r.bufferLoss);
+
+		r.fermenterHeatDemand = 0;
+		for (var p : r.producers) {
+			if (p.biogasPlant == null)
+				continue;
+			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
+			r.fermenterHeatDemand += Stats.sum(demand);
+		}
 	}
 }

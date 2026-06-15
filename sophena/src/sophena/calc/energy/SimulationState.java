@@ -1,14 +1,19 @@
 package sophena.calc.energy;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import sophena.math.energetic.SeasonalItem;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
+import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.TimeInterval;
+import sophena.rcp.app.Workspace;
 import sophena.utils.Temperature;
 
 /**
@@ -84,12 +89,12 @@ class SimulationState {
 	}
 
 	void updateAfter(int hour) {
-		 for (var state : solarStates.values()) {
-		   state.updateAfter(hour);
-		 }
-		 for (var state : heatPumpStates.values()) {
-		   state.updateAfter(hour);
-		 }
+		for (var state : solarStates.values()) {
+			state.updateAfter(hour);
+		}
+		for (var state : heatPumpStates.values()) {
+			state.updateAfter(hour);
+		}
 	}
 
 	boolean hasHighTemperatureProducerAt(int hour) {
@@ -102,17 +107,17 @@ class SimulationState {
 	}
 
 	void collectResultsInto(EnergyResult r) {
-		 for (int k = 0; k < r.producers.length; k++) {
-		   var producer = r.producers[k];
-		   var solar = solarStates.get(producer);
-		   if (solar != null) {
-				 r.producerStagnationDays[k] = solar.numStagnationDays;
-			 }
-		   var pump = heatPumpStates.get(producer);
-		   if (pump != null) {
-				 r.producerJaz[k] = pump.getJAZ();
-			 }
-		 }
+		for (int k = 0; k < r.producers.length; k++) {
+			var producer = r.producers[k];
+			var solar = solarStates.get(producer);
+			if (solar != null) {
+				r.producerStagnationDays[k] = solar.numStagnationDays;
+			}
+			var pump = heatPumpStates.get(producer);
+			if (pump != null) {
+				r.producerJaz[k] = pump.getJAZ();
+			}
+		}
 	}
 
 	BufferLoadType bufferLoadTypeOf(Producer producer, int hour) {
@@ -171,23 +176,18 @@ class SimulationState {
 			: bufferState.getTV();
 	}
 
-	// extracted in: SimulationState.getSuppliedPower()
-	// Corresponds to EnergyCalculator.getSuppliedPower()
-	double getSuppliedPower(Producer producer, int hour, double requiredLoad, double maxLoad) {
-		// double bMin = Util.minPower(producer, hour);
-		// double bMax = Util.maxPower(producer, solarStates.get(producer), heatPumpStates.get(producer), hour);
-		// double load = producer.function == ProducerFunction.PEAK_LOAD
-		//   ? requiredLoad
-		//   : maxLoad;
-		// return Math.min(Math.max(load, bMin), bMax);
-		return 0;
+	double getSuppliedPower(
+		Producer producer, int hour, double requiredLoad, double maxLoad
+	) {
+		double bMin = Util.minPower(producer, hour);
+		double bMax = Util.maxPower(
+			producer, solarStates.get(producer), heatPumpStates.get(producer), hour);
+		double load = producer.function == ProducerFunction.PEAK_LOAD
+			? requiredLoad
+			: maxLoad;
+		return Math.clamp(load, bMin, bMax);
+
 	}
-
-	// TODO (future): extract main producer loop (lines 103-201) as one or more
-	// methods. The loop is complex and mixes state lookups, eligibility checks,
-	// power calculation, and buffer load/unload logic, so a piecewise
-	// extraction will be needed.
-
 
 	private boolean isDisabled(Producer producer, int hour) {
 		if (producer == null || producer.disabled)
@@ -206,4 +206,36 @@ class SimulationState {
 		};
 	}
 
+	void writeSolarLog() {
+		if (solarStates.isEmpty())
+			return;
+
+		double[] chargeLevels = new double[Stats.HOURS];
+		double[] flowTemp = new double[Stats.HOURS];
+		double[] returnTemp = new double[Stats.HOURS];
+		double minTemp = Temperature.minimumOf(project);
+		double maxTemp = project.maxConsumerHeatTemperature();
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			double temp = Temperature.of(project, hour);
+			var item = SeasonalItem.calc(
+				project.heatNet, hour, minTemp, maxTemp, temp);
+			chargeLevels[hour] = item.targetChargeLevel;
+			flowTemp[hour] = item.flowTemperature;
+			returnTemp[hour] = item.returnTemperature;
+		}
+
+		try {
+			var dir = new File(Workspace.dir(), "log");
+			try (var pw = new PrintWriter(new File(dir, "SolarCalcLog.log"))) {
+				pw.println(solarLog);
+			}
+			SolarLog.writeCsv(
+				new File(dir, "seasonal_targetchargelevels.csv"), chargeLevels);
+			SolarLog.writeCsv(
+				new File(dir, "seasonal_TV.csv"), flowTemp);
+			SolarLog.writeCsv(
+				new File(dir.getAbsolutePath(), "seasonal_TR.csv"), returnTemp);
+		} catch (Exception ignored) {
+		}
+	}
 }
