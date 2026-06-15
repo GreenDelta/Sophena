@@ -71,6 +71,27 @@ class SimulationState {
 		}
 	}
 
+	void setConsumedPower(Producer producer, double power) {
+		var solar = solarStates.get(producer);
+		if (solar != null) {
+			solar.setConsumedPower(power);
+			return;
+		}
+		var pump = heatPumpStates.get(producer);
+		if (pump != null) {
+			pump.setConsumedPower(power);
+		}
+	}
+
+	void updateAfter(int hour) {
+		 for (var state : solarStates.values()) {
+		   state.updateAfter(hour);
+		 }
+		 for (var state : heatPumpStates.values()) {
+		   state.updateAfter(hour);
+		 }
+	}
+
 	boolean hasHighTemperatureProducerAt(int hour) {
 		for (var producer : project.producers) {
 			var type = bufferLoadTypeOf(producer, hour);
@@ -80,29 +101,19 @@ class SimulationState {
 		return false;
 	}
 
-	// extracted in: SimulationState.calcPost()
-	void calcPost(int hour) {
-		// for (var state : solarStates.values()) {
-		//   state.calcPost(hour);
-		// }
-		// for (var state : heatPumpStates.values()) {
-		//   state.calcPost(hour);
-		// }
+	void collectResultsInto(EnergyResult r) {
+		 for (int k = 0; k < r.producers.length; k++) {
+		   var producer = r.producers[k];
+		   var solar = solarStates.get(producer);
+		   if (solar != null) {
+				 r.producerStagnationDays[k] = solar.numStagnationDays;
+			 }
+		   var pump = heatPumpStates.get(producer);
+		   if (pump != null) {
+				 r.producerJaz[k] = pump.getJAZ();
+			 }
+		 }
 	}
-
-	// extracted in: SimulationState.collectResults()
-	void collectResults(EnergyResult r) {
-		// for (int k = 0; k < r.producers.length; k++) {
-		//   var producer = r.producers[k];
-		//   var solarState = solarStates.get(producer);
-		//   if (solarState != null)
-		//     r.producerStagnationDays[k] = solarState.numStagnationDays;
-		//   var hpState = heatPumpStates.get(producer);
-		//   if (hpState != null)
-		//     r.producerJaz[k] = hpState.getJAZ();
-		// }
-	}
-
 
 	BufferLoadType bufferLoadTypeOf(Producer producer, int hour) {
 		if (isDisabled(producer, hour))
@@ -146,6 +157,18 @@ class SimulationState {
 			case HEAT_PUMP, SOLAR_THERMAL_PLANT -> BufferLoadType.NONE;
 			case null, default -> BufferLoadType.HIGH_TEMP;
 		};
+	}
+
+	double getTargetTemperature(Producer producer, int hour) {
+		var solar = solarStates.get(producer);
+		if (solar != null)
+			return solar.TK_i;
+		var heatPump = heatPumpStates.get(producer);
+		if (heatPump != null)
+			return heatPump.getTK_i();
+		return producer.profile != null && producer.profile.temperaturLevel != null
+			? producer.profile.temperaturLevel[hour]
+			: bufferState.getTV();
 	}
 
 	// extracted in: SimulationState.getSuppliedPower()

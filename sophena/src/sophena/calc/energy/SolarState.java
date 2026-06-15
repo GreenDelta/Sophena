@@ -349,7 +349,7 @@ class SolarState {
 			: consumedPower / producer.utilisationRate;
 	}
 
-	public void calcPost(int hour) {
+	public void updateAfter(int hour) {
 		boolean writeLog = false;
 		log.beginProducer(producer);
 

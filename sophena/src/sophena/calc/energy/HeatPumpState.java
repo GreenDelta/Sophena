@@ -209,7 +209,7 @@ class HeatPumpState {
 		bufferLoadType = useTV ? BufferLoadType.FLOW_TEMP : BufferLoadType.LOW_TEMP;
 	}
 
-	public void calcPost(int hour) {
+	public void updateAfter(int hour) {
 		if (bufferLoadType != BufferLoadType.NONE) {
 			Q_used += consumedPower;
 			Q_el_used += consumedPower / cop;

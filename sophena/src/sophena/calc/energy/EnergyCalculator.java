@@ -31,12 +31,12 @@ class EnergyCalculator {
 			}
 		}
 
-
+		var bufferState = state.bufferState;
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			state.updateBefore(hour);
 
 			if (hour == 0) {
-				r.bufferCapacity[hour] = state.bufferState.calcHTCapacity(false);
+				r.bufferCapacity[hour] = bufferState.calcHTCapacity(false);
 			}
 			double totalSuppliedPower = 0;
 			double heatNetSuppliedPower = 0;
@@ -54,16 +54,9 @@ class EnergyCalculator {
 				if (loadType == null || loadType == BufferLoadType.NONE)
 					continue;
 
-				double TR = state.bufferState.getTR();
-				double TV = state.bufferState.getTV();
-
-				double TK_i = TV;
-				if (isSolarProducer)
-					TK_i = solarState.TK_i;
-				if (heatPumpState != null)
-					TK_i = heatPumpState.getTK_i();
-				if (producer.profile != null && producer.profile.temperaturLevel != null)
-					TK_i = producer.profile.temperaturLevel[hour];
+				double TR = bufferState.getTR();
+				double TV = bufferState.getTV();
+				double TK_i = state.getTargetTemperature(producer, hour);
 
 				// For NT producer calculate the power factor based on their temperature level
 				double loadFactorTK_i = (loadType != BufferLoadType.LOW_TEMP) ? 1 : (TK_i - TR) / (TV - TR);
@@ -71,13 +64,13 @@ class EnergyCalculator {
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor(false) - heatNetSuppliedPower);
 
 				// Amount of power currently needed for heatnet and buffer based on producer buffer load type
-				double maxLoadRel = reducedLoad + (bufferLoadType == BufferLoadType.HIGH_TEMP ?
-					bufferState.CalcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
+				double maxLoadRel = reducedLoad + (loadType == BufferLoadType.HIGH_TEMP ?
+					bufferState.calcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
 					bufferState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD, loadFactorTK_i));
 
 				// Maximum amount of power currently needed for heatnet and buffer
-				double maxLoadAbs = reducedLoad + (bufferLoadType == BufferLoadType.HIGH_TEMP ?
-					bufferState.CalcHTCapacity(false) :
+				double maxLoadAbs = reducedLoad + (loadType == BufferLoadType.HIGH_TEMP ?
+					bufferState.calcHTCapacity(false) :
 					bufferState.CalcNTCapacity(false, loadFactorTK_i));
 
 				// Power which can be provided by the producer
@@ -97,7 +90,7 @@ class EnergyCalculator {
 
 				// Don't limit producer unless they exceed the maximum power currently needed, allways use solar producer
 				if (power <= maxLoadAbs) {
-					if (bufferLoadType == BufferLoadType.HIGH_TEMP && producer.function == ProducerFunction.PEAK_LOAD && bufferState.totalUnloadableNTPower() > 0) {
+					if (loadType == BufferLoadType.HIGH_TEMP && producer.function == ProducerFunction.PEAK_LOAD && bufferState.totalUnloadableNTPower() > 0) {
 						double p = Math.min(unloadableNTPower, power - Util.minPower(producer, hour));
 						bufferState.unload(hour, p, BufferLoadType.LOW_TEMP);
 						totalSuppliedPower += p;
@@ -107,12 +100,12 @@ class EnergyCalculator {
 						reducedLoad -= p;
 					}
 
-					if (haveAtLeastOneHTProducer || bufferLoadType != BufferLoadType.LOW_TEMP) {
+					if (haveAtLeastOneHTProducer || loadType != BufferLoadType.LOW_TEMP) {
 						// Mainly use producer power for the heatnet and leftover to charge the buffer
 						double surplus = power - reducedLoad;
 						heatNetSuppliedPower += surplus > 0 ? power - surplus : power;
 						if (surplus > 0)
-							power -= bufferState.load(hour, surplus, bufferLoadType, false, loadFactorTK_i);
+							power -= bufferState.load(hour, surplus, loadType, false, loadFactorTK_i);
 					} else
 						power = 0;
 
@@ -120,30 +113,14 @@ class EnergyCalculator {
 					r.producerResults[k][hour] = power;
 				}
 
-				// Write back used power in order to heat up the collector with the not used part
-				if (isSolarProducer)
-					solarState.setConsumedPower(power * 1000);
+				state.setConsumedPower(producer, power);
 
-				if (heatPumpState != null)
-					heatPumpState.setConsumedPower(power * 1000);
 			}
 			// end producer loop
 
-			// extracted in: SimulationState.calcPost()
-			for (int k = 0; k < r.producers.length; k++) {
-				var producer = r.producers[k];
+			state.updateAfter(hour);
 
-				var solarCalcState = solarStates.get(producer);
-				if (solarCalcState != null)
-					solarCalcState.calcPost(hour);
-
-				var heatPumpCalcState = heatPumpCalcStates.get(producer);
-				if (heatPumpCalcState != null)
-					heatPumpCalcState.calcPost(hour);
-			}
-			// end: SimulationState.calcPost()
-
-			requiredLoad = (r.loadCurve[hour] - heatNetSuppliedPower);
+			double requiredLoad = (r.loadCurve[hour] - heatNetSuppliedPower);
 			if (requiredLoad >= 0) {
 
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor(false) - heatNetSuppliedPower);
@@ -169,26 +146,14 @@ class EnergyCalculator {
 			r.suppliedPower[hour] = totalSuppliedPower;
 
 			if ((hour + 1) < Stats.HOURS) {
-				r.bufferCapacity[hour + 1] = bufferState.CalcHTCapacity(false);
+				r.bufferCapacity[hour + 1] = bufferState.calcHTCapacity(false);
 			}
 
 			bufferState.postStep(hour);
 
 		} // end hour loop
 
-		// extracted in: SimulationState.collectResults()
-		for (int k = 0; k < r.producers.length; k++) {
-			var producer = r.producers[k];
-
-			var solarCalcState = solarStates.get(producer);
-			if (solarCalcState != null)
-				r.producerStagnationDays[k] = solarCalcState.numStagnationDays;
-
-			var heatPumpCalcState = heatPumpCalcStates.get(producer);
-			if (heatPumpCalcState != null)
-				r.producerJaz[k] = heatPumpCalcState.getJAZ();
-		}
-		// end: SimulationState.collectResults()
+		state.collectResultsInto(r);
 
 		double[] targetChargeLevels = new double[Stats.HOURS];
 		double[] flowTemperatures = new double[Stats.HOURS];
