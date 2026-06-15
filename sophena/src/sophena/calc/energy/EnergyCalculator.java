@@ -1,139 +1,61 @@
 package sophena.calc.energy;
 
 import java.io.File;
-import java.util.HashMap;
 
 import sophena.calc.biogas.BiogasPlants;
 import sophena.math.energetic.SeasonalItem;
-import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.model.TimeInterval;
 import sophena.rcp.app.Workspace;
 import sophena.utils.Temperature;
 
 class EnergyCalculator {
 
 	private final Project project;
+	private final SimulationState state;
+	private final EnergyResult r;
 
 	EnergyCalculator(Project project) {
 		this.project = project;
+		this.r = new EnergyResult(project);
+		this.state = new SimulationState(project);
 	}
 
 	EnergyResult calculate() {
-
+		// update the producer profiles of biogas-plants
 		for (var producer : project.producers) {
 			if (producer.biogasPlant != null) {
 				BiogasPlants.syncProducerProfile(project, producer);
 			}
 		}
 
-		var solarLog = new SolarLog();
-		var bufferState = new BufferState(project, solarLog);
-
-		var r = new EnergyResult(project);
-		boolean[][] interruptions = interruptions(r);
-
-		var solarStates = new HashMap<Producer, SolarState>();
-		var heatPumpCalcStates = new HashMap<Producer, HeatPumpState>();
-
-		// extracted in: SimulationState.initProducerStates()
-		for (var producer : r.producers) {
-			if (producer.solarCollector != null & producer.solarCollectorSpec != null)
-				solarStates.put(producer, new SolarState(solarLog, project, producer));
-
-			if (producer.heatPump != null)
-				heatPumpCalcStates.put(producer, new HeatPumpState(solarLog, project, producer));
-		}
-		// end: SimulationState.initProducerStates()
 
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			bufferState.preStep(hour);
+			state.updateBefore(hour);
 
-			if (hour == 0)
-				r.bufferCapacity[hour] = bufferState.CalcHTCapacity(false);
-
-			double requiredLoad = r.loadCurve[hour];
+			if (hour == 0) {
+				r.bufferCapacity[hour] = state.bufferState.calcHTCapacity(false);
+			}
 			double totalSuppliedPower = 0;
 			double heatNetSuppliedPower = 0;
 
-			// extracted in: SimulationState.calcPre()
-			for (int k = 0; k < r.producers.length; k++) {
-				var producer = r.producers[k];
-
-				var solarCalcState = solarStates.get(producer);
-				if (solarCalcState != null)
-					solarCalcState.calcPre(hour, bufferState.getTE(), bufferState.getTV());
-
-				var heatPumpCalcState = heatPumpCalcStates.get(producer);
-				if (heatPumpCalcState != null)
-					heatPumpCalcState.calcPre(hour, bufferState.getTR(), bufferState.getTV());
-			}
-			// end: SimulationState.calcPre()
-
-			double TL_i = Temperature.of(project, hour);
-
-			// extracted in: SimulationState.hasAtLeastOneHTProducer()
-			// Note: needs isInterrupted() and isDisabledByOutdoorTemp() to move too
-			boolean haveAtLeastOneHTProducer = false;
-			for (int k = 0; k < r.producers.length; k++) {
-				var producer = r.producers[k];
-
-				var solarState = solarStates.get(producer);
-				var heatPumpCalcState = heatPumpCalcStates.get(producer);
-				boolean isSolarProducer = solarState != null;
-				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarState, heatPumpCalcState, hour);
-
-				if (bufferLoadType == BufferLoadType.NONE)
-					continue;
-
-				// Check whether the collector is working for the current hour
-				if (isSolarProducer && solarState.isNotOperating())
-					continue;
-
-				// Check whether the producer can be taken
-				if (isInterrupted(k, hour, interruptions))
-					continue;
-
-				if (isDisabledByOutdoorTemp(producer, TL_i))
-					continue;
-
-				if (bufferLoadType == BufferLoadType.HIGH_TEMP)
-					haveAtLeastOneHTProducer = true;
-			}
-			// end: SimulationState.hasAtLeastOneHTProducer()
+			boolean haveAtLeastOneHTProducer = state.hasHighTemperatureProducerAt(hour);
 
 			// Main producer loop
 			for (int k = 0; k < r.producers.length; k++) {
-				requiredLoad = (r.loadCurve[hour] - heatNetSuppliedPower);
+				double requiredLoad = (r.loadCurve[hour] - heatNetSuppliedPower);
 				if (requiredLoad <= 0)
 					break;
 
 				var producer = r.producers[k];
-
-				var solarState = solarStates.get(producer);
-				var heatPumpState = heatPumpCalcStates.get(producer);
-				boolean isSolarProducer = solarState != null;
-				var bufferLoadType = getProducerBufferLoadType(producer, bufferState, solarState, heatPumpState, hour);
-
-				if (bufferLoadType == BufferLoadType.NONE)
+				var loadType = state.bufferLoadTypeOf(producer, hour);
+				if (loadType == null || loadType == BufferLoadType.NONE)
 					continue;
 
-				// Check whether the collector is working for the current hour
-				if (isSolarProducer && solarState.isNotOperating())
-					continue;
-
-				// Check whether the producer can be taken
-				if (isInterrupted(k, hour, interruptions))
-					continue;
-
-				if (isDisabledByOutdoorTemp(producer, TL_i))
-					continue;
-
-				double TR = bufferState.getTR();
-				double TV = bufferState.getTV();
+				double TR = state.bufferState.getTR();
+				double TV = state.bufferState.getTV();
 
 				double TK_i = TV;
 				if (isSolarProducer)
@@ -144,7 +66,7 @@ class EnergyCalculator {
 					TK_i = producer.profile.temperaturLevel[hour];
 
 				// For NT producer calculate the power factor based on their temperature level
-				double loadFactorTK_i = (bufferLoadType != BufferLoadType.LOW_TEMP) ? 1 : (TK_i - TR) / (TV - TR);
+				double loadFactorTK_i = (loadType != BufferLoadType.LOW_TEMP) ? 1 : (TK_i - TR) / (TV - TR);
 				double reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - heatNetSuppliedPower);
 				double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor(false) - heatNetSuppliedPower);
 
@@ -308,46 +230,7 @@ class EnergyCalculator {
 		return r;
 	}
 
-	// Note: may move to SimulationState or Producer when extracting
-	// SimulationState.hasAtLeastOneHTProducer()
-	private boolean isDisabledByOutdoorTemp(Producer producer, double temp) {
-		if (!producer.isOutdoorTemperatureControl)
-			return false;
-		return switch (producer.outdoorTemperatureControlKind) {
-			case From -> temp < producer.outdoorTemperature;
-			case Until -> temp > producer.outdoorTemperature;
-			case null -> true;
-		};
-	}
 
-	// extracted in: SimulationState.getBufferLoadType()
-	private BufferLoadType getProducerBufferLoadType(
-		Producer producer,
-		BufferState bufferCalcState,
-		SolarState solarCalcState,
-		HeatPumpState heatPumpCalcState,
-		int hour
-	) {
-		if (producer.profile != null && producer.profile.temperaturLevel != null) {
-			double temp = producer.profile.temperaturLevel[hour];
-			if (temp >= bufferCalcState.getTMAX())
-				return BufferLoadType.HIGH_TEMP;
-			if (temp >= bufferCalcState.getTV())
-				return BufferLoadType.FLOW_TEMP;
-			if (temp >= bufferCalcState.getTR())
-				return BufferLoadType.LOW_TEMP;
-			return BufferLoadType.NONE;
-		}
-
-		if (producer.productGroup == null)
-			return BufferLoadType.HIGH_TEMP;
-		return switch (producer.productGroup.type) {
-			case HEAT_PUMP -> heatPumpCalcState.getBufferLoadType();
-			case SOLAR_THERMAL_PLANT -> solarCalcState.getBufferLoadType();
-			case null, default -> BufferLoadType.HIGH_TEMP;
-		};
-	}
-	// end: SimulationState.getBufferLoadType()
 
 	// extracted in: SimulationState.getSuppliedPower()
 	private double getSuppliedPower(Producer producer, int hour, SolarState solarCalcState,
@@ -372,32 +255,5 @@ class EnergyCalculator {
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
 		r.totalBufferLoss = Stats.sum(r.bufferLoss);
-	}
-
-	private boolean[][] interruptions(EnergyResult r) {
-		boolean[][] interruptions = new boolean[r.producers.length][];
-		for (int i = 0; i < r.producers.length; i++) {
-			Producer p = r.producers[i];
-			if (p == null || p.interruptions.isEmpty())
-				continue;
-			boolean[] interruption = new boolean[Stats.HOURS];
-			for (TimeInterval time : p.interruptions) {
-				int[] interval = HoursTrace.getHourInterval(time);
-				HoursTrace.applyInterval(interruption, interval, (old, idx) -> true);
-			}
-			interruptions[i] = interruption;
-		}
-		return interruptions;
-	}
-
-	// Note: may move to SimulationState when extracting
-	// SimulationState.hasAtLeastOneHTProducer()
-	private boolean isInterrupted(
-		int producer, int hour, boolean[][] interruptions
-	) {
-		boolean[] interruption = interruptions[producer];
-		if (interruption == null)
-			return false;
-		return interruption[hour];
 	}
 }

@@ -49,7 +49,7 @@ class SolarState {
 		return phase != SolarPhase.OPERATION;
 	}
 
-	void calcPre(int hour, double TE, double TV) {
+	void updateBefore(int hour, double TE, double TV) {
 
 		log.beginProducer(producer);
 

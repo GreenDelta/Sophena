@@ -8,7 +8,7 @@ import sophena.model.Project;
 import sophena.utils.Temperature;
 
 class HeatPumpState {
-	
+
 	private SolarLog log;
 	private Project project;
 	private Producer producer;
@@ -28,7 +28,7 @@ class HeatPumpState {
 		this.producer = producer;
 	}
 
-	public void calcPre(int hour, double TR, double TV) {
+	public void updateBefore(int hour, double TR, double TV) {
 		bufferLoadType = BufferLoadType.NONE;
 
 		consumedPower = 0;

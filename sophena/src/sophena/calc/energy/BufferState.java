@@ -7,7 +7,7 @@ import sophena.model.Project;
 import sophena.utils.Temperature;
 
 class BufferState {
-	
+
 	private final Project project;
 	private final SolarLog log;
 
@@ -97,7 +97,7 @@ class BufferState {
 		bufferLossFactor = lossFactor(project.heatNet);
 	}
 
-	public void preStep(int hour)
+	public void updateBefore(int hour)
 	{
 		double temperature = Temperature.of(project, hour);
 		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
@@ -155,7 +155,7 @@ class BufferState {
 		double Qloaded;
 		if(loadType == BufferLoadType.HIGH_TEMP)
 		{
-			Qloaded = Math.min(qToLoad, CalcHTCapacity(useMaxTargetLoadFactor));
+			Qloaded = Math.min(qToLoad, calcHTCapacity(useMaxTargetLoadFactor));
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
@@ -312,7 +312,7 @@ class BufferState {
 	}
 
 
-	public double CalcHTCapacity(boolean useMaxTargetLoadFactor)
+	public double calcHTCapacity(boolean useMaxTargetLoadFactor)
 	{
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
