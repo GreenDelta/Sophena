@@ -47,7 +47,7 @@ class SimulationState {
 		for (var p : project.producers) {
 			if (p.disabled)
 				continue;
-			if (p.solarCollector != null & p.solarCollectorSpec != null) {
+			if (p.solarCollector != null && p.solarCollectorSpec != null) {
 				solarStates.put(p, new SolarState(solarLog, project, p));
 			}
 			if (p.heatPump != null) {
@@ -79,12 +79,12 @@ class SimulationState {
 	void setConsumedPower(Producer producer, double power) {
 		var solar = solarStates.get(producer);
 		if (solar != null) {
-			solar.setConsumedPower(power);
+			solar.setConsumedPower(power * 1000);
 			return;
 		}
 		var pump = heatPumpStates.get(producer);
 		if (pump != null) {
-			pump.setConsumedPower(power);
+			pump.setConsumedPower(power * 1000);
 		}
 	}
 
