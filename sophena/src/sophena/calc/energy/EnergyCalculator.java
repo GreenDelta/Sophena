@@ -56,26 +56,20 @@ class EnergyCalculator {
 			if (loadType == null || loadType == BufferLoadType.NONE)
 				continue;
 
-			double TR = bufferState.getTR();
-			double TV = bufferState.getTV();
-			double TK_i = state.getTargetTemperature(producer, hour);
 
-			// For NT producer calculate the power factor based on their temperature level
-			double loadFactorTK_i = loadType != BufferLoadType.LOW_TEMP
-				? 1
-				: (TK_i - TR) / (TV - TR);
-			double reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactorTK_i - heatNetSuppliedPower);
+			double loadFactor = loadFactor(hour, producer, loadType);
+			double reducedLoad = Math.max(0, r.loadCurve[hour] * loadFactor - heatNetSuppliedPower);
 			double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor() - heatNetSuppliedPower);
 
 			// Amount of power currently needed for heatnet and buffer based on producer buffer load type
 			double maxLoadRel = reducedLoad + (loadType == BufferLoadType.HIGH_TEMP ?
 				bufferState.calcHTCapacity(producer.function != ProducerFunction.MAX_LOAD) :
-				bufferState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD, loadFactorTK_i));
+				bufferState.CalcNTCapacity(producer.function != ProducerFunction.MAX_LOAD, loadFactor));
 
 			// Maximum amount of power currently needed for heatnet and buffer
 			double maxLoadAbs = reducedLoad + (loadType == BufferLoadType.HIGH_TEMP ?
 				bufferState.calcHTCapacity(false) :
-				bufferState.CalcNTCapacity(false, loadFactorTK_i));
+				bufferState.CalcNTCapacity(false, loadFactor));
 
 			// Power which can be provided by the producer
 			double power = state.getSuppliedPower(producer, hour, reducedLoad, maxLoadRel);
@@ -109,7 +103,7 @@ class EnergyCalculator {
 					double surplus = power - reducedLoad;
 					heatNetSuppliedPower += surplus > 0 ? power - surplus : power;
 					if (surplus > 0)
-						power -= bufferState.load(hour, surplus, loadType, false, loadFactorTK_i);
+						power -= bufferState.load(hour, surplus, loadType, false, loadFactor);
 				} else
 					power = 0;
 
@@ -154,6 +148,18 @@ class EnergyCalculator {
 		}
 
 		bufferState.postStep(hour);
+	}
+
+	private double loadFactor(int hour, Producer producer, BufferLoadType type) {
+		if (type != BufferLoadType.LOW_TEMP)
+			return 1;
+		// for low temperature producers, calculate the load factor based
+		// on their temperature level
+		var s = state.bufferState;
+		double returnTemp = s.getTR();
+		double flowTemp = s.getTV();
+		double producerTemp = state.getTargetTemperature(producer, hour);
+		return (producerTemp - returnTemp) / (flowTemp - returnTemp);
 	}
 
 	private void finalizeSimulation(EnergyResult r) {
