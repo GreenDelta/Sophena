@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import sophena.math.energetic.Producers;
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
@@ -176,17 +177,43 @@ class SimulationState {
 			: bufferState.getTV();
 	}
 
+	double minPower(Producer p, int hour) {
+		if (p == null)
+			return 0;
+		if (p.profile != null)
+			return Stats.get(p.profile.minPower, hour);
+		return p.boiler != null
+			? p.boiler.minPower * Producers.heatRecoveryFactor(p)
+			: 0;
+	}
+
+	double maxPower(Producer p, int hour) {
+		if (p == null)
+			return 0;
+		if (p.profile != null)
+			return Stats.get(p.profile.maxPower, hour);
+
+		var solar = solarStates.get(p);
+		if (p.solarCollector != null && solar != null)
+			return solar.getAvailablePowerInKWh();
+		var pump = heatPumpStates.get(p);
+		if (p.heatPump != null && pump != null)
+			return pump.getMaxPower();
+
+		return p.boiler != null
+			? p.boiler.maxPower * Producers.heatRecoveryFactor(p)
+			: 0;
+	}
+
 	double getSuppliedPower(
 		Producer producer, int hour, double requiredLoad, double maxLoad
 	) {
-		double bMin = Util.minPower(producer, hour);
-		double bMax = Util.maxPower(
-			producer, solarStates.get(producer), heatPumpStates.get(producer), hour);
+		double bMin = minPower(producer, hour);
+		double bMax = maxPower(producer, hour);
 		double load = producer.function == ProducerFunction.PEAK_LOAD
 			? requiredLoad
 			: maxLoad;
 		return Math.clamp(load, bMin, bMax);
-
 	}
 
 	private boolean isDisabled(Producer producer, int hour) {
