@@ -128,6 +128,25 @@ def find_best_match(name: str, logos: Dict[str, ManufacturerData]) -> Optional[M
     return None
 
 
+def find_best_contact(name: str, contacts: Dict[str, ManufacturerContact]) -> Optional[ManufacturerContact]:
+    """Return ManufacturerContact for the first contact whose normalized first word matches `name`."""
+    if not name:
+        return None
+
+    def normalize(text: str) -> str:
+        parts = re.split('[- ]', text.strip().lower())
+        return parts[0]
+
+    norm_name = normalize(name)
+    if not norm_name:
+        return None
+
+    for key, value in contacts.items():
+        if normalize(key) == norm_name:
+            return value
+
+    return None
+
 def update_manufacturers_csv(logos: Dict[str, ManufacturerData],
                              src_csv: str = "data/csv/manufacturers.csv",
                              dst_csv: str = "data/csv/manufacturers.csv",
@@ -181,7 +200,14 @@ def update_manufacturers_csv(logos: Dict[str, ManufacturerData],
                 row[5] = ""
                 row[6] = ""
 
-            # contact data is available here for future use, e.g. contacts.get(manufacturer)
+            cdata = find_best_contact(manufacturer, contacts)
+            if cdata is not None:
+                row[2] = cdata.address
+                row[3] = cdata.weblink
+            else:
+                row[2] = ""
+                row[3] = ""
+
             writer.writerow(row)
 
     print(f"Processed {processed} lines, matched {matched} manufacturers. Wrote {dst_csv}")
