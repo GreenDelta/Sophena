@@ -10,19 +10,19 @@ Import-Package: org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.swt,
- org.eclipse.platform,
  org.eclipse.ui.forms,
  org.eclipse.ui.views,
+ org.eclipse.ui.navigator,
+ org.eclipse.draw2d,
+ org.eclipse.swt,
  org.eclipse.e4.ui.workbench.addons.swt,
  org.eclipse.equinox.event,
- org.eclipse.ui.navigator,
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.swtchart,
  org.eclipse.swtchart.extensions,
- org.eclipse.draw2d,
  org.eclipse.nebula.widgets.opal.notifier,
- org.apache.felix.scr
+ org.apache.felix.scr,
+ org.eclipse.e4.ui.css.swt
 Eclipse-BundleShape: dir
 Bundle-ClassPath: .,
  libs/commons-codec-1.20.0.jar,

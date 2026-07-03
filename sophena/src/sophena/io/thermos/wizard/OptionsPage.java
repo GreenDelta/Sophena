@@ -50,18 +50,18 @@ class OptionsPage extends WizardPage {
 		consumersCheck = new Button(group, SWT.CHECK);
 		consumersCheck.setText("Abnehmer");
 		consumersCheck.setSelection(config.isWithConsumers());
-		Controls.onSelect(consumersCheck, $ -> onSelectionChanged());
+		Controls.onSelect(consumersCheck, _ -> onSelectionChanged());
 
 		stationsCheck = new Button(group, SWT.CHECK);
 		stationsCheck.setText("Hausübergabestationen");
 		stationsCheck.setSelection(config.isWithStations());
 		stationsCheck.setEnabled(config.isWithConsumers());
-		Controls.onSelect(stationsCheck, $ -> onSelectionChanged());
+		Controls.onSelect(stationsCheck, _ -> onSelectionChanged());
 
 		pipesCheck = new Button(group, SWT.CHECK);
 		pipesCheck.setText("Wärmeleitungen");
 		pipesCheck.setSelection(config.isWithPipes());
-		Controls.onSelect(pipesCheck, $ -> onSelectionChanged());
+		Controls.onSelect(pipesCheck, _ -> onSelectionChanged());
 	}
 
 	private void createDataModeGroup(Composite parent) {
@@ -73,12 +73,12 @@ class OptionsPage extends WizardPage {
 		updateRadio = new Button(group, SWT.RADIO);
 		updateRadio.setText("aktualisieren");
 		updateRadio.setSelection(config.isUpdateExisting());
-		Controls.onSelect(updateRadio, $ -> onSelectionChanged());
+		Controls.onSelect(updateRadio, _ -> onSelectionChanged());
 
 		var appendRadio = new Button(group, SWT.RADIO);
 		appendRadio.setText("ergänzen");
 		appendRadio.setSelection(!config.isUpdateExisting());
-		Controls.onSelect(appendRadio, $ -> onSelectionChanged());
+		Controls.onSelect(appendRadio, _ -> onSelectionChanged());
 	}
 
 	private void createFileGroup(Composite parent) {
@@ -92,7 +92,7 @@ class OptionsPage extends WizardPage {
 
 		var browseBtn = new Button(group, SWT.PUSH);
 		browseBtn.setText("Durchsuchen...");
-		browseBtn.addListener(SWT.Selection, e -> onBrowse());
+		browseBtn.addListener(SWT.Selection, _ -> onBrowse());
 	}
 
 	private void onBrowse() {

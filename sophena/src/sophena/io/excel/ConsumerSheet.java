@@ -1,14 +1,12 @@
 package sophena.io.excel;
 
-import java.util.Collections;
-
 import org.apache.poi.ss.usermodel.Workbook;
+import org.openlca.commons.Strings;
 
 import sophena.calc.ConsumerResult;
 import sophena.calc.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
-import org.openlca.commons.Strings;
 
 class ConsumerSheet {
 

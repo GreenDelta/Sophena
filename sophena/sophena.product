@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0" type="bundles" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="Sophena" uid="sophena.product" id="sophena.product" application="sophena.application" version="3.0" type="bundles" includeLaunchers="true" autoIncludeRequirements="true">
 
    <aboutInfo>
       <image path="/sophena/icons/AboutDialogLogo.png"/>
@@ -14,7 +14,7 @@ C.A.R.M.E.N. e.V.
 Centrales Agrar-Rohstoff Marketing- und Energie-Netzwerk e.V.
 http://www.carmen-ev.de - contact@carmen-ev.de
 
-Technische Umsetzung: 
+Technische Umsetzung:
 GreenDelta GmbH:: https://www.greendelta.com
 AVS GmbH: https://www.alzinger-vogel.de
       </text>
@@ -52,6 +52,7 @@ AVS GmbH: https://www.alzinger-vogel.de
    </launcher>
 
    <vm>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-25</windows>
    </vm>
 
    <plugins>
@@ -61,6 +62,7 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="com.sun.jna.platform"/>
       <plugin id="jakarta.annotation-api"/>
       <plugin id="jakarta.inject.jakarta.inject-api"/>
+      <plugin id="org.apache.aries.spifly.dynamic.bundle"/>
       <plugin id="org.apache.batik.constants"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.i18n"/>
@@ -118,7 +120,6 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.e4.ui.model.workbench.nl_de"/>
       <plugin id="org.eclipse.e4.ui.services"/>
       <plugin id="org.eclipse.e4.ui.services.nl_de"/>
-      <plugin id="org.eclipse.e4.ui.swt.gtk"/>
       <plugin id="org.eclipse.e4.ui.swt.win32"/>
       <plugin id="org.eclipse.e4.ui.widgets"/>
       <plugin id="org.eclipse.e4.ui.widgets.nl_de"/>
@@ -156,10 +157,7 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.orbit.xml-apis-ext"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state"/>
-      <plugin id="org.eclipse.platform"/>
-      <plugin id="org.eclipse.platform.nl_de"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
       <plugin id="org.eclipse.swt.nl_de"/>
       <plugin id="org.eclipse.swt.svg"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64"/>
@@ -168,8 +166,6 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.forms.nl_de"/>
-      <plugin id="org.eclipse.ui.intro"/>
-      <plugin id="org.eclipse.ui.intro.nl_de"/>
       <plugin id="org.eclipse.ui.navigator"/>
       <plugin id="org.eclipse.ui.navigator.nl_de"/>
       <plugin id="org.eclipse.ui.nl_de"/>
@@ -180,6 +176,11 @@ AVS GmbH: https://www.alzinger-vogel.de
       <plugin id="org.eclipse.ui.workbench.nl_de"/>
       <plugin id="org.eclipse.urischeme"/>
       <plugin id="org.eclipse.urischeme.nl_de"/>
+      <plugin id="org.objectweb.asm"/>
+      <plugin id="org.objectweb.asm.commons"/>
+      <plugin id="org.objectweb.asm.tree"/>
+      <plugin id="org.objectweb.asm.tree.analysis"/>
+      <plugin id="org.objectweb.asm.util"/>
       <plugin id="org.osgi.service.component"/>
       <plugin id="org.osgi.service.event"/>
       <plugin id="org.osgi.service.prefs"/>

@@ -199,6 +199,6 @@ public class ProjectLoad {
 		if (curve == null || net == null || net.interruption == null)
 			return;
 		int[] interval = HoursTrace.getDayInterval(net.interruption);
-		HoursTrace.applyInterval(curve, interval, (old, i) -> 0.0);
+		HoursTrace.applyInterval(curve, interval, (_, _) -> 0.0);
 	}
 }

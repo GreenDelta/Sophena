@@ -54,7 +54,7 @@ class TransferStationsPage extends WizardPage {
 		manCombo.setItems(manItems);
 		var lineCombo = UI.formCombo(comp, "Produktlinie");
 
-		Controls.onSelect(manCombo, $ -> {
+		Controls.onSelect(manCombo, _ -> {
 			int i = manCombo.getSelectionIndex();
 			config.stationManufacturer(manufacturers.get(i));
 			var pls = productLinesOf(config.stationManufacturer());
@@ -63,7 +63,7 @@ class TransferStationsPage extends WizardPage {
 			validate();
 		});
 
-		Controls.onSelect(lineCombo, $ -> {
+		Controls.onSelect(lineCombo, _ -> {
 			int idx = lineCombo.getSelectionIndex();
 			config.stationProductLine(lineCombo.getItem(idx));
 			validate();

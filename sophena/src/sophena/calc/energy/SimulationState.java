@@ -61,7 +61,7 @@ class SimulationState {
 			var breaks = new boolean[Stats.HOURS];
 			for (TimeInterval time : p.interruptions) {
 				int[] interval = HoursTrace.getHourInterval(time);
-				HoursTrace.applyInterval(breaks, interval, (old, idx) -> true);
+				HoursTrace.applyInterval(breaks, interval, (_, _) -> true);
 			}
 			interruptions.put(p, breaks);
 		}

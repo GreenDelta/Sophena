@@ -95,7 +95,7 @@ public class ConsumerLoadCurve {
 		boolean[] trace = new boolean[Stats.HOURS];
 		for (TimeInterval time : consumer.interruptions) {
 			int[] interval = HoursTrace.getDayInterval(time);
-			HoursTrace.applyInterval(trace, interval, (old, i) -> true);
+			HoursTrace.applyInterval(trace, interval, (_, _) -> true);
 		}
 		return trace;
 	}
