@@ -3,6 +3,7 @@ package sophena.calc.biogas;
 import java.util.List;
 
 import sophena.model.Stats;
+import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
 
 public record BiogasProfile(double[] volume, double[] methaneContent) {
@@ -23,6 +24,12 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 			p.methaneContent[h] = trace.methaneContent();
 		}
 		return p;
+	}
+
+	public static BiogasProfile of(BiogasPlant plant) {
+		return plant != null
+			? BiogasProfile.of(plant.substrateProfiles)
+			: empty();
 	}
 
 	public static BiogasProfile of(List<SubstrateProfile> substrates) {

@@ -2,39 +2,35 @@ package sophena.calc.biogas;
 
 import org.openlca.commons.Copyable;
 
+import sophena.model.biogas.BiogasPlant;
+
 public class BiogasStorage implements Copyable<BiogasStorage> {
 
 	/// The calorific value of biomethane in kWh/m3
 	private final double CAL = 9.97;
 
-	/// The fuel power demand of the plant in kW under full load.
-	private final double fuelPower;
+	/// The fuel power demand of the plant under full load in kW.
+	private final double fullLoadDemand;
 	private final double size;
 	private double filled;
 	private double methaneContent;
 
 	/// Creates a new biogas storage of the given size in m3 that is used by
 	/// the biogas plant under full load.
-	public BiogasStorage(double size, double fuelPower) {
-		if (size <= 0)
-			throw new IllegalArgumentException("size is <= 0: " + size);
-		if (fuelPower <= 0)
-			throw new IllegalArgumentException("invalid boiler configuration");
+	public BiogasStorage(double size, double fullLoadDemand) {
 		this.size = size;
-		this.fuelPower = fuelPower;
+		this.fullLoadDemand = fullLoadDemand;
+	}
+
+	public static BiogasStorage of(BiogasPlant plant) {
+		var fullLoadDemand = BiogasPlants.fullLoadFuelPower(plant);
+		return plant != null
+			? new BiogasStorage(plant.gasStorageSize, fullLoadDemand)
+			: new BiogasStorage(0, 0);
 	}
 
 	public double size() {
 		return size;
-	}
-
-	/// Returns the filled volume of storage in m3.
-	public double filledVolume() {
-		return filled;
-	}
-
-	public double methaneContent() {
-		return methaneContent;
 	}
 
 	/// Add the given volume with the given methane content to this storage. The
@@ -74,8 +70,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	/// Returns the number of hours it takes to complete empty the storage when
 	/// running the boiler under full load.
 	public double hoursToEmpty() {
+		if (fullLoadDemand <= 0)
+			return 0;
 		double q = filled * methaneContent * CAL;
-		return q / fuelPower;
+		return q / fullLoadDemand;
 	}
 
 	public boolean canRunOneHour() {
@@ -87,12 +85,17 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	}
 
 	public boolean canRunHours(double hours) {
+		if (fullLoadDemand <= 0)
+			return false;
 		double q = filled * methaneContent * CAL;
-		return q >= (fuelPower * hours);
+		return q >= (fullLoadDemand * hours);
 	}
 
 	public void runHours(double hours) {
-		double vol = (hours * fuelPower) / (CAL * methaneContent);
+		if (fullLoadDemand <= 0 || methaneContent <= 0) {
+			return;
+		}
+		double vol = (hours * fullLoadDemand) / (CAL * methaneContent);
 		filled = filled > vol ? filled - vol : 0;
 	}
 
@@ -102,7 +105,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 
 	@Override
 	public BiogasStorage copy() {
-		var copy = new BiogasStorage(size, fuelPower);
+		var copy = new BiogasStorage(size, fullLoadDemand);
 		copy.filled = filled;
 		copy.methaneContent = methaneContent;
 		return copy;

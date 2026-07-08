@@ -77,8 +77,7 @@ public record BiogasPlantResult(
 			this.plant = plant;
 			minRunTime = Math.max(1, plant.minimumRuntime);
 			profile = BiogasProfile.of(plant.substrateProfiles);
-			storage = new BiogasStorage(
-				plant.gasStorageSize, BiogasPlants.fullLoadFuelPower(plant));
+			storage = BiogasStorage.of(plant);
 			priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
 		}
 
