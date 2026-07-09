@@ -1,64 +1,101 @@
 package sophena.calc.biogas.eblocks;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
+import org.apache.lucene.index.ReaderSlice;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.openlca.commons.Res;
 
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityPriceCurve;
 
 @NullMarked
 public class BlockSearch {
 
 	private final BiogasPlant plant;
+	private final ElectricityPriceCurve prices;
 
-	public BlockSearch(BiogasPlant plant) {
+	private BlockSearch(BiogasPlant plant) {
 		this.plant = plant;
+		this.prices = plant.electricityPrices;
 	}
 
-	public void run() {
+	public static Res<Void> run(BiogasPlant plant) {
+		var res = PreCheck.validate(plant);
+		if (res.isError())
+			return res;
+		new BlockSearch(plant).run();
+		return Res.ok();
+	}
 
-		var start = State.initial(plant);
+	private void run() {
+
+		var state = State.initial(plant);
+		var blocks = new ArrayDeque<BlockPrice>();
+
+		while (state.hour() < Stats.HOURS) {
+			var next = findNextBlock(state);
+			if (next == null)
+				break;
+			var prev = !blocks.isEmpty()
+				? blocks.peekLast()
+				: null;
+
+			if (prev == null) {
+				blocks.add(next);
+				state = next.block.end();
+				continue;
+			}
+
+
+		}
+
+	}
+
+	@Nullable
+	private BlockPrice findNextBlock(State start) {
 		var end = start;
 		while (end.canFillNext()) {
 			end = end.fillNext();
 		}
-
 		if (end == start)
-			return;
+			return null;
 
 		int lastPossibleHour = end.hour() < Stats.HOURS - 1
 			? end.hour() + 1
 			: end.hour();
 
-		Block minOpt = null;
-		double price = Double.MIN_VALUE;
+		BlockPrice best = null;
 		for (var it = start; it.hour() <= lastPossibleHour; it = it.fillNext()) {
 			var block = it.getBlock(plant.minimumRuntime);
 			if (block == null)
 				continue;
-			var p = priceOf(block);
-			if (minOpt == null || p > price) {
-				minOpt = block;
-				price = p;
+			var next = priceOf(block);
+			if (best == null || next.price > best.price) {
+				best = next;
 			}
 		}
 
-		System.out.println(minOpt);
-
+		return best;
 	}
 
-	private double priceOf(Block block) {
-		var p = plant.electricityPrices;
-		if (p == null)
-			return 0;
+	private BlockPrice priceOf(Block block) {
 		double total = 0;
 		for (int h = block.start().hour(); h <= block.end().hour(); h++) {
-			total += p.values[h];
-			if (!p.feedInAllowed[h]) {
+			total += prices.values[h];
+			if (!prices.feedInAllowed[h]) {
 				total -= 1000;
 			}
 		}
-		return total;
+		return new BlockPrice(block, total);
 	}
 
+
+
+	private record BlockPrice(Block block, double price) {
+	}
 
 }
