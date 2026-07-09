@@ -67,7 +67,7 @@ record State(
 		nextStorage.run(profile, hour, demand);
 		return new State(
 			hour + 1,
-			false,
+			true,
 			nextStorage,
 			profile,
 			this
@@ -77,7 +77,7 @@ record State(
 	/// Starting from the current state, tries to find the next runtime block for
 	/// the given number of hours. Returns `null` if no such block could be found.
 	@Nullable
-	Block getNextBlock(int hours) {
+	Block getBlock(int hours) {
 		if (hours < 1)
 			return null;
 		var end = this;
@@ -94,5 +94,4 @@ record State(
 
 		return new Block(this, end);
 	}
-
 }
