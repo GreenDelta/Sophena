@@ -104,6 +104,65 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		filled = filled > vol ? filled - vol : 0;
 	}
 
+	public boolean canRun(BiogasProfile profile, int hour) {
+		return canRun(profile, hour, 1.0);
+	}
+
+	public boolean canRunRamp(BiogasProfile profile, int hour) {
+		return canRun(profile, hour, 1.125);
+	}
+
+	private boolean canRun(BiogasProfile profile, int hour, double demandFactor) {
+		if (profile == null || hour >= Stats.HOURS)
+			return false;
+		double demand = fullLoadDemand * demandFactor;
+		if (demand <= 0)
+			return false;
+		double methane = filled * methaneContent
+			+ profile.volumeAt(hour) * profile.methaneContentAt(hour);
+		double provided = methane * CAL;
+		return provided >= demand;
+	}
+
+	public void run(BiogasProfile profile, int hour) {
+		run(profile, hour, 1.0);
+	}
+
+	public void runRamp(BiogasProfile profile, int hour) {
+		run(profile, hour, 1.125);
+	}
+
+	private void run(BiogasProfile profile, int hour, double demandFactor) {
+		if (profile == null || hour >= Stats.HOURS)
+			return;
+		double demand = fullLoadDemand * demandFactor;
+		if (demand <= 0)
+			return;
+
+		double profileVol = profile.volumeAt(hour);
+		double profileMethaneContent = profile.methaneContentAt(hour);
+		double totalVol = filled + profileVol;
+		if (totalVol <= 0)
+			return;
+
+		double nextMethaneContent = (
+			filled * methaneContent + profileVol * profileMethaneContent) / totalVol;
+		if (nextMethaneContent <= 0)
+			return;
+
+		double volNeeded =  demand / (CAL * nextMethaneContent);
+		double remainingVol = totalVol - volNeeded;
+		if (remainingVol > size) {
+			filled = size;
+		} else if (remainingVol > 0) {
+			filled = remainingVol;
+		} else {
+			filled = 0;
+		}
+
+		this.methaneContent = filled > 0 ? nextMethaneContent : 0;
+	}
+
 	public void setEmpty() {
 		filled = 0;
 	}
