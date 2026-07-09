@@ -104,18 +104,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		filled = filled > vol ? filled - vol : 0;
 	}
 
-	public boolean canRun(BiogasProfile profile, int hour) {
-		return canRun(profile, hour, 1.0);
-	}
-
-	public boolean canRunRamp(BiogasProfile profile, int hour) {
-		return canRun(profile, hour, 1.125);
-	}
-
-	private boolean canRun(BiogasProfile profile, int hour, double demandFactor) {
+	public boolean canRun(BiogasProfile profile, int hour, Demand factor) {
 		if (profile == null || hour >= Stats.HOURS)
 			return false;
-		double demand = fullLoadDemand * demandFactor;
+		double demand = fullLoadDemand * Demand.factorOf(factor);
 		if (demand <= 0)
 			return false;
 		double methane = filled * methaneContent
@@ -124,18 +116,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		return provided >= demand;
 	}
 
-	public void run(BiogasProfile profile, int hour) {
-		run(profile, hour, 1.0);
-	}
-
-	public void runRamp(BiogasProfile profile, int hour) {
-		run(profile, hour, 1.125);
-	}
-
-	private void run(BiogasProfile profile, int hour, double demandFactor) {
+	public void run(BiogasProfile profile, int hour, Demand factor) {
 		if (profile == null || hour >= Stats.HOURS)
 			return;
-		double demand = fullLoadDemand * demandFactor;
+		double demand = fullLoadDemand * Demand.factorOf(factor);
 		if (demand <= 0)
 			return;
 
