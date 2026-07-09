@@ -59,11 +59,11 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 	}
 
 	public double volumeAt(int h) {
-		return volume[h];
+		return Stats.get(volume, h);
 	}
 
 	public double methaneContentAt(int h) {
-		return methaneContent[h];
+		return Stats.get(methaneContent, h);
 	}
 
 	private record Trace(

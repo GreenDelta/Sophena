@@ -2,6 +2,7 @@ package sophena.calc.biogas;
 
 import org.openlca.commons.Copyable;
 
+import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
 public class BiogasStorage implements Copyable<BiogasStorage> {
@@ -60,10 +61,14 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	}
 
 	public double add(BiogasProfile profile, int hour) {
+		if (hour >= Stats.HOURS)
+			return 0;
 		return add(profile.volumeAt(hour), profile.methaneContentAt(hour));
 	}
 
 	public boolean canAdd(BiogasProfile profile, int hour) {
+		if (hour >= Stats.HOURS)
+			return false;
 		return (filled + profile.volumeAt(hour)) <= size;
 	}
 
