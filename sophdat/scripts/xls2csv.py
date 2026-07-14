@@ -114,7 +114,8 @@ def write_solarthermal_plants(wb):
     log.info('extract solarthermal plants')
     header = prepare_header() + ['collectorArea', 'efficiencyRateRadiation', 'correctionFactor', 'heatTransferCoefficient1', 'heatTransferCoefficient2', 'heatCapacity',
                                  'angleIncidenceEW10', 'angleIncidenceEW20', 'angleIncidenceEW30', 'angleIncidenceEW40', 'angleIncidenceEW50', 'angleIncidenceEW60', 'angleIncidenceEW70', 'angleIncidenceEW80', 'angleIncidenceEW90', 
-                                 'angleIncidenceNS10', 'angleIncidenceNS20', 'angleIncidenceNS30', 'angleIncidenceNS40', 'angleIncidenceNS50', 'angleIncidenceNS60', 'angleIncidenceNS70', 'angleIncidenceNS80', 'angleIncidenceNS90']
+                                 'angleIncidenceNS10', 'angleIncidenceNS20', 'angleIncidenceNS30', 'angleIncidenceNS40', 'angleIncidenceNS50', 'angleIncidenceNS60', 'angleIncidenceNS70', 'angleIncidenceNS80', 'angleIncidenceNS90',
+                                 'description']
     write_records(wb, 'Solarthermie', header, 'solar_collectors.csv')
 
 
