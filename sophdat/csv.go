@@ -277,7 +277,7 @@ func (model *CsvModel) readHeatPumps() {
 		h.Cop = make([]float64, 0)
 		h.TargetTemperature = make([]float64, 0)
 		h.SourceTemperature = make([]float64, 0)
-		h.Description = cStr(row, 11)
+		h.Description = cStr(row, 10)
 
 		model.HeatPumps = append(model.HeatPumps, &h)
 	}
