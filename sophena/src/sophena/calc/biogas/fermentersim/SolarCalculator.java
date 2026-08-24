@@ -19,8 +19,8 @@ final class SolarCalculator {
 
 	static StepSolar computeStepSolar(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int doy,
 		double hod,
@@ -64,8 +64,8 @@ final class SolarCalculator {
 
 	private static double computeWallSolar(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		int doy,
 		double bHorWm2,
 		double dHorWm2,

@@ -33,8 +33,8 @@ public record RoofGeometry(
 
 	public static RoofGeometry createDoubleMembrane(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c
+		MaterialConstants m,
+		SimulationConstants c
 	) {
 		var f = p.fermenter();
 		double r1 = f.wallInnerRadius();
@@ -90,8 +90,8 @@ public record RoofGeometry(
 		double velocity,
 		double length,
 		double prandtl,
-		FermenterMaterials m,
-		FermenterConstants c
+		MaterialConstants m,
+		SimulationConstants c
 	) {
 		double reynolds = m.uRhoKgm3() * velocity * length / m.uEtaPas();
 		double nuLaminar = 0.664 * Math.sqrt(reynolds) * Math.pow(prandtl, 1.0 / 3.0);

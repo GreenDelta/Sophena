@@ -11,8 +11,8 @@ public class FermenterSimulationTest {
 	public void testSimulationResults() {
 		var station = TestWeatherStation.get();
 		var parameters = FermenterParameters.createDefault(station);
-		var materials = FermenterMaterials.createDefault();
-		var constants = FermenterConstants.createDefault();
+		var materials = MaterialConstants.createDefault();
+		var constants = SimulationConstants.createDefault();
 		double[] dataBefore = station.data.clone();
 		double[] beamBefore = station.directRadiation.clone();
 		double[] diffuseBefore = station.diffuseRadiation.clone();
@@ -33,8 +33,8 @@ public class FermenterSimulationTest {
 	public void testMissingRadiationDataThrows() {
 		var station = TestWeatherStation.get();
 		var parameters = FermenterParameters.createDefault(station);
-		var materials = FermenterMaterials.createDefault();
-		var constants = FermenterConstants.createDefault();
+		var materials = MaterialConstants.createDefault();
+		var constants = SimulationConstants.createDefault();
 
 		station.directRadiation = null;
 

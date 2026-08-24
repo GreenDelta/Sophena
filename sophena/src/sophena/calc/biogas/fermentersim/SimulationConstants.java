@@ -2,33 +2,33 @@ package sophena.calc.biogas.fermentersim;
 
 /// Constant values of the fermenter simulation.
 ///
-/// @param k0C                 Celsius-Kelvin offset in K
+/// @param k0C                 Celsius-Kelvin offset in K.
 /// Parameter of the original fermenter simulation model: `k0C`.
-/// @param sigma               Stefan-Boltzmann constant in W/(m2K4)
+/// @param sigma               Stefan-Boltzmann constant in W/(m2K4).
 /// Parameter of the original fermenter simulation model: `sigma`.
-/// @param g                   Standard acceleration of gravity in m/s2
+/// @param g                   Standard acceleration of gravity in m/s2.
 /// Parameter of the original fermenter simulation model: `g`.
-/// @param solarConstant       Total Solar Irradiance constant in W/m2
+/// @param solarConstant       Total Solar Irradiance constant in W/m2.
 /// Parameter of the original fermenter simulation model: `solarConstantWm2`.
-/// @param reTransition        Critical Reynolds transition number
+/// @param reTransition        Critical Reynolds transition number.
 /// Parameter of the original fermenter simulation model: `reTransition`.
-/// @param soilBuffer          Soil buffer depth in m
+/// @param soilBuffer          Soil buffer depth in m.
 /// Parameter of the original fermenter simulation model: `soilBufferM`.
-/// @param methaneHeatingValue Methane lower heating value in kWh/Nm3
+/// @param methaneHeatingValue Methane lower heating value in kWh/Nm3.
 /// Parameter of the original fermenter simulation model: `methaneLowerHeatingValueKwhNm3`.
-/// @param normalTemperatureK  Normal temperature in K
+/// @param normalTemperatureK  Normal temperature in K.
 /// Parameter of the original fermenter simulation model: `normalTemperatureK`.
-/// @param skyEmissivity       Effective sky emissivity
+/// @param skyEmissivity       Effective sky emissivity.
 /// Parameter of the original fermenter simulation model: `skyEmissivity`.
-/// @param tolerance           Convergence tolerance for temperature in K
+/// @param tolerance           Convergence tolerance for temperature in K.
 /// Parameter of the original fermenter simulation model: `toleranceK`.
-/// @param residualTolerance   Convergence residual tolerance in W
+/// @param residualTolerance   Convergence residual tolerance in W.
 /// Parameter of the original fermenter simulation model: `residualToleranceW`.
-/// @param relaxation          Under-relaxation factor (0 < omega <= 1)
+/// @param relaxation          Under-relaxation factor (0 < omega <= 1).
 /// Parameter of the original fermenter simulation model: `relaxation`.
-/// @param maxIterations       Maximum iterations per timestep
+/// @param maxIterations       Maximum iterations per timestep.
 /// Parameter of the original fermenter simulation model: `maxIterations`.
-public record FermenterConstants(
+public record SimulationConstants(
 	double k0C,
 	double sigma,
 	double g,
@@ -43,8 +43,8 @@ public record FermenterConstants(
 	double relaxation,
 	int maxIterations
 ) {
-	public static FermenterConstants createDefault() {
-		return new FermenterConstants(
+	public static SimulationConstants createDefault() {
+		return new SimulationConstants(
 			273.15,            // Celsius-Kelvin offset [K]
 			5.670374419e-8,    // Stefan-Boltzmann constant [W/(m2 K4)]
 			9.80665,           // Standard acceleration of gravity [m/s2]

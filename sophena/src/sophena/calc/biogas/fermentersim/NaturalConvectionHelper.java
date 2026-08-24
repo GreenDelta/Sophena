@@ -20,8 +20,8 @@ final class NaturalConvectionHelper {
 		double tsInnerMembraneC,
 		double aRoofProjectedM2,
 		double r1,
-		FermenterMaterials m,
-		FermenterConstants c
+		MaterialConstants m,
+		SimulationConstants c
 	) {
 		double naturalConvectionLengthM = aRoofProjectedM2 / (2.0 * Math.PI * r1);
 		double tFilmK = 0.5 * (tSetC + tsInnerMembraneC) + c.k0C();

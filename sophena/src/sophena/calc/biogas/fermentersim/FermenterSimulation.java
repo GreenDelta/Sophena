@@ -18,8 +18,8 @@ public final class FermenterSimulation {
 	 */
 	public SimulationResult run(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		SimulationInput input
 	) {
 		if (p.station() == null) {
@@ -153,7 +153,7 @@ public final class FermenterSimulation {
 	}
 
 	private RoofEval evaluateRoof(
-		FermenterParameters p, FermenterMaterials m, FermenterConstants c, RoofGeometry roofGeo,
+		FermenterParameters p, MaterialConstants m, SimulationConstants c, RoofGeometry roofGeo,
 		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
 		if (p.fermenter().roofType == RoofType.FIXED) {

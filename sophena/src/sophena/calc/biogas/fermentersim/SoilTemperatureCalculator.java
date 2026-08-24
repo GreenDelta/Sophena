@@ -17,7 +17,7 @@ final class SoilTemperatureCalculator {
 	static GroundTemperatures calculate(
 		SimulationInput input,
 		FermenterParameters p,
-		FermenterMaterials m
+		MaterialConstants m
 	) {
 		int nSteps = input.size();
 		double depthBottom = p.fermenter().wallTotalHeight * p.fermenter().wallBuriedFraction;

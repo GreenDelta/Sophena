@@ -13,8 +13,8 @@ final class FixedRoofSolver {
 
 	static FixedRoofResult solve(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		RoofGeometry roofGeo,
 		double tAirC,
 		double windMps,
@@ -67,7 +67,7 @@ final class FixedRoofSolver {
 	}
 
 	private static double roofExternalNusselt(
-		FermenterConstants c, double roofExternalReynolds, double outsideAirPrandtl
+		SimulationConstants c, double roofExternalReynolds, double outsideAirPrandtl
 	) {
 		double roofExternalNuLaminar = 0.664 * Math.sqrt(roofExternalReynolds) * Math.pow(outsideAirPrandtl, 1.0 / 3.0);
 		if (roofExternalReynolds < c.reTransition()) {

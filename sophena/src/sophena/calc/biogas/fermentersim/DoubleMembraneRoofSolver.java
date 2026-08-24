@@ -24,8 +24,8 @@ final class DoubleMembraneRoofSolver {
 
 	static DoubleMembraneResult solve(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int k,
 		double tAirC,
@@ -121,7 +121,7 @@ final class DoubleMembraneRoofSolver {
 		return computeFinalFluxes(p, m, c, roofGeo, k, tAirC, tempsC, hGapInnerWK, hGapOuterWK, hSupportAirAdvectionWK, hExternalConvectionWK, qSolarW, rRadSubstrateInnerM2, rRadInnerOuterM2, tSkyK, tAmbientK);
 	}
 
-	private static double roofExternalNusselt(FermenterConstants c, double roofExternalReynolds, double outsideAirPrandtl) {
+	private static double roofExternalNusselt(SimulationConstants c, double roofExternalReynolds, double outsideAirPrandtl) {
 		double roofExternalNuLaminar = 0.664 * Math.sqrt(roofExternalReynolds) * Math.pow(outsideAirPrandtl, 1.0 / 3.0);
 		double roofExternalNusselt;
 
@@ -138,8 +138,8 @@ final class DoubleMembraneRoofSolver {
 
 	private static DoubleMembraneResult computeFinalFluxes(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int k,
 		double tAirC,

@@ -10,7 +10,7 @@ public record SimulationResult(
 	double totalEnergyMWh,
 	double peakHeatingPowerKW,
 	FermenterParameters parameters,
-	FermenterMaterials materials,
-	FermenterConstants constants
+	MaterialConstants materials,
+	SimulationConstants constants
 ) {
 }

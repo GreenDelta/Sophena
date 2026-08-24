@@ -13,8 +13,8 @@ final class CylinderWallSolver {
 
 	static WallResult solve(
 		FermenterParameters p,
-		FermenterMaterials m,
-		FermenterConstants c,
+		MaterialConstants m,
+		SimulationConstants c,
 		double tAirC,
 		double windMps,
 		double qSolarAbsWallWm2,
