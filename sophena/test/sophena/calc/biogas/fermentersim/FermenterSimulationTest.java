@@ -1,22 +1,15 @@
-package sophena.calc;
+package sophena.calc.biogas.fermentersim;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import sophena.calc.biogas.fermentersim.FermenterConstants;
-import sophena.calc.biogas.fermentersim.FermenterMaterials;
-import sophena.calc.biogas.fermentersim.FermenterParameters;
-import sophena.calc.biogas.fermentersim.FermenterSimulation;
-import sophena.calc.biogas.fermentersim.SimulationInput;
-import sophena.calc.biogas.fermentersim.SyntheticDataGenerator;
 
 
 public class FermenterSimulationTest {
 
 	@Test
 	public void testSimulationResults() {
-		var station = SyntheticDataGenerator.generateStation();
+		var station = TestWeatherStation.get();
 		var parameters = FermenterParameters.createDefault(station);
 		var materials = FermenterMaterials.createDefault();
 		var constants = FermenterConstants.createDefault();
@@ -38,7 +31,7 @@ public class FermenterSimulationTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testMissingRadiationDataThrows() {
-		var station = SyntheticDataGenerator.generateStation();
+		var station = TestWeatherStation.get();
 		var parameters = FermenterParameters.createDefault(station);
 		var materials = FermenterMaterials.createDefault();
 		var constants = FermenterConstants.createDefault();
