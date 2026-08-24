@@ -26,30 +26,35 @@ public final class FermenterSimulation {
 			throw new IllegalArgumentException(
 				"FermenterParameters must reference a weather station for the location.");
 		}
+		if (p.fermenter() == null) {
+			throw new IllegalArgumentException(
+				"FermenterParameters must reference a fermenter with the construction parameters.");
+		}
+		var f = p.fermenter();
 		var groundTemps = SoilTemperatureCalculator.calculate(input, p, m);
-		var roofGeo = (p.roofType() == RoofType.FIXED)
+		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
 			: RoofGeometry.createDoubleMembrane(p, m, c);
 
-		double fermenterVolumeM3 = Math.PI * (p.wRim() * p.wRim()) * p.wHTotalM();
-		double mixerInstalledPowerKW = p.mixerInstalledPowerDensityWm3() * fermenterVolumeM3 / 1000.0;
+		double fermenterVolumeM3 = Math.PI * (f.wallInnerRadius() * f.wallInnerRadius()) * f.wallTotalHeight;
+		double mixerInstalledPowerKW = f.mixerPowerDensity * fermenterVolumeM3 / 1000.0;
 		double mixerMeanHeatKW = mixerInstalledPowerKW * (p.mixerRunTimeMinPerHour() / 60.0) * p.mixerHeatFraction();
 		double qMixerGainW = 1000.0 * mixerMeanHeatKW;
 
-		double r1 = p.wRim();
-		double r2 = p.wRaM() - p.wIm();
-		double r3 = p.wRaM();
+		double r1 = f.wallInnerRadius();
+		double r2 = f.wallOuterRadius - f.wallInsulationThickness;
+		double r3 = f.wallOuterRadius;
 		double r4 = r3 + c.soilBufferM();
 
 		double rWallEarthGeometryMKW = Math.log(r2 / r1) / m.wLambdaWmK()
 			+ Math.log(r3 / r2) / m.wLambdaIWmK()
 			+ Math.log(r4 / r3) / m.boLambdaGrWmK();
 
-		double wallEarthHeightM = p.wHTotalM() * p.buriedWallFraction();
+		double wallEarthHeightM = f.wallTotalHeight * f.wallBuriedFraction;
 		double uaWallEarthWK = 2.0 * Math.PI * wallEarthHeightM / rWallEarthGeometryMKW;
 
 		double aFloorM2 = Math.PI * r1 * r1;
-		double rFloorM2KW = p.boSM() / m.boLambdaWmK() + p.boIm() / m.boLambdaIWmK();
+		double rFloorM2KW = f.floorSlabThickness / m.boLambdaWmK() + f.floorInsulationThickness / m.boLambdaIWmK();
 
 		int nSteps = input.size();
 		List<SimulationResultStep> steps = new ArrayList<>(nSteps);
@@ -73,7 +78,7 @@ public final class FermenterSimulation {
 
 			var roofEval = evaluateRoof(p, m, c, roofGeo, k, stepInput, solar, prevMembraneTempsC);
 
-			if (p.roofType() == RoofType.DOUBLE_MEMBRANE) {
+			if (f.roofType == RoofType.DOUBLE_MEMBRANE) {
 				prevMembraneTempsC[0] = roofEval.tsInnerMembraneC();
 				prevMembraneTempsC[1] = roofEval.tsSupportAirC();
 				prevMembraneTempsC[2] = roofEval.tsRoofC();
@@ -151,7 +156,7 @@ public final class FermenterSimulation {
 		FermenterParameters p, FermenterMaterials m, FermenterConstants c, RoofGeometry roofGeo,
 		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
-		if (p.roofType() == RoofType.FIXED) {
+		if (p.fermenter().roofType == RoofType.FIXED) {
 			var res = FixedRoofSolver.solve(p, m, c, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {

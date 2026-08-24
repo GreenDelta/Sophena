@@ -21,7 +21,8 @@ final class FixedRoofSolver {
 		double qSolarAbsRoofWm2,
 		double lDownWm2
 	) {
-		double rRoofM2KW = p.dIm() / m.dLambdaWmK() + p.dSdM() / m.dLambdaIWmK();
+		double rRoofM2KW = p.fermenter().roofFixedLayerThickness / m.dLambdaWmK()
+			+ p.fermenter().roofInsulationThickness / m.dLambdaIWmK();
 		double outsideAirPrandtl = m.uEtaPas() * m.uCpJkgK() / m.uLambdaWmK();
 		double outsideAirKinematicViscosityM2s = m.uEtaPas() / m.uRhoKgm3();
 

@@ -74,6 +74,12 @@ public class Fermenter extends AbstractEntity {
 	@Column(name = "mixer_power_density")
 	public double mixerPowerDensity;
 
+	/// The inner radius of the wall in m, derived from the outer radius and
+	/// the wall thicknesses. Model parameter: `wRim`.
+	public double wallInnerRadius() {
+		return wallOuterRadius - wallStructuralThickness - wallInsulationThickness;
+	}
+
 	@Override
 	public Fermenter copy() {
 		var clone = new Fermenter();

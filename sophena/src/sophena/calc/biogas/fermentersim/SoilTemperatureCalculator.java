@@ -20,7 +20,7 @@ final class SoilTemperatureCalculator {
 		FermenterMaterials m
 	) {
 		int nSteps = input.size();
-		double depthBottom = p.wHTotalM() * p.buriedWallFraction();
+		double depthBottom = p.fermenter().wallTotalHeight * p.fermenter().wallBuriedFraction;
 		double annualPeriodS = 365.2425 * 24.0 * 3600.0;
 
 		double[] annualPhaseRad = new double[nSteps];

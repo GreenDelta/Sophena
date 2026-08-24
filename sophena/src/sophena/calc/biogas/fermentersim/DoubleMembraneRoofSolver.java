@@ -70,7 +70,7 @@ final class DoubleMembraneRoofSolver {
 			double tSubstrateK = p.tSetC() + c.k0C();
 
 			var natConvection = NaturalConvectionHelper.compute(
-				p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.wRim(), m, c
+				p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c
 			);
 			double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
@@ -154,7 +154,7 @@ final class DoubleMembraneRoofSolver {
 		double tSkyK,
 		double tAmbientK
 	) {
-		var natConvection = NaturalConvectionHelper.compute(p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.wRim(), m, c);
+		var natConvection = NaturalConvectionHelper.compute(p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c);
 		double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
 		double tSubstrateK = p.tSetC() + c.k0C();

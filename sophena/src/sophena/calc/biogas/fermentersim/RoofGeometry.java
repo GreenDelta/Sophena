@@ -16,7 +16,7 @@ public record RoofGeometry(
 ) {
 
 	public static RoofGeometry createFixed(FermenterParameters p) {
-		double r1 = p.wRim();
+		double r1 = p.fermenter().wallInnerRadius();
 		double aRoofProjectedM2 = Math.PI * r1 * r1;
 		return new RoofGeometry(
 			aRoofProjectedM2,
@@ -36,10 +36,11 @@ public record RoofGeometry(
 		FermenterMaterials m,
 		FermenterConstants c
 	) {
-		double r1 = p.wRim();
+		var f = p.fermenter();
+		double r1 = f.wallInnerRadius();
 		double aRoofProjectedM2 = Math.PI * r1 * r1;
-		double aRoofM2 = Math.PI * (r1 * r1 + p.membraneRoofHeightM() * p.membraneRoofHeightM());
-		double meanInnerHeight = 0.5 * p.membraneRoofHeightM();
+		double aRoofM2 = Math.PI * (r1 * r1 + f.roofMembraneHeight * f.roofMembraneHeight);
+		double meanInnerHeight = 0.5 * f.roofMembraneHeight;
 		double innerMembraneAreaM2 = Math.PI * (r1 * r1 + meanInnerHeight * meanInnerHeight);
 
 		double fSkyRoof = 0.5 * (1.0 + aRoofProjectedM2 / aRoofM2);
@@ -50,8 +51,8 @@ public record RoofGeometry(
 		);
 		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.tSetC() + c.k0C()) / c.normalTemperatureK();
 
-		double outerRadius = (r1 * r1 + p.membraneRoofHeightM() * p.membraneRoofHeightM()) / (2.0 * p.membraneRoofHeightM());
-		double outerAngle = 4.0 * Math.atan(p.membraneRoofHeightM() / r1);
+		double outerRadius = (r1 * r1 + f.roofMembraneHeight * f.roofMembraneHeight) / (2.0 * f.roofMembraneHeight);
+		double outerAngle = 4.0 * Math.atan(f.roofMembraneHeight / r1);
 		double outerArea = 0.5 * (outerRadius * outerRadius) * (outerAngle - Math.sin(outerAngle));
 		double outerLength = outerRadius * outerAngle;
 
