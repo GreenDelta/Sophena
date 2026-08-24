@@ -55,7 +55,7 @@ final class FixedRoofSolver {
 			double tempChangeK = Math.abs(tsRoofNewC - tsRoofC);
 			tsRoofC = tsRoofNewC;
 
-			if (tempChangeK < c.toleranceK()) {
+			if (tempChangeK < c.tolerance()) {
 				break;
 			}
 		}

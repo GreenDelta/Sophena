@@ -85,7 +85,7 @@ final class CylinderWallSolver {
 			double tempChangeK = Math.abs(tsWallNewC - tsWallC);
 			tsWallC = tsWallNewC;
 
-			if (tempChangeK < c.toleranceK()) {
+			if (tempChangeK < c.tolerance()) {
 				break;
 			}
 		}

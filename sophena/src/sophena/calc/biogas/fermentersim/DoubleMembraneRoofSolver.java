@@ -108,7 +108,7 @@ final class DoubleMembraneRoofSolver {
 
 			tempsC = tempsNewC;
 
-			if (maxTempChangeK < c.toleranceK() && maxResidualW < c.residualToleranceW()) {
+			if (maxTempChangeK < c.tolerance() && maxResidualW < c.residualTolerance()) {
 				converged = true;
 				break;
 			}
@@ -177,7 +177,7 @@ final class DoubleMembraneRoofSolver {
 		double res2 = qGapOuterConvectionW + qMembraneRadiationW + qSolarW - qOuterConvectionW - qOuterSkyRadiationW - qOuterGroundRadiationW;
 		double finalMaxRes = Math.max(Math.abs(res0), Math.max(Math.abs(res1), Math.abs(res2)));
 
-		if (finalMaxRes >= c.residualToleranceW()) {
+		if (finalMaxRes >= c.residualTolerance()) {
 			throw new IllegalStateException("Membrane energy balance not closed at hour " + k + ": max residual = " + finalMaxRes + " W");
 		}
 

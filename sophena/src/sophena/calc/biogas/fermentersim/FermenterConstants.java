@@ -1,32 +1,45 @@
 package sophena.calc.biogas.fermentersim;
 
-/// Physical constants and solver iteration parameters.
+/// Constant values of the fermenter simulation.
 ///
-/// @param k0C                            Celsius-Kelvin offset [K]
-/// @param sigma                          Stefan-Boltzmann constant [W/(m2K4)]
-/// @param g                              Standard acceleration of gravity [m/s2]
-/// @param solarConstantWm2               Total Solar Irradiance constant [W/m2]
-/// @param reTransition                   Critical Reynolds transition number [-]
-/// @param soilBufferM                    Soil buffer depth [m]
-/// @param methaneLowerHeatingValueKwhNm3 Methane lower heating value [kWh/Nm3]
-/// @param normalTemperatureK             Normal temperature [K]
-/// @param skyEmissivity                  Effective sky emissivity [-]
-/// @param toleranceK                     Convergence tolerance for temperature [K]
-/// @param residualToleranceW             Convergence residual tolerance [W]
-/// @param relaxation                     Under-relaxation factor (0 < omega <= 1) [-]
-/// @param maxIterations                  Maximum iterations per timestep
+/// @param k0C                 Celsius-Kelvin offset in K
+/// Parameter of the original fermenter simulation model: `k0C`.
+/// @param sigma               Stefan-Boltzmann constant in W/(m2K4)
+/// Parameter of the original fermenter simulation model: `sigma`.
+/// @param g                   Standard acceleration of gravity in m/s2
+/// Parameter of the original fermenter simulation model: `g`.
+/// @param solarConstant       Total Solar Irradiance constant in W/m2
+/// Parameter of the original fermenter simulation model: `solarConstantWm2`.
+/// @param reTransition        Critical Reynolds transition number
+/// Parameter of the original fermenter simulation model: `reTransition`.
+/// @param soilBuffer          Soil buffer depth in m
+/// Parameter of the original fermenter simulation model: `soilBufferM`.
+/// @param methaneHeatingValue Methane lower heating value in kWh/Nm3
+/// Parameter of the original fermenter simulation model: `methaneLowerHeatingValueKwhNm3`.
+/// @param normalTemperatureK  Normal temperature in K
+/// Parameter of the original fermenter simulation model: `normalTemperatureK`.
+/// @param skyEmissivity       Effective sky emissivity
+/// Parameter of the original fermenter simulation model: `skyEmissivity`.
+/// @param tolerance           Convergence tolerance for temperature in K
+/// Parameter of the original fermenter simulation model: `toleranceK`.
+/// @param residualTolerance   Convergence residual tolerance in W
+/// Parameter of the original fermenter simulation model: `residualToleranceW`.
+/// @param relaxation          Under-relaxation factor (0 < omega <= 1)
+/// Parameter of the original fermenter simulation model: `relaxation`.
+/// @param maxIterations       Maximum iterations per timestep
+/// Parameter of the original fermenter simulation model: `maxIterations`.
 public record FermenterConstants(
 	double k0C,
 	double sigma,
 	double g,
-	double solarConstantWm2,
+	double solarConstant,
 	double reTransition,
-	double soilBufferM,
-	double methaneLowerHeatingValueKwhNm3,
+	double soilBuffer,
+	double methaneHeatingValue,
 	double normalTemperatureK,
 	double skyEmissivity,
-	double toleranceK,
-	double residualToleranceW,
+	double tolerance,
+	double residualTolerance,
 	double relaxation,
 	int maxIterations
 ) {

@@ -76,7 +76,7 @@ final class SolarCalculator {
 		double fSkyWall = 0.5;
 		double fGroundWall = 0.5;
 
-		double gOnWm2 = c.solarConstantWm2() * (1.0 + 0.033 * Utils.cosd(360.0 * doy / 365.0));
+		double gOnWm2 = c.solarConstant() * (1.0 + 0.033 * Utils.cosd(360.0 * doy / 365.0));
 		double sinElevationPositive = Math.max(0.0, sinElevation);
 		boolean sunAboveHorizon = sinElevationPositive > 0.0;
 

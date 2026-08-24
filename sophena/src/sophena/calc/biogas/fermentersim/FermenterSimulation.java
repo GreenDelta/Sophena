@@ -44,7 +44,7 @@ public final class FermenterSimulation {
 		double r1 = f.wallInnerRadius();
 		double r2 = f.wallOuterRadius - f.wallInsulationThickness;
 		double r3 = f.wallOuterRadius;
-		double r4 = r3 + c.soilBufferM();
+		double r4 = r3 + c.soilBuffer();
 
 		double rWallEarthGeometryMKW = Math.log(r2 / r1) / m.wLambdaWmK()
 			+ Math.log(r3 / r2) / m.wLambdaIWmK()

@@ -47,7 +47,7 @@ public record RoofGeometry(
 		double fGroundRoof = 1.0 - fSkyRoof;
 
 		double biogasFlowNm3h = p.bhkwMeanElectricPowerKW() / (
-			p.bhkwElectricEfficiency() * c.methaneLowerHeatingValueKwhNm3() * p.biogasMethaneFraction()
+			p.bhkwElectricEfficiency() * c.methaneHeatingValue() * p.biogasMethaneFraction()
 		);
 		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.fermenter().targetTemperature + c.k0C()) / c.normalTemperatureK();
 
