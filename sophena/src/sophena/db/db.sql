@@ -121,8 +121,26 @@ CREATE TABLE tbl_biogas_plants (
 
 CREATE TABLE tbl_fermenters (
 
-    id          CHAR(36),
-    roof_type   VARCHAR(255),
+    id                          CHAR(36),
+    roof_type                   VARCHAR(255),
+
+    wall_outer_radius           DOUBLE,
+    wall_structural_thickness   DOUBLE,
+    wall_insulation_thickness   DOUBLE,
+    wall_total_height           DOUBLE,
+    wall_buried_fraction        DOUBLE,
+
+    roof_fixed_layer_thickness  DOUBLE,
+    roof_insulation_thickness   DOUBLE,
+    roof_membrane_height        DOUBLE,
+
+    floor_slab_thickness        DOUBLE,
+    floor_insulation_thickness  DOUBLE,
+
+    wall_shading_fraction       DOUBLE,
+    roof_shading_fraction       DOUBLE,
+
+    mixer_power_density         DOUBLE,
 
     PRIMARY KEY (id)
 );
