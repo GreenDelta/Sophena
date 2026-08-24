@@ -67,10 +67,10 @@ final class DoubleMembraneRoofSolver {
 		for (int iter = 1; iter <= c.maxIterations(); iter++) {
 			double tInnerK = tempsC[0] + c.k0C();
 			double tOuterK = tempsC[2] + c.k0C();
-			double tSubstrateK = p.tSetC() + c.k0C();
+			double tSubstrateK = p.fermenter().targetTemperature + c.k0C();
 
 			var natConvection = NaturalConvectionHelper.compute(
-				p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c
+				p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c
 			);
 			double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
@@ -88,7 +88,7 @@ final class DoubleMembraneRoofSolver {
 			};
 
 			double[] rhs = new double[]{
-				hFromSubstrateWK * p.tSetC(),
+				hFromSubstrateWK * p.fermenter().targetTemperature,
 				hSupportAirAdvectionWK * tAirC,
 				(hExternalConvectionWK + hRadGroundWK) * tAirC + hRadSkyWK * tSkyC + qSolarW
 			};
@@ -154,14 +154,14 @@ final class DoubleMembraneRoofSolver {
 		double tSkyK,
 		double tAmbientK
 	) {
-		var natConvection = NaturalConvectionHelper.compute(p.tSetC(), tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c);
+		var natConvection = NaturalConvectionHelper.compute(p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c);
 		double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
-		double tSubstrateK = p.tSetC() + c.k0C();
+		double tSubstrateK = p.fermenter().targetTemperature + c.k0C();
 		double tInnerK = tempsC[0] + c.k0C();
 		double tOuterK = tempsC[2] + c.k0C();
 
-		double qInnerConvectionW = hInnerConvectionWK * (p.tSetC() - tempsC[0]);
+		double qInnerConvectionW = hInnerConvectionWK * (p.fermenter().targetTemperature - tempsC[0]);
 		double qInnerRadiationW = c.sigma() * (Math.pow(tSubstrateK, 4) - Math.pow(tInnerK, 4)) / rRadSubstrateInnerM2;
 		double qMembraneRadiationW = c.sigma() * (Math.pow(tInnerK, 4) - Math.pow(tOuterK, 4)) / rRadInnerOuterM2;
 		double qGapInnerConvectionW = hGapInnerWK * (tempsC[0] - tempsC[1]);

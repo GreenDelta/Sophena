@@ -42,7 +42,7 @@ final class FixedRoofSolver {
 			double hRadGroundWm2K = m.dEpsilonDA() * roofGeo.fGroundRoof() * c.sigma() * (tsRoofK + tGroundK) * (tsRoofK * tsRoofK + tGroundK * tGroundK);
 
 			double tsRoofRawC = (
-				p.tSetC() / rRoofM2KW
+				p.fermenter().targetTemperature / rRoofM2KW
 					+ hRoofExternalWm2K * tAirC
 					+ hRadSkyWm2K * (tSkyK - c.k0C())
 					+ hRadGroundWm2K * tAirC
@@ -60,7 +60,7 @@ final class FixedRoofSolver {
 			}
 		}
 
-		double qRoofWm2 = (p.tSetC() - tsRoofC) / rRoofM2KW;
+		double qRoofWm2 = (p.fermenter().targetTemperature - tsRoofC) / rRoofM2KW;
 		double qRoofW = roofGeo.aRoofM2() * qRoofWm2;
 
 		return new FixedRoofResult(tsRoofC, qRoofW);

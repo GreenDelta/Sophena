@@ -13,10 +13,7 @@ import sophena.model.biogas.RoofType;
 public record FermenterParameters(
 	Fermenter fermenter,
 	WeatherStation station,
-	double tSetC,
 	double bhkwMeanElectricPowerKW,
-	double mixerRunTimeMinPerHour,
-	double mixerHeatFraction,
 	double bhkwElectricEfficiency,
 	double biogasMethaneFraction,
 	double membraneRoofAlpha,
@@ -34,6 +31,7 @@ public record FermenterParameters(
 
 		var fermenter = new Fermenter();
 		fermenter.roofType = RoofType.DOUBLE_MEMBRANE;
+		fermenter.targetTemperature = 38.0;
 		fermenter.wallOuterRadius = 12.32;
 		fermenter.wallStructuralThickness = 0.10;
 		fermenter.wallInsulationThickness = 0.10;
@@ -47,14 +45,13 @@ public record FermenterParameters(
 		fermenter.wallShadingFraction = 0.50;
 		fermenter.roofShadingFraction = 0.50;
 		fermenter.mixerPowerDensity = 16.0;
+		fermenter.mixerRuntime = 15.0;
+		fermenter.mixerHeatFraction = 1.0;
 
 		return new FermenterParameters(
 			fermenter,
 			station,
-			38.0,                       // Target substrate temperature [degC]
 			500.0,                      // Mean CHP electric power [kW]
-			15.0,                       // Mixer runtime per hour [min/h]
-			1.0,                        // Mixer heat fraction in operation [-]
 			0.40,                       // CHP electric efficiency [-]
 			0.50,                       // Methane fraction in biogas [-]
 			0.60,                       // Solar absorption coefficient of outer membrane [-]

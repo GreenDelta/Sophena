@@ -49,7 +49,7 @@ public record RoofGeometry(
 		double biogasFlowNm3h = p.bhkwMeanElectricPowerKW() / (
 			p.bhkwElectricEfficiency() * c.methaneLowerHeatingValueKwhNm3() * p.biogasMethaneFraction()
 		);
-		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.tSetC() + c.k0C()) / c.normalTemperatureK();
+		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.fermenter().targetTemperature + c.k0C()) / c.normalTemperatureK();
 
 		double outerRadius = (r1 * r1 + f.roofMembraneHeight * f.roofMembraneHeight) / (2.0 * f.roofMembraneHeight);
 		double outerAngle = 4.0 * Math.atan(f.roofMembraneHeight / r1);

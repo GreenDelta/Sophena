@@ -124,6 +124,8 @@ CREATE TABLE tbl_fermenters (
     id                          CHAR(36),
     roof_type                   VARCHAR(255),
 
+    target_temperature          DOUBLE,
+
     wall_outer_radius           DOUBLE,
     wall_structural_thickness   DOUBLE,
     wall_insulation_thickness   DOUBLE,
@@ -141,6 +143,8 @@ CREATE TABLE tbl_fermenters (
     roof_shading_fraction       DOUBLE,
 
     mixer_power_density         DOUBLE,
+    mixer_runtime               DOUBLE,
+    mixer_heat_fraction         DOUBLE,
 
     PRIMARY KEY (id)
 );

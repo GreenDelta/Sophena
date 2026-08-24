@@ -72,7 +72,7 @@ final class CylinderWallSolver {
 			double hWallRadGroundWm2K = m.wEpsilon() * fGroundWall * c.sigma() * (tsWallK + tGroundK) * (tsWallK * tsWallK + tGroundK * tGroundK);
 
 			double tsWallRawC = (
-				p.tSetC() / rWallM2KW
+				p.fermenter().targetTemperature / rWallM2KW
 					+ hWallMixedWm2K * tAirC
 					+ hWallRadSkyWm2K * (tSkyK - c.k0C())
 					+ hWallRadGroundWm2K * tAirC
@@ -90,7 +90,7 @@ final class CylinderWallSolver {
 			}
 		}
 
-		double qWallWm2 = (p.tSetC() - tsWallC) / rWallM2KW;
+		double qWallWm2 = (p.fermenter().targetTemperature - tsWallC) / rWallM2KW;
 		double qWallAirW = aWallAirM2 * qWallWm2;
 
 		return new WallResult(tsWallC, qWallAirW);

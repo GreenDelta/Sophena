@@ -38,7 +38,7 @@ public final class FermenterSimulation {
 
 		double fermenterVolumeM3 = Math.PI * (f.wallInnerRadius() * f.wallInnerRadius()) * f.wallTotalHeight;
 		double mixerInstalledPowerKW = f.mixerPowerDensity * fermenterVolumeM3 / 1000.0;
-		double mixerMeanHeatKW = mixerInstalledPowerKW * (p.mixerRunTimeMinPerHour() / 60.0) * p.mixerHeatFraction();
+		double mixerMeanHeatKW = mixerInstalledPowerKW * (p.fermenter().mixerRuntime / 60.0) * p.fermenter().mixerHeatFraction;
 		double qMixerGainW = 1000.0 * mixerMeanHeatKW;
 
 		double r1 = f.wallInnerRadius();
@@ -71,8 +71,8 @@ public final class FermenterSimulation {
 			);
 
 			if (k == 0) {
-				prevMembraneTempsC[0] = p.tSetC() - 1.0;
-				prevMembraneTempsC[1] = 0.5 * (p.tSetC() + stepInput.tAirC());
+				prevMembraneTempsC[0] = p.fermenter().targetTemperature - 1.0;
+				prevMembraneTempsC[1] = 0.5 * (p.fermenter().targetTemperature + stepInput.tAirC());
 				prevMembraneTempsC[2] = stepInput.tAirC() + 1.0;
 			}
 
@@ -86,10 +86,10 @@ public final class FermenterSimulation {
 
 			var wallEval = CylinderWallSolver.solve(p, m, c, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
 
-			double qWallEarthW = (p.tSetC() - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
-			double qFloorW = (aFloorM2 / rFloorM2KW) * (p.tSetC() - groundTemps.tEarthBottomC()[k]);
+			double qWallEarthW = (p.fermenter().targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
+			double qFloorW = (aFloorM2 / rFloorM2KW) * (p.fermenter().targetTemperature - groundTemps.tEarthBottomC()[k]);
 			double feedKgS = stepInput.feedKgH() / 3600.0;
-			double qFeedW = feedKgS * m.sCpJkgK() * (p.tSetC() - stepInput.tAirC());
+			double qFeedW = feedKgS * m.sCpJkgK() * (p.fermenter().targetTemperature - stepInput.tAirC());
 
 			double qBalanceW = roofEval.qRoofW() + wallEval.qWallAirW() + qWallEarthW + qFloorW + qFeedW - qMixerGainW;
 			double qHeatKW = Math.max(0.0, qBalanceW) / 1000.0;
