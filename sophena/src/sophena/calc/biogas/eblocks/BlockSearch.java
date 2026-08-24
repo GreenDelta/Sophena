@@ -1,9 +1,7 @@
 package sophena.calc.biogas.eblocks;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 
-import org.apache.lucene.index.ReaderSlice;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;

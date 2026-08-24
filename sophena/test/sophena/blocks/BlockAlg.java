@@ -2,7 +2,6 @@ package sophena.blocks;
 
 import java.io.File;
 
-import sophena.calc.biogas.eblocks.BlockSearch;
 import sophena.db.Database;
 import sophena.model.biogas.BiogasPlant;
 
@@ -17,7 +16,7 @@ public class BlockAlg {
 			var plant = db.getAll(BiogasPlant.class).getFirst();
 			System.out.println(plant.name);
 
-			new BlockSearch(plant).run();
+			// new BlockSearch(plant).run();
 
 
 
