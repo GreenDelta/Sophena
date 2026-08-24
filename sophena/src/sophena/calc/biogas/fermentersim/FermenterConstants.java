@@ -1,8 +1,20 @@
 package sophena.calc.biogas.fermentersim;
 
-/**
- * Physical constants and solver iteration parameters.
- */
+/// Physical constants and solver iteration parameters.
+///
+/// @param k0C                            Celsius-Kelvin offset [K]
+/// @param sigma                          Stefan-Boltzmann constant [W/(m2K4)]
+/// @param g                              Standard acceleration of gravity [m/s2]
+/// @param solarConstantWm2               Total Solar Irradiance constant [W/m2]
+/// @param reTransition                   Critical Reynolds transition number [-]
+/// @param soilBufferM                    Soil buffer depth [m]
+/// @param methaneLowerHeatingValueKwhNm3 Methane lower heating value [kWh/Nm3]
+/// @param normalTemperatureK             Normal temperature [K]
+/// @param skyEmissivity                  Effective sky emissivity [-]
+/// @param toleranceK                     Convergence tolerance for temperature [K]
+/// @param residualToleranceW             Convergence residual tolerance [W]
+/// @param relaxation                     Under-relaxation factor (0 < omega <= 1) [-]
+/// @param maxIterations                  Maximum iterations per timestep
 public record FermenterConstants(
 	double k0C,
 	double sigma,
