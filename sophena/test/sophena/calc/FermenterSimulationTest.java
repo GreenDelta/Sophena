@@ -15,12 +15,11 @@ import sophena.calc.biogas.fermentersim.SyntheticDataGenerator;
 public class FermenterSimulationTest {
 
 	@Test
-	public void testSimulationResultsMatchPythonModel() {
-		var parameters = FermenterParameters.createDefault();
+	public void testSimulationResults() {
+		var station = SyntheticDataGenerator.generateStation();
+		var parameters = FermenterParameters.createDefault(station);
 		var materials = FermenterMaterials.createDefault();
 		var constants = FermenterConstants.createDefault();
-
-		var station = SyntheticDataGenerator.generateStation(parameters);
 		double[] dataBefore = station.data.clone();
 		double[] beamBefore = station.directRadiation.clone();
 		double[] diffuseBefore = station.diffuseRadiation.clone();
@@ -39,11 +38,11 @@ public class FermenterSimulationTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testMissingRadiationDataThrows() {
-		var parameters = FermenterParameters.createDefault();
+		var station = SyntheticDataGenerator.generateStation();
+		var parameters = FermenterParameters.createDefault(station);
 		var materials = FermenterMaterials.createDefault();
 		var constants = FermenterConstants.createDefault();
 
-		var station = SyntheticDataGenerator.generateStation(parameters);
 		station.directRadiation = null;
 
 		SimulationInput.constant(station, 3.5, 1875.0);

@@ -31,12 +31,13 @@ final class SolarCalculator {
 			- 7.53 * Math.cos(dayAngleRad)
 			- 1.5 * Math.sin(dayAngleRad);
 
-		double solarTimeH = hod + (4.0 * (p.longitudeDeg() - p.timeMeridianDeg()) + equationOfTimeMin) / 60.0;
+		var station = p.station();
+		double solarTimeH = hod + (4.0 * (station.longitude - station.referenceLongitude) + equationOfTimeMin) / 60.0;
 		double hourAngleDeg = 15.0 * (solarTimeH - 12.0);
 		double declinationDeg = 23.45 * Utils.sind(360.0 / 365.0 * (284.0 + doy));
 
-		double sinElevation = Utils.sind(p.latitudeDeg()) * Utils.sind(declinationDeg)
-			+ Utils.cosd(p.latitudeDeg()) * Utils.cosd(declinationDeg) * Utils.cosd(hourAngleDeg);
+		double sinElevation = Utils.sind(station.latitude) * Utils.sind(declinationDeg)
+			+ Utils.cosd(station.latitude) * Utils.cosd(declinationDeg) * Utils.cosd(hourAngleDeg);
 		sinElevation = Math.clamp(sinElevation, -1.0, 1.0);
 		double cosElevation = Math.sqrt(Math.max(0.0, 1.0 - sinElevation * sinElevation));
 

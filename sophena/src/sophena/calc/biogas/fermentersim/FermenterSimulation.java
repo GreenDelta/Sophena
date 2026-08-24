@@ -10,9 +10,9 @@ public final class FermenterSimulation {
 
 	/**
 	 * Runs the simulation. The weather data are used directly from the weather
-	 * station of the given input (read-only, never modified). The station's
-	 * latitude, longitude and reference meridian are used for the solar
-	 * calculations.
+	 * station of the given input (read-only, never modified). The location for
+	 * the solar calculations is taken from the weather station referenced by
+	 * the parameters.
 	 */
 	public SimulationResult run(
 		FermenterParameters p,
@@ -20,11 +20,10 @@ public final class FermenterSimulation {
 		FermenterConstants c,
 		SimulationInput input
 	) {
-		p = p.withLocation(
-			input.station().latitude,
-			input.station().longitude,
-			input.station().referenceLongitude
-		);
+		if (p.station() == null) {
+			throw new IllegalArgumentException(
+				"FermenterParameters must reference a weather station for the location.");
+		}
 		var groundTemps = SoilTemperatureCalculator.calculate(input, p, m);
 		var roofGeo = (p.roofType() == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)

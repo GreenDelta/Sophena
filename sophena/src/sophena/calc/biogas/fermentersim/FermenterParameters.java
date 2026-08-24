@@ -1,7 +1,11 @@
 package sophena.calc.biogas.fermentersim;
 
+
+import sophena.model.WeatherStation;
+
 /**
- * Plant operational parameters and geometry definitions.
+ * Plant operational parameters and geometry definitions. The location used for
+ * the solar calculations is taken directly from the referenced weather station.
  */
 public record FermenterParameters(
 	double tSetC,
@@ -17,9 +21,7 @@ public record FermenterParameters(
 	double bhkwMeanElectricPowerKW,
 	double boSM,
 	double boIm,
-	double latitudeDeg,
-	double longitudeDeg,
-	double timeMeridianDeg,
+	WeatherStation station,
 	double wallShadingFraction,
 	double roofShadingFraction,
 	double mixerInstalledPowerDensityWm3,
@@ -35,25 +37,11 @@ public record FermenterParameters(
 	double outerMembraneEpsilonExterior,
 	double wRim
 ) {
-	/**
-	 * Returns a copy of these parameters with the given location applied.
-	 */
-	public FermenterParameters withLocation(
-		double latitudeDeg, double longitudeDeg, double timeMeridianDeg
-	) {
-		return new FermenterParameters(
-			tSetC, wRaM, wS, wIm, wHTotalM, buriedWallFraction, roofType,
-			dIm, dSdM, membraneRoofHeightM, bhkwMeanElectricPowerKW, boSM, boIm,
-			latitudeDeg, longitudeDeg, timeMeridianDeg,
-			wallShadingFraction, roofShadingFraction,
-			mixerInstalledPowerDensityWm3, mixerRunTimeMinPerHour, mixerHeatFraction,
-			bhkwElectricEfficiency, biogasMethaneFraction, membraneRoofAlpha,
-			liquidSurfaceEpsilon, innerMembraneEpsilonInterior, innerMembraneEpsilonGap,
-			outerMembraneEpsilonGap, outerMembraneEpsilonExterior, wRim
-		);
-	}
 
-	public static FermenterParameters createDefault() {
+	public static FermenterParameters createDefault(WeatherStation station) {
+		if (station == null) {
+			throw new IllegalArgumentException("Weather station is required.");
+		}
 		double wRaM = 12.32;
 		double wS = 0.10;
 		double wIm = 0.10;
@@ -73,9 +61,7 @@ public record FermenterParameters(
 			500.0,                      // Mean CHP electric power [kW]
 			0.20,                       // Floor slab thickness [m]
 			0.10,                       // Floor insulation thickness [m]
-			52.52,                      // Latitude [deg]
-			13.405,                     // Longitude [deg]
-			15.0,                       // Reference meridian [deg]
+			station,                    // Weather station providing the location
 			0.50,                       // Wall shading fraction [-]
 			0.50,                       // Roof shading fraction [-]
 			16.0,                       // Installed mixer power density [W/m3]

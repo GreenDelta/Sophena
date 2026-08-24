@@ -23,6 +23,7 @@ public record FermenterMaterials(
 	double uRhoKgm3,
 	double sCpJkgK
 ) {
+
 	public static FermenterMaterials createDefault() {
 		return new FermenterMaterials(
 			2.10,      // Wall thermal conductivity [W/(m K)]
@@ -45,4 +46,5 @@ public record FermenterMaterials(
 			3900.0     // Substrate specific heat capacity [J/(kg K)]
 		);
 	}
+
 }
