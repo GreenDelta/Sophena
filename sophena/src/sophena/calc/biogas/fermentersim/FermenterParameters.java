@@ -2,6 +2,7 @@ package sophena.calc.biogas.fermentersim;
 
 
 import sophena.model.WeatherStation;
+import sophena.model.biogas.RoofType;
 
 /**
  * Plant operational parameters and geometry definitions. The location used for

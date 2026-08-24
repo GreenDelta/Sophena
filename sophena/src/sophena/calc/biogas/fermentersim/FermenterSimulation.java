@@ -3,6 +3,8 @@ package sophena.calc.biogas.fermentersim;
 import java.util.ArrayList;
 import java.util.List;
 
+import sophena.model.biogas.RoofType;
+
 /**
  * Main simulation runner executing the quasi-stationary fermenter heat demand model.
  */

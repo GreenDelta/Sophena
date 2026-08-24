@@ -46,6 +46,10 @@ public class BiogasPlant extends RootEntity {
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
 
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "f_fermenter")
+	public Fermenter fermenter;
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<BiogasPlantBoiler> boilers = new ArrayList<>();
@@ -153,6 +157,7 @@ public class BiogasPlant extends RootEntity {
 		copy.electricityPrices = electricityPrices;
 		copy.gasStorageSize = gasStorageSize;
 		copy.minimumRuntime = minimumRuntime;
+		copy.fermenter = fermenter != null ? fermenter.copy() : null;
 		for (var boiler : boilers) {
 			if (boiler != null) {
 				copy.boilers.add(boiler.copy());

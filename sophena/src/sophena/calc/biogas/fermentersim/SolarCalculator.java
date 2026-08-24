@@ -1,5 +1,7 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.biogas.RoofType;
+
 /**
  * Solar radiation geometric decomposition and absorbed solar radiation computation.
  */

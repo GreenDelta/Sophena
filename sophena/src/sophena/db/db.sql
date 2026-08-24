@@ -96,6 +96,7 @@ CREATE TABLE tbl_biogas_plants (
     f_demand_electricity_mix    CHAR(36),
     gas_storage_size            DOUBLE,
     minimum_runtime             INTEGER,
+    f_fermenter                 CHAR(36),
 
     hourly_wage                 DOUBLE,
     electricity_price           DOUBLE,
@@ -113,6 +114,15 @@ CREATE TABLE tbl_biogas_plants (
     operation_factor            DOUBLE,
     maintenance_factor          DOUBLE,
     electricity_revenues_factor DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_fermenters (
+
+    id          CHAR(36),
+    roof_type   VARCHAR(255),
 
     PRIMARY KEY (id)
 );
