@@ -391,10 +391,6 @@ func cFlo(row []string, idx int) float64 {
 		return 0
 	}
 	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		dummy := 0
-		dummy = dummy + 1
-	}
 	check(err)
 	return f
 }
