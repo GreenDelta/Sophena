@@ -8,9 +8,6 @@ import java.util.List;
 public record SimulationResult(
 	List<SimulationResultStep> steps,
 	double totalEnergyMWh,
-	double peakHeatingPowerKW,
-	FermenterParameters parameters,
-	MaterialConstants materials,
-	SimulationConstants constants
+	double peakHeatingPowerKW
 ) {
 }

@@ -121,7 +121,7 @@ public final class FermenterSimulation {
 		}
 
 		double totalEnergyMWh = totalHeatKwSum / 1000.0;
-		return new SimulationResult(steps, totalEnergyMWh, peakKw, p, m, c);
+		return new SimulationResult(steps, totalEnergyMWh, peakKw);
 	}
 
 	private record StepInput(int doy, double hod, double tAirC, double bHorWm2,
