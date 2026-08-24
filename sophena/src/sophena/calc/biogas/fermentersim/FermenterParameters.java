@@ -35,6 +35,24 @@ public record FermenterParameters(
 	double outerMembraneEpsilonExterior,
 	double wRim
 ) {
+	/**
+	 * Returns a copy of these parameters with the given location applied.
+	 */
+	public FermenterParameters withLocation(
+		double latitudeDeg, double longitudeDeg, double timeMeridianDeg
+	) {
+		return new FermenterParameters(
+			tSetC, wRaM, wS, wIm, wHTotalM, buriedWallFraction, roofType,
+			dIm, dSdM, membraneRoofHeightM, bhkwMeanElectricPowerKW, boSM, boIm,
+			latitudeDeg, longitudeDeg, timeMeridianDeg,
+			wallShadingFraction, roofShadingFraction,
+			mixerInstalledPowerDensityWm3, mixerRunTimeMinPerHour, mixerHeatFraction,
+			bhkwElectricEfficiency, biogasMethaneFraction, membraneRoofAlpha,
+			liquidSurfaceEpsilon, innerMembraneEpsilonInterior, innerMembraneEpsilonGap,
+			outerMembraneEpsilonGap, outerMembraneEpsilonExterior, wRim
+		);
+	}
+
 	public static FermenterParameters createDefault() {
 		double wRaM = 12.32;
 		double wS = 0.10;

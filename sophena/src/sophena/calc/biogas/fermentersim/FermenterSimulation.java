@@ -8,12 +8,23 @@ import java.util.List;
  */
 public final class FermenterSimulation {
 
+	/**
+	 * Runs the simulation. The weather data are used directly from the weather
+	 * station of the given input (read-only, never modified). The station's
+	 * latitude, longitude and reference meridian are used for the solar
+	 * calculations.
+	 */
 	public SimulationResult run(
 		FermenterParameters p,
 		FermenterMaterials m,
 		FermenterConstants c,
 		SimulationInput input
 	) {
+		p = p.withLocation(
+			input.station().latitude,
+			input.station().longitude,
+			input.station().referenceLongitude
+		);
 		var groundTemps = SoilTemperatureCalculator.calculate(input, p, m);
 		var roofGeo = (p.roofType() == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
@@ -114,7 +125,15 @@ public final class FermenterSimulation {
 	private StepInput extractStepInput(SimulationInput input, int k) {
 		int doy = (k / 24) + 1;
 		double hod = k % 24;
-		return new StepInput(doy, hod, input.tAirC()[k], input.bHorWm2()[k], input.dHorWm2()[k], input.windMps()[k], input.feedKgH()[k]);
+		var station = input.station();
+		return new StepInput(
+			doy, hod,
+			station.data[k],
+			station.directRadiation[k],
+			station.diffuseRadiation[k],
+			input.windMps(),
+			input.feedKgH()[k]
+		);
 	}
 
 	private record RoofEval(

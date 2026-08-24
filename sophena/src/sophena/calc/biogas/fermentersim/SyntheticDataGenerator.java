@@ -2,38 +2,44 @@ package sophena.calc.biogas.fermentersim;
 
 
 import sophena.model.Stats;
+import sophena.model.WeatherStation;
 
 /**
- * Generates synthetic weather and operational dataset for 8760 hours.
+ * Generates a synthetic weather station dataset for 8760 hours.
  */
 public final class SyntheticDataGenerator {
 
 	private SyntheticDataGenerator() {
 	}
 
-	public static SimulationInput generate(FermenterParameters p) {
+	public static WeatherStation generateStation(FermenterParameters p) {
 		var tAirC = new double[Stats.HOURS];
 		var bHorWm2 = new double[Stats.HOURS];
 		var dHorWm2 = new double[Stats.HOURS];
-		var windMps = new double[Stats.HOURS];
-		var feedKgH = new double[Stats.HOURS];
 
 		for (int k = 0; k < Stats.HOURS; k++) {
 			int doy = (k / 24) + 1;
 			double hod = k % 24;
 
 			tAirC[k] = computeSyntheticAirTemperature(doy, hod);
-			windMps[k] = Math.max(0.2, 3.5 + 1.2 * Math.sin(2.0 * Math.PI * hod / 24.0 + 0.7));
 
 			double sinElevation = computeSunElevation(p, doy, hod);
 			double solarFactor = Math.max(0.25, 0.65 + 0.35 * Math.sin(2.0 * Math.PI * (doy - 80.0) / 365.0));
 
 			bHorWm2[k] = 750.0 * solarFactor * sinElevation;
 			dHorWm2[k] = 120.0 * solarFactor * Math.sqrt(sinElevation);
-			feedKgH[k] = 45000.0 / 24.0;
 		}
 
-		return new SimulationInput(tAirC, bHorWm2, dHorWm2, windMps, feedKgH);
+		var station = new WeatherStation();
+		station.name = "Synthetic weather station";
+		station.latitude = p.latitudeDeg();
+		station.longitude = p.longitudeDeg();
+		station.referenceLongitude = p.timeMeridianDeg();
+		station.altitude = 0.0;
+		station.data = tAirC;
+		station.directRadiation = bHorWm2;
+		station.diffuseRadiation = dHorWm2;
+		return station;
 	}
 
 	private static double computeSyntheticAirTemperature(int doy, double hod) {

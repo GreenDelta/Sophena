@@ -8,6 +8,7 @@ import sophena.calc.biogas.fermentersim.FermenterConstants;
 import sophena.calc.biogas.fermentersim.FermenterMaterials;
 import sophena.calc.biogas.fermentersim.FermenterParameters;
 import sophena.calc.biogas.fermentersim.FermenterSimulation;
+import sophena.calc.biogas.fermentersim.SimulationInput;
 import sophena.calc.biogas.fermentersim.SyntheticDataGenerator;
 
 
@@ -19,12 +20,32 @@ public class FermenterSimulationTest {
 		var materials = FermenterMaterials.createDefault();
 		var constants = FermenterConstants.createDefault();
 
-		var input = SyntheticDataGenerator.generate(parameters);
+		var station = SyntheticDataGenerator.generateStation(parameters);
+		double[] dataBefore = station.data.clone();
+		double[] beamBefore = station.directRadiation.clone();
+		double[] diffuseBefore = station.diffuseRadiation.clone();
+
+		var input = SimulationInput.constant(station, 3.5, 1875.0);
 		var simulation = new FermenterSimulation();
 		var result = simulation.run(parameters, materials, constants, input);
 
 		assertEquals(8760, result.steps().size());
-		assertEquals(761.469824, result.totalEnergyMWh(), 1e-4);
-		assertEquals(130.891196, result.peakHeatingPowerKW(), 1e-4);
+		assertEquals(763.991697, result.totalEnergyMWh(), 1e-4);
+		assertEquals(130.440041, result.peakHeatingPowerKW(), 1e-4);
+		assertArrayEquals(dataBefore, station.data, 0.0);
+		assertArrayEquals(beamBefore, station.directRadiation, 0.0);
+		assertArrayEquals(diffuseBefore, station.diffuseRadiation, 0.0);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testMissingRadiationDataThrows() {
+		var parameters = FermenterParameters.createDefault();
+		var materials = FermenterMaterials.createDefault();
+		var constants = FermenterConstants.createDefault();
+
+		var station = SyntheticDataGenerator.generateStation(parameters);
+		station.directRadiation = null;
+
+		SimulationInput.constant(station, 3.5, 1875.0);
 	}
 }
