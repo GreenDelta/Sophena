@@ -121,6 +121,10 @@ public class Sorters {
 			if (c != 0 || p1 == null || p2 == null)
 				return c;
 
+			if (Math.abs(p1.ratedPower - p2.ratedPower) > 1e-6) {
+				return Double.compare(p1.ratedPower, p2.ratedPower);
+			}
+			
 			return byManufacturer(p1, p2);
 		});
 	}

@@ -17,6 +17,7 @@ import sophena.model.BufferTank;
 import sophena.model.FlueGasCleaning;
 import sophena.model.HeatRecovery;
 import sophena.model.Pipe;
+import sophena.model.TransferStation;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.MsgBox;
 
@@ -114,7 +115,7 @@ class ProductCleanup implements Runnable {
 		});
 
 		// transfer stations
-		Dao<FlueGasCleaning> tsDao = new Dao<>(FlueGasCleaning.class, db);
+		Dao<TransferStation> tsDao = new Dao<>(TransferStation.class, db);
 		tsDao.getAll().stream().forEach(ts -> {
 			if (!ts.isProtected)
 				return;

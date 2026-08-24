@@ -20,11 +20,14 @@ def main(xls_file):
     write_manufacturers(wb)
     write_boilers(wb)
     write_cogen_boilers(wb)
-    write_heat_recoveries(wb)
-    write_flue_gas_cleanings(wb)
+    #write_heat_recoveries(wb)
+    #write_flue_gas_cleanings(wb)
     write_buffers(wb)
     write_pipes(wb)
     write_transfer_stations(wb)
+    write_heatpumps(wb)
+    write_heatpump_curves(wb)
+    write_solarthermal_plants(wb)
 
 
 def write_boilers(wb):
@@ -85,6 +88,37 @@ def write_transfer_stations(wb):
                   key_fn=lambda x: path(*(x[1:5] + [x[8]])))
 
 
+def write_heatpumps(wb):
+    log.info('extract heatpumps')
+    header = prepare_header() + ['source', 'nominal_power', 'min_power', 'description']
+    write_records(wb, 'Wärmepumpen (Grunddaten)', header, 'heat_pumps.csv')
+
+
+def write_heatpump_curves(wb):
+    log.info('extract heatpump curves')
+    header = ['description', 'target_temperature', 'source_temperature', 'max_power', 'cop']
+
+    sheet = wb.sheet_by_name('Wärmepumpen (Betriebpunkte)')
+
+    records = []
+    for row in range(1, sheet.nrows):
+        r = []
+        for col in range(0, len(header)):
+            r.append(sheet.cell_value(row, col))
+        records.append(r)
+    records.insert(0, header)
+    write(records, 'heat_pump_curves.csv')
+
+
+def write_solarthermal_plants(wb):
+    log.info('extract solarthermal plants')
+    header = prepare_header() + ['collectorArea', 'efficiencyRateRadiation', 'correctionFactor', 'heatTransferCoefficient1', 'heatTransferCoefficient2', 'heatCapacity',
+                                 'angleIncidenceEW10', 'angleIncidenceEW20', 'angleIncidenceEW30', 'angleIncidenceEW40', 'angleIncidenceEW50', 'angleIncidenceEW60', 'angleIncidenceEW70', 'angleIncidenceEW80', 'angleIncidenceEW90', 
+                                 'angleIncidenceNS10', 'angleIncidenceNS20', 'angleIncidenceNS30', 'angleIncidenceNS40', 'angleIncidenceNS50', 'angleIncidenceNS60', 'angleIncidenceNS70', 'angleIncidenceNS80', 'angleIncidenceNS90',
+                                 'description']
+    write_records(wb, 'Solarthermie', header, 'solar_collectors.csv')
+
+
 def write_records(workbook, sheet_name, header, csv_file, key_fn=None):
     records = []
     sheet = workbook.sheet_by_name(sheet_name)
@@ -105,6 +139,7 @@ def write_records(workbook, sheet_name, header, csv_file, key_fn=None):
     write(records, csv_file)
 
 
+
 def prepare_header():
     return ['id', 'product type', 'product group', 'manufacturer', 'name',
             'url', 'price']
@@ -114,9 +149,9 @@ def write_manufacturers(workbook):
     log.info('extract manufacturers')
     names = get_producer_names(workbook)
     names.sort()
-    records = [['id', 'name', 'address', 'url', 'description']]
+    records = [['id', 'name', 'address', 'url', 'description', 'sponsor pos', 'image']]
     for name in names:
-        r = [uid(name), name, '', '', '']
+        r = [uid(name), name, '', '', '', '', '']
         records.append(r)
     write(records, 'manufacturers.csv')
 
@@ -178,4 +213,4 @@ def write(records, file_name):
 
 
 if __name__ == '__main__':
-    main('./data/Produktdatenbank_2016_07_08.xlsx')
+    main('./data/Produktdatenbank 30 mit Standardprodukten.xls')

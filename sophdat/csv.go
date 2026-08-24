@@ -121,18 +121,18 @@ func (model *CsvModel) readBoilers() {
 		b := Boiler{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &b.Product, productType)
-		b.MaxPower = cFlo(row, 7)
-		b.MinPower = cFlo(row, 8)
-		b.EfficiencyRate = cFlo(row, 9)
+		b.MaxPower = cFlo(row, 8)
+		b.MinPower = cFlo(row, 9)
+		b.EfficiencyRate = cFlo(row, 10)
 		if productType != "COGENERATION_PLANT" {
 			b.IsCoGenPlant = false
-			b.Description = cStr(row, 10)
+			b.Description = cStr(row, 11)
 		} else {
 			b.IsCoGenPlant = true
-			b.MaxPowerElectric = cFlo(row, 10)
-			b.MinPowerElectric = cFlo(row, 11)
-			b.EfficiencyRateElectric = cFlo(row, 12)
-			b.Description = cStr(row, 13)
+			b.MaxPowerElectric = cFlo(row, 11)
+			b.MinPowerElectric = cFlo(row, 12)
+			b.EfficiencyRateElectric = cFlo(row, 13)
+			b.Description = cStr(row, 14)
 		}
 		model.Boilers = append(model.Boilers, &b)
 	}
@@ -268,12 +268,12 @@ func (model *CsvModel) readHeatPumps() {
 		h := HeatPump{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &h.Product, productType)
-		h.MinPower = cFlo(row, 7)
-		h.RatedPower = cFlo(row, 7)              // TODO
-		h.MaxPower = make([]float64, 0)          // TODO
-		h.Cop = make([]float64, 0)               // TODO
-		h.TargetTemperature = make([]float64, 0) // TODO
-		h.SourceTemperature = make([]float64, 0) // TODO
+		h.MinPower = cFlo(row, 9)
+		h.RatedPower = cFlo(row, 8)
+		h.MaxPower = make([]float64, 0)
+		h.Cop = make([]float64, 0)
+		h.TargetTemperature = make([]float64, 0)
+		h.SourceTemperature = make([]float64, 0)
 		h.Description = cStr(row, 10)
 
 		model.HeatPumps = append(model.HeatPumps, &h)
@@ -285,7 +285,7 @@ func (model *CsvModel) readHeatPumps() {
 func (model *CsvModel) readHeatPumpCurves() {
 	//model.HeatPumps = make([]*HeatPump, 0)
 	fn := func(row []string) {
-		id := cStr(row, 0)
+		name := cStr(row, 0)
 		targetTemperature := cFlo(row, 1)
 		sourceTemperature := cFlo(row, 2)
 		maxPower := cFlo(row, 3)
@@ -293,7 +293,7 @@ func (model *CsvModel) readHeatPumpCurves() {
 
 		index := -1
 		for i := 0; i < len(model.HeatPumps); i++ {
-			if model.HeatPumps[i].ID == id {
+			if model.HeatPumps[i].Name == name {
 				index = i
 				break
 			}
@@ -362,6 +362,10 @@ func cFlo(row []string, idx int) float64 {
 		return 0
 	}
 	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		dummy := 0
+		dummy = dummy + 1
+	}
 	check(err)
 	return f
 }
