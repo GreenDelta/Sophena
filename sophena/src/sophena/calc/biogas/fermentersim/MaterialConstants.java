@@ -38,7 +38,7 @@ package sophena.calc.biogas.fermentersim;
 /// Parameter of the original fermenter simulation model: `uRhoKgm3`.
 /// @param sCpJkgK              Substrate specific heat capacity in J/(kg K).
 /// Parameter of the original fermenter simulation model: `sCpJkgK`.
-public record MaterialConstants(
+record MaterialConstants(
 	double wLambdaWmK,
 	double wLambdaIWmK,
 	double dLambdaWmK,
@@ -59,7 +59,7 @@ public record MaterialConstants(
 	double sCpJkgK
 ) {
 
-	public static MaterialConstants createDefault() {
+	static MaterialConstants get() {
 		return new MaterialConstants(
 			2.10,      // Wall thermal conductivity [W/(m K)]
 			0.035,     // Wall insulation thermal conductivity [W/(m K)]

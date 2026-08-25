@@ -28,7 +28,7 @@ package sophena.calc.biogas.fermentersim;
 /// Parameter of the original fermenter simulation model: `relaxation`.
 /// @param maxIterations       Maximum iterations per timestep.
 /// Parameter of the original fermenter simulation model: `maxIterations`.
-public record SimulationConstants(
+record SimulationConstants(
 	double k0C,
 	double sigma,
 	double g,
@@ -43,7 +43,7 @@ public record SimulationConstants(
 	double relaxation,
 	int maxIterations
 ) {
-	public static SimulationConstants createDefault() {
+	static SimulationConstants get() {
 		return new SimulationConstants(
 			273.15,            // Celsius-Kelvin offset [K]
 			5.670374419e-8,    // Stefan-Boltzmann constant [W/(m2 K4)]

@@ -11,15 +11,13 @@ public class FermenterSimulationTest {
 	public void testSimulationResults() {
 		var station = TestWeatherStation.get();
 		var parameters = FermenterParameters.createDefault(station);
-		var materials = MaterialConstants.createDefault();
-		var constants = SimulationConstants.createDefault();
 		double[] dataBefore = station.data.clone();
 		double[] beamBefore = station.directRadiation.clone();
 		double[] diffuseBefore = station.diffuseRadiation.clone();
 
 		var input = SimulationInput.constant(station, 3.5, 1875.0);
 		var simulation = new FermenterSimulation();
-		var result = simulation.run(parameters, materials, constants, input);
+		var result = simulation.run(parameters, input);
 
 		assertEquals(8760, result.steps().size());
 		assertEquals(763.991697, result.totalEnergyMWh(), 1e-4);
@@ -32,12 +30,7 @@ public class FermenterSimulationTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testMissingRadiationDataThrows() {
 		var station = TestWeatherStation.get();
-		var parameters = FermenterParameters.createDefault(station);
-		var materials = MaterialConstants.createDefault();
-		var constants = SimulationConstants.createDefault();
-
 		station.directRadiation = null;
-
 		SimulationInput.constant(station, 3.5, 1875.0);
 	}
 }
