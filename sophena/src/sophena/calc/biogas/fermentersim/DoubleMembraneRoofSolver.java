@@ -25,7 +25,6 @@ final class DoubleMembraneRoofSolver {
 	static DoubleMembraneResult solve(
 		FermenterParameters p,
 		MaterialConstants m,
-		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int k,
 		double tAirC,
@@ -34,9 +33,9 @@ final class DoubleMembraneRoofSolver {
 		double lDownWm2,
 		double[] prevTempsC
 	) {
-		double tSkyK = Math.pow(lDownWm2 / c.sigma(), 0.25);
-		double tSkyC = tSkyK - c.k0C();
-		double tAmbientK = tAirC + c.k0C();
+		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
+		double tSkyC = tSkyK - Const.k0C;
+		double tAmbientK = tAirC + Const.k0C;
 
 		double hGapInnerWK = roofGeo.supportAirConvectionInnerWm2K() * roofGeo.innerMembraneAreaM2();
 		double hGapOuterWK = roofGeo.supportAirConvectionOuterWm2K() * roofGeo.aRoofM2();
@@ -46,7 +45,7 @@ final class DoubleMembraneRoofSolver {
 		double outsideAirKinematicViscosityM2s = m.uEtaPas() / m.uRhoKgm3();
 
 		double roofExternalReynolds = windMps * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
-		double roofExternalNusselt = roofExternalNusselt(c, roofExternalReynolds, outsideAirPrandtl);
+		double roofExternalNusselt = roofExternalNusselt(roofExternalReynolds, outsideAirPrandtl);
 
 		double hRoofExternalWm2K = roofExternalNusselt * m.uLambdaWmK() / roofGeo.roofExternalFlowLengthM();
 		double hExternalConvectionWK = hRoofExternalWm2K * roofGeo.aRoofM2();
@@ -64,20 +63,20 @@ final class DoubleMembraneRoofSolver {
 		double maxResidualW = Double.POSITIVE_INFINITY;
 		boolean converged = false;
 
-		for (int iter = 1; iter <= c.maxIterations(); iter++) {
-			double tInnerK = tempsC[0] + c.k0C();
-			double tOuterK = tempsC[2] + c.k0C();
-			double tSubstrateK = p.fermenter().targetTemperature + c.k0C();
+		for (int iter = 1; iter <= Const.maxIterations; iter++) {
+			double tInnerK = tempsC[0] + Const.k0C;
+			double tOuterK = tempsC[2] + Const.k0C;
+			double tSubstrateK = p.fermenter().targetTemperature + Const.k0C;
 
 			var natConvection = NaturalConvectionHelper.compute(
-				p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c
+				p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m
 			);
 			double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
-			double hRadSubstrateInnerWK = c.sigma() * (tSubstrateK + tInnerK) * (tSubstrateK * tSubstrateK + tInnerK * tInnerK) / rRadSubstrateInnerM2;
-			double hRadInnerOuterWK = c.sigma() * (tInnerK + tOuterK) * (tInnerK * tInnerK + tOuterK * tOuterK) / rRadInnerOuterM2;
-			double hRadSkyWK = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * c.sigma() * (tOuterK + tSkyK) * (tOuterK * tOuterK + tSkyK * tSkyK);
-			double hRadGroundWK = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * c.sigma() * (tOuterK + tAmbientK) * (tOuterK * tOuterK + tAmbientK * tAmbientK);
+			double hRadSubstrateInnerWK = Const.sigma * (tSubstrateK + tInnerK) * (tSubstrateK * tSubstrateK + tInnerK * tInnerK) / rRadSubstrateInnerM2;
+			double hRadInnerOuterWK = Const.sigma * (tInnerK + tOuterK) * (tInnerK * tInnerK + tOuterK * tOuterK) / rRadInnerOuterM2;
+			double hRadSkyWK = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tSkyK) * (tOuterK * tOuterK + tSkyK * tSkyK);
+			double hRadGroundWK = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tAmbientK) * (tOuterK * tOuterK + tAmbientK * tAmbientK);
 
 			double hFromSubstrateWK = hInnerConvectionWK + hRadSubstrateInnerWK;
 
@@ -102,13 +101,13 @@ final class DoubleMembraneRoofSolver {
 			double[] tempsNewC = new double[3];
 			double maxTempChangeK = 0.0;
 			for (int i = 0; i < 3; i++) {
-				tempsNewC[i] = (1.0 - c.relaxation()) * tempsC[i] + c.relaxation() * tempsRawC[i];
+				tempsNewC[i] = (1.0 - Const.relaxation) * tempsC[i] + Const.relaxation * tempsRawC[i];
 				maxTempChangeK = Math.max(maxTempChangeK, Math.abs(tempsNewC[i] - tempsC[i]));
 			}
 
 			tempsC = tempsNewC;
 
-			if (maxTempChangeK < c.tolerance() && maxResidualW < c.residualTolerance()) {
+			if (maxTempChangeK < Const.tolerance && maxResidualW < Const.residualTolerance) {
 				converged = true;
 				break;
 			}
@@ -118,14 +117,14 @@ final class DoubleMembraneRoofSolver {
 			throw new IllegalStateException("Double membrane solver did not converge at hour " + k + ", max residual: " + maxResidualW);
 		}
 
-		return computeFinalFluxes(p, m, c, roofGeo, k, tAirC, tempsC, hGapInnerWK, hGapOuterWK, hSupportAirAdvectionWK, hExternalConvectionWK, qSolarW, rRadSubstrateInnerM2, rRadInnerOuterM2, tSkyK, tAmbientK);
+		return computeFinalFluxes(p, m, roofGeo, k, tAirC, tempsC, hGapInnerWK, hGapOuterWK, hSupportAirAdvectionWK, hExternalConvectionWK, qSolarW, rRadSubstrateInnerM2, rRadInnerOuterM2, tSkyK, tAmbientK);
 	}
 
-	private static double roofExternalNusselt(SimulationConstants c, double roofExternalReynolds, double outsideAirPrandtl) {
+	private static double roofExternalNusselt(double roofExternalReynolds, double outsideAirPrandtl) {
 		double roofExternalNuLaminar = 0.664 * Math.sqrt(roofExternalReynolds) * Math.pow(outsideAirPrandtl, 1.0 / 3.0);
 		double roofExternalNusselt;
 
-		if (roofExternalReynolds < c.reTransition()) {
+		if (roofExternalReynolds < Const.reTransition) {
 			roofExternalNusselt = roofExternalNuLaminar;
 		} else {
 			double roofExternalNuTurbulent = 0.037 * Math.pow(roofExternalReynolds, 0.8) * outsideAirPrandtl / (
@@ -139,7 +138,6 @@ final class DoubleMembraneRoofSolver {
 	private static DoubleMembraneResult computeFinalFluxes(
 		FermenterParameters p,
 		MaterialConstants m,
-		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int k,
 		double tAirC,
@@ -154,30 +152,30 @@ final class DoubleMembraneRoofSolver {
 		double tSkyK,
 		double tAmbientK
 	) {
-		var natConvection = NaturalConvectionHelper.compute(p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m, c);
+		var natConvection = NaturalConvectionHelper.compute(p.fermenter().targetTemperature, tempsC[0], roofGeo.aRoofProjectedM2(), p.fermenter().wallInnerRadius(), m);
 		double hInnerConvectionWK = natConvection.hNatWm2K() * roofGeo.aRoofProjectedM2();
 
-		double tSubstrateK = p.fermenter().targetTemperature + c.k0C();
-		double tInnerK = tempsC[0] + c.k0C();
-		double tOuterK = tempsC[2] + c.k0C();
+		double tSubstrateK = p.fermenter().targetTemperature + Const.k0C;
+		double tInnerK = tempsC[0] + Const.k0C;
+		double tOuterK = tempsC[2] + Const.k0C;
 
 		double qInnerConvectionW = hInnerConvectionWK * (p.fermenter().targetTemperature - tempsC[0]);
-		double qInnerRadiationW = c.sigma() * (Math.pow(tSubstrateK, 4) - Math.pow(tInnerK, 4)) / rRadSubstrateInnerM2;
-		double qMembraneRadiationW = c.sigma() * (Math.pow(tInnerK, 4) - Math.pow(tOuterK, 4)) / rRadInnerOuterM2;
+		double qInnerRadiationW = Const.sigma * (Math.pow(tSubstrateK, 4) - Math.pow(tInnerK, 4)) / rRadSubstrateInnerM2;
+		double qMembraneRadiationW = Const.sigma * (Math.pow(tInnerK, 4) - Math.pow(tOuterK, 4)) / rRadInnerOuterM2;
 		double qGapInnerConvectionW = hGapInnerWK * (tempsC[0] - tempsC[1]);
 		double qGapOuterConvectionW = hGapOuterWK * (tempsC[1] - tempsC[2]);
 		double qSupportAirAdvectionW = hSupportAirAdvectionWK * (tempsC[1] - tAirC);
 
 		double qOuterConvectionW = hExternalConvectionWK * (tempsC[2] - tAirC);
-		double qOuterSkyRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * c.sigma() * (Math.pow(tOuterK, 4) - Math.pow(tSkyK, 4));
-		double qOuterGroundRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * c.sigma() * (Math.pow(tOuterK, 4) - Math.pow(tAmbientK, 4));
+		double qOuterSkyRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tSkyK, 4));
+		double qOuterGroundRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tAmbientK, 4));
 
 		double res0 = qInnerConvectionW + qInnerRadiationW - qGapInnerConvectionW - qMembraneRadiationW;
 		double res1 = qGapInnerConvectionW - qGapOuterConvectionW - qSupportAirAdvectionW;
 		double res2 = qGapOuterConvectionW + qMembraneRadiationW + qSolarW - qOuterConvectionW - qOuterSkyRadiationW - qOuterGroundRadiationW;
 		double finalMaxRes = Math.max(Math.abs(res0), Math.max(Math.abs(res1), Math.abs(res2)));
 
-		if (finalMaxRes >= c.residualTolerance()) {
+		if (finalMaxRes >= Const.residualTolerance) {
 			throw new IllegalStateException("Membrane energy balance not closed at hour " + k + ": max residual = " + finalMaxRes + " W");
 		}
 

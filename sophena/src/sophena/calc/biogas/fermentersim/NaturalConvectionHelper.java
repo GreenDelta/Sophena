@@ -20,11 +20,10 @@ final class NaturalConvectionHelper {
 		double tsInnerMembraneC,
 		double aRoofProjectedM2,
 		double r1,
-		MaterialConstants m,
-		SimulationConstants c
+		MaterialConstants m
 	) {
 		double naturalConvectionLengthM = aRoofProjectedM2 / (2.0 * Math.PI * r1);
-		double tFilmK = 0.5 * (tSetC + tsInnerMembraneC) + c.k0C();
+		double tFilmK = 0.5 * (tSetC + tsInnerMembraneC) + Const.k0C;
 
 		double referenceTemperatureK = 293.15;
 		double sutherlandConstantK = 110.4;
@@ -41,7 +40,7 @@ final class NaturalConvectionHelper {
 		double prandtl = nuFilmM2s / thermalDiffusivityFilmM2s;
 
 		double deltaTInnerK = Math.abs(tSetC - tsInnerMembraneC);
-		double rayleigh = c.g() * (1.0 / tFilmK) * deltaTInnerK * Math.pow(naturalConvectionLengthM, 3)
+		double rayleigh = Const.g * (1.0 / tFilmK) * deltaTInnerK * Math.pow(naturalConvectionLengthM, 3)
 			/ (nuFilmM2s * thermalDiffusivityFilmM2s);
 
 		double nusselt;

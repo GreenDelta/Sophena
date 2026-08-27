@@ -22,7 +22,6 @@ final class SolarCalculator {
 		WeatherStation station,
 		FermenterParameters p,
 		MaterialConstants m,
-		SimulationConstants c,
 		RoofGeometry roofGeo,
 		int doy,
 		double hod,
@@ -57,8 +56,8 @@ final class SolarCalculator {
 		);
 
 		double qSolarAbsRoofWm2 = roofAbsorptivity * gRoofWm2;
-		double qSolarAbsWallWm2 = computeWallSolar(p, m, c, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
-		double lDownWm2 = c.skyEmissivity() * c.sigma() * Math.pow(tAirC + c.k0C(), 4);
+		double qSolarAbsWallWm2 = computeWallSolar(p, m, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
+		double lDownWm2 = Const.skyEmissivity * Const.sigma * Math.pow(tAirC + Const.k0C, 4);
 
 		return new StepSolar(qSolarAbsRoofWm2, qSolarAbsWallWm2, lDownWm2);
 	}
@@ -66,7 +65,6 @@ final class SolarCalculator {
 	private static double computeWallSolar(
 		FermenterParameters p,
 		MaterialConstants m,
-		SimulationConstants c,
 		int doy,
 		double bHorWm2,
 		double dHorWm2,
@@ -77,7 +75,7 @@ final class SolarCalculator {
 		double fSkyWall = 0.5;
 		double fGroundWall = 0.5;
 
-		double gOnWm2 = c.solarConstant() * (1.0 + 0.033 * Utils.cosd(360.0 * doy / 365.0));
+		double gOnWm2 = Const.solarConstant * (1.0 + 0.033 * Utils.cosd(360.0 * doy / 365.0));
 		double sinElevationPositive = Math.max(0.0, sinElevation);
 		boolean sunAboveHorizon = sinElevationPositive > 0.0;
 

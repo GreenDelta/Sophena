@@ -18,8 +18,6 @@ public final class FermenterSimulation {
 	private final BiogasPlant plant;
 	private final WeatherStation station;
 	private final MaterialConstants mat = MaterialConstants.get();
-	private final SimulationConstants sim = SimulationConstants.get();
-
 	private final FermenterParameters p;
 
 	private FermenterSimulation(
@@ -52,7 +50,7 @@ public final class FermenterSimulation {
 		var groundTemps = SoilTemperatureCalculator.calculate(station, p, mat);
 		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
-			: RoofGeometry.createDoubleMembrane(p, mat, sim);
+			: RoofGeometry.createDoubleMembrane(p, mat);
 
 		double fermenterVolumeM3 = Math.PI * (f.wallInnerRadius() * f.wallInnerRadius()) * f.wallTotalHeight;
 		double mixerInstalledPowerKW = f.mixerPowerDensity * fermenterVolumeM3 / 1000.0;
@@ -62,7 +60,7 @@ public final class FermenterSimulation {
 		double r1 = f.wallInnerRadius();
 		double r2 = f.wallOuterRadius - f.wallInsulationThickness;
 		double r3 = f.wallOuterRadius;
-		double r4 = r3 + sim.soilBuffer();
+		double r4 = r3 + Const.soilBuffer;
 
 		double rWallEarthGeometryMKW = Math.log(r2 / r1) / mat.wLambdaWmK()
 			+ Math.log(r3 / r2) / mat.wLambdaIWmK()
@@ -82,9 +80,9 @@ public final class FermenterSimulation {
 		double[] prevMembraneTempsC = new double[3];
 
 		for (int k = 0; k < Stats.HOURS; k++) {
-			var stepInput = StepInput.of(sim, plant, station, k);
+			var stepInput = StepInput.of(plant, station, k);
 			var solar = SolarCalculator.computeStepSolar(
-				station, p, mat, sim, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
+				station, p, mat, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
 			);
 
 			if (k == 0) {
@@ -101,12 +99,12 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = roofEval.tsRoofC();
 			}
 
-			var wallEval = CylinderWallSolver.solve(p, mat, sim, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
+			var wallEval = CylinderWallSolver.solve(p, mat, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
 
 			double qWallEarthW = (p.fermenter().targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
 			double qFloorW = (aFloorM2 / rFloorM2KW) * (p.fermenter().targetTemperature - groundTemps.tEarthBottomC()[k]);
 			double feedKgS = stepInput.feedKgH() / 3600.0;
-			double qFeedW = feedKgS * mat.sCpJkgK() * (p.fermenter().targetTemperature - stepInput.tAirC());
+			double qFeedW = feedKgS * mat.sCpJkgK() * (p.fermenter().targetTemperature - stepInput.feedTemperature());
 
 			double qBalanceW = roofEval.qRoofW() + wallEval.qWallAirW() + qWallEarthW + qFloorW + qFeedW - qMixerGainW;
 			double qHeatKW = Math.max(0.0, qBalanceW) / 1000.0;
@@ -156,10 +154,10 @@ public final class FermenterSimulation {
 		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
 		if (p.fermenter().roofType == RoofType.FIXED) {
-			var res = FixedRoofSolver.solve(p, mat, sim, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
+			var res = FixedRoofSolver.solve(p, mat, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(p, mat, sim, roofGeo, k, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(p, mat, roofGeo, k, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

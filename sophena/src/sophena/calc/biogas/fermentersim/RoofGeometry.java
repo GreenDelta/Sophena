@@ -3,7 +3,7 @@ package sophena.calc.biogas.fermentersim;
 /**
  * Geometric parameters and flow lengths for fermenter roof models.
  */
-public record RoofGeometry(
+record RoofGeometry(
 	double aRoofM2,
 	double aRoofProjectedM2,
 	double innerMembraneAreaM2,
@@ -15,7 +15,7 @@ public record RoofGeometry(
 	double supportAirExchangeFlowScalarM3h
 ) {
 
-	public static RoofGeometry createFixed(FermenterParameters p) {
+	static RoofGeometry createFixed(FermenterParameters p) {
 		double r1 = p.fermenter().wallInnerRadius();
 		double aRoofProjectedM2 = Math.PI * r1 * r1;
 		return new RoofGeometry(
@@ -31,10 +31,9 @@ public record RoofGeometry(
 		);
 	}
 
-	public static RoofGeometry createDoubleMembrane(
+	static RoofGeometry createDoubleMembrane(
 		FermenterParameters p,
-		MaterialConstants m,
-		SimulationConstants c
+		MaterialConstants m
 	) {
 		var f = p.fermenter();
 		double r1 = f.wallInnerRadius();
@@ -47,9 +46,9 @@ public record RoofGeometry(
 		double fGroundRoof = 1.0 - fSkyRoof;
 
 		double biogasFlowNm3h = p.bhkwMeanElectricPowerKW() / (
-			p.bhkwElectricEfficiency() * c.methaneHeatingValue() * p.biogasMethaneFraction()
+			p.bhkwElectricEfficiency() * Const.methaneHeatingValue * p.biogasMethaneFraction()
 		);
-		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.fermenter().targetTemperature + c.k0C()) / c.normalTemperatureK();
+		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.fermenter().targetTemperature + Const.k0C) / Const.normalTemperatureK;
 
 		double outerRadius = (r1 * r1 + f.roofMembraneHeight * f.roofMembraneHeight) / (2.0 * f.roofMembraneHeight);
 		double outerAngle = 4.0 * Math.atan(f.roofMembraneHeight / r1);
@@ -70,8 +69,8 @@ public record RoofGeometry(
 		double supportAirVelocity = supportAirMeanFlow / (3600.0 * channelArea);
 		double supportAirPrandtl = m.uEtaPas() * m.uCpJkgK() / m.uLambdaWmK();
 
-		double hInner = computeGapConvection(supportAirVelocity, innerLength, supportAirPrandtl, m, c);
-		double hOuter = computeGapConvection(supportAirVelocity, outerLength, supportAirPrandtl, m, c);
+		double hInner = computeGapConvection(supportAirVelocity, innerLength, supportAirPrandtl, m);
+		double hOuter = computeGapConvection(supportAirVelocity, outerLength, supportAirPrandtl, m);
 
 		return new RoofGeometry(
 			aRoofM2,
@@ -90,14 +89,13 @@ public record RoofGeometry(
 		double velocity,
 		double length,
 		double prandtl,
-		MaterialConstants m,
-		SimulationConstants c
+		MaterialConstants m
 	) {
 		double reynolds = m.uRhoKgm3() * velocity * length / m.uEtaPas();
 		double nuLaminar = 0.664 * Math.sqrt(reynolds) * Math.pow(prandtl, 1.0 / 3.0);
 		double nusselt;
 
-		if (reynolds < c.reTransition()) {
+		if (reynolds < Const.reTransition) {
 			nusselt = nuLaminar;
 		} else {
 			double nuTurbulent = 0.037 * Math.pow(reynolds, 0.8) * prandtl / (
