@@ -20,20 +20,10 @@ public final class FermenterSimulation {
 	private final WeatherStation station;
 	private final Fermenter f;
 
-	/// Parameter name of the original fermenter
-	/// simulation: `bhkwMeanElectricPowerKW`.
-	private final double chpMeanPower;
-
-	/// Parameter name of the original fermenter
-	/// simulation: `bhkwElectricEfficiency`.
-	private final double chpEfficiency;
-
 	private FermenterSimulation(BiogasPlant plant, WeatherStation station) {
 		this.plant = plant;
 		this.station = station;
 		this.f = plant.fermenter;
-		this.chpMeanPower = Utils.meanElectricPowerOf(plant);
-		this.chpEfficiency = Utils.electricEfficiencyOf(plant);
 	}
 
 	public static Res<FermenterSimulation> of(
@@ -162,7 +152,7 @@ public final class FermenterSimulation {
 			var res = FixedRoofSolver.solve(f, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(f, roofGeo, chpMeanPower, chpEfficiency, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(plant, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

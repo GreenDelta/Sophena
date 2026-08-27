@@ -1,5 +1,6 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.Fermenter;
 
 /**
@@ -25,15 +26,18 @@ final class DoubleMembraneRoofSolver {
 	}
 
 	static DoubleMembraneResult solve(
-		Fermenter f,
+		BiogasPlant plant,
 		RoofGeometry roofGeo,
-		double bhkwMeanElectricPowerKW,
-		double bhkwElectricEfficiency,
 		StepInput in,
 		double qSolarAbsRoofWm2,
 		double lDownWm2,
 		double[] prevTempsC
 	) {
+
+		var f = plant.fermenter;
+		double bhkwMeanElectricPowerKW = Utils.meanElectricPowerOf(plant);
+		double bhkwElectricEfficiency = Utils.electricEfficiencyOf(plant);
+
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tSkyC = tSkyK - Const.k0C;
 		double tAmbientK = in.tAirC() + Const.k0C;
@@ -129,9 +133,7 @@ final class DoubleMembraneRoofSolver {
 	}
 
 	private static double computeGapConvection(
-		double velocity,
-		double length,
-		double prandtl
+		double velocity, double length, double prandtl
 	) {
 		double reynolds = Const.uRhoKgm3 * velocity * length / Const.uEtaPas;
 		double nuLaminar = 0.664 * Math.sqrt(reynolds) * Math.pow(prandtl, 1.0 / 3.0);
