@@ -5,6 +5,8 @@ import sophena.model.biogas.BiogasPlant;
 
 /// Hourly input values for the fermenter simulation.
 ///
+/// @param hour            Current hour in the annual simulation.
+/// Parameter of the original fermenter simulation model: `k`.
 /// @param doy             Day of year in the annual simulation.
 /// @param hod             Hour of day in the 24h cycle.
 /// @param tAirC           Ambient air temperature in °C.
@@ -15,6 +17,7 @@ import sophena.model.biogas.BiogasPlant;
 /// @param feedKgH         Substrate feed mass in kg/h.
 /// @param methaneContent  Methane content of the produced biogas as a fraction.
 record StepInput(
+	int hour,
 	int doy,
 	double hod,
 	double tAirC,
@@ -33,6 +36,7 @@ record StepInput(
 		double hod = hour % 24;
 		double tAirC = station.data[hour];
 		return new StepInput(
+			hour,
 			doy,
 			hod,
 			tAirC,

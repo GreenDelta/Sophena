@@ -16,8 +16,7 @@ final class FixedRoofSolver {
 	static FixedRoofResult solve(
 		Fermenter f,
 		RoofGeometry roofGeo,
-		double tAirC,
-		double windMps,
+		StepInput in,
 		double qSolarAbsRoofWm2,
 		double lDownWm2
 	) {
@@ -26,15 +25,15 @@ final class FixedRoofSolver {
 		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
-		double roofExternalReynolds = windMps * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
+		double roofExternalReynolds = in.windMps() * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
 		double roofExternalNusselt = roofExternalNusselt(roofExternalReynolds, outsideAirPrandtl);
 
 		double hRoofExternalWm2K = roofExternalNusselt * Const.uLambdaWmK / roofGeo.roofExternalFlowLengthM();
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
-		double tGroundK = tAirC + Const.k0C;
+		double tGroundK = in.tAirC() + Const.k0C;
 
-		double tsRoofC = tAirC;
+		double tsRoofC = in.tAirC();
 
 		for (int iter = 1; iter <= Const.maxIterations; iter++) {
 			double tsRoofK = tsRoofC + Const.k0C;
@@ -43,9 +42,9 @@ final class FixedRoofSolver {
 
 			double tsRoofRawC = (
 				f.targetTemperature / rRoofM2KW
-					+ hRoofExternalWm2K * tAirC
+					+ hRoofExternalWm2K * in.tAirC()
 					+ hRadSkyWm2K * (tSkyK - Const.k0C)
-					+ hRadGroundWm2K * tAirC
+					+ hRadGroundWm2K * in.tAirC()
 					+ qSolarAbsRoofWm2
 			) / (
 				1.0 / rRoofM2KW + hRoofExternalWm2K + hRadSkyWm2K + hRadGroundWm2K

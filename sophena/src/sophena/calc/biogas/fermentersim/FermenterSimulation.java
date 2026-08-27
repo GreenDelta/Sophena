@@ -76,7 +76,8 @@ public final class FermenterSimulation {
 		double uaWallEarthWK = 2.0 * Math.PI * wallEarthHeightM / rWallEarthGeometryMKW;
 
 		double aFloorM2 = Math.PI * r1 * r1;
-		double rFloorM2KW = f.floorSlabThickness / Const.boLambdaWmK + f.floorInsulationThickness / Const.boLambdaIWmK;
+		double rFloorM2KW = f.floorSlabThickness / Const.boLambdaWmK
+			+ f.floorInsulationThickness / Const.boLambdaIWmK;
 
 		List<SimulationResultStep> steps = new ArrayList<>(Stats.HOURS);
 
@@ -87,9 +88,7 @@ public final class FermenterSimulation {
 
 		for (int k = 0; k < Stats.HOURS; k++) {
 			var stepInput = StepInput.of(plant, station, k);
-			var solar = SolarCalculator.computeStepSolar(
-				station, f, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
-			);
+			var solar = SolarCalculator.computeStepSolar(station, f, roofGeo, stepInput);
 
 			if (k == 0) {
 				prevMembraneTempsC[0] = f.targetTemperature - 1.0;
@@ -97,7 +96,7 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = stepInput.tAirC() + 1.0;
 			}
 
-			var roofEval = evaluateRoof(f, roofGeo, k, stepInput, solar, prevMembraneTempsC);
+			var roofEval = evaluateRoof(f, roofGeo, stepInput, solar, prevMembraneTempsC);
 
 			if (f.roofType == RoofType.DOUBLE_MEMBRANE) {
 				prevMembraneTempsC[0] = roofEval.tsInnerMembraneC();
@@ -105,7 +104,7 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = roofEval.tsRoofC();
 			}
 
-			var wallEval = CylinderWallSolver.solve(f, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
+			var wallEval = CylinderWallSolver.solve(f, stepInput, solar.qSolarAbsWallWm2(), solar.lDownWm2());
 
 			double qWallEarthW = (f.targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
 			double qFloorW = (aFloorM2 / rFloorM2KW) * (f.targetTemperature - groundTemps.tEarthBottomC()[k]);
@@ -157,13 +156,13 @@ public final class FermenterSimulation {
 
 	private RoofEval evaluateRoof(
 		Fermenter f, RoofGeometry roofGeo,
-		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
+		StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
 		if (f.roofType == RoofType.FIXED) {
-			var res = FixedRoofSolver.solve(f, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
+			var res = FixedRoofSolver.solve(f, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(f, roofGeo, chpMeanPower, chpEfficiency, in.methaneContent(), k, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(f, roofGeo, chpMeanPower, chpEfficiency, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

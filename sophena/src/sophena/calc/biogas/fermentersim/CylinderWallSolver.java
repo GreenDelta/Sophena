@@ -15,8 +15,7 @@ final class CylinderWallSolver {
 
 	static WallResult solve(
 		Fermenter f,
-		double tAirC,
-		double windMps,
+		StepInput in,
 		double qSolarAbsWallWm2,
 		double lDownWm2
 	) {
@@ -36,7 +35,7 @@ final class CylinderWallSolver {
 		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
-		double wallReynolds = windMps * lWallM / outsideAirKinematicViscosityM2s;
+		double wallReynolds = in.windMps() * lWallM / outsideAirKinematicViscosityM2s;
 		double wallNuLaminar = 0.664 * Math.pow(outsideAirPrandtl, 1.0 / 3.0) * Math.sqrt(wallReynolds);
 		double wallNuTurbulent = 0.037 * Math.pow(wallReynolds, 0.8) * Math.pow(outsideAirPrandtl, 0.48) / (
 			1.0 + 2.443 * Math.pow(wallReynolds, -0.1) * (Math.pow(outsideAirPrandtl, 2.0 / 3.0) - 1.0)
@@ -46,13 +45,13 @@ final class CylinderWallSolver {
 			* Const.uLambdaWmK / lWallM;
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
-		double tGroundK = tAirC + Const.k0C;
+		double tGroundK = in.tAirC() + Const.k0C;
 
-		double tsWallC = tAirC;
+		double tsWallC = in.tAirC();
 
 		for (int iter = 1; iter <= Const.maxIterations; iter++) {
-			double wallGrashof = Const.g * Math.pow(wallAirHeightM, 3) * Math.abs(tAirC - tsWallC)
-				/ ((tAirC + Const.k0C) * outsideAirKinematicViscosityM2s * outsideAirKinematicViscosityM2s);
+			double wallGrashof = Const.g * Math.pow(wallAirHeightM, 3) * Math.abs(in.tAirC() - tsWallC)
+				/ ((in.tAirC() + Const.k0C) * outsideAirKinematicViscosityM2s * outsideAirKinematicViscosityM2s);
 			double wallRayleigh = wallGrashof * outsideAirPrandtl;
 
 			double wallNuFree = Math.pow(
@@ -73,9 +72,9 @@ final class CylinderWallSolver {
 
 			double tsWallRawC = (
 				f.targetTemperature / rWallM2KW
-					+ hWallMixedWm2K * tAirC
+					+ hWallMixedWm2K * in.tAirC()
 					+ hWallRadSkyWm2K * (tSkyK - Const.k0C)
-					+ hWallRadGroundWm2K * tAirC
+					+ hWallRadGroundWm2K * in.tAirC()
 					+ qSolarAbsWallWm2
 			) / (
 				1.0 / rWallM2KW + hWallMixedWm2K + hWallRadSkyWm2K + hWallRadGroundWm2K

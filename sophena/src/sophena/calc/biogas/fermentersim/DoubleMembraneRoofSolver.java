@@ -29,20 +29,17 @@ final class DoubleMembraneRoofSolver {
 		RoofGeometry roofGeo,
 		double bhkwMeanElectricPowerKW,
 		double bhkwElectricEfficiency,
-		double methaneContent,
-		int k,
-		double tAirC,
-		double windMps,
+		StepInput in,
 		double qSolarAbsRoofWm2,
 		double lDownWm2,
 		double[] prevTempsC
 	) {
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tSkyC = tSkyK - Const.k0C;
-		double tAmbientK = tAirC + Const.k0C;
+		double tAmbientK = in.tAirC() + Const.k0C;
 
 		double biogasFlowNm3h = bhkwMeanElectricPowerKW / (
-			bhkwElectricEfficiency * Const.methaneHeatingValue * methaneContent
+			bhkwElectricEfficiency * Const.methaneHeatingValue * in.methaneContent()
 		);
 		double supportAirExchangeFlowM3h = biogasFlowNm3h * (f.targetTemperature + Const.k0C) / Const.normalTemperatureK;
 		double supportAirVelocity = 0.5 * supportAirExchangeFlowM3h / (3600.0 * roofGeo.channelAreaM2());
@@ -55,7 +52,7 @@ final class DoubleMembraneRoofSolver {
 		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
-		double roofExternalReynolds = windMps * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
+		double roofExternalReynolds = in.windMps() * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
 		double roofExternalNusselt = roofExternalNusselt(roofExternalReynolds, outsideAirPrandtl);
 
 		double hRoofExternalWm2K = roofExternalNusselt * Const.uLambdaWmK / roofGeo.roofExternalFlowLengthM();
@@ -99,8 +96,8 @@ final class DoubleMembraneRoofSolver {
 
 			double[] rhs = new double[]{
 				hFromSubstrateWK * f.targetTemperature,
-				hSupportAirAdvectionWK * tAirC,
-				(hExternalConvectionWK + hRadGroundWK) * tAirC + hRadSkyWK * tSkyC + qSolarW
+				hSupportAirAdvectionWK * in.tAirC(),
+				(hExternalConvectionWK + hRadGroundWK) * in.tAirC() + hRadSkyWK * tSkyC + qSolarW
 			};
 
 			double r0 = rhs[0] - (matrix[0][0] * tempsC[0] + matrix[0][1] * tempsC[1] + matrix[0][2] * tempsC[2]);
@@ -125,10 +122,10 @@ final class DoubleMembraneRoofSolver {
 		}
 
 		if (!converged) {
-			throw new IllegalStateException("Double membrane solver did not converge at hour " + k + ", max residual: " + maxResidualW);
+			throw new IllegalStateException("Double membrane solver did not converge at hour " + in.hour() + ", max residual: " + maxResidualW);
 		}
 
-		return computeFinalFluxes(f, roofGeo, k, tAirC, tempsC, hGapInnerWK, hGapOuterWK, hSupportAirAdvectionWK, hExternalConvectionWK, qSolarW, rRadSubstrateInnerM2, rRadInnerOuterM2, tSkyK, tAmbientK);
+		return computeFinalFluxes(f, roofGeo, in.hour(), in.tAirC(), tempsC, hGapInnerWK, hGapOuterWK, hSupportAirAdvectionWK, hExternalConvectionWK, qSolarW, rRadSubstrateInnerM2, rRadInnerOuterM2, tSkyK, tAmbientK);
 	}
 
 	private static double computeGapConvection(
