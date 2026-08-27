@@ -9,13 +9,7 @@ record FermenterParameters(
 	Fermenter fermenter,
 	double bhkwMeanElectricPowerKW,
 	double bhkwElectricEfficiency,
-	double biogasMethaneFraction,
-	double membraneRoofAlpha,
-	double liquidSurfaceEpsilon,
-	double innerMembraneEpsilonInterior,
-	double innerMembraneEpsilonGap,
-	double outerMembraneEpsilonGap,
-	double outerMembraneEpsilonExterior
+	double biogasMethaneFraction
 ) {
 
 	static FermenterParameters of(BiogasPlant plant) {
@@ -23,13 +17,7 @@ record FermenterParameters(
 			plant.fermenter,
 			500.0,    // Mean CHP electric power [kW]
 			0.40,     // CHP electric efficiency [-]
-			0.50,     // Methane fraction in biogas [-]
-			0.60,     // Solar absorption coefficient of outer membrane [-]
-			0.95,     // Substrate liquid surface emissivity [-]
-			0.90,     // Inner membrane emissivity (interior side) [-]
-			0.90,     // Inner membrane emissivity (gap side) [-]
-			0.90,     // Outer membrane emissivity (gap side) [-]
-			0.90      // Outer membrane emissivity (exterior side) [-]
+			0.50      // Methane fraction in biogas [-]
 		);
 	}
 }

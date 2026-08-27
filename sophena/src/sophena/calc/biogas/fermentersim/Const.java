@@ -132,4 +132,30 @@ interface Const {
 	/// Substrate specific heat capacity in J/(kg K).
 	/// Parameter of the original fermenter simulation model: `sCpJkgK`.
 	double sCpJkgK = 3900.0;
+
+	// membrane and surface optical constants
+
+	/// Solar absorption coefficient of the outer membrane.
+	/// Parameter of the original fermenter simulation model: `membraneRoofAlpha`.
+	double membraneRoofAlpha = 0.60;
+
+	/// Substrate liquid surface emissivity.
+	/// Parameter of the original fermenter simulation model: `liquidSurfaceEpsilon`.
+	double liquidSurfaceEpsilon = 0.95;
+
+	/// Inner membrane emissivity on the interior side.
+	/// Parameter of the original fermenter simulation model: `innerMembraneEpsilonInterior`.
+	double innerMembraneEpsilonInterior = 0.90;
+
+	/// Inner membrane emissivity on the gap side.
+	/// Parameter of the original fermenter simulation model: `innerMembraneEpsilonGap`.
+	double innerMembraneEpsilonGap = 0.90;
+
+	/// Outer membrane emissivity on the gap side.
+	/// Parameter of the original fermenter simulation model: `outerMembraneEpsilonGap`.
+	double outerMembraneEpsilonGap = 0.90;
+
+	/// Outer membrane emissivity on the exterior side.
+	/// Parameter of the original fermenter simulation model: `outerMembraneEpsilonExterior`.
+	double outerMembraneEpsilonExterior = 0.90;
 }

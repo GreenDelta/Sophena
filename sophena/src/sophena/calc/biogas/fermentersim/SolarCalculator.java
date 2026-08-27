@@ -46,7 +46,7 @@ final class SolarCalculator {
 		double gHorWm2 = bHorWm2 + dHorWm2;
 		double roofSolarFactor = 1.0 - fermenter.roofShadingFraction;
 
-		double roofAbsorptivity = (fermenter.roofType == RoofType.FIXED) ? Const.dAlphaDA : p.membraneRoofAlpha();
+		double roofAbsorptivity = (fermenter.roofType == RoofType.FIXED) ? Const.dAlphaDA : Const.membraneRoofAlpha;
 
 		double gRoofWm2 = roofSolarFactor * (
 			bHorWm2 * roofGeo.aRoofProjectedM2() / roofGeo.aRoofM2()

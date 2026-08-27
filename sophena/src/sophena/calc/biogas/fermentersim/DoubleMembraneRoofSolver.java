@@ -50,13 +50,13 @@ final class DoubleMembraneRoofSolver {
 		double hExternalConvectionWK = hRoofExternalWm2K * roofGeo.aRoofM2();
 		double qSolarW = qSolarAbsRoofWm2 * roofGeo.aRoofM2();
 
-		double rRadSubstrateInnerM2 = (1.0 - p.liquidSurfaceEpsilon()) / (p.liquidSurfaceEpsilon() * roofGeo.aRoofProjectedM2())
+		double rRadSubstrateInnerM2 = (1.0 - Const.liquidSurfaceEpsilon) / (Const.liquidSurfaceEpsilon * roofGeo.aRoofProjectedM2())
 			+ 1.0 / roofGeo.aRoofProjectedM2()
-			+ (1.0 - p.innerMembraneEpsilonInterior()) / (p.innerMembraneEpsilonInterior() * roofGeo.innerMembraneAreaM2());
+			+ (1.0 - Const.innerMembraneEpsilonInterior) / (Const.innerMembraneEpsilonInterior * roofGeo.innerMembraneAreaM2());
 
-		double rRadInnerOuterM2 = (1.0 - p.innerMembraneEpsilonGap()) / (p.innerMembraneEpsilonGap() * roofGeo.innerMembraneAreaM2())
+		double rRadInnerOuterM2 = (1.0 - Const.innerMembraneEpsilonGap) / (Const.innerMembraneEpsilonGap * roofGeo.innerMembraneAreaM2())
 			+ 1.0 / roofGeo.innerMembraneAreaM2()
-			+ (1.0 - p.outerMembraneEpsilonGap()) / (p.outerMembraneEpsilonGap() * roofGeo.aRoofM2());
+			+ (1.0 - Const.outerMembraneEpsilonGap) / (Const.outerMembraneEpsilonGap * roofGeo.aRoofM2());
 
 		double[] tempsC = prevTempsC.clone();
 		double maxResidualW = Double.POSITIVE_INFINITY;
@@ -74,8 +74,8 @@ final class DoubleMembraneRoofSolver {
 
 			double hRadSubstrateInnerWK = Const.sigma * (tSubstrateK + tInnerK) * (tSubstrateK * tSubstrateK + tInnerK * tInnerK) / rRadSubstrateInnerM2;
 			double hRadInnerOuterWK = Const.sigma * (tInnerK + tOuterK) * (tInnerK * tInnerK + tOuterK * tOuterK) / rRadInnerOuterM2;
-			double hRadSkyWK = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tSkyK) * (tOuterK * tOuterK + tSkyK * tSkyK);
-			double hRadGroundWK = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tAmbientK) * (tOuterK * tOuterK + tAmbientK * tAmbientK);
+			double hRadSkyWK = Const.outerMembraneEpsilonExterior * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tSkyK) * (tOuterK * tOuterK + tSkyK * tSkyK);
+			double hRadGroundWK = Const.outerMembraneEpsilonExterior * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tAmbientK) * (tOuterK * tOuterK + tAmbientK * tAmbientK);
 
 			double hFromSubstrateWK = hInnerConvectionWK + hRadSubstrateInnerWK;
 
@@ -165,8 +165,8 @@ final class DoubleMembraneRoofSolver {
 		double qSupportAirAdvectionW = hSupportAirAdvectionWK * (tempsC[1] - tAirC);
 
 		double qOuterConvectionW = hExternalConvectionWK * (tempsC[2] - tAirC);
-		double qOuterSkyRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tSkyK, 4));
-		double qOuterGroundRadiationW = p.outerMembraneEpsilonExterior() * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tAmbientK, 4));
+		double qOuterSkyRadiationW = Const.outerMembraneEpsilonExterior * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tSkyK, 4));
+		double qOuterGroundRadiationW = Const.outerMembraneEpsilonExterior * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (Math.pow(tOuterK, 4) - Math.pow(tAmbientK, 4));
 
 		double res0 = qInnerConvectionW + qInnerRadiationW - qGapInnerConvectionW - qMembraneRadiationW;
 		double res1 = qGapInnerConvectionW - qGapOuterConvectionW - qSupportAirAdvectionW;
