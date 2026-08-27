@@ -2,10 +2,10 @@ package sophena.calc.biogas.fermentersim;
 
 import java.util.Arrays;
 
-import org.jspecify.annotations.NonNull;
-
+import sophena.model.Boiler;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 import sophena.model.biogas.SubstrateProfile;
@@ -17,7 +17,8 @@ class TestBiogasPlant {
 
 	static BiogasPlant get() {
 		var plant = new BiogasPlant();
-		plant.fermenter =  makeFermenter();
+		plant.fermenter = makeFermenter();
+		plant.boilers.add(makeBoiler());
 
 		var profile = new SubstrateProfile();
 		profile.hourlyValues = new double[Stats.HOURS];
@@ -25,6 +26,16 @@ class TestBiogasPlant {
 		plant.substrateProfiles.add(profile);
 
 		return plant;
+	}
+
+	private static BiogasPlantBoiler makeBoiler() {
+		var boiler = new Boiler();
+		boiler.maxPowerElectric = 500.0;
+		boiler.minPowerElectric = 500.0;
+		boiler.efficiencyRateElectric = 0.4;
+		var block = new BiogasPlantBoiler();
+		block.boiler = boiler;
+		return block;
 	}
 
 	private static Fermenter makeFermenter() {

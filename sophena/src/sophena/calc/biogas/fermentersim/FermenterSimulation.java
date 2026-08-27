@@ -19,12 +19,22 @@ public final class FermenterSimulation {
 	private final WeatherStation station;
 	private final FermenterParameters p;
 
+	/// Parameter name of the original fermenter
+	/// simulation: `bhkwMeanElectricPowerKW`.
+	private final double chpMeanPower;
+
+	/// Parameter name of the original fermenter
+	/// simulation: `bhkwElectricEfficiency`.
+	private final double chpEfficiency;
+
 	private FermenterSimulation(
 		BiogasPlant plant, WeatherStation station, FermenterParameters p
 	) {
 		this.plant = plant;
 		this.station = station;
 		this.p = p;
+		this.chpMeanPower = Utils.meanElectricPowerOf(plant);
+		this.chpEfficiency = Utils.electricEfficiencyOf(plant);
 	}
 
 	public static Res<FermenterSimulation> of(
@@ -49,7 +59,7 @@ public final class FermenterSimulation {
 		var groundTemps = SoilTemperatureCalculator.calculate(station, p);
 		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
-			: RoofGeometry.createDoubleMembrane(p);
+			: RoofGeometry.createDoubleMembrane(p, chpMeanPower, chpEfficiency);
 
 		double fermenterVolumeM3 = Math.PI * (f.wallInnerRadius() * f.wallInnerRadius()) * f.wallTotalHeight;
 		double mixerInstalledPowerKW = f.mixerPowerDensity * fermenterVolumeM3 / 1000.0;

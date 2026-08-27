@@ -4,6 +4,9 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.LUDecomposition;
 
+import sophena.model.Boiler;
+import sophena.model.biogas.BiogasPlant;
+
 final class Utils {
 
 	private Utils() {
@@ -30,4 +33,34 @@ final class Utils {
 			.toArray();
 	}
 
+	/// Mean electric power of the CHP unit in kW as the sum over all boiler
+	/// blocks of the mean of their min and max electric power.
+	static double meanElectricPowerOf(BiogasPlant plant) {
+		double power = 0;
+		for (var b : plant.boilers) {
+			if (b == null || b.boiler == null)
+				continue;
+			power += meanBlockPower(b.boiler);
+		}
+		return power;
+	}
+
+	/// Electric efficiency of the CHP unit as the weighted average of the
+	/// efficiency rates of all boiler blocks, weighted by their electric power.
+	static double electricEfficiencyOf(BiogasPlant plant) {
+		double weightedSum = 0;
+		double totalPower = 0;
+		for (var entry : plant.boilers) {
+			if (entry == null || entry.boiler == null)
+				continue;
+			double power = meanBlockPower(entry.boiler);
+			weightedSum += power * entry.boiler.efficiencyRateElectric;
+			totalPower += power;
+		}
+		return totalPower > 0 ? weightedSum / totalPower : 0;
+	}
+
+	static double meanBlockPower(Boiler boiler) {
+		return 0.5 * (boiler.maxPowerElectric + boiler.minPowerElectric);
+	}
 }

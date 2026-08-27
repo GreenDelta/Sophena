@@ -32,7 +32,9 @@ record RoofGeometry(
 	}
 
 	static RoofGeometry createDoubleMembrane(
-		FermenterParameters p
+		FermenterParameters p,
+		double bhkwMeanElectricPowerKW,
+		double bhkwElectricEfficiency
 	) {
 		var f = p.fermenter();
 		double r1 = f.wallInnerRadius();
@@ -44,8 +46,8 @@ record RoofGeometry(
 		double fSkyRoof = 0.5 * (1.0 + aRoofProjectedM2 / aRoofM2);
 		double fGroundRoof = 1.0 - fSkyRoof;
 
-		double biogasFlowNm3h = p.bhkwMeanElectricPowerKW() / (
-			p.bhkwElectricEfficiency() * Const.methaneHeatingValue * p.biogasMethaneFraction()
+		double biogasFlowNm3h = bhkwMeanElectricPowerKW / (
+			bhkwElectricEfficiency * Const.methaneHeatingValue * p.biogasMethaneFraction()
 		);
 		double biogasFlowOperatingM3h = biogasFlowNm3h * (p.fermenter().targetTemperature + Const.k0C) / Const.normalTemperatureK;
 
