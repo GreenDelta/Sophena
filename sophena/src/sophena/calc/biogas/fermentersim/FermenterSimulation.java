@@ -8,6 +8,7 @@ import org.openlca.commons.Res;
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 
 /**
@@ -17,7 +18,7 @@ public final class FermenterSimulation {
 
 	private final BiogasPlant plant;
 	private final WeatherStation station;
-	private final FermenterParameters p;
+	private final Fermenter f;
 
 	/// Parameter name of the original fermenter
 	/// simulation: `bhkwMeanElectricPowerKW`.
@@ -27,12 +28,10 @@ public final class FermenterSimulation {
 	/// simulation: `bhkwElectricEfficiency`.
 	private final double chpEfficiency;
 
-	private FermenterSimulation(
-		BiogasPlant plant, WeatherStation station, FermenterParameters p
-	) {
+	private FermenterSimulation(BiogasPlant plant, WeatherStation station) {
 		this.plant = plant;
 		this.station = station;
-		this.p = p;
+		this.f = plant.fermenter;
 		this.chpMeanPower = Utils.meanElectricPowerOf(plant);
 		this.chpEfficiency = Utils.electricEfficiencyOf(plant);
 	}
@@ -48,22 +47,20 @@ public final class FermenterSimulation {
 		if (res.isError())
 			return res.castError();
 
-		var parameters = FermenterParameters.of(plant);
-		var sim = new FermenterSimulation(plant, station, parameters);
+		var sim = new FermenterSimulation(plant, station);
 		return Res.ok(sim);
 	}
 
 	public SimulationResult run() {
 
-		var f = p.fermenter();
-		var groundTemps = SoilTemperatureCalculator.calculate(station, p);
+		var groundTemps = SoilTemperatureCalculator.calculate(station, f);
 		var roofGeo = (f.roofType == RoofType.FIXED)
-			? RoofGeometry.createFixed(p)
-			: RoofGeometry.createDoubleMembrane(p, chpMeanPower, chpEfficiency);
+			? RoofGeometry.createFixed(f)
+			: RoofGeometry.createDoubleMembrane(f);
 
 		double fermenterVolumeM3 = Math.PI * (f.wallInnerRadius() * f.wallInnerRadius()) * f.wallTotalHeight;
 		double mixerInstalledPowerKW = f.mixerPowerDensity * fermenterVolumeM3 / 1000.0;
-		double mixerMeanHeatKW = mixerInstalledPowerKW * (p.fermenter().mixerRuntime / 60.0) * p.fermenter().mixerHeatFraction;
+		double mixerMeanHeatKW = mixerInstalledPowerKW * (f.mixerRuntime / 60.0) * f.mixerHeatFraction;
 		double qMixerGainW = 1000.0 * mixerMeanHeatKW;
 
 		double r1 = f.wallInnerRadius();
@@ -91,16 +88,16 @@ public final class FermenterSimulation {
 		for (int k = 0; k < Stats.HOURS; k++) {
 			var stepInput = StepInput.of(plant, station, k);
 			var solar = SolarCalculator.computeStepSolar(
-				station, p, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
+				station, f, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
 			);
 
 			if (k == 0) {
-				prevMembraneTempsC[0] = p.fermenter().targetTemperature - 1.0;
-				prevMembraneTempsC[1] = 0.5 * (p.fermenter().targetTemperature + stepInput.tAirC());
+				prevMembraneTempsC[0] = f.targetTemperature - 1.0;
+				prevMembraneTempsC[1] = 0.5 * (f.targetTemperature + stepInput.tAirC());
 				prevMembraneTempsC[2] = stepInput.tAirC() + 1.0;
 			}
 
-			var roofEval = evaluateRoof(p, roofGeo, k, stepInput, solar, prevMembraneTempsC);
+			var roofEval = evaluateRoof(f, roofGeo, k, stepInput, solar, prevMembraneTempsC);
 
 			if (f.roofType == RoofType.DOUBLE_MEMBRANE) {
 				prevMembraneTempsC[0] = roofEval.tsInnerMembraneC();
@@ -108,12 +105,12 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = roofEval.tsRoofC();
 			}
 
-			var wallEval = CylinderWallSolver.solve(p, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
+			var wallEval = CylinderWallSolver.solve(f, stepInput.tAirC(), stepInput.windMps(), solar.qSolarAbsWallWm2(), solar.lDownWm2());
 
-			double qWallEarthW = (p.fermenter().targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
-			double qFloorW = (aFloorM2 / rFloorM2KW) * (p.fermenter().targetTemperature - groundTemps.tEarthBottomC()[k]);
+			double qWallEarthW = (f.targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
+			double qFloorW = (aFloorM2 / rFloorM2KW) * (f.targetTemperature - groundTemps.tEarthBottomC()[k]);
 			double feedKgS = stepInput.feedKgH() / 3600.0;
-			double qFeedW = feedKgS * Const.sCpJkgK * (p.fermenter().targetTemperature - stepInput.feedTemperature());
+			double qFeedW = feedKgS * Const.sCpJkgK * (f.targetTemperature - stepInput.feedTemperature());
 
 			double qBalanceW = roofEval.qRoofW() + wallEval.qWallAirW() + qWallEarthW + qFloorW + qFeedW - qMixerGainW;
 			double qHeatKW = Math.max(0.0, qBalanceW) / 1000.0;
@@ -159,14 +156,14 @@ public final class FermenterSimulation {
 	}
 
 	private RoofEval evaluateRoof(
-		FermenterParameters p, RoofGeometry roofGeo,
+		Fermenter f, RoofGeometry roofGeo,
 		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
-		if (p.fermenter().roofType == RoofType.FIXED) {
-			var res = FixedRoofSolver.solve(p, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
+		if (f.roofType == RoofType.FIXED) {
+			var res = FixedRoofSolver.solve(f, roofGeo, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(p, roofGeo, k, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(f, roofGeo, chpMeanPower, chpEfficiency, in.methaneContent(), k, in.tAirC(), in.windMps(), solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

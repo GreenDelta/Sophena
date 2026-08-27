@@ -2,6 +2,7 @@ package sophena.calc.biogas.fermentersim;
 
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
+import sophena.model.biogas.Fermenter;
 
 /**
  * Calculates earth temperatures using harmonic fit and Kusuda-Achenbach soil model.
@@ -17,11 +18,8 @@ final class SoilTemperatureCalculator {
 	private SoilTemperatureCalculator() {
 	}
 
-	static GroundTemperatures calculate(
-		WeatherStation station,
-		FermenterParameters p
-	) {
-		double depthBottom = p.fermenter().wallTotalHeight * p.fermenter().wallBuriedFraction;
+	static GroundTemperatures calculate(WeatherStation station, Fermenter f) {
+		double depthBottom = f.wallTotalHeight * f.wallBuriedFraction;
 		double annualPeriodS = 365.2425 * 24.0 * 3600.0;
 
 		double[] annualPhaseRad = new double[Stats.HOURS];

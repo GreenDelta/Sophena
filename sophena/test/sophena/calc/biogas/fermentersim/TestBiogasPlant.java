@@ -8,6 +8,7 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
+import sophena.model.biogas.Substrate;
 import sophena.model.biogas.SubstrateProfile;
 
 class TestBiogasPlant {
@@ -21,6 +22,8 @@ class TestBiogasPlant {
 		plant.boilers.add(makeBoiler());
 
 		var profile = new SubstrateProfile();
+		profile.substrate = new Substrate();
+		profile.substrate.methaneContent = 50.0;
 		profile.hourlyValues = new double[Stats.HOURS];
 		Arrays.fill(profile.hourlyValues, 1.875);
 		plant.substrateProfiles.add(profile);

@@ -1,5 +1,7 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.biogas.Fermenter;
+
 /**
  * Solves iterative energy balance and heat transfer for cylinder wall exposed to air.
  */
@@ -12,16 +14,16 @@ final class CylinderWallSolver {
 	}
 
 	static WallResult solve(
-		FermenterParameters p,
+		Fermenter f,
 		double tAirC,
 		double windMps,
 		double qSolarAbsWallWm2,
 		double lDownWm2
 	) {
-		double wallAirHeightM = p.fermenter().wallTotalHeight * (1.0 - p.fermenter().wallBuriedFraction);
-		double r1 = p.fermenter().wallInnerRadius();
-		double r2 = p.fermenter().wallOuterRadius - p.fermenter().wallInsulationThickness;
-		double r3 = p.fermenter().wallOuterRadius;
+		double wallAirHeightM = f.wallTotalHeight * (1.0 - f.wallBuriedFraction);
+		double r1 = f.wallInnerRadius();
+		double r2 = f.wallOuterRadius - f.wallInsulationThickness;
+		double r3 = f.wallOuterRadius;
 
 		double aWallAirM2 = 2.0 * Math.PI * r3 * wallAirHeightM;
 		if (aWallAirM2 <= 0.0) {
@@ -57,7 +59,7 @@ final class CylinderWallSolver {
 				0.825 + 0.387 * Math.pow(wallRayleigh, 1.0 / 6.0) / Math.pow(
 					1.0 + Math.pow(0.492 / outsideAirPrandtl, 9.0 / 16.0), 8.0 / 27.0
 				), 2
-			) + 0.435 * wallAirHeightM / (2.0 * p.fermenter().wallOuterRadius);
+			) + 0.435 * wallAirHeightM / (2.0 * f.wallOuterRadius);
 
 			double hWallFreeWm2K = wallNuFree * Const.uLambdaWmK / wallAirHeightM;
 			double hWallMixedWm2K = Math.pow(Math.pow(hWallForcedWm2K, 3) + Math.pow(hWallFreeWm2K, 3), 1.0 / 3.0);
@@ -70,7 +72,7 @@ final class CylinderWallSolver {
 			double hWallRadGroundWm2K = Const.wEpsilon * fGroundWall * Const.sigma * (tsWallK + tGroundK) * (tsWallK * tsWallK + tGroundK * tGroundK);
 
 			double tsWallRawC = (
-				p.fermenter().targetTemperature / rWallM2KW
+				f.targetTemperature / rWallM2KW
 					+ hWallMixedWm2K * tAirC
 					+ hWallRadSkyWm2K * (tSkyK - Const.k0C)
 					+ hWallRadGroundWm2K * tAirC
@@ -88,7 +90,7 @@ final class CylinderWallSolver {
 			}
 		}
 
-		double qWallWm2 = (p.fermenter().targetTemperature - tsWallC) / rWallM2KW;
+		double qWallWm2 = (f.targetTemperature - tsWallC) / rWallM2KW;
 		double qWallAirW = aWallAirM2 * qWallWm2;
 
 		return new WallResult(tsWallC, qWallAirW);

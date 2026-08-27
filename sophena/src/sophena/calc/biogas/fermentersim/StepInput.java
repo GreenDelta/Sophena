@@ -13,6 +13,7 @@ import sophena.model.biogas.BiogasPlant;
 /// @param dHorWm2         Horizontal diffuse radiation in W/m2.
 /// @param windMps         Wind speed in m/s.
 /// @param feedKgH         Substrate feed mass in kg/h.
+/// @param methaneContent  Methane content of the produced biogas as a fraction.
 record StepInput(
 	int doy,
 	double hod,
@@ -21,7 +22,8 @@ record StepInput(
 	double bHorWm2,
 	double dHorWm2,
 	double windMps,
-	double feedKgH
+	double feedKgH,
+	double methaneContent
 ) {
 
 	static StepInput of(
@@ -38,7 +40,8 @@ record StepInput(
 			station.directRadiation[hour],
 			station.diffuseRadiation[hour],
 			Const.windMps,
-			feedMassAt(plant, hour)
+			feedMassAt(plant, hour),
+			methaneContentAt(plant, hour)
 		);
 	}
 
@@ -48,5 +51,16 @@ record StepInput(
 			mass += (p.hourlyValues[hour] * 1000);
 		}
 		return mass;
+	}
+
+	private static double methaneContentAt(BiogasPlant plant, int hour) {
+		double mass = 0;
+		double content = 0;
+		for (var p : plant.substrateProfiles) {
+			double mi = p.hourlyValues[hour];
+			mass += mi;
+			content += (p.substrate.methaneContent / 100) * mi;
+		}
+		return mass == 0 ? 0 : content / mass;
 	}
 }

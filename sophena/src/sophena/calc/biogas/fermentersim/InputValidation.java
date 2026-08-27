@@ -50,7 +50,7 @@ class InputValidation {
 		if (plant.substrateProfiles.isEmpty())
 			return Res.error("Es wurde kein Substratinput definiert.");
 		for (var p : plant.substrateProfiles) {
-			if (invalid(p.hourlyValues))
+			if (p.substrate == null || invalid(p.hourlyValues))
 				return Res.error("Es gibt unvollständige Substratprofile.");
 		}
 

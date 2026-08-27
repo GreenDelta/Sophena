@@ -1,6 +1,7 @@
 package sophena.calc.biogas.fermentersim;
 
 import sophena.model.WeatherStation;
+import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 
 /**
@@ -20,7 +21,7 @@ final class SolarCalculator {
 
 	static StepSolar computeStepSolar(
 		WeatherStation station,
-		FermenterParameters p,
+		Fermenter f,
 		RoofGeometry roofGeo,
 		int doy,
 		double hod,
@@ -33,7 +34,6 @@ final class SolarCalculator {
 			- 7.53 * Math.cos(dayAngleRad)
 			- 1.5 * Math.sin(dayAngleRad);
 
-		var fermenter = p.fermenter();
 		double solarTimeH = hod + (4.0 * (station.longitude - station.referenceLongitude) + equationOfTimeMin) / 60.0;
 		double hourAngleDeg = 15.0 * (solarTimeH - 12.0);
 		double declinationDeg = 23.45 * Utils.sind(360.0 / 365.0 * (284.0 + doy));
@@ -44,9 +44,9 @@ final class SolarCalculator {
 		double cosElevation = Math.sqrt(Math.max(0.0, 1.0 - sinElevation * sinElevation));
 
 		double gHorWm2 = bHorWm2 + dHorWm2;
-		double roofSolarFactor = 1.0 - fermenter.roofShadingFraction;
+		double roofSolarFactor = 1.0 - f.roofShadingFraction;
 
-		double roofAbsorptivity = (fermenter.roofType == RoofType.FIXED) ? Const.dAlphaDA : Const.membraneRoofAlpha;
+		double roofAbsorptivity = (f.roofType == RoofType.FIXED) ? Const.dAlphaDA : Const.membraneRoofAlpha;
 
 		double gRoofWm2 = roofSolarFactor * (
 			bHorWm2 * roofGeo.aRoofProjectedM2() / roofGeo.aRoofM2()
@@ -55,14 +55,14 @@ final class SolarCalculator {
 		);
 
 		double qSolarAbsRoofWm2 = roofAbsorptivity * gRoofWm2;
-		double qSolarAbsWallWm2 = computeWallSolar(p, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
+		double qSolarAbsWallWm2 = computeWallSolar(f, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
 		double lDownWm2 = Const.skyEmissivity * Const.sigma * Math.pow(tAirC + Const.k0C, 4);
 
 		return new StepSolar(qSolarAbsRoofWm2, qSolarAbsWallWm2, lDownWm2);
 	}
 
 	private static double computeWallSolar(
-		FermenterParameters p,
+		Fermenter f,
 		int doy,
 		double bHorWm2,
 		double dHorWm2,
@@ -87,7 +87,7 @@ final class SolarCalculator {
 		double gWallDiffuseWm2 = fSkyWall * (dHorWm2 + bHorReclassifiedDiffuseWm2);
 		double gWallGroundWm2 = Const.groundReflectance * fGroundWall * gHorWm2;
 
-		double wallSolarFactor = 1.0 - p.fermenter().wallShadingFraction;
+		double wallSolarFactor = 1.0 - f.wallShadingFraction;
 		return Const.wAlphaWA * wallSolarFactor * (gWallDirectWm2 + gWallDiffuseWm2 + gWallGroundWm2);
 	}
 }

@@ -1,5 +1,7 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.biogas.Fermenter;
+
 /**
  * Solves heat transfer across a single-layer/fixed roof.
  */
@@ -12,15 +14,15 @@ final class FixedRoofSolver {
 	}
 
 	static FixedRoofResult solve(
-		FermenterParameters p,
+		Fermenter f,
 		RoofGeometry roofGeo,
 		double tAirC,
 		double windMps,
 		double qSolarAbsRoofWm2,
 		double lDownWm2
 	) {
-		double rRoofM2KW = p.fermenter().roofFixedLayerThickness / Const.dLambdaWmK
-			+ p.fermenter().roofInsulationThickness / Const.dLambdaIWmK;
+		double rRoofM2KW = f.roofFixedLayerThickness / Const.dLambdaWmK
+			+ f.roofInsulationThickness / Const.dLambdaIWmK;
 		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
@@ -40,7 +42,7 @@ final class FixedRoofSolver {
 			double hRadGroundWm2K = Const.dEpsilonDA * roofGeo.fGroundRoof() * Const.sigma * (tsRoofK + tGroundK) * (tsRoofK * tsRoofK + tGroundK * tGroundK);
 
 			double tsRoofRawC = (
-				p.fermenter().targetTemperature / rRoofM2KW
+				f.targetTemperature / rRoofM2KW
 					+ hRoofExternalWm2K * tAirC
 					+ hRadSkyWm2K * (tSkyK - Const.k0C)
 					+ hRadGroundWm2K * tAirC
@@ -58,7 +60,7 @@ final class FixedRoofSolver {
 			}
 		}
 
-		double qRoofWm2 = (p.fermenter().targetTemperature - tsRoofC) / rRoofM2KW;
+		double qRoofWm2 = (f.targetTemperature - tsRoofC) / rRoofM2KW;
 		double qRoofW = roofGeo.aRoofM2() * qRoofWm2;
 
 		return new FixedRoofResult(tsRoofC, qRoofW);
