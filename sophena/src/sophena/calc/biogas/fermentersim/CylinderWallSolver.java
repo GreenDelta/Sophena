@@ -13,7 +13,6 @@ final class CylinderWallSolver {
 
 	static WallResult solve(
 		FermenterParameters p,
-		MaterialConstants m,
 		double tAirC,
 		double windMps,
 		double qSolarAbsWallWm2,
@@ -29,11 +28,11 @@ final class CylinderWallSolver {
 			return new WallResult(0.0, 0.0);
 		}
 
-		double rWallM2KW = r3 * (Math.log(r2 / r1) / m.wLambdaWmK() + Math.log(r3 / r2) / m.wLambdaIWmK());
+		double rWallM2KW = r3 * (Math.log(r2 / r1) / Const.wLambdaWmK + Math.log(r3 / r2) / Const.wLambdaIWmK);
 		double lWallM = Math.PI * r3;
 
-		double outsideAirPrandtl = m.uEtaPas() * m.uCpJkgK() / m.uLambdaWmK();
-		double outsideAirKinematicViscosityM2s = m.uEtaPas() / m.uRhoKgm3();
+		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
+		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
 		double wallReynolds = windMps * lWallM / outsideAirKinematicViscosityM2s;
 		double wallNuLaminar = 0.664 * Math.pow(outsideAirPrandtl, 1.0 / 3.0) * Math.sqrt(wallReynolds);
@@ -42,7 +41,7 @@ final class CylinderWallSolver {
 		);
 
 		double hWallForcedWm2K = (0.3 + Math.sqrt(wallNuLaminar * wallNuLaminar + wallNuTurbulent * wallNuTurbulent))
-			* m.uLambdaWmK() / lWallM;
+			* Const.uLambdaWmK / lWallM;
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tGroundK = tAirC + Const.k0C;
@@ -60,15 +59,15 @@ final class CylinderWallSolver {
 				), 2
 			) + 0.435 * wallAirHeightM / (2.0 * p.fermenter().wallOuterRadius);
 
-			double hWallFreeWm2K = wallNuFree * m.uLambdaWmK() / wallAirHeightM;
+			double hWallFreeWm2K = wallNuFree * Const.uLambdaWmK / wallAirHeightM;
 			double hWallMixedWm2K = Math.pow(Math.pow(hWallForcedWm2K, 3) + Math.pow(hWallFreeWm2K, 3), 1.0 / 3.0);
 
 			double tsWallK = tsWallC + Const.k0C;
 			double fSkyWall = 0.5;
 			double fGroundWall = 0.5;
 
-			double hWallRadSkyWm2K = m.wEpsilon() * fSkyWall * Const.sigma * (tsWallK + tSkyK) * (tsWallK * tsWallK + tSkyK * tSkyK);
-			double hWallRadGroundWm2K = m.wEpsilon() * fGroundWall * Const.sigma * (tsWallK + tGroundK) * (tsWallK * tsWallK + tGroundK * tGroundK);
+			double hWallRadSkyWm2K = Const.wEpsilon * fSkyWall * Const.sigma * (tsWallK + tSkyK) * (tsWallK * tsWallK + tSkyK * tSkyK);
+			double hWallRadGroundWm2K = Const.wEpsilon * fGroundWall * Const.sigma * (tsWallK + tGroundK) * (tsWallK * tsWallK + tGroundK * tGroundK);
 
 			double tsWallRawC = (
 				p.fermenter().targetTemperature / rWallM2KW

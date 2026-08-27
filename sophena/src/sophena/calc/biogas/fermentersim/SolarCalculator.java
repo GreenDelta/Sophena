@@ -21,7 +21,6 @@ final class SolarCalculator {
 	static StepSolar computeStepSolar(
 		WeatherStation station,
 		FermenterParameters p,
-		MaterialConstants m,
 		RoofGeometry roofGeo,
 		int doy,
 		double hod,
@@ -47,16 +46,16 @@ final class SolarCalculator {
 		double gHorWm2 = bHorWm2 + dHorWm2;
 		double roofSolarFactor = 1.0 - fermenter.roofShadingFraction;
 
-		double roofAbsorptivity = (fermenter.roofType == RoofType.FIXED) ? m.dAlphaDA() : p.membraneRoofAlpha();
+		double roofAbsorptivity = (fermenter.roofType == RoofType.FIXED) ? Const.dAlphaDA : p.membraneRoofAlpha();
 
 		double gRoofWm2 = roofSolarFactor * (
 			bHorWm2 * roofGeo.aRoofProjectedM2() / roofGeo.aRoofM2()
 				+ dHorWm2 * roofGeo.fSkyRoof()
-				+ m.groundReflectance() * gHorWm2 * roofGeo.fGroundRoof()
+				+ Const.groundReflectance * gHorWm2 * roofGeo.fGroundRoof()
 		);
 
 		double qSolarAbsRoofWm2 = roofAbsorptivity * gRoofWm2;
-		double qSolarAbsWallWm2 = computeWallSolar(p, m, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
+		double qSolarAbsWallWm2 = computeWallSolar(p, doy, bHorWm2, dHorWm2, gHorWm2, sinElevation, cosElevation);
 		double lDownWm2 = Const.skyEmissivity * Const.sigma * Math.pow(tAirC + Const.k0C, 4);
 
 		return new StepSolar(qSolarAbsRoofWm2, qSolarAbsWallWm2, lDownWm2);
@@ -64,7 +63,6 @@ final class SolarCalculator {
 
 	private static double computeWallSolar(
 		FermenterParameters p,
-		MaterialConstants m,
 		int doy,
 		double bHorWm2,
 		double dHorWm2,
@@ -87,9 +85,9 @@ final class SolarCalculator {
 
 		double gWallDirectWm2 = sunAboveHorizon ? (dniLimitedWm2 * cosElevation / Math.PI) : 0.0;
 		double gWallDiffuseWm2 = fSkyWall * (dHorWm2 + bHorReclassifiedDiffuseWm2);
-		double gWallGroundWm2 = m.groundReflectance() * fGroundWall * gHorWm2;
+		double gWallGroundWm2 = Const.groundReflectance * fGroundWall * gHorWm2;
 
 		double wallSolarFactor = 1.0 - p.fermenter().wallShadingFraction;
-		return m.wAlphaWA() * wallSolarFactor * (gWallDirectWm2 + gWallDiffuseWm2 + gWallGroundWm2);
+		return Const.wAlphaWA * wallSolarFactor * (gWallDirectWm2 + gWallDiffuseWm2 + gWallGroundWm2);
 	}
 }

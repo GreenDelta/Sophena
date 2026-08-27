@@ -19,8 +19,7 @@ final class SoilTemperatureCalculator {
 
 	static GroundTemperatures calculate(
 		WeatherStation station,
-		FermenterParameters p,
-		MaterialConstants m
+		FermenterParameters p
 	) {
 		double depthBottom = p.fermenter().wallTotalHeight * p.fermenter().wallBuriedFraction;
 		double annualPeriodS = 365.2425 * 24.0 * 3600.0;
@@ -32,7 +31,7 @@ final class SoilTemperatureCalculator {
 
 		double[] annualCoeffs = fitAnnualHarmonics(annualPhaseRad, station.data);
 
-		double penetrationDepthM = Math.sqrt(m.soilThermalDiffusivityM2s() * annualPeriodS / Math.PI);
+		double penetrationDepthM = Math.sqrt(Const.soilThermalDiffusivityM2s * annualPeriodS / Math.PI);
 		double depthWall = 0.5 * depthBottom;
 
 		double attWall = Math.exp(-depthWall / penetrationDepthM);

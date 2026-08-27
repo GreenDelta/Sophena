@@ -32,8 +32,7 @@ record RoofGeometry(
 	}
 
 	static RoofGeometry createDoubleMembrane(
-		FermenterParameters p,
-		MaterialConstants m
+		FermenterParameters p
 	) {
 		var f = p.fermenter();
 		double r1 = f.wallInnerRadius();
@@ -67,10 +66,10 @@ record RoofGeometry(
 
 		double supportAirMeanFlow = 0.5 * biogasFlowOperatingM3h;
 		double supportAirVelocity = supportAirMeanFlow / (3600.0 * channelArea);
-		double supportAirPrandtl = m.uEtaPas() * m.uCpJkgK() / m.uLambdaWmK();
+		double supportAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 
-		double hInner = computeGapConvection(supportAirVelocity, innerLength, supportAirPrandtl, m);
-		double hOuter = computeGapConvection(supportAirVelocity, outerLength, supportAirPrandtl, m);
+		double hInner = computeGapConvection(supportAirVelocity, innerLength, supportAirPrandtl);
+		double hOuter = computeGapConvection(supportAirVelocity, outerLength, supportAirPrandtl);
 
 		return new RoofGeometry(
 			aRoofM2,
@@ -88,10 +87,9 @@ record RoofGeometry(
 	private static double computeGapConvection(
 		double velocity,
 		double length,
-		double prandtl,
-		MaterialConstants m
+		double prandtl
 	) {
-		double reynolds = m.uRhoKgm3() * velocity * length / m.uEtaPas();
+		double reynolds = Const.uRhoKgm3 * velocity * length / Const.uEtaPas;
 		double nuLaminar = 0.664 * Math.sqrt(reynolds) * Math.pow(prandtl, 1.0 / 3.0);
 		double nusselt;
 
@@ -104,6 +102,6 @@ record RoofGeometry(
 			nusselt = Math.sqrt(nuLaminar * nuLaminar + nuTurbulent * nuTurbulent);
 		}
 
-		return nusselt * m.uLambdaWmK() / length;
+		return nusselt * Const.uLambdaWmK / length;
 	}
 }

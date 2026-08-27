@@ -19,8 +19,7 @@ final class NaturalConvectionHelper {
 		double tSetC,
 		double tsInnerMembraneC,
 		double aRoofProjectedM2,
-		double r1,
-		MaterialConstants m
+		double r1
 	) {
 		double naturalConvectionLengthM = aRoofProjectedM2 / (2.0 * Math.PI * r1);
 		double tFilmK = 0.5 * (tSetC + tsInnerMembraneC) + Const.k0C;
@@ -28,15 +27,15 @@ final class NaturalConvectionHelper {
 		double referenceTemperatureK = 293.15;
 		double sutherlandConstantK = 110.4;
 
-		double rhoFilmKgm3 = m.uRhoKgm3() * referenceTemperatureK / tFilmK;
-		double etaFilmPas = m.uEtaPas()
+		double rhoFilmKgm3 = Const.uRhoKgm3 * referenceTemperatureK / tFilmK;
+		double etaFilmPas = Const.uEtaPas
 			* Math.pow(tFilmK / referenceTemperatureK, 1.5)
 			* (referenceTemperatureK + sutherlandConstantK)
 			/ (tFilmK + sutherlandConstantK);
-		double lambdaFilmWmK = m.uLambdaWmK() * Math.pow(tFilmK / referenceTemperatureK, 0.9);
+		double lambdaFilmWmK = Const.uLambdaWmK * Math.pow(tFilmK / referenceTemperatureK, 0.9);
 
 		double nuFilmM2s = etaFilmPas / rhoFilmKgm3;
-		double thermalDiffusivityFilmM2s = lambdaFilmWmK / (rhoFilmKgm3 * m.uCpJkgK());
+		double thermalDiffusivityFilmM2s = lambdaFilmWmK / (rhoFilmKgm3 * Const.uCpJkgK);
 		double prandtl = nuFilmM2s / thermalDiffusivityFilmM2s;
 
 		double deltaTInnerK = Math.abs(tSetC - tsInnerMembraneC);

@@ -58,4 +58,78 @@ interface Const {
 	/// Average wind speed in m/s.
 	/// Parameter of the original fermenter simulation model: `windMps`.
 	double windMps = 3.5;
+
+	// material constants
+
+	/// Wall thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `wLambdaWmK`.
+	double wLambdaWmK = 2.10;
+
+	/// Wall insulation thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `wLambdaIWmK`.
+	double wLambdaIWmK = 0.035;
+
+	/// Roof layer thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `dLambdaWmK`.
+	double dLambdaWmK = 0.20;
+
+	/// Roof insulation thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `dLambdaIWmK`.
+	double dLambdaIWmK = 0.035;
+
+	/// Floor slab thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `boLambdaWmK`.
+	double boLambdaWmK = 2.10;
+
+	/// Floor insulation thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `boLambdaIWmK`.
+	double boLambdaIWmK = 0.035;
+
+	/// Soil thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `boLambdaGrWmK`.
+	double boLambdaGrWmK = 2.0;
+
+	/// Soil thermal diffusivity in m2/s.
+	/// Parameter of the original fermenter simulation model: `soilThermalDiffusivityM2s`.
+	double soilThermalDiffusivityM2s = 6.5e-7;
+
+	/// Wall emissivity.
+	/// Parameter of the original fermenter simulation model: `wEpsilon`.
+	double wEpsilon = 0.90;
+
+	/// Fixed roof emissivity.
+	/// Parameter of the original fermenter simulation model: `dEpsilonDA`.
+	double dEpsilonDA = 0.90;
+
+	/// Wall solar absorptivity.
+	/// Parameter of the original fermenter simulation model: `wAlphaWA`.
+	double wAlphaWA = 0.60;
+
+	/// Fixed roof solar absorptivity.
+	/// Parameter of the original fermenter simulation model: `dAlphaDA`.
+	double dAlphaDA = 0.60;
+
+	/// Ground solar reflectance.
+	/// Parameter of the original fermenter simulation model: `groundReflectance`.
+	double groundReflectance = 0.20;
+
+	/// Air dynamic viscosity in Pa s.
+	/// Parameter of the original fermenter simulation model: `uEtaPas`.
+	double uEtaPas = 17.98e-6;
+
+	/// Air specific heat capacity in J/(kg K).
+	/// Parameter of the original fermenter simulation model: `uCpJkgK`.
+	double uCpJkgK = 1007.0;
+
+	/// Air thermal conductivity in W/(m K).
+	/// Parameter of the original fermenter simulation model: `uLambdaWmK`.
+	double uLambdaWmK = 0.02603;
+
+	/// Air density in kg/m3.
+	/// Parameter of the original fermenter simulation model: `uRhoKgm3`.
+	double uRhoKgm3 = 1.1881;
+
+	/// Substrate specific heat capacity in J/(kg K).
+	/// Parameter of the original fermenter simulation model: `sCpJkgK`.
+	double sCpJkgK = 3900.0;
 }

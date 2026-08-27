@@ -13,22 +13,21 @@ final class FixedRoofSolver {
 
 	static FixedRoofResult solve(
 		FermenterParameters p,
-		MaterialConstants m,
 		RoofGeometry roofGeo,
 		double tAirC,
 		double windMps,
 		double qSolarAbsRoofWm2,
 		double lDownWm2
 	) {
-		double rRoofM2KW = p.fermenter().roofFixedLayerThickness / m.dLambdaWmK()
-			+ p.fermenter().roofInsulationThickness / m.dLambdaIWmK();
-		double outsideAirPrandtl = m.uEtaPas() * m.uCpJkgK() / m.uLambdaWmK();
-		double outsideAirKinematicViscosityM2s = m.uEtaPas() / m.uRhoKgm3();
+		double rRoofM2KW = p.fermenter().roofFixedLayerThickness / Const.dLambdaWmK
+			+ p.fermenter().roofInsulationThickness / Const.dLambdaIWmK;
+		double outsideAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
+		double outsideAirKinematicViscosityM2s = Const.uEtaPas / Const.uRhoKgm3;
 
 		double roofExternalReynolds = windMps * roofGeo.roofExternalFlowLengthM() / outsideAirKinematicViscosityM2s;
 		double roofExternalNusselt = roofExternalNusselt(roofExternalReynolds, outsideAirPrandtl);
 
-		double hRoofExternalWm2K = roofExternalNusselt * m.uLambdaWmK() / roofGeo.roofExternalFlowLengthM();
+		double hRoofExternalWm2K = roofExternalNusselt * Const.uLambdaWmK / roofGeo.roofExternalFlowLengthM();
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tGroundK = tAirC + Const.k0C;
@@ -37,8 +36,8 @@ final class FixedRoofSolver {
 
 		for (int iter = 1; iter <= Const.maxIterations; iter++) {
 			double tsRoofK = tsRoofC + Const.k0C;
-			double hRadSkyWm2K = m.dEpsilonDA() * roofGeo.fSkyRoof() * Const.sigma * (tsRoofK + tSkyK) * (tsRoofK * tsRoofK + tSkyK * tSkyK);
-			double hRadGroundWm2K = m.dEpsilonDA() * roofGeo.fGroundRoof() * Const.sigma * (tsRoofK + tGroundK) * (tsRoofK * tsRoofK + tGroundK * tGroundK);
+			double hRadSkyWm2K = Const.dEpsilonDA * roofGeo.fSkyRoof() * Const.sigma * (tsRoofK + tSkyK) * (tsRoofK * tsRoofK + tSkyK * tSkyK);
+			double hRadGroundWm2K = Const.dEpsilonDA * roofGeo.fGroundRoof() * Const.sigma * (tsRoofK + tGroundK) * (tsRoofK * tsRoofK + tGroundK * tGroundK);
 
 			double tsRoofRawC = (
 				p.fermenter().targetTemperature / rRoofM2KW
