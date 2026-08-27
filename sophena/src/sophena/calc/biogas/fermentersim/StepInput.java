@@ -67,4 +67,30 @@ record StepInput(
 		}
 		return mass == 0 ? 0 : content / mass;
 	}
+
+	/// Calculates the heat capacity of the substrate input at the given hour in
+	/// J/(kg K). We take this as the heat capacity of the fermenter content
+	/// though this is just for the input. However, this seems to be still more
+	/// reasonable instead taking an average value for the complete year when
+	/// the substrates change over the year.
+	private static double substrateHeatCapacityAt(BiogasPlant plant, int hour) {
+		double mass = 0;
+		double capa = 0;
+		for (var p : plant.substrateProfiles) {
+			double mi = p.hourlyValues[hour];
+			mass += mi;
+
+			double organicShare =
+				(p.substrate.dryMatter / 100) * (p.substrate.organicDryMatter / 100);
+			double waterShare = 1 - (p.substrate.dryMatter / 100);
+			double inorganicShare = 1 - waterShare - organicShare;
+
+			double capai = waterShare * 4180
+				+ organicShare * 1800
+				+ inorganicShare * 1000;
+			capa += capai * mi;
+		}
+		return mass == 0 ? 0 : capa / mass;
+	}
+
 }
