@@ -28,6 +28,8 @@ package sophena.calc.biogas.fermentersim;
 /// Parameter of the original fermenter simulation model: `relaxation`.
 /// @param maxIterations       Maximum iterations per timestep.
 /// Parameter of the original fermenter simulation model: `maxIterations`.
+/// @param windMps             Average wind speed in m/s.
+/// Parameter of the original fermenter simulation model: `windMps`.
 record SimulationConstants(
 	double k0C,
 	double sigma,
@@ -41,7 +43,8 @@ record SimulationConstants(
 	double tolerance,
 	double residualTolerance,
 	double relaxation,
-	int maxIterations
+	int maxIterations,
+	double windMps
 ) {
 	static SimulationConstants get() {
 		return new SimulationConstants(
@@ -57,7 +60,8 @@ record SimulationConstants(
 			0.002,             // Convergence tolerance for temperature [K]
 			1.0,               // Convergence residual tolerance [W]
 			0.5,               // Under-relaxation factor (0 < omega <= 1) [-]
-			100                // Maximum iterations per timestep
+			100,               // Maximum iterations per timestep
+			3.5                // Wind speed in m/s
 		);
 	}
 }

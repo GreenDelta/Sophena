@@ -1,5 +1,6 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 
 /**
@@ -18,16 +19,14 @@ final class SoilTemperatureCalculator {
 
 	static GroundTemperatures calculate(
 		WeatherStation station,
-		SimulationInput input,
 		FermenterParameters p,
 		MaterialConstants m
 	) {
-		int nSteps = input.size();
 		double depthBottom = p.fermenter().wallTotalHeight * p.fermenter().wallBuriedFraction;
 		double annualPeriodS = 365.2425 * 24.0 * 3600.0;
 
-		double[] annualPhaseRad = new double[nSteps];
-		for (int k = 0; k < nSteps; k++) {
+		double[] annualPhaseRad = new double[Stats.HOURS];
+		for (int k = 0; k < Stats.HOURS; k++) {
 			annualPhaseRad[k] = 2.0 * Math.PI * (k * 3600.0) / annualPeriodS;
 		}
 
@@ -39,10 +38,10 @@ final class SoilTemperatureCalculator {
 		double attWall = Math.exp(-depthWall / penetrationDepthM);
 		double attBottom = Math.exp(-depthBottom / penetrationDepthM);
 
-		double[] tEarthWallC = new double[nSteps];
-		double[] tEarthBottomC = new double[nSteps];
+		double[] tEarthWallC = new double[Stats.HOURS];
+		double[] tEarthBottomC = new double[Stats.HOURS];
 
-		for (int k = 0; k < nSteps; k++) {
+		for (int k = 0; k < Stats.HOURS; k++) {
 			double phaseW = annualPhaseRad[k] - depthWall / penetrationDepthM;
 			double phaseB = annualPhaseRad[k] - depthBottom / penetrationDepthM;
 

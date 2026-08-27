@@ -47,6 +47,13 @@ class InputValidation {
 			return Res.error("Die Angaben zum Fermenter fehlen.");
 		}
 
+		if (plant.substrateProfiles.isEmpty())
+			return Res.error("Es wurde kein Substratinput definiert.");
+		for (var p : plant.substrateProfiles) {
+			if (invalid(p.hourlyValues))
+				return Res.error("Es gibt unvollständige Substratprofile.");
+		}
+
 		return Res.ok();
 	}
 

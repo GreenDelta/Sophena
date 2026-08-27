@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openlca.commons.Res;
 
+import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.RoofType;
@@ -14,17 +15,19 @@ import sophena.model.biogas.RoofType;
  */
 public final class FermenterSimulation {
 
+	private final BiogasPlant plant;
 	private final WeatherStation station;
 	private final MaterialConstants mat = MaterialConstants.get();
 	private final SimulationConstants sim = SimulationConstants.get();
 
 	private final FermenterParameters p;
-	private final SimulationInput input;
 
-	private FermenterSimulation(WeatherStation station, FermenterParameters p, SimulationInput input) {
+	private FermenterSimulation(
+		BiogasPlant plant, WeatherStation station, FermenterParameters p
+	) {
+		this.plant = plant;
 		this.station = station;
 		this.p = p;
-		this.input = input;
 	}
 
 	public static Res<FermenterSimulation> of(
@@ -38,16 +41,15 @@ public final class FermenterSimulation {
 		if (res.isError())
 			return res.castError();
 
-		var input = SimulationInput.constant(3.5, 1875.0);
 		var parameters = FermenterParameters.of(plant);
-		var sim = new FermenterSimulation(station, parameters, input);
+		var sim = new FermenterSimulation(plant, station, parameters);
 		return Res.ok(sim);
 	}
 
 	public SimulationResult run() {
 
 		var f = p.fermenter();
-		var groundTemps = SoilTemperatureCalculator.calculate(station, input, p, mat);
+		var groundTemps = SoilTemperatureCalculator.calculate(station, p, mat);
 		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
 			: RoofGeometry.createDoubleMembrane(p, mat, sim);
@@ -72,16 +74,15 @@ public final class FermenterSimulation {
 		double aFloorM2 = Math.PI * r1 * r1;
 		double rFloorM2KW = f.floorSlabThickness / mat.boLambdaWmK() + f.floorInsulationThickness / mat.boLambdaIWmK();
 
-		int nSteps = input.size();
-		List<SimulationResultStep> steps = new ArrayList<>(nSteps);
+		List<SimulationResultStep> steps = new ArrayList<>(Stats.HOURS);
 
 		double totalHeatKwSum = 0.0;
 		double peakKw = 0.0;
 
 		double[] prevMembraneTempsC = new double[3];
 
-		for (int k = 0; k < nSteps; k++) {
-			var stepInput = extractStepInput(input, k);
+		for (int k = 0; k < Stats.HOURS; k++) {
+			var stepInput = StepInput.of(sim, plant, station, k);
 			var solar = SolarCalculator.computeStepSolar(
 				station, p, mat, sim, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
 			);
@@ -138,23 +139,6 @@ public final class FermenterSimulation {
 
 		double totalEnergyMWh = totalHeatKwSum / 1000.0;
 		return new SimulationResult(steps, totalEnergyMWh, peakKw);
-	}
-
-	private record StepInput(int doy, double hod, double tAirC, double bHorWm2,
-	                         double dHorWm2, double windMps, double feedKgH) {
-	}
-
-	private StepInput extractStepInput(SimulationInput input, int k) {
-		int doy = (k / 24) + 1;
-		double hod = k % 24;
-		return new StepInput(
-			doy, hod,
-			station.data[k],
-			station.directRadiation[k],
-			station.diffuseRadiation[k],
-			input.windMps(),
-			input.feedKgH()[k]
-		);
 	}
 
 	private record RoofEval(
