@@ -14,13 +14,15 @@ import sophena.model.biogas.RoofType;
  */
 public final class FermenterSimulation {
 
+	private final WeatherStation station;
 	private final MaterialConstants mat = MaterialConstants.get();
 	private final SimulationConstants sim = SimulationConstants.get();
 
 	private final FermenterParameters p;
 	private final SimulationInput input;
 
-	private FermenterSimulation(FermenterParameters p, SimulationInput input) {
+	private FermenterSimulation(WeatherStation station, FermenterParameters p, SimulationInput input) {
+		this.station = station;
 		this.p = p;
 		this.input = input;
 	}
@@ -36,16 +38,16 @@ public final class FermenterSimulation {
 		if (res.isError())
 			return res.castError();
 
-		var input = SimulationInput.constant(station, 3.5, 1875.0);
-		var parameters = FermenterParameters.of(plant, station);
-		var sim = new FermenterSimulation(parameters, input);
+		var input = SimulationInput.constant(3.5, 1875.0);
+		var parameters = FermenterParameters.of(plant);
+		var sim = new FermenterSimulation(station, parameters, input);
 		return Res.ok(sim);
 	}
 
 	public SimulationResult run() {
 
 		var f = p.fermenter();
-		var groundTemps = SoilTemperatureCalculator.calculate(input, p, mat);
+		var groundTemps = SoilTemperatureCalculator.calculate(station, input, p, mat);
 		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(p)
 			: RoofGeometry.createDoubleMembrane(p, mat, sim);
@@ -81,7 +83,7 @@ public final class FermenterSimulation {
 		for (int k = 0; k < nSteps; k++) {
 			var stepInput = extractStepInput(input, k);
 			var solar = SolarCalculator.computeStepSolar(
-				p, mat, sim, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
+				station, p, mat, sim, roofGeo, stepInput.doy(), stepInput.hod(), stepInput.tAirC(), stepInput.bHorWm2(), stepInput.dHorWm2()
 			);
 
 			if (k == 0) {
@@ -145,7 +147,6 @@ public final class FermenterSimulation {
 	private StepInput extractStepInput(SimulationInput input, int k) {
 		int doy = (k / 24) + 1;
 		double hod = k % 24;
-		var station = input.station();
 		return new StepInput(
 			doy, hod,
 			station.data[k],

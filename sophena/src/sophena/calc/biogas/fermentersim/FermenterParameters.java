@@ -7,7 +7,6 @@ import sophena.model.biogas.RoofType;
 
 record FermenterParameters(
 	Fermenter fermenter,
-	WeatherStation station,
 	double bhkwMeanElectricPowerKW,
 	double bhkwElectricEfficiency,
 	double biogasMethaneFraction,
@@ -19,10 +18,9 @@ record FermenterParameters(
 	double outerMembraneEpsilonExterior
 ) {
 
-	static FermenterParameters of(BiogasPlant plant, WeatherStation station) {
+	static FermenterParameters of(BiogasPlant plant) {
 		return new FermenterParameters(
 			plant.fermenter,
-			station,
 			500.0,    // Mean CHP electric power [kW]
 			0.40,     // CHP electric efficiency [-]
 			0.50,     // Methane fraction in biogas [-]

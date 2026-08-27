@@ -1,5 +1,6 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.WeatherStation;
 import sophena.model.biogas.RoofType;
 
 /**
@@ -18,6 +19,7 @@ final class SolarCalculator {
 	}
 
 	static StepSolar computeStepSolar(
+		WeatherStation station,
 		FermenterParameters p,
 		MaterialConstants m,
 		SimulationConstants c,
@@ -33,7 +35,6 @@ final class SolarCalculator {
 			- 7.53 * Math.cos(dayAngleRad)
 			- 1.5 * Math.sin(dayAngleRad);
 
-		var station = p.station();
 		var fermenter = p.fermenter();
 		double solarTimeH = hod + (4.0 * (station.longitude - station.referenceLongitude) + equationOfTimeMin) / 60.0;
 		double hourAngleDeg = 15.0 * (solarTimeH - 12.0);

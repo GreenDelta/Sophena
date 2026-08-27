@@ -1,5 +1,7 @@
 package sophena.calc.biogas.fermentersim;
 
+import sophena.model.WeatherStation;
+
 /**
  * Calculates earth temperatures using harmonic fit and Kusuda-Achenbach soil model.
  */
@@ -15,6 +17,7 @@ final class SoilTemperatureCalculator {
 	}
 
 	static GroundTemperatures calculate(
+		WeatherStation station,
 		SimulationInput input,
 		FermenterParameters p,
 		MaterialConstants m
@@ -28,7 +31,7 @@ final class SoilTemperatureCalculator {
 			annualPhaseRad[k] = 2.0 * Math.PI * (k * 3600.0) / annualPeriodS;
 		}
 
-		double[] annualCoeffs = fitAnnualHarmonics(annualPhaseRad, input.station().data);
+		double[] annualCoeffs = fitAnnualHarmonics(annualPhaseRad, station.data);
 
 		double penetrationDepthM = Math.sqrt(m.soilThermalDiffusivityM2s() * annualPeriodS / Math.PI);
 		double depthWall = 0.5 * depthBottom;

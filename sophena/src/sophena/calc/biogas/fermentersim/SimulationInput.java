@@ -13,9 +13,7 @@ import sophena.model.WeatherStation;
  * weather station data.
  */
 public record SimulationInput(
-	WeatherStation station,
-	double windMps,
-	double[] feedKgH
+	double windMps, double[] feedKgH
 ) {
 
 	public SimulationInput {
@@ -30,11 +28,9 @@ public record SimulationInput(
 		return Stats.HOURS;
 	}
 
-	static SimulationInput constant(
-		WeatherStation station, double windMps, double feedKgH
-	) {
+	static SimulationInput constant(double windMps, double feedKgH) {
 		var feed = new double[Stats.HOURS];
 		Arrays.fill(feed, feedKgH);
-		return new SimulationInput(station, windMps, feed);
+		return new SimulationInput(windMps, feed);
 	}
 }
