@@ -24,6 +24,8 @@ class TestBiogasPlant {
 		var profile = new SubstrateProfile();
 		profile.substrate = new Substrate();
 		profile.substrate.methaneContent = 50.0;
+		profile.substrate.dryMatter = 10.0;
+		profile.substrate.organicDryMatter = 47.5;
 		profile.hourlyValues = new double[Stats.HOURS];
 		Arrays.fill(profile.hourlyValues, 1.875);
 		plant.substrateProfiles.add(profile);

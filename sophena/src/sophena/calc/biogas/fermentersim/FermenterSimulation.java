@@ -99,7 +99,7 @@ public final class FermenterSimulation {
 			double qWallEarthW = (f.targetTemperature - groundTemps.tEarthWallC()[k]) * uaWallEarthWK;
 			double qFloorW = (aFloorM2 / rFloorM2KW) * (f.targetTemperature - groundTemps.tEarthBottomC()[k]);
 			double feedKgS = stepInput.feedKgH() / 3600.0;
-			double qFeedW = feedKgS * Const.sCpJkgK * (f.targetTemperature - stepInput.feedTemperature());
+			double qFeedW = feedKgS * stepInput.substrateHeatCapacity() * (f.targetTemperature - stepInput.feedTemperature());
 
 			double qBalanceW = roofEval.qRoofW() + wallEval.qWallAirW() + qWallEarthW + qFloorW + qFeedW - qMixerGainW;
 			double qHeatKW = Math.max(0.0, qBalanceW) / 1000.0;

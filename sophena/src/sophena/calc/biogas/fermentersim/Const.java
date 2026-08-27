@@ -129,10 +129,6 @@ interface Const {
 	/// Parameter of the original fermenter simulation model: `uRhoKgm3`.
 	double uRhoKgm3 = 1.1881;
 
-	/// Substrate specific heat capacity in J/(kg K).
-	/// Parameter of the original fermenter simulation model: `sCpJkgK`.
-	double sCpJkgK = 3900.0;
-
 	// membrane and surface optical constants
 
 	/// Solar absorption coefficient of the outer membrane.

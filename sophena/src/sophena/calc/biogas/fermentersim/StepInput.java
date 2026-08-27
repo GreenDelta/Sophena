@@ -16,6 +16,8 @@ import sophena.model.biogas.BiogasPlant;
 /// @param windMps         Wind speed in m/s.
 /// @param feedKgH         Substrate feed mass in kg/h.
 /// @param methaneContent  Methane content of the produced biogas as a fraction.
+/// @param substrateHeatCapacity Heat capacity of the substrate feed in J/(kg K).
+/// Parameter of the original fermenter simulation model: `sCpJkgK`.
 record StepInput(
 	int hour,
 	int doy,
@@ -26,7 +28,8 @@ record StepInput(
 	double dHorWm2,
 	double windMps,
 	double feedKgH,
-	double methaneContent
+	double methaneContent,
+	double substrateHeatCapacity
 ) {
 
 	static StepInput of(
@@ -45,7 +48,8 @@ record StepInput(
 			station.diffuseRadiation[hour],
 			Const.windMps,
 			feedMassAt(plant, hour),
-			methaneContentAt(plant, hour)
+			methaneContentAt(plant, hour),
+			substrateHeatCapacityAt(plant, hour)
 		);
 	}
 
