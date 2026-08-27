@@ -3,6 +3,10 @@ package sophena.calc.biogas.fermentersim;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openlca.commons.Res;
+
+import sophena.model.WeatherStation;
+import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.RoofType;
 
 /**
@@ -13,15 +17,33 @@ public final class FermenterSimulation {
 	private final MaterialConstants mat = MaterialConstants.get();
 	private final SimulationConstants sim = SimulationConstants.get();
 
-	public SimulationResult run(FermenterParameters p, SimulationInput input) {
-		if (p.station() == null) {
-			throw new IllegalArgumentException(
-				"FermenterParameters must reference a weather station for the location.");
-		}
-		if (p.fermenter() == null) {
-			throw new IllegalArgumentException(
-				"FermenterParameters must reference a fermenter with the construction parameters.");
-		}
+	private final FermenterParameters p;
+	private final SimulationInput input;
+
+	private FermenterSimulation(FermenterParameters p, SimulationInput input) {
+		this.p = p;
+		this.input = input;
+	}
+
+	public static Res<FermenterSimulation> of(
+		BiogasPlant plant, WeatherStation station
+	) {
+		var res = InputValidation.of(station);
+		if (res.isError())
+			return res.castError();
+
+		res = InputValidation.of(plant);
+		if (res.isError())
+			return res.castError();
+
+		var input = SimulationInput.constant(station, 3.5, 1875.0);
+		var parameters = FermenterParameters.of(plant, station);
+		var sim = new FermenterSimulation(parameters, input);
+		return Res.ok(sim);
+	}
+
+	public SimulationResult run() {
+
 		var f = p.fermenter();
 		var groundTemps = SoilTemperatureCalculator.calculate(input, p, mat);
 		var roofGeo = (f.roofType == RoofType.FIXED)
@@ -68,7 +90,7 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = stepInput.tAirC() + 1.0;
 			}
 
-			var roofEval = evaluateRoof(p,roofGeo, k, stepInput, solar, prevMembraneTempsC);
+			var roofEval = evaluateRoof(p, roofGeo, k, stepInput, solar, prevMembraneTempsC);
 
 			if (f.roofType == RoofType.DOUBLE_MEMBRANE) {
 				prevMembraneTempsC[0] = roofEval.tsInnerMembraneC();
@@ -145,7 +167,7 @@ public final class FermenterSimulation {
 	}
 
 	private RoofEval evaluateRoof(
-		FermenterParameters p,  RoofGeometry roofGeo,
+		FermenterParameters p, RoofGeometry roofGeo,
 		int k, StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
 		if (p.fermenter().roofType == RoofType.FIXED) {
