@@ -90,14 +90,20 @@ final class DoubleMembraneRoofSolver {
 			double hRadSkyWK = Const.outerMembraneEpsilonExterior * roofGeo.fSkyRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tSkyK) * (tOuterK * tOuterK + tSkyK * tSkyK);
 			double hRadGroundWK = Const.outerMembraneEpsilonExterior * roofGeo.fGroundRoof() * roofGeo.aRoofM2() * Const.sigma * (tOuterK + tAmbientK) * (tOuterK * tOuterK + tAmbientK * tAmbientK);
 
+			// Natural and radiative heat transfer coefficients from the substrate to the inner membrane
 			double hFromSubstrateWK = hInnerConvectionWK + hRadSubstrateInnerWK;
 
+			// Coupled thermal network energy balance equations for the three nodes:
+			// Node 0: Inner membrane (T1)
+			// Node 1: Support air gap (T2)
+			// Node 2: Outer membrane (T3)
 			double[][] matrix = new double[][]{
 				{hFromSubstrateWK + hGapInnerWK + hRadInnerOuterWK, -hGapInnerWK, -hRadInnerOuterWK},
 				{-hGapInnerWK, hGapInnerWK + hGapOuterWK + hSupportAirAdvectionWK, -hGapOuterWK},
 				{-hRadInnerOuterWK, -hGapOuterWK, hRadInnerOuterWK + hGapOuterWK + hExternalConvectionWK + hRadSkyWK + hRadGroundWK}
 			};
 
+			// Right-hand side vector (source terms and external boundary temperatures)
 			double[] rhs = new double[]{
 				hFromSubstrateWK * f.targetTemperature,
 				hSupportAirAdvectionWK * in.tAirC(),

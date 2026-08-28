@@ -60,6 +60,10 @@ record StepInput(
 		return mass;
 	}
 
+	/// Calculates the temperature of the substrate feed at the given hour. The
+	/// substrate temperature is assumed to range between the substrate's min. and
+	/// max. temperatures, linearly interpolating based on the ambient air
+	/// temperature.
 	private static double feedTemperatureAt(
 		BiogasPlant plant, WeatherScale scale, int hour
 	) {
