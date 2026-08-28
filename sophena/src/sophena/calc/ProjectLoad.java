@@ -2,7 +2,7 @@ package sophena.calc;
 
 import java.util.Arrays;
 
-import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.math.Smoothing;
 import sophena.math.energetic.SeasonalItem;
 import sophena.model.HeatNet;
@@ -190,7 +190,7 @@ public class ProjectLoad {
 		for (var p : project.producers) {
 			if (p.disabled || p.biogasPlant == null)
 				continue;
-			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
+			double[] demand = FermenterHeatDemand.of(project, p.biogasPlant);
 			Stats.add(demand, load);
 		}
 	}

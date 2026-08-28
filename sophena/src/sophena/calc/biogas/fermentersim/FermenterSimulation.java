@@ -41,7 +41,18 @@ public final class FermenterSimulation {
 		return Res.ok(sim);
 	}
 
-	public SimulationResult run() {
+	public Res<SimulationResult> run() {
+		try {
+			var result = internalRun();
+			return Res.ok(result);
+		} catch (Exception e) {
+			return Res.error(
+				"Es gab einen unerwarteten Fehler in der Fermentersimulation: "
+					+ e.getMessage());
+		}
+	}
+
+	private SimulationResult internalRun() {
 
 		var groundTemps = SoilTemperatureCalculator.calculate(station, f);
 		var roofGeo = (f.roofType == RoofType.FIXED)

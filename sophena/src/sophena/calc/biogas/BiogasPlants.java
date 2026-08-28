@@ -113,23 +113,4 @@ public final class BiogasPlants {
 			: Stats.max(producer.profile.maxPower);
 		producer.profileMaxPowerElectric = totalElectricPower(plant);
 	}
-
-	public static double[] heatDemandOf(Project project, BiogasPlant plant) {
-		var demand = new double[Stats.HOURS];
-		double power = totalThermalPower(plant);
-		if (power < 0.1
-			|| project == null
-			|| project.weatherStation == null
-			|| project.weatherStation.data == null)
-			return demand;
-		var temperature = project.weatherStation.data;
-		double maxDist = 40 - Stats.min(temperature);
-		double maxDemand = 0.2 * power;
-		for (int h = 0; h < temperature.length; h++) {
-			var dist = 40 - temperature[h];
-			demand[h] = maxDemand * dist / maxDist;
-		}
-		return demand;
-	}
-
 }

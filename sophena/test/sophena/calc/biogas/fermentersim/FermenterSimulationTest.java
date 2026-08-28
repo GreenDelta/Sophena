@@ -13,7 +13,8 @@ public class FermenterSimulationTest {
 		var plant = TestBiogasPlant.get(station);
 		var result = FermenterSimulation.of(plant, station)
 			.orElseThrow()
-			.run();
+			.run()
+			.orElseThrow();
 		assertEquals(8760, result.steps().size());
 		assertEquals(763.991697, result.totalEnergyMWh(), 1e-4);
 		assertEquals(130.440041, result.peakHeatingPowerKW(), 1e-4);
@@ -30,7 +31,8 @@ public class FermenterSimulationTest {
 
 		FermenterSimulation.of(plant, station)
 			.orElseThrow()
-			.run();
+			.run()
+			.orElseThrow();
 
 		assertArrayEquals(dataBefore, station.data, 0.0);
 		assertArrayEquals(beamBefore, station.directRadiation, 0.0);
