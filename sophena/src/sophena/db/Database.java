@@ -58,7 +58,10 @@ public class Database implements Closeable {
 		if (!log.exists())
 			return true;
 		File seg0 = new File(folder, "seg0");
-		return !seg0.exists();
+		if (!seg0.exists())
+			return true;
+		File props = new File(folder, "service.properties");
+		return !props.exists();
 	}
 
 	private void createNew(String url) {
