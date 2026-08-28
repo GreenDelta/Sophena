@@ -10,7 +10,7 @@ public class FermenterSimulationTest {
 	@Test
 	public void testSimulationResults() {
 		var station = TestWeatherStation.get();
-		var plant = TestBiogasPlant.get();
+		var plant = TestBiogasPlant.get(station);
 		var result = FermenterSimulation.of(plant, station)
 			.orElseThrow()
 			.run();
@@ -22,7 +22,7 @@ public class FermenterSimulationTest {
 	@Test
 	public void testImmutableInput() {
 		var station = TestWeatherStation.get();
-		var plant = TestBiogasPlant.get();
+		var plant = TestBiogasPlant.get(station);
 
 		double[] dataBefore = station.data.clone();
 		double[] beamBefore = station.directRadiation.clone();

@@ -75,9 +75,9 @@ public final class FermenterSimulation {
 		double peakKw = 0.0;
 
 		double[] prevMembraneTempsC = new double[3];
-
+		var scale = WeatherScale.of(station);
 		for (int k = 0; k < Stats.HOURS; k++) {
-			var stepInput = StepInput.of(plant, station, k);
+			var stepInput = StepInput.of(plant, scale, k);
 			var solar = SolarCalculator.computeStepSolar(station, f, roofGeo, stepInput);
 
 			if (k == 0) {

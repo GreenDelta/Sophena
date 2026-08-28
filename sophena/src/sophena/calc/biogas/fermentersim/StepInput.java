@@ -1,6 +1,5 @@
 package sophena.calc.biogas.fermentersim;
 
-import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
 
 /// Hourly input values for the fermenter simulation.
@@ -33,17 +32,17 @@ record StepInput(
 ) {
 
 	static StepInput of(
-		BiogasPlant plant, WeatherStation station, int hour
+		BiogasPlant plant, WeatherScale scale, int hour
 	) {
 		int doy = (hour / 24) + 1;
 		double hod = hour % 24;
-		double tAirC = station.data[hour];
+		var station = scale.station();
 		return new StepInput(
 			hour,
 			doy,
 			hod,
-			tAirC,
-			tAirC,
+			station.data[hour],
+			feedTemperatureAt(plant, scale, hour),
 			station.directRadiation[hour],
 			station.diffuseRadiation[hour],
 			Const.windMps,
@@ -59,6 +58,31 @@ record StepInput(
 			mass += (p.hourlyValues[hour] * 1000);
 		}
 		return mass;
+	}
+
+	private static double feedTemperatureAt(
+		BiogasPlant plant, WeatherScale scale, int hour
+	) {
+		double mass = 0;
+		double substrateTemperature = 0;
+		double airTemp = scale.station().data[hour];
+		double minTemp = scale.minTemp();
+		double maxTemp = scale.maxTemp();
+
+		for (var p : plant.substrateProfiles) {
+			double mi = p.hourlyValues[hour];
+			mass += mi;
+
+			double subMin = p.substrate.minTemperature;
+			double subMax = p.substrate.maxTemperature;
+
+			double subTemp = subMin
+				+ ((airTemp - minTemp) / (maxTemp - minTemp))
+				* (subMax - subMin);
+			substrateTemperature += subTemp * mi;
+
+		}
+		return mass == 0 ? 0 : substrateTemperature / mass;
 	}
 
 	private static double methaneContentAt(BiogasPlant plant, int hour) {

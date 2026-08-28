@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import sophena.model.Boiler;
 import sophena.model.Stats;
+import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.Fermenter;
@@ -16,7 +17,7 @@ class TestBiogasPlant {
 	private TestBiogasPlant() {
 	}
 
-	static BiogasPlant get() {
+	static BiogasPlant get(WeatherStation station) {
 		var plant = new BiogasPlant();
 		plant.fermenter = makeFermenter();
 		plant.boilers.add(makeBoiler());
@@ -26,6 +27,8 @@ class TestBiogasPlant {
 		profile.substrate.methaneContent = 50.0;
 		profile.substrate.dryMatter = 10.0;
 		profile.substrate.organicDryMatter = 47.5;
+		profile.substrate.minTemperature = Stats.min(station.data);
+		profile.substrate.maxTemperature = Stats.max(station.data);
 		profile.hourlyValues = new double[Stats.HOURS];
 		Arrays.fill(profile.hourlyValues, 1.875);
 		plant.substrateProfiles.add(profile);
