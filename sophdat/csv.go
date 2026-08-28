@@ -327,6 +327,9 @@ func (model *CsvModel) readBiogasSubstrates() {
 		s.BiogasProduction = cFlo(row, 4)
 		s.MethaneContent = cFlo(row, 5)
 		s.Co2Emissions = cFlo(row, 6)
+		s.PrimaryEnergyFactor = cFlo(row, 7)
+		s.MinTemperature = cFlo(row, 8)
+		s.MaxTemperature = cFlo(row, 9)
 		model.BiogasSubstrates = append(model.BiogasSubstrates, &s)
 	}
 	eachCsvRow("data/csv/biogas_substrates.csv", fn)

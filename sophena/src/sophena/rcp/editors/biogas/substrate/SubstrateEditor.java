@@ -82,12 +82,15 @@ public class SubstrateEditor extends Editor {
 					"oTS [%]",
 					"Biogasproduktion [m³/t oTS]",
 					"Methangehalt [%]",
-					"CO2 Emissionen [g/kWh]"
+					"CO2 Emissionen [g/kWh]",
+					"Primärenergiefaktor",
+					"Min. Temperatur [°C]",
+					"Max. Temperatur [°C]"
 			);
 			table.setLabelProvider(new TableLabel());
 			table.setInput(substrates);
-			double w = 1d / 6d;
-			Tables.bindColumnWidths(table, w, w, w, w, w, w);
+			double w = 1d / 9d;
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w);
 			bindActions(section, table);
 		}
 
@@ -114,6 +117,9 @@ public class SubstrateEditor extends Editor {
 			s.biogasProduction = 400.0;
 			s.methaneContent = 55.0;
 			s.co2Emissions = 0.0;
+			s.primaryEnergyFactor = 0.2;
+			s.minTemperature = 5.0;
+			s.maxTemperature = 20.0;
 			if (SubstrateWizard.open(s) != Window.OK)
 				return;
 			try {
@@ -191,6 +197,9 @@ public class SubstrateEditor extends Editor {
 				case 3 -> Num.str(s.biogasProduction);
 				case 4 -> Num.str(s.methaneContent);
 				case 5 -> Num.str(s.co2Emissions);
+				case 6 -> Num.str(s.primaryEnergyFactor);
+				case 7 -> Num.str(s.minTemperature);
+				case 8 -> Num.str(s.maxTemperature);
 				default -> null;
 			};
 		}

@@ -56,6 +56,9 @@ CREATE TABLE tbl_biogas_substrates (
     biogas_production   DOUBLE,
     methane_content     DOUBLE,
     co2_emissions       DOUBLE,
+    primary_energy_factor DOUBLE,
+    min_temperature     DOUBLE,
+    max_temperature     DOUBLE,
 
     PRIMARY KEY (id)
 );

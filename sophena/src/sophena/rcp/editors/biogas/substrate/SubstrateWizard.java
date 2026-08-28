@@ -42,6 +42,9 @@ public class SubstrateWizard extends Wizard {
 			substrate.biogasProduction = Texts.getDouble(page.biogasProductionText);
 			substrate.methaneContent = Texts.getDouble(page.methaneContentText);
 			substrate.co2Emissions = Texts.getDouble(page.co2EmissionsText);
+			substrate.primaryEnergyFactor = Texts.getDouble(page.primaryEnergyFactorText);
+			substrate.minTemperature = Texts.getDouble(page.minTemperatureText);
+			substrate.maxTemperature = Texts.getDouble(page.maxTemperatureText);
 			return true;
 		} catch (Exception e) {
 			log.error("failed to set substrate data " + substrate, e);
@@ -65,6 +68,9 @@ public class SubstrateWizard extends Wizard {
 		private Text biogasProductionText;
 		private Text methaneContentText;
 		private Text co2EmissionsText;
+		private Text primaryEnergyFactorText;
+		private Text minTemperatureText;
+		private Text maxTemperatureText;
 
 		private Page() {
 			super("SubstrateWizardPage", "Biogas Substrat", null);
@@ -82,6 +88,9 @@ public class SubstrateWizard extends Wizard {
 			createBiogasProductionText(comp);
 			createMethaneContentText(comp);
 			createCO2EmissionsText(comp);
+			createPrimaryEnergyFactorText(comp);
+			createMinTemperatureText(comp);
+			createMaxTemperatureText(comp);
 			createDescriptionText(comp);
 			validate();
 		}
@@ -144,6 +153,33 @@ public class SubstrateWizard extends Wizard {
 			UI.formLabel(comp, "g CO2 äq./kWh");
 		}
 
+		private void createPrimaryEnergyFactorText(Composite comp) {
+			primaryEnergyFactorText = UI.formText(comp, "Primärenergiefaktor");
+			Texts.on(primaryEnergyFactorText)
+					.init(substrate.primaryEnergyFactor)
+					.decimal()
+					.validate(this::validate);
+			UI.formLabel(comp, "");
+		}
+
+		private void createMinTemperatureText(Composite comp) {
+			minTemperatureText = UI.formText(comp, "Min. Temperatur");
+			Texts.on(minTemperatureText)
+					.init(substrate.minTemperature)
+					.decimal()
+					.validate(this::validate);
+			UI.formLabel(comp, "°C");
+		}
+
+		private void createMaxTemperatureText(Composite comp) {
+			maxTemperatureText = UI.formText(comp, "Max. Temperatur");
+			Texts.on(maxTemperatureText)
+					.init(substrate.maxTemperature)
+					.decimal()
+					.validate(this::validate);
+			UI.formLabel(comp, "°C");
+		}
+
 		private void createDescriptionText(Composite comp) {
 			descriptionText = UI.formMultiText(comp, M.Description);
 			Texts.set(descriptionText, substrate.description);
@@ -161,6 +197,12 @@ public class SubstrateWizard extends Wizard {
 				return error("Es muss ein Wert für die Biogasproduktion angegeben werden.");
 			if (!Num.isNumeric(methaneContentText.getText()))
 				return error("Es muss ein Wert für den Methangehalt angegeben werden.");
+			if (!Num.isNumeric(primaryEnergyFactorText.getText()))
+				return error("Es muss ein Wert für den Primärenergiefaktor angegeben werden.");
+			if (!Num.isNumeric(minTemperatureText.getText()))
+				return error("Es muss ein Wert für die minimale Temperatur angegeben werden.");
+			if (!Num.isNumeric(maxTemperatureText.getText()))
+				return error("Es muss ein Wert für die maximale Temperatur angegeben werden.");
 			setPageComplete(!substrate.isProtected);
 			setErrorMessage(null);
 			return true;

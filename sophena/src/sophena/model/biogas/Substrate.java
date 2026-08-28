@@ -27,9 +27,23 @@ public class Substrate extends BaseDataEntity {
 	@Column(name = "methane_content")
 	public double methaneContent;
 
-	/// CO2 emissions in g CO2 eq./kWh
+	/// CO2 emission factor, in g CO2 eq./kWh
 	@Column(name = "co2_emissions")
 	public double co2Emissions;
+
+	/// The primary energy factor of the substrate, dimensionless.
+	@Column(name = "primary_energy_factor")
+	public double primaryEnergyFactor;
+
+	/// The minimum temperature that a substrate can have when feeding in into a
+	/// biogas fermenter, in °C.
+	@Column(name = "min_temperature")
+	public double minTemperature;
+
+	/// The maximum temperature that a substrate can have when feeding in into a
+	/// biogas fermenter, in °C.
+	@Column(name = "max_temperature")
+	public double maxTemperature;
 
 	@Override
 	public Substrate copy() {
@@ -43,6 +57,9 @@ public class Substrate extends BaseDataEntity {
 		clone.biogasProduction = biogasProduction;
 		clone.methaneContent = methaneContent;
 		clone.co2Emissions = co2Emissions;
+		clone.primaryEnergyFactor = primaryEnergyFactor;
+		clone.minTemperature = minTemperature;
+		clone.maxTemperature = maxTemperature;
 		return clone;
 	}
 }
