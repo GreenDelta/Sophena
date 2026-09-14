@@ -45,7 +45,7 @@ class FermenterPage extends FormPage {
 	private void createGeneralSection(Composite body) {
 		var comp = UI.formSection(body, tk, "Allgemein");
 		UI.gridLayout(comp, 3);
-		t(comp, "Solltemperatur Substrat/Fermenter", "°C", fermenter().targetTemperature)
+		t(comp, "Solltemperatur des Fermenters", "°C", fermenter().targetTemperature)
 			.onChanged(s -> fermenter().targetTemperature = Num.read(s));
 	}
 
@@ -56,10 +56,10 @@ class FermenterPage extends FormPage {
 		t(comp, "Außenradius (inkl. Dämmung)", "m", fermenter().wallOuterRadius)
 			.onChanged(s -> fermenter().wallOuterRadius = Num.read(s));
 
-		t(comp, "Dicke tragende Wand", "m", fermenter().wallStructuralThickness)
+		t(comp, "Dicke der tragenden Wand", "m", fermenter().wallStructuralThickness)
 			.onChanged(s -> fermenter().wallStructuralThickness = Num.read(s));
 
-		t(comp, "Dämmstärke Wand", "m", fermenter().wallInsulationThickness)
+		t(comp, "Dämmstärke", "m", fermenter().wallInsulationThickness)
 			.onChanged(s -> fermenter().wallInsulationThickness = Num.read(s));
 
 		t(comp, "Wandhöhe gesamt", "m", fermenter().wallTotalHeight)
@@ -68,7 +68,7 @@ class FermenterPage extends FormPage {
 		t(comp, "Erdberührter Wandanteil (0..1)", "-", fermenter().wallBuriedFraction)
 			.onChanged(s -> fermenter().wallBuriedFraction = Num.read(s));
 
-		t(comp, "Verschattung Wand (0..1)", "-", fermenter().wallShadingFraction)
+		t(comp, "Verschattungsfaktor (0..1)", "-", fermenter().wallShadingFraction)
 			.onChanged(s -> fermenter().wallShadingFraction = Num.read(s));
 	}
 
@@ -79,11 +79,11 @@ class FermenterPage extends FormPage {
 		// Roof type radio buttons
 		UI.formLabel(comp, tk, "Dachtyp");
 		var radioComp = tk.createComposite(comp);
-		UI.gridLayout(radioComp, 2).marginHeight = 0;
+		UI.innerGrid(radioComp, 2);
 		UI.gridData(radioComp, true, false).horizontalSpan = 2;
 
-		var fixedRadio = tk.createButton(radioComp, "Festes Dach", SWT.RADIO);
 		var membraneRadio = tk.createButton(radioComp, "Doppelmembrandach", SWT.RADIO);
+		var fixedRadio = tk.createButton(radioComp, "Festes Dach", SWT.RADIO);
 		fixedRadio.setSelection(fermenter().roofType == RoofType.FIXED);
 		membraneRadio.setSelection(fermenter().roofType == RoofType.DOUBLE_MEMBRANE);
 
@@ -96,7 +96,7 @@ class FermenterPage extends FormPage {
 		t(fixedComp, "Dachschichtdicke", "m", fermenter().roofFixedLayerThickness)
 			.onChanged(s -> fermenter().roofFixedLayerThickness = Num.read(s));
 
-		t(fixedComp, "Dämmstärke Dach", "m", fermenter().roofInsulationThickness)
+		t(fixedComp, "Dämmstärke", "m", fermenter().roofInsulationThickness)
 			.onChanged(s -> fermenter().roofInsulationThickness = Num.read(s));
 
 		// Double-membrane specific container
@@ -109,18 +109,18 @@ class FermenterPage extends FormPage {
 			.onChanged(s -> fermenter().roofMembraneHeight = Num.read(s));
 
 		// Shading (applicable to both roof types)
-		t(comp, "Verschattung Dach (0..1)", "-", fermenter().roofShadingFraction)
+		t(comp, "Verschattungfaktor (0..1)", "-", fermenter().roofShadingFraction)
 			.onChanged(s -> fermenter().roofShadingFraction = Num.read(s));
 
 		// Setup event listeners for the radios
-		Controls.onSelect(fixedRadio, e -> {
+		Controls.onSelect(fixedRadio, _ -> {
 			if (fixedRadio.getSelection()) {
 				fermenter().roofType = RoofType.FIXED;
 				editor.setDirty();
 				updateRoofControls(fixedComp, fixedData, membraneComp, membraneData);
 			}
 		});
-		Controls.onSelect(membraneRadio, e -> {
+		Controls.onSelect(membraneRadio, _ -> {
 			if (membraneRadio.getSelection()) {
 				fermenter().roofType = RoofType.DOUBLE_MEMBRANE;
 				editor.setDirty();
@@ -155,10 +155,10 @@ class FermenterPage extends FormPage {
 		var comp = UI.formSection(body, tk, "Bodenplatte");
 		UI.gridLayout(comp, 3);
 
-		t(comp, "Dicke Bodenplatte", "m", fermenter().floorSlabThickness)
+		t(comp, "Dicke der Bodenplatte", "m", fermenter().floorSlabThickness)
 			.onChanged(s -> fermenter().floorSlabThickness = Num.read(s));
 
-		t(comp, "Dämmstärke Boden", "m", fermenter().floorInsulationThickness)
+		t(comp, "Dämmstärke", "m", fermenter().floorInsulationThickness)
 			.onChanged(s -> fermenter().floorInsulationThickness = Num.read(s));
 	}
 
@@ -172,16 +172,18 @@ class FermenterPage extends FormPage {
 		t(comp, "Laufzeit", "min/h", fermenter().mixerRuntime)
 			.onChanged(s -> fermenter().mixerRuntime = Num.read(s));
 
-		t(comp, "Wärmeeintrag-Anteil (0..1)", "-", fermenter().mixerHeatFraction)
+		t(comp, "Wärmeeintragsfaktor (0..1)", "-", fermenter().mixerHeatFraction)
 			.onChanged(s -> fermenter().mixerHeatFraction = Num.read(s));
 	}
 
-	private Texts.TextBox t(Composite comp, String label, String unit, double initial) {
+	private Texts.TextBox t(
+		Composite comp, String label, String unit, double initial
+	) {
 		Text text = UI.formText(comp, tk, label);
 		UI.formLabel(comp, tk, unit);
 		return Texts.on(text)
 			.decimal()
 			.init(initial)
-			.onChanged(s -> editor.setDirty());
+			.onChanged(_ -> editor.setDirty());
 	}
 }
