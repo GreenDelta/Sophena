@@ -1,7 +1,6 @@
 package sophena.rcp.editors.biogas.plant;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -73,7 +72,7 @@ class FermenterPage extends FormPage {
 	}
 
 	private void createRoofSection(Composite body) {
-		var comp = UI.formSection(body, tk, "Dach");
+		var comp = UI.formSection(body, tk, "Fermenterdach");
 		UI.gridLayout(comp, 3);
 
 		// Roof type radio buttons
@@ -87,68 +86,45 @@ class FermenterPage extends FormPage {
 		fixedRadio.setSelection(fermenter().roofType == RoofType.FIXED);
 		membraneRadio.setSelection(fermenter().roofType == RoofType.DOUBLE_MEMBRANE);
 
-		// Fixed-roof specific container
-		var fixedComp = tk.createComposite(comp);
-		UI.innerGrid(fixedComp, 3);
-		var fixedData = UI.gridData(fixedComp, true, false);
-		fixedData.horizontalSpan = 3;
-
-		t(fixedComp, "Dachschichtdicke", "m", fermenter().roofFixedLayerThickness)
-			.onChanged(s -> fermenter().roofFixedLayerThickness = Num.read(s));
-
-		t(fixedComp, "Dämmstärke", "m", fermenter().roofInsulationThickness)
-			.onChanged(s -> fermenter().roofInsulationThickness = Num.read(s));
-
-		// Double-membrane specific container
-		var membraneComp = tk.createComposite(comp);
-		UI.innerGrid(membraneComp, 3);
-		var membraneData = UI.gridData(membraneComp, true, false);
-		membraneData.horizontalSpan = 3;
-
-		t(membraneComp, "Membranhöhe", "m", fermenter().roofMembraneHeight)
+		var membraneHeight = t(
+			comp, "Membranhöhe", "m", fermenter().roofMembraneHeight)
 			.onChanged(s -> fermenter().roofMembraneHeight = Num.read(s));
 
-		// Shading (applicable to both roof types)
+		var fixedThickness = t(
+			comp, "Dachschichtdicke", "m", fermenter().roofFixedLayerThickness)
+			.onChanged(s -> fermenter().roofFixedLayerThickness = Num.read(s));
+
+		var fixedInsulation = t(
+			comp, "Dämmstärke", "m", fermenter().roofInsulationThickness)
+			.onChanged(s -> fermenter().roofInsulationThickness = Num.read(s));
+
 		t(comp, "Verschattungfaktor (0..1)", "-", fermenter().roofShadingFraction)
 			.onChanged(s -> fermenter().roofShadingFraction = Num.read(s));
 
-		// Setup event listeners for the radios
-		Controls.onSelect(fixedRadio, _ -> {
+		Runnable update = () -> {
 			if (fixedRadio.getSelection()) {
 				fermenter().roofType = RoofType.FIXED;
-				editor.setDirty();
-				updateRoofControls(fixedComp, fixedData, membraneComp, membraneData);
+				fixedThickness.enable();
+				fixedInsulation.enable();
+				membraneHeight.disable();
+			} else {
+				fermenter().roofType = RoofType.DOUBLE_MEMBRANE;
+				fixedThickness.disable();
+				fixedInsulation.disable();
+				membraneHeight.enable();
 			}
+		};
+
+		Controls.onSelect(fixedRadio, _ -> {
+			update.run();
+			editor.setDirty();
 		});
 		Controls.onSelect(membraneRadio, _ -> {
-			if (membraneRadio.getSelection()) {
-				fermenter().roofType = RoofType.DOUBLE_MEMBRANE;
-				editor.setDirty();
-				updateRoofControls(fixedComp, fixedData, membraneComp, membraneData);
-			}
+			update.run();
+			editor.setDirty();
 		});
 
-		// Initial state
-		updateRoofControls(fixedComp, fixedData, membraneComp, membraneData);
-	}
-
-	private void updateRoofControls(
-		Composite fixedComp, GridData fixedData,
-		Composite membraneComp, GridData membraneData
-	) {
-		boolean isFixed = fermenter().roofType == RoofType.FIXED;
-		fixedComp.setVisible(isFixed);
-		fixedData.exclude = !isFixed;
-		fixedComp.requestLayout();
-
-		boolean isMembrane = fermenter().roofType == RoofType.DOUBLE_MEMBRANE;
-		membraneComp.setVisible(isMembrane);
-		membraneData.exclude = !isMembrane;
-		membraneComp.requestLayout();
-
-		if (getManagedForm() != null && getManagedForm().getForm() != null) {
-			getManagedForm().getForm().reflow(true);
-		}
+		update.run();
 	}
 
 	private void createFloorSection(Composite body) {

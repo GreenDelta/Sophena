@@ -230,6 +230,18 @@ public final class Texts {
 			return this;
 		}
 
+		public void disable() {
+			if (text == null)
+				return;
+			text.setEnabled(false);
+		}
+
+		public void enable() {
+			if (text == null)
+				return;
+			text.setEnabled(true);
+		}
+
 		public TextBox init(String s) {
 			set(text, s);
 			return this;
