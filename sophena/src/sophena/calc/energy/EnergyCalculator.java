@@ -1,6 +1,7 @@
 package sophena.calc.energy;
 
 import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
@@ -179,7 +180,7 @@ class EnergyCalculator {
 		for (var p : r.producers) {
 			if (p.biogasPlant == null)
 				continue;
-			double[] demand = BiogasPlants.heatDemandOf(project, p.biogasPlant);
+			double[] demand = FermenterHeatDemand.of(project, p.biogasPlant);
 			r.fermenterHeatDemand += Stats.sum(demand);
 		}
 	}

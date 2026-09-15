@@ -107,7 +107,7 @@ public class HeatPumpDataWizard extends Wizard {
 				MsgBox.error(M.PlausibilityErrors, M.MaxPowerError);
 				return false;
 			}
-			if (heatPumpData.cop < 1 || heatPumpData.cop > 10) {
+			if (heatPumpData.cop < 1 || heatPumpData.cop > 20) {
 				MsgBox.error(M.PlausibilityErrors, M.COPError);
 				return false;
 			}

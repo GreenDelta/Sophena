@@ -45,7 +45,7 @@ public class LoadHeatPumpData {
 					double maxPower = Double.parseDouble(parts[2].replace(',', '.'));
 					double cop = Double.parseDouble(parts[3].replace(',', '.'));
 
-					if(targettemp < 5 || targettemp > 95 || targettemp % 5 != 0 || sourcetemp < -30 || sourcetemp > 100 || maxPower <= 0 || cop < 1 || cop > 10)
+					if(targettemp < 5 || targettemp > 95 || targettemp % 5 != 0 || sourcetemp < -30 || sourcetemp > 100 || maxPower <= 0 || cop < 1 || cop > 20)
 						return Result.error("Ungültige Werte in Zeile " + (row + 1));
 
 					var heatPumpData = new HeatPumpData(targettemp, sourcetemp, maxPower, cop);

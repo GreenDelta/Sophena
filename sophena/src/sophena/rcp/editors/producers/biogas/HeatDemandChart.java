@@ -5,7 +5,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -28,7 +28,7 @@ record HeatDemandChart(XYGraph graph, CircularBufferDataProvider buffer) {
 	}
 
 	void update(Project project, BiogasPlant plant) {
-		var data = BiogasPlants.heatDemandOf(project, plant);
+		var data = FermenterHeatDemand.of(project, plant);
 		buffer.setCurrentYDataArray(data);
 		double top = Stats.nextStep(Stats.max(data));
 		graph.getPrimaryYAxis().setRange(0, top);

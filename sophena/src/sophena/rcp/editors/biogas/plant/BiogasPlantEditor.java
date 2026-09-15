@@ -61,6 +61,7 @@ public class BiogasPlantEditor extends Editor {
 		try {
 			addPage(new BiogasPlantInfoPage(this));
 			addPage(new BiogasPlantCostSettingsPage(this));
+			addPage(new FermenterPage(this));
 		} catch (Exception e) {
 			log.error("failed to add page", e);
 		}

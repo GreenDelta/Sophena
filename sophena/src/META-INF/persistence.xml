@@ -11,6 +11,7 @@
 		<class>sophena.model.biogas.BiogasPlant</class>
 		<class>sophena.model.biogas.BiogasPlantBoiler</class>
 		<class>sophena.model.biogas.ElectricityPriceCurve</class>
+		<class>sophena.model.biogas.Fermenter</class>
 		<class>sophena.model.biogas.Substrate</class>
 		<class>sophena.model.biogas.SubstrateProfile</class>
 		<class>sophena.model.Boiler</class>

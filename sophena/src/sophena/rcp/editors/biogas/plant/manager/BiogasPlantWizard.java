@@ -14,6 +14,8 @@ import sophena.model.FuelGroup;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.Fermenter;
+import sophena.model.biogas.RoofType;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
 import sophena.rcp.utils.MsgBox;
@@ -46,6 +48,7 @@ public class BiogasPlantWizard extends Wizard {
 		plant.id = UUID.randomUUID().toString();
 		plant.productGroup = group;
 		plant.minimumRuntime = 2;
+		plant.fermenter = defaultFermenter();
 
 		var wizard = new BiogasPlantWizard(plant);
 		wizard.setWindowTitle("Neue Biogasanlage");
@@ -55,6 +58,29 @@ public class BiogasPlantWizard extends Wizard {
 		return dialog.open() == Window.OK
 			? Optional.of(wizard.plant)
 			: Optional.empty();
+	}
+
+	private static Fermenter defaultFermenter() {
+		var f = new Fermenter();
+		f.id = UUID.randomUUID().toString();
+		f.roofType = RoofType.DOUBLE_MEMBRANE;
+		f.targetTemperature = 38.0;
+		f.wallOuterRadius = 12.32;
+		f.wallStructuralThickness = 0.10;
+		f.wallInsulationThickness = 0.10;
+		f.wallTotalHeight = 10.0;
+		f.wallBuriedFraction = 0.50;
+		f.roofFixedLayerThickness = 0.01;
+		f.roofInsulationThickness = 0.10;
+		f.roofMembraneHeight = 4.0;
+		f.floorSlabThickness = 0.20;
+		f.floorInsulationThickness = 0.10;
+		f.wallShadingFraction = 0.50;
+		f.roofShadingFraction = 0.50;
+		f.mixerPowerDensity = 16.0;
+		f.mixerRuntime = 15.0;
+		f.mixerHeatFraction = 1.0;
+		return f;
 	}
 
 	private BiogasPlantWizard(BiogasPlant plant) {

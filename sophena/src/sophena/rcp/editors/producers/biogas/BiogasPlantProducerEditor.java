@@ -145,7 +145,7 @@ public class BiogasPlantProducerEditor extends Editor {
 
 		private Text readOnlyText(Composite parent, FormToolkit tk, String label) {
 			var text = UI.formText(parent, tk, label);
-			Texts.on(text).readOnly();
+			text.setEditable(false);
 			return text;
 		}
 

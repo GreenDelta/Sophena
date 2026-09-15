@@ -271,13 +271,13 @@ func (model *CsvModel) readHeatPumps() {
 		h := HeatPump{}
 		productType := cStr(row, 1)
 		model.mapProductData(row, &h.Product, productType)
-		h.MinPower = cFlo(row, 8)
-		h.RatedPower = cFlo(row, 8)              // TODO
-		h.MaxPower = make([]float64, 0)          // TODO
-		h.Cop = make([]float64, 0)               // TODO
-		h.TargetTemperature = make([]float64, 0) // TODO
-		h.SourceTemperature = make([]float64, 0) // TODO
-		h.Description = cStr(row, 11)
+		h.MinPower = cFlo(row, 9)
+		h.RatedPower = cFlo(row, 8)
+		h.MaxPower = make([]float64, 0)
+		h.Cop = make([]float64, 0)
+		h.TargetTemperature = make([]float64, 0)
+		h.SourceTemperature = make([]float64, 0)
+		h.Description = cStr(row, 10)
 
 		model.HeatPumps = append(model.HeatPumps, &h)
 	}
@@ -288,7 +288,7 @@ func (model *CsvModel) readHeatPumps() {
 func (model *CsvModel) readHeatPumpCurves() {
 	//model.HeatPumps = make([]*HeatPump, 0)
 	fn := func(row []string) {
-		id := cStr(row, 0)
+		name := cStr(row, 0)
 		targetTemperature := cFlo(row, 1)
 		sourceTemperature := cFlo(row, 2)
 		maxPower := cFlo(row, 3)
@@ -296,7 +296,7 @@ func (model *CsvModel) readHeatPumpCurves() {
 
 		index := -1
 		for i := 0; i < len(model.HeatPumps); i++ {
-			if model.HeatPumps[i].ID == id {
+			if model.HeatPumps[i].Name == name {
 				index = i
 				break
 			}
@@ -327,6 +327,9 @@ func (model *CsvModel) readBiogasSubstrates() {
 		s.BiogasProduction = cFlo(row, 4)
 		s.MethaneContent = cFlo(row, 5)
 		s.Co2Emissions = cFlo(row, 6)
+		s.PrimaryEnergyFactor = cFlo(row, 7)
+		s.MinTemperature = cFlo(row, 8)
+		s.MaxTemperature = cFlo(row, 9)
 		model.BiogasSubstrates = append(model.BiogasSubstrates, &s)
 	}
 	eachCsvRow("data/csv/biogas_substrates.csv", fn)

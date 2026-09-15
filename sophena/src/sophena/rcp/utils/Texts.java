@@ -223,11 +223,18 @@ public final class Texts {
 			return this;
 		}
 
-		public TextBox readOnly() {
+		public void disable() {
 			if (text == null)
-				return this;
+				return;
+			text.setEnabled(false);
 			text.setEditable(false);
-			return this;
+		}
+
+		public void enable() {
+			if (text == null)
+				return;
+			text.setEnabled(true);
+			text.setEditable(true);
 		}
 
 		public TextBox init(String s) {

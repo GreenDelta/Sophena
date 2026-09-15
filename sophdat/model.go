@@ -224,9 +224,12 @@ type HeatPump struct {
 // BiogasSubstrate stores data for biogas substrates used in biogas production
 type BiogasSubstrate struct {
 	BaseDataEntity
-	DryMatter        float64 `json:"dryMatter"`
-	OrganicDryMatter float64 `json:"organicDryMatter"`
-	BiogasProduction float64 `json:"biogasProduction"`
-	MethaneContent   float64 `json:"methaneContent"`
-	Co2Emissions     float64 `json:"co2Emissions"`
+	DryMatter           float64 `json:"dryMatter"`
+	OrganicDryMatter    float64 `json:"organicDryMatter"`
+	BiogasProduction    float64 `json:"biogasProduction"`
+	MethaneContent      float64 `json:"methaneContent"`
+	Co2Emissions        float64 `json:"co2Emissions"`
+	PrimaryEnergyFactor float64 `json:"primaryEnergyFactor"`
+	MinTemperature     float64 `json:"minTemperature"`
+	MaxTemperature     float64 `json:"maxTemperature"`
 }

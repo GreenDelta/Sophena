@@ -56,6 +56,9 @@ CREATE TABLE tbl_biogas_substrates (
     biogas_production   DOUBLE,
     methane_content     DOUBLE,
     co2_emissions       DOUBLE,
+    primary_energy_factor DOUBLE,
+    min_temperature     DOUBLE,
+    max_temperature     DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -96,6 +99,7 @@ CREATE TABLE tbl_biogas_plants (
     f_demand_electricity_mix    CHAR(36),
     gas_storage_size            DOUBLE,
     minimum_runtime             INTEGER,
+    f_fermenter                 CHAR(36),
 
     hourly_wage                 DOUBLE,
     electricity_price           DOUBLE,
@@ -113,6 +117,37 @@ CREATE TABLE tbl_biogas_plants (
     operation_factor            DOUBLE,
     maintenance_factor          DOUBLE,
     electricity_revenues_factor DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_fermenters (
+
+    id                          CHAR(36),
+    roof_type                   VARCHAR(255),
+
+    target_temperature          DOUBLE,
+
+    wall_outer_radius           DOUBLE,
+    wall_structural_thickness   DOUBLE,
+    wall_insulation_thickness   DOUBLE,
+    wall_total_height           DOUBLE,
+    wall_buried_fraction        DOUBLE,
+
+    roof_fixed_layer_thickness  DOUBLE,
+    roof_insulation_thickness   DOUBLE,
+    roof_membrane_height        DOUBLE,
+
+    floor_slab_thickness        DOUBLE,
+    floor_insulation_thickness  DOUBLE,
+
+    wall_shading_fraction       DOUBLE,
+    roof_shading_fraction       DOUBLE,
+
+    mixer_power_density         DOUBLE,
+    mixer_runtime               DOUBLE,
+    mixer_heat_fraction         DOUBLE,
 
     PRIMARY KEY (id)
 );
