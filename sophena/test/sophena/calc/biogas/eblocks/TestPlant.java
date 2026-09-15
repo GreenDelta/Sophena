@@ -35,7 +35,7 @@ final class TestPlant {
 	/// A plant with the given gas storage size and minimum runtime, and a price
 	/// of 10 ct/kWh in every hour of the year.
 	static BiogasPlant of(double storageSize, int minimumRuntime) {
-		return of(storageSize, minimumRuntime, hour -> 10);
+		return of(storageSize, minimumRuntime, _ -> 10);
 	}
 
 	/// A plant with the given gas storage size and minimum runtime, and the

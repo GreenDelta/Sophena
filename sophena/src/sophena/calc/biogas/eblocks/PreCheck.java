@@ -3,6 +3,7 @@ package sophena.calc.biogas.eblocks;
 import java.util.Arrays;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
@@ -42,7 +43,7 @@ final class PreCheck {
 
 	/// Validates the plant. Returns an error with a message that describes the
 	/// problem when the plant cannot be calculated.
-	static Res<Void> validate(BiogasPlant plant) {
+	static Res<Void> validate(@Nullable BiogasPlant plant) {
 		if (plant == null)
 			return Res.error("there is no biogas plant");
 		if (plant.gasStorageSize <= 0)

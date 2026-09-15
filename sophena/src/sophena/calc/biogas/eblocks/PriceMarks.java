@@ -45,7 +45,7 @@ record PriceMarks(int startHour, boolean[] marked) {
 	}
 
 	/// `true` when the given hour is one of the marked price optimal hours.
-	/// Hours outside of the window are never marked.
+	/// Hours outside the window are never marked.
 	boolean contains(int hour) {
 		int i = hour - startHour;
 		return i >= 0 && i < marked.length && marked[i];
