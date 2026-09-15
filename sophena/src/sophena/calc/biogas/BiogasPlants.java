@@ -101,7 +101,14 @@ public final class BiogasPlants {
 		if (plant == null) return;
 
 		producer.productGroup = plant.productGroup;
-		var result = BiogasPlantResult.calculate(plant);
+
+		// an edit of a plant must always be possible, so we use an empty result
+		// when the plant cannot be calculated; the plant editor shows the error
+		var res = BiogasPlantResult.calculate(plant);
+		var result = res.isError()
+			? BiogasPlantResult.emptyOf(plant)
+			: res.value();
+
 		double temperature = project.heatNet != null
 			&& project.heatNet.maxBufferLoadTemperature > 0
 			? project.heatNet.maxBufferLoadTemperature

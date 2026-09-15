@@ -1,12 +1,15 @@
 package sophena.rcp.editors.biogas.plant;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -14,6 +17,7 @@ import sophena.utils.Num;
 class BiogasPlantInfoPage extends FormPage {
 
 	private final BiogasPlantEditor editor;
+	private Label problemLabel;
 
 	BiogasPlantInfoPage(BiogasPlantEditor editor) {
 		super(editor, "BiogasPlantPage", "Biogasanlage");
@@ -63,6 +67,7 @@ class BiogasPlantInfoPage extends FormPage {
 		UI.filler(comp, tk);
 
 		createSettingsSection(body, tk);
+		createProblemLabel(body, tk);
 
 		// biogas boilers
 		BiogasPlantBoilerTable.of(editor).render(body, tk);
@@ -77,7 +82,26 @@ class BiogasPlantInfoPage extends FormPage {
 		// producer profile section
 		ProducerProfileSection.of(editor).create(body, tk);
 
+		editor.onResult(r -> showProblem());
 		editor.calculate();
+	}
+
+	/// Creates the label that shows the error of the last calculation, e.g.
+	/// when the gas storage is too small for the minimum runtime of the plant.
+	private void createProblemLabel(Composite body, FormToolkit tk) {
+		problemLabel = tk.createLabel(body, "", SWT.WRAP);
+		problemLabel.setForeground(Colors.getSystemColor(SWT.COLOR_RED));
+		UI.gridData(problemLabel, true, false);
+	}
+
+	/// Shows the error of the last calculation, or nothing when the plant was
+	/// calculated without a problem.
+	private void showProblem() {
+		if (problemLabel == null || problemLabel.isDisposed())
+			return;
+		var res = editor.calculation();
+		problemLabel.setText(res.isError() ? res.error() : "");
+		problemLabel.getParent().layout(true, true);
 	}
 
 	private void createSettingsSection(Composite body, FormToolkit tk) {

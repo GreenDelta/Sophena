@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.TestPlant;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

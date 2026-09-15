@@ -2,26 +2,70 @@ package sophena.calc.biogas;
 
 import java.util.UUID;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.openlca.commons.Res;
+
+import sophena.calc.biogas.eblocks.EblockSearch;
+import sophena.calc.biogas.ehours.EhourSearch;
 import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
+/// The result of a biogas plant calculation: the gas that is produced by the
+/// substrates of the plant and the hours of the year in which the plant runs.
+///
+/// The run hours can be calculated with two algorithms, see `BiogasAlgorithm`:
+/// the hour based algorithm (`EhourSearch`) that was used before and the block
+/// based algorithm (`EblockSearch`) that keeps the minimum runtime of the
+/// plant.
+///
+/// A calculation with a different algorithm produces different run hours and
+/// therefore different results for the whole project in which the plant is
+/// used, because the run hours are used to create the producer profile of the
+/// plant (see `BiogasPlants.syncProducerProfile`).
+///
+/// The ramp hours (1/8 of the power before and after a block) are not included
+/// in the run flags; they are added when the producer profile is created.
+@NullMarked
 public record BiogasPlantResult(
 	BiogasPlant plant,
 	BiogasProfile biogasProfile,
 	double gasStorageSize,
-	boolean[] runFlags) {
+	boolean[] runFlags
+) {
 
-	public static BiogasPlantResult calculate(BiogasPlant plant) {
-		if (!BiogasPlants.hasValidBoilers(plant)
-			|| BiogasPlants.totalElectricPower(plant) <= 0
-			|| plant.gasStorageSize <= 0
-			|| plant.substrateProfiles.isEmpty())
-			return emptyOf(plant);
-		return new Calculator(plant).run();
+	/// Calculates the plant with the default algorithm
+	/// (`BiogasAlgorithm.DEFAULT`) and returns an error when the plant cannot
+	/// be calculated with it.
+	public static Res<BiogasPlantResult> calculate(BiogasPlant plant) {
+		return calculate(plant, BiogasAlgorithm.DEFAULT);
 	}
 
-	private static BiogasPlantResult emptyOf(BiogasPlant plant) {
+	/// Calculates the plant with the given algorithm and returns an error with
+	/// a message that describes the problem when the plant cannot be calculated
+	/// with it, e.g. when the gas storage is too small for the minimum runtime
+	/// of the plant.
+	public static Res<BiogasPlantResult> calculate(
+		BiogasPlant plant, @Nullable BiogasAlgorithm algorithm
+	) {
+		if (algorithm == null)
+			return Res.error("no algorithm for the biogas plant given");
+		var flags = switch (algorithm) {
+			case HOURS -> EhourSearch.runFlags(plant);
+			case BLOCKS -> EblockSearch.runFlags(plant);
+		};
+		return flags.then(runFlags -> Res.ok(new BiogasPlantResult(
+			plant,
+			BiogasProfile.of(plant),
+			plant != null ? plant.gasStorageSize : 0,
+			runFlags)));
+	}
+
+	/// An empty result. It is used by callers that need a producer profile for
+	/// a plant that cannot be calculated, e.g. when the plant is edited: an
+	/// edit should always be possible, also when the plant is not complete.
+	public static BiogasPlantResult emptyOf(@Nullable BiogasPlant plant) {
 		return new BiogasPlantResult(
 			plant,
 			BiogasProfile.empty(),
@@ -59,112 +103,5 @@ public record BiogasPlantResult(
 			}
 		}
 		return profile;
-	}
-
-	private static class Calculator {
-
-		private final BiogasPlant plant;
-
-		private final int minRunTime;
-		private final BiogasProfile profile;
-		private final BiogasStorage storage;
-		private final ElectricityPriceSchedule priceSchedule;
-
-		private final boolean[] runFlags = new boolean[Stats.HOURS];
-		private int runTime = 0;
-
-		Calculator(BiogasPlant plant) {
-			this.plant = plant;
-			minRunTime = Math.max(1, plant.minimumRuntime);
-			profile = BiogasProfile.of(plant.substrateProfiles);
-			storage = BiogasStorage.of(plant);
-			priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
-		}
-
-		private void runAt(int hour) {
-			if (runTime == 0) {
-				// ramp-up
-				storage.runHours(0.125);
-			}
-			storage.runOneHour();
-			runTime++;
-			runFlags[hour] = true;
-		}
-
-		private void stop() {
-			if (runTime > 0) {
-				// ramp-down
-				storage.runHours(0.125);
-			}
-			runTime = 0;
-		}
-
-		BiogasPlantResult run() {
-
-			for (int hour = 0; hour < Stats.HOURS; hour++) {
-
-				storage.add(profile, hour);
-
-				// the storage is empty
-				if (!storage.canRunOneHour()) {
-					stop();
-					continue;
-				}
-
-				// the storage is full!
-				if (hour < (Stats.HOURS - 1) && !storage.canAdd(profile, hour + 1)) {
-					runAt(hour);
-					continue;
-				}
-
-				boolean priceOk = priceSchedule.shouldRunAt(hour);
-
-				// if it is not running, start it only if the price is good and
-				// if it can run for the minimum runtime
-				if (runTime == 0) {
-					if (priceOk && canStartAt(hour)) {
-						runAt(hour);
-					}
-					continue;
-				}
-
-				// if it did not run for the minimum runtime or if the price is good,
-				// keep it running
-				if (priceOk || runTime < minRunTime) {
-					runAt(hour);
-					continue;
-				}
-
-				// otherwise stop it
-				stop();
-			}
-
-			return new BiogasPlantResult(plant, profile, storage.size(), runFlags);
-		}
-
-		private boolean canStartAt(int startHour) {
-			int endHour = startHour + minRunTime - 1;
-			if (endHour >= Stats.HOURS) {
-				return false;
-			}
-			var s = storage.copy();
-			for (int h = startHour; h <= endHour; h++) {
-				s.add(profile, h);
-				double time = 1.0;
-				// start and end could be the same when minRunTime = 1
-				if (h == startHour) {
-					time += 0.125;
-				}
-				if (h == endHour) {
-					time += 0.125;
-				}
-				if (s.canRunHours(time)) {
-					s.runHours(time);
-				} else {
-					return false;
-				}
-			}
-			return true;
-		}
 	}
 }

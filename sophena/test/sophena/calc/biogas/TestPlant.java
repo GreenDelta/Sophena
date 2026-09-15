@@ -1,4 +1,4 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas;
 
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
@@ -11,7 +11,7 @@ import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 import sophena.model.biogas.SubstrateProfile;
 
-/// Creates biogas plants for the tests of this package.
+/// Creates biogas plants for the tests of the biogas calculation.
 ///
 /// The plant has one boiler with 500 kW electric power and an electric
 /// efficiency of 40 %, so it needs 1250 kW of fuel under full load. Its
@@ -21,26 +21,26 @@ import sophena.model.biogas.SubstrateProfile;
 /// Because the plant produces less gas per hour than it needs under full load,
 /// it can only run when the storage is filled. A storage of 1600 m3 is full
 /// after 8 hours of production and holds 6.38 hours of full load.
-final class TestPlant {
+public final class TestPlant {
 
 	/// The gas that the substrates produce in an hour, in m3.
-	static final double GAS_PER_HOUR = 200;
+	public static final double GAS_PER_HOUR = 200;
 
 	/// The methane content of the produced gas.
-	static final double METHANE_CONTENT = 0.5;
+	public static final double METHANE_CONTENT = 0.5;
 
 	private TestPlant() {
 	}
 
 	/// A plant with the given gas storage size and minimum runtime, and a price
 	/// of 10 ct/kWh in every hour of the year.
-	static BiogasPlant of(double storageSize, int minimumRuntime) {
+	public static BiogasPlant of(double storageSize, int minimumRuntime) {
 		return of(storageSize, minimumRuntime, _ -> 10);
 	}
 
 	/// A plant with the given gas storage size and minimum runtime, and the
 	/// prices that the given function creates for an hour of the year.
-	static BiogasPlant of(
+	public static BiogasPlant of(
 		double storageSize, int minimumRuntime, IntToDoubleFunction priceFn
 	) {
 		var plant = base(storageSize, minimumRuntime);
@@ -54,7 +54,7 @@ final class TestPlant {
 	}
 
 	/// Blocks the feed-in of the plant in the given hours.
-	static void blockFeedIn(BiogasPlant plant, int... hours) {
+	public static void blockFeedIn(BiogasPlant plant, int... hours) {
 		var allowed = new boolean[Stats.HOURS];
 		Arrays.fill(allowed, true);
 		for (int hour : hours) {

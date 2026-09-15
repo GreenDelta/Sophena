@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.TestPlant;
 import sophena.model.Stats;
 
 public class WindowTest {

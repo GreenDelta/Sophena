@@ -1,10 +1,10 @@
 /// A block based calculation of the runtime of a biogas plant.
 ///
-/// The old calculation (`sophena.calc.biogas.ElectricityPriceSchedule`) tags
-/// single hours in which the plant should run and only looks at the price of
-/// that hour. A biogas plant has a minimum runtime, so the plant must run in
-/// blocks of hours. This package implements a search that always searches and
-/// extends whole blocks of hours.
+/// The old calculation (`sophena.calc.biogas.ehours.EhourSearch`) tags single
+/// hours in which the plant should run and only looks at the price of that
+/// hour. A biogas plant has a minimum runtime, so the plant must run in blocks
+/// of hours. This package implements a search that always searches and extends
+/// whole blocks of hours.
 ///
 /// ## Hours
 ///

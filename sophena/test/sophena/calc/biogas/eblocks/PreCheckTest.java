@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.TestPlant;
+
 public class PreCheckTest {
 
 	@Test

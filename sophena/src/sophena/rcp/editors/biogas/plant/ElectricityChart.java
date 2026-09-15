@@ -5,6 +5,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 
+import sophena.calc.biogas.BiogasAlgorithm;
 import sophena.calc.biogas.BiogasPlantResult;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.Stats;
@@ -20,6 +21,7 @@ class ElectricityChart {
 	private final CircularBufferDataProvider runData;
 	private final CircularBufferDataProvider warnData;
 	private final CircularBufferDataProvider pauseData;
+	private final CircularBufferDataProvider otherData;
 
 	ElectricityChart(BiogasPlantEditor editor, Composite parent, int height) {
 		graph = Charts.initHoursGraph(parent, height);
@@ -29,6 +31,7 @@ class ElectricityChart {
 		runData = Charts.dataProvider();
 		warnData = Charts.dataProvider();
 		pauseData = Charts.dataProvider();
+		otherData = Charts.dataProvider();
 
 		// default -> electricity price
 		var defaultTrace = Charts.lineTraceOf(
@@ -54,6 +57,14 @@ class ElectricityChart {
 		var pauseTrace = Charts.lineTraceOf(
 			graph, "pause", Colors.of("#d3d3d3"), pauseData);
 		pauseTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
+
+		// the run hours of the other algorithm; both algorithms are calculated
+		// so that they can be compared while the block search is validated
+		var other = otherAlgorithm();
+		var otherTrace = Charts.lineTraceOf(
+			graph, "run-" + other.name().toLowerCase(),
+			Colors.of("#7e57c2"), otherData);
+		otherTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
 		// draw a gray line at y = 0
 		var zeros = Charts.dataProvider(new double[Stats.HOURS]);
@@ -95,8 +106,30 @@ class ElectricityChart {
 		runData.setCurrentYDataArray(runVals);
 		warnData.setCurrentYDataArray(warnVals);
 		pauseData.setCurrentYDataArray(pauseVals);
+		otherData.setCurrentYDataArray(otherValues(r, prices));
 
 		graph.getPrimaryYAxis().setRange(min, max);
+	}
+
+	/// The prices of the hours in which the other algorithm runs the plant.
+	/// Returns an empty series when that algorithm cannot calculate the plant.
+	private double[] otherValues(BiogasPlantResult r, double[] prices) {
+		var values = new double[Stats.HOURS];
+		var res = BiogasPlantResult.calculate(r.plant(), otherAlgorithm());
+		if (res.isError())
+			return values;
+		var flags = res.value().runFlags();
+		for (int h = 0; h < Stats.HOURS; h++) {
+			values[h] = flags[h] ? prices[h] : 0;
+		}
+		return values;
+	}
+
+	/// The algorithm that is not the default algorithm of the calculation.
+	private static BiogasAlgorithm otherAlgorithm() {
+		return BiogasAlgorithm.DEFAULT == BiogasAlgorithm.HOURS
+			? BiogasAlgorithm.BLOCKS
+			: BiogasAlgorithm.HOURS;
 	}
 
 	private double[] pricesOf(BiogasPlant plant) {

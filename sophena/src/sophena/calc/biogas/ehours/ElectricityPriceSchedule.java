@@ -1,16 +1,26 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.ehours;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.BiogasProfile;
+import sophena.calc.biogas.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
-/// TODO: we should find blocks of hours and tag them instead of tagging
-/// single hours with best prices.
-public record ElectricityPriceSchedule(boolean[] flags) {
+/// Marks the hours in which the plant of the hour based algorithm runs: for
+/// every day of the year it fills a storage with the production of that day and
+/// marks the hours with the highest prices, of which there are as many as the
+/// filled storage could deliver (`hoursToEmpty`).
+///
+/// Hours in which feed-in is not allowed are not removed from the calculation.
+/// They get the same penalty as in the block search (see
+/// `sophena.calc.biogas.eblocks.Prices.BLOCKED_FEED_IN_PENALTY`), so they are
+/// simply never attractive.
+record ElectricityPriceSchedule(boolean[] flags) {
 
-	public boolean shouldRunAt(int hour) {
+	boolean shouldRunAt(int hour) {
 		return flags[hour];
 	}
 
@@ -46,7 +56,8 @@ public record ElectricityPriceSchedule(boolean[] flags) {
 			sortSeq.clear();
 			for (int h = offset; h < end; h++) {
 				storage.add(profile, h);
-				// simply sort "break" hours to the end for now
+				// hours with a blocked feed-in get the penalty, so they are
+				// the last hours that are selected
 				double sortVal = BiogasPlants.isFeedInAllowed(plant, h)
 					? prices[h]
 					: -1000.0 + prices[h];
