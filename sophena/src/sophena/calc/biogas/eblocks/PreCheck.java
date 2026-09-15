@@ -4,6 +4,7 @@ import org.openlca.commons.Res;
 
 import sophena.model.biogas.BiogasPlant;
 
+/// PreCheck checks if we can calculate a biogas plant.
 class PreCheck {
 
 	static Res<Void> validate(BiogasPlant plant) {
