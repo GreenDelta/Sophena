@@ -178,11 +178,11 @@ class SubstrateWizard extends Wizard {
 			excelRadio = new Button(radioComp, SWT.RADIO);
 			excelRadio.setText("Excel-Datei mit Stundenwerten");
 
-			Controls.onSelect(monthRadio, (e) -> {
+			Controls.onSelect(monthRadio, _ -> {
 				monthPanel.setEnabled(true);
 				excelPanel.setEnabled(false);
 			});
-			Controls.onSelect(excelRadio, (e) -> {
+			Controls.onSelect(excelRadio, _ -> {
 				monthPanel.setEnabled(false);
 				excelPanel.setEnabled(true);
 			});
@@ -217,7 +217,7 @@ class SubstrateWizard extends Wizard {
 				button.setText("Durchsuchen...");
 
 				var ref = new Ref<File>();
-				Controls.onSelect(button, $ -> {
+				Controls.onSelect(button, _ -> {
 					var file = FileChooser.open("*.xlsx");
 					if (file == null)
 						return;

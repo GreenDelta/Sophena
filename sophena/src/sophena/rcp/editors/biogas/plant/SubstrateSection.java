@@ -76,7 +76,7 @@ class SubstrateSection {
 		Tables.bindColumnWidths(table, 0.3, 0.2, 0.2, 0.3);
 		table.setLabelProvider(new Label());
 		table.setInput(plant().substrateProfiles);
-		Tables.onDoubleClick(table, (e) -> onEdit());
+		Tables.onDoubleClick(table, _ -> onEdit());
 		return table;
 	}
 

@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.rcp.M;
-import sophena.rcp.app.Icon;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
+import sophena.rcp.M;
+import sophena.rcp.app.Icon;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -57,8 +57,8 @@ class BiogasPlantBoilerTable {
 		var remove = Actions.create(M.Remove, Icon.DELETE_16.des(), this::remove);
 		Actions.bind(section, add, edit, remove);
 		Actions.bind(table, add, edit, remove);
-		Tables.onDoubleClick(table, e -> edit());
-		Tables.onDeletePressed(table, e -> remove());
+		Tables.onDoubleClick(table, _ -> edit());
+		Tables.onDeletePressed(table, _ -> remove());
 		table.setInput(plant().boilers);
 	}
 

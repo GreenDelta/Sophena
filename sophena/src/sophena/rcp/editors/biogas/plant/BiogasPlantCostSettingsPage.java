@@ -70,16 +70,16 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		fullFeedIn.setSelection(plant().isFullFeedIn);
 		surplusFeedIn.setSelection(!plant().isFullFeedIn);
 
-		Controls.onSelect(fullFeedIn, e -> {
+		Controls.onSelect(fullFeedIn, _ -> {
 			plant().isFullFeedIn = fullFeedIn.getSelection();
 			editor.setDirty();
 		});
-		Controls.onSelect(surplusFeedIn, e -> {
+		Controls.onSelect(surplusFeedIn, _ -> {
 			plant().isFullFeedIn = !surplusFeedIn.getSelection();
 			editor.setDirty();
 		});
 	}
-	
+
 	private void createLossesSection(Composite body) {
 		var comp = UI.formSection(body, tk, "Verluste");
 		UI.gridLayout(comp, 3);
@@ -131,6 +131,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		return Texts.on(text)
 				.decimal()
 				.init(initial)
-				.onChanged(s -> editor.setDirty());
+			.onChanged(_ -> editor.setDirty());
 	}
 }
