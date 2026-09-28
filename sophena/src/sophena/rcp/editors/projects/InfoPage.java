@@ -1,7 +1,6 @@
 package sophena.rcp.editors.projects;
 
 import java.io.File;
-import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -9,11 +8,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.db.daos.WeatherStationDao;
 import sophena.model.Project;
-import sophena.model.WeatherStation;
 import sophena.model.descriptors.WeatherStationDescriptor;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
@@ -42,19 +39,19 @@ class InfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		ScrolledForm form = UI.formHeader(mform, project().name);
-		FormToolkit toolkit = mform.getToolkit();
-		Composite body = UI.formBody(form, toolkit);
-		createInfoSection(body, toolkit);
+		var form = UI.formHeader(mform, project().name);
+		var tk = mform.getToolkit();
+		var body = UI.formBody(form, tk);
+		createInfoSection(body, tk);
 		CostSettingsPanel panel = new CostSettingsPanel(
-				editor, () -> project().costSettings, () -> form.reflow(true));
+			editor, () -> project().costSettings, () -> form.reflow(true));
 		panel.isForProject = true;
-		panel.render(toolkit, body);
+		panel.render(tk, body);
 		form.reflow(true);
 	}
 
 	private void createInfoSection(Composite body, FormToolkit tk) {
-		Composite comp = UI.formSection(body, tk, M.Project);
+		var comp = UI.formSection(body, tk, M.Project);
 		createNameText(tk, comp);
 		createDescriptionText(tk, comp);
 		createDurationText(tk, comp);
@@ -63,53 +60,53 @@ class InfoPage extends FormPage {
 		File dbDir = Workspace.dir();
 		var link = tk.createHyperlink(comp, dbDir.getAbsolutePath(), SWT.NONE);
 		link.setForeground(Colors.getLinkBlue());
-		Controls.onClick(link, e -> Desktop.browse(dbDir.toURI().toASCIIString()));
+		Controls.onClick(link, _ -> Desktop.browse(dbDir.toURI().toASCIIString()));
 	}
 
 	private void createNameText(FormToolkit toolkit, Composite composite) {
 		Text t = UI.formText(composite, toolkit, M.Name);
 		Texts.on(t)
-				.init(project().name)
-				.required()
-				.onChanged(s -> {
-					project().name = t.getText();
-					editor.setDirty();
-				});
+			.init(project().name)
+			.required()
+			.onChanged(_ -> {
+				project().name = t.getText();
+				editor.setDirty();
+			});
 	}
 
-	private void createDescriptionText(FormToolkit toolkit,
-			Composite composite) {
-		Text t = UI.formMultiText(composite, toolkit, M.Description);
+	private void createDescriptionText(FormToolkit tk, Composite comp) {
+		var t = UI.formMultiText(comp, tk, M.Description);
 		Texts.on(t)
-				.init(project().description)
-				.onChanged(s -> {
-					project().description = t.getText();
-					editor.setDirty();
-				});
+			.init(project().description)
+			.onChanged(_ -> {
+				project().description = t.getText();
+				editor.setDirty();
+			});
 	}
 
-	private void createDurationText(FormToolkit toolkit, Composite composite) {
-		Text t = UI.formText(composite, toolkit, M.ProjectDurationYears);
+	private void createDurationText(FormToolkit tk, Composite comp) {
+		Text t = UI.formText(comp, tk, M.ProjectDurationYears);
 		Texts.on(t)
-				.init(project().duration)
-				.required()
-				.integer()
-				.onChanged(s -> {
-					project().duration = Texts.getInt(t);
-					editor.setDirty();
-				});
+			.init(project().duration)
+			.required()
+			.integer()
+			.onChanged(_ -> {
+				project().duration = Texts.getInt(t);
+				editor.setDirty();
+			});
 	}
 
-	private void createStationCombo(FormToolkit toolkit, Composite composite) {
-		EntityCombo<WeatherStationDescriptor> combo = new EntityCombo<>();
-		combo.create("Wetterstation", composite, toolkit);
-		WeatherStationDao dao = new WeatherStationDao(App.getDb());
-		List<WeatherStationDescriptor> list = dao.getDescriptors();
+	private void createStationCombo(FormToolkit tk, Composite comp) {
+		var combo = new EntityCombo<WeatherStationDescriptor>();
+		combo.create("Wetterstation", comp, tk);
+		var dao = new WeatherStationDao(App.getDb());
+		var list = dao.getDescriptors();
 		Sorters.byName(list);
 		combo.setInput(list);
-		WeatherStation s = project().weatherStation;
-		if (s != null)
+		var s = project().weatherStation;
+		if (s != null) {
 			combo.select(s.toDescriptor());
+		}
 		combo.onSelect(d -> {
 			if (d == null) {
 				return;

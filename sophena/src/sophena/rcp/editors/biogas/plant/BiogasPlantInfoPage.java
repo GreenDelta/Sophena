@@ -7,6 +7,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -16,7 +18,7 @@ class BiogasPlantInfoPage extends FormPage {
 	private final BiogasPlantEditor editor;
 
 	BiogasPlantInfoPage(BiogasPlantEditor editor) {
-		super(editor, "BiogasPlantPage", "Biogasanlage");
+		super(editor, "BiogasPlantPage", "Biogasanlageninformtionen");
 		this.editor = editor;
 	}
 
@@ -26,11 +28,11 @@ class BiogasPlantInfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, plant().name);
+		var form = UI.formHeader(mForm, "Biogasanlageninformtionen");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
-		var comp = UI.formSection(body, tk, "BHKW");
+		var comp = UI.formSection(body, tk, "Biogasanlage");
 		UI.gridLayout(comp, 3);
 
 		// name
@@ -51,7 +53,7 @@ class BiogasPlantInfoPage extends FormPage {
 				plant().duration = Num.readInt(s);
 				editor.setDirty();
 			});
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, "Laufzeit (Jahre)", H.PlantDurationInfo);
 
 		// description
 		Texts.on(UI.formMultiText(comp, tk, M.Description))

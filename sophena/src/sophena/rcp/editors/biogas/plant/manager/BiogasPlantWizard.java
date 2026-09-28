@@ -46,6 +46,8 @@ public class BiogasPlantWizard extends Wizard {
 
 		var plant = new BiogasPlant();
 		plant.id = UUID.randomUUID().toString();
+		plant.name = "Neue Biogasanlage";
+		plant.duration = 20;
 		plant.productGroup = group;
 		plant.minimumRuntime = 2;
 		plant.fermenter = defaultFermenter();
@@ -101,7 +103,7 @@ public class BiogasPlantWizard extends Wizard {
 		return true;
 	}
 
-	private static class Page extends WizardPage {
+	private class Page extends WizardPage {
 
 		private Text nameText;
 		private Text durationText;
@@ -126,13 +128,17 @@ public class BiogasPlantWizard extends Wizard {
 			UI.gridLayout(comp, 2);
 
 			nameText = UI.formText(comp, M.Name);
+			Texts.set(nameText, plant.name);
 			Texts.on(nameText).required().validate(this::validate);
 
 			durationText = UI.formText(comp, "Laufzeit (Jahre)");
+			Texts.set(durationText, plant.duration);
 			Texts.on(durationText).required().integer().validate(this::validate);
 
 			descriptionText = UI.formMultiText(comp, M.Description);
 			UI.gridData(descriptionText, true, false).heightHint = 150;
+
+			validate();
 		}
 
 		private void validate() {

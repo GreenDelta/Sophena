@@ -57,8 +57,8 @@ class InfoSection {
 		if (consumer().hasProfile()) {
 			UI.filler(comp);
 			Button btn = tk.createButton(
-					comp, "Neuen Lastgang importieren", SWT.NONE);
-			Controls.onSelect(btn, e -> updateProfile());
+				comp, "Neuen Lastgang importieren", SWT.NONE);
+			Controls.onSelect(btn, _ -> updateProfile());
 		} else {
 			buildingTypeCombo(comp, tk);
 			buildingStateCombo(comp, tk);
@@ -80,7 +80,7 @@ class InfoSection {
 	private void descriptionText(FormToolkit tk, Composite comp) {
 		Text dt = UI.formMultiText(comp, tk, M.Description);
 		Texts.set(dt, consumer().description);
-		dt.addModifyListener((e) -> {
+		dt.addModifyListener(_ -> {
 			consumer().description = dt.getText();
 			editor.setDirty();
 		});
@@ -100,7 +100,7 @@ class InfoSection {
 		}
 		combo.setItems(items);
 		combo.select(selected);
-		Controls.onSelect(combo, e -> {
+		Controls.onSelect(combo, _ -> {
 			BuildingType type = types[combo.getSelectionIndex()];
 			updateSateCombo(type);
 		});
@@ -159,12 +159,12 @@ class InfoSection {
 		var r = ConsumerProfiles.read(f, consumer());
 		if (r.isError()) {
 			MsgBox.error(r.message().orElse(
-					"Datei konnte nicht gelesen werden"));
+				"Datei konnte nicht gelesen werden"));
 			return;
 		}
 		if (r.isWarning()) {
 			MsgBox.warn(r.message().orElse(
-					"Die Datei enthält Formatfehler"));
+				"Die Datei enthält Formatfehler"));
 		}
 		editor.calculate();
 		editor.setDirty();
