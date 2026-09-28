@@ -92,6 +92,9 @@ CREATE TABLE tbl_biogas_plant_settings (
     electricity_price           DOUBLE,
     f_demand_electricity_mix    CHAR(36),
     is_full_feed_in             BOOLEAN,
+    manure_biomethane_price     DOUBLE,
+    non_manure_biomethane_price DOUBLE,
+    avg_power_demand            DOUBLE,
 
     PRIMARY KEY (id)
 );
