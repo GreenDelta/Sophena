@@ -38,6 +38,12 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_electricity_price_curve")
 	public ElectricityPriceCurve electricityPrices;
 
+	/// The settings of the plant, e.g. the average hourly wage or the
+	/// electricity price. A plant is always created with a settings instance.
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_settings")
+	public BiogasPlantSettings settings;
+
 	/// Configured size of the gas storage in m3.
 	@Column(name = "gas_storage_size")
 	public double gasStorageSize;
@@ -58,35 +64,12 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-	/// Average hourly wage in EUR.
-	@Column(name = "hourly_wage")
-	public double hourlyWage;
-
-	/// Price for purchased electricity in EUR/kWh when operating in full
-	/// feed-in mode or when the CHP unit is idle.
-	@Column(name = "electricity_price")
-	public double electricityPrice;
-
 	/// The self-consumption of electricity in kW. This is subtracted from
 	/// electricity production and not considered for grid feed-in. When no
 	/// electricity is produced, the self-consumption must be sourced from
 	/// other sources like the power grid.
 	@Column(name = "electricity_demand")
 	public double electricityDemand;
-
-	/// The electricity mix used for self-consumption when the biogas plant
-	/// is idle or when operating in full feed-in mode.
-	@OneToOne
-	@JoinColumn(name = "f_demand_electricity_mix")
-	public Fuel demandElectricityMix;
-
-	/// Indicates whether the plant operates in full feed-in mode. In full feed-in
-	/// mode, the electricity price above is always used for self-consumption. In
-	/// surplus feed-in mode, the self-consumption is subtracted from the installed
-	/// capacity when the CHP is running and not fed into the grid; at other times,
-	/// the electricity price above is used.
-	@Column(name = "is_full_feed_in")
-	public boolean isFullFeedIn;
 
 	/// Cable and transformer losses in kW. Transformer losses are typically 0.7%
 	/// of electricity production; cable losses depend on voltage, power, and cable
@@ -166,11 +149,10 @@ public class BiogasPlant extends RootEntity {
 		for (var p : substrateProfiles) {
 			copy.substrateProfiles.add(p.copy());
 		}
-		copy.hourlyWage = hourlyWage;
-		copy.electricityPrice = electricityPrice;
 		copy.electricityDemand = electricityDemand;
-		copy.demandElectricityMix = demandElectricityMix;
-		copy.isFullFeedIn = isFullFeedIn;
+		copy.settings = settings != null
+			? settings.copy()
+			: BiogasPlantSettings.createDefault(null);
 		copy.transmissionLosses = transmissionLosses;
 		copy.heatLoss = heatLoss;
 		copy.interestRate = interestRate;

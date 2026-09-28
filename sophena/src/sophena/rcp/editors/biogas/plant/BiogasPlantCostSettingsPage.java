@@ -49,11 +49,11 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		t(comp, "Kapital-Mischzinssatz", "%", plant().interestRate)
 				.onChanged(s -> plant().interestRate = Num.read(s));
 
-		t(comp, "Mittlerer Stundenlohn", "EUR", plant().hourlyWage)
-				.onChanged(s -> plant().hourlyWage = Num.read(s));
+		t(comp, "Mittlerer Stundenlohn", "EUR", plant().settings.hourlyWage)
+				.onChanged(s -> plant().settings.hourlyWage = Num.read(s));
 
-		t(comp, "Strompreis", "EUR/kWh", plant().electricityPrice)
-				.onChanged(s -> plant().electricityPrice = Num.read(s));
+		t(comp, "Strompreis", "EUR/kWh", plant().settings.electricityPrice)
+				.onChanged(s -> plant().settings.electricityPrice = Num.read(s));
 
 		t(comp, "Eigenstrombedarf", "kW", plant().electricityDemand)
 				.onChanged(s -> plant().electricityDemand = Num.read(s));
@@ -67,15 +67,15 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		Button fullFeedIn = tk.createButton(radioComp, "Volleinspeisung", SWT.RADIO);
 		Button surplusFeedIn = tk.createButton(radioComp, "Überschusseinspeisung", SWT.RADIO);
 
-		fullFeedIn.setSelection(plant().isFullFeedIn);
-		surplusFeedIn.setSelection(!plant().isFullFeedIn);
+		fullFeedIn.setSelection(plant().settings.isFullFeedIn);
+		surplusFeedIn.setSelection(!plant().settings.isFullFeedIn);
 
 		Controls.onSelect(fullFeedIn, _ -> {
-			plant().isFullFeedIn = fullFeedIn.getSelection();
+			plant().settings.isFullFeedIn = fullFeedIn.getSelection();
 			editor.setDirty();
 		});
 		Controls.onSelect(surplusFeedIn, _ -> {
-			plant().isFullFeedIn = !surplusFeedIn.getSelection();
+			plant().settings.isFullFeedIn = !surplusFeedIn.getSelection();
 			editor.setDirty();
 		});
 	}

@@ -11,7 +11,9 @@ import org.eclipse.ui.PartInitException;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlantResult;
+import sophena.db.daos.CostSettingsDao;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantSettings;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
@@ -72,6 +74,11 @@ public class BiogasPlantEditor extends Editor {
 		plant = App.getDb().get(BiogasPlant.class, keyInp.getKey());
 		if (plant == null)
 			throw new PartInitException("biogas plant does not exists: " + keyInp.getKey());
+		if (plant.settings == null) {
+			var global = new CostSettingsDao(App.getDb()).getGlobal();
+			plant.settings = BiogasPlantSettings.createDefault(global);
+			plant = App.getDb().update(plant);
+		}
 		setPartName(plant.name);
 	}
 

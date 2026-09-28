@@ -113,8 +113,8 @@ public class BiogasCostCalculator {
 		for (int h = 0; h < Stats.HOURS; h++) {
 			// Grid power is needed if plant is in full feed-in mode OR if currently idle.
 			// Base demand is required regardless of output.
-			if (plant.isFullFeedIn || !result.runFlags()[h]) {
-				electricitySum += plant.electricityDemand * plant.electricityPrice;
+			if (plant.settings.isFullFeedIn || !result.runFlags()[h]) {
+				electricitySum += plant.electricityDemand * plant.settings.electricityPrice;
 			}
 		}
 		// Apply duration-based annuity factor for grid electricity
@@ -140,7 +140,7 @@ public class BiogasCostCalculator {
 		double maintAnnuity = maintBase * annuityFactor(plant.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
-		double operBase = BiogasPlants.totalOperationHours(plant) * plant.hourlyWage;
+		double operBase = BiogasPlants.totalOperationHours(plant) * plant.settings.hourlyWage;
 		double operAnnuity = operBase * annuityFactor(plant.operationFactor);
 
 		// Insurance: fixed percentage of investment (assumed constant price level)
@@ -173,7 +173,7 @@ public class BiogasCostCalculator {
 		double netPower = Math.max(0, BiogasPlants.totalElectricPower(plant) - plant.transmissionLosses);
 
 		// Subtract internal demand from production if not in full feed-in mode (surplus feed-in)
-		if (!plant.isFullFeedIn) {
+		if (!plant.settings.isFullFeedIn) {
 			netPower = Math.max(0, netPower - plant.electricityDemand);
 		}
 

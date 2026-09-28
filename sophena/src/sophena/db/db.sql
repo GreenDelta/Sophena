@@ -86,6 +86,17 @@ CREATE TABLE tbl_biogas_substrate_profiles (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE tbl_biogas_plant_settings (
+    id                          CHAR(36),
+    hourly_wage                 DOUBLE,
+    electricity_price           DOUBLE,
+    f_demand_electricity_mix    CHAR(36),
+    is_full_feed_in             BOOLEAN,
+
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_biogas_plants (
 
     id                          CHAR(36),
@@ -96,15 +107,12 @@ CREATE TABLE tbl_biogas_plants (
     f_produced_electricity      CHAR(36),
     f_product_group             CHAR(36),
     f_electricity_price_curve   CHAR(36),
-    f_demand_electricity_mix    CHAR(36),
+    f_settings                  CHAR(36),
     gas_storage_size            DOUBLE,
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
 
-    hourly_wage                 DOUBLE,
-    electricity_price           DOUBLE,
     electricity_demand          DOUBLE,
-    is_full_feed_in             BOOLEAN,
     transmission_losses         DOUBLE,
     heat_loss                   DOUBLE,
     interest_rate               DOUBLE,

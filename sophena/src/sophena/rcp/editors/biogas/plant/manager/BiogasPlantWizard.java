@@ -10,10 +10,12 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import sophena.db.daos.CostSettingsDao;
 import sophena.model.FuelGroup;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.BiogasPlantSettings;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 import sophena.rcp.M;
@@ -51,6 +53,8 @@ public class BiogasPlantWizard extends Wizard {
 		plant.productGroup = group;
 		plant.minimumRuntime = 2;
 		plant.fermenter = defaultFermenter();
+		var global = new CostSettingsDao(App.getDb()).getGlobal();
+		plant.settings = BiogasPlantSettings.createDefault(global);
 
 		var wizard = new BiogasPlantWizard(plant);
 		wizard.setWindowTitle("Neue Biogasanlage");
