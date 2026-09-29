@@ -115,7 +115,6 @@ CREATE TABLE tbl_biogas_plants (
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
 
-    electricity_demand          DOUBLE,
     transmission_losses         DOUBLE,
     heat_loss                   DOUBLE,
     interest_rate               DOUBLE,

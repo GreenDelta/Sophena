@@ -10,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.openlca.commons.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,6 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
-import org.openlca.commons.Strings;
 
 public class ElectricityPriceWizard extends Wizard {
 
@@ -110,7 +110,7 @@ public class ElectricityPriceWizard extends Wizard {
 			var button = new Button(comp, SWT.PUSH);
 			button.setText("Durchsuchen...");
 
-			Controls.onSelect(button, $ -> {
+			Controls.onSelect(button, _ -> {
 				var f = FileChooser.open("*.xlsx");
 				if (f == null)
 					return;

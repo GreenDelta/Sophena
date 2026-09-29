@@ -1,7 +1,5 @@
 package sophena.rcp.editors.biogas.plant;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -9,7 +7,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -48,36 +45,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 
 		t(comp, "Kapital-Mischzinssatz", "%", plant().interestRate)
 				.onChanged(s -> plant().interestRate = Num.read(s));
-
-		t(comp, "Mittlerer Stundenlohn", "EUR", plant().settings.hourlyWage)
-				.onChanged(s -> plant().settings.hourlyWage = Num.read(s));
-
-		t(comp, "Strompreis", "EUR/kWh", plant().settings.electricityPrice)
-				.onChanged(s -> plant().settings.electricityPrice = Num.read(s));
-
-		t(comp, "Eigenstrombedarf", "kW", plant().electricityDemand)
-				.onChanged(s -> plant().electricityDemand = Num.read(s));
-
-		// Feed-in mode radio buttons
-		UI.formLabel(comp, tk, "Einspeisemodus");
-		var radioComp = tk.createComposite(comp);
-		UI.gridLayout(radioComp, 2).marginHeight = 0;
-		UI.gridData(radioComp, true, false).horizontalSpan = 2;
-
-		Button fullFeedIn = tk.createButton(radioComp, "Volleinspeisung", SWT.RADIO);
-		Button surplusFeedIn = tk.createButton(radioComp, "Überschusseinspeisung", SWT.RADIO);
-
-		fullFeedIn.setSelection(plant().settings.isFullFeedIn);
-		surplusFeedIn.setSelection(!plant().settings.isFullFeedIn);
-
-		Controls.onSelect(fullFeedIn, _ -> {
-			plant().settings.isFullFeedIn = fullFeedIn.getSelection();
-			editor.setDirty();
-		});
-		Controls.onSelect(surplusFeedIn, _ -> {
-			plant().settings.isFullFeedIn = !surplusFeedIn.getSelection();
-			editor.setDirty();
-		});
 	}
 
 	private void createLossesSection(Composite body) {

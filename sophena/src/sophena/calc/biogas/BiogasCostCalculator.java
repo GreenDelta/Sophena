@@ -114,7 +114,7 @@ public class BiogasCostCalculator {
 			// Grid power is needed if plant is in full feed-in mode OR if currently idle.
 			// Base demand is required regardless of output.
 			if (plant.settings.isFullFeedIn || !result.runFlags()[h]) {
-				electricitySum += plant.electricityDemand * plant.settings.electricityPrice;
+				electricitySum += plant.settings.avgPowerDemand * plant.settings.electricityPrice;
 			}
 		}
 		// Apply duration-based annuity factor for grid electricity
@@ -174,7 +174,7 @@ public class BiogasCostCalculator {
 
 		// Subtract internal demand from production if not in full feed-in mode (surplus feed-in)
 		if (!plant.settings.isFullFeedIn) {
-			netPower = Math.max(0, netPower - plant.electricityDemand);
+			netPower = Math.max(0, netPower - plant.settings.avgPowerDemand);
 		}
 
 		for (int h = 0; h < Stats.HOURS; h++) {

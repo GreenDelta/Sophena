@@ -108,7 +108,7 @@ public class BiogasPlantManager extends Editor {
 				this::importPlant);
 			Actions.bind(section, add, edit, copy, del);
 			Actions.bind(table, add, edit, copy, del, exp, imp);
-			Tables.onDoubleClick(table, (e) -> editPlant(table));
+			Tables.onDoubleClick(table, _ -> editPlant(table));
 		}
 
 		private void addPlant(TableViewer table) {

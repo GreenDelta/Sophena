@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.openlca.commons.Strings;
 
 import sophena.model.AnnualCostEntry;
 import sophena.model.biogas.BiogasPlant;
@@ -22,7 +23,6 @@ import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.rcp.wizards.SimpleWizard;
 import sophena.utils.Num;
-import org.openlca.commons.Strings;
 
 class BiogasAnnualCostsTable {
 
@@ -54,7 +54,7 @@ class BiogasAnnualCostsTable {
 				this::delete);
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
-		Tables.onDoubleClick(table, e -> edit());
+		Tables.onDoubleClick(table, _ -> edit());
 		table.setInput(plant().otherAnnualCosts);
 	}
 

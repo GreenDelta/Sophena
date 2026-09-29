@@ -108,7 +108,7 @@ public class ElectricityPriceEditor extends Editor {
 
 			Actions.bind(section, add, edit, copy, delete);
 			Actions.bind(table, add, edit, copy, export, delete);
-			Tables.onDoubleClick(table, e -> editCurve(table));
+			Tables.onDoubleClick(table, _ -> editCurve(table));
 		}
 
 		private void addCurve(TableViewer table) {

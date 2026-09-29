@@ -5,13 +5,17 @@ import org.eclipse.osgi.util.NLS;
 public class H extends NLS {
 
 	public static String AnnualCOP;
+	public static String AvgPowerDemandInfo;
 	public static String BoilerAccessories;
 	public static String BoilerHouseTechnology;
 	public static String BufferLambda;
 	public static String Buildings;
 	public static String CoGenPlants;
+	public static String DemandElectricityMixInfo;
 	public static String ElectricityDemandShare;
+	public static String ElectricityPriceInfo;
 	public static String ElectricityRevenues;
+	public static String FeedInModeInfo;
 	public static String HeatingLoad;
 	public static String HeatingNetConstruction;
 	public static String HeatingNetTechnology;
@@ -27,7 +31,9 @@ public class H extends NLS {
 	public static String CollectorTemperatureIncrease;
 	public static String LongitudeInfo;
 	public static String LatitudeInfo;
+	public static String ManureBiomethanePriceInfo;
 	public static String MaxPerfInfo;
+	public static String NonManureBiomethanePriceInfo;
 	public static String LimitRadiationInfo;
 	public static String ReferenceLongitudeInfo;
 	public static String InterpolationInfo;

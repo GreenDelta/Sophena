@@ -105,7 +105,7 @@ public class SubstrateEditor extends Editor {
 					() -> deleteSubstrate(table));
 			Actions.bind(section, add, edit, copy, del);
 			Actions.bind(table, add, edit, copy, del);
-			Tables.onDoubleClick(table, (e) -> editSubstrate(table));
+			Tables.onDoubleClick(table, _ -> editSubstrate(table));
 		}
 
 		private void addSubstrate(TableViewer table) {

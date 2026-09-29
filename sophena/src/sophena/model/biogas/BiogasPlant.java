@@ -64,13 +64,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-	/// The self-consumption of electricity in kW. This is subtracted from
-	/// electricity production and not considered for grid feed-in. When no
-	/// electricity is produced, the self-consumption must be sourced from
-	/// other sources like the power grid.
-	@Column(name = "electricity_demand")
-	public double electricityDemand;
-
 	/// Cable and transformer losses in kW. Transformer losses are typically 0.7%
 	/// of electricity production; cable losses depend on voltage, power, and cable
 	/// length. At medium voltage, losses are negligible.
@@ -149,7 +142,6 @@ public class BiogasPlant extends RootEntity {
 		for (var p : substrateProfiles) {
 			copy.substrateProfiles.add(p.copy());
 		}
-		copy.electricityDemand = electricityDemand;
 		copy.settings = settings != null
 			? settings.copy()
 			: BiogasPlantSettings.createDefault(null);
