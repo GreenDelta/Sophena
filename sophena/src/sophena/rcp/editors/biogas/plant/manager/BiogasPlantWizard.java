@@ -1,5 +1,6 @@
 package sophena.rcp.editors.biogas.plant.manager;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,8 +10,10 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.jspecify.annotations.NonNull;
 
 import sophena.db.daos.CostSettingsDao;
+import sophena.model.AnnualCostEntry;
 import sophena.model.FuelGroup;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
@@ -46,18 +49,7 @@ public class BiogasPlantWizard extends Wizard {
 			return Optional.empty();
 		}
 
-		var plant = new BiogasPlant();
-		plant.id = UUID.randomUUID().toString();
-		plant.name = "Neue Biogasanlage";
-		plant.duration = 20;
-		plant.productGroup = group;
-		plant.minimumRuntime = 2;
-		plant.gasStorageFillingLevel = 100;
-		plant.gasStorageTemperature = 30;
-		plant.gasStorageOverpressure = 5;
-		plant.fermenter = defaultFermenter();
-		var global = new CostSettingsDao(App.getDb()).getGlobal();
-		plant.settings = BiogasPlantSettings.createDefault(global);
+		var plant = makeNewPlant(group);
 
 		var wizard = new BiogasPlantWizard(plant);
 		wizard.setWindowTitle("Neue Biogasanlage");
@@ -67,6 +59,35 @@ public class BiogasPlantWizard extends Wizard {
 		return dialog.open() == Window.OK
 			? Optional.of(wizard.plant)
 			: Optional.empty();
+	}
+
+	private static @NonNull BiogasPlant makeNewPlant(ProductGroup group) {
+		var plant = new BiogasPlant();
+		plant.id = UUID.randomUUID().toString();
+		plant.name = "Neue Biogasanlage";
+		plant.duration = 20;
+		plant.productGroup = group;
+		plant.minimumRuntime = 2;
+		plant.gasStorageFillingLevel = 100;
+		plant.gasStorageTemperature = 30;
+		plant.gasStorageOverpressure = 5;
+
+		var costs = List.of(
+			"Laborkosten",
+			"Verwaltungskosten",
+			"Verzinsung eingelagertes Material",
+			"Gärproduktausbringung");
+		for (var label : costs) {
+			var entry = new AnnualCostEntry();
+			entry.value = 0;
+			entry.label = label;
+			plant.otherAnnualCosts.add(entry);
+		}
+
+		plant.fermenter = defaultFermenter();
+		var global = new CostSettingsDao(App.getDb()).getGlobal();
+		plant.settings = BiogasPlantSettings.createDefault(global);
+		return plant;
 	}
 
 	private static Fermenter defaultFermenter() {

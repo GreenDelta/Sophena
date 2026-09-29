@@ -1,6 +1,5 @@
 package sophena.rcp.editors.biogas.plant;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -9,7 +8,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.openlca.commons.Strings;
 
 import sophena.model.AnnualCostEntry;
@@ -42,15 +40,15 @@ class BiogasAnnualCostsTable {
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "Weitere jährliche Kosten");
-		Composite comp = UI.sectionClient(section, tk);
-		table = Tables.createViewer(comp, "Bezeichnung", "Jährliche Kosten");
+		var section = UI.section(body, tk, "Weitere jährliche Kosten");
+		var comp = UI.sectionClient(section, tk);
+		table = Tables.createViewer(comp, "Bezeichnung", "Jährliche Kosten", "");
 		table.setLabelProvider(new EntryLabel());
-		Tables.bindColumnWidths(table, 0.4, 0.3);
-		Action add = Actions.create("Kostenpunkt hinzufügen",
+		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
+		var add = Actions.create("Kosten hinzufügen",
 				Icon.ADD_16.des(), this::add);
-		Action edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
-		Action del = Actions.create(M.Remove, Icon.DELETE_16.des(),
+		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
+		var del = Actions.create(M.Remove, Icon.DELETE_16.des(),
 				this::delete);
 		Actions.bind(section, add, edit, del);
 		Actions.bind(table, add, edit, del);
@@ -59,8 +57,8 @@ class BiogasAnnualCostsTable {
 	}
 
 	private void add() {
-		AnnualCostEntry e = new AnnualCostEntry();
-		Wizard wizard = new Wizard(e);
+		var e = new AnnualCostEntry();
+		var wizard = new Wizard(e);
 		if (wizard.open() != Window.OK)
 			return;
 		plant().otherAnnualCosts.add(e);
@@ -72,11 +70,11 @@ class BiogasAnnualCostsTable {
 		AnnualCostEntry e = Viewers.getFirstSelected(table);
 		if (e == null)
 			return;
-		AnnualCostEntry clone = e.copy();
+		var clone = e.copy();
 		Wizard wizard = new Wizard(clone);
 		if (wizard.open() != Window.OK)
 			return;
-		AnnualCostEntry managed = getJpaManaged(e);
+		var managed = getJpaManaged(e);
 		if (managed == null)
 			return;
 		managed.label = clone.label;
@@ -89,7 +87,7 @@ class BiogasAnnualCostsTable {
 		AnnualCostEntry e = Viewers.getFirstSelected(table);
 		if (e == null)
 			return;
-		AnnualCostEntry managed = getJpaManaged(e);
+		var managed = getJpaManaged(e);
 		if (managed == null)
 			return;
 		plant().otherAnnualCosts.remove(managed);
@@ -98,7 +96,7 @@ class BiogasAnnualCostsTable {
 	}
 
 	private AnnualCostEntry getJpaManaged(AnnualCostEntry e) {
-		for (AnnualCostEntry managed : plant().otherAnnualCosts) {
+		for (var managed : plant().otherAnnualCosts) {
 			if (!Strings.equalsIgnoreCase(managed.label, e.label))
 				continue;
 			if (Double.compare(managed.value, e.value) == 0)
@@ -126,7 +124,7 @@ class BiogasAnnualCostsTable {
 			UI.filler(comp);
 			valueText = UI.formText(comp, "Wert");
 			Texts.on(valueText).init(entry.value).decimal().required();
-			UI.formLabel(comp, "EUR");
+			UI.formLabel(comp, "EUR/a");
 		}
 
 		@Override
@@ -152,6 +150,7 @@ class BiogasAnnualCostsTable {
 			return switch (col) {
 				case 0 -> e.label;
 				case 1 -> Num.str(e.value);
+				case 2 -> "EUR/a";
 				default -> null;
 			};
 		}

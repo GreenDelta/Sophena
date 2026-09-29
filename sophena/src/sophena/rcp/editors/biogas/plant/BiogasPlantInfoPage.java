@@ -70,9 +70,7 @@ class BiogasPlantInfoPage extends FormPage {
 		FinancingSection.of(editor).create(body, tk);
 
 		createOtherCostsSection(body, tk);
-
 		BiogasAnnualCostsTable.of(editor).render(body, tk);
-
 		createPriceChangeSection(body, tk);
 
 		editor.calculate();
