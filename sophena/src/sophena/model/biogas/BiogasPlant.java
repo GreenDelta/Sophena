@@ -64,10 +64,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-	/// Capital mixed interest rate in %.
-	@Column(name = "interest_rate")
-	public double interestRate;
-
 	/// Insurance costs as a percentage of investment.
 	@Column(name = "insurance_share")
 	public double insuranceShare;
@@ -134,7 +130,6 @@ public class BiogasPlant extends RootEntity {
 		copy.settings = settings != null
 			? settings.copy()
 			: BiogasPlantSettings.createDefault(null);
-		copy.interestRate = interestRate;
 		copy.insuranceShare = insuranceShare;
 		for (var entry : otherAnnualCosts) {
 			if (entry != null) {

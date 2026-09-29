@@ -90,6 +90,42 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "heat_loss")
 	public double heatLoss;
 
+	/// Capital mixed interest rate in %.
+	///
+	/// @de Kapital-Mischzinssatz
+	@Column(name = "interest_rate")
+	public double interestRate;
+
+	/// Indicates whether the expected profit is based on the expected rate of
+	/// return (`rateOfReturn`) or on the expected annual surplus
+	/// (`expectedAnnualSurplus`).
+	///
+	/// @de Renditeerwartung | Jahresüberschusserwartung
+	@Column(name = "use_rate_of_return")
+	public boolean useRateOfReturn;
+
+	/// The expected rate of return in %. This is only used when
+	/// `useRateOfReturn` is `true`.
+	///
+	/// @de Renditeerwartung
+	@Column(name = "rate_of_return")
+	public double rateOfReturn;
+
+	/// The expected annual surplus in EUR/a. This is only used when
+	/// `useRateOfReturn` is `false`.
+	///
+	/// @de Jahresüberschusserwartung
+	@Column(name = "expected_annual_surplus")
+	public double expectedAnnualSurplus;
+
+	/// General investment funding in EUR. This field is not shown in the user
+	/// interface yet. It is kept in the model and the database so that it can be
+	/// used in later extensions without requiring a database change.
+	///
+	/// @de Investitionsförderung absolut
+	@Column(name = "funding")
+	public double funding;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
@@ -105,6 +141,11 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.transmissionLosses = 7.35;
 		settings.methaneSlip = 1.8;
 		settings.heatLoss = 0.0;
+		settings.interestRate = 4.0;
+		settings.useRateOfReturn = true;
+		settings.rateOfReturn = 20.0;
+		settings.expectedAnnualSurplus = 0.0;
+		settings.funding = 0.0;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
@@ -125,6 +166,11 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.transmissionLosses = transmissionLosses;
 		copy.methaneSlip = methaneSlip;
 		copy.heatLoss = heatLoss;
+		copy.interestRate = interestRate;
+		copy.useRateOfReturn = useRateOfReturn;
+		copy.rateOfReturn = rateOfReturn;
+		copy.expectedAnnualSurplus = expectedAnnualSurplus;
+		copy.funding = funding;
 		return copy;
 	}
 }

@@ -68,6 +68,8 @@ class BiogasPlantInfoPage extends FormPage {
 
 		LossesSection.of(editor).create(body, tk);
 
+		FinancingSection.of(editor).create(body, tk);
+
 		createSettingsSection(body, tk);
 
 		// biogas boilers

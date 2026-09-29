@@ -76,7 +76,7 @@ public class BiogasCostCalculator {
 	 * It assumes the observation period (T) is equal to the plant's duration.
 	 */
 	private double calculateCapitalCosts() {
-		double q = 1 + plant.interestRate / 100;
+		double q = 1 + plant.settings.interestRate / 100;
 		double sum = 0;
 		for (BiogasPlantBoiler entry : plant.boilers) {
 			if (entry == null || entry.costs == null || entry.costs.investment <= 0)
@@ -201,7 +201,7 @@ public class BiogasCostCalculator {
 	 * @return Combined factor to multiply with first-year costs.
 	 */
 	private double annuityFactor(double r) {
-		double q = 1 + plant.interestRate / 100;
+		double q = 1 + plant.settings.interestRate / 100;
 		int T = plant.duration;
 		if (T <= 0) return 0;
 

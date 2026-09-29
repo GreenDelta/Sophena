@@ -98,6 +98,11 @@ CREATE TABLE tbl_biogas_plant_settings (
     transmission_losses         DOUBLE,
     methane_slip                DOUBLE,
     heat_loss                   DOUBLE,
+    interest_rate               DOUBLE,
+    use_rate_of_return          BOOLEAN,
+    rate_of_return              DOUBLE,
+    expected_annual_surplus     DOUBLE,
+    funding                     DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -118,7 +123,6 @@ CREATE TABLE tbl_biogas_plants (
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
 
-    interest_rate               DOUBLE,
     insurance_share             DOUBLE,
 
     investment_factor           DOUBLE,

@@ -30,20 +30,11 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		var form = UI.formHeader(mForm, "Kosteneinstellungen - " + plant().name);
 		tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
-		createGeneralSection(body);
 		createOtherCostsSection(body);
 		BiogasAnnualCostsTable.of(editor).render(body, tk);
 		createPriceChangeSection(body);
 
 		form.reflow(true);
-	}
-
-	private void createGeneralSection(Composite body) {
-		var comp = UI.formSection(body, tk, "Allgemein");
-		UI.gridLayout(comp, 3);
-
-		t(comp, "Kapital-Mischzinssatz", "%", plant().interestRate)
-				.onChanged(s -> plant().interestRate = Num.read(s));
 	}
 
 	private void createOtherCostsSection(Composite body) {
