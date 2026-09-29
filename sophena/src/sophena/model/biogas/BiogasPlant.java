@@ -90,10 +90,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-	/// Insurance costs as a percentage of investment.
-	@Column(name = "insurance_share")
-	public double insuranceShare;
-
 	/// Other annual costs in EUR/a, such as administration costs, laboratory costs, etc.
 	@ElementCollection
 	@CollectionTable(
@@ -159,7 +155,6 @@ public class BiogasPlant extends RootEntity {
 		copy.settings = settings != null
 			? settings.copy()
 			: BiogasPlantSettings.createDefault(null);
-		copy.insuranceShare = insuranceShare;
 		for (var entry : otherAnnualCosts) {
 			if (entry != null) {
 				copy.otherAnnualCosts.add(entry.copy());

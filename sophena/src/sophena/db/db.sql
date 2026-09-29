@@ -105,6 +105,8 @@ CREATE TABLE tbl_biogas_plant_settings (
     funding                     DOUBLE,
     max_rated_power             DOUBLE,
     eligible_quarter_hours      INTEGER,
+    insurance_costs_share       DOUBLE,
+    other_costs_share           DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -127,8 +129,6 @@ CREATE TABLE tbl_biogas_plants (
     gas_storage_overpressure    DOUBLE,
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
-
-    insurance_share             DOUBLE,
 
     investment_factor           DOUBLE,
     bio_fuel_factor             DOUBLE,

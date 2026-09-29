@@ -141,6 +141,19 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "eligible_quarter_hours")
 	public int eligibleQuarterHours;
 
+	/// Insurance costs as a percentage of the investment.
+	///
+	/// @de Versicherung
+	@Column(name = "insurance_costs_share")
+	public double insuranceCostsShare;
+
+	/// Other charges as a percentage of the investment, e.g. taxes, lease
+	/// payments, etc.
+	///
+	/// @de Sonstige Abgaben (Steuern, Pacht, usw.)
+	@Column(name = "other_costs_share")
+	public double otherCostsShare;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
@@ -162,6 +175,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.expectedAnnualSurplus = 0.0;
 		settings.funding = 0.0;
 		settings.eligibleQuarterHours = 35040;
+		settings.insuranceCostsShare = 0.50;
+		settings.otherCostsShare = 0.25;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
@@ -189,6 +204,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.funding = funding;
 		copy.maxRatedPower = maxRatedPower;
 		copy.eligibleQuarterHours = eligibleQuarterHours;
+		copy.insuranceCostsShare = insuranceCostsShare;
+		copy.otherCostsShare = otherCostsShare;
 		return copy;
 	}
 }

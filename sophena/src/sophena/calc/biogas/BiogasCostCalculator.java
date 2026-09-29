@@ -144,7 +144,7 @@ public class BiogasCostCalculator {
 		double operAnnuity = operBase * annuityFactor(plant.operationFactor);
 
 		// Insurance: fixed percentage of investment (assumed constant price level)
-		double insurance = investment * (plant.insuranceShare / 100);
+		double insurance = investment * (plant.settings.insuranceCostsShare / 100);
 
 		return maintAnnuity + operAnnuity + insurance;
 	}

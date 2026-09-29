@@ -1,7 +1,10 @@
 package sophena.rcp.editors.biogas.plant;
 
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
@@ -63,11 +66,64 @@ class BiogasPlantInfoPage extends FormPage {
 		UI.filler(comp, tk);
 
 		GeneralSection.of(editor).create(body, tk);
-
 		LossesSection.of(editor).create(body, tk);
-
 		FinancingSection.of(editor).create(body, tk);
 
+		createOtherCostsSection(body, tk);
+
+		BiogasAnnualCostsTable.of(editor).render(body, tk);
+
+		createPriceChangeSection(body, tk);
+
 		editor.calculate();
+	}
+
+	private void createOtherCostsSection(Composite body, FormToolkit tk) {
+		var comp = UI.formSection(body, tk, "Sonstige Kosten");
+		UI.gridLayout(comp, 3);
+
+		t(comp, tk, "Versicherung", "%", plant().settings.insuranceCostsShare)
+			.onChanged(s -> plant().settings.insuranceCostsShare = Num.read(s));
+
+		t(comp, tk, "Sonstige Abgaben (Steuern, Pacht, usw.)", "%",
+			plant().settings.otherCostsShare)
+			.onChanged(s -> plant().settings.otherCostsShare = Num.read(s));
+	}
+
+	private void createPriceChangeSection(Composite body, FormToolkit tk) {
+		var comp = UI.formSection(body, tk, "Preisänderungsfaktoren");
+		UI.gridLayout(comp, 3);
+
+		t(comp, tk, "Investitionen", "", plant().investmentFactor)
+			.onChanged(s -> plant().investmentFactor = Num.read(s));
+
+		t(comp, tk, "Biomasse-Brennstoff", "", plant().bioFuelFactor)
+			.onChanged(s -> plant().bioFuelFactor = Num.read(s));
+
+		t(comp, tk, "Fossiler Brennstoff", "", plant().fossilFuelFactor)
+			.onChanged(s -> plant().fossilFuelFactor = Num.read(s));
+
+		t(comp, tk, "Strom", "", plant().electricityFactor)
+			.onChanged(s -> plant().electricityFactor = Num.read(s));
+
+		t(comp, tk, "Lohnkosten und sonstige Kosten", "", plant().operationFactor)
+			.onChanged(s -> plant().operationFactor = Num.read(s));
+
+		t(comp, tk, "Instandhaltung", "", plant().maintenanceFactor)
+			.onChanged(s -> plant().maintenanceFactor = Num.read(s));
+
+		t(comp, tk, "Strommehrerlöse", "", plant().electricityRevenuesFactor)
+			.onChanged(s -> plant().electricityRevenuesFactor = Num.read(s));
+	}
+
+	private Texts.TextBox t(
+		Composite comp, FormToolkit tk, String label, String unit, double initial
+	) {
+		Text text = UI.formText(comp, tk, label);
+		UI.formLabel(comp, tk, unit);
+		return Texts.on(text)
+			.decimal()
+			.init(initial)
+			.onChanged(_ -> editor.setDirty());
 	}
 }
