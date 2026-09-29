@@ -18,8 +18,10 @@ public class Smoothing {
 		var net = project.heatNet;
 		if (net.smoothingFactor != null)
 			return net.smoothingFactor;
-		var maxLoad = ProjectLoad.getMax(project);
 		var fsi = net.simultaneityFactor;
+		if (fsi == 1.0)  // avoid division by 0 below
+			return 0;
+		var maxLoad = ProjectLoad.getMax(project);
 		var rawCurve = ProjectLoad.getRawCurve(project);
 		var rawMax = Stats.max(rawCurve);
 		if (rawMax == 0 || rawMax < (0.9 * maxLoad))
@@ -29,7 +31,7 @@ public class Smoothing {
 				* Defaults.SMOOTHING_FACTOR * (1 - fsiEstimated)
 				* Math.pow(2, (10 * (1 - fsiEstimated))));
 		double factor = countEstimated / (20 * (1 - fsi) * Math.pow(2, 10 * (1 - fsi)));
-		return factor < 0 || Double.isNaN(factor)
+		return factor < 0 || !Double.isFinite(factor)
 				? 0
 				: factor;
 	}

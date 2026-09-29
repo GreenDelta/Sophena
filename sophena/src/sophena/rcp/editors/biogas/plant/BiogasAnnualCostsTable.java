@@ -45,6 +45,7 @@ class BiogasAnnualCostsTable {
 		table = Tables.createViewer(comp, "Bezeichnung", "Jährliche Kosten", "");
 		table.setLabelProvider(new EntryLabel());
 		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
+		Tables.rightAlignColumns(table, 1);
 		var add = Actions.create("Kosten hinzufügen",
 				Icon.ADD_16.des(), this::add);
 		var edit = Actions.create(M.Edit, Icon.EDIT_16.des(), this::edit);
