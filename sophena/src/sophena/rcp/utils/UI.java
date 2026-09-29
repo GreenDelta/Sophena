@@ -233,7 +233,7 @@ public class UI {
 	}
 
 	public static GridLayout innerGrid(Composite composite, int columns) {
-		return gridLayout(composite, columns, 5, 0);
+		return gridLayout(composite, columns, 10, 0);
 	}
 
 	public static GridLayout gridLayout(Composite composite, int columns,
