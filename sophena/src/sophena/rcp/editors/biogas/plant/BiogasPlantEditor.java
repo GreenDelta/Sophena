@@ -86,6 +86,9 @@ public class BiogasPlantEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new BiogasPlantInfoPage(this));
+			addPage(new BiogasPlantSubstratePage(this));
+			addPage(new BiogasPlantGasStoragePage(this));
+			addPage(new BiogasPlantBoilerPage(this));
 			addPage(new BiogasPlantCostSettingsPage(this));
 			addPage(new FermenterPage(this));
 		} catch (Exception e) {

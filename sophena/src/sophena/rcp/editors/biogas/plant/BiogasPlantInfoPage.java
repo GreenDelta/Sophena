@@ -72,18 +72,6 @@ class BiogasPlantInfoPage extends FormPage {
 
 		createSettingsSection(body, tk);
 
-		// biogas boilers
-		BiogasPlantBoilerTable.of(editor).render(body, tk);
-
-		// substrate section
-		var substrateSection = SubstrateSection.of(editor);
-		substrateSection.create(body, tk);
-
-		// electricity section
-		ElectricitySection.of(editor).create(body, tk);
-
-		// producer profile section
-		ProducerProfileSection.of(editor).create(body, tk);
 		editor.calculate();
 	}
 

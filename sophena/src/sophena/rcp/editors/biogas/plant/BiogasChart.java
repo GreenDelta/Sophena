@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import sophena.model.ProductType;
 import sophena.model.Stats;
 import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasProfile;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.Colors;
@@ -35,7 +36,10 @@ class BiogasChart {
 	}
 
 	void setInput(BiogasPlantResult r) {
-		var profile = r.biogasProfile();
+		// the biogas production only depends on the substrates of the plant;
+		// the profile of the result is empty when the plant cannot be
+		// calculated for other reasons, so we compute it from the plant here
+		var profile = BiogasProfile.of(r.plant());
 
 		var vol = profile.volume();
 		biogasData.setCurrentYDataArray(vol);
