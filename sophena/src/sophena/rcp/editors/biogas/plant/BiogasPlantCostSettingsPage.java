@@ -31,7 +31,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 		tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 		createGeneralSection(body);
-		createLossesSection(body);
 		createOtherCostsSection(body);
 		BiogasAnnualCostsTable.of(editor).render(body, tk);
 		createPriceChangeSection(body);
@@ -45,17 +44,6 @@ class BiogasPlantCostSettingsPage extends FormPage {
 
 		t(comp, "Kapital-Mischzinssatz", "%", plant().interestRate)
 				.onChanged(s -> plant().interestRate = Num.read(s));
-	}
-
-	private void createLossesSection(Composite body) {
-		var comp = UI.formSection(body, tk, "Verluste");
-		UI.gridLayout(comp, 3);
-
-		t(comp, "Kabel- und Trafo", "kW", plant().transmissionLosses)
-				.onChanged(s -> plant().transmissionLosses = Num.read(s));
-
-		t(comp, "Wärmeverluste", "kW", plant().heatLoss)
-				.onChanged(s -> plant().heatLoss = Num.read(s));
 	}
 
 	private void createOtherCostsSection(Composite body) {

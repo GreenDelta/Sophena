@@ -67,6 +67,29 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "avg_power_demand")
 	public double avgPowerDemand;
 
+	/// Cable and transformer losses in kW. Transformer losses are typically
+	/// 0.7 % of the electricity production; cable losses depend on the voltage,
+	/// the power and the cable length. At medium voltage, losses are hardly
+	/// relevant.
+	///
+	/// @de Kabel- und Trafoverluste
+	@Column(name = "transmission_losses")
+	public double transmissionLosses;
+
+	/// Methane slip in %. This is the share of methane that is not converted or
+	/// captured, e.g. due to leaks in the gas hood or at the CHP unit.
+	///
+	/// @de Methanschlupf
+	@Column(name = "methane_slip")
+	public double methaneSlip;
+
+	/// Heat losses in kW that may occur before feeding into the heat network.
+	/// Heat losses within the heat network are accounted for elsewhere.
+	///
+	/// @de Wärmeverluste
+	@Column(name = "heat_loss")
+	public double heatLoss;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
@@ -79,6 +102,9 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.manureBiomethanePrice = 0.12;
 		settings.nonManureBiomethanePrice = 0.08;
 		settings.avgPowerDemand = 30.0;
+		settings.transmissionLosses = 7.35;
+		settings.methaneSlip = 1.8;
+		settings.heatLoss = 0.0;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
@@ -96,6 +122,9 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.manureBiomethanePrice = manureBiomethanePrice;
 		copy.nonManureBiomethanePrice = nonManureBiomethanePrice;
 		copy.avgPowerDemand = avgPowerDemand;
+		copy.transmissionLosses = transmissionLosses;
+		copy.methaneSlip = methaneSlip;
+		copy.heatLoss = heatLoss;
 		return copy;
 	}
 }

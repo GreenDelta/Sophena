@@ -64,17 +64,6 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public final List<SubstrateProfile> substrateProfiles = new ArrayList<>();
 
-	/// Cable and transformer losses in kW. Transformer losses are typically 0.7%
-	/// of electricity production; cable losses depend on voltage, power, and cable
-	/// length. At medium voltage, losses are negligible.
-	@Column(name = "transmission_losses")
-	public double transmissionLosses;
-
-	/// Heat losses in kW that may occur before feeding into the heat network.
-	/// Heat losses within the heat network are accounted for elsewhere.
-	@Column(name = "heat_loss")
-	public double heatLoss;
-
 	/// Capital mixed interest rate in %.
 	@Column(name = "interest_rate")
 	public double interestRate;
@@ -145,8 +134,6 @@ public class BiogasPlant extends RootEntity {
 		copy.settings = settings != null
 			? settings.copy()
 			: BiogasPlantSettings.createDefault(null);
-		copy.transmissionLosses = transmissionLosses;
-		copy.heatLoss = heatLoss;
 		copy.interestRate = interestRate;
 		copy.insuranceShare = insuranceShare;
 		for (var entry : otherAnnualCosts) {

@@ -95,6 +95,9 @@ CREATE TABLE tbl_biogas_plant_settings (
     manure_biomethane_price     DOUBLE,
     non_manure_biomethane_price DOUBLE,
     avg_power_demand            DOUBLE,
+    transmission_losses         DOUBLE,
+    methane_slip                DOUBLE,
+    heat_loss                   DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -115,8 +118,6 @@ CREATE TABLE tbl_biogas_plants (
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
 
-    transmission_losses         DOUBLE,
-    heat_loss                   DOUBLE,
     interest_rate               DOUBLE,
     insurance_share             DOUBLE,
 
