@@ -126,6 +126,21 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "funding")
 	public double funding;
 
+	/// The maximum rated electrical power of the plant in kW. A `null` value
+	/// means that no maximum rated power is defined.
+	///
+	/// @de Höchstbemessungsleistung
+	@Column(name = "max_rated_power")
+	public Double maxRatedPower;
+
+	/// The number of operating quarter hours per year for which a claim to
+	/// payment under §19 exists. Quarter hours are operating quarter hours when
+	/// at least one boiler runs with any power.
+	///
+	/// @de Förderfähige Betriebsviertelstunden
+	@Column(name = "eligible_quarter_hours")
+	public int eligibleQuarterHours;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
@@ -146,6 +161,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.rateOfReturn = 20.0;
 		settings.expectedAnnualSurplus = 0.0;
 		settings.funding = 0.0;
+		settings.eligibleQuarterHours = 35040;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
@@ -171,6 +187,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.rateOfReturn = rateOfReturn;
 		copy.expectedAnnualSurplus = expectedAnnualSurplus;
 		copy.funding = funding;
+		copy.maxRatedPower = maxRatedPower;
+		copy.eligibleQuarterHours = eligibleQuarterHours;
 		return copy;
 	}
 }

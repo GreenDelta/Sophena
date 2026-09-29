@@ -48,7 +48,10 @@ public class BiogasPlant extends RootEntity {
 	@Column(name = "gas_storage_size")
 	public double gasStorageSize;
 
-	/// minimum runtime in hours
+	/// The minimum runtime of the boilers in hours. This is the duration that a
+	/// boiler must run at least at every start.
+	///
+	/// @de BHKW-Mindestlaufzeit
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
 

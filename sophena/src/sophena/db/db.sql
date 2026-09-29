@@ -103,6 +103,8 @@ CREATE TABLE tbl_biogas_plant_settings (
     rate_of_return              DOUBLE,
     expected_annual_surplus     DOUBLE,
     funding                     DOUBLE,
+    max_rated_power             DOUBLE,
+    eligible_quarter_hours      INTEGER,
 
     PRIMARY KEY (id)
 );

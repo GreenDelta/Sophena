@@ -89,16 +89,5 @@ class BiogasPlantInfoPage extends FormPage {
 				editor.calculate();
 			});
 		UI.formLabel(comp, tk, "m3");
-
-		var runtimeText = UI.formText(comp, tk, "Mindestlaufzeit");
-		Texts.on(runtimeText)
-			.integer()
-			.init(plant().minimumRuntime)
-			.onChanged(s -> {
-				plant().minimumRuntime = Num.readInt(s);
-				editor.setDirty();
-				editor.calculate();
-			});
-		UI.formLabel(comp, tk, "h");
 	}
 }

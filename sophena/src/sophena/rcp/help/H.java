@@ -15,6 +15,7 @@ public class H extends NLS {
 	public static String ElectricityDemandShare;
 	public static String ElectricityPriceInfo;
 	public static String ElectricityRevenues;
+	public static String EligibleQuarterHoursInfo;
 	public static String FeedInModeInfo;
 	public static String HeatLossInfo;
 	public static String HeatingLoad;
@@ -35,6 +36,7 @@ public class H extends NLS {
 	public static String ManureBiomethanePriceInfo;
 	public static String MaxPerfInfo;
 	public static String MethaneSlipInfo;
+	public static String MinimumRuntimeInfo;
 	public static String NonManureBiomethanePriceInfo;
 	public static String LimitRadiationInfo;
 	public static String ReferenceLongitudeInfo;
