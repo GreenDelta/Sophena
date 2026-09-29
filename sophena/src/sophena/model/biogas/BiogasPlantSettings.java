@@ -154,6 +154,50 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "other_costs_share")
 	public double otherCostsShare;
 
+	// price change factors
+
+	/// Price change factor for investments.
+	///
+	/// @de Investitionen
+	@Column(name = "investment_factor")
+	public double investmentFactor;
+
+	/// Price change factor for biomass fuels.
+	///
+	/// @de Biomasse-Brennstoff
+	@Column(name = "bio_fuel_factor")
+	public double bioFuelFactor;
+
+	/// Price change factor for fossil fuels.
+	///
+	/// @de Fossiler Brennstoff
+	@Column(name = "fossil_fuel_factor")
+	public double fossilFuelFactor;
+
+	/// Price change factor for electricity.
+	///
+	/// @de Strom
+	@Column(name = "electricity_factor")
+	public double electricityFactor;
+
+	/// Price change factor for wages/operation.
+	///
+	/// @de Lohnkosten und sonstige Kosten
+	@Column(name = "operation_factor")
+	public double operationFactor;
+
+	/// Price change factor for maintenance.
+	///
+	/// @de Instandhaltung
+	@Column(name = "maintenance_factor")
+	public double maintenanceFactor;
+
+	/// Price change factor for electricity revenues.
+	///
+	/// @de Strommehrerlöse
+	@Column(name = "electricity_revenues_factor")
+	public double electricityRevenuesFactor;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
@@ -177,6 +221,13 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.eligibleQuarterHours = 35040;
 		settings.insuranceCostsShare = 0.50;
 		settings.otherCostsShare = 0.25;
+		settings.investmentFactor = 1.02;
+		settings.bioFuelFactor = 1.02;
+		settings.fossilFuelFactor = 1.03;
+		settings.electricityFactor = 1.03;
+		settings.operationFactor = 1.02;
+		settings.maintenanceFactor = 1.02;
+		settings.electricityRevenuesFactor = 1.0;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
@@ -206,6 +257,13 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.eligibleQuarterHours = eligibleQuarterHours;
 		copy.insuranceCostsShare = insuranceCostsShare;
 		copy.otherCostsShare = otherCostsShare;
+		copy.investmentFactor = investmentFactor;
+		copy.bioFuelFactor = bioFuelFactor;
+		copy.fossilFuelFactor = fossilFuelFactor;
+		copy.electricityFactor = electricityFactor;
+		copy.operationFactor = operationFactor;
+		copy.maintenanceFactor = maintenanceFactor;
+		copy.electricityRevenuesFactor = electricityRevenuesFactor;
 		return copy;
 	}
 }

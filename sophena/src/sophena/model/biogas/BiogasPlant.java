@@ -98,36 +98,6 @@ public class BiogasPlant extends RootEntity {
 	)
 	public List<AnnualCostEntry> otherAnnualCosts = new ArrayList<>();
 
-	// price change factors
-
-	/// Price change factor for investments.
-	@Column(name = "investment_factor")
-	public double investmentFactor;
-
-	/// Price change factor for biomass fuels.
-	@Column(name = "bio_fuel_factor")
-	public double bioFuelFactor;
-
-	/// Price change factor for fossil fuels.
-	@Column(name = "fossil_fuel_factor")
-	public double fossilFuelFactor;
-
-	/// Price change factor for electricity.
-	@Column(name = "electricity_factor")
-	public double electricityFactor;
-
-	/// Price change factor for wages/operation.
-	@Column(name = "operation_factor")
-	public double operationFactor;
-
-	/// Price change factor for maintenance.
-	@Column(name = "maintenance_factor")
-	public double maintenanceFactor;
-
-	/// Price change factor for electricity revenues.
-	@Column(name = "electricity_revenues_factor")
-	public double electricityRevenuesFactor;
-
 	@Override
 	public BiogasPlant copy() {
 		var copy = new BiogasPlant();
@@ -160,13 +130,6 @@ public class BiogasPlant extends RootEntity {
 				copy.otherAnnualCosts.add(entry.copy());
 			}
 		}
-		copy.investmentFactor = investmentFactor;
-		copy.bioFuelFactor = bioFuelFactor;
-		copy.fossilFuelFactor = fossilFuelFactor;
-		copy.electricityFactor = electricityFactor;
-		copy.operationFactor = operationFactor;
-		copy.maintenanceFactor = maintenanceFactor;
-		copy.electricityRevenuesFactor = electricityRevenuesFactor;
 		return copy;
 	}
 

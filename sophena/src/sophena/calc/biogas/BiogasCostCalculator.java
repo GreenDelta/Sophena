@@ -91,7 +91,7 @@ public class BiogasCostCalculator {
 					duration,
 					plant.duration,
 					q,
-					plant.investmentFactor);
+					plant.settings.investmentFactor);
 		}
 		return sum;
 	}
@@ -106,7 +106,7 @@ public class BiogasCostCalculator {
 			substrateSum += profile.annualMass * profile.substrateCosts;
 		}
 		// Apply duration-based annuity factor for bio-fuels
-		double bioAnnuity = substrateSum * annuityFactor(plant.bioFuelFactor);
+		double bioAnnuity = substrateSum * annuityFactor(plant.settings.bioFuelFactor);
 
 		// Calculate electricity purchased from the grid (EUR/a)
 		double electricitySum = 0;
@@ -118,7 +118,7 @@ public class BiogasCostCalculator {
 			}
 		}
 		// Apply duration-based annuity factor for grid electricity
-		double elecAnnuity = electricitySum * annuityFactor(plant.electricityFactor);
+		double elecAnnuity = electricitySum * annuityFactor(plant.settings.electricityFactor);
 
 		return bioAnnuity + elecAnnuity;
 	}
@@ -137,11 +137,11 @@ public class BiogasCostCalculator {
 			maintBase += entry.costs.investment
 					* (entry.costs.maintenance + entry.costs.repair) / 100;
 		}
-		double maintAnnuity = maintBase * annuityFactor(plant.maintenanceFactor);
+		double maintAnnuity = maintBase * annuityFactor(plant.settings.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
 		double operBase = BiogasPlants.totalOperationHours(plant) * plant.settings.hourlyWage;
-		double operAnnuity = operBase * annuityFactor(plant.operationFactor);
+		double operAnnuity = operBase * annuityFactor(plant.settings.operationFactor);
 
 		// Insurance: fixed percentage of investment (assumed constant price level)
 		double insurance = investment * (plant.settings.insuranceCostsShare / 100);
@@ -190,7 +190,7 @@ public class BiogasCostCalculator {
 		}
 
 		// Apply duration-based annuity factor for electricity revenues
-		return hourlyRevenuesSum * annuityFactor(plant.electricityRevenuesFactor);
+		return hourlyRevenuesSum * annuityFactor(plant.settings.electricityRevenuesFactor);
 	}
 
 	/**

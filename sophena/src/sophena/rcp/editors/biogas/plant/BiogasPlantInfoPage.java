@@ -94,26 +94,28 @@ class BiogasPlantInfoPage extends FormPage {
 		var comp = UI.formSection(body, tk, "Preisänderungsfaktoren");
 		UI.gridLayout(comp, 3);
 
-		t(comp, tk, "Investitionen", "", plant().investmentFactor)
-			.onChanged(s -> plant().investmentFactor = Num.read(s));
+		t(comp, tk, "Investitionen", "", plant().settings.investmentFactor)
+			.onChanged(s -> plant().settings.investmentFactor = Num.read(s));
 
-		t(comp, tk, "Biomasse-Brennstoff", "", plant().bioFuelFactor)
-			.onChanged(s -> plant().bioFuelFactor = Num.read(s));
+		t(comp, tk, "Biomasse-Brennstoff", "", plant().settings.bioFuelFactor)
+			.onChanged(s -> plant().settings.bioFuelFactor = Num.read(s));
 
-		t(comp, tk, "Fossiler Brennstoff", "", plant().fossilFuelFactor)
-			.onChanged(s -> plant().fossilFuelFactor = Num.read(s));
+		t(comp, tk, "Fossiler Brennstoff", "", plant().settings.fossilFuelFactor)
+			.onChanged(s -> plant().settings.fossilFuelFactor = Num.read(s));
 
-		t(comp, tk, "Strom", "", plant().electricityFactor)
-			.onChanged(s -> plant().electricityFactor = Num.read(s));
+		t(comp, tk, "Strom", "", plant().settings.electricityFactor)
+			.onChanged(s -> plant().settings.electricityFactor = Num.read(s));
 
-		t(comp, tk, "Lohnkosten und sonstige Kosten", "", plant().operationFactor)
-			.onChanged(s -> plant().operationFactor = Num.read(s));
+		t(comp, tk, "Lohnkosten und sonstige Kosten", "",
+			plant().settings.operationFactor)
+			.onChanged(s -> plant().settings.operationFactor = Num.read(s));
 
-		t(comp, tk, "Instandhaltung", "", plant().maintenanceFactor)
-			.onChanged(s -> plant().maintenanceFactor = Num.read(s));
+		t(comp, tk, "Instandhaltung", "", plant().settings.maintenanceFactor)
+			.onChanged(s -> plant().settings.maintenanceFactor = Num.read(s));
 
-		t(comp, tk, "Strommehrerlöse", "", plant().electricityRevenuesFactor)
-			.onChanged(s -> plant().electricityRevenuesFactor = Num.read(s));
+		t(comp, tk, "Strommehrerlöse", "",
+			plant().settings.electricityRevenuesFactor)
+			.onChanged(s -> plant().settings.electricityRevenuesFactor = Num.read(s));
 	}
 
 	private Texts.TextBox t(

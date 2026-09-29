@@ -107,6 +107,13 @@ CREATE TABLE tbl_biogas_plant_settings (
     eligible_quarter_hours      INTEGER,
     insurance_costs_share       DOUBLE,
     other_costs_share           DOUBLE,
+    investment_factor           DOUBLE,
+    bio_fuel_factor             DOUBLE,
+    fossil_fuel_factor          DOUBLE,
+    electricity_factor          DOUBLE,
+    operation_factor            DOUBLE,
+    maintenance_factor          DOUBLE,
+    electricity_revenues_factor DOUBLE,
 
     PRIMARY KEY (id)
 );
@@ -129,14 +136,6 @@ CREATE TABLE tbl_biogas_plants (
     gas_storage_overpressure    DOUBLE,
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
-
-    investment_factor           DOUBLE,
-    bio_fuel_factor             DOUBLE,
-    fossil_fuel_factor          DOUBLE,
-    electricity_factor          DOUBLE,
-    operation_factor            DOUBLE,
-    maintenance_factor          DOUBLE,
-    electricity_revenues_factor DOUBLE,
 
     PRIMARY KEY (id)
 );
