@@ -70,7 +70,7 @@ public final class EhourSearch {
 		if (!BiogasPlants.hasValidBoilers(plant))
 			return Res.error("the plant has no boiler with an electric power"
 				+ " and an electric efficiency of more than 0");
-		if (plant.gasStorageSize <= 0)
+		if (BiogasPlants.gasStorageSizeOf(plant) <= 0)
 			return Res.error("the gas storage size must be greater than 0");
 		if (plant.substrateProfiles.isEmpty())
 			return Res.error("the plant has no substrate profiles");

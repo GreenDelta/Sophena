@@ -120,4 +120,39 @@ public final class BiogasPlants {
 			: Stats.max(producer.profile.maxPower);
 		producer.profileMaxPowerElectric = totalElectricPower(plant);
 	}
+
+	/// Returns the gas storage size in m³ that is used for the calculations of
+	/// the given plant: the size that was entered by the user or, when it is not
+	/// defined, the calculated default size.
+	public static double gasStorageSizeOf(BiogasPlant plant) {
+		if (plant == null)
+			return 0;
+		var size = plant.gasStorageSize;
+		return size != null && size > 0
+			? size
+			: defaultGasStorageSizeOf(plant);
+	}
+
+	/// Calculates the default gas storage size in m³: the maximum volume of
+	/// biogas that is produced within 24 hours over the year.
+	public static double defaultGasStorageSizeOf(BiogasPlant plant) {
+		if (plant == null)
+			return 0;
+		var profile = BiogasProfile.of(plant).volume();
+		if (profile == null)
+			return 0;
+
+		double maxSize = 0;
+		double nextSize = 0;
+		for (int h = 0; h < Stats.HOURS; h++) {
+			if (h < 24) {
+				nextSize += profile[h];
+				continue;
+			}
+
+			nextSize = nextSize + profile[h] - profile[h - 24];
+			maxSize = Math.max(maxSize, nextSize);
+		}
+		return maxSize;
+	}
 }

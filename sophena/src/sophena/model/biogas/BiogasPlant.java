@@ -1,5 +1,9 @@
 package sophena.model.biogas;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -9,9 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import sophena.model.AnnualCostEntry;
 import sophena.model.Fuel;
 import sophena.model.ProductGroup;
@@ -44,9 +45,31 @@ public class BiogasPlant extends RootEntity {
 	@JoinColumn(name = "f_settings")
 	public BiogasPlantSettings settings;
 
-	/// Configured size of the gas storage in m3.
+	/// Size of the gas storage in m³. A `null` value means that no size is
+	/// defined by the user and that a default size is calculated dynamically,
+	/// see `BiogasPlants#gasStorageSizeOf(BiogasPlant)`.
+	///
+	/// @de Gasspeichergröße
 	@Column(name = "gas_storage_size")
-	public double gasStorageSize;
+	public Double gasStorageSize;
+
+	/// The share in % up to which the gas storage should be filled.
+	///
+	/// @de Gasspeicherbefüllungsanteil
+	@Column(name = "gas_storage_filling_level")
+	public double gasStorageFillingLevel;
+
+	/// The temperature of the gas storage in °C.
+	///
+	/// @de Gasspeichertemperatur
+	@Column(name = "gas_storage_temperature")
+	public double gasStorageTemperature;
+
+	/// The overpressure of the gas storage in mbar.
+	///
+	/// @de Gasspeicherüberdruck
+	@Column(name = "gas_storage_overpressure")
+	public double gasStorageOverpressure;
 
 	/// The minimum runtime of the boilers in hours. This is the duration that a
 	/// boiler must run at least at every start.
@@ -120,6 +143,9 @@ public class BiogasPlant extends RootEntity {
 		copy.productGroup = productGroup;
 		copy.electricityPrices = electricityPrices;
 		copy.gasStorageSize = gasStorageSize;
+		copy.gasStorageFillingLevel = gasStorageFillingLevel;
+		copy.gasStorageTemperature = gasStorageTemperature;
+		copy.gasStorageOverpressure = gasStorageOverpressure;
 		copy.minimumRuntime = minimumRuntime;
 		copy.fermenter = fermenter != null ? fermenter.copy() : null;
 		for (var boiler : boilers) {

@@ -122,6 +122,9 @@ CREATE TABLE tbl_biogas_plants (
     f_electricity_price_curve   CHAR(36),
     f_settings                  CHAR(36),
     gas_storage_size            DOUBLE,
+    gas_storage_filling_level   DOUBLE,
+    gas_storage_temperature     DOUBLE,
+    gas_storage_overpressure    DOUBLE,
     minimum_runtime             INTEGER,
     f_fermenter                 CHAR(36),
 

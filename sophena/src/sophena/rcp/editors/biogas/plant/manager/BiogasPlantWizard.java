@@ -52,6 +52,9 @@ public class BiogasPlantWizard extends Wizard {
 		plant.duration = 20;
 		plant.productGroup = group;
 		plant.minimumRuntime = 2;
+		plant.gasStorageFillingLevel = 100;
+		plant.gasStorageTemperature = 30;
+		plant.gasStorageOverpressure = 5;
 		plant.fermenter = defaultFermenter();
 		var global = new CostSettingsDao(App.getDb()).getGlobal();
 		plant.settings = BiogasPlantSettings.createDefault(global);

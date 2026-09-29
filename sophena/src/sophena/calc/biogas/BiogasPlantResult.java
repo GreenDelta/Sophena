@@ -58,7 +58,7 @@ public record BiogasPlantResult(
 		return flags.then(runFlags -> Res.ok(new BiogasPlantResult(
 			plant,
 			BiogasProfile.of(plant),
-			plant != null ? plant.gasStorageSize : 0,
+			BiogasPlants.gasStorageSizeOf(plant),
 			runFlags)));
 	}
 

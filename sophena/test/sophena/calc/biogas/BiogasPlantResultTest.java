@@ -31,7 +31,8 @@ public class BiogasPlantResultTest {
 			EhourSearch.runFlags(plant).orElseThrow(),
 			result.runFlags());
 		assertEquals(Stats.HOURS, result.runFlags().length);
-		assertEquals(plant.gasStorageSize, result.gasStorageSize(), 1e-10);
+		assertEquals(BiogasPlants.gasStorageSizeOf(plant),
+			result.gasStorageSize(), 1e-10);
 
 		// the profile is used by the charts of the plant editor
 		assertEquals(TestPlant.GAS_PER_HOUR,

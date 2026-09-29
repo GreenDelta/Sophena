@@ -46,7 +46,8 @@ final class PreCheck {
 	static Res<Void> validate(@Nullable BiogasPlant plant) {
 		if (plant == null)
 			return Res.error("there is no biogas plant");
-		if (plant.gasStorageSize <= 0)
+		double storageSize = BiogasPlants.gasStorageSizeOf(plant);
+		if (storageSize <= 0)
 			return Res.error("the gas storage size must be greater than 0");
 		if (plant.minimumRuntime < 2 || plant.minimumRuntime > 12)
 			return Res.error("the minimum runtime of the plant must be between"
@@ -68,8 +69,8 @@ final class PreCheck {
 		if (maxVolume <= 0)
 			return Res.error("the substrates of the plant do not produce"
 				+ " any biogas");
-		if (maxVolume > plant.gasStorageSize)
-			return Res.error("a gas storage of " + plant.gasStorageSize
+		if (maxVolume > storageSize)
+			return Res.error("a gas storage of " + storageSize
 				+ " m3 cannot hold the gas that is produced in a single hour ("
 				+ maxVolume + " m3)");
 
@@ -77,15 +78,15 @@ final class PreCheck {
 		// the minimum methane content of the produced gas
 		double minVolume = Stats.min(profile.volume());
 		double minMethane = minMethane(profile);
-		double minGas = Math.max(minVolume, plant.gasStorageSize - maxVolume);
+		double minGas = Math.max(minVolume, storageSize - maxVolume);
 
-		var storage = new BiogasStorage(plant.gasStorageSize, fuelPower);
+		var storage = new BiogasStorage(storageSize, fuelPower);
 		storage.add(minGas, minMethane);
 		var worstCase = new State(
 			0, false, storage, worstCaseProfile(minVolume, minMethane), null);
 
 		if (worstCase.getBlock(plant.minimumRuntime) == null)
-			return Res.error("a gas storage of " + plant.gasStorageSize
+			return Res.error("a gas storage of " + storageSize
 				+ " m3 with a production of at least " + minVolume
 				+ " m3 per hour and a methane content of " + (minMethane * 100)
 				+ " % cannot hold a block of the minimum runtime of "

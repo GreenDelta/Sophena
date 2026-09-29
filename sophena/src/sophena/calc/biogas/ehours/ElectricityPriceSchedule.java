@@ -32,15 +32,18 @@ record ElectricityPriceSchedule(boolean[] flags) {
 		var schedule = new ElectricityPriceSchedule(flags);
 		if (plant == null
 			|| plant.electricityPrices == null
-			|| plant.electricityPrices.values == null
-			|| plant.gasStorageSize <= 0)
+			|| plant.electricityPrices.values == null)
+			return schedule;
+
+		double storageSize = BiogasPlants.gasStorageSizeOf(plant);
+		if (storageSize <= 0)
 			return schedule;
 
 		double fuelPower = BiogasPlants.fullLoadFuelPower(plant);
 		if (fuelPower <= 0)
 			return schedule;
 
-		var storage = new BiogasStorage(plant.gasStorageSize, fuelPower);
+		var storage = new BiogasStorage(storageSize, fuelPower);
 		if (storage.size() == 0)
 			return schedule;
 
