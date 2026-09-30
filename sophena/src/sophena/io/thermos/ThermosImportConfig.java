@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import sophena.io.thermos.file.ThermosFile;
 import sophena.model.Consumer;
 import sophena.model.Manufacturer;
 import sophena.model.Pipe;
@@ -122,7 +123,8 @@ public class ThermosImportConfig {
 	/// manufacturer is selected.
 	public List<Pipe> pipesForProductLine(List<Pipe> pipes) {
 		var result = new ArrayList<Pipe>();
-		if (pipes == null || pipeManufacturer == null) return result;
+		if (pipes == null || pipeManufacturer == null)
+			return result;
 		for (var p : pipes) {
 			if (p == null) continue;
 			if (!Objects.equals(p.manufacturer, pipeManufacturer)) continue;

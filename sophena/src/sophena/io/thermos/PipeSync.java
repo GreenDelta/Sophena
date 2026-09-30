@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.openlca.commons.Res;
 
 import sophena.db.Database;
+import sophena.io.thermos.file.ThermosFile;
 import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;

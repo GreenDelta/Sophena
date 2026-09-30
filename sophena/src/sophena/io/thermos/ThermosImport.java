@@ -11,6 +11,7 @@ import java.util.Set;
 import org.openlca.commons.Res;
 
 import sophena.db.Database;
+import sophena.io.thermos.file.ThermosFile;
 import sophena.math.costs.FittingsCostSync;
 import sophena.math.costs.FittingsCostSync.Mode;
 import sophena.model.Consumer;

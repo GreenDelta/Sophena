@@ -4,7 +4,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import sophena.io.thermos.NetworkTree.Junction;
+
+import sophena.io.thermos.file.NetworkTree;
+import sophena.io.thermos.file.NetworkTree.Junction;
 import sophena.model.Pipe;
 
 /// An aggregation of the pipe-plan of a network. For every pipe (identified

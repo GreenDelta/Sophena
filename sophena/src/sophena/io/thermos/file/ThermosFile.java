@@ -1,4 +1,4 @@
-package sophena.io.thermos;
+package sophena.io.thermos.file;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

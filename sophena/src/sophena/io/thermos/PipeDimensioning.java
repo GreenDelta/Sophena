@@ -15,7 +15,8 @@ public final class PipeDimensioning {
 	/// the given import configuration, otherwise the reason why the
 	/// dimensioning failed.
 	public static String errorOf(ThermosImportConfig config, List<Pipe> pipes) {
-		if (config == null || pipes == null || pipes.isEmpty()) return null;
+		if (config == null || pipes == null || pipes.isEmpty())
+			return null;
 		var file = config.thermosFile();
 		if (file == null || file.network() == null) return null;
 		try {
@@ -23,7 +24,10 @@ public final class PipeDimensioning {
 			var pipeConfig = PipeConfig.of(
 				config.project(), new ArrayList<>(pipes));
 			var plan = PipePlan.of(pipeConfig, file.network());
-			return plan.isError() ? plan.error() : null;
+
+			return plan.isError()
+				? plan.error()
+				: null;
 		} catch (Exception e) {
 			return "Dimensioning failed: " + e.getMessage();
 		}

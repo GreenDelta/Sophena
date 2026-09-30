@@ -3,10 +3,13 @@ package sophena.io.thermos;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.openlca.commons.Res;
-import sophena.io.thermos.NetworkTree.Building;
-import sophena.io.thermos.NetworkTree.Junction;
-import sophena.io.thermos.NetworkTree.Segment;
+
+import sophena.io.thermos.file.NetworkTree;
+import sophena.io.thermos.file.NetworkTree.Building;
+import sophena.io.thermos.file.NetworkTree.Junction;
+import sophena.io.thermos.file.NetworkTree.Segment;
 import sophena.model.Pipe;
 
 class PipePlan {
@@ -14,7 +17,6 @@ class PipePlan {
 	private final PipeConfig config;
 	private final List<Pipe> pipes;
 	private final HashMap<Long, PipeSegment> segments = new HashMap<>();
-	private final HashMap<Long, PipeJunction> junctions = new HashMap<>();
 
 	private PipePlan(PipeConfig config) {
 		this.config = config;
@@ -22,8 +24,10 @@ class PipePlan {
 	}
 
 	static Res<PipePlan> of(PipeConfig config, NetworkTree tree) {
-		if (config == null) return Res.error("No configuration provided");
-		if (tree == null) return Res.error("No valid heat flow tree provided");
+		if (config == null)
+			return Res.error("No configuration provided");
+		if (tree == null)
+			return Res.error("No valid heat flow tree provided");
 		try {
 			var model = new PipePlan(config);
 			var result = model.traverse(tree.root());
@@ -52,7 +56,6 @@ class PipePlan {
 			if (target instanceof Building building) {
 				double load = building.peakLoad();
 				var sub = new PipeJunction(building.id(), 0, load, 1, List.of());
-				junctions.put(building.id(), sub);
 				var segment = segmentOf(s, sub);
 				if (segment.isError()) return segment.castError();
 				segments.add(segment.value());
@@ -87,7 +90,6 @@ class PipePlan {
 			buildingCount,
 			segments
 		);
-		junctions.put(junction.id, junction);
 		return Res.ok(junction);
 	}
 
@@ -128,7 +130,7 @@ class PipePlan {
 					config.roughness(),
 					config.averageTemperature()
 				) *
-				(1 + config.fittingSurchargePressure());
+					(1 + config.fittingSurchargePressure());
 			if (pressureLoss < config.maxPressureLoss()) {
 				pipe = p;
 				segmentLoad = pipeLoss;
@@ -136,15 +138,11 @@ class PipePlan {
 			}
 		}
 
-		if (pipe == null) {
+		if (pipe == null)
 			return Res.error(
-				"No suitable pipe found for segment " +
-					s.id() +
-					" with peak load " +
-					peakLoad +
-					" W"
-			);
-		}
+				"No suitable pipe found for segment " + s.id() + " with peak load "
+					+ peakLoad + " W");
+
 
 		var segment = new PipeSegment(
 			s.id(),

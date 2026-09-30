@@ -21,6 +21,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
+/// The page for selecting a matching product line for the network pipes.
 class PipesPage extends WizardPage {
 
 	private static final String INFO =
@@ -118,7 +119,7 @@ class PipesPage extends WizardPage {
 		if (diameterRangeText == null || diameterRangeText.isDisposed())
 			return;
 
-		var available = availablePipes();
+		var available = config.pipesForProductLine(pipes);
 		if (available.isEmpty()) {
 			diameterRangeText.setText("");
 			diameterRangeText.setForeground(null);
@@ -147,13 +148,10 @@ class PipesPage extends WizardPage {
 		}
 	}
 
-	private List<Pipe> availablePipes() {
-		return config.pipesForProductLine(pipes);
-	}
-
 	private String range(double min, double max) {
-		if (min == max) return Num.str(min) + " mm";
-		return Num.str(min) + " mm bis " + Num.str(max) + " mm";
+		return min == max
+			? Num.str(min) + " mm"
+			: Num.str(min) + " mm bis " + Num.str(max) + " mm";
 	}
 
 	private void validate() {

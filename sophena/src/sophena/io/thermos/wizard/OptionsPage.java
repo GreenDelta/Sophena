@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-import sophena.io.thermos.ThermosFile;
+import sophena.io.thermos.file.ThermosFile;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.rcp.app.App;
 import sophena.rcp.utils.Controls;
@@ -14,6 +14,8 @@ import sophena.rcp.utils.FileChooser;
 import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.UI;
 
+/// The first page in the wizard to select the import options and the import
+/// file.
 class OptionsPage extends WizardPage {
 
 	private final ThermosImportConfig config;

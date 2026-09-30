@@ -20,6 +20,8 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
+/// The page for selecting the transfer stations for the imported or updated
+/// consumers.
 class TransferStationsPage extends WizardPage {
 
 	private final ThermosImportConfig config;
@@ -175,8 +177,9 @@ class TransferStationsPage extends WizardPage {
 	}
 
 	private String range(double min, double max) {
-		if (min == max) return Num.str(min) + " kW";
-		return Num.str(min) + " kW bis " + Num.str(max) + " kW";
+		return min == max
+			? Num.str(min) + " kW"
+			: Num.str(min) + " kW bis " + Num.str(max) + " kW";
 	}
 
 	private void validate() {
