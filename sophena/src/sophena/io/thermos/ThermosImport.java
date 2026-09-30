@@ -230,7 +230,7 @@ public class ThermosImport implements Runnable {
 			return;
 		}
 		var sync = FittingsCostSync.of(project, db)
-			.withCount(r.fittingsCount().get());
+			.withCount(r.fittingsCount());
 		if (config.isUpdateExisting()) {
 			sync.withUpdate(Mode.REPLACE);
 		} else {

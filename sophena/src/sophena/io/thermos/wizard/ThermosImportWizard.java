@@ -10,9 +10,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.io.thermos.pipes.PipeDimensioning;
 import sophena.io.thermos.ThermosImport;
 import sophena.io.thermos.ThermosImportConfig;
+import sophena.io.thermos.pipes.PipeSync;
 import sophena.model.Pipe;
 import sophena.model.Project;
 import sophena.model.TransferStation;
@@ -153,13 +153,13 @@ public class ThermosImportWizard extends Wizard {
 	/// partially imported state.
 	private boolean hasMissingPipes() {
 		var pipes = config.pipesForProductLine(App.getDb().getAll(Pipe.class));
-		var error = PipeDimensioning.errorOf(config, pipes);
-		if (error == null)
+		var res = PipeSync.check(config, pipes);
+		if (res.isOk())
 			return false;
 
 		var question =
 			"Die ausgewählte Produktlinie für die Wärmeleitungen kann nicht " +
-				"alle Netzabschnitte dimensionieren (" + error + "). " +
+				"alle Netzabschnitte dimensionieren (" + res.error() + "). " +
 				"Soll der Import der Wärmeleitungen übersprungen werden?";
 		if (MsgBox.ask("Passende Leitung fehlt", question)) {
 			config.skipPipes(true);

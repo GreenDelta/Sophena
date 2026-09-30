@@ -12,6 +12,9 @@ import sophena.io.thermos.file.NetworkTree.Junction;
 import sophena.io.thermos.file.NetworkTree.Segment;
 import sophena.model.Pipe;
 
+/// Traverses the network tree and constructs the pipe plan based on a
+/// configuration. For each segment in the tree, the plan has then an assigned
+/// pipe with a respective dimension.
 class PipePlan {
 
 	private final PipeConfig config;
@@ -112,25 +115,20 @@ class PipePlan {
 
 			// inner diameter in m (converted from mm)
 			double di = p.innerDiameter / 1000;
-			double massFlow = Pipes.massFlowOf(
+			double massFlow = Hydraulics.massFlowOf(
 				config.flowTemperature(),
 				config.returnTemperature(),
 				totalLoad
 			);
-			double velocity = Pipes.flowVelocityOf(
-				massFlow,
-				di,
-				config.averageTemperature()
-			);
+			double velocity = Hydraulics.flowVelocityOf(
+				massFlow, di, config.averageTemperature());
 			if (velocity > config.maxFlowVelocity()) continue;
-			var pressureLoss =
-				Pipes.pressureLossOf(
-					velocity,
-					di,
-					config.roughness(),
-					config.averageTemperature()
-				) *
-					(1 + config.fittingSurchargePressure());
+			var pressureLoss = Hydraulics.pressureLossOf(
+				velocity,
+				di,
+				config.roughness(),
+				config.averageTemperature()
+			) * (1 + config.fittingSurchargePressure());
 			if (pressureLoss < config.maxPressureLoss()) {
 				pipe = p;
 				segmentLoad = pipeLoss;
@@ -164,7 +162,7 @@ class PipePlan {
 		List<PipeSegment> segments
 	) {
 		public double peakLoad() {
-			return netLoad + buildingLoad * Pipes.diversityFactorOf(buildingCount);
+			return netLoad + buildingLoad * Hydraulics.diversityFactorOf(buildingCount);
 		}
 	}
 
@@ -176,8 +174,5 @@ class PipePlan {
 		int buildingCount,
 		Pipe pipe
 	) {
-		public double peakLoad() {
-			return netLoad + buildingLoad * Pipes.diversityFactorOf(buildingCount);
-		}
 	}
 }

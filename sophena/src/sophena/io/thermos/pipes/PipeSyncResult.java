@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import sophena.model.HeatNetPipe;
 
@@ -12,12 +11,12 @@ import sophena.model.HeatNetPipe;
 /// sync is running in `replace` mode, it will contain all pipes that were
 /// added; in `append` mode, it will only contain the newly added lengths of
 /// the respective pipes.
-public record PipeSyncResult(
-	Map<String, PipeDiff> diffs, AtomicInteger fittingsCount
-) {
+public class PipeSyncResult {
+
+	private final Map<String, PipeDiff> diffs = new HashMap<>();
+	private int fittingsCount;
 
 	PipeSyncResult() {
-		this(new HashMap<>(), new AtomicInteger(0));
 	}
 
 	void add(HeatNetPipe hnp) {
@@ -31,9 +30,17 @@ public record PipeSyncResult(
 			return;
 		}
 		diffs.compute(hnp.pipe.id,
-			($, old) -> old == null
+			(_, old) -> old == null
 				? new PipeDiff(hnp, length)
 				: new PipeDiff(hnp, old.length() + length));
+	}
+
+	void fittingsCount(int count) {
+		this.fittingsCount = count;
+	}
+
+	public int fittingsCount() {
+		return fittingsCount;
 	}
 
 	public List<HeatNetPipe> pipeDiffs() {
@@ -44,5 +51,10 @@ public record PipeSyncResult(
 			list.add(pipe);
 		}
 		return list;
+	}
+
+	/// Tracks the added length for a pipe during the sync. For new pipes, this is
+	/// the full length. For modified pipes, this is the positive length delta.
+	private record PipeDiff(HeatNetPipe pipe, double length) {
 	}
 }

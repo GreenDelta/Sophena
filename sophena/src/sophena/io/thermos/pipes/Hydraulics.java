@@ -2,9 +2,9 @@ package sophena.io.thermos.pipes;
 
 import static java.lang.Math.*;
 
-class Pipes {
+class Hydraulics {
 
-	private Pipes() {
+	private Hydraulics() {
 	}
 
 	/// Calculates the diversity factor for n consumers:

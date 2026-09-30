@@ -1,10 +1,12 @@
 package sophena.io.thermos.pipes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.jspecify.annotations.NonNull;
 import org.openlca.commons.Res;
 
 import sophena.db.Database;
@@ -32,6 +34,29 @@ public class PipeSync {
 		this.project = config.project();
 		this.file = config.thermosFile();
 		this.result = new PipeSyncResult();
+	}
+
+	/// Runs the pipe dimensioning to check whether a given product line of
+	/// pipes can be used for a network.
+	@NonNull
+	public static Res<Void> check(ThermosImportConfig config, List<Pipe> pipes) {
+		if (config == null || pipes == null || pipes.isEmpty())
+			return Res.error("No configuration or pipes given");
+		var file = config.thermosFile();
+		if (file == null || file.network() == null)
+			return Res.error("Invalid file format");
+		try {
+			// the pipe config sorts the given list in place, thus we pass a copy
+			var pipeConfig = PipeConfig.of(
+				config.project(), new ArrayList<>(pipes));
+			var plan = PipePlan.of(pipeConfig, file.network());
+
+			return plan.isError()
+				? plan.castError()
+				: Res.ok();
+		} catch (Exception e) {
+			return Res.error("Dimensioning failed: ", e);
+		}
 	}
 
 	/// Calculates the pipe plan for the network of the import file and
@@ -65,7 +90,7 @@ public class PipeSync {
 				project.heatNet = new HeatNet();
 				project.heatNet.id = UUID.randomUUID().toString();
 			}
-			result.fittingsCount().set(sum.fittingsCount());
+			result.fittingsCount(sum.fittingsCount());
 
 			if (config.isUpdateExisting()) {
 				updateAll(sum.segments());

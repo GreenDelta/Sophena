@@ -3,20 +3,21 @@ package sophena.io.thermos.pipes;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import sophena.model.Pipe;
 import sophena.model.Project;
 
 /// Configuration parameters for pipe dimensioning calculations.
 ///
-/// @param maxPressureLoss maximum allowed pressure loss in Pa/m
-/// @param maxFlowVelocity maximum allowed flow velocity in m/s
+/// @param maxPressureLoss          maximum allowed pressure loss in Pa/m
+/// @param maxFlowVelocity          maximum allowed flow velocity in m/s
 /// @param fittingSurchargePressure surcharge factor for fittings pressure loss (e.g., 0.2 for 20%)
-/// @param flowTemperature flow (supply) temperature in °C
-/// @param returnTemperature return temperature in °C
-/// @param averageTemperature average of flow and return temperature in °C
-/// @param roughness pipe wall roughness in m, e.g. 0.002E-3 for plastic pipes
-/// @param groundTemperature ground/ambient temperature in °C for heat loss calculation
-/// @param pipes the list of available pipes for selection
+/// @param flowTemperature          flow (supply) temperature in °C
+/// @param returnTemperature        return temperature in °C
+/// @param averageTemperature       average of flow and return temperature in °C
+/// @param roughness                pipe wall roughness in m, e.g. 0.002E-3 for plastic pipes
+/// @param groundTemperature        ground/ambient temperature in °C for heat loss calculation
+/// @param pipes                    the list of available pipes for selection
 record PipeConfig(
 	double maxPressureLoss,
 	double maxFlowVelocity,
@@ -85,8 +86,9 @@ record PipeConfig(
 			this.pipes = pipes != null
 				? pipes
 				: Collections.emptyList();
-			this.pipes.sort(Comparator.comparingDouble(pi -> pi.innerDiameter)
-			);
+			if (!this.pipes.isEmpty()) {
+				this.pipes.sort(Comparator.comparingDouble(pi -> pi.innerDiameter));
+			}
 		}
 
 		Builder withMaxPressureLoss(double maxPressureLoss) {

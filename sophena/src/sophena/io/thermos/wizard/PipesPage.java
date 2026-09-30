@@ -10,8 +10,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.io.thermos.pipes.PipeDimensioning;
 import sophena.io.thermos.ThermosImportConfig;
+import sophena.io.thermos.pipes.PipeSync;
 import sophena.model.Manufacturer;
 import sophena.model.Pipe;
 import sophena.rcp.app.App;
@@ -136,11 +136,11 @@ class PipesPage extends WizardPage {
 		}
 		diameterRangeText.setText(range(min, max));
 
-		var error = PipeDimensioning.errorOf(config, available);
+		var err = PipeSync.check(config, available);
 		diameterRangeText.setForeground(
-			error != null ? Colors.getChartRed() : null);
-		diameterRangeText.setToolTipText(error);
-		if (error == null) {
+			err.isError() ? Colors.getChartRed() : null);
+		diameterRangeText.setToolTipText(err.error());
+		if (err.isOk()) {
 			setMessage(INFO);
 		} else {
 			setErrorMessage("Mit der ausgewählte Produktlinie können nicht alle " +
