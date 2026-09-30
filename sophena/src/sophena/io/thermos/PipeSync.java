@@ -77,20 +77,34 @@ class PipeSync {
 		this.result = new PipeSyncResult();
 	}
 
-	Res<PipeSyncResult> run() {
-		if (file.network() == null) {
+	/// Calculates the pipe plan for the network of the import file and
+	/// aggregates the results. This method does not modify the project.
+	Res<PipeSum> plan() {
+		var network = file.network();
+		if (network == null) {
 			return Res.error("No network provided");
 		}
 
 		try {
-			var pipes = getAvailablePipes();
+			var pipes = config.pipesForProductLine(db.getAll(Pipe.class));
 			var pipeConfig = PipeConfig.of(project, pipes);
-			var plan = PipePlan.of(pipeConfig, file.network());
-			if (plan.isError()) {
-				return plan.wrapError("Failed to calculate pipe plan");
+			var res = PipePlan.of(pipeConfig, network);
+			if (res.isError()) {
+				return res.wrapError("Failed to calculate pipe plan");
 			}
+			return Res.ok(PipeSum.of(network, res.value()));
+		} catch (Exception e) {
+			return Res.error("Failed to calculate pipe plan", e);
+		}
+	}
 
-			var sum = PipeSum.of(file.network(), plan.value());
+	/// Applies the given pipe plan to the heat net of the project.
+	Res<PipeSyncResult> apply(PipeSum sum) {
+		if (sum == null) {
+			return Res.error("No pipe plan provided");
+		}
+
+		try {
 			if (project.heatNet == null) {
 				project.heatNet = new HeatNet();
 				project.heatNet.id = UUID.randomUUID().toString();
@@ -108,22 +122,6 @@ class PipeSync {
 		} catch (Exception e) {
 			return Res.error("Failed to sync pipes", e);
 		}
-	}
-
-	/// Get the available pipes from the selected product line.
-	private List<Pipe> getAvailablePipes() {
-		var pipes = new ArrayList<Pipe>();
-		var manu = config.pipeManufacturer();
-		var line = config.pipeProductLine();
-		for (var p : db.getAll(Pipe.class)) {
-			if (
-				Objects.equals(p.manufacturer, manu) &&
-				Objects.equals(p.productLine, line)
-			) {
-				pipes.add(p);
-			}
-		}
-		return pipes;
 	}
 
 	private void updateAll(List<PipeSum.Seg> segments) {

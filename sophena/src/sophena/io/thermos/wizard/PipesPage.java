@@ -3,28 +3,39 @@ package sophena.io.thermos.wizard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+
+import sophena.io.thermos.PipeDimensioning;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Manufacturer;
 import sophena.model.Pipe;
 import sophena.rcp.app.App;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
+import sophena.utils.Num;
 
 class PipesPage extends WizardPage {
+
+	private static final String INFO =
+		"Wählen Sie einen Hersteller und eine Produktlinie aus.";
 
 	private final ThermosImportConfig config;
 	private final List<Manufacturer> manufacturers;
 	private final List<Pipe> pipes;
 
+	private Text diameterRangeText;
+
 	public PipesPage(ThermosImportConfig config) {
 		super("PipesPage", "Wärmeleitungen", null);
 		this.config = config;
-		setMessage("Wählen Sie einen Hersteller und eine Produktlinie aus.");
+		setMessage(INFO);
 
 		var db = App.getDb();
 		this.pipes = db.getAll(Pipe.class);
@@ -54,22 +65,43 @@ class PipesPage extends WizardPage {
 		manCombo.setItems(manItems);
 		var lineCombo = UI.formCombo(comp, "Produktlinie");
 
-		Controls.onSelect(manCombo, $ -> {
+		diameterRangeText = UI.formText(
+			comp, "Nennweitenbereich der Produktlinie", SWT.READ_ONLY);
+
+		Controls.onSelect(manCombo, _ -> {
 			int i = manCombo.getSelectionIndex();
+			if (i < 0)
+				return;
 			config.pipeManufacturer(manufacturers.get(i));
 			var pls = productLinesOf(config.pipeManufacturer());
 			lineCombo.setItems(pls);
 			config.pipeProductLine(null);
+			config.skipPipes(false);
+			refreshDiameterRange();
 			validate();
 		});
 
-		Controls.onSelect(lineCombo, $ -> {
+		Controls.onSelect(lineCombo, _ -> {
 			int idx = lineCombo.getSelectionIndex();
+			if (idx < 0)
+				return;
 			config.pipeProductLine(lineCombo.getItem(idx));
+			config.skipPipes(false);
+			refreshDiameterRange();
 			validate();
 		});
 
+		refreshDiameterRange();
 		validate();
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (visible) {
+			refreshDiameterRange();
+			validate();
+		}
 	}
 
 	private String[] productLinesOf(Manufacturer manufacturer) {
@@ -80,6 +112,48 @@ class PipesPage extends WizardPage {
 			.distinct()
 			.sorted()
 			.toArray(String[]::new);
+	}
+
+	private void refreshDiameterRange() {
+		if (diameterRangeText == null || diameterRangeText.isDisposed())
+			return;
+
+		var available = availablePipes();
+		if (available.isEmpty()) {
+			diameterRangeText.setText("");
+			diameterRangeText.setForeground(null);
+			diameterRangeText.setToolTipText(null);
+			setMessage(INFO);
+			return;
+		}
+
+		double min = Double.MAX_VALUE;
+		double max = -Double.MAX_VALUE;
+		for (var p : available) {
+			min = Math.min(min, p.innerDiameter);
+			max = Math.max(max, p.innerDiameter);
+		}
+		diameterRangeText.setText(range(min, max));
+
+		var error = PipeDimensioning.errorOf(config, available);
+		diameterRangeText.setForeground(
+			error != null ? Colors.getChartRed() : null);
+		diameterRangeText.setToolTipText(error);
+		if (error == null) {
+			setMessage(INFO);
+		} else {
+			setErrorMessage("Mit der ausgewählte Produktlinie können nicht alle " +
+				"Netzabschnitte dimensioniert werden.");
+		}
+	}
+
+	private List<Pipe> availablePipes() {
+		return config.pipesForProductLine(pipes);
+	}
+
+	private String range(double min, double max) {
+		if (min == max) return Num.str(min) + " mm";
+		return Num.str(min) + " mm bis " + Num.str(max) + " mm";
 	}
 
 	private void validate() {

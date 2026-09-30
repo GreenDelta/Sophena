@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import org.openlca.commons.Res;
+
 import sophena.db.Database;
 import sophena.math.costs.FittingsCostSync;
 import sophena.math.costs.FittingsCostSync.Mode;
@@ -14,6 +18,12 @@ import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.TransferStation;
 
+/// Imports the data of a BioHeating-Tool file into a project.
+///
+/// The import runs in two phases: in the planning phase everything that can
+/// fail is calculated without modifying the project. Only in the commit phase,
+/// when the import is known to be executable, the project is modified and
+/// finally updated in the database.
 public class ThermosImport implements Runnable {
 
 	private final Database db;
@@ -21,7 +31,6 @@ public class ThermosImport implements Runnable {
 	private final ThermosFile file;
 	private final Project project;
 	private String error;
-	private List<TransferStation> stations;
 
 	public ThermosImport(Database db, ThermosImportConfig config) {
 		this.db = Objects.requireNonNull(db);
@@ -41,88 +50,124 @@ public class ThermosImport implements Runnable {
 	@Override
 	public void run() {
 		try {
-			if (config.isWithStations()) {
-				stations = new ArrayList<>();
-				var manufacturer = config.stationManufacturer();
-				var productLine = config.stationProductLine();
-				for (var s : db.getAll(TransferStation.class)) {
-					if (
-						Objects.equals(s.manufacturer, manufacturer) &&
-						Objects.equals(s.productLine, productLine)
-					) {
-						stations.add(s);
-					}
-				}
-				stations.sort(Comparator.comparingDouble(s -> s.outputCapacity));
+			var res = plan();
+			if (res.isError()) {
+				error = res.error();
+				return;
 			}
-
-			if (config.isWithConsumers()) {
-				syncConsumers();
-			}
-
-			if (config.isWithPipes()) {
-				var res = new PipeSync(db, config).run();
-				if (res.isError()) {
-					error = res.error();
-					return;
-				}
-				syncFittingsCosts(res.value());
-			}
-
+			if (!commit(res.value()))
+				return;
 			db.update(project);
 		} catch (Exception e) {
 			error = "Unerwarteter Fehler im Import: " + e.getMessage();
 		}
 	}
 
-	private void syncConsumers() {
-		if (config.isUpdateExisting()) {
-			syncConsumersInUpdateMode(file.consumers());
-		} else {
-			syncConsumersInAppendMode(file.consumers());
-		}
-	}
+	/// An update of an existing consumer with the data of the import file.
+	private record ConsumerUpdate(Consumer existing, Consumer update) {}
 
-	private void syncConsumersInUpdateMode(List<Consumer> consumers) {
-		var existingMap = new HashMap<String, Consumer>();
-		for (var consumer : project.consumers) {
-			existingMap.put(consumer.id, consumer);
+	/// Everything that is needed to apply the import to the project. It is
+	/// calculated in the planning phase, before the project is modified.
+	private record Plan(
+		List<TransferStation> stations,
+		PipeSync pipeSync,
+		PipeSum pipeSum,
+		List<Consumer> newConsumers,
+		List<ConsumerUpdate> updates,
+		Set<String> fileConsumerIds
+	) {}
+
+	/// Calculates the import without modifying the project.
+	private Res<Plan> plan() {
+		var stations = new ArrayList<TransferStation>();
+		if (config.isWithStations()) {
+			var manufacturer = config.stationManufacturer();
+			var productLine = config.stationProductLine();
+			for (var s : db.getAll(TransferStation.class)) {
+				if (
+					Objects.equals(s.manufacturer, manufacturer) &&
+					Objects.equals(s.productLine, productLine)
+				) {
+					stations.add(s);
+				}
+			}
+			stations.sort(Comparator.comparingDouble(s -> s.outputCapacity));
 		}
 
-		var ids = new HashSet<String>();
-		for (var c : consumers) {
-			ids.add(c.id);
-			var existing = existingMap.get(c.id);
-			if (existing != null) {
-				updateConsumer(existing, c);
-			} else {
-				addNewConsumer(c);
+		PipeSync pipeSync = null;
+		PipeSum pipeSum = null;
+		if (config.isWithPipes() && !config.isSkipPipes()) {
+			pipeSync = new PipeSync(db, config);
+			var res = pipeSync.plan();
+			if (res.isError())
+				return Res.error(res.error());
+			pipeSum = res.value();
+		}
+
+		var newConsumers = new ArrayList<Consumer>();
+		var updates = new ArrayList<ConsumerUpdate>();
+		var fileIds = new HashSet<String>();
+		if (config.isWithConsumers()) {
+			var existing = new HashMap<String, Consumer>();
+			for (var c : project.consumers) {
+				existing.put(c.id, c);
+			}
+			for (var c : file.consumers()) {
+				fileIds.add(c.id);
+				var old = existing.get(c.id);
+				if (old == null) {
+					newConsumers.add(c);
+				} else if (config.isUpdateExisting()) {
+					updates.add(new ConsumerUpdate(old, c));
+				}
 			}
 		}
 
-		// remove consumers that are not in file
-		project.consumers.removeIf(consumer -> !ids.contains(consumer.id));
+		return Res.ok(new Plan(
+			stations,
+			pipeSync,
+			pipeSum,
+			newConsumers,
+			updates,
+			fileIds
+		));
 	}
 
-	private void syncConsumersInAppendMode(List<Consumer> consumers) {
-		var ids = new HashSet<String>();
-		for (var old : project.consumers) {
-			ids.add(old.id);
+	/// Applies the given plan to the project. Returns `false` if the import
+	/// could not be applied; in this case the error is set.
+	private boolean commit(Plan plan) {
+		if (config.isWithConsumers()) {
+			for (var c : plan.newConsumers()) {
+				if (config.isWithStations()) {
+					assignStation(c, plan.stations());
+				}
+				project.consumers.add(c);
+			}
+			for (var update : plan.updates()) {
+				updateConsumer(
+					update.existing(), update.update(), plan.stations());
+			}
+			if (config.isUpdateExisting()) {
+				project.consumers.removeIf(
+					c -> !plan.fileConsumerIds().contains(c.id));
+			}
 		}
-		for (var c : consumers) {
-			if (ids.contains(c.id)) continue;
-			addNewConsumer(c);
+
+		if (plan.pipeSum() != null) {
+			var res = plan.pipeSync().apply(plan.pipeSum());
+			if (res.isError()) {
+				error = res.error();
+				return false;
+			}
+			syncFittingsCosts(res.value());
 		}
+
+		return true;
 	}
 
-	private void addNewConsumer(Consumer c) {
-		if (config.isWithStations()) {
-			assignStation(c, stations);
-		}
-		project.consumers.add(c);
-	}
-
-	private void updateConsumer(Consumer c, Consumer update) {
+	private void updateConsumer(
+		Consumer c, Consumer update, List<TransferStation> stations
+	) {
 		boolean loadChanged = c.heatingLoad != update.heatingLoad;
 
 		c.name = update.name;

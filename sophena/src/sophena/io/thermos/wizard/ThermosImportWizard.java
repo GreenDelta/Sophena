@@ -8,8 +8,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sophena.io.thermos.PipeDimensioning;
 import sophena.io.thermos.ThermosImport;
 import sophena.io.thermos.ThermosImportConfig;
+import sophena.model.Pipe;
 import sophena.model.Project;
 import sophena.model.TransferStation;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -77,6 +79,8 @@ public class ThermosImportWizard extends Wizard {
 			config.isWithStations() &&
 			hasMissingStations()
 		) return false;
+		if (config.isWithPipes() && !config.isSkipPipes() && hasMissingPipes())
+			return false;
 
 		try {
 			var imp = new ThermosImport(App.getDb(), config);
@@ -132,5 +136,27 @@ public class ThermosImportWizard extends Wizard {
 			"enthält nicht für jede Heizlast der Abnehmer in der Importdatei " +
 			"ein passendes Produkt. Soll der Import trotzdem fortgesetzt werden?";
 		return !MsgBox.ask("Passendes Produkt fehlt", question);
+	}
+
+	/// Checks if the selected product line of the pipes can dimension the
+	/// network of the import file. If this is not the case, the user can decide
+	/// to skip the pipes. Because the pipes are planned before the project is
+	/// modified, a failing dimensioning will never leave the project in a
+	/// partially imported state.
+	private boolean hasMissingPipes() {
+		var pipes = config.pipesForProductLine(App.getDb().getAll(Pipe.class));
+		var error = PipeDimensioning.errorOf(config, pipes);
+		if (error == null)
+			return false;
+
+		var question =
+			"Die ausgewählte Produktlinie für die Wärmeleitungen kann nicht " +
+			"alle Netzabschnitte dimensionieren (" + error + "). " +
+			"Soll der Import der Wärmeleitungen übersprungen werden?";
+		if (MsgBox.ask("Passende Leitung fehlt", question)) {
+			config.skipPipes(true);
+			return false;
+		}
+		return true;
 	}
 }

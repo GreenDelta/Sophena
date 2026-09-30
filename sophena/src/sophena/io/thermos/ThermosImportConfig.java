@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import sophena.model.Consumer;
 import sophena.model.Manufacturer;
+import sophena.model.Pipe;
 import sophena.model.Project;
 
 public class ThermosImportConfig {
@@ -16,6 +18,7 @@ public class ThermosImportConfig {
 	private boolean withConsumers = true;
 	private boolean withStations = true;
 	private boolean withPipes = true;
+	private boolean skipPipes;
 	private boolean updateExisting = true;
 
 	private sophena.model.Manufacturer stationManufacturer;
@@ -101,6 +104,32 @@ public class ThermosImportConfig {
 
 	public void pipeProductLine(String productLine) {
 		this.pipeProductLine = productLine;
+	}
+
+	/// Indicates that the import of the pipes should be skipped. This is set
+	/// when the user decides to continue an import although the selected
+	/// product line cannot dimension the network.
+	public boolean isSkipPipes() {
+		return skipPipes;
+	}
+
+	public void skipPipes(boolean skipPipes) {
+		this.skipPipes = skipPipes;
+	}
+
+	/// Returns the pipes of the given list that belong to the pipe product line
+	/// that is selected for this import. Returns an empty list when no
+	/// manufacturer is selected.
+	public List<Pipe> pipesForProductLine(List<Pipe> pipes) {
+		var result = new ArrayList<Pipe>();
+		if (pipes == null || pipeManufacturer == null) return result;
+		for (var p : pipes) {
+			if (p == null) continue;
+			if (!Objects.equals(p.manufacturer, pipeManufacturer)) continue;
+			if (!Objects.equals(p.productLine, pipeProductLine)) continue;
+			result.add(p);
+		}
+		return result;
 	}
 
 	public boolean canRunImport() {
