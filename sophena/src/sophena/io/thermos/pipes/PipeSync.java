@@ -20,6 +20,8 @@ import sophena.model.PipeType;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 
+/// The PipeSync can construct, check, and execute a pipe plan (the assignment
+/// of pipes to the segments of a network tree).
 public class PipeSync {
 
 	private final Database db;

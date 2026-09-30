@@ -7,7 +7,8 @@ import java.util.List;
 import sophena.model.Pipe;
 import sophena.model.Project;
 
-/// Configuration parameters for pipe dimensioning calculations.
+/// Configuration parameters for pipe dimensioning calculations. It is
+/// constructed from the project settings and the type of the given pipes.
 ///
 /// @param maxPressureLoss          maximum allowed pressure loss in Pa/m
 /// @param maxFlowVelocity          maximum allowed flow velocity in m/s
@@ -71,7 +72,7 @@ record PipeConfig(
 		return s.contains("stahl") || s.contains("steel");
 	}
 
-	static class Builder {
+	private static class Builder {
 
 		private final List<Pipe> pipes;
 		private double maxPressureLoss = 100;
@@ -80,7 +81,6 @@ record PipeConfig(
 		private double flowTemperature = 80;
 		private double returnTemperature = 50;
 		private double roughness = 0.002e-3;
-		private double groundTemperature = 10;
 
 		private Builder(List<Pipe> pipes) {
 			this.pipes = pipes != null
@@ -101,9 +101,8 @@ record PipeConfig(
 			return this;
 		}
 
-		Builder withFittingSurchargePressure(double fittingSurchargePressure) {
+		void withFittingSurchargePressure(double fittingSurchargePressure) {
 			this.fittingSurchargePressure = fittingSurchargePressure;
-			return this;
 		}
 
 		Builder withFlowTemperature(double flowTemperature) {
@@ -111,22 +110,16 @@ record PipeConfig(
 			return this;
 		}
 
-		Builder withReturnTemperature(double returnTemperature) {
+		void withReturnTemperature(double returnTemperature) {
 			this.returnTemperature = returnTemperature;
-			return this;
 		}
 
-		Builder withRoughness(double roughness) {
+		void withRoughness(double roughness) {
 			this.roughness = roughness;
-			return this;
-		}
-
-		Builder withGroundTemperature(double groundTemperature) {
-			this.groundTemperature = groundTemperature;
-			return this;
 		}
 
 		PipeConfig get() {
+			double groundTemperature = 10;
 			return new PipeConfig(
 				maxPressureLoss,
 				maxFlowVelocity,
