@@ -85,12 +85,12 @@ public class ThermosImportWizard extends Wizard {
 				imp.run();
 				monitor.done();
 			});
-			
+
 			if (imp.hasError()) {
 				MsgBox.error("Beim Import ist ein Fehler aufgetreten", imp.error());
 				return false;
-			}		
-			
+			}
+
 			return true;
 		} catch (Exception e) {
 			MsgBox.error(
@@ -104,7 +104,7 @@ public class ThermosImportWizard extends Wizard {
 	}
 
 	private boolean hasMissingStations() {
-		var consumers = config.thermosFile().consumers();
+		var consumers = config.consumersForStationAssignment();
 		var manufacturer = config.stationManufacturer();
 		var productLine = config.stationProductLine();
 		var stations = App.getDb()

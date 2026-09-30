@@ -1,5 +1,11 @@
 package sophena.io.thermos;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
+import sophena.model.Consumer;
 import sophena.model.Manufacturer;
 import sophena.model.Project;
 
@@ -102,5 +108,42 @@ public class ThermosImportConfig {
 		if (withStations && stationProductLine == null) return false;
 		if (withPipes && pipeProductLine == null) return false;
 		return withConsumers || withStations || withPipes;
+	}
+
+	/// Returns the consumers that will receive a transfer station when the import
+	/// is executed. In append mode only new consumers are added, while in update
+	/// mode existing consumers are updated and get a new station when they do not
+	/// have one yet or when their heating load changed.
+	public List<Consumer> consumersForStationAssignment() {
+		if (thermosFile == null)
+			return List.of();
+		var result = new ArrayList<Consumer>();
+
+		if (!updateExisting) {
+			var existingIds = new HashSet<String>();
+			for (var c : project.consumers) {
+				existingIds.add(c.id);
+			}
+			for (var c : thermosFile.consumers()) {
+				if (!existingIds.contains(c.id)) {
+					result.add(c);
+				}
+			}
+			return result;
+		}
+
+		var existing = new HashMap<String, Consumer>();
+		for (var c : project.consumers) {
+			existing.put(c.id, c);
+		}
+		for (var c : thermosFile.consumers()) {
+			var old = existing.get(c.id);
+			if (old == null
+				|| old.transferStation == null
+				|| old.heatingLoad != c.heatingLoad) {
+				result.add(c);
+			}
+		}
+		return result;
 	}
 }
