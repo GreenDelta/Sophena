@@ -1,6 +1,7 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import sophena.model.Pipe;
 import sophena.model.Project;
@@ -27,9 +28,11 @@ record PipeConfig(
 	double groundTemperature,
 	List<Pipe> pipes
 ) {
+
 	static PipeConfig of(Project project, List<Pipe> pipes) {
 		var builder = new Builder(pipes);
-		if (project == null) return builder.get();
+		if (project == null)
+			return builder.get();
 
 		if (project.heatNet != null) {
 			var hn = project.heatNet;
@@ -79,9 +82,10 @@ record PipeConfig(
 		private double groundTemperature = 10;
 
 		private Builder(List<Pipe> pipes) {
-			this.pipes = pipes != null ? pipes : Collections.emptyList();
-			pipes.sort((pi, pj) ->
-				Double.compare(pi.innerDiameter, pj.innerDiameter)
+			this.pipes = pipes != null
+				? pipes
+				: Collections.emptyList();
+			this.pipes.sort(Comparator.comparingDouble(pi -> pi.innerDiameter)
 			);
 		}
 

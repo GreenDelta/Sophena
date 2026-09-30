@@ -1,17 +1,14 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openlca.commons.Res;
 
 import sophena.db.Database;
+import sophena.io.thermos.ThermosImportConfig;
 import sophena.io.thermos.file.ThermosFile;
 import sophena.math.energetic.HeatNets;
 import sophena.model.HeatNet;
@@ -21,48 +18,7 @@ import sophena.model.PipeType;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
 
-/// Tracks the added length for a pipe during the sync. For new pipes, this is
-/// the full length. For modified pipes, this is the positive length delta.
-record PipeDiff(HeatNetPipe pipe, double length) {}
-
-/// The result of a pipe sync operation, containing the pipe diffs. When the
-/// sync is running in `replace` mode, it will contain all pipes that were
-/// added; in `append` mode, it will only contain the newly added lengths of
-/// the respective pipes.
-record PipeSyncResult(Map<String, PipeDiff> diffs, AtomicInteger fittingsCount) {
-
-	PipeSyncResult() {
-		this(new HashMap<>(), new AtomicInteger(0));
-	}
-
-	void add(HeatNetPipe hnp) {
-		if (hnp != null) {
-			add(hnp, hnp.length);
-		}
-	}
-
-	void add(HeatNetPipe hnp, double length) {
-		if (hnp == null || hnp.pipe == null || length <= 0) {
-			return;
-		}
-		diffs.compute(hnp.pipe.id,
-			($, old) -> old == null
-			? new PipeDiff(hnp, length)
-			: new PipeDiff(hnp, old.length() + length));
-	}
-
-	List<HeatNetPipe> pipeDiffs() {
-		var list = new ArrayList<HeatNetPipe>();
-		for (var diff : diffs.values()) {
-			var pipe = diff.pipe().copy();
-			pipe.length = diff.length();
-			list.add(pipe);
-		}
-		return list;
-	}
-}
-
-class PipeSync {
+public class PipeSync {
 
 	private final Database db;
 	private final ThermosImportConfig config;
@@ -70,7 +26,7 @@ class PipeSync {
 	private final ThermosFile file;
 	private final PipeSyncResult result;
 
-	PipeSync(Database db, ThermosImportConfig config) {
+	public PipeSync(Database db, ThermosImportConfig config) {
 		this.db = db;
 		this.config = config;
 		this.project = config.project();
@@ -80,7 +36,7 @@ class PipeSync {
 
 	/// Calculates the pipe plan for the network of the import file and
 	/// aggregates the results. This method does not modify the project.
-	Res<PipeSum> plan() {
+	public Res<PipeSum> plan() {
 		var network = file.network();
 		if (network == null) {
 			return Res.error("No network provided");
@@ -100,10 +56,9 @@ class PipeSync {
 	}
 
 	/// Applies the given pipe plan to the heat net of the project.
-	Res<PipeSyncResult> apply(PipeSum sum) {
-		if (sum == null) {
+	public Res<PipeSyncResult> apply(PipeSum sum) {
+		if (sum == null)
 			return Res.error("No pipe plan provided");
-		}
 
 		try {
 			if (project.heatNet == null) {

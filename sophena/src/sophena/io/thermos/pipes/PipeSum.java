@@ -1,4 +1,4 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -12,8 +12,9 @@ import sophena.model.Pipe;
 /// An aggregation of the pipe-plan of a network. For every pipe (identified
 /// by ID) there is only one entry in this aggregation. The number of fittings
 /// are estimated by the number of nodes in the tree.
-record PipeSum(List<Seg> segments, int fittingsCount) {
-	record Seg(Pipe pipe, double length) {}
+public record PipeSum(List<Seg> segments, int fittingsCount) {
+
+	public record Seg(Pipe pipe, double length) {}
 
 	static PipeSum of(NetworkTree tree, PipePlan plan) {
 		if (tree == null || plan == null) {
@@ -37,7 +38,7 @@ record PipeSum(List<Seg> segments, int fittingsCount) {
 					continue;
 				}
 
-				segs.compute(pipe.id, (pipeId, old) ->
+				segs.compute(pipe.id, (_, old) ->
 					old == null
 						? new Seg(pipe, s.length())
 						: new Seg(pipe, old.length + s.length())

@@ -1,8 +1,9 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Pipe;
 
 /// Runs the pipe dimensioning that is used by the thermos import to check

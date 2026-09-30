@@ -1,4 +1,4 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
 import static java.lang.Math.pow;
 

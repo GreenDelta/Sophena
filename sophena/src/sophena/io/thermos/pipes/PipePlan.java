@@ -1,4 +1,4 @@
-package sophena.io.thermos;
+package sophena.io.thermos.pipes;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -10,7 +10,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.io.thermos.PipeDimensioning;
+import sophena.io.thermos.pipes.PipeDimensioning;
 import sophena.io.thermos.ThermosImport;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Pipe;

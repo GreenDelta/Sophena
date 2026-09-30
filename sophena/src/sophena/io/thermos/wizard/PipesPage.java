@@ -10,7 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import sophena.io.thermos.PipeDimensioning;
+import sophena.io.thermos.pipes.PipeDimensioning;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.model.Manufacturer;
 import sophena.model.Pipe;

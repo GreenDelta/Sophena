@@ -12,6 +12,9 @@ import org.openlca.commons.Res;
 
 import sophena.db.Database;
 import sophena.io.thermos.file.ThermosFile;
+import sophena.io.thermos.pipes.PipeSum;
+import sophena.io.thermos.pipes.PipeSync;
+import sophena.io.thermos.pipes.PipeSyncResult;
 import sophena.math.costs.FittingsCostSync;
 import sophena.math.costs.FittingsCostSync.Mode;
 import sophena.model.Consumer;
