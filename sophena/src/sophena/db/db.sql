@@ -82,7 +82,6 @@ CREATE TABLE tbl_electricity_market_values (
 
     is_protected   BOOLEAN,
 
-    valid_year     INTEGER,
     value          DOUBLE,
     monthly_values BLOB (120),
     source         VARCHAR(255),

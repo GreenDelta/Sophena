@@ -238,7 +238,6 @@ type BiogasSubstrate struct {
 // the funding for electricity feed-ins.
 type ElectricityMarketValue struct {
 	BaseDataEntity
-	Year          int       `json:"year"`
 	Value         float64   `json:"value"`
 	MonthlyValues []float64 `json:"monthlyValues"`
 	Source        string    `json:"source"`

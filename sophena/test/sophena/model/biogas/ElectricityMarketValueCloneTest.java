@@ -12,7 +12,6 @@ public class ElectricityMarketValueCloneTest {
 		origin.name = "Marktwerte 2022";
 		origin.description = "a description";
 		origin.isProtected = true;
-		origin.year = 2022;
 		origin.value = 23.545;
 		origin.source = "https://www.netztransparenz.de";
 		origin.monthlyValues = new double[12];
@@ -26,7 +25,6 @@ public class ElectricityMarketValueCloneTest {
 		Assert.assertEquals(origin.name, clone.name);
 		Assert.assertEquals(origin.description, clone.description);
 		Assert.assertEquals(origin.isProtected, clone.isProtected);
-		Assert.assertEquals(origin.year, clone.year);
 		Assert.assertEquals(origin.value, clone.value, 1e-16);
 		Assert.assertEquals(origin.source, clone.source);
 

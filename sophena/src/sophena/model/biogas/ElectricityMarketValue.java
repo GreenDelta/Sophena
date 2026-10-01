@@ -1,5 +1,6 @@
 package sophena.model.biogas;
 
+import java.time.Month;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -15,10 +16,6 @@ import sophena.model.Stats;
 @Table(name = "tbl_electricity_market_values")
 public class ElectricityMarketValue extends BaseDataEntity {
 
-	/// The year for which the market value is valid.
-	@Column(name = "valid_year")
-	public int year;
-
 	/// The average annual market value in ct/kWh.
 	@Column(name = "value")
 	public double value;
@@ -32,12 +29,18 @@ public class ElectricityMarketValue extends BaseDataEntity {
 	@Column(name = "source")
 	public String source;
 
+	public double valueOf(Month month) {
+		return month != null
+			? monthlyValueOf(month.getValue())
+			: value;
+	}
+
 	/// Returns the monthly value of the given month (1 = January ... 12 =
 	/// December), or `0` when there is no value for that month.
 	public double monthlyValueOf(int month) {
-		if (monthlyValues == null || month < 1 || month > 12)
-			return 0;
-		return monthlyValues[month - 1];
+		return monthlyValues == null || month < 1 || month > 12
+			? value
+			: monthlyValues[month - 1];
 	}
 
 	@Override
@@ -47,7 +50,6 @@ public class ElectricityMarketValue extends BaseDataEntity {
 		copy.name = name;
 		copy.description = description;
 		copy.isProtected = isProtected;
-		copy.year = year;
 		copy.value = value;
 		copy.monthlyValues = Stats.copy(monthlyValues);
 		copy.source = source;

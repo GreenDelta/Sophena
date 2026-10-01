@@ -78,12 +78,11 @@ public class MarketValueEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			var table = Tables.createViewer(comp,
 				"Datensatz",
-				"Bezugsjahr",
-				"Durchschnittswert",
+				"Jahresdurchschnitt",
 				"Monatswerte");
 			table.setLabelProvider(new TableLabel());
 			table.setInput(values);
-			Tables.bindColumnWidths(table, 0.3, 0.15, 0.2, 0.35);
+			Tables.bindColumnWidths(table, 0.35, 0.25, 0.4);
 			bindActions(section, table);
 		}
 
@@ -106,7 +105,6 @@ public class MarketValueEditor extends Editor {
 			var value = new ElectricityMarketValue();
 			value.id = UUID.randomUUID().toString();
 			value.name = "Marktwerte " + year;
-			value.year = year;
 			value.monthlyValues = new double[12];
 			if (MarketValueWizard.open(value) != Window.OK)
 				return;
@@ -180,9 +178,8 @@ public class MarketValueEditor extends Editor {
 				return null;
 			return switch (col) {
 				case 0 -> value.name;
-				case 1 -> Integer.toString(value.year);
-				case 2 -> Num.str(value.value) + " ct/kWh";
-				case 3 -> monthlyRangeOf(value);
+				case 1 -> Num.str(value.value) + " ct/kWh";
+				case 2 -> monthlyRangeOf(value);
 				default -> null;
 			};
 		}

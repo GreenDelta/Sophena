@@ -42,7 +42,6 @@ public class MarketValueWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			value.name = page.nameText.getText();
-			value.year = Texts.getInt(page.yearText);
 			value.value = Texts.getDouble(page.valueText);
 			value.source = page.sourceText.getText();
 			var months = new double[MONTHS.length];
@@ -67,7 +66,6 @@ public class MarketValueWizard extends Wizard {
 	private class Page extends WizardPage {
 
 		private Text nameText;
-		private Text yearText;
 		private Text valueText;
 		private Text sourceText;
 		private final Text[] monthTexts = new Text[MONTHS.length];
@@ -83,16 +81,14 @@ public class MarketValueWizard extends Wizard {
 			setControl(comp);
 			UI.gridLayout(comp, 4);
 			createNameText(comp);
-			createYearText(comp);
-			createValueText(comp);
 			createSourceText(comp);
+			createValueText(comp);
 			createMonthTexts(comp);
 			validate();
 		}
 
 		private void createNameText(Composite comp) {
-			UI.formLabel(comp, "Name des Datensatzes");
-			nameText = UI.formText(comp, (String) null);
+			nameText = UI.formText(comp, "Name des Datensatzes");
 			span(nameText, 3);
 			Texts.on(nameText)
 				.init(value.name)
@@ -100,21 +96,9 @@ public class MarketValueWizard extends Wizard {
 				.validate(this::validate);
 		}
 
-		private void createYearText(Composite comp) {
-			UI.formLabel(comp, "Bezugsjahr");
-			yearText = UI.formText(comp, (String) null);
-			Texts.on(yearText)
-				.init(value.year)
-				.required()
-				.integer()
-				.validate(this::validate);
-			UI.filler(comp);
-			UI.filler(comp);
-		}
-
 		private void createValueText(Composite comp) {
 			UI.formLabel(comp, "Jahresdurchschnitt");
-			valueText = UI.formText(comp, (String) null);
+			valueText = UI.formText(comp, null);
 			Texts.on(valueText)
 				.init(value.value)
 				.required()
@@ -126,7 +110,7 @@ public class MarketValueWizard extends Wizard {
 
 		private void createSourceText(Composite comp) {
 			UI.formLabel(comp, "Datenquelle");
-			sourceText = UI.formText(comp, (String) null);
+			sourceText = UI.formText(comp, null);
 			span(sourceText, 3);
 			Texts.on(sourceText).init(value.source);
 		}
@@ -144,7 +128,7 @@ public class MarketValueWizard extends Wizard {
 		}
 
 		private Text monthText(Composite comp, int idx) {
-			var text = UI.formText(comp, (String) null);
+			var text = UI.formText(comp, null);
 			Texts.on(text)
 				.init(value.monthlyValueOf(idx + 1))
 				.required()
@@ -162,10 +146,6 @@ public class MarketValueWizard extends Wizard {
 		private boolean validate() {
 			if (Texts.isEmpty(nameText))
 				return error("Es muss ein Name angegeben werden.");
-			if (!Num.isNumeric(yearText.getText()))
-				return error("Es muss ein Bezugsjahr angegeben werden.");
-			if (Texts.getInt(yearText) <= 0)
-				return error("Das Bezugsjahr muss größer als 0 sein.");
 			if (!Num.isNumeric(valueText.getText()))
 				return error("Es muss ein Jahresdurchschnitt angegeben werden.");
 			for (int i = 0; i < monthTexts.length; i++) {
