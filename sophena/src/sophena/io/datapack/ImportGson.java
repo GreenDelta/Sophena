@@ -29,6 +29,7 @@ import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 import org.openlca.commons.Strings;
@@ -59,7 +60,7 @@ public class ImportGson {
 			FlueGasCleaning.class, ProjectFolder.class,
 			HeatRecovery.class, Manufacturer.class, SolarCollector.class,
 			HeatPump.class, BiogasPlant.class, ElectricityPriceCurve.class,
-			Substrate.class
+			ElectricityMarketValue.class, Substrate.class
 		};
 		for (Class<?> refType : refTypes) {
 			if (refType.equals(rootType))

@@ -5,6 +5,7 @@ import org.eclipse.osgi.util.NLS;
 public class H extends NLS {
 
 	public static String AnnualCOP;
+	public static String AnnualFundingInfo;
 	public static String AvgPowerDemandInfo;
 	public static String BoilerAccessories;
 	public static String BoilerHouseTechnology;
@@ -12,6 +13,7 @@ public class H extends NLS {
 	public static String Buildings;
 	public static String CoGenPlants;
 	public static String DemandElectricityMixInfo;
+	public static String DirectMarketerShareInfo;
 	public static String ElectricityDemandShare;
 	public static String ElectricityPriceInfo;
 	public static String ElectricityRevenues;

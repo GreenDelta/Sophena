@@ -131,6 +131,15 @@ CREATE TABLE tbl_biogas_plant_settings (
     maintenance_factor          DOUBLE,
     electricity_revenues_factor DOUBLE,
 
+    annual_funding              DOUBLE,
+    is_fixed_remuneration       BOOLEAN,
+    feed_in_tariff              DOUBLE,
+    market_premium_value        DOUBLE,
+    f_market_value              CHAR(36),
+    use_annual_market_value     BOOLEAN,
+    direct_marketer_share       DOUBLE,
+    market_price_limit          VARCHAR(50),
+
     PRIMARY KEY (id)
 );
 

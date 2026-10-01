@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 import sophena.model.Boiler;
@@ -55,6 +56,7 @@ public class Export {
 				Substrate.class,
 				BiogasPlant.class,
 				ElectricityPriceCurve.class,
+				ElectricityMarketValue.class,
 				Boiler.class,
 				BufferTank.class,
 				BuildingState.class,

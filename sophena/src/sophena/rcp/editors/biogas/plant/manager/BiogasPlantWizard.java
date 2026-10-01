@@ -19,6 +19,7 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
+import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 import sophena.rcp.M;
@@ -86,7 +87,8 @@ public class BiogasPlantWizard extends Wizard {
 
 		plant.fermenter = defaultFermenter();
 		var global = new CostSettingsDao(App.getDb()).getGlobal();
-		plant.settings = BiogasPlantSettings.createDefault(global);
+		plant.settings = BiogasPlantSettings.createDefault(
+			global, App.getDb().getAll(ElectricityMarketValue.class));
 		return plant;
 	}
 

@@ -2,11 +2,17 @@ package sophena.model.biogas;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import org.openlca.commons.Strings;
 
 import sophena.model.AbstractEntity;
 import sophena.model.CostSettings;
@@ -198,10 +204,80 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "electricity_revenues_factor")
 	public double electricityRevenuesFactor;
 
+	// funding
+
+	/// Annual funding in EUR/a that is independent of the fed-in electricity,
+	/// e.g. the flexibility premium and the flexibility surcharge.
+	///
+	/// @de Jährliche Förderungen
+	@Column(name = "annual_funding")
+	public double annualFunding;
+
+	/// Indicates whether the electricity is sold with a fixed feed-in tariff
+	/// (`true`) or via the market premium model (`false`).
+	///
+	/// @de Art der Stromvermarktung: Festvergütung | Marktprämienmodell
+	@Column(name = "is_fixed_remuneration")
+	public boolean isFixedRemuneration;
+
+	/// The feed-in tariff in ct/kWh. This is only used in the fixed
+	/// remuneration mode.
+	///
+	/// @de Einspeisevergütung
+	@Column(name = "feed_in_tariff")
+	public double feedInTariff;
+
+	/// The value to be applied in ct/kWh (anzulegender Wert). This is only used
+	/// in the market premium model.
+	///
+	/// @de Anzulegender Wert
+	@Column(name = "market_premium_value")
+	public double marketPremiumValue;
+
+	/// The electricity market values that are used in the market premium
+	/// model.
+	///
+	/// @de Marktwert
+	@OneToOne
+	@JoinColumn(name = "f_market_value")
+	public ElectricityMarketValue marketValue;
+
+	/// Indicates whether the annual value (`true`) or the monthly values
+	/// (`false`) of the selected market value are used in the calculation.
+	///
+	/// @de Jahreswert | Monatswert
+	@Column(name = "use_annual_market_value")
+	public boolean useAnnualMarketValue;
+
+	/// The share of the direct marketer in % of the additional revenues.
+	///
+	/// @de Direktvermarkteranteil
+	@Column(name = "direct_marketer_share")
+	public double directMarketerShare;
+
+	/// The electricity price limit below which no market premium is paid.
+	///
+	/// @de Keine Marktprämie bei Strompreisen
+	@Column(name = "market_price_limit")
+	@Enumerated(EnumType.STRING)
+	public MarketPriceLimit marketPriceLimit;
+
 	/// Creates a new settings instance with the default values. The demand
 	/// electricity mix is taken from the given global cost settings, if it is
 	/// available.
 	public static BiogasPlantSettings createDefault(CostSettings global) {
+		return createDefault(global, null);
+	}
+
+	/// Creates a new settings instance with the default values. The demand
+	/// electricity mix is taken from the given global cost settings and the
+	/// market value from the given list of market values, if they are
+	/// available. The market value that comes first when the list is sorted by
+	/// name in descending order is selected. When the list is empty, the fixed
+	/// remuneration mode is used.
+	public static BiogasPlantSettings createDefault(
+		CostSettings global, List<ElectricityMarketValue> marketValues
+	) {
 		var settings = new BiogasPlantSettings();
 		settings.id = UUID.randomUUID().toString();
 		settings.hourlyWage = 25.0;
@@ -228,10 +304,35 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.operationFactor = 1.02;
 		settings.maintenanceFactor = 1.02;
 		settings.electricityRevenuesFactor = 1.0;
+		settings.annualFunding = 0.0;
+		settings.feedInTariff = 0.0;
+		settings.marketPremiumValue = 18.0;
+		settings.useAnnualMarketValue = true;
+		settings.directMarketerShare = 0.0;
+		settings.marketPriceLimit = MarketPriceLimit.NONE;
+		settings.isFixedRemuneration = true;
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
+		initMarketValue(settings, marketValues);
 		return settings;
+	}
+
+	/// Selects the market value that comes first when the given values are
+	/// sorted by name in descending order and activates the market premium
+	/// model. When there is no market value, the fixed remuneration mode is
+	/// used.
+	private static void initMarketValue(
+		BiogasPlantSettings settings, List<ElectricityMarketValue> values
+	) {
+		var markets = values == null
+			? new ArrayList<ElectricityMarketValue>()
+			: new ArrayList<>(values);
+		markets.sort((a, b) -> Strings.compareIgnoreCase(b.name, a.name));
+		if (markets.isEmpty())
+			return;
+		settings.isFixedRemuneration = false;
+		settings.marketValue = markets.getFirst();
 	}
 
 	@Override
@@ -264,6 +365,14 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.operationFactor = operationFactor;
 		copy.maintenanceFactor = maintenanceFactor;
 		copy.electricityRevenuesFactor = electricityRevenuesFactor;
+		copy.annualFunding = annualFunding;
+		copy.isFixedRemuneration = isFixedRemuneration;
+		copy.feedInTariff = feedInTariff;
+		copy.marketPremiumValue = marketPremiumValue;
+		copy.marketValue = marketValue;
+		copy.useAnnualMarketValue = useAnnualMarketValue;
+		copy.directMarketerShare = directMarketerShare;
+		copy.marketPriceLimit = marketPriceLimit;
 		return copy;
 	}
 }
