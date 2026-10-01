@@ -1,0 +1,22 @@
+{
+  "id": "53bcbab0-7a29-4ad5-a5cc-7544c2cd7252",
+  "name": "Marktwerte 2025",
+  "isProtected": true,
+  "year": 2025,
+  "value": 8.932,
+  "monthlyValues": [
+    11.414,
+    12.852,
+    9.473,
+    7.794,
+    6.734,
+    6.399,
+    8.78,
+    7.699,
+    8.351,
+    8.44,
+    10.188,
+    9.347
+  ],
+  "source": "https://www.netztransparenz.de"
+}

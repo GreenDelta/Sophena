@@ -1,0 +1,22 @@
+{
+  "id": "ae306275-398b-4c17-bff0-f303d13718eb",
+  "name": "Marktwerte 2024",
+  "isProtected": true,
+  "year": 2024,
+  "value": 7.946,
+  "monthlyValues": [
+    7.657,
+    6.134,
+    6.47,
+    6.236,
+    6.721,
+    8.445,
+    6.77,
+    8.205,
+    7.831,
+    8.61,
+    11.391,
+    10.832
+  ],
+  "source": "https://www.netztransparenz.de"
+}

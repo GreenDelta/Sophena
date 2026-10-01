@@ -27,6 +27,8 @@ The `data` folder should have the following content:
 * `data/json/cost_settings/*.json`: The default cost settings of Sophena.
 * `data/json/weather_stations/*.json`: The climate data of the weather stations
     that are included in the base data of Sophena.
+* `data/json/electricity_market_values/*.json`: The yearly and monthly market
+    values that are used to calculate the funding of electricity feed-ins.
 
 ## Product data
 In the following the format of the CSV files with the product data is described.

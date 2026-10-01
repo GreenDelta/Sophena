@@ -233,3 +233,13 @@ type BiogasSubstrate struct {
 	MinTemperature     float64 `json:"minTemperature"`
 	MaxTemperature     float64 `json:"maxTemperature"`
 }
+
+// ElectricityMarketValue stores the market values that are used to calculate
+// the funding for electricity feed-ins.
+type ElectricityMarketValue struct {
+	BaseDataEntity
+	Year          int       `json:"year"`
+	Value         float64   `json:"value"`
+	MonthlyValues []float64 `json:"monthlyValues"`
+	Source        string    `json:"source"`
+}

@@ -1,0 +1,22 @@
+{
+  "id": "8ca984b6-348e-4cb7-a1ec-62b206a592f8",
+  "name": "Marktwerte 2022",
+  "isProtected": true,
+  "year": 2022,
+  "value": 23.545,
+  "monthlyValues": [
+    16.773,
+    12.88,
+    25.201,
+    16.573,
+    17.748,
+    21.802,
+    31.5,
+    46.518,
+    34.612,
+    15.26,
+    17.363,
+    25.162
+  ],
+  "source": "https://www.netztransparenz.de"
+}

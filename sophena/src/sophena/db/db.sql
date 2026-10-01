@@ -74,6 +74,23 @@ CREATE TABLE tbl_electricity_price_curves (
 );
 
 
+CREATE TABLE tbl_electricity_market_values (
+
+    id             CHAR(36),
+    name           VARCHAR(255),
+    description    CLOB(64 K),
+
+    is_protected   BOOLEAN,
+
+    valid_year     INTEGER,
+    value          DOUBLE,
+    monthly_values BLOB (120),
+    source         VARCHAR(255),
+
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE tbl_biogas_substrate_profiles (
     id                     CHAR(36),
     f_biogas_plant         CHAR(36),

@@ -29,6 +29,7 @@ import sophena.model.ProductGroup;
 import sophena.model.Project;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.Substrate;
 
 public class EntityTest {
@@ -55,7 +56,8 @@ public class EntityTest {
 			WeatherStation.class,
 
 			BiogasPlant.class,
-			Substrate.class
+			Substrate.class,
+			ElectricityMarketValue.class
 	};
 
 	@Test

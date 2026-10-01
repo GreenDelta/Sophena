@@ -30,6 +30,7 @@ import sophena.model.SolarCollector;
 import sophena.model.TransferStation;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 
@@ -74,6 +75,7 @@ public class Import implements Runnable {
 			importAll(ModelType.FLUE_GAS_CLEANING, FlueGasCleaning.class);
 			importAll(ModelType.HEAT_RECOVERY, HeatRecovery.class);
 			importAll(ModelType.ELECTRICITY_PRICE_CURVE, ElectricityPriceCurve.class);
+			importAll(ModelType.ELECTRICITY_MARKET_VALUE, ElectricityMarketValue.class);
 			importAll(ModelType.BIOGAS_SUBSTRATE, Substrate.class);
 			importAll(ModelType.BIOGAS_PLANT, BiogasPlant.class);
 			importAll(ModelType.PROJECT_FOLDER, ProjectFolder.class);

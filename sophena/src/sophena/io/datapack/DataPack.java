@@ -157,6 +157,7 @@ public class DataPack implements Closeable {
 			case CONSUMER -> "consumers";
 			case COST_SETTINGS -> "cost_settings";
 			case ELECTRICITY_PRICE_CURVE -> "electricity_price_curves";
+			case ELECTRICITY_MARKET_VALUE -> "electricity_market_values";
 			case FLUE_GAS_CLEANING -> "flue_gas_cleaning";
 			case FUEL -> "fuels";
 			case HEAT_RECOVERY -> "heat_recovery";

@@ -1,0 +1,22 @@
+{
+  "id": "cbf00471-3d9f-48f8-83e7-740bb17494c9",
+  "name": "Marktwerte 2023",
+  "isProtected": true,
+  "year": 2023,
+  "value": 9.518,
+  "monthlyValues": [
+    11.783,
+    12.831,
+    10.252,
+    10.074,
+    8.172,
+    9.476,
+    7.761,
+    9.432,
+    10.072,
+    8.738,
+    9.112,
+    6.852
+  ],
+  "source": "https://www.netztransparenz.de"
+}
