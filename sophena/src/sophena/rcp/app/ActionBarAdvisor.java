@@ -31,6 +31,7 @@ import sophena.rcp.editors.basedata.fuels.FuelEditor;
 import sophena.rcp.editors.basedata.manufacturers.ManufacturerEditor;
 import sophena.rcp.editors.basedata.products.ProductEditor;
 import sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor;
+import sophena.rcp.editors.biogas.marketvalues.MarketValueEditor;
 import sophena.rcp.editors.biogas.plant.manager.BiogasPlantManager;
 import sophena.rcp.editors.biogas.substrate.SubstrateEditor;
 import sophena.rcp.editors.results.compare.ComparisonDialog;
@@ -129,8 +130,8 @@ public class ActionBarAdvisor extends
 				SubstrateEditor::open));
 		m.add(Actions.create("Strompreise", Icon.ELECTRICITY_16.des(),
 				ElectricityPriceEditor::open));
-		m.add(Actions.create("Marktwerte", () -> {
-		}));
+		m.add(Actions.create("Marktwerte", Icon.COSTS_16.des(),
+				MarketValueEditor::open));
 	}
 
 	private ImageDescriptor img(ProductType type) {

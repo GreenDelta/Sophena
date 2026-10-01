@@ -299,5 +299,13 @@
 			name="Strompreise">
 		</editor>
 
+		<editor
+			class="sophena.rcp.editors.biogas.marketvalues.MarketValueEditor"
+			default="false"
+			id="sophena.MarketValueEditor"
+			icon="icons/costs_16.png"
+			name="Marktwerte">
+		</editor>
+
 	</extension>
 </plugin>
