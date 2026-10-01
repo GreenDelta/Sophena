@@ -88,6 +88,7 @@ public final class TestPlant {
 		plant.boilers.add(plantBoiler);
 		plant.substrateProfiles.add(profile);
 		plant.gasStorageSize = storageSize;
+		plant.gasStorageFillingLevel = 100;
 		plant.minimumRuntime = minimumRuntime;
 		return plant;
 	}

@@ -26,7 +26,8 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	public static BiogasStorage of(BiogasPlant plant) {
 		var fullLoadDemand = BiogasPlants.fullLoadFuelPower(plant);
 		return plant != null
-			? new BiogasStorage(BiogasPlants.gasStorageSizeOf(plant), fullLoadDemand)
+			? new BiogasStorage(
+				BiogasPlants.effectiveGasStorageSizeOf(plant), fullLoadDemand)
 			: new BiogasStorage(0, 0);
 	}
 

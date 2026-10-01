@@ -26,7 +26,7 @@ public class SubstrateWizard extends Wizard {
 		if (substrate == null)
 			return Window.CANCEL;
 		SubstrateWizard wiz = new SubstrateWizard();
-		wiz.setWindowTitle("Biogas Substrat");
+		wiz.setWindowTitle("Biogassubstrat");
 		wiz.substrate = substrate;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);
 		return dialog.open();
@@ -47,7 +47,7 @@ public class SubstrateWizard extends Wizard {
 			substrate.maxTemperature = Texts.getDouble(page.maxTemperatureText);
 			return true;
 		} catch (Exception e) {
-			log.error("failed to set substrate data " + substrate, e);
+			log.error("failed to set substrate data {}", substrate, e);
 			return false;
 		}
 	}
@@ -73,7 +73,7 @@ public class SubstrateWizard extends Wizard {
 		private Text maxTemperatureText;
 
 		private Page() {
-			super("SubstrateWizardPage", "Biogas Substrat", null);
+			super("SubstrateWizardPage", "Biogassubstrat", null);
 			setMessage(" ");
 		}
 

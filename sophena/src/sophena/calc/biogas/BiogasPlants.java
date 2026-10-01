@@ -133,6 +133,24 @@ public final class BiogasPlants {
 			: defaultGasStorageSizeOf(plant);
 	}
 
+	/// Returns the effective gas storage size in m³ that is used by the
+	/// calculations: the storage size (see `gasStorageSizeOf`) multiplied by the
+	/// filling level of the plant (see `BiogasPlant#gasStorageFillingLevel`).
+	///
+	/// The filling level is a percentage and is clamped to the range `0..100`:
+	/// a value `<= 0` is treated as `100` (a fully filled storage), so that
+	/// plants that were created before the filling level existed are still
+	/// calculated with their full storage.
+	public static double effectiveGasStorageSizeOf(BiogasPlant plant) {
+		if (plant == null)
+			return 0;
+		double level = plant.gasStorageFillingLevel;
+		if (level <= 0 || level > 100) {
+			level = 100;
+		}
+		return (level / 100) * gasStorageSizeOf(plant);
+	}
+
 	/// Calculates the default gas storage size in m³: the maximum volume of
 	/// biogas that is produced within 24 hours over the year.
 	public static double defaultGasStorageSizeOf(BiogasPlant plant) {

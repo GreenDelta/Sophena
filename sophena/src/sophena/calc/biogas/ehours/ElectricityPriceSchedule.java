@@ -35,7 +35,7 @@ record ElectricityPriceSchedule(boolean[] flags) {
 			|| plant.electricityPrices.values == null)
 			return schedule;
 
-		double storageSize = BiogasPlants.gasStorageSizeOf(plant);
+		double storageSize = BiogasPlants.effectiveGasStorageSizeOf(plant);
 		if (storageSize <= 0)
 			return schedule;
 

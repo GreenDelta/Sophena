@@ -46,7 +46,7 @@ final class PreCheck {
 	static Res<Void> validate(@Nullable BiogasPlant plant) {
 		if (plant == null)
 			return Res.error("there is no biogas plant");
-		double storageSize = BiogasPlants.gasStorageSizeOf(plant);
+		double storageSize = BiogasPlants.effectiveGasStorageSizeOf(plant);
 		if (storageSize <= 0)
 			return Res.error("the gas storage size must be greater than 0");
 		if (plant.minimumRuntime < 2 || plant.minimumRuntime > 12)

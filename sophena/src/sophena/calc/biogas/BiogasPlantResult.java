@@ -25,6 +25,9 @@ import sophena.model.biogas.BiogasPlant;
 /// used, because the run hours are used to create the producer profile of the
 /// plant (see `BiogasPlants.syncProducerProfile`).
 ///
+/// The `gasStorageSize` of a result is the effective size that was used for
+/// the calculation, see `BiogasPlants#effectiveGasStorageSizeOf(BiogasPlant)`.
+///
 /// The ramp hours (1/8 of the power before and after a block) are not included
 /// in the run flags; they are added when the producer profile is created.
 @NullMarked
@@ -58,7 +61,7 @@ public record BiogasPlantResult(
 		return flags.then(runFlags -> Res.ok(new BiogasPlantResult(
 			plant,
 			BiogasProfile.of(plant),
-			BiogasPlants.gasStorageSizeOf(plant),
+			BiogasPlants.effectiveGasStorageSizeOf(plant),
 			runFlags)));
 	}
 
