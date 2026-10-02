@@ -12,14 +12,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.jspecify.annotations.NonNull;
 
-import sophena.db.daos.CostSettingsDao;
 import sophena.model.AnnualCostEntry;
 import sophena.model.FuelGroup;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
-import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 import sophena.rcp.M;
@@ -86,9 +84,7 @@ public class BiogasPlantWizard extends Wizard {
 		}
 
 		plant.fermenter = defaultFermenter();
-		var global = new CostSettingsDao(App.getDb()).getGlobal();
-		plant.settings = BiogasPlantSettings.createDefault(
-			global, App.getDb().getAll(ElectricityMarketValue.class));
+		plant.settings = BiogasPlantSettings.createDefault(App.getDb());
 		return plant;
 	}
 

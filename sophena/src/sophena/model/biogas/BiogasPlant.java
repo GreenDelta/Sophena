@@ -147,7 +147,7 @@ public class BiogasPlant extends RootEntity {
 		}
 		copy.settings = settings != null
 			? settings.copy()
-			: BiogasPlantSettings.createDefault(null);
+			: BiogasPlantSettings.createDefault();
 		for (var entry : otherAnnualCosts) {
 			if (entry != null) {
 				copy.otherAnnualCosts.add(entry.copy());

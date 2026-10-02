@@ -8,15 +8,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Strings;
 
+import sophena.db.Database;
+import sophena.db.daos.CostSettingsDao;
 import sophena.model.AbstractEntity;
-import sophena.model.CostSettings;
 import sophena.model.Fuel;
+import sophena.rcp.app.App;
 
 /// The settings of a biogas plant. This is similar to the cost settings of a
 /// project: a biogas plant is always created with a settings instance.
@@ -262,22 +263,12 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	public MarketPriceLimit marketPriceLimit;
 
-	/// Creates a new settings instance with the default values. The demand
-	/// electricity mix is taken from the given global cost settings, if it is
-	/// available.
-	public static BiogasPlantSettings createDefault(CostSettings global) {
-		return createDefault(global, null);
+	public static BiogasPlantSettings createDefault() {
+		return createDefault(null);
 	}
 
-	/// Creates a new settings instance with the default values. The demand
-	/// electricity mix is taken from the given global cost settings and the
-	/// market value from the given list of market values, if they are
-	/// available. The market value that comes first when the list is sorted by
-	/// name in descending order is selected. When the list is empty, the fixed
-	/// remuneration mode is used.
-	public static BiogasPlantSettings createDefault(
-		CostSettings global, List<ElectricityMarketValue> marketValues
-	) {
+	/// Creates a new settings instance with default values.
+	public static BiogasPlantSettings createDefault(@Nullable Database db) {
 		var settings = new BiogasPlantSettings();
 		settings.id = UUID.randomUUID().toString();
 		settings.hourlyWage = 25.0;
@@ -311,28 +302,21 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.directMarketerShare = 0.0;
 		settings.marketPriceLimit = MarketPriceLimit.NONE;
 		settings.isFixedRemuneration = true;
+
+		// add default values from the database
+		if (db == null)
+			return settings;
+		var global = new CostSettingsDao(db).getGlobal();
 		if (global != null) {
 			settings.demandElectricityMix = global.electricityMix;
 		}
-		initMarketValue(settings, marketValues);
-		return settings;
-	}
+		settings.marketValue = db.getAll(ElectricityMarketValue.class)
+			.stream()
+			.min((a, b) -> Strings.compareIgnoreCase(b.name, a.name))
+			.orElse(null);
+		settings.isFixedRemuneration = settings.marketValue == null;
 
-	/// Selects the market value that comes first when the given values are
-	/// sorted by name in descending order and activates the market premium
-	/// model. When there is no market value, the fixed remuneration mode is
-	/// used.
-	private static void initMarketValue(
-		BiogasPlantSettings settings, List<ElectricityMarketValue> values
-	) {
-		var markets = values == null
-			? new ArrayList<ElectricityMarketValue>()
-			: new ArrayList<>(values);
-		markets.sort((a, b) -> Strings.compareIgnoreCase(b.name, a.name));
-		if (markets.isEmpty())
-			return;
-		settings.isFixedRemuneration = false;
-		settings.marketValue = markets.getFirst();
+		return settings;
 	}
 
 	@Override

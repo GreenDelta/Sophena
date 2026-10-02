@@ -10,10 +10,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 import sophena.calc.biogas.BiogasPlantResult;
-import sophena.db.daos.CostSettingsDao;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
-import sophena.model.biogas.ElectricityMarketValue;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.navigation.Navigator;
@@ -58,13 +56,14 @@ public class BiogasPlantEditor extends Editor {
 		super.init(site, input);
 		var keyInp = (KeyEditorInput) input;
 		plant = App.getDb().get(BiogasPlant.class, keyInp.getKey());
-		if (plant == null)
-			throw new PartInitException("biogas plant does not exists: " + keyInp.getKey());
+		if (plant == null) {
+			throw new PartInitException(
+				"biogas plant does not exists: " + keyInp.getKey());
+		}
 		if (plant.settings == null) {
-			var global = new CostSettingsDao(App.getDb()).getGlobal();
-			plant.settings = BiogasPlantSettings.createDefault(
-				global, App.getDb().getAll(ElectricityMarketValue.class));
-			plant = App.getDb().update(plant);
+			var db = App.getDb();
+			plant.settings = BiogasPlantSettings.createDefault(db);
+			plant = db.update(plant);
 		}
 		setPartName(plant.name);
 	}

@@ -6,44 +6,47 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Test;
 
-/// Tests the default values of the biogas plant settings, in particular the
-/// selection of the market value.
+import sophena.Tests;
+import sophena.db.Database;
+
 public class BiogasPlantSettingsTest {
 
+	private final Database db = Tests.getDb();
+
+	@After
+	public void tearDown() {
+		for (var mv : db.getAll(ElectricityMarketValue.class)) {
+			db.delete(mv);
+		}
+	}
+
 	@Test
-	public void usesFixedRemunerationWhenThereIsNoMarketValue() {
-		var settings = BiogasPlantSettings.createDefault(null, List.of());
+	public void testDefault() {
+		var settings = BiogasPlantSettings.createDefault();
 		assertTrue(settings.isFixedRemuneration);
 		assertNull(settings.marketValue);
 	}
 
 	@Test
-	public void usesFixedRemunerationWhenTheMarketValuesAreNull() {
-		var settings = BiogasPlantSettings.createDefault(null, null);
-		assertTrue(settings.isFixedRemuneration);
-		assertNull(settings.marketValue);
-	}
+	public void testMarketValueSelection() {
+		market("Marktwerte 2022");
+		var expected = market("Marktwerte 2025");
+		market("Marktwerte 2024");
 
-	@Test
-	public void selectsTheMarketValueThatComesFirstWhenSortedDescending() {
-		var value2022 = market("Marktwerte 2022");
-		var value2025 = market("Marktwerte 2025");
-		var value2024 = market("Marktwerte 2024");
-
-		var settings = BiogasPlantSettings.createDefault(
-			null, List.of(value2022, value2025, value2024));
+		var settings = BiogasPlantSettings.createDefault(db);
 
 		assertFalse(settings.isFixedRemuneration);
-		assertSame(value2025, settings.marketValue);
+		assertEquals(expected, settings.marketValue);
 	}
 
 	@Test
 	public void defaultFundingValues() {
-		var settings = BiogasPlantSettings.createDefault(null, List.of());
+		var settings = BiogasPlantSettings.createDefault();
 		assertEquals(0.0, settings.annualFunding, 1e-16);
 		assertEquals(0.0, settings.feedInTariff, 1e-16);
 		assertEquals(18.0, settings.marketPremiumValue, 1e-16);
@@ -54,8 +57,8 @@ public class BiogasPlantSettingsTest {
 
 	@Test
 	public void copyKeepsTheFundingSettings() {
-		var settings = BiogasPlantSettings.createDefault(
-			null, List.of(market("Marktwerte 2025")));
+		market("Marktwerte 2025");
+		var settings = BiogasPlantSettings.createDefault();
 		settings.annualFunding = 1500.0;
 		settings.isFixedRemuneration = true;
 		settings.feedInTariff = 12.5;
@@ -76,9 +79,10 @@ public class BiogasPlantSettingsTest {
 		assertEquals(MarketPriceLimit.BELOW_TWO, copy.marketPriceLimit);
 	}
 
-	private static ElectricityMarketValue market(String name) {
+	private ElectricityMarketValue market(String name) {
 		var value = new ElectricityMarketValue();
+		value.id = UUID.randomUUID().toString();
 		value.name = name;
-		return value;
+		return db.insert(value);
 	}
 }
