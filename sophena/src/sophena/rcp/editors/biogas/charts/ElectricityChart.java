@@ -1,4 +1,4 @@
-package sophena.rcp.editors.biogas.plant;
+package sophena.rcp.editors.biogas.charts;
 
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -12,7 +12,7 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.Colors;
 
-class ElectricityChart {
+public class ElectricityChart {
 
 	private final XYGraph graph;
 	private final CircularBufferDataProvider defaultData;
@@ -21,8 +21,8 @@ class ElectricityChart {
 	private final CircularBufferDataProvider warnData;
 	private final CircularBufferDataProvider pauseData;
 
-	ElectricityChart(BiogasPlantEditor editor, Composite parent, int height) {
-		graph = Charts.initHoursGraph(parent, height);
+	public ElectricityChart(Composite parent) {
+		graph = Charts.initHoursGraph(parent, 250);
 		graph.getPrimaryYAxis().setTitle("Strompreis [ct/kWh]");
 		defaultData = Charts.dataProvider();
 		errorData = Charts.dataProvider();
@@ -60,11 +60,9 @@ class ElectricityChart {
 		var zeroTrace = Charts.lineTraceOf(
 			graph, "zeros", Colors.of("#d3d3d3"), zeros);
 		zeroTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
-
-		editor.onResult(this::setInput);
 	}
 
-	private void setInput(BiogasPlantResult r) {
+	public void setInput(BiogasPlantResult r) {
 		var prices = pricesOf(r.plant());
 		var max = Stats.max(prices);
 		if (max == 0) {

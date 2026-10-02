@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlantResult;
 import sophena.db.daos.CostSettingsDao;
@@ -26,11 +25,6 @@ public class BiogasPlantEditor extends Editor {
 	private BiogasPlant plant;
 	private final List<Consumer<BiogasPlantResult>> resultFns = new ArrayList<>();
 
-	/// The result of the last calculation, `null` before the first calculation.
-	/// When the plant cannot be calculated, it contains the error and the
-	/// reason why, see `BiogasPlantInfoPage`.
-	private Res<BiogasPlantResult> calculation;
-
 	public static void open(BiogasPlant plant) {
 		if (plant == null)
 			return;
@@ -43,23 +37,14 @@ public class BiogasPlantEditor extends Editor {
 	}
 
 	void calculate() {
-		calculation = BiogasPlantResult.calculate(plant);
+		var res = BiogasPlantResult.calculate(plant);
 		// the pages show empty charts when the plant cannot be calculated
-		var result = calculation.isError()
+		var result = res.isError()
 			? BiogasPlantResult.emptyOf(plant)
-			: calculation.value();
+			: res.value();
 		for (var fn : resultFns) {
 			fn.accept(result);
 		}
-	}
-
-	/// The result of the last calculation with the reason why when the plant
-	/// cannot be calculated.
-	Res<BiogasPlantResult> calculation() {
-		if (calculation == null) {
-			calculation = BiogasPlantResult.calculate(plant);
-		}
-		return calculation;
 	}
 
 	void onResult(Consumer<BiogasPlantResult> fn) {

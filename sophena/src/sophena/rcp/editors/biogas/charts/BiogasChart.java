@@ -1,4 +1,4 @@
-package sophena.rcp.editors.biogas.plant;
+package sophena.rcp.editors.biogas.charts;
 
 import java.util.Arrays;
 
@@ -14,14 +14,14 @@ import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.Colors;
 
-class BiogasChart {
+public class BiogasChart {
 
 	private final XYGraph graph;
 	private final CircularBufferDataProvider biogasData;
 	private final CircularBufferDataProvider methaneData;
 
-	BiogasChart(BiogasPlantEditor editor, Composite parent, int height) {
-		graph = Charts.initHoursGraph(parent, height);
+	public BiogasChart(Composite parent) {
+		graph = Charts.initHoursGraph(parent, 250);
 		graph.getPrimaryYAxis().setTitle("Biogas [m³]");
 		biogasData = Charts.dataProvider();
 		methaneData = Charts.dataProvider();
@@ -31,11 +31,9 @@ class BiogasChart {
 		var methaneColor = Colors.of(colors.variant(1));
 		Charts.areaTraceOf(graph, "biogas", biogasColor, biogasData);
 		Charts.areaTraceOf(graph, "methane", methaneColor, methaneData);
-
-		editor.onResult(this::setInput);
 	}
 
-	void setInput(BiogasPlantResult r) {
+	public void setInput(BiogasPlantResult r) {
 		// the biogas production only depends on the substrates of the plant;
 		// the profile of the result is empty when the plant cannot be
 		// calculated for other reasons, so we compute it from the plant here
@@ -53,6 +51,4 @@ class BiogasChart {
 		methaneData.setCurrentYDataArray(m);
 		graph.getPrimaryYAxis().setRange(0, Stats.nextStep(max));
 	}
-
-
 }
