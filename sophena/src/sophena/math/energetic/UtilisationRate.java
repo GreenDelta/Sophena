@@ -21,7 +21,7 @@ public class UtilisationRate {
 		return get(efficiencyRate, fullLoadHours, Stats.HOURS);
 	}
 
-	public static double get(
+	private static double get(
 			double efficiencyRate, int fullLoadHours, int usageDuration) {
 		if (fullLoadHours == 0)
 			return 0.01;

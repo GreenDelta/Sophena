@@ -1,7 +1,7 @@
 CREATE TABLE sophena_version (
     version SMALLINT
 );
-INSERT INTO sophena_version (version) VALUES (4);
+INSERT INTO sophena_version (version) VALUES (5);
 
 
 CREATE TABLE tbl_weather_stations (
@@ -633,7 +633,7 @@ CREATE TABLE tbl_transfer_stations (
     f_manufacturer CHAR(36),
 
     building_type VARCHAR(255),
-    output_capacity VARCHAR(255),
+    output_capacity DOUBLE,
     station_type VARCHAR(255),
     material VARCHAR(255),
     water_heating VARCHAR(255),
