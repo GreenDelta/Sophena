@@ -1,15 +1,22 @@
 package sophena.rcp.editors.biogas.plant;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.biogas.BiogasPlantResult;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
+import sophena.rcp.app.App;
+import sophena.rcp.app.Icon;
+import sophena.rcp.editors.biogas.results.BiogasPlantResultEditor;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
+import sophena.rcp.utils.Controls;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -33,6 +40,20 @@ class BiogasPlantInfoPage extends FormPage {
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
+		createInfoSection(body, tk);
+		GeneralSection.of(editor).create(body, tk);
+		LossesSection.of(editor).create(body, tk);
+		FinancingSection.of(editor).create(body, tk);
+
+		createOtherCostsSection(body, tk);
+		BiogasAnnualCostsTable.of(editor).render(body, tk);
+		FundingSection.of(editor).create(body, tk);
+		createPriceChangeSection(body, tk);
+
+		editor.calculate();
+	}
+
+	private void createInfoSection(Composite body, FormToolkit tk) {
 		var comp = UI.formSection(body, tk, "Biogasanlage");
 		UI.gridLayout(comp, 3);
 
@@ -65,16 +86,20 @@ class BiogasPlantInfoPage extends FormPage {
 			});
 		UI.filler(comp, tk);
 
-		GeneralSection.of(editor).create(body, tk);
-		LossesSection.of(editor).create(body, tk);
-		FinancingSection.of(editor).create(body, tk);
+		UI.filler(comp, tk);
+		var btn = tk.createButton(comp, "Berechnen", SWT.NONE);
+		btn.setImage(Icon.CALCULATE_16.img());
+		Controls.onSelect(btn, _ -> {
+			var res = App.exec(
+				"Berechne ...",
+				() -> BiogasPlantResult.calculate(plant()));
+			if (res.isError()) {
+				MsgBox.error("Eine Berechnung ist nicht möglich.", res.error());
+				return;
+			}
+			BiogasPlantResultEditor.open(res.value());
+		});
 
-		createOtherCostsSection(body, tk);
-		BiogasAnnualCostsTable.of(editor).render(body, tk);
-		FundingSection.of(editor).create(body, tk);
-		createPriceChangeSection(body, tk);
-
-		editor.calculate();
 	}
 
 	private void createOtherCostsSection(Composite body, FormToolkit tk) {

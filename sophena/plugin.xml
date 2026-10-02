@@ -292,6 +292,14 @@
 		</editor>
 
 		<editor
+			class="sophena.rcp.editors.biogas.results.BiogasPlantResultEditor"
+			default="false"
+			id="sophena.BiogasPlantResultEditor"
+			icon="icons/bar_chart_16.png"
+			name="Biogasanlagen-Ergebnisse">
+		</editor>
+
+		<editor
 			class="sophena.rcp.editors.biogas.electricity.ElectricityPriceEditor"
 			default="false"
 			id="sophena.ElectricityPriceEditor"
