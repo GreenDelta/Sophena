@@ -20,7 +20,7 @@ public enum BiogasAlgorithm {
 	BLOCKS("Blockweise Preisoptimierung");
 
 	/// The algorithm that is used when no other algorithm is given.
-	public static final BiogasAlgorithm DEFAULT = HOURS;
+	public static final BiogasAlgorithm DEFAULT = BLOCKS;
 
 	private final String label;
 

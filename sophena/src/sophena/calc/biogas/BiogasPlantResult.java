@@ -41,7 +41,7 @@ public record BiogasPlantResult(
 	/// Calculates the plant with the default algorithm
 	/// (`BiogasAlgorithm.DEFAULT`) and returns an error when the plant cannot
 	/// be calculated with it.
-	public static Res<BiogasPlantResult> calculate(BiogasPlant plant) {
+	public static Res<BiogasPlantResult> calculate(@Nullable BiogasPlant plant) {
 		return calculate(plant, BiogasAlgorithm.DEFAULT);
 	}
 
@@ -50,8 +50,10 @@ public record BiogasPlantResult(
 	/// with it, e.g. when the gas storage is too small for the minimum runtime
 	/// of the plant.
 	public static Res<BiogasPlantResult> calculate(
-		BiogasPlant plant, @Nullable BiogasAlgorithm algorithm
+		@Nullable BiogasPlant plant, @Nullable BiogasAlgorithm algorithm
 	) {
+		if (plant == null)
+			return Res.error("No biogas plant provided");
 		if (algorithm == null)
 			return Res.error("no algorithm for the biogas plant given");
 		var flags = switch (algorithm) {
@@ -68,7 +70,7 @@ public record BiogasPlantResult(
 	/// An empty result. It is used by callers that need a producer profile for
 	/// a plant that cannot be calculated, e.g. when the plant is edited: an
 	/// edit should always be possible, also when the plant is not complete.
-	public static BiogasPlantResult emptyOf(@Nullable BiogasPlant plant) {
+	public static BiogasPlantResult emptyOf(BiogasPlant plant) {
 		return new BiogasPlantResult(
 			plant,
 			BiogasProfile.empty(),
@@ -83,7 +85,7 @@ public record BiogasPlantResult(
 		profile.maxPower = new double[Stats.HOURS];
 		profile.temperaturLevel = new double[Stats.HOURS];
 		double power = BiogasPlants.totalThermalPower(plant);
-		if (power <= 0 || runFlags == null)
+		if (power <= 0)
 			return profile;
 
 		int n = runFlags.length;

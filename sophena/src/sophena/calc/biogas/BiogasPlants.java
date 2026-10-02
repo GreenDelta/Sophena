@@ -96,9 +96,11 @@ public final class BiogasPlants {
 	}
 
 	public static void syncProducerProfile(Project project, Producer producer) {
-		if (project == null || producer == null) return;
+		if (project == null || producer == null)
+			return;
 		var plant = producer.biogasPlant;
-		if (plant == null) return;
+		if (plant == null)
+			return;
 
 		producer.productGroup = plant.productGroup;
 
