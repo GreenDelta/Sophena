@@ -63,6 +63,9 @@ public final class BiogasPlants {
 		return sum;
 	}
 
+	/// The total investment of the plant in EUR: the investments of the boilers
+	/// plus the new investment entries and the shares that are spent for
+	/// refurbishments.
 	public static double totalInvestment(BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
@@ -72,6 +75,37 @@ public final class BiogasPlants {
 				continue;
 			sum += entry.costs.investment;
 		}
+		sum += newInvestmentOf(plant);
+		sum += refurbishmentInvestmentOf(plant);
+		return sum;
+	}
+
+	/// The sum of the new investment entries of the plant in EUR. They are
+	/// calculated like the product entries of a project.
+	public static double newInvestmentOf(BiogasPlant plant) {
+		double sum = 0;
+		if (plant == null)
+			return sum;
+		for (var entry : plant.newInvestmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.investment;
+		}
+		return sum;
+	}
+
+	/// The sum of the refurbishments of the plant in EUR. Only the share of the
+	/// given investment that is spent for the overhaul is added, see
+	/// `BiogasRefurbishmentEntry#refurbishmentShare`.
+	public static double refurbishmentInvestmentOf(BiogasPlant plant) {
+		double sum = 0;
+		if (plant == null)
+			return sum;
+		for (var entry : plant.refurbishmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.investment * entry.refurbishmentShare / 100;
+		}
 		return sum;
 	}
 
@@ -80,6 +114,16 @@ public final class BiogasPlants {
 		if (plant == null)
 			return sum;
 		for (var entry : plant.boilers) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.operation;
+		}
+		for (var entry : plant.newInvestmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.operation;
+		}
+		for (var entry : plant.refurbishmentEntries) {
 			if (entry == null || entry.costs == null)
 				continue;
 			sum += entry.costs.operation;

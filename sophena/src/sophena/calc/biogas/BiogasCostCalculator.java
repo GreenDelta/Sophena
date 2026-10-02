@@ -2,6 +2,7 @@ package sophena.calc.biogas;
 
 import sophena.calc.CostResult;
 import sophena.model.AnnualCostEntry;
+import sophena.model.ProductCosts;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
@@ -76,24 +77,44 @@ public class BiogasCostCalculator {
 	 * It assumes the observation period (T) is equal to the plant's duration.
 	 */
 	private double calculateCapitalCosts() {
-		double q = 1 + plant.settings.interestRate / 100;
 		double sum = 0;
 		for (BiogasPlantBoiler entry : plant.boilers) {
-			if (entry == null || entry.costs == null || entry.costs.investment <= 0)
+			if (entry == null || entry.costs == null)
 				continue;
-			int duration = entry.costs.duration > 0
-					? entry.costs.duration
-					: plant.duration;
-			if (duration <= 0)
+			sum += capitalCostsOf(entry.costs.investment, entry.costs.duration);
+		}
+		for (var entry : plant.newInvestmentEntries) {
+			if (entry == null || entry.costs == null)
 				continue;
-			sum += CapitalCosts.calculate(
-					entry.costs.investment,
-					duration,
-					plant.duration,
-					q,
-					plant.settings.investmentFactor);
+			sum += capitalCostsOf(entry.costs.investment, entry.costs.duration);
+		}
+		for (var entry : plant.refurbishmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			double investment = entry.costs.investment
+				* entry.refurbishmentShare / 100;
+			sum += capitalCostsOf(investment, entry.costs.duration);
 		}
 		return sum;
+	}
+
+	/// Calculates the capital costs of a single investment over the observation
+	/// period of the plant. A missing duration falls back to the plant duration.
+	private double capitalCostsOf(double investment, int duration) {
+		if (investment <= 0)
+			return 0;
+		if (duration <= 0) {
+			duration = plant.duration;
+		}
+		if (duration <= 0)
+			return 0;
+		double q = 1 + plant.settings.interestRate / 100;
+		return CapitalCosts.calculate(
+			investment,
+			duration,
+			plant.duration,
+			q,
+			plant.settings.investmentFactor);
 	}
 
 	/**
@@ -134,8 +155,19 @@ public class BiogasCostCalculator {
 		for (BiogasPlantBoiler entry : plant.boilers) {
 			if (entry == null || entry.costs == null)
 				continue;
-			maintBase += entry.costs.investment
-					* (entry.costs.maintenance + entry.costs.repair) / 100;
+			maintBase += maintenanceBaseOf(entry.costs.investment, entry.costs);
+		}
+		for (var entry : plant.newInvestmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			maintBase += maintenanceBaseOf(entry.costs.investment, entry.costs);
+		}
+		for (var entry : plant.refurbishmentEntries) {
+			if (entry == null || entry.costs == null)
+				continue;
+			double counted = entry.costs.investment
+				* entry.refurbishmentShare / 100;
+			maintBase += maintenanceBaseOf(counted, entry.costs);
 		}
 		double maintAnnuity = maintBase * annuityFactor(plant.settings.maintenanceFactor);
 
@@ -191,6 +223,11 @@ public class BiogasCostCalculator {
 
 		// Apply duration-based annuity factor for electricity revenues
 		return hourlyRevenuesSum * annuityFactor(plant.settings.electricityRevenuesFactor);
+	}
+
+	/// The yearly maintenance and repair costs of an investment.
+	private double maintenanceBaseOf(double investment, ProductCosts costs) {
+		return investment * (costs.maintenance + costs.repair) / 100;
 	}
 
 	/**

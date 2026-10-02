@@ -10,6 +10,7 @@
 
 		<class>sophena.model.biogas.BiogasPlant</class>
 		<class>sophena.model.biogas.BiogasPlantBoiler</class>
+		<class>sophena.model.biogas.BiogasRefurbishmentEntry</class>
 		<class>sophena.model.biogas.BiogasPlantSettings</class>
 		<class>sophena.model.biogas.ElectricityMarketValue</class>
 		<class>sophena.model.biogas.ElectricityPriceCurve</class>

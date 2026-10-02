@@ -371,6 +371,7 @@ CREATE TABLE tbl_product_entries (
     id CHAR(36),
 
     f_project CHAR(36),
+    f_biogas_plant CHAR(36),
     f_product CHAR(36),
 
     price_per_piece DOUBLE,
@@ -381,6 +382,28 @@ CREATE TABLE tbl_product_entries (
     repair DOUBLE,
     maintenance DOUBLE,
     operation DOUBLE,
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE tbl_biogas_refurbishment_entries (
+
+    id CHAR(36),
+
+    f_biogas_plant CHAR(36),
+    f_product CHAR(36),
+
+    price_per_piece DOUBLE,
+    number_of_items DOUBLE,
+
+    investment DOUBLE,
+    duration INTEGER,
+    repair DOUBLE,
+    maintenance DOUBLE,
+    operation DOUBLE,
+
+    refurbishment_share DOUBLE,
 
     PRIMARY KEY (id)
 );
