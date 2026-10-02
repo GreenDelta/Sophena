@@ -12,23 +12,23 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sophena.calc.biogas.ehours.EhourSearch;
+import sophena.calc.biogas.eblocks.EblockSearch;
 import sophena.model.Stats;
 
 /// Tests how the two algorithms are integrated into `BiogasPlantResult`.
 public class BiogasPlantResultTest {
 
 	@Test
-	public void usesTheHourBasedAlgorithmByDefault() {
+	public void usesBlockAlgByDefault() {
 		var plant = TestPlant.of(1600, 4);
 		var res = BiogasPlantResult.calculate(plant);
 		if (res.isError())
 			fail(res.error());
 		var result = res.value();
 
-		assertEquals(BiogasAlgorithm.HOURS, BiogasAlgorithm.DEFAULT);
+		assertEquals(BiogasAlgorithm.BLOCKS, BiogasAlgorithm.DEFAULT);
 		assertArrayEquals(
-			EhourSearch.runFlags(plant).orElseThrow(),
+			EblockSearch.runFlags(plant).orElseThrow(),
 			result.runFlags());
 		assertEquals(Stats.HOURS, result.runFlags().length);
 		assertEquals(BiogasPlants.effectiveGasStorageSizeOf(plant),
@@ -40,7 +40,7 @@ public class BiogasPlantResultTest {
 	}
 
 	@Test
-	public void calculatesTheRunHoursWithTheBlockAlgorithm() {
+	public void testRunHours() {
 		var plant = TestPlant.of(1600, 4);
 		var res = BiogasPlantResult.calculate(plant, BiogasAlgorithm.BLOCKS);
 		if (res.isError())
@@ -59,7 +59,9 @@ public class BiogasPlantResultTest {
 
 		// the hour based algorithm produces many blocks that are shorter than
 		// the minimum runtime, so the results differ
-		var hours = BiogasPlantResult.calculate(plant).value().runFlags();
+		var hours = BiogasPlantResult.calculate(plant, BiogasAlgorithm.HOURS)
+			.value()
+			.runFlags();
 		assertFalse("the algorithms must produce different run hours",
 			Arrays.equals(flags, hours));
 		assertTrue("the hour based algorithm produces more blocks",
