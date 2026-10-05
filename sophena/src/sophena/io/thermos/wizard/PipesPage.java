@@ -124,6 +124,7 @@ class PipesPage extends WizardPage {
 			diameterRangeText.setText("");
 			diameterRangeText.setForeground(null);
 			diameterRangeText.setToolTipText(null);
+			setErrorMessage(null);
 			setMessage(INFO);
 			return;
 		}
@@ -137,14 +138,17 @@ class PipesPage extends WizardPage {
 		diameterRangeText.setText(range(min, max));
 
 		var err = PipeSync.check(config, available);
-		diameterRangeText.setForeground(
-			err.isError() ? Colors.getChartRed() : null);
-		diameterRangeText.setToolTipText(err.error());
-		if (err.isOk()) {
-			setMessage(INFO);
-		} else {
+		if (err.isError()) {
+			diameterRangeText.setToolTipText(err.error());
+			diameterRangeText.setForeground(Colors.getChartRed());
+			setMessage(null);
 			setErrorMessage("Mit der ausgewählte Produktlinie können nicht alle " +
 				"Netzabschnitte dimensioniert werden.");
+		} else {
+			diameterRangeText.setToolTipText(null);
+			diameterRangeText.setForeground(null);
+			setErrorMessage(null);
+			setMessage(INFO);
 		}
 	}
 
