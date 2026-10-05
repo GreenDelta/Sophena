@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.jspecify.annotations.Nullable;
+import org.openlca.commons.Strings;
 
 import sophena.db.daos.RootEntityDao;
 import sophena.model.BufferTank;
@@ -29,7 +31,6 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import org.openlca.commons.Strings;
 
 public class SearchDialog<T extends RootEntity> extends FormDialog {
 
@@ -47,6 +48,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 	 * into this dialog. See also the other factory methods
 	 * in this class.
 	 */
+	@Nullable
 	public static <T extends RootEntity> T open(
 		String title,
 		List<T> list,
@@ -62,6 +64,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 			: null;
 	}
 
+	@Nullable
 	public static BufferTank forBuffers() {
 		var buffers = new RootEntityDao<>(
 			BufferTank.class, App.getDb()).getAll();
@@ -69,6 +72,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open("Pufferspeicher", buffers, ProductLabel::of);
 	}
 
+	@Nullable
 	public static TransferStation forTransferStations() {
 		var stations = new RootEntityDao<>(
 			TransferStation.class, App.getDb()).getAll();
@@ -76,6 +80,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open("Hausübergabestationen", stations, ProductLabel::of);
 	}
 
+	@Nullable
 	public static Pipe forPipes() {
 		var pipes = new RootEntityDao<>(
 			Pipe.class, App.getDb()).getAll();
@@ -83,6 +88,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open("Wärmeleitungen", pipes, ProductLabel::of);
 	}
 
+	@Nullable
 	public static HeatRecovery forHeatRecoveries() {
 		var recoveries = new RootEntityDao<>(
 			HeatRecovery.class, App.getDb()).getAll();
@@ -90,6 +96,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		return open("Wärmerückgewinnungen", recoveries, ProductLabel::of);
 	}
 
+	@Nullable
 	public static FlueGasCleaning forFlueGasCleanings() {
 		var cleanings = new RootEntityDao<>(
 			FlueGasCleaning.class, App.getDb()).getAll();
@@ -117,7 +124,7 @@ public class SearchDialog<T extends RootEntity> extends FormDialog {
 		var comp = UI.formComposite(body, tk);
 		UI.gridData(comp, true, false);
 		filterText = UI.formText(comp, tk, "Suche");
-		Texts.on(filterText).onChanged(s -> viewer.refresh());
+		Texts.on(filterText).onChanged(_ -> viewer.refresh());
 		createViewer(body, tk);
 		viewer.setInput(list);
 		viewer.addSelectionChangedListener((e) -> {

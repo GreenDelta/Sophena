@@ -89,7 +89,7 @@ class BufferTankSection {
 			.init(net().maximumPerformance)
 			.decimal()
 			.required()
-			.onChanged(s -> {
+			.onChanged(_ -> {
 				net().maximumPerformance = Texts.getDouble(maximumPerformanceText);
 				editor.setDirty();
 			});
@@ -103,7 +103,7 @@ class BufferTankSection {
 			.init(net().maxBufferLoadTemperature)
 			.decimal()
 			.required()
-			.onChanged(s -> {
+			.onChanged(_ -> {
 				net().maxBufferLoadTemperature = Texts.getDouble(t);
 				editor.setDirty();
 			});
@@ -117,7 +117,7 @@ class BufferTankSection {
 			.init(net().bufferLambda)
 			.decimal()
 			.required()
-			.onChanged(s -> {
+			.onChanged(_ -> {
 				net().bufferLambda = Texts.getDouble(t);
 				editor.setDirty();
 			});
@@ -131,7 +131,7 @@ class BufferTankSection {
 			.decimal()
 			.required()
 			.init(net().targetChargeLevel)
-			.onChanged((s) -> {
+			.onChanged((_) -> {
 				net().targetChargeLevel = Texts.getDouble(targetChargeText);
 				editor.setDirty();
 			});
@@ -150,8 +150,10 @@ class BufferTankSection {
 			: "(kein Pufferspeicher ausgewählt)");
 		link.setImage(Icon.BUFFER_16.img());
 		link.setForeground(Colors.getLinkBlue());
-		Controls.onClick(link, $ ->  {
+		Controls.onClick(link, _ -> {
 			BufferTank b = SearchDialog.forBuffers();
+			if (b == null)
+				return;
 			applyBufferTank(link, b);
 		});
 
@@ -162,13 +164,15 @@ class BufferTankSection {
 		});
 
 		var btn = tk.createButton(comp, "Abschätzen", SWT.PUSH);
-		Controls.onSelect(btn, $ -> BufferEstimator
+		Controls.onSelect(btn, _ -> BufferEstimator
 			.run(project(), App.getDb())
 			.ifPresent(buffer -> applyBufferTank(link, buffer)));
 		UI.filler(comp, tk);
 	}
 
 	private void applyBufferTank(ImageHyperlink link, BufferTank b) {
+		if (b == null)
+			return;
 		net().bufferTank = b;
 		Texts.set(volText, Num.intStr(b.volume));
 		link.setText(ProductLabel.of(b));
