@@ -11,6 +11,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.jspecify.annotations.NonNull;
+import org.openlca.commons.Strings;
 
 import sophena.model.AnnualCostEntry;
 import sophena.model.FuelGroup;
@@ -18,6 +19,7 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
+import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 import sophena.rcp.M;
@@ -71,6 +73,14 @@ public class BiogasPlantWizard extends Wizard {
 		plant.gasStorageTemperature = 30;
 		plant.gasStorageOverpressure = 5;
 
+		// select a default electricity price curver
+		plant.electricityPrices = App.getDb().getAll(ElectricityPriceCurve.class)
+			.stream()
+			.sorted((i, j) -> Strings.compareNatural(j.name, i.name))
+			.findAny()
+			.orElse(null);
+
+		// create some default cost entries
 		var costs = List.of(
 			"Laborkosten",
 			"Verwaltungskosten",

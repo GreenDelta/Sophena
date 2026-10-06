@@ -311,7 +311,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 		}
 		settings.marketValue = db.getAll(ElectricityMarketValue.class)
 			.stream()
-			.min((a, b) -> Strings.compareIgnoreCase(b.name, a.name))
+			.min((a, b) -> Strings.compareNatural(b.name, a.name))
 			.orElse(null);
 		settings.isFixedRemuneration = settings.marketValue == null;
 
