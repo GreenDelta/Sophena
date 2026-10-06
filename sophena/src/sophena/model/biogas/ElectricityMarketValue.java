@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import sophena.model.BaseDataEntity;
 import sophena.model.DoubleArrayConverter;
+import sophena.model.HoursTrace;
 import sophena.model.Stats;
 
 /// Market values that are used to calculate funding for electricity feed-ins.
@@ -36,11 +37,34 @@ public class ElectricityMarketValue extends BaseDataEntity {
 	}
 
 	/// Returns the monthly value of the given month (1 = January ... 12 =
-	/// December), or `0` when there is no value for that month.
+	/// December), or the yearly average when there is no value for that month.
 	public double monthlyValueOf(int month) {
 		return monthlyValues == null || month < 1 || month > 12
 			? value
 			: monthlyValues[month - 1];
+	}
+
+	/// Returns the monthly value that is applied to the given hour of an
+	/// annual hours trace (0 = 01.01. 00:00 - 01:00 ... 8759 = 31.12. 23:00 -
+	/// 00:00). As in other hours traces, the February is assumed to have 28
+	/// days. When no monthly values are available, the annual `value` is
+	/// returned.
+	public double monthlyValueOfHour(int hour) {
+		if (monthlyValues == null || monthlyValues.length < 12)
+			return value;
+		if (hour < 0)
+			return monthlyValues[0];
+		if (hour >= Stats.HOURS)
+			return monthlyValues[11];
+
+		int day = hour / 24;
+		int days = 0;
+		for (int month = 0; month < 12; month++) {
+			days += HoursTrace.DAYS_IN_MONTH[month];
+			if (day < days)
+				return monthlyValues[month];
+		}
+		return monthlyValues[11];
 	}
 
 	@Override
