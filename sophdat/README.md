@@ -29,6 +29,8 @@ The `data` folder should have the following content:
     that are included in the base data of Sophena.
 * `data/json/electricity_market_values/*.json`: The yearly and monthly market
     values that are used to calculate the funding of electricity feed-ins.
+* `data/json/electricity_price_curves/*.json`: The hourly electricity prices
+    and the flags that indicate whether feed-in is allowed for each hour.
 
 ## Product data
 In the following the format of the CSV files with the product data is described.

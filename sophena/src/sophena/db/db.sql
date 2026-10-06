@@ -68,6 +68,9 @@ CREATE TABLE tbl_electricity_price_curves (
     id               CHAR(36),
     name             VARCHAR(255),
     description      CLOB(64 K),
+
+    is_protected     BOOLEAN,
+
     data             BLOB (80 K),
     feed_in_allowed  BLOB (10 K),
     PRIMARY KEY (id)

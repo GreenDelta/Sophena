@@ -56,6 +56,7 @@ func pack() {
 	packJSONFolder("cost_settings", baseData)
 	packJSONFolder("weather_stations", baseData)
 	packJSONFolder("electricity_market_values", baseData)
+	packJSONFolder("electricity_price_curves", baseData)
 	for _, s := range csvModel.BuildingStates {
 		baseData.Put(s, "building_states")
 	}

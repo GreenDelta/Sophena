@@ -242,3 +242,11 @@ type ElectricityMarketValue struct {
 	MonthlyValues []float64 `json:"monthlyValues"`
 	Source        string    `json:"source"`
 }
+
+// ElectricityPriceCurve stores the hourly electricity prices and flags that
+// indicate whether feed-in is allowed for each hour.
+type ElectricityPriceCurve struct {
+	BaseDataEntity
+	Values        []float64 `json:"values"`
+	FeedInAllowed []bool    `json:"feedInAllowed"`
+}
