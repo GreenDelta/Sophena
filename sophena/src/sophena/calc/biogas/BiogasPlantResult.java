@@ -15,15 +15,9 @@ import sophena.model.biogas.BiogasPlant;
 /// The result of a biogas plant calculation: the gas that is produced by the
 /// substrates of the plant and the hours of the year in which the plant runs.
 ///
-/// The run hours can be calculated with two algorithms, see `BiogasAlgorithm`:
-/// the hour based algorithm (`EhourSearch`) that was used before and the block
-/// based algorithm (`EblockSearch`) that keeps the minimum runtime of the
-/// plant.
-///
-/// A calculation with a different algorithm produces different run hours and
-/// therefore different results for the whole project in which the plant is
-/// used, because the run hours are used to create the producer profile of the
-/// plant (see `BiogasPlants.syncProducerProfile`).
+/// The run hours can be calculated with two algorithms, see `BiogasAlgorithm`.
+/// The run hours are used to create the producer profile of the plant (see
+/// `BiogasPlants.syncProducerProfile`).
 ///
 /// The `gasStorageSize` of a result is the effective size that was used for
 /// the calculation, see `BiogasPlants#effectiveGasStorageSizeOf(BiogasPlant)`.
@@ -94,17 +88,21 @@ public record BiogasPlantResult(
 				profile.maxPower[h] = power;
 				profile.temperaturLevel[h] = temperature;
 			} else {
-				// if we are before a block -> 1/8 ramp-up
+				// if we are before a block -> + 1/8 ramp-up
 				if (h < (n - 1) && runFlags[h + 1]) {
 					profile.maxPower[h] += power / 8;
 					profile.temperaturLevel[h] = temperature;
 				}
 
-				// if we are after a block -> 1/8 ramp-down
+				// if we are after a block -> + 1/8 ramp-down
 				if (h > 0 && runFlags[h - 1]) {
 					profile.maxPower[h] += power / 8;
 					profile.temperaturLevel[h] = temperature;
 				}
+
+				// note that we could be exactly between two
+				// blocks and this is covered by the conditions
+				// above, so do not join them in a single if-clause
 			}
 		}
 		return profile;

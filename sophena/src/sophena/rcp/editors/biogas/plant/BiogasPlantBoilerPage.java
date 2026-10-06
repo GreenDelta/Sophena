@@ -64,20 +64,6 @@ class BiogasPlantBoilerPage extends FormPage {
 		UI.formLabel(comp, tk, "kW");
 		UI.filler(comp, tk);
 
-		// eligible operating quarter hours
-		var hoursText = UI.formText(
-			comp, tk, "Förderfähige Betriebsviertelstunden");
-		Texts.on(hoursText)
-			.integer()
-			.init(settings.eligibleQuarterHours)
-			.onChanged(s -> {
-				settings.eligibleQuarterHours = Num.readInt(s);
-				editor.setDirty();
-			});
-		UI.formLabel(comp, tk, "BVh/a");
-		HelpLink.create(comp, tk, "Förderfähige Betriebsviertelstunden",
-			H.EligibleQuarterHoursInfo);
-
 		// minimum runtime of the boilers
 		var runtimeText = UI.formText(comp, tk, "BHKW-Mindestlaufzeit");
 		Texts.on(runtimeText)

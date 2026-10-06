@@ -34,6 +34,7 @@ class FundingSection {
 	private Texts.TextBox feedInTariff;
 	private Texts.TextBox premiumValue;
 	private EntityCombo<ElectricityMarketValue> marketValueCombo;
+	private Texts.TextBox eligibleQuarterHours;
 	private Combo priceLimitCombo;
 
 	private FundingSection(BiogasPlantEditor editor) {
@@ -63,6 +64,7 @@ class FundingSection {
 		createMarketValueRow(comp, tk);
 		createValueTypeRow(comp, tk);
 		createMarketerRow(comp, tk);
+		createEligibleQuarterHoursRow(comp, tk);
 		createPriceLimitRow(comp, tk);
 
 		updateState();
@@ -159,6 +161,24 @@ class FundingSection {
 			H.DirectMarketerShareInfo);
 	}
 
+	private void createEligibleQuarterHoursRow(
+		Composite comp, FormToolkit tk
+	) {
+		var settings = plant().settings;
+		var text = UI.formText(
+			comp, tk, "Förderfähige Betriebsviertelstunden");
+		eligibleQuarterHours = Texts.on(text)
+			.integer()
+			.init(settings.eligibleQuarterHours)
+			.onChanged(s -> {
+				settings.eligibleQuarterHours = Num.readInt(s);
+				editor.setDirty();
+			});
+		UI.formLabel(comp, tk, "BVh/a");
+		HelpLink.create(comp, tk, "Förderfähige Betriebsviertelstunden",
+			H.EligibleQuarterHoursInfo);
+	}
+
 	private void createPriceLimitRow(Composite comp, FormToolkit tk) {
 		var settings = plant().settings;
 		priceLimitCombo = UI.formCombo(
@@ -199,6 +219,7 @@ class FundingSection {
 		setEnabled(marketValueCombo, !fixed);
 		setEnabled(annualRadio, !fixed);
 		setEnabled(monthlyRadio, !fixed);
+		setEnabled(eligibleQuarterHours, !fixed);
 		setEnabled(priceLimitCombo, !fixed);
 	}
 

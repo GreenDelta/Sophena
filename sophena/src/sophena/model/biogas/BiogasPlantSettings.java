@@ -17,7 +17,6 @@ import sophena.db.Database;
 import sophena.db.daos.CostSettingsDao;
 import sophena.model.AbstractEntity;
 import sophena.model.Fuel;
-import sophena.rcp.app.App;
 
 /// The settings of a biogas plant. This is similar to the cost settings of a
 /// project: a biogas plant is always created with a settings instance.
