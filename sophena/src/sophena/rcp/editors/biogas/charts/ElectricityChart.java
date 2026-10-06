@@ -5,8 +5,8 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.calc.biogas.BiogasPlantResult;
 import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.charts.Charts;
@@ -62,7 +62,7 @@ public class ElectricityChart {
 		zeroTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 	}
 
-	public void setInput(BiogasPlantResult r) {
+	public void setInput(BiogasRuntimeResult r) {
 		var prices = pricesOf(r.plant());
 		var max = Stats.max(prices);
 		if (max == 0) {

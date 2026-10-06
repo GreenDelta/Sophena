@@ -7,7 +7,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
@@ -92,7 +92,7 @@ class BiogasPlantInfoPage extends FormPage {
 		Controls.onSelect(btn, _ -> {
 			var res = App.exec(
 				"Berechne ...",
-				() -> BiogasPlantResult.calculate(plant()));
+				() -> BiogasRuntimeResult.calculate(plant()));
 			if (res.isError()) {
 				MsgBox.error("Eine Berechnung ist nicht möglich.", res.error());
 				return;

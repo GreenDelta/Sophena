@@ -31,8 +31,54 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 			: new BiogasStorage(0, 0);
 	}
 
+	/// Simulates the storage over one year with the given run flags and returns
+	/// the amount of gas in m³ that is in the storage at the end of each hour.
+	///
+	/// The gas that is produced in an hour is added to the storage first. When
+	/// the plant runs in an hour, the gas for the ramp-up (1/8 of an hour under
+	/// full load) is taken from the storage in the first hour of a block and the
+	/// full load for every following hour. When a block ends, the gas for the
+	/// ramp-down (1/8 of an hour under full load) is taken from the storage in
+	/// the first hour in which the plant does not run. Gas that does not fit
+	/// into the storage is lost.
+	public static double[] annualProfileOf(
+		BiogasPlant plant, BiogasProfile profile, boolean[] runFlags
+	) {
+		var storageProfile = new double[Stats.HOURS];
+		if (plant == null || profile == null)
+			return storageProfile;
+
+		var storage = of(plant);
+		boolean running = false;
+		for (int h = 0; h < Stats.HOURS; h++) {
+			storage.add(profile, h);
+			boolean runs = runFlags != null
+				&& h < runFlags.length
+				&& runFlags[h];
+			if (runs) {
+				if (!running) {
+					storage.runHours(Demand.RAMP.factor());
+				}
+				storage.runOneHour();
+				running = true;
+			} else {
+				if (running) {
+					storage.runHours(Demand.RAMP.factor());
+				}
+				running = false;
+			}
+			storageProfile[h] = storage.filled();
+		}
+		return storageProfile;
+	}
+
 	public double size() {
 		return size;
+	}
+
+	/// The amount of gas that is currently in the storage in m³.
+	public double filled() {
+		return filled;
 	}
 
 	/// Add the given volume with the given methane content to this storage. The

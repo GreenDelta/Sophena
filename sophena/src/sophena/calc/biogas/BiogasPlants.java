@@ -150,9 +150,9 @@ public final class BiogasPlants {
 
 		// an edit of a plant must always be possible, so we use an empty result
 		// when the plant cannot be calculated; the plant editor shows the error
-		var res = BiogasPlantResult.calculate(plant);
+		var res = BiogasRuntimeResult.calculate(plant);
 		var result = res.isError()
-			? BiogasPlantResult.emptyOf(plant)
+			? BiogasRuntimeResult.emptyOf(plant)
 			: res.value();
 
 		double temperature = project.heatNet != null

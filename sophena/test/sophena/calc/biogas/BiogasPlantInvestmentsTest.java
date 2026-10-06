@@ -131,7 +131,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.settings = BiogasPlantSettings.createDefault(null);
 		plant.settings.interestRate = 0;
 		plant.settings.investmentFactor = 1.0;
-		var result = BiogasPlantResult.calculate(plant).orElseThrow();
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 
 		var before = new BiogasCostCalculator(plant, result).calculate();
 

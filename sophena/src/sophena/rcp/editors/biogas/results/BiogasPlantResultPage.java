@@ -12,7 +12,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.biogas.BiogasCostCalculator;
-import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -43,7 +43,7 @@ class BiogasPlantResultPage extends FormPage {
 	}
 
 	private void createOverview(
-		Composite body, FormToolkit tk, BiogasPlantResult result
+		Composite body, FormToolkit tk, BiogasRuntimeResult result
 	) {
 		var plant = result.plant();
 		var table = createTable(UI.formSection(body, tk, "Übersicht"));
@@ -64,7 +64,7 @@ class BiogasPlantResultPage extends FormPage {
 	}
 
 	private void createCosts(
-		Composite body, FormToolkit tk, BiogasPlantResult result
+		Composite body, FormToolkit tk, BiogasRuntimeResult result
 	) {
 		var plant = result.plant();
 		if (plant.settings == null)
@@ -98,7 +98,7 @@ class BiogasPlantResultPage extends FormPage {
 		return table;
 	}
 
-	private static int runHours(BiogasPlantResult result) {
+	private static int runHours(BiogasRuntimeResult result) {
 		var flags = result.runFlags();
 		if (flags == null)
 			return 0;
@@ -110,7 +110,7 @@ class BiogasPlantResultPage extends FormPage {
 		return n;
 	}
 
-	private static String plantName(BiogasPlantResult result) {
+	private static String plantName(BiogasRuntimeResult result) {
 		var plant = result.plant();
 		return plant == null || plant.name == null
 			? "Biogasanlage"

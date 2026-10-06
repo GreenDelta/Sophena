@@ -6,7 +6,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
@@ -43,7 +43,7 @@ class ProducerProfileSection {
 		editor.onResult(this::setInput);
 	}
 
-	private void setInput(BiogasPlantResult r) {
+	private void setInput(BiogasRuntimeResult r) {
 		var profile = r.asProducerProfile(90);
 		double[] nums = profile.maxPower;
 		if (nums == null)

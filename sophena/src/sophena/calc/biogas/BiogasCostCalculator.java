@@ -20,7 +20,7 @@ import sophena.math.costs.CapitalCosts;
 public class BiogasCostCalculator {
 
 	private final BiogasPlant plant;
-	private final BiogasPlantResult result;
+	private final BiogasRuntimeResult result;
 
 	/**
 	 * Creates a new calculator for the given plant and its energy results.
@@ -28,7 +28,7 @@ public class BiogasCostCalculator {
 	 * @param plant The biogas plant model with cost settings.
 	 * @param result The simulation result containing run flags and energy data.
 	 */
-	public BiogasCostCalculator(BiogasPlant plant, BiogasPlantResult result) {
+	public BiogasCostCalculator(BiogasPlant plant, BiogasRuntimeResult result) {
 		this.plant = plant;
 		this.result = result;
 	}

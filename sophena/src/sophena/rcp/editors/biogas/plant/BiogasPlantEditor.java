@@ -9,7 +9,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
-import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
 import sophena.rcp.app.App;
@@ -21,7 +21,7 @@ import sophena.rcp.utils.KeyEditorInput;
 public class BiogasPlantEditor extends Editor {
 
 	private BiogasPlant plant;
-	private final List<Consumer<BiogasPlantResult>> resultFns = new ArrayList<>();
+	private final List<Consumer<BiogasRuntimeResult>> resultFns = new ArrayList<>();
 
 	public static void open(BiogasPlant plant) {
 		if (plant == null)
@@ -35,17 +35,17 @@ public class BiogasPlantEditor extends Editor {
 	}
 
 	void calculate() {
-		var res = BiogasPlantResult.calculate(plant);
+		var res = BiogasRuntimeResult.calculate(plant);
 		// the pages show empty charts when the plant cannot be calculated
 		var result = res.isError()
-			? BiogasPlantResult.emptyOf(plant)
+			? BiogasRuntimeResult.emptyOf(plant)
 			: res.value();
 		for (var fn : resultFns) {
 			fn.accept(result);
 		}
 	}
 
-	void onResult(Consumer<BiogasPlantResult> fn) {
+	void onResult(Consumer<BiogasRuntimeResult> fn) {
 		if (fn != null) {
 			resultFns.add(fn);
 		}

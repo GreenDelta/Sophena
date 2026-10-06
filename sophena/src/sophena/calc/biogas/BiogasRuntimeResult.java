@@ -12,12 +12,15 @@ import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
-/// The result of a biogas plant calculation: the gas that is produced by the
-/// substrates of the plant and the hours of the year in which the plant runs.
+/// The runtime result of a biogas plant calculation: the gas that is produced
+/// by the substrates of the plant and the hours of the year in which the plant
+/// runs.
 ///
 /// The run hours can be calculated with two algorithms, see `BiogasAlgorithm`.
-/// The run hours are used to create the producer profile of the plant (see
-/// `BiogasPlants.syncProducerProfile`).
+/// The runtime result also contains the producer profile of the plant, which is
+/// created with the default temperature (see `PRODUCER_TEMPERATURE`), and the
+/// storage profile, which contains the gas that is in the biogas storage (in
+/// m³) at the end of each hour.
 ///
 /// The `gasStorageSize` of a result is the effective size that was used for
 /// the calculation, see `BiogasPlants#effectiveGasStorageSizeOf(BiogasPlant)`.
@@ -25,17 +28,24 @@ import sophena.model.biogas.BiogasPlant;
 /// The ramp hours (1/8 of the power before and after a block) are not included
 /// in the run flags; they are added when the producer profile is created.
 @NullMarked
-public record BiogasPlantResult(
+public record BiogasRuntimeResult(
 	BiogasPlant plant,
 	BiogasProfile biogasProfile,
 	double gasStorageSize,
-	boolean[] runFlags
+	boolean[] runFlags,
+	ProducerProfile producerProfile,
+	double[] storageProfile
 ) {
+
+	/// The temperature in °C that is used for the `producerProfile` of a
+	/// result. The method `asProducerProfile` can be used to create a profile
+	/// with another temperature.
+	public static final double PRODUCER_TEMPERATURE = 95.0;
 
 	/// Calculates the plant with the default algorithm
 	/// (`BiogasAlgorithm.DEFAULT`) and returns an error when the plant cannot
 	/// be calculated with it.
-	public static Res<BiogasPlantResult> calculate(@Nullable BiogasPlant plant) {
+	public static Res<BiogasRuntimeResult> calculate(@Nullable BiogasPlant plant) {
 		return calculate(plant, BiogasAlgorithm.DEFAULT);
 	}
 
@@ -43,7 +53,7 @@ public record BiogasPlantResult(
 	/// a message that describes the problem when the plant cannot be calculated
 	/// with it, e.g. when the gas storage is too small for the minimum runtime
 	/// of the plant.
-	public static Res<BiogasPlantResult> calculate(
+	public static Res<BiogasRuntimeResult> calculate(
 		@Nullable BiogasPlant plant, @Nullable BiogasAlgorithm algorithm
 	) {
 		if (plant == null)
@@ -54,25 +64,42 @@ public record BiogasPlantResult(
 			case HOURS -> EhourSearch.runFlags(plant);
 			case BLOCKS -> EblockSearch.runFlags(plant);
 		};
-		return flags.then(runFlags -> Res.ok(new BiogasPlantResult(
-			plant,
-			BiogasProfile.of(plant),
-			BiogasPlants.effectiveGasStorageSizeOf(plant),
-			runFlags)));
+		return flags.then(runFlags -> {
+			var profile = BiogasProfile.of(plant);
+			return Res.ok(new BiogasRuntimeResult(
+				plant,
+				profile,
+				BiogasPlants.effectiveGasStorageSizeOf(plant),
+				runFlags,
+				producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE),
+				BiogasStorage.annualProfileOf(plant, profile, runFlags)));
+		});
 	}
 
 	/// An empty result. It is used by callers that need a producer profile for
 	/// a plant that cannot be calculated, e.g. when the plant is edited: an
 	/// edit should always be possible, also when the plant is not complete.
-	public static BiogasPlantResult emptyOf(BiogasPlant plant) {
-		return new BiogasPlantResult(
+	public static BiogasRuntimeResult emptyOf(BiogasPlant plant) {
+		var runFlags = new boolean[Stats.HOURS];
+		return new BiogasRuntimeResult(
 			plant,
 			BiogasProfile.empty(),
 			0,
-			new boolean[Stats.HOURS]);
+			runFlags,
+			producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE),
+			new double[Stats.HOURS]);
 	}
 
+	/// Creates the producer profile of this result with the given temperature
+	/// in °C. The stored `producerProfile` was created with
+	/// `PRODUCER_TEMPERATURE`.
 	public ProducerProfile asProducerProfile(double temperature) {
+		return producerProfileOf(plant, runFlags, temperature);
+	}
+
+	private static ProducerProfile producerProfileOf(
+		BiogasPlant plant, boolean[] runFlags, double temperature
+	) {
 		var profile = new ProducerProfile();
 		profile.id = UUID.randomUUID().toString();
 		profile.minPower = new double[Stats.HOURS];

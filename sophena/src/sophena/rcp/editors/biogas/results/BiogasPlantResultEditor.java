@@ -5,7 +5,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.openlca.commons.Strings;
 
-import sophena.calc.biogas.BiogasPlantResult;
+import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
@@ -15,11 +15,11 @@ import sophena.rcp.utils.KeyEditorInput;
 /// editor through a key in the application cache, see `App#stash(Object)`.
 public class BiogasPlantResultEditor extends Editor {
 
-	private BiogasPlantResult result;
+	private BiogasRuntimeResult result;
 
 	/// Opens the editor for the given calculation result. An already open
 	/// result editor for the same plant is closed first.
-	public static void open(BiogasPlantResult result) {
+	public static void open(BiogasRuntimeResult result) {
 		if (result == null || result.plant() == null)
 			return;
 		var plant = result.plant();
@@ -37,7 +37,7 @@ public class BiogasPlantResultEditor extends Editor {
 		Editors.open(input, "sophena.BiogasPlantResultEditor");
 	}
 
-	BiogasPlantResult result() {
+	BiogasRuntimeResult result() {
 		return result;
 	}
 
