@@ -1,12 +1,10 @@
-package sophena.math.costs;
+package sophena.calc.costs;
 
 import java.util.function.DoubleSupplier;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.calc.costs.CostResultItem;
-import sophena.calc.costs.CapitalCosts;
 import sophena.model.CostSettings;
 import sophena.model.ProductCosts;
 import sophena.model.Project;

@@ -1,9 +1,7 @@
-package sophena.math.energetic;
+package sophena.calc.specs;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import sophena.calc.specs.UtilisationRate;
 
 public class UtilisationRateTest {
 

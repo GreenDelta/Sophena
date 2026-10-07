@@ -1,9 +1,8 @@
-package sophena.math.energetic;
+package sophena.calc.kpi;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.calc.kpi.UsedElectricity;
 import sophena.model.CostSettings;
 
 public class UsedElectricityTest {

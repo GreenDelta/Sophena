@@ -1,11 +1,10 @@
-package sophena.math.costs;
+package sophena.calc.costs;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import sophena.calc.ProjectResult;
-import sophena.calc.costs.Costs;
 import sophena.model.Boiler;
 import sophena.model.BufferTank;
 import sophena.model.Consumer;

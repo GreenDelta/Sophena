@@ -1,4 +1,4 @@
-package sophena.math.costs;
+package sophena.calc.costs;
 
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;

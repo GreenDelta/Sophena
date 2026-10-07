@@ -1,4 +1,4 @@
-package sophena.math;
+package sophena.calc.load;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +7,6 @@ import static sophena.calc.load.Smoothing.on;
 
 import org.junit.Test;
 
-import sophena.calc.load.Smoothing;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.LoadProfile;

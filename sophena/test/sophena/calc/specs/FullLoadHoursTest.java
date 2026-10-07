@@ -1,9 +1,8 @@
-package sophena.math.energetic;
+package sophena.calc.specs;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.calc.specs.Producers;
 import sophena.model.Boiler;
 import sophena.model.Producer;
 import sophena.model.ProducerProfile;

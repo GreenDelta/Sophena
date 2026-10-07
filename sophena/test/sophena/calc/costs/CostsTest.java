@@ -1,4 +1,4 @@
-package sophena.math.costs;
+package sophena.calc.costs;
 
 import org.junit.Assert;
 import org.junit.Test;
