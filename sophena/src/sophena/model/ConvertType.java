@@ -43,6 +43,11 @@ public class ConvertType {
 			return FundingType.SolarThermalPlant;
 		case TRANSFER_STATION:
 			return FundingType.TransferStation;
+		case BIOGAS_STRUCTURE:
+		case BIOGAS_TECHNOLOGY:
+		case ELECTRICITY_TRANSFER:
+			// biogas components are currently not part of the funding program
+			return null;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + productType);
 		}

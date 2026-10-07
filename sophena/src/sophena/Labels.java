@@ -110,6 +110,9 @@ public final class Labels {
 			case HEATING_NET_CONSTRUCTION -> "Wärmenetz-Bau";
 			case PLANNING -> "Planung";
 			case TRANSFER_STATION -> "Wärmeübergabe";
+			case BIOGAS_STRUCTURE -> "Biogasbauwerk";
+			case BIOGAS_TECHNOLOGY -> "Biogastechnik";
+			case ELECTRICITY_TRANSFER -> "Stromübergabe";
 		};
 	}
 
@@ -117,6 +120,7 @@ public final class Labels {
 		if (area == null)
 			return null;
 		return switch (area) {
+			case BIOGAS -> "Biogas";
 			case BUILDINGS -> "Gebäude";
 			case HEATING_NET -> "Wärmenetz";
 			case PLANNING -> "Planung";
@@ -172,6 +176,9 @@ public final class Labels {
 			case HEATING_NET_CONSTRUCTION -> "Wärmenetz-Bau";
 			case PLANNING -> "Planung";
 			case TRANSFER_STATION -> "Wärmeübergabe";
+			case BIOGAS_STRUCTURE -> "Biogasbauwerke";
+			case BIOGAS_TECHNOLOGY -> "Biogastechnik";
+			case ELECTRICITY_TRANSFER -> "Stromübergabe";
 		};
 	}
 
@@ -192,7 +199,7 @@ public final class Labels {
 		FuelSpec spec = producer.fuelSpec;
 		return spec.fuel != null ? spec.fuel.name : "?";
 	}
-	
+
 	public static String getRankText(ProducerFunction func, int rank)
 	{
 		String s = "";
@@ -208,7 +215,7 @@ public final class Labels {
 			s = " - möglichst wenig laden ";
 			break;
 		default:
-			break;		
+			break;
 		}
 		return rank + s;
 	}

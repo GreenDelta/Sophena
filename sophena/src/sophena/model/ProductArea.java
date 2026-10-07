@@ -12,6 +12,8 @@ public enum ProductArea {
 
 	HEATING_NET,
 
-	PLANNING;
+	PLANNING,
+
+	BIOGAS;
 
 }

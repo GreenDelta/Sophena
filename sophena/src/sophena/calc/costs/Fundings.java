@@ -35,7 +35,10 @@ public class Fundings {
 			if (item.productType == null)
 				continue;
 
-			Integer fundingTypeValue = ConvertType.ProductTypeToFundingType(item.productType).getValue();
+			var fundingType = ConvertType.ProductTypeToFundingType(item.productType);
+			if (fundingType == null)
+				continue;
+			Integer fundingTypeValue = fundingType.getValue();
 			if((fundingTypes & fundingTypeValue) > 0)
 				total += factor * item.investmentCosts;
 		}

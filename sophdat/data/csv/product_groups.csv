@@ -57,6 +57,7 @@ d0313ee3-9474-49c4-bd0f-69ecda76dd21 ; 5      ; BUILDING                  ; Pell
 7a8f1995-557f-47d4-895b-69497d705a1f ; 6      ; BUILDING                  ; Kamin                                                          ;              ; 50        ; 1       ; 2            ; 0
 9d44fb19-c020-44ee-b72f-e4490408c4bf ; 7      ; BUILDING                  ; Rauchgasrohre                                                  ;              ; 15        ; 1       ; 1            ; 0
 c3c9a105-ef87-4b67-aed0-12f85bbd47d6 ; 8      ; BUILDING                  ; Abgasventilator                                                ;              ; 15        ; 2       ; 2            ; 2
+07637139-ff53-45ed-b0cd-1cc5296a782b ; 9      ; BUILDING                  ; BHKW-Gebäude                                                   ;              ;           ;         ;              ;
 0ad99eb8-ff78-4ee9-8a2c-620217c7c4d0 ; 0      ; PIPE                      ; Leitungsrohre Kunststoff flexibel                              ;              ; 30        ; 0.5     ; 0            ; 0
 04bf0363-235b-3d6d-adfe-aa6d53f14694 ; 1      ; PIPE                      ; Leitungsrohre Kunststoff starr                                 ;              ; 30        ; 0.5     ; 0            ; 0
 911b3151-05dc-41c3-a19a-c86694707cc4 ; 2      ; PIPE                      ; Leitungsrohre Stahl                                            ;              ; 40        ; 1       ; 0            ; 0
@@ -71,3 +72,29 @@ b80024fb-5818-41be-909e-da96d6be67f3 ; 0      ; PLANNING                  ; Vorp
 4d56325d-026f-4050-8749-8d75882e2aba ; 1      ; PLANNING                  ; Detailplanung, Genehmigung, Bauüberwachung                     ;              ;           ; 0       ; 0            ; 0
 aef04552-f19b-4bc9-ae31-fb5fdca8e39d ; 2      ; PLANNING                  ; Finanzierung und Förderanträge                                 ;              ;           ; 0       ; 0            ; 0
 79ac3ebf-238e-43c3-8696-ba777ec06359 ; 3      ; PLANNING                  ; Öffentlichkeitsarbeit, Informationsveranstaltungen, Werbung    ;              ;           ; 0       ; 0            ; 0
+e5dcdb34-b794-40ec-9a22-70c326e7ccab ; 0      ; BIOGAS_STRUCTURE          ; Fahrsilo                                                       ;              ;           ;         ;              ;
+a47fce60-0115-40d0-8778-d9e4d9047cf6 ; 1      ; BIOGAS_STRUCTURE          ; Vorgrube                                                       ;              ;           ;         ;              ;
+1a7f1731-c378-4b4b-98f5-53e233c2745e ; 2      ; BIOGAS_STRUCTURE          ; Silosickersaftbehälter                                         ;              ;           ;         ;              ;
+bcdd2d12-0181-4671-bd81-aa450158216e ; 3      ; BIOGAS_STRUCTURE          ; Fermenter                                                      ;              ;           ;         ;              ;
+936c7dc8-53c9-4ce5-9bfa-779ba7feaef7 ; 4      ; BIOGAS_STRUCTURE          ; Gärproduktlager                                                ;              ;           ;         ;              ;
+b05edcc7-cfff-4ab1-aea0-4323f4c5b5b4 ; 5      ; BIOGAS_STRUCTURE          ; Umwallung                                                      ;              ;           ;         ;              ;
+876b1e7e-1994-4f1f-850b-ccf05d4c2ff4 ; 0      ; BIOGAS_TECHNOLOGY         ; Einbringung                                                    ;              ;           ;         ;              ;
+f881b4e0-14a7-4977-a65e-39b6b6bb9008 ; 1      ; BIOGAS_TECHNOLOGY         ; Rührtechnik                                                    ;              ;           ;         ;              ;
+103e5616-20c0-43f9-b304-844f0a428ff6 ; 2      ; BIOGAS_TECHNOLOGY         ; Pumptechnik                                                    ;              ;           ;         ;              ;
+d8eb5df5-c047-48a9-a846-919b80727b59 ; 3      ; BIOGAS_TECHNOLOGY         ; Behälterabdeckung                                              ;              ;           ;         ;              ;
+df0e4ebb-e8d4-47c5-b21f-3eb9d101fbfe ; 4      ; BIOGAS_TECHNOLOGY         ; Separation                                                     ;              ;           ;         ;              ;
+43a96881-1cad-446a-b09f-82add30d7cd7 ; 5      ; BIOGAS_TECHNOLOGY         ; Gasspeicher                                                    ;              ;           ;         ;              ;
+73681099-8c16-4778-a8a7-cb8c4de75ee3 ; 6      ; BIOGAS_TECHNOLOGY         ; Gasspeicherfüllstandsmessung                                   ;              ;           ;         ;              ;
+88c2f9dc-3c42-4837-8787-7ef0c53627ae ; 7      ; BIOGAS_TECHNOLOGY         ; Gasmischer                                                     ;              ;           ;         ;              ;
+0070e49a-a3fb-479e-9645-9898f7c9090d ; 8      ; BIOGAS_TECHNOLOGY         ; Kompressor                                                     ;              ;           ;         ;              ;
+009c2cb1-c319-441f-9538-a933df8da522 ; 9      ; BIOGAS_TECHNOLOGY         ; Biogasleitungen                                                ;              ;           ;         ;              ;
+4e390523-8a58-4b36-bfbd-74f1d1810f52 ; 10     ; BIOGAS_TECHNOLOGY         ; Gastrocknung, -entschwefelung und -reinigung                   ;              ;           ;         ;              ;
+bf6f4a6d-3465-41db-8b22-b69b26a355e2 ; 11     ; BIOGAS_TECHNOLOGY         ; BHKW-Vorwärmer                                                 ;              ;           ;         ;              ;
+82cc1f59-1d10-4dc7-8cb6-475d750e1dd3 ; 12     ; BIOGAS_TECHNOLOGY         ; Technik Rest wenig komplex                                     ;              ;           ;         ;              ;
+efdd11d8-5fe9-41ac-8304-c19b9eadc00f ; 13     ; BIOGAS_TECHNOLOGY         ; Technik Rest komplex                                           ;              ;           ;         ;              ;
+ae190d50-1614-473d-acd1-08e33ec09901 ; 14     ; BIOGAS_TECHNOLOGY         ; Sonstiges                                                      ;              ;           ;         ;              ;
+4bbe26fe-4acd-4193-8dde-4bda518a7afa ; 0      ; ELECTRICITY_TRANSFER      ; Stromnetzanschluss                                             ;              ;           ;         ;              ;
+135a739a-8a8d-43a2-9272-be0c2dcb6d10 ; 1      ; ELECTRICITY_TRANSFER      ; Trafo                                                          ;              ;           ;         ;              ;
+b4333ca6-d296-4bbe-a68e-81adf802a81b ; 2      ; ELECTRICITY_TRANSFER      ; Stromübergabestation                                           ;              ;           ;         ;              ;
+143e0084-a323-4098-ac42-6a746b03f852 ; 3      ; ELECTRICITY_TRANSFER      ; Kommunikationseinrichtung                                      ;              ;           ;         ;              ;
+f1b424a4-dc57-4684-a923-efacb1e62aec ; 4      ; ELECTRICITY_TRANSFER      ; Sonstiges                                                      ;              ;           ;         ;              ;

@@ -47,7 +47,13 @@ public enum ProductType {
 
 	TRANSFER_STATION(ProductArea.HEATING_NET),
 
-	PLANNING(ProductArea.PLANNING);
+	PLANNING(ProductArea.PLANNING),
+
+	BIOGAS_STRUCTURE(ProductArea.BIOGAS),
+
+	BIOGAS_TECHNOLOGY(ProductArea.BIOGAS),
+
+	ELECTRICITY_TRANSFER(ProductArea.BIOGAS);
 
 	public final ProductArea productArea;
 
