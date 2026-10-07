@@ -2,6 +2,7 @@ package sophena.rcp.charts;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
+import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
@@ -94,8 +95,14 @@ public class Charts {
 	public static Trace lineTraceOf(
 			XYGraph g, String name, Color color, CircularBufferDataProvider data
 	) {
-		var trace = new Trace(
-				name, g.getPrimaryXAxis(), g.getPrimaryYAxis(), data);
+		return lineTraceOf(g, g.getPrimaryYAxis(), name, color, data);
+	}
+
+	public static Trace lineTraceOf(
+			XYGraph g, Axis yAxis, String name, Color color,
+			CircularBufferDataProvider data
+	) {
+		var trace = new Trace(name, g.getPrimaryXAxis(), yAxis, data);
 		trace.setPointStyle(Trace.PointStyle.NONE);
 		trace.setTraceType(TraceType.SOLID_LINE);
 		trace.setTraceColor(color);

@@ -1,8 +1,10 @@
 package sophena.rcp.editors.biogas.charts;
 
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
+import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
+import org.eclipse.nebula.visualization.xygraph.linearscale.AbstractScale.LabelSide;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.calc.biogas.BiogasPlants;
@@ -12,10 +14,19 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.Colors;
 
+/// Shows the electricity prices of a biogas plant over the hours of a year.
+/// The prices are shown as a single blue series with the left y-axis. The
+/// producer profile of the plant is shown on a secondary y-axis on the right
+/// side. The hours of the profile are colored like the states of the plant:
+/// red when the plant runs in an hour in which the feed-in is not allowed,
+/// green when it runs with a positive price, orange when it runs with a price
+/// <= 0, and gray when it does not run.
 public class ElectricityChart {
 
 	private final XYGraph graph;
-	private final CircularBufferDataProvider defaultData;
+	private final Axis powerAxis;
+
+	private final CircularBufferDataProvider priceData;
 	private final CircularBufferDataProvider errorData;
 	private final CircularBufferDataProvider runData;
 	private final CircularBufferDataProvider warnData;
@@ -24,42 +35,52 @@ public class ElectricityChart {
 	public ElectricityChart(Composite parent) {
 		graph = Charts.initHoursGraph(parent, 250);
 		graph.getPrimaryYAxis().setTitle("Strompreis [ct/kWh]");
-		defaultData = Charts.dataProvider();
+
+		// secondary axis on the right side for the power of the producer
+		// profile
+		powerAxis = new Axis("Leistung [kW]", true);
+		powerAxis.setYAxis(true);
+		powerAxis.setTickLabelSide(LabelSide.Secondary);
+		powerAxis.setMinorTicksVisible(false);
+		powerAxis.setFormatPattern("###,###,###,###");
+		powerAxis.setRange(0, 500);
+		graph.addAxis(powerAxis);
+
+
+
+		// the producer profile on the right axis, colored by the state of the
+		// hours
 		errorData = Charts.dataProvider();
 		runData = Charts.dataProvider();
 		warnData = Charts.dataProvider();
 		pauseData = Charts.dataProvider();
 
-		// default -> electricity price
-		var defaultTrace = Charts.lineTraceOf(
-			graph, "default", Colors.getChartBlue(), defaultData);
-		defaultTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
-
-		// error -> runs when it should not
+		// error -> runs although the feed-in is not allowed
 		var errorTrace = Charts.lineTraceOf(
-			graph, "error", Colors.getChartRed(), errorData);
+			graph, powerAxis, "error", Colors.getChartRed(), errorData);
 		errorTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// run -> runs, and price is ok
+		// run -> runs, and the price is ok
 		var runTrace = Charts.lineTraceOf(
-			graph, "run", Colors.of("#4caf50"), runData);
+			graph, powerAxis, "run", Colors.of("#E1F4EE"), runData);
 		runTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// warn -> runs, but price is <= 0
+		// warn -> runs, but the price is <= 0
 		var warnTrace = Charts.lineTraceOf(
-			graph, "warn", Colors.of("#ff9800"), warnData);
+			graph, powerAxis, "warn", Colors.of("#ff9800"), warnData);
 		warnTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// pause -> does not run, and it should not
+		// pause -> does not run, feed-in is not allowed
 		var pauseTrace = Charts.lineTraceOf(
-			graph, "pause", Colors.of("#d3d3d3"), pauseData);
+			graph, powerAxis, "pause", Colors.of("#d3d3d3"), pauseData);
 		pauseTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 
-		// draw a gray line at y = 0
-		var zeros = Charts.dataProvider(new double[Stats.HOURS]);
-		var zeroTrace = Charts.lineTraceOf(
-			graph, "zeros", Colors.of("#d3d3d3"), zeros);
-		zeroTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
+		// the electricity price as a single blue series with the left axis
+		priceData = Charts.dataProvider();
+		var priceTrace = Charts.lineTraceOf(
+			graph, "Strompreis", Colors.getChartBlue(), priceData);
+		priceTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
+
 	}
 
 	public void setInput(BiogasRuntimeResult r) {
@@ -69,32 +90,40 @@ public class ElectricityChart {
 			max = 50;
 		}
 		var min = Stats.min(prices);
+		priceData.setCurrentYDataArray(prices);
 
-		double[] defaultVals = new double[Stats.HOURS];
+		// the producer profile of the plant
+		var profile = r.producerProfile();
+		var power = profile != null && profile.maxPower != null
+			? profile.maxPower
+			: new double[Stats.HOURS];
+
 		double[] errorVals = new double[Stats.HOURS];
 		double[] runVals = new double[Stats.HOURS];
 		double[] warnVals = new double[Stats.HOURS];
 		double[] pauseVals = new double[Stats.HOURS];
 
 		for (int h = 0; h < Stats.HOURS; h++) {
-			boolean isRunning = r.runFlags()[h];
+			double p = power[h];
+			boolean isRunning = p > 0;
 			boolean isBreak = !BiogasPlants.isFeedInAllowed(r.plant(), h);
 			double price = prices[h];
 
-			defaultVals[h] = !isRunning && !isBreak ? price : 0;
-			errorVals[h] = isRunning && isBreak ? price : 0;
-			runVals[h] = isRunning && !isBreak && price > 0 ? price : 0;
-			warnVals[h] = isRunning && !isBreak && price <= 0 ? price : 0;
-			pauseVals[h] = isBreak && !isRunning ? price : 0;
+			errorVals[h] = isRunning && isBreak ? p : 0;
+			runVals[h] = isRunning && !isBreak && price > 0 ? p : 0;
+			warnVals[h] = isRunning && !isBreak && price <= 0 ? p : 0;
+			pauseVals[h] = isBreak && !isRunning ? p : 0;
 		}
 
-		defaultData.setCurrentYDataArray(defaultVals);
 		errorData.setCurrentYDataArray(errorVals);
 		runData.setCurrentYDataArray(runVals);
 		warnData.setCurrentYDataArray(warnVals);
 		pauseData.setCurrentYDataArray(pauseVals);
 
 		graph.getPrimaryYAxis().setRange(min, max);
+
+		double maxPower = Stats.max(power);
+		powerAxis.setRange(0, maxPower > 0 ? Stats.nextStep(maxPower) : 100);
 	}
 
 	private double[] pricesOf(BiogasPlant plant) {
