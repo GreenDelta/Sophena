@@ -1,5 +1,6 @@
 package sophena.calc.biogas;
 
+import sophena.calc.costs.InvestmentItem;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -105,20 +106,14 @@ public final class BiogasPlants {
 	/// The full investment in EUR of the given entry. This is the amount that is
 	/// spent when the asset is replaced after its lifetime.
 	public static double investmentOf(BiogasInvestmentEntry entry) {
-		if (entry == null || entry.costs == null)
-			return 0;
-		return entry.costs.investment;
+		return InvestmentItem.of(entry).investment();
 	}
 
 	/// The amount in EUR that is spent initially for the given entry. For a
 	/// refurbishment or general overhaul of an existing asset only the defined
 	/// share is spent, see `BiogasInvestmentEntry#refurbishmentShare`.
 	public static double initialInvestmentOf(BiogasInvestmentEntry entry) {
-		if (entry == null || entry.costs == null)
-			return 0;
-		return entry.refurbishmentShare == null
-			? entry.costs.investment
-			: entry.costs.investment * entry.refurbishmentShare / 100;
+		return InvestmentItem.of(entry).initialInvestment();
 	}
 
 	public static double totalOperationHours(BiogasPlant plant) {

@@ -92,12 +92,10 @@ public class CostCalculator {
 
 		// add capital costs
 		log.println("=> Kapitalkosten: " + item.label);
-		item.capitalCosts = CapitalCosts.get(item, project, ir(),
-				settings.investmentFactor);
+		item.capitalCosts = capitalCostsOf(item, settings.investmentFactor);
 		log.value("Dynamisch", item.capitalCosts, "EUR/a");
 		r.dynamicTotal.capitalCosts += item.capitalCosts;
-		double staticCapitalCosts = CapitalCosts.get(
-				item, project, ir(), 1.0);
+		double staticCapitalCosts = capitalCostsOf(item, 1.0);
 		log.value("Statisch", staticCapitalCosts, "EUR/a");
 		r.staticTotal.capitalCosts += staticCapitalCosts;
 		log.println();
@@ -114,8 +112,10 @@ public class CostCalculator {
 		log.println();
 
 		log.println("=> Instandhaltungskosten: " + item.label);
-		double maintenanceCosts = item.costs.investment
-				* (item.costs.repair / 100 + item.costs.maintenance / 100);
+		double maintenanceCosts = Investments.maintenanceBase(
+				item.costs.investment,
+				item.costs.repair,
+				item.costs.maintenance);
 		log.println("dynamisch:");
 		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
@@ -129,6 +129,20 @@ public class CostCalculator {
 
 		r.staticTotal.operationCosts += staticAnnuityOperations
 				+ staticAnnuityMaintenance;
+	}
+
+	/// The annual capital costs of the given item. Returns 0 when the project
+	/// has no cost settings.
+	private double capitalCostsOf(CostResultItem item, double priceChange) {
+		if (project.costSettings == null)
+			return 0;
+		return Investments.capitalCosts(
+				item.investmentCosts,
+				item.investmentCosts,
+				item.costs.duration,
+				project.duration,
+				ir(),
+				priceChange);
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
