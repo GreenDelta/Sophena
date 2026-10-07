@@ -61,6 +61,11 @@ class InvestmentWizard extends SimpleWizard {
 	}
 
 	@Override
+	protected int[] minimumSize() {
+		return new int[] { 420, 450 };
+	}
+
+	@Override
 	protected boolean onFinish() {
 		return entry.productGroup != null;
 	}
