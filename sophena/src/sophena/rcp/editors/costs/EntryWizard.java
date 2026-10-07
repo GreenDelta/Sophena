@@ -1,6 +1,7 @@
 package sophena.rcp.editors.costs;
 
 import java.util.List;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -9,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
+
 import sophena.Labels;
 import sophena.db.daos.ProductDao;
 import sophena.db.daos.ProductGroupDao;
@@ -17,8 +19,8 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
-import sophena.rcp.SearchDialog;
 import sophena.rcp.ProductLabel;
+import sophena.rcp.SearchDialog;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
@@ -117,7 +119,7 @@ class EntryWizard extends Wizard {
 			else link.setText("(kein Produkt ausgewählt)");
 			link.setImage(Icon.PIPE_16.img());
 			link.setForeground(Colors.getLinkBlue());
-			Controls.onClick(link, e -> searchGlobalProduct(link));
+			Controls.onClick(link, _ -> searchGlobalProduct(link));
 			UI.formLabel(comp, "");
 		}
 
@@ -189,7 +191,7 @@ class EntryWizard extends Wizard {
 				.init(entry.count)
 				.decimal()
 				.required()
-				.onChanged(s -> {
+				.onChanged(_ -> {
 					entry.count = Texts.getDouble(t);
 					updateCosts();
 				});
@@ -202,7 +204,7 @@ class EntryWizard extends Wizard {
 				.init(entry.pricePerPiece)
 				.decimal()
 				.required()
-				.onChanged(s -> {
+				.onChanged(_ -> {
 					entry.pricePerPiece = Texts.getDouble(priceText);
 					updateCosts();
 				});

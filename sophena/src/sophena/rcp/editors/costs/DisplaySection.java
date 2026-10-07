@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.eclipse.jface.action.Action;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
+
 import sophena.Labels;
 import sophena.model.ProductCosts;
 import sophena.model.ProductType;
@@ -50,7 +50,7 @@ class DisplaySection<T> {
 		var composite = UI.sectionClient(section, tk);
 		table = createTable(composite);
 		table.setLabelProvider(new Label());
-		Tables.onDoubleClick(table, e -> doOpen(table));
+		Tables.onDoubleClick(table, _ -> doOpen(table));
 		var open = Actions.create("Öffnen", Icon.OPEN_16.des(), () ->
 			doOpen(table)
 		);

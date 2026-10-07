@@ -3,10 +3,13 @@ package sophena.rcp.editors.costs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.openlca.commons.Strings;
+
 import sophena.model.Boiler;
 import sophena.model.Consumer;
 import sophena.model.FlueGasCleaningEntry;
@@ -19,7 +22,6 @@ import sophena.rcp.editors.consumers.ConsumerEditor;
 import sophena.rcp.editors.heatnets.HeatNetEditor;
 import sophena.rcp.editors.producers.ProducerEditor;
 import sophena.rcp.utils.UI;
-import org.openlca.commons.Strings;
 
 class OverviewPage extends FormPage {
 
@@ -88,7 +90,7 @@ class OverviewPage extends FormPage {
 		};
 		s.costs = n -> n.bufferTankCosts;
 		s.label = n -> n.bufferTank.name;
-		s.onOpen = n -> HeatNetEditor.open(project().toDescriptor());
+		s.onOpen = _ -> HeatNetEditor.open(project().toDescriptor());
 		s.create(body, tk);
 	}
 
@@ -100,7 +102,7 @@ class OverviewPage extends FormPage {
 		};
 		s.costs = p -> p.costs;
 		s.label = p -> p.pipe != null ? p.pipe.name : null;
-		s.onOpen = p -> HeatNetEditor.open(project().toDescriptor());
+		s.onOpen = _ -> HeatNetEditor.open(project().toDescriptor());
 		s.create(body, tk);
 	}
 

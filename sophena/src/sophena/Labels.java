@@ -13,6 +13,7 @@ import sophena.model.ProducerFunction;
 import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.WoodAmountType;
+import sophena.model.biogas.BiogasInvestmentGroup;
 import sophena.rcp.M;
 
 public final class Labels {
@@ -125,6 +126,17 @@ public final class Labels {
 			case HEATING_NET -> "Wärmenetz";
 			case PLANNING -> "Planung";
 			case TECHNOLOGY -> "Anlagentechnik";
+		};
+	}
+
+	public static String get(BiogasInvestmentGroup group) {
+		if (group == null)
+			return null;
+		return switch (group) {
+			case CHP -> "Biogas BHKW";
+			case GAS -> "Gasspeicherung und -aufbereitung";
+			case GRID -> "Stromnetz/- übergabe";
+			case OLD -> "Zurückliegende Investitionen";
 		};
 	}
 

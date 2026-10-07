@@ -3,12 +3,15 @@ package sophena.rcp.editors.costs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.openlca.commons.Strings;
+
 import sophena.Labels;
 import sophena.calc.costs.FittingsCostSync;
 import sophena.calc.costs.FittingsCostSync.Mode;
@@ -26,7 +29,6 @@ import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
-import org.openlca.commons.Strings;
 
 /// A section to edit cost properties of a product entry.
 class EntrySection {
@@ -61,7 +63,7 @@ class EntrySection {
 			var btn = new Button(comp, SWT.NONE);
 			btn.setText("Formteile aktualisieren");
 			btn.setImage(Icon.CALCULATE_16.img());
-			Controls.onSelect(btn, $ -> {
+			Controls.onSelect(btn, _ -> {
 				var b = MsgBox.ask(
 					"Kosten für Formteile aktualisieren?",
 					"Sollen die Kosten für Formteile neu aus den " +
@@ -94,7 +96,7 @@ class EntrySection {
 		var del = Actions.create(M.Remove, Icon.DELETE_16.des(), this::delete);
 		Actions.bind(section, addGlobal, addPrivate, edit, del);
 		Actions.bind(table, addGlobal, addPrivate, edit, del);
-		Tables.onDoubleClick(table, e -> edit());
+		Tables.onDoubleClick(table, _ -> edit());
 	}
 
 	private TableViewer createTable(Composite comp) {
