@@ -11,12 +11,18 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Strings;
 
+import sophena.db.Database;
 import sophena.model.AnnualCostEntry;
 import sophena.model.FuelGroup;
+import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
+import sophena.model.biogas.BiogasInvestmentEntry;
+import sophena.model.biogas.BiogasInvestmentGroup;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
 import sophena.model.biogas.ElectricityPriceCurve;
@@ -92,6 +98,41 @@ public class BiogasPlantWizard extends Wizard {
 			entry.label = label;
 			plant.otherAnnualCosts.add(entry);
 		}
+
+		// add some investment templates
+		var ivs = new InvestmentBuilder(App.getDb(), plant);
+		ivs.chp(ProductType.BUILDING, "BHKW-Gebäude");
+		ivs.chp(ProductType.BIOGAS_TECHNOLOGY, "BHKW-Vorwärmer");
+
+		ivs.gas("Gasspeicher");
+		ivs.gas("Biogasleitungen");
+		ivs.gas("Gastrocknung, -entschwefelung und -reinigung");
+		ivs.gas("Kompressor");
+		ivs.gas("Gasspeicherfüllstandsmessung");
+		ivs.gas("Gasmischer");
+		ivs.gas("Sonstiges");
+
+		ivs.grid("Stromnetzanschluss");
+		ivs.grid("Trafo");
+		ivs.grid("Stromübergabestation");
+		ivs.grid("Kommunikationseinrichtung");
+		ivs.grid("Sonstiges");
+
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Fahrsilo", 15);
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Vorgrube", 5);
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Silosickersaftbehälter", 5);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Einbringung", 30);
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Fermenter", 10);
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Gärproduktlager", 10);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Rührtechnik", 30);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Behälterabdeckung", 50);
+		ivs.old(ProductType.BUILDING,
+			"Erschließung, Außenanlagen, Freilager, Zufahrten, Wege, Zäune", 0);
+		ivs.old(ProductType.BIOGAS_STRUCTURE, "Umwallung", 0);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Separation", 0);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Pumptechnik", 20);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Technik Rest wenig komplex", 20);
+		ivs.old(ProductType.BIOGAS_TECHNOLOGY, "Technik Rest komplex", 20);
 
 		plant.fermenter = defaultFermenter();
 		plant.settings = BiogasPlantSettings.createDefault(App.getDb());
@@ -185,6 +226,62 @@ public class BiogasPlantWizard extends Wizard {
 				return;
 			}
 			setPageComplete(true);
+		}
+
+	}
+
+	/// A utility class to add same default investment templates.
+	@NullMarked
+	private record InvestmentBuilder(
+		BiogasPlant plant, List<ProductGroup> groups
+	) {
+
+		InvestmentBuilder(Database db, BiogasPlant plant) {
+			this(plant, db.getAll(ProductGroup.class));
+		}
+
+		void chp(ProductType type, String name) {
+			add(type, name, BiogasInvestmentGroup.CHP);
+		}
+
+		void gas(String name) {
+			add(ProductType.BIOGAS_TECHNOLOGY, name, BiogasInvestmentGroup.GAS);
+		}
+
+		void grid(String name) {
+			add(ProductType.ELECTRICITY_TRANSFER, name, BiogasInvestmentGroup.GRID);
+		}
+
+		void old(ProductType type, String name, double share) {
+			var entry = add(type, name, BiogasInvestmentGroup.OLD);
+			if (entry != null) {
+				entry.refurbishmentShare = share;
+			}
+		}
+
+		@Nullable
+		BiogasInvestmentEntry add(
+			ProductType type, String name, BiogasInvestmentGroup group
+		) {
+			var g = findGroup(type, name);
+			if (g == null)
+				return null;
+			var entry = new BiogasInvestmentEntry();
+			entry.id = UUID.randomUUID().toString();
+			entry.investmentGroup = group;
+			entry.productGroup = g;
+			entry.costs = ProductCosts.createFrom(g);
+			plant.investments.add(entry);
+			return entry;
+		}
+
+		@Nullable
+		private ProductGroup findGroup(ProductType type, String name) {
+			for (var g : groups) {
+				if (g.type == type && Strings.equalsIgnoreCase(g.name, name))
+					return g;
+			}
+			return null;
 		}
 
 	}

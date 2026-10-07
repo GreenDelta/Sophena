@@ -62,7 +62,7 @@ class InvestmentWizard extends SimpleWizard {
 
 	@Override
 	protected boolean onFinish() {
-		return entry.productGroup != null && !Strings.isBlank(entry.name);
+		return entry.productGroup != null;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ class InvestmentWizard extends SimpleWizard {
 
 		// The listeners are only added after the initial selection, so that
 		// the initial setup does not overwrite the values of the entry.
-		Controls.onSelect(typeCombo, e -> {
+		Controls.onSelect(typeCombo, _ -> {
 			int i = typeCombo.getSelectionIndex();
 			var type = i < 0 ? null : types[i];
 			entry.productGroup = null;
@@ -102,7 +102,7 @@ class InvestmentWizard extends SimpleWizard {
 	}
 
 	private void createGroupCombo(Composite comp) {
-		groupCombo = new EntityCombo<ProductGroup>();
+		groupCombo = new EntityCombo<>();
 		groupCombo.create("Produktgruppe", comp);
 		groupCombo.setInput(groupsOf(initialType()));
 		if (entry.productGroup != null) {
@@ -146,7 +146,6 @@ class InvestmentWizard extends SimpleWizard {
 		var text = UI.formText(comp, "Bezeichnung");
 		Texts.set(text, entry.name);
 		Texts.on(text)
-			.required()
 			.onChanged(s -> entry.name = s);
 		UI.filler(comp);
 	}

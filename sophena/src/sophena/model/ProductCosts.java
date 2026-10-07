@@ -39,6 +39,12 @@ public class ProductCosts implements Copyable<ProductCosts> {
 		return clone;
 	}
 
+	public static ProductCosts createFrom(ProductGroup group) {
+		var costs = new ProductCosts();
+		copy(group, costs);
+		return costs;
+	}
+
 	public static void copy(AbstractProduct product, ProductCosts toCosts) {
 		if (toCosts == null)
 			return;
