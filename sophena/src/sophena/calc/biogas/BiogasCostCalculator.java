@@ -81,21 +81,31 @@ public class BiogasCostCalculator {
 		for (BiogasPlantBoiler entry : plant.boilers) {
 			if (entry == null || entry.costs == null)
 				continue;
-			sum += capitalCostsOf(entry.costs.investment, entry.costs.duration);
+			sum += capitalCostsOf(
+				entry.costs.investment,
+				entry.costs.investment,
+				entry.costs.duration);
 		}
 		for (var entry : plant.investments) {
 			if (entry == null || entry.costs == null)
 				continue;
 			sum += capitalCostsOf(
-				BiogasPlants.investmentOf(entry), entry.costs.duration);
+				BiogasPlants.initialInvestmentOf(entry),
+				BiogasPlants.investmentOf(entry),
+				entry.costs.duration);
 		}
 		return sum;
 	}
 
 	/// Calculates the capital costs of a single investment over the observation
-	/// period of the plant. A missing duration falls back to the plant duration.
-	private double capitalCostsOf(double investment, int duration) {
-		if (investment <= 0)
+	/// period of the plant. The amount that is spent initially can be smaller
+	/// than the amount that is spent for a replacement, e.g. for the
+	/// refurbishment of an existing asset. A missing duration falls back to the
+	/// plant duration.
+	private double capitalCostsOf(
+		double initial, double replacement, int duration
+	) {
+		if (replacement <= 0)
 			return 0;
 		if (duration <= 0) {
 			duration = plant.duration;
@@ -104,7 +114,8 @@ public class BiogasCostCalculator {
 			return 0;
 		double q = 1 + plant.settings.interestRate / 100;
 		return CapitalCosts.calculate(
-			investment,
+			initial,
+			replacement,
 			duration,
 			plant.duration,
 			q,
@@ -142,8 +153,6 @@ public class BiogasCostCalculator {
 	 * Calculates operation-related costs including maintenance and labor.
 	 */
 	private double calculateOperationCosts() {
-		double investment = BiogasPlants.totalInvestment(plant);
-
 		// Maintenance/Repair: sum of all block-specific maintenance shares
 		double maintBase = 0;
 		for (BiogasPlantBoiler entry : plant.boilers) {
@@ -154,6 +163,7 @@ public class BiogasCostCalculator {
 		for (var entry : plant.investments) {
 			if (entry == null || entry.costs == null)
 				continue;
+			// maintenance and repair are applied to the full investment
 			maintBase += maintenanceBaseOf(
 				BiogasPlants.investmentOf(entry), entry.costs);
 		}
@@ -163,8 +173,10 @@ public class BiogasCostCalculator {
 		double operBase = BiogasPlants.totalOperationHours(plant) * plant.settings.hourlyWage;
 		double operAnnuity = operBase * annuityFactor(plant.settings.operationFactor);
 
-		// Insurance: fixed percentage of investment (assumed constant price level)
-		double insurance = investment * (plant.settings.insuranceCostsShare / 100);
+		// Insurance: fixed percentage of the full investment value (assumed
+		// constant price level)
+		double insurance = BiogasPlants.totalInvestmentValue(plant)
+			* (plant.settings.insuranceCostsShare / 100);
 
 		return maintAnnuity + operAnnuity + insurance;
 	}

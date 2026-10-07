@@ -64,10 +64,30 @@ public final class BiogasPlants {
 		return sum;
 	}
 
-	/// The total investment of the plant in EUR: the investments of the boilers
-	/// plus the investments of the investment entries. Only the share that is
-	/// spent for a refurbishment is counted for such an entry.
+	/// The total initial investment of the plant in EUR: the investments of the
+	/// boilers plus the initial investments of the investment entries. For a
+	/// refurbishment only the share that is spent initially is counted, see
+	/// `BiogasInvestmentEntry#refurbishmentShare`.
 	public static double totalInvestment(BiogasPlant plant) {
+		double sum = 0;
+		if (plant == null)
+			return sum;
+		for (var entry : plant.boilers) {
+			if (entry == null || entry.costs == null)
+				continue;
+			sum += entry.costs.investment;
+		}
+		for (var entry : plant.investments) {
+			sum += initialInvestmentOf(entry);
+		}
+		return sum;
+	}
+
+	/// The total value of the plant investments in EUR: the investments of the
+	/// boilers plus the full investments of the investment entries. In contrast
+	/// to `totalInvestment` this ignores the refurbishment shares, e.g. for the
+	/// calculation of the insurance costs.
+	public static double totalInvestmentValue(BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
 			return sum;
@@ -82,10 +102,18 @@ public final class BiogasPlants {
 		return sum;
 	}
 
-	/// The investment in EUR that is accounted for the given entry. For a
-	/// refurbishment or general overhaul only the defined share is spent, see
-	/// `BiogasInvestmentEntry#refurbishmentShare`.
+	/// The full investment in EUR of the given entry. This is the amount that is
+	/// spent when the asset is replaced after its lifetime.
 	public static double investmentOf(BiogasInvestmentEntry entry) {
+		if (entry == null || entry.costs == null)
+			return 0;
+		return entry.costs.investment;
+	}
+
+	/// The amount in EUR that is spent initially for the given entry. For a
+	/// refurbishment or general overhaul of an existing asset only the defined
+	/// share is spent, see `BiogasInvestmentEntry#refurbishmentShare`.
+	public static double initialInvestmentOf(BiogasInvestmentEntry entry) {
 		if (entry == null || entry.costs == null)
 			return 0;
 		return entry.refurbishmentShare == null

@@ -1,8 +1,11 @@
 package sophena.rcp.editors.biogas.plant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.openlca.commons.Strings;
@@ -11,9 +14,11 @@ import sophena.Labels;
 import sophena.db.daos.ProductGroupDao;
 import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
+import sophena.model.ProductType;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasInvestmentGroup;
 import sophena.rcp.app.App;
+import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -28,6 +33,10 @@ class InvestmentWizard extends SimpleWizard {
 
 	private final BiogasInvestmentEntry entry;
 	private final BiogasInvestmentGroup group;
+
+	private ProductType[] types;
+	private Combo typeCombo;
+	private EntityCombo<ProductGroup> groupCombo;
 
 	private Text investmentText;
 	private Text durationText;
@@ -59,27 +68,78 @@ class InvestmentWizard extends SimpleWizard {
 	@Override
 	protected void create(Composite comp) {
 		UI.gridLayout(comp, 3);
+		createTypeCombo(comp);
 		createGroupCombo(comp);
 		createNameText(comp);
 		createCostFields(comp);
-	}
+		createSpacer(comp);
 
-	private void createGroupCombo(Composite comp) {
-		var combo = new EntityCombo<ProductGroup>();
-		combo.create("Produktgruppe", comp);
-		var groups = new ArrayList<>(
-			new ProductGroupDao(App.getDb()).getAll());
-		Sorters.productGroups(groups);
-		combo.setInput(groups);
-		if (entry.productGroup != null) {
-			combo.select(entry.productGroup);
-		}
-		combo.onSelect(pg -> {
+		// The listeners are only added after the initial selection, so that
+		// the initial setup does not overwrite the values of the entry.
+		Controls.onSelect(typeCombo, e -> {
+			int i = typeCombo.getSelectionIndex();
+			var type = i < 0 ? null : types[i];
+			entry.productGroup = null;
+			groupCombo.setInput(groupsOf(type));
+		});
+		groupCombo.onSelect(pg -> {
 			entry.productGroup = pg;
 			ProductCosts.copy(pg, entry.costs);
 			refresh();
 		});
+	}
+
+	private void createTypeCombo(Composite comp) {
+		types = ProductType.values();
+		var items = new String[types.length];
+		for (int i = 0; i < types.length; i++) {
+			items[i] = Labels.get(types[i]);
+		}
+		typeCombo = UI.formCombo(comp, "Produkttyp");
+		typeCombo.setItems(items);
+		typeCombo.select(indexOf(initialType()));
 		UI.filler(comp);
+	}
+
+	private void createGroupCombo(Composite comp) {
+		groupCombo = new EntityCombo<ProductGroup>();
+		groupCombo.create("Produktgruppe", comp);
+		groupCombo.setInput(groupsOf(initialType()));
+		if (entry.productGroup != null) {
+			groupCombo.select(entry.productGroup);
+		}
+		UI.filler(comp);
+	}
+
+	private ProductType initialType() {
+		if (entry.productGroup != null && entry.productGroup.type != null)
+			return entry.productGroup.type;
+		return types.length > 0 ? types[0] : null;
+	}
+
+	private int indexOf(ProductType type) {
+		for (int i = 0; i < types.length; i++) {
+			if (types[i] == type)
+				return i;
+		}
+		return 0;
+	}
+
+	private List<ProductGroup> groupsOf(ProductType type) {
+		var groups = new ArrayList<ProductGroup>();
+		if (type != null) {
+			groups.addAll(new ProductGroupDao(App.getDb()).getAll(type));
+		}
+		Sorters.productGroups(groups);
+		return groups;
+	}
+
+	private void createSpacer(Composite comp) {
+		var spacer = UI.filler(comp);
+		var data = new GridData();
+		data.horizontalSpan = 3;
+		data.heightHint = 24;
+		spacer.setLayoutData(data);
 	}
 
 	private void createNameText(Composite comp) {

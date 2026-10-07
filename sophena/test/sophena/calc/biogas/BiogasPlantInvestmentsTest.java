@@ -108,6 +108,58 @@ public class BiogasPlantInvestmentsTest {
 		assertEquals(2_500, withRefurb.investments - after.investments, 1e-10);
 	}
 
+	@Test
+	public void refurbishmentReplacementsUseTheFullInvestment() {
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.interestRate = 0;
+		plant.settings.investmentFactor = 1.0;
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+
+		var before = new BiogasCostCalculator(plant, result).calculate();
+
+		var refurb = refurbishment(10_000, 30);
+		refurb.costs.duration = 10;
+		plant.investments.add(refurb);
+		var after = new BiogasCostCalculator(plant, result).calculate();
+
+		// initial: 3_000 EUR (30 %); one replacement after 10 years: 10_000 EUR;
+		// spread over 20 years => (3_000 + 10_000) / 20 = 650 EUR/a
+		assertEquals(650, after.capitalCosts - before.capitalCosts, 1e-6);
+		assertEquals(3_000, after.investments - before.investments, 1e-10);
+	}
+
+	@Test
+	public void refurbishmentMaintenanceUsesTheFullInvestment() {
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.interestRate = 2;
+		plant.settings.investmentFactor = 1.0;
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+
+		var normal = investment(10_000);
+		normal.costs.duration = 10;
+		normal.costs.maintenance = 2;
+		normal.costs.repair = 1;
+		plant.investments.add(normal);
+		var withNormal = new BiogasCostCalculator(plant, result).calculate();
+
+		plant.investments.clear();
+		var refurb = refurbishment(10_000, 30);
+		refurb.costs.duration = 10;
+		refurb.costs.maintenance = 2;
+		refurb.costs.repair = 1;
+		plant.investments.add(refurb);
+		var withRefurb = new BiogasCostCalculator(plant, result).calculate();
+
+		// maintenance and repair are applied to the full investment and the
+		// insurance is based on the full investment value as well, so the
+		// operation costs are the same as for a normal investment
+		assertEquals(withNormal.operationCosts, withRefurb.operationCosts, 1e-6);
+	}
+
 	private BiogasInvestmentEntry investment(double investment) {
 		var entry = new BiogasInvestmentEntry();
 		entry.costs = costs(investment);

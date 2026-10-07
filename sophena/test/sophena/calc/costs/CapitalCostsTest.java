@@ -106,4 +106,19 @@ public class CapitalCostsTest {
 		Assert.assertEquals(611.5671, capitalCosts, 1e-3);
 	}
 
+	@Test
+	public void testInitialAndReplacementAmounts() {
+		// with equal amounts both functions are identical
+		double a = CapitalCosts.calculate(10_000, 8, 20, 1.02, 1.03);
+		double b = CapitalCosts.calculate(
+				10_000, 10_000, 8, 20, 1.02, 1.03);
+		Assert.assertEquals(a, b, 1e-10);
+
+		// a smaller initial amount (a refurbishment share) lowers the result,
+		// but the replacements still use the full amount
+		double c = CapitalCosts.calculate(3_000, 10_000, 8, 20, 1.02, 1.03);
+		double d = CapitalCosts.calculate(3_000, 3_000, 8, 20, 1.02, 1.03);
+		Assert.assertTrue(c > d);
+	}
+
 }
