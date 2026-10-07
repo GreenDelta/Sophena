@@ -83,17 +83,11 @@ public class BiogasCostCalculator {
 				continue;
 			sum += capitalCostsOf(entry.costs.investment, entry.costs.duration);
 		}
-		for (var entry : plant.newInvestmentEntries) {
+		for (var entry : plant.investments) {
 			if (entry == null || entry.costs == null)
 				continue;
-			sum += capitalCostsOf(entry.costs.investment, entry.costs.duration);
-		}
-		for (var entry : plant.refurbishmentEntries) {
-			if (entry == null || entry.costs == null)
-				continue;
-			double investment = entry.costs.investment
-				* entry.refurbishmentShare / 100;
-			sum += capitalCostsOf(investment, entry.costs.duration);
+			sum += capitalCostsOf(
+				BiogasPlants.investmentOf(entry), entry.costs.duration);
 		}
 		return sum;
 	}
@@ -157,17 +151,11 @@ public class BiogasCostCalculator {
 				continue;
 			maintBase += maintenanceBaseOf(entry.costs.investment, entry.costs);
 		}
-		for (var entry : plant.newInvestmentEntries) {
+		for (var entry : plant.investments) {
 			if (entry == null || entry.costs == null)
 				continue;
-			maintBase += maintenanceBaseOf(entry.costs.investment, entry.costs);
-		}
-		for (var entry : plant.refurbishmentEntries) {
-			if (entry == null || entry.costs == null)
-				continue;
-			double counted = entry.costs.investment
-				* entry.refurbishmentShare / 100;
-			maintBase += maintenanceBaseOf(counted, entry.costs);
+			maintBase += maintenanceBaseOf(
+				BiogasPlants.investmentOf(entry), entry.costs);
 		}
 		double maintAnnuity = maintBase * annuityFactor(plant.settings.maintenanceFactor);
 

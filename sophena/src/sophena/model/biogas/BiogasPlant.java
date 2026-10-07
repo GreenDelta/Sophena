@@ -1,9 +1,7 @@
 package sophena.model.biogas;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -17,8 +15,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import sophena.model.AnnualCostEntry;
 import sophena.model.Fuel;
-import sophena.model.Product;
-import sophena.model.ProductEntry;
 import sophena.model.ProductGroup;
 import sophena.model.RootEntity;
 
@@ -102,24 +98,12 @@ public class BiogasPlant extends RootEntity {
 	)
 	public List<AnnualCostEntry> otherAnnualCosts = new ArrayList<>();
 
-	/// New investments of the plant. They are calculated like the product
-	/// entries of a project, see `sophena.model.ProductEntry`.
+	/// The investments of the plant, e.g. new investments, refurbishments, or
+	/// general overhauls. Only the share that is defined in
+	/// `BiogasInvestmentEntry#refurbishmentShare` is spent for a refurbishment.
 	@JoinColumn(name = "f_biogas_plant")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	public final List<ProductEntry> newInvestmentEntries = new ArrayList<>();
-
-	/// Refurbishments and general overhauls of existing investments. Only the
-	/// share that is defined in `BiogasRefurbishmentEntry#refurbishmentShare`
-	/// is spent for the overhaul.
-	@JoinColumn(name = "f_biogas_plant")
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	public final List<BiogasRefurbishmentEntry> refurbishmentEntries = new ArrayList<>();
-
-	/// Plant-private products, similar to `sophena.model.Project#ownProducts`.
-	/// The owner of such a product is stored in `Product#projectId`.
-	@JoinColumn(name = "f_project")
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	public final List<Product> ownProducts = new ArrayList<>();
+	public final List<BiogasInvestmentEntry> investments = new ArrayList<>();
 
 	@Override
 	public BiogasPlant copy() {
@@ -153,47 +137,12 @@ public class BiogasPlant extends RootEntity {
 				copy.otherAnnualCosts.add(entry.copy());
 			}
 		}
-		cloneInvestments(copy);
+		for (var entry : investments) {
+			if (entry != null) {
+				copy.investments.add(entry.copy());
+			}
+		}
 		return copy;
-	}
-
-	/// Clones the investment related lists of this plant into the given copy.
-	/// Plant-private products are cloned first and the product references of
-	/// the investment entries are remapped to those clones, similar to
-	/// `sophena.model.Project#cloneProductEntries(Project)`.
-	private void cloneInvestments(BiogasPlant copy) {
-		Map<String, Product> productMap = new HashMap<>();
-		for (var ownProduct : ownProducts) {
-			if (ownProduct == null)
-				continue;
-			var clonedProduct = ownProduct.copy();
-			clonedProduct.projectId = copy.id;
-			copy.ownProducts.add(clonedProduct);
-			productMap.put(ownProduct.id, clonedProduct);
-		}
-		for (var entry : newInvestmentEntries) {
-			if (entry == null)
-				continue;
-			var clone = entry.copy();
-			copy.newInvestmentEntries.add(clone);
-			clone.product = remapOwnProduct(entry.product, productMap);
-		}
-		for (var entry : refurbishmentEntries) {
-			if (entry == null)
-				continue;
-			var clone = entry.copy();
-			copy.refurbishmentEntries.add(clone);
-			clone.product = remapOwnProduct(entry.product, productMap);
-		}
-	}
-
-	private Product remapOwnProduct(
-		Product product, Map<String, Product> productMap
-	) {
-		if (product == null || product.projectId == null)
-			return product;
-		var cloned = productMap.get(product.id);
-		return cloned != null ? cloned : product;
 	}
 
 }

@@ -6,14 +6,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import sophena.Tests;
-import sophena.model.Product;
 import sophena.model.ProductCosts;
-import sophena.model.ProductEntry;
+import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
-import sophena.model.biogas.BiogasRefurbishmentEntry;
 
 /// Tests that the investment entries of a biogas plant are persisted and that
-/// plant-private products are deleted together with the plant.
+/// they are deleted together with the plant.
 public class BiogasPlantInvestmentTest {
 
 	private final Database db = Tests.getDb();
@@ -24,28 +22,24 @@ public class BiogasPlantInvestmentTest {
 		var loaded = db.get(BiogasPlant.class, plant.id);
 
 		Assert.assertNotNull(loaded);
-		Assert.assertEquals(1, loaded.newInvestmentEntries.size());
+		Assert.assertEquals(1, loaded.investments.size());
 		Assert.assertEquals(20_000,
-			loaded.newInvestmentEntries.get(0).costs.investment, 1e-10);
-		Assert.assertEquals(1, loaded.refurbishmentEntries.size());
+			loaded.investments.get(0).costs.investment, 1e-10);
 		Assert.assertEquals(30,
-			loaded.refurbishmentEntries.get(0).refurbishmentShare, 1e-10);
+			loaded.investments.get(0).refurbishmentShare, 1e-10);
 
 		db.delete(plant);
 		Assert.assertNull(db.get(BiogasPlant.class, plant.id));
 	}
 
 	@Test
-	public void deletesPrivateProductsWithThePlant() {
+	public void deletesInvestmentEntriesWithThePlant() {
 		var plant = withInvestments();
-		var productId = plant.ownProducts.get(0).id;
-		var refurbishmentId = plant.refurbishmentEntries.get(0).id;
-		Assert.assertNotNull(db.get(Product.class, productId));
+		var entryId = plant.investments.get(0).id;
+		Assert.assertNotNull(db.get(BiogasInvestmentEntry.class, entryId));
 
 		db.delete(plant);
-		Assert.assertNull(db.get(Product.class, productId));
-		Assert.assertNull(db.get(
-			BiogasRefurbishmentEntry.class, refurbishmentId));
+		Assert.assertNull(db.get(BiogasInvestmentEntry.class, entryId));
 	}
 
 	private BiogasPlant withInvestments() {
@@ -54,24 +48,12 @@ public class BiogasPlantInvestmentTest {
 		plant.name = "Test plant";
 		plant.duration = 20;
 
-		var product = new Product();
-		product.id = UUID.randomUUID().toString();
-		product.name = "Behälter";
-		product.projectId = plant.id;
-		plant.ownProducts.add(product);
-
-		var newEntry = new ProductEntry();
-		newEntry.id = UUID.randomUUID().toString();
-		newEntry.costs = costs(20_000);
-		newEntry.product = product;
-		plant.newInvestmentEntries.add(newEntry);
-
-		var refurb = new BiogasRefurbishmentEntry();
-		refurb.id = UUID.randomUUID().toString();
-		refurb.costs = costs(10_000);
-		refurb.refurbishmentShare = 30;
-		refurb.product = product;
-		plant.refurbishmentEntries.add(refurb);
+		var entry = new BiogasInvestmentEntry();
+		entry.id = UUID.randomUUID().toString();
+		entry.name = "Behälter";
+		entry.costs = costs(20_000);
+		entry.refurbishmentShare = 30d;
+		plant.investments.add(entry);
 
 		db.insert(plant);
 		return plant;

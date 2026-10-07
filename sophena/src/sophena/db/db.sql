@@ -374,7 +374,6 @@ CREATE TABLE tbl_product_entries (
     id CHAR(36),
 
     f_project CHAR(36),
-    f_biogas_plant CHAR(36),
     f_product CHAR(36),
 
     price_per_piece DOUBLE,
@@ -390,15 +389,15 @@ CREATE TABLE tbl_product_entries (
 );
 
 
-CREATE TABLE tbl_biogas_refurbishment_entries (
+CREATE TABLE tbl_biogas_investment_entries (
 
     id CHAR(36),
 
     f_biogas_plant CHAR(36),
-    f_product CHAR(36),
+    f_product_group CHAR(36),
 
-    price_per_piece DOUBLE,
-    number_of_items DOUBLE,
+    investment_group VARCHAR(255),
+    name VARCHAR(255),
 
     investment DOUBLE,
     duration INTEGER,

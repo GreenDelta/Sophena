@@ -3,6 +3,7 @@ package sophena.calc.biogas;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
 
 public final class BiogasPlants {
@@ -64,8 +65,8 @@ public final class BiogasPlants {
 	}
 
 	/// The total investment of the plant in EUR: the investments of the boilers
-	/// plus the new investment entries and the shares that are spent for
-	/// refurbishments.
+	/// plus the investments of the investment entries. Only the share that is
+	/// spent for a refurbishment is counted for such an entry.
 	public static double totalInvestment(BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
@@ -75,38 +76,21 @@ public final class BiogasPlants {
 				continue;
 			sum += entry.costs.investment;
 		}
-		sum += newInvestmentOf(plant);
-		sum += refurbishmentInvestmentOf(plant);
-		return sum;
-	}
-
-	/// The sum of the new investment entries of the plant in EUR. They are
-	/// calculated like the product entries of a project.
-	public static double newInvestmentOf(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.newInvestmentEntries) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.investment;
+		for (var entry : plant.investments) {
+			sum += investmentOf(entry);
 		}
 		return sum;
 	}
 
-	/// The sum of the refurbishments of the plant in EUR. Only the share of the
-	/// given investment that is spent for the overhaul is added, see
-	/// `BiogasRefurbishmentEntry#refurbishmentShare`.
-	public static double refurbishmentInvestmentOf(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.refurbishmentEntries) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.investment * entry.refurbishmentShare / 100;
-		}
-		return sum;
+	/// The investment in EUR that is accounted for the given entry. For a
+	/// refurbishment or general overhaul only the defined share is spent, see
+	/// `BiogasInvestmentEntry#refurbishmentShare`.
+	public static double investmentOf(BiogasInvestmentEntry entry) {
+		if (entry == null || entry.costs == null)
+			return 0;
+		return entry.refurbishmentShare == null
+			? entry.costs.investment
+			: entry.costs.investment * entry.refurbishmentShare / 100;
 	}
 
 	public static double totalOperationHours(BiogasPlant plant) {
@@ -118,12 +102,7 @@ public final class BiogasPlants {
 				continue;
 			sum += entry.costs.operation;
 		}
-		for (var entry : plant.newInvestmentEntries) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.operation;
-		}
-		for (var entry : plant.refurbishmentEntries) {
+		for (var entry : plant.investments) {
 			if (entry == null || entry.costs == null)
 				continue;
 			sum += entry.costs.operation;
