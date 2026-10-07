@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.math.CalculateModules;
+import sophena.calc.specs.SolarModules;
 import sophena.model.Producer;
 import sophena.model.SolarCollectorOperatingMode;
 import sophena.model.SolarCollectorSpec;
@@ -30,13 +30,13 @@ class LocationSpecificationSection {
 	private Producer producer() {
 		return editor.getProducer();
 	}
-	
+
 	void create(Composite body, FormToolkit tk) {
 		if (producer().solarCollector == null)
 			return;
 		Composite comp = UI.formSection(body, tk,
 				"Standortspezifikation");
-		UI.gridLayout(comp, 4);		
+		UI.gridLayout(comp, 4);
 		if (producer().solarCollectorSpec == null) {
 			producer().solarCollectorSpec = new SolarCollectorSpec();
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
@@ -54,7 +54,7 @@ class LocationSpecificationSection {
 		createSolarCollectorTempIncreaseRow(tk, comp);
 		createSolarCollectorRadiationLimitRow(tk, comp);
 	}
-	
+
 	private void createSolarCollectorAreaRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.Area);
 		UI.formLabel(comp, tk,"m2");
@@ -63,19 +63,19 @@ class LocationSpecificationSection {
 				.init(producer().solarCollectorSpec.solarCollectorArea)
 				.onChanged((s) -> {
 					producer().solarCollectorSpec.solarCollectorArea = Texts.getDouble(t);
-					Texts.set(moduleCount, Num.intStr(CalculateModules.getCount(producer().solarCollectorSpec.solarCollectorArea, producer().solarCollector.collectorArea)));
+					Texts.set(moduleCount, Num.intStr(SolarModules.getCount(producer().solarCollectorSpec.solarCollectorArea, producer().solarCollector.collectorArea)));
 					editor.setDirty();
 				});
 	}
-	
+
 	private void createSolarCollectorModuleCountRow(FormToolkit tk, Composite comp) {
 		moduleCount = UI.formText(comp, tk, M.ModuleCount);
 		Texts.on(moduleCount).decimal().calculated()
-			.init(Num.intStr(CalculateModules.getCount(producer().solarCollectorSpec.solarCollectorArea, producer().solarCollector.collectorArea)));
+			.init(Num.intStr(SolarModules.getCount(producer().solarCollectorSpec.solarCollectorArea, producer().solarCollector.collectorArea)));
 		UI.formLabel(comp, "");
 		UI.filler(comp);
 	}
-	
+
 	private void createSolarCollectorAlignmentRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.Alignment);
 		UI.formLabel(comp, tk, "°");
@@ -87,7 +87,7 @@ class LocationSpecificationSection {
 					editor.setDirty();
 				});
 	}
-	
+
 	private void createSolarCollectorTiltRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.Tilt);
 		UI.formLabel(comp, tk, "°");
@@ -99,7 +99,7 @@ class LocationSpecificationSection {
 					editor.setDirty();
 				});
 	}
-	
+
 	private void createSolarCollectorOperatingModeRow(FormToolkit tk, Composite comp) {
 		UI.formLabel(comp, tk, M.OperatingMode);
 		Composite inner = tk.createComposite(comp);
@@ -111,21 +111,21 @@ class LocationSpecificationSection {
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_RADIATION;
 			editor.setDirty();
 		});
-		
+
 		Button autoSeason = tk.createButton(inner, M.AutoSeason, SWT.RADIO);
 		autoSeason.setSelection(current == SolarCollectorOperatingMode.AUTO_SEASON);
 		Controls.onSelect(autoSeason, e -> {
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.AUTO_SEASON;
 			editor.setDirty();
 		});
-		
+
 		Button preheating = tk.createButton(inner, M.PreheatingMode, SWT.RADIO);
 		preheating.setSelection(current == SolarCollectorOperatingMode.PREHEATING_MODE);
 		Controls.onSelect(preheating, e -> {
 			producer().solarCollectorSpec.solarCollectorOperatingMode = SolarCollectorOperatingMode.PREHEATING_MODE;
 			editor.setDirty();
 		});
-				
+
 		Button targetTemp = tk.createButton(inner, M.TargetTemperatureOperation, SWT.RADIO);
 		targetTemp.setSelection(current == SolarCollectorOperatingMode.TARGET_TEMPERATURE_OPERATION);
 		Controls.onSelect(targetTemp, e -> {
@@ -135,7 +135,7 @@ class LocationSpecificationSection {
 		UI.formLabel(comp, "");
 		HelpLink.create(comp, tk, M.OperatingMode, H.OperatingModeInfo);
 	}
-	
+
 	private void createSolarCollectorTempDiffernceRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.TemperatureDifference);
 		UI.formLabel(comp, tk, "K");
@@ -147,7 +147,7 @@ class LocationSpecificationSection {
 					editor.setDirty();
 				});
 	}
-	
+
 	private void createSolarCollectorTempIncreaseRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.TemperatureIncrease);
 		UI.formLabel(comp, tk, "K");
@@ -159,7 +159,7 @@ class LocationSpecificationSection {
 					editor.setDirty();
 				});
 	}
-	
+
 	private void createSolarCollectorRadiationLimitRow(FormToolkit tk, Composite comp) {
 		Text t = UI.formText(comp, tk, M.LimitRadiation);
 		UI.formLabel(comp, tk, "W/m2");

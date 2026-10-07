@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sophena.math.energetic.HeatNets;
+import sophena.calc.load.ProjectLoad;
+import sophena.calc.specs.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;

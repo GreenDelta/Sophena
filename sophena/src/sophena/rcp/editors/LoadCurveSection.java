@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.io.LoadProfileWriter;
-import sophena.math.LoadSorting;
+import sophena.calc.load.LoadSorting;
 import sophena.model.LoadProfile;
 import sophena.rcp.M;
 import sophena.rcp.app.App;

@@ -12,7 +12,7 @@ import org.openlca.commons.Res;
 import sophena.db.Database;
 import sophena.io.thermos.ThermosImportConfig;
 import sophena.io.thermos.file.ThermosFile;
-import sophena.math.energetic.HeatNets;
+import sophena.calc.specs.HeatNets;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Pipe;

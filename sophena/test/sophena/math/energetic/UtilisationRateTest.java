@@ -3,6 +3,8 @@ package sophena.math.energetic;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sophena.calc.specs.UtilisationRate;
+
 public class UtilisationRateTest {
 
 	@Test

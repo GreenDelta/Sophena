@@ -15,7 +15,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import sophena.calc.CostResult;
+import sophena.calc.costs.CostResult;
 import sophena.calc.ProjectResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;

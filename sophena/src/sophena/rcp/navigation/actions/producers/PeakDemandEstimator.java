@@ -1,6 +1,6 @@
 package sophena.rcp.navigation.actions.producers;
 
-import sophena.calc.ProjectLoad;
+import sophena.calc.load.ProjectLoad;
 import sophena.model.HoursTrace;
 import sophena.model.Producer;
 import sophena.model.Project;

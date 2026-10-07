@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.math.energetic.Producers;
+import sophena.calc.specs.Producers;
 import sophena.model.Producer;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.help.H;
@@ -28,7 +28,7 @@ class UtilisationRateSwitch {
 	private Producer producer() {
 		return editor.getProducer();
 	}
-	
+
 	/**
 	 * Create a switch for manuel input of the utilisation rate if appropiate
 	 * for the producer.

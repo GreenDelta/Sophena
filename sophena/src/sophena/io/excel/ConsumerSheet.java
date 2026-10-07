@@ -3,8 +3,8 @@ package sophena.io.excel;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.openlca.commons.Strings;
 
-import sophena.calc.ConsumerResult;
-import sophena.calc.ProjectLoad;
+import sophena.calc.load.ConsumerResult;
+import sophena.calc.load.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.model.Project;
 

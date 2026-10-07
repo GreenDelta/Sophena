@@ -6,8 +6,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.GeneratedElectricity;
-import sophena.math.energetic.Producers;
+import sophena.calc.kpi.GeneratedElectricity;
+import sophena.calc.specs.Producers;
 import sophena.model.Producer;
 
 class ElectricitySheet {

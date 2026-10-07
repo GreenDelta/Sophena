@@ -8,7 +8,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.io.ProducerProfiles;
-import sophena.math.energetic.Producers;
+import sophena.calc.specs.Producers;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.app.Icon;

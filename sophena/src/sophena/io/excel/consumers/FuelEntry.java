@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import sophena.db.Database;
 import sophena.db.daos.FuelDao;
-import sophena.math.energetic.UtilisationRate;
+import sophena.calc.specs.UtilisationRate;
 import sophena.model.FuelConsumption;
 import sophena.model.WoodAmountType;
 import sophena.utils.Num;

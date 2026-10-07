@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
-import sophena.calc.CostResult;
-import sophena.calc.CostResultItem;
-import sophena.calc.ProductAreaResult;
+import sophena.calc.costs.CostResult;
+import sophena.calc.costs.CostResultItem;
+import sophena.calc.costs.ProductAreaResult;
 import sophena.calc.ProjectResult;
 import sophena.model.ProductArea;
 import sophena.utils.Enums;

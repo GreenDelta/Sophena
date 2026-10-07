@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import sophena.calc.energy.EnergyResult;
+import sophena.calc.costs.CostCalculator;
+import sophena.calc.costs.CostResult;
+import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.FuelUsage;
+import sophena.calc.load.ConsumerLoadCurve;
+import sophena.calc.load.ConsumerResult;
+import sophena.calc.load.ProjectLoad;
+import sophena.calc.simulation.EnergyResult;
 import sophena.model.Project;
 import sophena.model.Stats;
 

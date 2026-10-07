@@ -12,8 +12,8 @@ import org.eclipse.ui.forms.editor.FormPage;
 
 import sophena.Labels;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.GeneratedElectricity;
-import sophena.math.energetic.Producers;
+import sophena.calc.kpi.GeneratedElectricity;
+import sophena.calc.specs.Producers;
 import sophena.rcp.M;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.utils.ColorImage;

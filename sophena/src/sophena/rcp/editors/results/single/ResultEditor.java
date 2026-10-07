@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import sophena.calc.ProjectResult;
 import sophena.db.daos.ProjectDao;
-import sophena.math.energetic.Producers;
+import sophena.calc.specs.Producers;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;

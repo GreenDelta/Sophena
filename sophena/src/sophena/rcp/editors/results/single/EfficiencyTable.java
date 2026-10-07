@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.math.energetic.EfficiencyResult;
+import sophena.calc.kpi.EfficiencyResult;
 import sophena.rcp.utils.Tables;
 import sophena.utils.Num;
 
@@ -42,8 +42,8 @@ class EfficiencyTable {
 
 	private List<Item> createItems() {
 		List<Item> items = new ArrayList<>();
-		if (r.producedElectrictiy > 0) {
-			items.add(new Item("Erzeugter Strom", r.producedElectrictiy));
+		if (r.producedElectricity > 0) {
+			items.add(new Item("Erzeugter Strom", r.producedElectricity));
 		}
 		items.add(new Item("Erzeugte Wärme", r.producedHeat));
 		items.add(new Item("Pufferspeicherverluste", r.bufferLoss,

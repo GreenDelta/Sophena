@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import sophena.math.energetic.Producers;
+import sophena.calc.specs.Producers;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;

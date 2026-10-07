@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
-import sophena.calc.ProjectLoad;
+import sophena.calc.load.ProjectLoad;
 import sophena.db.daos.ProjectDao;
 import sophena.model.BufferTank;
 import sophena.model.Consumer;

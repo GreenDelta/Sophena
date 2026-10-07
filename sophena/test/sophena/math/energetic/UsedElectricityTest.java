@@ -3,6 +3,7 @@ package sophena.math.energetic;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sophena.calc.kpi.UsedElectricity;
 import sophena.model.CostSettings;
 
 public class UsedElectricityTest {

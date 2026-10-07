@@ -11,16 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.Labels;
-import sophena.calc.CO2Result;
+import sophena.calc.kpi.CO2Result;
 import sophena.calc.Comparison;
-import sophena.calc.CostResult;
-import sophena.calc.CostResult.FieldSet;
-import sophena.calc.ProductAreaResult;
+import sophena.calc.costs.CostResult;
+import sophena.calc.costs.CostResult.FieldSet;
+import sophena.calc.costs.ProductAreaResult;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.EfficiencyResult;
-import sophena.math.energetic.PrimaryEnergyFactor;
-import sophena.math.energetic.Producers;
-import sophena.math.energetic.UsedHeat;
+import sophena.calc.kpi.EfficiencyResult;
+import sophena.calc.kpi.PrimaryEnergyFactor;
+import sophena.calc.specs.Producers;
+import sophena.calc.kpi.UsedHeat;
 import sophena.model.Producer;
 import sophena.model.ProductArea;
 

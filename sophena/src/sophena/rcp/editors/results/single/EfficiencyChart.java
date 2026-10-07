@@ -12,7 +12,7 @@ import org.eclipse.swtchart.ISeriesSet;
 import org.eclipse.swtchart.Range;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.math.energetic.EfficiencyResult;
+import sophena.calc.kpi.EfficiencyResult;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.ColorKey;
@@ -106,7 +106,7 @@ class EfficiencyChart  {
 		y.getTitle().setText("kWh");
 		y.getTitle().setFont(UI.defaultFont());
 		double max = result.usedHeat
-				+ result.producedElectrictiy
+				+ result.producedElectricity
 				+ result.bufferLoss
 				+ result.distributionLoss;
 		if (max == 0) {

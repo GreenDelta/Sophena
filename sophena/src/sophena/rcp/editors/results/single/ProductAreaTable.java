@@ -10,8 +10,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.Labels;
-import sophena.calc.CostResult;
-import sophena.calc.ProductAreaResult;
+import sophena.calc.costs.CostResult;
+import sophena.calc.costs.ProductAreaResult;
 import sophena.model.ProductArea;
 import sophena.rcp.utils.Tables;
 import sophena.utils.Num;

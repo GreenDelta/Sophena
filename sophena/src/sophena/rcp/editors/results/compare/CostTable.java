@@ -4,8 +4,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
-import sophena.calc.CostResult;
-import sophena.calc.CostResult.FieldSet;
+import sophena.calc.costs.CostResult;
+import sophena.calc.costs.CostResult.FieldSet;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 

@@ -15,8 +15,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.Labels;
-import sophena.calc.CostResult;
-import sophena.calc.CostResultItem;
+import sophena.calc.costs.CostResult;
+import sophena.calc.costs.CostResultItem;
 import sophena.model.ProductType;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Tables;

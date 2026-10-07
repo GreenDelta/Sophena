@@ -3,6 +3,7 @@ package sophena.math.energetic;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sophena.calc.specs.CalorificValue;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.FuelGroup;

@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.Comparison;
-import sophena.calc.CostResult;
+import sophena.calc.costs.CostResult;
 import sophena.rcp.utils.UI;
 
 class Page extends FormPage {

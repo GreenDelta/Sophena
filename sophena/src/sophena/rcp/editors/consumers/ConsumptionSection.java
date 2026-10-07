@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.math.energetic.EfficiencyRate;
+import sophena.calc.specs.EfficiencyRate;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;

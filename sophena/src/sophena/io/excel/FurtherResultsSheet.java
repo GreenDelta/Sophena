@@ -6,12 +6,12 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import sophena.calc.CO2Result;
+import sophena.calc.kpi.CO2Result;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.EfficiencyResult;
-import sophena.math.energetic.GeneratedHeat;
-import sophena.math.energetic.PrimaryEnergyFactor;
-import sophena.math.energetic.UsedHeat;
+import sophena.calc.kpi.EfficiencyResult;
+import sophena.calc.kpi.GeneratedHeat;
+import sophena.calc.kpi.PrimaryEnergyFactor;
+import sophena.calc.kpi.UsedHeat;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.utils.Num;
@@ -90,11 +90,11 @@ class FurtherResultsSheet {
 		row++;
 		Excel.cell(sheet, row, 0, "Erzeugte Wärme");
 		Excel.cell(sheet, row, 1, Math.round(efficiency.producedHeat));
-		if (efficiency.producedElectrictiy > 0) {
+		if (efficiency.producedElectricity > 0) {
 			row++;
 			Excel.cell(sheet, row, 0, "Erzeugter Strom");
 			Excel.cell(sheet, row, 1,
-					Math.round(efficiency.producedElectrictiy));
+					Math.round(efficiency.producedElectricity));
 		}
 		row++;
 		Excel.cell(sheet, row, 0, "Pufferspeicherverluste");
@@ -137,13 +137,13 @@ class FurtherResultsSheet {
 		Excel.cell(sheet, row, 0, "Primärenergiefaktor");
 		Excel.cell(sheet, row, 1, PrimaryEnergyFactor.get(result));
 		row++;
-		
+
 		int share = 0;
 		for (Producer p : project.producers)
 		{
 			if(!p.disabled && p.solarCollector != null && p.solarCollectorSpec != null)
 			{
-				share += GeneratedHeat.share(result.energyResult.totalHeat(p), result.energyResult);					
+				share += GeneratedHeat.share(result.energyResult.totalHeat(p), result.energyResult);
 			}
 		}
 		if (share > 0)

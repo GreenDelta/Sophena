@@ -14,7 +14,7 @@ import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sophena.calc.ConsumerLoadCurve;
+import sophena.calc.load.ConsumerLoadCurve;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Consumer;
 import sophena.model.Location;

@@ -2,6 +2,7 @@ package sophena.model;
 
 import java.time.MonthDay;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class HoursTrace {
 
 	public static final int[] DAYS_IN_MONTH = {
-		31, 28, 31, 30, 31, 30, 31, 31,	30, 31, 30, 31
+		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	};
 
 	private HoursTrace() {
@@ -28,17 +29,17 @@ public class HoursTrace {
 	 */
 	public static int[] getDayInterval(TimeInterval time) {
 		if (time == null)
-			return new int[] { -1, -1 };
+			return new int[]{-1, -1};
 		try {
 			MonthDay startDay = MonthDay.parse(time.start);
 			MonthDay endDay = MonthDay.parse(time.end);
 			int startHour = getFirstHour(startDay);
 			int endHour = getFirstHour(endDay) + 23;
-			return new int[] { startHour, endHour };
+			return new int[]{startHour, endHour};
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(HoursTrace.class);
 			log.error("Failed to parse time span {}", time, e);
-			return new int[] { -1, -1 };
+			return new int[]{-1, -1};
 		}
 	}
 
@@ -47,17 +48,17 @@ public class HoursTrace {
 	 * interval. It is expected that the given interval has a MonthDayHour
 	 * format. If something went wrong [-1, -1] will be returned.
 	 */
-	public static int[] getHourInterval(TimeInterval time) {
+	public static int @NonNull [] getHourInterval(TimeInterval time) {
 		if (time == null)
-			return new int[] { -1, -1 };
+			return new int[]{-1, -1};
 		try {
 			MonthDayHour start = MonthDayHour.parse(time.start);
 			MonthDayHour end = MonthDayHour.parse(time.end);
-			return new int[] { getHour(start), getHour(end) };
+			return new int[]{getHour(start), getHour(end)};
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(HoursTrace.class);
 			log.error("Failed to parse time span {}", time, e);
-			return new int[] { -1, -1 };
+			return new int[]{-1, -1};
 		}
 	}
 
@@ -97,7 +98,7 @@ public class HoursTrace {
 	}
 
 	public static void applyInterval(double[] trace, int[] interval,
-			TraceFunction fn) {
+																	 TraceFunction fn) {
 		if (trace == null || interval == null || interval.length < 2)
 			return;
 		int start = interval[0];
@@ -119,7 +120,7 @@ public class HoursTrace {
 	}
 
 	public static void applyInterval(boolean[] trace, int[] interval,
-			BooleanTraceFunction fn) {
+																	 BooleanTraceFunction fn) {
 		if (trace == null || interval == null || interval.length < 2)
 			return;
 		int start = interval[0];

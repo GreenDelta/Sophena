@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import sophena.calc.ProjectResult;
+import sophena.calc.kpi.GeneratedElectricity;
 import sophena.model.Boiler;
 import sophena.model.Consumer;
 import sophena.model.LoadProfile;

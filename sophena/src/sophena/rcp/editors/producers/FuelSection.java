@@ -12,7 +12,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.Labels;
 import sophena.db.daos.FuelDao;
-import sophena.math.energetic.CalorificValue;
+import sophena.calc.specs.CalorificValue;
 import sophena.model.Fuel;
 import sophena.model.FuelGroup;
 import sophena.model.FuelSpec;

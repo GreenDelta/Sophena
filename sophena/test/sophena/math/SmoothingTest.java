@@ -2,11 +2,12 @@ package sophena.math;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static sophena.math.Smoothing.circularIndex;
-import static sophena.math.Smoothing.on;
+import static sophena.calc.load.Smoothing.circularIndex;
+import static sophena.calc.load.Smoothing.on;
 
 import org.junit.Test;
 
+import sophena.calc.load.Smoothing;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.LoadProfile;

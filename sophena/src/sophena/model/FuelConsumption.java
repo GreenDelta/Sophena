@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import sophena.math.energetic.CalorificValue;
+import sophena.calc.specs.CalorificValue;
 
 @Entity
 @Table(name = "tbl_fuel_consumptions")

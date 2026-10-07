@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.calc.CO2Result;
+import sophena.calc.kpi.CO2Result;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -34,8 +34,8 @@ class EmissionTable {
 		TableViewer table = Tables.createViewer(comp, "", "Emissionen");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
-		Tables.rightAlignColumns(table, 1);		
-		//Tables.autoSizeColumns(table);		
+		Tables.rightAlignColumns(table, 1);
+		//Tables.autoSizeColumns(table);
 		table.getTable().getColumn(0).setWidth(200);
 		table.getTable().getColumn(1).setWidth(200);
 	}

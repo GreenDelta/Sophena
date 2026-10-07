@@ -5,11 +5,11 @@ import java.util.Arrays;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
-import sophena.calc.ProjectLoad;
+import sophena.calc.load.ProjectLoad;
 import sophena.calc.ProjectResult;
-import sophena.math.energetic.GeneratedHeat;
-import sophena.math.energetic.Producers;
-import sophena.math.energetic.UtilisationRate;
+import sophena.calc.kpi.GeneratedHeat;
+import sophena.calc.specs.Producers;
+import sophena.calc.specs.UtilisationRate;
 import sophena.model.BufferTank;
 import sophena.model.Producer;
 import sophena.model.Stats;
@@ -19,8 +19,8 @@ class HeatSheet {
 
 	private final ProjectResult result;
 	private final SheetWriter w;
-	
-	private boolean showStagnationDays = false;		
+
+	private boolean showStagnationDays = false;
 	private boolean showJAZ = false;
 
 	HeatSheet(Workbook wb, ProjectResult result) {
@@ -52,7 +52,7 @@ class HeatSheet {
 						result.project, p, result.energyResult));
 			}
 			w.num(result.energyResult.numberOfStarts(p));
-			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
+			if(p.solarCollector != null & p.solarCollectorSpec != null) {
 				w.rint(result.energyResult.stagnationDays(p));
 			}
 			else if (showStagnationDays)
@@ -68,7 +68,7 @@ class HeatSheet {
 		diffAndBuffer(row, result.energyResult.producers);
 		Excel.autoSize(w.sheet, 0, 7);
 	}
-	
+
 	private void header() {
 		w.boldStr(0, 0, "Wärmeerzeuger");
 		w.boldStr("Rang");
@@ -79,7 +79,7 @@ class HeatSheet {
 		w.boldStr("Volllaststunden [h]");
 		w.boldStr("Nutzungsgrad [%]");
 		w.boldStr("Starts");
-		
+
 		for(Producer p : result.energyResult.producers)
 		{
 			if(p.solarCollector != null & p.solarCollectorSpec != null)

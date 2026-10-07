@@ -14,10 +14,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.Labels;
 import sophena.calc.ProjectResult;
-import sophena.calc.energy.EnergyResult;
-import sophena.math.energetic.GeneratedHeat;
-import sophena.math.energetic.Producers;
-import sophena.math.energetic.UtilisationRate;
+import sophena.calc.simulation.EnergyResult;
+import sophena.calc.kpi.GeneratedHeat;
+import sophena.calc.specs.Producers;
+import sophena.calc.specs.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -36,7 +36,7 @@ class BoilerTableSection {
 	private final ResultColors colors;
 	private final Project project;
 	private final double maxLoad;
-	
+
 	BoilerTableSection(ResultEditor editor, double maxLoad) {
 		this.projectResult = editor.result;
 		this.colors = editor.colors;
@@ -49,21 +49,21 @@ class BoilerTableSection {
 		var section = UI.section(body, tk, "Wärmeerzeugung");
 		UI.gridData(section, true, false);
 		var comp = UI.sectionClient(section, tk);
-		UI.gridLayout(comp, 1);		
+		UI.gridLayout(comp, 1);
 		List<Item> items = getItems();
 		boolean showStagnationDays = false;
 		for(int i = 0; i < items.size(); i++)
 			if(items.get(i).showStagnationDays)
 				showStagnationDays = true;
-		
+
 		boolean showJAZ = false;
 		for(Producer p : result.producers)
 			if(p.heatPump != null)
 			{
 				showJAZ = true;
 				break;
-			}				
-		
+			}
+
 		List<String> properties = new ArrayList<String>();
 		properties.add(M.HeatProducer);
 		properties.add("Rang");
@@ -76,18 +76,18 @@ class BoilerTableSection {
 		properties.add("Starts");
 		properties.add("Stagnationstage");
 		properties.add("JAZ");
-		
+
 		int count = 9;
 		if(showStagnationDays)
 			count++;
 		if(showJAZ)
 			count++;
-		
+
 		var table = Tables.createViewer(comp, properties.toArray(new String[0]));
 		table.setLabelProvider(new Label());
 		double w = 0.9 / count;
 		if(count == 11)
-			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, w);		
+			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, w, w);
 		else if(count == 10)
 		{
 			if(showStagnationDays)
@@ -97,8 +97,8 @@ class BoilerTableSection {
 		}
 		else
 			Tables.bindColumnWidths(table, w, w, w, w, w, w, w, w, w, 0, 0);
-		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10, 11);		
-		table.setInput(items);		
+		Tables.rightAlignColumns(table, 2, 4, 5, 6, 7, 8, 9, 10, 11);
+		table.setInput(items);
 	}
 
 	private List<Item> getItems() {
@@ -131,7 +131,7 @@ class BoilerTableSection {
 					? p.boiler.efficiencyRate
 					: UtilisationRate.get(project, p, result);
 			item.clocks = result.numberOfStarts(p);
-			if(p.solarCollector != null & p.solarCollectorSpec != null) {				
+			if(p.solarCollector != null & p.solarCollectorSpec != null) {
 				item.stagnationDays = result.stagnationDays(p);
 				item.showStagnationDays = true;
 			}
@@ -144,7 +144,7 @@ class BoilerTableSection {
 			items.add(item);
 		}
 	}
-	
+
 	private void addBufferItem(List<Item> items) {
 		var sep = new Item();
 		sep.separator = true;
@@ -222,7 +222,7 @@ class BoilerTableSection {
 			if (!(element instanceof Item item))
 				return null;
 			if (item.separator)
-				return null;			
+				return null;
 			return switch (col) {
 				case 0 -> item.name;
 				case 1 -> item.rank;
@@ -239,7 +239,7 @@ class BoilerTableSection {
 				case 8 -> item.clocks == null
 						? null
 						: Num.intStr(item.clocks);
-				case 9 -> item.stagnationDays == null 
+				case 9 -> item.stagnationDays == null
 						? null
 						: Num.intStr(item.stagnationDays);
 				case 10 -> item.jaz == null

@@ -11,7 +11,7 @@ import org.eclipse.swtchart.ISeriesSet;
 import org.eclipse.swtchart.Range;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.CO2Result;
+import sophena.calc.kpi.CO2Result;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.ColorConfig;

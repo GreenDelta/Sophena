@@ -3,12 +3,12 @@ package sophena.rcp.editors.results.compare;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.CO2Result;
+import sophena.calc.kpi.CO2Result;
 import sophena.calc.Comparison;
-import sophena.math.energetic.EfficiencyResult;
-import sophena.math.energetic.PrimaryEnergyFactor;
-import sophena.math.energetic.Producers;
-import sophena.math.energetic.UsedHeat;
+import sophena.calc.kpi.EfficiencyResult;
+import sophena.calc.kpi.PrimaryEnergyFactor;
+import sophena.calc.specs.Producers;
+import sophena.calc.kpi.UsedHeat;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.rcp.utils.UI;

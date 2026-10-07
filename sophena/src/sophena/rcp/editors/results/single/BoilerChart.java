@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.energy.EnergyResult;
+import sophena.calc.simulation.EnergyResult;
 import sophena.model.Producer;
 import sophena.model.Stats;
 import sophena.rcp.app.Icon;

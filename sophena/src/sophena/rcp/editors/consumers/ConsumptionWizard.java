@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.db.daos.FuelDao;
-import sophena.math.energetic.EfficiencyRate;
-import sophena.math.energetic.UtilisationRate;
+import sophena.calc.specs.EfficiencyRate;
+import sophena.calc.specs.UtilisationRate;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
 import sophena.model.WoodAmountType;

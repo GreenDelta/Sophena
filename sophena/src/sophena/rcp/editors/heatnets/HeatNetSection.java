@@ -5,11 +5,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.ProjectLoad;
+import sophena.calc.load.ProjectLoad;
 import sophena.db.daos.ProjectDao;
-import sophena.math.Smoothing;
-import sophena.math.energetic.HeatNets;
-import sophena.math.energetic.SeasonalItem;
+import sophena.calc.load.Smoothing;
+import sophena.calc.specs.HeatNets;
+import sophena.calc.specs.SeasonalItem;
 import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.Project;

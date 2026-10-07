@@ -1,13 +1,13 @@
 package sophena.calc.biogas;
 
-import sophena.calc.CostResult;
+import sophena.calc.costs.CostResult;
 import sophena.model.AnnualCostEntry;
 import sophena.model.ProductCosts;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.SubstrateProfile;
-import sophena.math.costs.CapitalCosts;
+import sophena.calc.costs.CapitalCosts;
 
 /**
  * Calculator for the economic evaluation of a biogas plant.
