@@ -1,32 +1,25 @@
 package sophena.calc.costs;
 
-import sophena.calc.ProjectResult;
-import sophena.model.Project;
-
 public class Costs {
 
 	private Costs() {
 	}
 
-	public static double annuity(ProjectResult r, double firstYearValue,
-															 double interestRate, double priceChangeFactor) {
-		double a = annuityFactor(r.project, interestRate);
-		double b = cashValueFactor(r.project, interestRate, priceChangeFactor);
-		double annuity = firstYearValue * a * b;
-		return annuity;
-	}
-
-	/**
-	 * Calculate the annuity factor for the given project and interest rate.
-	 *
-	 * @param project      The project with a given duration.
-	 * @param interestRate The percentage value of the interest rate
-	 *                     (e.g. 2 means 2%).
-	 */
-	public static double annuityFactor(Project project, double interestRate) {
-		return project != null
-			? annuityFactor(project.duration, interestRate)
-			: 0;
+	/// Calculates the annuity of a yearly value according to VDI 2067.
+	///
+	/// @param duration          The number of years.
+	/// @param firstYearValue    The value of the first year.
+	/// @param interestRate      The interest rate as percentage value, e.g. 2 means 2%.
+	/// @param priceChangeFactor The price change factor, e.g. 1.02.
+	public static double annuity(
+		int duration,
+		double firstYearValue,
+		double interestRate,
+		double priceChangeFactor
+	) {
+		double a = annuityFactor(duration, interestRate);
+		double b = cashValueFactor(duration, interestRate, priceChangeFactor);
+		return firstYearValue * a * b;
 	}
 
 	/// Calculates the annuity factor for the given time and interest rate.
@@ -35,10 +28,12 @@ public class Costs {
 	/// @param interestRate The interest rate as percentage value, e.g. 2 means 2%.
 	public static double annuityFactor(int duration, double interestRate) {
 		if (duration < 1)
-			return 1.0;
+			return 0.0;
 		double T = duration;
-		double i = interestRate / 100.0;
-		double q = 1 + i;
+		double q = 1 + interestRate / 100.0;
+		// when the interest rate is 0 (q = 1) the annuity factor is 1 / T
+		if (Math.abs(q - 1) < 1e-10)
+			return 1.0 / T;
 		// the formula is often written a bit differently
 		// (q - 1) / (1 - q^(-T))
 		// = (q - 1) / (q^(-T) * (q^T - 1))
@@ -47,26 +42,31 @@ public class Costs {
 		return (q - 1) / (1 - Math.pow(q, -T));
 	}
 
-	/**
-	 * Calculate the cash value factor for the given project, interest rate, and
-	 * price change factor.
-	 *
-	 * @param project           The project with the calculation settings.
-	 * @param interestRate      The percentage value of the interest rate (e.g. 2 means 2%).
-	 * @param priceChangeFactor The price change factor (e.g. 1.02)
-	 */
+	/// Calculates the cash value factor for the given time, interest rate, and
+	/// price change factor.
+	///
+	/// @param duration          The number of years.
+	/// @param interestRate      The interest rate as percentage value, e.g. 2 means 2%.
+	/// @param priceChangeFactor The price change factor, e.g. 1.02.
 	public static double cashValueFactor(
-		Project project, double interestRate, double priceChangeFactor
+		int duration,
+		double interestRate,
+		double priceChangeFactor
 	) {
-		if (project == null)
-			return 0;
-		double q = 1 + interestRate / 100;
-		double r = priceChangeFactor;
-		double T = project.duration;
-		if (Math.abs(q - r) < 1e-6)
-			return T / q;
-		return (1 - Math.pow(r / q, T)) / (q - r);
-	}
+		if (duration < 1)
+			return 0.0;
+		double T = duration;
+		double q = 1 + interestRate / 100.0;
+		double p = priceChangeFactor;
 
+		if (q <= 0)
+			return 0;
+
+		// Special case: q == p (interest rate matches price change)
+		if (Math.abs(q - p) < 1e-6)
+			return T / q;
+
+		return (1 - Math.pow(p / q, T)) / (q - p);
+	}
 
 }

@@ -3,7 +3,6 @@ package sophena.calc.costs;
 import sophena.calc.ProjectResult;
 import sophena.calc.costs.CostResult.FieldSet;
 import sophena.calc.kpi.GeneratedElectricity;
-import sophena.calc.simulation.EnergyResult;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
 import sophena.model.Project;
@@ -36,8 +35,8 @@ public class CostCalculator {
 		finishCapitalCosts(r);
 		addOtherCosts(r);
 		addRevenues(r);
-		calcTotals(r.dynamicTotal, true);
-		calcTotals(r.staticTotal, false);
+		calcTotals(r.dynamicTotal);
+		calcTotals(r.staticTotal);
 		return r;
 	}
 
@@ -50,7 +49,6 @@ public class CostCalculator {
 			}
 		}
 	}
-
 
 	private void handleItem(CostResult r, CostResultItem item) {
 
@@ -67,17 +65,12 @@ public class CostCalculator {
 
 		// add operation costs = operation + maintenance
 		double operationCosts = item.investment.operation() * settings.hourlyWage;
-		double annuityOperations = Costs.annuity(result, operationCosts,
-			ir(), settings.operationFactor);
-		double staticAnnuityOperations = Costs.annuity(result, operationCosts,
-			ir(), 1.0);
+		double annuityOperations = annuityOf(operationCosts, settings.operationFactor);
+		double staticAnnuityOperations = staticAnnuityOf(operationCosts);
 
-		double maintenanceCosts = Investments.maintenanceBase(
-			item.investment);
-		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
-			ir(), settings.maintenanceFactor);
-		double staticAnnuityMaintenance = Costs.annuity(result,
-			maintenanceCosts, ir(), 1.0);
+		double maintenanceCosts = Investments.maintenanceBase(item.investment);
+		double annuityMaintenance = annuityOf(maintenanceCosts, settings.maintenanceFactor);
+		double staticAnnuityMaintenance = staticAnnuityOf(maintenanceCosts);
 
 		item.operationRelatedCosts = annuityOperations + annuityMaintenance;
 		r.dynamicTotal.operationCosts += item.operationRelatedCosts;
@@ -86,37 +79,36 @@ public class CostCalculator {
 			+ staticAnnuityMaintenance;
 	}
 
-	/// The annual capital costs of the given item. Returns 0 when the project
-	/// has no cost settings.
+	/// The annual capital costs of the given item.
 	private double capitalCostsOf(CostResultItem item, double priceChange) {
-		if (project.costSettings == null)
-			return 0;
 		return Investments.capitalCosts(
 			item.investment,
 			project.duration,
-			ir(),
+			interestRate(),
 			priceChange);
 	}
 
+
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
 
-		EnergyResult energyResult = result.energyResult;
+		var energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
 
 		double fuelCosts = FuelCosts.get(result, p);
 		double electricityCosts = ElectricityCosts.net(producedHeat, settings);
 		double ashCosts = FuelCosts.getAshCosts(result, p);
-		double costs = fuelCosts + electricityCosts + ashCosts;
+		double priceChangeFuel = FuelCosts.getPriceChangeFactor(p, settings);
 
-		double a = Costs.annuityFactor(project, ir());
-		double priceChangeFactor = FuelCosts.getPriceChangeFactor(p, settings);
-		double bDynamic = Costs.cashValueFactor(project, ir(),
-			priceChangeFactor);
-		double bStatic = Costs.cashValueFactor(project, ir(), 1.0);
-
-		item.demandRelatedCosts = costs * a * bDynamic;
+		// we assume the same price change factor for the ash costs as for the fuel
+		item.demandRelatedCosts = annuityOf(fuelCosts, priceChangeFuel)
+			+ annuityOf(electricityCosts, settings.electricityFactor)
+			+ annuityOf(ashCosts, priceChangeFuel);
 		r.dynamicTotal.consumptionCosts += item.demandRelatedCosts;
-		r.staticTotal.consumptionCosts += costs * a * bStatic;
+
+		double staticCosts = staticAnnuityOf(fuelCosts)
+			+ staticAnnuityOf(electricityCosts)
+			+ staticAnnuityOf(ashCosts);
+		r.staticTotal.consumptionCosts += staticCosts;
 	}
 
 	/// Reduce capital costs by fundings and connection fees.
@@ -130,7 +122,7 @@ public class CostCalculator {
 		}
 		if (bonus <= 0)
 			return;
-		double a = Costs.annuityFactor(project, ir());
+		double a = Costs.annuityFactor(project.duration, interestRate());
 		r.dynamicTotal.capitalCosts -= (bonus * a);
 		r.staticTotal.capitalCosts -= (bonus * a);
 	}
@@ -152,36 +144,27 @@ public class CostCalculator {
 			dynamicSum += annualCosts.value;
 		}
 
-		r.dynamicTotal.otherAnnualCosts = Costs.annuity(
-			result, dynamicSum, ir(), settings.operationFactor);
-		r.staticTotal.otherAnnualCosts = Costs.annuity(
-			result, staticSum, ir(), 1.0);
+		r.dynamicTotal.otherAnnualCosts = annuityOf(
+			dynamicSum, settings.operationFactor);
+		r.staticTotal.otherAnnualCosts = staticAnnuityOf(staticSum);
 	}
 
+	/// Add revenues from generated electricity and heat.
 	private void addRevenues(CostResult r) {
-		double pe = settings.electricityRevenues;
-		double Egen = GeneratedElectricity.getTotal(result);
-		double revenuesElectricity = pe * Egen;
+		double electricityRevenues =
+			GeneratedElectricity.getTotal(result) * settings.electricityRevenues;
 
-		r.dynamicTotal.revenuesElectricity = Costs.annuity(
-			result,
-			revenuesElectricity,
-			ir(),
-			settings.electricityRevenuesFactor
-		);
-		r.staticTotal.revenuesElectricity = Costs.annuity(result,
-			revenuesElectricity, ir(), 1.0);
+		r.dynamicTotal.revenuesElectricity = annuityOf(
+			electricityRevenues, settings.electricityRevenuesFactor);
+		r.staticTotal.revenuesElectricity = staticAnnuityOf(electricityRevenues);
 
-		double ph = settings.heatRevenues;
-		double Qu = usedHeat();
-		double revenuesHeat = ph * Qu;
-		r.dynamicTotal.revenuesHeat = Costs.annuity(
-			result, revenuesHeat, ir(), settings.heatRevenuesFactor);
-		r.staticTotal.revenuesHeat = Costs.annuity(
-			result, revenuesHeat, ir(), 1.0);
+		double revenuesHeat = usedHeat() * settings.heatRevenues;
+		r.dynamicTotal.revenuesHeat = annuityOf(
+			revenuesHeat, settings.heatRevenuesFactor);
+		r.staticTotal.revenuesHeat = staticAnnuityOf(revenuesHeat);
 	}
 
-	private void calcTotals(FieldSet costs, boolean dynamic) {
+	private void calcTotals(FieldSet costs) {
 		costs.totalAnnualCosts = costs.capitalCosts
 			+ costs.consumptionCosts
 			+ costs.operationCosts
@@ -189,33 +172,41 @@ public class CostCalculator {
 		costs.annualSurplus = costs.revenuesHeat
 			+ costs.revenuesElectricity - costs.totalAnnualCosts;
 
-		double Q = usedHeat();
-		if (Q == 0) {
-			costs.heatGenerationCosts = 0;
-		} else {
-			costs.heatGenerationCosts = (costs.totalAnnualCosts
-				- costs.revenuesElectricity) / Q;
-		}
+		double usedHeat = usedHeat();
+		costs.heatGenerationCosts = usedHeat != 0
+			? (costs.totalAnnualCosts - costs.revenuesElectricity) / usedHeat
+			: 0;
+	}
+
+	private double staticAnnuityOf(double firstYearValue) {
+		return annuityOf(firstYearValue, 1.0);
+	}
+
+	private double annuityOf(double firstYearValue, double priceChangeFactor) {
+		return Costs.annuity(
+			project.duration,
+			firstYearValue,
+			interestRate(),
+			priceChangeFactor
+		);
 	}
 
 	/**
 	 * Returns the interest rate that is used for the calculation.
 	 */
-	private double ir() {
+	private double interestRate() {
 		return withFunding
 			? settings.interestRateFunding
 			: settings.interestRate;
 	}
 
-	/**
-	 * The used heat in MWh
-	 */
+	/// Returns the used heat in MWh.
 	private double usedHeat() {
-		EnergyResult energyResult = result.energyResult;
+		var energyResult = result.energyResult;
 		double bufferLoss = Stats.sum(energyResult.bufferLoss);
 		return (energyResult.totalProducedHeat
 			- energyResult.heatNetLoss
-			- bufferLoss) * 1 / 1000d;
+			- bufferLoss) / 1000d;
 	}
 
 }

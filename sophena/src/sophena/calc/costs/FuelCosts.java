@@ -22,28 +22,24 @@ public class FuelCosts {
 		FuelSpec spec = p.fuelSpec;
 		double amount = r.fuelUsage.getInFuelUnits(p);
 		double price = spec.pricePerUnit;
-		double val = amount * price;
-		return val;
+		return amount * price;
 	}
 
-	public static double getPriceChangeFactor(Producer p,
-			CostSettings settings) {
-		if (p == null || p.fuelSpec == null || settings == null)
+	public static double getPriceChangeFactor(Producer p, CostSettings settings) {
+		if (settings == null)
+			return 1.0;
+
+		if (p == null || p.fuelSpec == null)
 			return settings.fossilFuelFactor;
 		Fuel fuel = p.fuelSpec.fuel;
 		if (fuel == null || fuel.group == null)
 			return settings.fossilFuelFactor;
-		switch (fuel.group) {
-		case BIOGAS:
-		case PELLETS:
-		case PLANTS_OIL:
-		case WOOD:
-			return settings.bioFuelFactor;
-		case ELECTRICITY:
-			return settings.electricityFactor;
-		default:
-			return settings.fossilFuelFactor;
-		}
+
+		return switch (fuel.group) {
+			case BIOGAS, PELLETS, PLANTS_OIL, WOOD -> settings.bioFuelFactor;
+			case ELECTRICITY -> settings.electricityFactor;
+			default -> settings.fossilFuelFactor;
+		};
 	}
 
 	public static double getAshCosts(ProjectResult r, Producer p) {

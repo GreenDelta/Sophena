@@ -1,5 +1,6 @@
 package sophena.calc.biogas;
 
+import sophena.calc.costs.Costs;
 import sophena.calc.costs.CostResult;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;
@@ -109,7 +110,7 @@ public class BiogasCostCalculator {
 			substrateSum += profile.annualMass * profile.substrateCosts;
 		}
 		// Apply duration-based annuity factor for bio-fuels
-		double bioAnnuity = substrateSum * annuityFactor(plant.settings.bioFuelFactor);
+		double bioAnnuity = annuity(substrateSum, plant.settings.bioFuelFactor);
 
 		// Calculate electricity purchased from the grid (EUR/a)
 		double electricitySum = 0;
@@ -121,7 +122,7 @@ public class BiogasCostCalculator {
 			}
 		}
 		// Apply duration-based annuity factor for grid electricity
-		double elecAnnuity = electricitySum * annuityFactor(plant.settings.electricityFactor);
+		double elecAnnuity = annuity(electricitySum, plant.settings.electricityFactor);
 
 		return bioAnnuity + elecAnnuity;
 	}
@@ -145,11 +146,11 @@ public class BiogasCostCalculator {
 			maintBase += Investments.maintenanceBase(
 				InvestmentItem.of(entry));
 		}
-		double maintAnnuity = maintBase * annuityFactor(plant.settings.maintenanceFactor);
+		double maintAnnuity = annuity(maintBase, plant.settings.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
 		double operBase = BiogasPlants.totalOperationHours(plant) * plant.settings.hourlyWage;
-		double operAnnuity = operBase * annuityFactor(plant.settings.operationFactor);
+		double operAnnuity = annuity(operBase, plant.settings.operationFactor);
 
 		// Insurance: fixed percentage of the full investment value (assumed
 		// constant price level)
@@ -200,32 +201,16 @@ public class BiogasCostCalculator {
 		}
 
 		// Apply duration-based annuity factor for electricity revenues
-		return hourlyRevenuesSum * annuityFactor(plant.settings.electricityRevenuesFactor);
+		return annuity(hourlyRevenuesSum, plant.settings.electricityRevenuesFactor);
 	}
 
-	/**
-	 * Helper method to calculate the combined annuity and price change factor (VDI 2067).
-	 * a * b = (annuity factor) * (cash value factor for price changes)
-	 *
-	 * @param r Price change factor (e.g., 1.05 for 5% increase).
-	 * @return Combined factor to multiply with first-year costs.
-	 */
-	private double annuityFactor(double r) {
-		double q = 1 + plant.settings.interestRate / 100;
-		int T = plant.duration;
-		if (T <= 0) return 0;
-
-		// a: Annuity factor for capital recovery
-		double a = (q - 1) / (1 - Math.pow(q, -T));
-
-		// b: Cash value factor for the geometric series of price changes
-		double b;
-		if (Math.abs(r - q) < 0.000001) {
-			b = T / q;
-		} else {
-			b = (1 - Math.pow(r / q, T)) / (q - r);
-		}
-
-		return a * b;
+	/// The annuity of the given first-year value for the observed duration of the
+	/// plant, see `Costs.annuity`.
+	private double annuity(double firstYearValue, double priceChangeFactor) {
+		return Costs.annuity(
+			plant.duration,
+			firstYearValue,
+			plant.settings.interestRate,
+			priceChangeFactor);
 	}
 }

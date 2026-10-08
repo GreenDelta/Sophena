@@ -97,7 +97,7 @@ public class ProductCostTest {
 		costs.duration = project.duration;
 		costs.investment = 10_000;
 		CostSettings settings = project.costSettings;
-		double af = Costs.annuityFactor(project, settings.interestRate);
+		double af = Costs.annuityFactor(project.duration, settings.interestRate);
 		double expected = -af * 10_000;
 		ProjectResult result = ProjectResult.calculate(project);
 		double annualSurplus = result.costResult.dynamicTotal.annualSurplus;

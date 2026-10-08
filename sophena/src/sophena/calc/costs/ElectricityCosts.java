@@ -16,8 +16,7 @@ public class ElectricityCosts {
 		if (producedHeat == 0 || settings == null)
 			return 0;
 		double amount = UsedElectricity.get(producedHeat, settings);
-		double net = amount * settings.electricityPrice;
-		return net;
+		return amount * settings.electricityPrice;
 	}
 
 }
