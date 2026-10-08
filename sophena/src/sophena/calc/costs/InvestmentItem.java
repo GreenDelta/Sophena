@@ -16,6 +16,7 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.biogas.BiogasInvestmentEntry;
+import sophena.model.biogas.BiogasPlant;
 
 /// A common structure for investment data that is the starting point in cost
 /// calculations. The different model classes are mapped into this structure.
@@ -107,6 +108,20 @@ public record InvestmentItem(
 		return items;
 	}
 
+	public static List<InvestmentItem> allOf(BiogasPlant plant) {
+		if (plant == null)
+			return Collections.emptyList();
+		var items = new ArrayList<InvestmentItem>();
+		for (var e : plant.investments) {
+			add(items, itemOf(e));
+		}
+		for (var b : plant.boilers) {
+			add(items, itemOf(b.boiler, b.costs));
+		}
+		return items;
+	}
+
+
 	private static void add(List<InvestmentItem> items, InvestmentItem item) {
 		if (item != null) {
 			items.add(item);
@@ -114,7 +129,7 @@ public record InvestmentItem(
 	}
 
 	@Nullable
-	static InvestmentItem of(BiogasInvestmentEntry entry) {
+	private static InvestmentItem itemOf(BiogasInvestmentEntry entry) {
 		if (entry == null || entry.costs == null)
 			return null;
 		String asset = entry.name;
@@ -151,11 +166,12 @@ public record InvestmentItem(
 		var asset = producer.boiler != null
 			? producer.boiler.name
 			: producer.name;
+		var type = typeOf(producer);
 
 		var costs = producer.costs;
 		if (ProductCosts.isEmpty(costs))
 			return new InvestmentItem(
-				asset, typeOf(producer.boiler), producer, 0, 0, 0, 0, 0, 0);
+				asset, type, producer, 0, 0, 0, 0, 0, 0);
 
 		var investment = costs.investment;
 		if (producer.solarCollector != null && producer.solarCollectorSpec != null) {
@@ -165,7 +181,7 @@ public record InvestmentItem(
 		}
 
 		return new InvestmentItem(
-			asset, typeOf(producer.boiler), producer,
+			asset, type, producer,
 			investment,
 			investment,
 			costs.duration,
@@ -205,8 +221,18 @@ public record InvestmentItem(
 		);
 	}
 
-	private static ProductType typeOf(AbstractProduct product) {
-		return typeOf(product, ProductType.OTHER_EQUIPMENT);
+	private static ProductType typeOf(Producer producer) {
+		if (producer == null)
+			return ProductType.OTHER_EQUIPMENT;
+		if (producer.boiler != null) {
+			if (producer.boiler.type != null)
+				return producer.boiler.type;
+			if (producer.boiler.group != null && producer.boiler.group.type != null)
+				return producer.boiler.group.type;
+		}
+		if (producer.productGroup != null && producer.productGroup.type != null)
+			return producer.productGroup.type;
+		return ProductType.OTHER_EQUIPMENT;
 	}
 
 	private static ProductType typeOf(
@@ -230,7 +256,7 @@ public record InvestmentItem(
 		if (Strings.isNotBlank(product.name))
 			return product.name;
 		if (product.group != null && Strings.isNotBlank(product.group.name))
-			return product.name;
+			return product.group.name;
 		var type = typeOf(product, defaultType);
 		return Labels.get(type);
 	}

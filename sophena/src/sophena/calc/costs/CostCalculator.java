@@ -1,8 +1,5 @@
 package sophena.calc.costs;
 
-import java.util.List;
-import java.util.function.Function;
-
 import sophena.calc.ProjectResult;
 import sophena.calc.costs.CostResult.FieldSet;
 import sophena.calc.kpi.GeneratedElectricity;
@@ -10,7 +7,6 @@ import sophena.calc.simulation.EnergyResult;
 import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
-import sophena.model.ProductEntry;
 import sophena.model.Project;
 import sophena.model.Stats;
 
@@ -47,38 +43,23 @@ public class CostCalculator {
 	}
 
 	private void createItems(CostResult r) {
-		for (Producer producer : project.producers) {
-			if (producer.disabled)
-				continue;
-			CostResultItem item = CostResultItem.create(producer);
+		for (var ii : InvestmentItem.allOf(project)) {
+			var item = new CostResultItem(ii);
 			handleItem(r, item);
-			addDemandCosts(r, item, producer);
+			if (ii.producer() != null) {
+				addDemandCosts(r, item, ii.producer());
+			}
 		}
-		for (ProductEntry entry : project.productEntries) {
-			CostResultItem item = CostResultItem.create(entry);
-			handleItem(r, item);
-		}
-		handleItems(r, CostResultItem::forTransferStations);
-		handleItems(r, CostResultItem::forHeatRecoveries);
-		handleItems(r, CostResultItem::forFlueGasCleanings);
-		handleItem(r, CostResultItem.forBuffer(project));
-		handleItems(r, CostResultItem::forPipes);
 	}
 
-	private void handleItems(CostResult r,
-			Function<Project, List<CostResultItem>> generator) {
-		for (CostResultItem item : generator.apply(project)) {
-			handleItem(r, item);
-		}
-	}
+
 
 	private void handleItem(CostResult r, CostResultItem item) {
-		if (item == null || item.costs == null)
-			return;
+
 		r.items.add(item);
-		item.investmentCosts = InvestmentCosts.get(item);
-		r.dynamicTotal.investments += item.investmentCosts;
-		r.staticTotal.investments += item.investmentCosts;
+
+		r.dynamicTotal.investments += item.investment.initialCosts();
+		r.staticTotal.investments += item.investment.initialCosts();
 
 		// add capital costs
 		item.capitalCosts = capitalCostsOf(item, settings.investmentFactor);
@@ -148,7 +129,7 @@ public class CostCalculator {
 	private void finishCapitalCosts(CostResult r) {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
-			double funding = Fundings.get(project, r);
+			double funding = Funding.get(project, r);
 			r.dynamicTotal.funding = funding;
 			r.staticTotal.funding = funding;
 			bonus += funding;
@@ -207,7 +188,6 @@ public class CostCalculator {
 
 		double Q = usedHeat();
 		if (Q == 0) {
-			costs.heatGenerationCosts = 0;
 			costs.heatGenerationCosts = 0;
 		} else {
 			costs.heatGenerationCosts = (costs.totalAnnualCosts

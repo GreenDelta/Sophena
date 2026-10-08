@@ -12,7 +12,10 @@ public class CostResult {
 
 	public static class FieldSet {
 
+		/// The initial investment sum in EUR.
 		public double investments;
+
+		/// The
 		public double funding;
 
 		public double capitalCosts;
