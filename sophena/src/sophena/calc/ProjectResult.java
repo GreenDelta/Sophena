@@ -27,7 +27,7 @@ public class ProjectResult {
 
 	public final List<ConsumerResult> consumerResults = new ArrayList<>();
 
-	ProjectResult(Project project) {
+	private ProjectResult(Project project) {
 		this.project = Objects.requireNonNull(project);
 	}
 
