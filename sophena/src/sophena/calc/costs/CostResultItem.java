@@ -4,15 +4,30 @@ import java.util.Objects;
 
 import org.jspecify.annotations.NullMarked;
 
+import sophena.model.ProductType;
+
 @NullMarked
-public class CostResultItem {
+public record CostResultItem(
+	InvestmentItem investment,
+	double capitalCosts,
+	double demandRelatedCosts,
+	double operationRelatedCosts
+) {
 
-	public final InvestmentItem investment;
-	public double capitalCosts;
-	public double demandRelatedCosts;
-	public double operationRelatedCosts;
-
-	CostResultItem(InvestmentItem investment) {
-		this.investment = Objects.requireNonNull(investment);
+	public CostResultItem {
+		Objects.requireNonNull(investment);
 	}
+
+	public String asset() {
+		return investment.asset();
+	}
+
+	public ProductType productType() {
+		return investment.productType();
+	}
+
+	public double initialInvestment() {
+		return investment.initialInvestment();
+	}
+
 }

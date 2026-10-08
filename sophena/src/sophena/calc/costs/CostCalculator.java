@@ -30,8 +30,12 @@ public class CostCalculator {
 	}
 
 	public CostResult calculate() {
-		CostResult r = new CostResult();
-		createItems(r);
+		var r = new CostResult();
+
+		for (var ii : InvestmentItem.allOf(project)) {
+			r.items.add(itemOf(r, ii));
+		}
+
 		finishCapitalCosts(r);
 		addOtherCosts(r);
 		addRevenues(r);
@@ -40,56 +44,45 @@ public class CostCalculator {
 		return r;
 	}
 
-	private void createItems(CostResult r) {
-		for (var ii : InvestmentItem.allOf(project)) {
-			var item = new CostResultItem(ii);
-			handleItem(r, item);
-			if (ii.producer() != null) {
-				addDemandCosts(r, item, ii.producer());
-			}
-		}
-	}
 
-	private void handleItem(CostResult r, CostResultItem item) {
+	private CostResultItem itemOf(CostResult r, InvestmentItem ii) {
 
-		r.items.add(item);
-
-		r.dynamicTotal.investments += item.investment.initialInvestment();
-		r.staticTotal.investments += item.investment.initialInvestment();
+		r.dynamicTotal.investments += ii.initialInvestment();
+		r.staticTotal.investments += ii.initialInvestment();
 
 		// add capital costs
-		item.capitalCosts = capitalCostsOf(item, settings.investmentFactor);
-		r.dynamicTotal.capitalCosts += item.capitalCosts;
-		double staticCapitalCosts = capitalCostsOf(item, 1.0);
-		r.staticTotal.capitalCosts += staticCapitalCosts;
+		double capitalCosts = capitalCostsOf(ii, settings.investmentFactor);
+		r.dynamicTotal.capitalCosts += capitalCosts;
+		r.staticTotal.capitalCosts += capitalCostsOf(ii, 1.0);
 
 		// add operation costs = operation + maintenance
-		double operationCosts = item.investment.operation() * settings.hourlyWage;
-		double annuityOperations = annuityOf(operationCosts, settings.operationFactor);
-		double staticAnnuityOperations = staticAnnuityOf(operationCosts);
+		double operationCosts = ii.operation() * settings.hourlyWage;
+		double maintenanceCosts = Investments.maintenanceBase(ii);
+		double operationRelatedCosts = annuityOf(operationCosts, settings.operationFactor)
+			+ annuityOf(maintenanceCosts, settings.maintenanceFactor);
+		r.dynamicTotal.operationCosts += operationRelatedCosts;
+		r.staticTotal.operationCosts += staticAnnuityOf(operationCosts)
+			+ staticAnnuityOf(maintenanceCosts);
 
-		double maintenanceCosts = Investments.maintenanceBase(item.investment);
-		double annuityMaintenance = annuityOf(maintenanceCosts, settings.maintenanceFactor);
-		double staticAnnuityMaintenance = staticAnnuityOf(maintenanceCosts);
+		double demandRelatedCosts = ii.producer() != null
+			? demandCostsOf(r, ii.producer())
+			: 0;
 
-		item.operationRelatedCosts = annuityOperations + annuityMaintenance;
-		r.dynamicTotal.operationCosts += item.operationRelatedCosts;
-
-		r.staticTotal.operationCosts += staticAnnuityOperations
-			+ staticAnnuityMaintenance;
+		return new CostResultItem(
+			ii, capitalCosts, demandRelatedCosts, operationRelatedCosts);
 	}
 
 	/// The annual capital costs of the given item.
-	private double capitalCostsOf(CostResultItem item, double priceChange) {
+	private double capitalCostsOf(InvestmentItem investment, double priceChange) {
 		return Investments.capitalCosts(
-			item.investment,
+			investment,
 			project.duration,
 			interestRate(),
 			priceChange);
 	}
 
 
-	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
+	private double demandCostsOf(CostResult r, Producer p) {
 
 		var energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
@@ -100,15 +93,16 @@ public class CostCalculator {
 		double priceChangeFuel = FuelCosts.getPriceChangeFactor(p, settings);
 
 		// we assume the same price change factor for the ash costs as for the fuel
-		item.demandRelatedCosts = annuityOf(fuelCosts, priceChangeFuel)
+		double demandCosts = annuityOf(fuelCosts, priceChangeFuel)
 			+ annuityOf(electricityCosts, settings.electricityFactor)
 			+ annuityOf(ashCosts, priceChangeFuel);
-		r.dynamicTotal.consumptionCosts += item.demandRelatedCosts;
+		r.dynamicTotal.consumptionCosts += demandCosts;
 
-		double staticCosts = staticAnnuityOf(fuelCosts)
+		r.staticTotal.consumptionCosts += staticAnnuityOf(fuelCosts)
 			+ staticAnnuityOf(electricityCosts)
 			+ staticAnnuityOf(ashCosts);
-		r.staticTotal.consumptionCosts += staticCosts;
+
+		return demandCosts;
 	}
 
 	/// Reduce capital costs by fundings and connection fees.
