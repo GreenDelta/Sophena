@@ -34,12 +34,12 @@ public class ProductAreaResult {
 	private void add(CostResultItem item) {
 		if (item == null)
 			return;
-		var productType = item.investment().productType();
+		var productType = item.productType();
 		if (productType == null || productType.productArea == null)
 			return;
 		ProductArea area = productType.productArea;
 		Entry entry = data.computeIfAbsent(area, _ -> new Entry());
-		double investmentCosts = item.investment().initialInvestment();
+		double investmentCosts = item.initialInvestment();
 		entry.investmentCosts += investmentCosts;
 		totalInvestmentCosts += investmentCosts;
 		entry.capitalCosts += item.capitalCosts();

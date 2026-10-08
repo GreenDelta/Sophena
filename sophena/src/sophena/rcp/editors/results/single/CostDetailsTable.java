@@ -56,10 +56,10 @@ class CostDetailsTable {
 		List<Item> items = new ArrayList<>();
 		for (CostResultItem r : result.items) {
 			Item item = new Item();
-			item.type = r.investment().productType();
-			item.category = Labels.getPlural(r.investment().productType());
-			item.product = r.investment().asset();
-			item.investment = r.investment().initialInvestment();
+			item.type = r.productType();
+			item.category = Labels.getPlural(r.productType());
+			item.product = r.asset();
+			item.investment = r.initialInvestment();
 			item.capitalCosts = s(r.capitalCosts(), "EUR/a");
 			item.consumptionCosts = s(r.demandRelatedCosts(), "EUR/a");
 			item.operationCosts = s(r.operationRelatedCosts(), "EUR/a");

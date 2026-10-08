@@ -19,11 +19,11 @@ public class Funding {
 		var fundingTypes = project.costSettings.fundingTypes;
 		var factor = project.costSettings.fundingPercent / 100;
 		for (var item : r.items) {
-			var type = fundingTypeOf(item.investment().productType());
+			var type = fundingTypeOf(item.productType());
 			if (type == null)
 				continue;
 			if ((fundingTypes & type.getValue()) > 0) {
-				total += factor * item.investment().initialInvestment();
+				total += factor * item.initialInvestment();
 			}
 		}
 		return total;
