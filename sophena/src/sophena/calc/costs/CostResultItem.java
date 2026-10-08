@@ -16,25 +16,17 @@ import sophena.model.Project;
 
 public class CostResultItem {
 
-	public String label;
-	public ProductType productType;
-	public ProductCosts costs;
-	public Producer producer;
-
-	public double investmentCosts;
+	public final InvestmentItem investment;
 	public double capitalCosts;
 	public double demandRelatedCosts;
 	public double operationRelatedCosts;
 
+	CostResultItem(InvestmentItem investment) {
+		this.investment = investment;
+	}
+
 	static CostResultItem create(ProductEntry entry) {
-		CostResultItem item = new CostResultItem();
-		if (entry == null)
-			return item;
-		if (entry.product != null) {
-			item.productType = entry.product.type;
-			item.label = entry.product.name;
-		}
-		return copy(entry.costs, item);
+		return new CostResultItem(InvestmentItem.of(entry));
 	}
 
 	static CostResultItem create(Producer producer) {
@@ -150,12 +142,5 @@ public class CostResultItem {
 		return item;
 	}
 
-	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {
-		if (costs == null) {
-			item.costs = new ProductCosts();
-		} else {
-			item.costs = costs.copy();
-		}
-		return item;
-	}
+
 }

@@ -1,169 +1,238 @@
 package sophena.calc.costs;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.openlca.commons.Strings;
+
+import sophena.Labels;
+import sophena.calc.specs.SolarModules;
+import sophena.model.AbstractProduct;
+import sophena.model.Producer;
 import sophena.model.ProductCosts;
-import sophena.model.ProductEntry;
+import sophena.model.ProductType;
+import sophena.model.Project;
 import sophena.model.biogas.BiogasInvestmentEntry;
 
-/// A facade for the investment data that is used in the cost calculations of
-/// projects and biogas plants. It adapts the different model classes
-/// (`ProductEntry`, `BiogasInvestmentEntry`) to a common interface.
-public sealed interface InvestmentItem {
+/// A common structure for investment data that is the starting point in cost
+/// calculations. The different model classes are mapped into this structure.
+///
+/// @param asset        The name of the underlying asset, e.g. the product name.
+/// @param productType  The product type of the asset.
+/// @param producer     In case the asset describes a producer, it is
+///                       referenced in this field, for the calculation of demand
+///                       based costs.
+/// @param initialCosts The initial costs of the investment in EUR; these can be
+///                       lower than the full investment costs in case of a
+///                       refurbishment or general overhaul of an existing asset.
+/// @param totalCosts   The total costs of the investment in EUR; while the
+///                       initial costs could be different, the total costs should
+///                       be always used when replacements, maintenance or repair
+///                       costs are calculated.
+/// @param duration     The usage duration of the asset in years.
+/// @param repair       The fraction [%] of the total investment costs that is
+///                       used for repair.
+/// @param maintenance  The fraction [%] of the total investment costs that is
+///                       used for maintenance.
+/// @param operation    The hours per year that are used for the operation of the
+///                       asset.
+public record InvestmentItem(
+	String asset,
+	ProductType productType,
+	@Nullable Producer producer,
+	double initialCosts,
+	double totalCosts,
+	int duration,
+	double repair,
+	double maintenance,
+	double operation
+) {
 
-	/// The full investment in EUR. This is the amount that is spent when the
-	/// asset is replaced after its lifetime.
-	double investment();
+	@NonNull
+	public static List<InvestmentItem> allOf(Project project) {
+		if (project == null)
+			return Collections.emptyList();
 
-	/// The amount in EUR that is spent initially. For the refurbishment or
-	/// general overhaul of an existing asset this can be a share of the full
-	/// investment.
-	double initialInvestment();
+		var items = new ArrayList<InvestmentItem>();
 
-	/// The usage duration of the asset in years.
-	int duration();
+		// producers & heat recoveries
+		for (var p : project.producers) {
+			if (p.disabled)
+				continue;
+			add(items, producerItemOf(p));
+			add(items, itemOf(
+				p.heatRecovery,
+				p.heatRecoveryCosts,
+				ProductType.HEAT_RECOVERY));
+		}
 
-	/// The fraction [%] of the investment that is used for repair.
-	double repair();
+		// flue gas cleanings
+		for (var e : project.flueGasCleaningEntries) {
+			add(items, itemOf(
+				e.product,
+				e.costs,
+				ProductType.FLUE_GAS_CLEANING));
+		}
 
-	/// The fraction [%] of the investment that is used for maintenance.
-	double maintenance();
+		// buffer tank and pipes
+		if (project.heatNet != null) {
+			add(items, itemOf(
+				project.heatNet.bufferTank,
+				project.heatNet.bufferTankCosts,
+				ProductType.BUFFER_TANK));
 
-	/// The hours per year that are used for the operation of the asset.
-	double operation();
+			for (var p : project.heatNet.pipes) {
+				add(items, itemOf(p.pipe, p.costs, ProductType.PIPE));
+			}
+		}
 
-	/// Returns a facade for the given biogas investment entry. A `null` entry
-	/// is mapped to an empty item.
+		// transfer stations of consumers
+		for (var c : project.consumers) {
+			if (c.disabled)
+				continue;
+			add(items, itemOf(
+				c.transferStation,
+				c.transferStationCosts,
+				ProductType.TRANSFER_STATION));
+		}
+
+		// generic product entries
+		for (var e : project.productEntries) {
+			add(items, itemOf(e.product, e.costs));
+		}
+
+		return items;
+	}
+
+	private static void add(List<InvestmentItem> items, InvestmentItem item) {
+		if (item != null) {
+			items.add(item);
+		}
+	}
+
+	@Nullable
 	static InvestmentItem of(BiogasInvestmentEntry entry) {
-		return entry == null ? new EmptyItem() : new BiogasItem(entry);
+		if (entry == null || entry.costs == null)
+			return null;
+		String asset = entry.name;
+		var type = ProductType.OTHER_EQUIPMENT;
+		var group = entry.productGroup;
+		if (group != null) {
+			type = group.type;
+			if (asset == null) {
+				asset = group.name;
+			}
+		}
+
+		var costs = entry.costs;
+		var initial = entry.refurbishmentShare != null
+			? costs.investment * (entry.refurbishmentShare / 100)
+			: costs.investment;
+		return new InvestmentItem(
+			asset, type, null,
+			initial,
+			costs.investment,
+			costs.duration,
+			costs.repair,
+			costs.maintenance,
+			costs.operation
+		);
 	}
 
-	/// Returns a facade for the given product entry. A `null` entry is mapped
-	/// to an empty item.
-	static InvestmentItem of(ProductEntry entry) {
-		return entry == null ? new EmptyItem() : new ProductItem(entry);
+
+	@Nullable
+	private static InvestmentItem producerItemOf(Producer producer) {
+		if (producer == null)
+			return null;
+
+		var asset = producer.boiler != null
+			? producer.boiler.name
+			: producer.name;
+
+		var costs = producer.costs;
+		if (ProductCosts.isEmpty(costs))
+			return new InvestmentItem(
+				asset, typeOf(producer.boiler), producer, 0, 0, 0, 0, 0, 0);
+
+		var investment = costs.investment;
+		if (producer.solarCollector != null && producer.solarCollectorSpec != null) {
+			investment *= SolarModules.getCount(
+				producer.solarCollectorSpec.solarCollectorArea,
+				producer.solarCollector.collectorArea);
+		}
+
+		return new InvestmentItem(
+			asset, typeOf(producer.boiler), producer,
+			investment,
+			investment,
+			costs.duration,
+			costs.repair,
+			costs.maintenance,
+			costs.operation
+		);
 	}
 
-	/// An investment item without any investments.
-	record EmptyItem() implements InvestmentItem {
-
-		@Override
-		public double investment() {
-			return 0;
-		}
-
-		@Override
-		public double initialInvestment() {
-			return 0;
-		}
-
-		@Override
-		public int duration() {
-			return 0;
-		}
-
-		@Override
-		public double repair() {
-			return 0;
-		}
-
-		@Override
-		public double maintenance() {
-			return 0;
-		}
-
-		@Override
-		public double operation() {
-			return 0;
-		}
+	@Nullable
+	private static InvestmentItem itemOf(
+		@Nullable AbstractProduct product, @Nullable ProductCosts costs
+	) {
+		return itemOf(product, costs, ProductType.OTHER_EQUIPMENT);
 	}
 
-	/// A facade for the investment entries of a biogas plant.
-	record BiogasItem(BiogasInvestmentEntry entry) implements InvestmentItem {
-
-		@Override
-		public double investment() {
-			var costs = costs();
-			return costs == null ? 0 : costs.investment;
-		}
-
-		@Override
-		public double initialInvestment() {
-			double investment = investment();
-			var share = entry.refurbishmentShare;
-			return share == null
-				? investment
-				: investment * share / 100;
-		}
-
-		@Override
-		public int duration() {
-			var costs = costs();
-			return costs == null ? 0 : costs.duration;
-		}
-
-		@Override
-		public double repair() {
-			var costs = costs();
-			return costs == null ? 0 : costs.repair;
-		}
-
-		@Override
-		public double maintenance() {
-			var costs = costs();
-			return costs == null ? 0 : costs.maintenance;
-		}
-
-		@Override
-		public double operation() {
-			var costs = costs();
-			return costs == null ? 0 : costs.operation;
-		}
-
-		private ProductCosts costs() {
-			return entry == null ? null : entry.costs;
-		}
+	@Nullable
+	private static InvestmentItem itemOf(
+		@Nullable AbstractProduct product,
+		@Nullable ProductCosts costs,
+		ProductType defaultType
+	) {
+		if (product == null && ProductCosts.isEmpty(costs))
+			return null;
+		var asset = nameOf(product, defaultType);
+		var type = typeOf(product, defaultType);
+		if (costs == null)
+			return new InvestmentItem(asset, type, null, 0, 0, 0, 0, 0, 0);
+		return new InvestmentItem(
+			asset, type, null,
+			costs.investment,
+			costs.investment,
+			costs.duration,
+			costs.repair,
+			costs.maintenance,
+			costs.operation
+		);
 	}
 
-	/// A facade for the product entries of a project. Product entries are always
-	/// invested completely.
-	record ProductItem(ProductEntry entry) implements InvestmentItem {
-
-		@Override
-		public double investment() {
-			var costs = costs();
-			return costs == null ? 0 : costs.investment;
-		}
-
-		@Override
-		public double initialInvestment() {
-			return investment();
-		}
-
-		@Override
-		public int duration() {
-			var costs = costs();
-			return costs == null ? 0 : costs.duration;
-		}
-
-		@Override
-		public double repair() {
-			var costs = costs();
-			return costs == null ? 0 : costs.repair;
-		}
-
-		@Override
-		public double maintenance() {
-			var costs = costs();
-			return costs == null ? 0 : costs.maintenance;
-		}
-
-		@Override
-		public double operation() {
-			var costs = costs();
-			return costs == null ? 0 : costs.operation;
-		}
-
-		private ProductCosts costs() {
-			return entry == null ? null : entry.costs;
-		}
+	private static ProductType typeOf(AbstractProduct product) {
+		return typeOf(product, ProductType.OTHER_EQUIPMENT);
 	}
+
+	private static ProductType typeOf(
+		AbstractProduct product, ProductType defaultType
+	) {
+		if (product == null)
+			return defaultType;
+		if (product.type != null)
+			return product.type;
+		if (product.group != null && product.group.type != null)
+			return product.group.type;
+		else
+			return defaultType;
+	}
+
+	private static String nameOf(
+		AbstractProduct product, ProductType defaultType
+	) {
+		if (product == null)
+			return Labels.get(defaultType);
+		if (Strings.isNotBlank(product.name))
+			return product.name;
+		if (product.group != null && Strings.isNotBlank(product.group.name))
+			return product.name;
+		var type = typeOf(product, defaultType);
+		return Labels.get(type);
+	}
+
 }

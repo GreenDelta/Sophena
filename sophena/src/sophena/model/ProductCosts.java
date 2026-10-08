@@ -87,9 +87,8 @@ public class ProductCosts implements Copyable<ProductCosts> {
 	 * entries in the given object.
 	 */
 	public static boolean isEmpty(ProductCosts costs) {
-		if (costs == null)
-			return true;
-		return costs.investment == 0 && costs.operation == 0;
+		return costs == null
+			|| (costs.investment == 0 && costs.operation == 0);
 	}
 
 	/**
