@@ -150,8 +150,7 @@ public class CostResultItem {
 		return item;
 	}
 
-	private static CostResultItem copy(ProductCosts costs,
-			CostResultItem item) {
+	private static CostResultItem copy(ProductCosts costs, CostResultItem item) {
 		if (costs == null) {
 			item.costs = new ProductCosts();
 		} else {

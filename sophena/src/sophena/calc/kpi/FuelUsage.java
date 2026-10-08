@@ -18,25 +18,19 @@ public class FuelUsage {
 		FuelUsage usage = new FuelUsage();
 		if (r == null || r.project == null)
 			return usage;
-		if (r.energyResult == null) {
-			r.calcLog.println("FEHLER: kein energetisches Ergebnis\n");
+		if (r.energyResult == null)
 			return usage;
-		}
-		r.calcLog.h3("Brennstoffverbräuche");
 		for (Producer p : r.project.producers) {
-			r.calcLog.println("=> Erzeuger: " + p.name);
 			double inKWh = calcKWh(r, p);
 			double amount = calcAmount(r, p, inKWh);
 			usage.inKWh.put(p.id, inKWh);
 			usage.inFuelUnits.put(p.id, amount);
-			r.calcLog.println();
 		}
 		return usage;
 	}
 
 	private static double calcKWh(ProjectResult r, Producer producer) {
 		double Qgen = r.energyResult.totalHeat(producer);
-		r.calcLog.value("Qgen: erzeugte Wärme", Qgen, "KWh");
 		if(producer.heatPump != null)
 		{
 			var jaz = r.energyResult.jaz(producer);
@@ -48,25 +42,14 @@ public class FuelUsage {
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer, r.energyResult);
-			r.calcLog.value("ur: Nutzungsgrad", ur, "");
 			double val = ur == 0 ? 0 : Qgen / ur;
-			r.calcLog.value("E: Benötigte Brennstoffenergie: E = Qgen / ur",
-					val, "kWh");
 			return val;
 
 		} else {
 			double tf = Producers.fullLoadHours(producer, Qgen);
-			r.calcLog.value("tf: Volllaststunden", tf, "h");
-			r.calcLog.value("er: elektrischer Wirkungsgrad",
-					electricalEfficiency, "");
 			double powerEl = Producers.electricPower(producer);
-			r.calcLog.value("Pe: elektrische Leistung", powerEl, "kW");
 			double Pf = powerEl / electricalEfficiency;
-			r.calcLog.value("Pf: Feuerungswärmeleistung: Pf = Pe / er",
-					Pf, "kW");
 			double val = Pf * tf;
-			r.calcLog.value("E: Benötigte Brennstoffenergie: E = Pf * tf",
-					val, "kWh");
 			return val;
 		}
 	}
@@ -75,10 +58,7 @@ public class FuelUsage {
 			double inKWh) {
 		FuelSpec spec = producer.fuelSpec;
 		double cv = CalorificValue.get(spec);
-		String fuelUnit = spec != null ? spec.getUnit() : "?";
-		r.calcLog.value("cv: Heizwert", cv, "kWh/" + fuelUnit);
 		double amount = cv == 0 ? 0 : inKWh / cv;
-		r.calcLog.value("af: Brennstoffmenge: af = E / cv", amount, fuelUnit);
 		return amount;
 	}
 

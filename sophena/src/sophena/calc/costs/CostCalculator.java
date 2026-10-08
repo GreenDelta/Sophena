@@ -3,11 +3,10 @@ package sophena.calc.costs;
 import java.util.List;
 import java.util.function.Function;
 
-import sophena.calc.CalcLog;
-import sophena.calc.costs.CostResult.FieldSet;
 import sophena.calc.ProjectResult;
-import sophena.calc.simulation.EnergyResult;
+import sophena.calc.costs.CostResult.FieldSet;
 import sophena.calc.kpi.GeneratedElectricity;
+import sophena.calc.simulation.EnergyResult;
 import sophena.model.AnnualCostEntry;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
@@ -18,7 +17,6 @@ import sophena.model.Stats;
 public class CostCalculator {
 
 	private final ProjectResult result;
-	private final CalcLog log;
 	private final Project project;
 
 	private CostSettings settings;
@@ -26,7 +24,6 @@ public class CostCalculator {
 
 	public CostCalculator(ProjectResult result) {
 		this.result = result;
-		this.log = result.calcLog;
 		this.project = result.project;
 		settings = project.costSettings;
 		if (settings == null) {
@@ -39,13 +36,6 @@ public class CostCalculator {
 	}
 
 	public CostResult calculate() {
-
-		if (withFunding) {
-			log.h2("Wirtschaftlichkeitsberechnung - mit Förderung");
-		} else {
-			log.h2("Wirtschaftlichkeitsberechnung - ohne Förderung");
-		}
-
 		CostResult r = new CostResult();
 		createItems(r);
 		finishCapitalCosts(r);
@@ -91,38 +81,26 @@ public class CostCalculator {
 		r.staticTotal.investments += item.investmentCosts;
 
 		// add capital costs
-		log.println("=> Kapitalkosten: " + item.label);
 		item.capitalCosts = capitalCostsOf(item, settings.investmentFactor);
-		log.value("Dynamisch", item.capitalCosts, "EUR/a");
 		r.dynamicTotal.capitalCosts += item.capitalCosts;
 		double staticCapitalCosts = capitalCostsOf(item, 1.0);
-		log.value("Statisch", staticCapitalCosts, "EUR/a");
 		r.staticTotal.capitalCosts += staticCapitalCosts;
-		log.println();
 
 		// add operation costs = operation + maintenance
-		log.println("=> Betriebskosten: " + item.label);
 		double operationCosts = item.costs.operation * settings.hourlyWage;
-		log.println("dynamisch:");
 		double annuityOperations = Costs.annuity(result, operationCosts,
 				ir(), settings.operationFactor);
-		log.println("statisch:");
 		double staticAnnuityOperations = Costs.annuity(result, operationCosts,
 				ir(), 1.0);
-		log.println();
 
-		log.println("=> Instandhaltungskosten: " + item.label);
 		double maintenanceCosts = Investments.maintenanceBase(
-				item.costs.investment,
+				item.investmentCosts,
 				item.costs.repair,
 				item.costs.maintenance);
-		log.println("dynamisch:");
 		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
-		log.println("statisch:");
 		double staticAnnuityMaintenance = Costs.annuity(result,
 				maintenanceCosts, ir(), 1.0);
-		log.println();
 
 		item.operationRelatedCosts = annuityOperations + annuityMaintenance;
 		r.dynamicTotal.operationCosts += item.operationRelatedCosts;
@@ -146,7 +124,6 @@ public class CostCalculator {
 	}
 
 	private void addDemandCosts(CostResult r, CostResultItem item, Producer p) {
-		log.h3("Bedarfsgebundene Kosten: " + p.name);
 
 		EnergyResult energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
@@ -171,7 +148,7 @@ public class CostCalculator {
 	private void finishCapitalCosts(CostResult r) {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
-			double funding = Fundings.get(project, r, log);
+			double funding = Fundings.get(project, r);
 			r.dynamicTotal.funding = funding;
 			r.staticTotal.funding = funding;
 			bonus += funding;
@@ -193,75 +170,42 @@ public class CostCalculator {
 			staticCosts += e.value;
 			dynamicCosts += e.value;
 		}
-		log.h3("Sonstige Kosten");
-		log.println("dynamisch:");
+
 		r.dynamicTotal.otherAnnualCosts = Costs.annuity(
 				result, dynamicCosts, ir(), settings.operationFactor);
-		log.println("statisch:");
 		r.staticTotal.otherAnnualCosts = Costs.annuity(
 				result, staticCosts, ir(), 1.0);
-		log.println();
 	}
 
 	private void addRevenues(CostResult r) {
-		log.h3("Stromerlöse");
 		double pe = settings.electricityRevenues;
-		log.value("pe: Mittlere Stromperlöse", pe, "EUR/kWh");
 		double Egen = GeneratedElectricity.getTotal(result);
-		log.value("Egen: Erzeugte Strommenge", Egen, "kWh");
 		double revenuesElectricity = pe * Egen;
-		log.value("A: Erlöse im ersten Jahr: A = pe * Egen",
-				revenuesElectricity, "kWh");
 
-		log.println("dynamisch:");
 		r.dynamicTotal.revenuesElectricity = Costs.annuity(result,
 				revenuesElectricity, ir(),
 				settings.electricityRevenuesFactor);
-		log.println("statisch:");
 		r.staticTotal.revenuesElectricity = Costs.annuity(result,
 				revenuesElectricity, ir(), 1.0);
-		log.println();
 
-		log.h3("Wärmeerlöse");
 		double ph = settings.heatRevenues;
-		log.value("ph: Mittlere Wärmeerlöse", ph, "EUR/kWh");
 		double Qu = usedHeat();
-		log.value("Qu: Genutzte Wärme", Qu, "MWh");
 		double revenuesHeat = ph * Qu;
-		log.value("A: Erlöse im ersten Jahr: A = ph * Qu",
-				revenuesHeat, "kWh");
-		log.println("dynamisch:");
 		r.dynamicTotal.revenuesHeat = Costs.annuity(
 				result, revenuesHeat, ir(), settings.heatRevenuesFactor);
-		log.println("statisch:");
 		r.staticTotal.revenuesHeat = Costs.annuity(
 				result, revenuesHeat, ir(), 1.0);
-
-		log.println();
 	}
 
 	private void calcTotals(FieldSet costs, boolean dynamic) {
-		log.h3("Jahresüberschuss - " + (dynamic ? "dynamisch" : "statisch"));
-		log.value("Wärmeerlöse", costs.revenuesHeat, "EUR/a");
-		log.value("Stromerlöse", costs.revenuesElectricity, "EUR/a");
 		costs.totalAnnualCosts = costs.capitalCosts
 				+ costs.consumptionCosts
 				+ costs.operationCosts
 				+ costs.otherAnnualCosts;
-		log.value("Kosten", costs.totalAnnualCosts, "EUR/a");
 		costs.annualSurplus = costs.revenuesHeat
 				+ costs.revenuesElectricity - costs.totalAnnualCosts;
-		log.value("Jahresüberschuss: Erlöse - Kosten",
-				costs.annualSurplus, "EUR/a");
-		log.println();
 
-		log.h3("Wärmegestehungskosten - "
-				+ (dynamic ? "dynamisch" : "statisch"));
 		double Q = usedHeat();
-		log.value("Q: Genutzte Wärme", Q, "MWh/a");
-		log.value("C: Jährliche Kosten", costs.totalAnnualCosts, "EUR/a");
-		log.value("E: Jährliche Stromerlöse",
-				costs.revenuesElectricity, "EUR/a");
 		if (Q == 0) {
 			costs.heatGenerationCosts = 0;
 			costs.heatGenerationCosts = 0;
@@ -269,9 +213,6 @@ public class CostCalculator {
 			costs.heatGenerationCosts = (costs.totalAnnualCosts
 					- costs.revenuesElectricity) / Q;
 		}
-		log.value("Wärmegestehungskosten: (C - E) / Q",
-				costs.heatGenerationCosts, "EUR/MWh");
-		log.println();
 	}
 
 	/** Returns the interest rate that is used for the calculation. */

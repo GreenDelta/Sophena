@@ -18,7 +18,6 @@ import sophena.model.Stats;
 public class ProjectResult {
 
 	public final Project project;
-	public final CalcLog calcLog;
 
 	public EnergyResult energyResult;
 	public FuelUsage fuelUsage;
@@ -30,8 +29,6 @@ public class ProjectResult {
 
 	ProjectResult(Project project) {
 		this.project = Objects.requireNonNull(project);
-		calcLog = new CalcLog(
-				"Berechnungsergebisse für \"" + project.name + "\"");
 	}
 
 	public static ProjectResult calculate(Project project) {

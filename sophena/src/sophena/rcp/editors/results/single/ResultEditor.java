@@ -4,12 +4,13 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.openlca.commons.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.calc.ProjectResult;
-import sophena.db.daos.ProjectDao;
 import sophena.calc.specs.Producers;
+import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -19,7 +20,6 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
-import org.openlca.commons.Strings;
 
 public class ResultEditor extends Editor {
 
@@ -80,7 +80,6 @@ public class ResultEditor extends Editor {
 			addPage(new FurtherResultsPage(this));
 			addPage(new ConsumerResultPage(this));
 			addPage(new LocationResultPage(this));
-			// addPage(new LogPage(this));
 			activateLastPage();
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(getClass());
