@@ -18,34 +18,33 @@ import sophena.model.Project;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
 
-/// A common structure for investment data that is the starting point in cost
-/// calculations. The different model classes are mapped into this structure.
+/// A common structure for investment data that is the starting point in
+/// cost calculations. The different model classes are mapped into this
+/// structure.
 ///
-/// @param asset        The name of the underlying asset, e.g. the product name.
-/// @param productType  The product type of the asset.
-/// @param producer     In case the asset describes a producer, it is
-///                       referenced in this field, for the calculation of demand
-///                       based costs.
-/// @param initialCosts The initial costs of the investment in EUR; these can be
-///                       lower than the full investment costs in case of a
-///                       refurbishment or general overhaul of an existing asset.
-/// @param totalCosts   The total costs of the investment in EUR; while the
-///                       initial costs could be different, the total costs should
-///                       be always used when replacements, maintenance or repair
-///                       costs are calculated.
-/// @param duration     The usage duration of the asset in years.
-/// @param repair       The fraction [%] of the total investment costs that is
-///                       used for repair.
-/// @param maintenance  The fraction [%] of the total investment costs that is
-///                       used for maintenance.
-/// @param operation    The hours per year that are used for the operation of the
-///                       asset.
+/// @param asset The name of the underlying asset, e.g. the product name.
+/// @param productType The product type of the asset.
+/// @param producer In case the asset describes a producer, it is
+///     referenced in this field, for the calculation of demand-based costs.
+/// @param initialInvestment The initial costs of the investment in EUR;
+///     these can be lower than the full investment costs in case of a
+///     refurbishment or general overhaul of an existing asset.
+/// @param investment The total costs of the investment in EUR; while the
+///     initial costs could be different, the total costs should be always
+///     used when replacements, maintenance or repair costs are calculated.
+/// @param duration The usage duration of the asset in years.
+/// @param repair The fraction [%] of the total investment costs that is
+///     used for repair.
+/// @param maintenance The fraction [%] of the total investment costs that
+///     is used for maintenance.
+/// @param operation The hours per year that are used for the operation of
+///     the asset.
 public record InvestmentItem(
 	String asset,
 	ProductType productType,
 	@Nullable Producer producer,
-	double initialCosts,
-	double totalCosts,
+	double initialInvestment,
+	double investment,
 	int duration,
 	double repair,
 	double maintenance,

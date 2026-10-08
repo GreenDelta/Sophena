@@ -23,13 +23,13 @@ public class Funding {
 			if (type == null)
 				continue;
 			if ((fundingTypes & type.getValue()) > 0) {
-				total += factor * item.investment.initialCosts();
+				total += factor * item.investment.initialInvestment();
 			}
 		}
 		return total;
 	}
 
-	public static FundingType fundingTypeOf(ProductType type) {
+	private static FundingType fundingTypeOf(ProductType type) {
 		return switch (type) {
 			case BIOMASS_BOILER -> FundingType.BiomassBoiler;
 			case BOILER_ACCESSORIES -> FundingType.BoilerAccessories;

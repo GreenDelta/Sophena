@@ -58,8 +58,8 @@ public class CostCalculator {
 
 		r.items.add(item);
 
-		r.dynamicTotal.investments += item.investment.initialCosts();
-		r.staticTotal.investments += item.investment.initialCosts();
+		r.dynamicTotal.investments += item.investment.initialInvestment();
+		r.staticTotal.investments += item.investment.initialInvestment();
 
 		// add capital costs
 		item.capitalCosts = capitalCostsOf(item, settings.investmentFactor);

@@ -12,15 +12,26 @@ public class CostResult {
 
 	public static class FieldSet {
 
-		/// The initial investment sum in EUR.
+		/// The total initial investment sum in EUR.
 		public double investments;
 
-		/// The
+		/// The total funding in EUR.
 		public double funding;
 
+		/// Annuity of capital tied up in the investment.
+		/// @de Kapitalgebundene Kosten
 		public double capitalCosts;
+
+		/// Annuity of fuel, energy, and material costs.
+		/// @de Verbrauchsgebundene Kosten
 		public double consumptionCosts;
+
+		/// Annuity of operation, maintenance, and repair.
+		/// @de Betriebsgebundene Kosten
 		public double operationCosts;
+
+		/// Insurance, administration, and other fixed annual costs. */
+		/// @de Sonstige Kosten
 		public double otherAnnualCosts;
 
 		/**
