@@ -68,16 +68,14 @@ public class CostCalculator {
 		r.staticTotal.capitalCosts += staticCapitalCosts;
 
 		// add operation costs = operation + maintenance
-		double operationCosts = item.costs.operation * settings.hourlyWage;
+		double operationCosts = item.investment.operation() * settings.hourlyWage;
 		double annuityOperations = Costs.annuity(result, operationCosts,
 				ir(), settings.operationFactor);
 		double staticAnnuityOperations = Costs.annuity(result, operationCosts,
 				ir(), 1.0);
 
 		double maintenanceCosts = Investments.maintenanceBase(
-				item.investmentCosts,
-				item.costs.repair,
-				item.costs.maintenance);
+				item.investment);
 		double annuityMaintenance = Costs.annuity(result, maintenanceCosts,
 				ir(), settings.maintenanceFactor);
 		double staticAnnuityMaintenance = Costs.annuity(result,
@@ -96,9 +94,7 @@ public class CostCalculator {
 		if (project.costSettings == null)
 			return 0;
 		return Investments.capitalCosts(
-				item.investmentCosts,
-				item.investmentCosts,
-				item.costs.duration,
+				item.investment,
 				project.duration,
 				ir(),
 				priceChange);

@@ -2,40 +2,9 @@ package sophena.calc.costs;
 
 import static java.lang.Math.pow;
 
-import sophena.model.Project;
-
 public class CapitalCosts {
 
 	private CapitalCosts() {
-	}
-
-	/**
-	 * Get the capital costs for the given component.
-	 *
-	 * @param item
-	 *            The component for which the capital costs should be
-	 *            calculated.
-	 * @param project
-	 *            The project with the calculation settings.
-	 * @param interestRate
-	 *            The percentage value of the interest rate that should be used
-	 *            in the calculation (e.g. 2)
-	 * @param priceChangeFactor
-	 *            The price change factor that should be used in the calculation
-	 *            (e.g. 1.02).
-	 */
-	public static double get(CostResultItem item, Project project,
-			double interestRate, double priceChangeFactor) {
-		if (item == null || item.costs == null
-				|| project == null || project.costSettings == null)
-			return 0;
-		double interestFactor = 1 + interestRate / 100;
-		return calculate(
-				item.investmentCosts,
-				item.costs.duration,
-				project.duration,
-				interestFactor,
-				priceChangeFactor);
 	}
 
 	/**

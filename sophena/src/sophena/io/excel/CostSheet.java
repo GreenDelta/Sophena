@@ -170,10 +170,12 @@ class CostSheet {
 		// sort the result items first by product type
 		// then by product name
 		r.items.sort((i1, i2) -> {
-			int c = Enums.compare(i1.productType, i2.productType);
+			int c = Enums.compare(
+					i1.investment.productType(), i2.investment.productType());
 			if (c != 0)
 				return c;
-			return Strings.compareIgnoreCase(i1.label, i2.label);
+			return Strings.compareIgnoreCase(
+					i1.investment.asset(), i2.investment.asset());
 		});
 
 		String category = "";
@@ -181,7 +183,7 @@ class CostSheet {
 
 			// write the product type only if when
 			// previous was different
-			String c = Labels.getPlural(i.productType);
+			String c = Labels.getPlural(i.investment.productType());
 			if (Strings.equalsIgnoreCase(c, category)) {
 				w.nextCol();
 			} else {
@@ -189,8 +191,8 @@ class CostSheet {
 				w.boldStr(category);
 			}
 
-			w.str(i.label)
-					.rint(i.investmentCosts)
+			w.str(i.investment.asset())
+					.rint(i.investment.initialInvestment())
 					.rint(i.capitalCosts)
 					.rint(i.demandRelatedCosts)
 					.rint(i.operationRelatedCosts)
