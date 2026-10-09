@@ -11,7 +11,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.BiogasCostCalculator;
 import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.rcp.utils.Tables;
@@ -37,7 +36,6 @@ class BiogasPlantResultPage extends FormPage {
 		var body = UI.formBody(form, tk);
 
 		createOverview(body, tk, result);
-		createCosts(body, tk, result);
 
 		form.reflow(true);
 	}
@@ -60,34 +58,6 @@ class BiogasPlantResultPage extends FormPage {
 			Num.intStr(BiogasPlants.totalElectricPower(plant)) + " kW"));
 		items.add(new Item("Brennstoffleistung",
 			Num.intStr(BiogasPlants.fullLoadFuelPower(plant)) + " kW"));
-		table.setInput(items);
-	}
-
-	private void createCosts(
-		Composite body, FormToolkit tk, BiogasRuntimeResult result
-	) {
-		var plant = result.plant();
-		if (plant.settings == null)
-			return;
-		var r = new BiogasCostCalculator(plant, result).calculate();
-		var costs = r.dynamicTotal;
-		var table = createTable(UI.formSection(body, tk, "Wirtschaftlichkeit"));
-
-		var items = new ArrayList<Item>();
-		items.add(new Item("Investitionen", eur(costs.investments)));
-		items.add(new Item("Kapitalkosten", eurPerYear(costs.capitalCosts)));
-		items.add(new Item("Bedarfsgebundene Kosten",
-			eurPerYear(costs.consumptionCosts)));
-		items.add(new Item("Betriebsgebundene Kosten",
-			eurPerYear(costs.operationCosts)));
-		items.add(new Item("Sonstige Kosten",
-			eurPerYear(costs.otherAnnualCosts)));
-		items.add(new Item("Gesamtkosten",
-			eurPerYear(costs.totalAnnualCosts)));
-		items.add(new Item("Stromerlöse",
-			eurPerYear(costs.revenuesElectricity)));
-		items.add(new Item("Jahresüberschuss",
-			eurPerYear(costs.annualSurplus)));
 		table.setInput(items);
 	}
 
@@ -116,14 +86,6 @@ class BiogasPlantResultPage extends FormPage {
 		return plant == null || plant.name == null
 			? "Biogasanlage"
 			: plant.name;
-	}
-
-	private static String eur(double value) {
-		return Num.intStr(value) + " EUR";
-	}
-
-	private static String eurPerYear(double value) {
-		return Num.intStr(value) + " EUR/a";
 	}
 
 	private record Item(String label, String value) {

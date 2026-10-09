@@ -57,6 +57,7 @@ public class BiogasPlantResultEditor extends Editor {
 	protected void addPages() {
 		try {
 			addPage(new BiogasPlantResultPage(this));
+			addPage(new BiogasCostResultPage(this));
 		} catch (Exception e) {
 			log.error("failed to add the result page", e);
 		}
