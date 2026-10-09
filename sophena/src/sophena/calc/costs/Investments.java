@@ -50,12 +50,20 @@ public final class Investments {
 	}
 
 	/// The maintenance and repair costs of the given item for the first year
-	/// (without applying interest rates and price changes).
+	/// (without applying any interest rates and price changes).
 	public static double maintenanceBaseOf(InvestmentItem item) {
 		if (item == null)
 			return 0;
 		var share = (item.repair() + item.maintenance()) / 100;
 		return share * item.investment();
+	}
+
+	/// The operation costs of the given item for the first year (without applying
+	/// any interest rates or price changes).
+	public static double operationBaseOf(InvestmentItem item, double hourlyWage) {
+		return item != null
+			? item.operation() * hourlyWage
+			: 0;
 	}
 
 }

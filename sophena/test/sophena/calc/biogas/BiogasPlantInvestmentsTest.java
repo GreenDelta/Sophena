@@ -23,7 +23,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(investment(5_000));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var costs = new BiogasCostCalculator(plant, result).calculate();
-		assertEquals(25_000, costs.investments, 1e-10);
+		assertEquals(25_000, costs.dynamicTotal.investments, 1e-10);
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(refurbishment(10_000, 30));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var costs = new BiogasCostCalculator(plant, result).calculate();
-		assertEquals(3_000, costs.investments, 1e-10);
+		assertEquals(3_000, costs.dynamicTotal.investments, 1e-10);
 	}
 
 	@Test
@@ -47,7 +47,8 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(refurbishment(10_000, 25));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var costs = new BiogasCostCalculator(plant, result).calculate();
-		assertEquals(50_000 + 20_000 + 2_500, costs.investments, 1e-10);
+		assertEquals(50_000 + 20_000 + 2_500,
+			costs.dynamicTotal.investments, 1e-10);
 	}
 
 	@Test
@@ -75,7 +76,7 @@ public class BiogasPlantInvestmentsTest {
 
 		// 150 operation hours * 25 EUR/h; with an operation factor of 1 and an
 		// interest rate of 0 the annuity equals the first-year value
-		assertEquals(3_750, costs.operationCosts, 1e-6);
+		assertEquals(3_750, costs.dynamicTotal.operationCosts, 1e-6);
 	}
 
 	@Test
@@ -116,16 +117,20 @@ public class BiogasPlantInvestmentsTest {
 		var after = new BiogasCostCalculator(plant, result).calculate();
 
 		// a duration that equals the observation period gives A / T
-		assertEquals(500, after.capitalCosts - before.capitalCosts, 1e-6);
-		assertEquals(10_000, after.investments - before.investments, 1e-10);
+		assertEquals(500,
+			after.dynamicTotal.capitalCosts - before.dynamicTotal.capitalCosts, 1e-6);
+		assertEquals(10_000,
+			after.dynamicTotal.investments - before.dynamicTotal.investments, 1e-10);
 
 		// a refurbishment only spends the given share
 		var refurb = refurbishment(10_000, 25);
 		refurb.costs.duration = 20;
 		plant.investments.add(refurb);
 		var withRefurb = new BiogasCostCalculator(plant, result).calculate();
-		assertEquals(125, withRefurb.capitalCosts - after.capitalCosts, 1e-6);
-		assertEquals(2_500, withRefurb.investments - after.investments, 1e-10);
+		assertEquals(125,
+			withRefurb.dynamicTotal.capitalCosts - after.dynamicTotal.capitalCosts, 1e-6);
+		assertEquals(2_500,
+			withRefurb.dynamicTotal.investments - after.dynamicTotal.investments, 1e-10);
 	}
 
 	@Test
@@ -146,8 +151,10 @@ public class BiogasPlantInvestmentsTest {
 
 		// initial: 3_000 EUR (30 %); one replacement after 10 years: 10_000 EUR;
 		// spread over 20 years => (3_000 + 10_000) / 20 = 650 EUR/a
-		assertEquals(650, after.capitalCosts - before.capitalCosts, 1e-6);
-		assertEquals(3_000, after.investments - before.investments, 1e-10);
+		assertEquals(650,
+			after.dynamicTotal.capitalCosts - before.dynamicTotal.capitalCosts, 1e-6);
+		assertEquals(3_000,
+			after.dynamicTotal.investments - before.dynamicTotal.investments, 1e-10);
 	}
 
 	@Test
@@ -174,10 +181,10 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(refurb);
 		var withRefurb = new BiogasCostCalculator(plant, result).calculate();
 
-		// maintenance and repair are applied to the full investment and the
-		// insurance is based on the full investment value as well, so the
+		// maintenance and repair are applied to the full investment, so the
 		// operation costs are the same as for a normal investment
-		assertEquals(withNormal.operationCosts, withRefurb.operationCosts, 1e-6);
+		assertEquals(withNormal.dynamicTotal.operationCosts,
+			withRefurb.dynamicTotal.operationCosts, 1e-6);
 	}
 
 	private BiogasInvestmentEntry investment(double investment) {

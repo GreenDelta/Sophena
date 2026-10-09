@@ -69,7 +69,8 @@ class BiogasPlantResultPage extends FormPage {
 		var plant = result.plant();
 		if (plant.settings == null)
 			return;
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var r = new BiogasCostCalculator(plant, result).calculate();
+		var costs = r.dynamicTotal;
 		var table = createTable(UI.formSection(body, tk, "Wirtschaftlichkeit"));
 
 		var items = new ArrayList<Item>();

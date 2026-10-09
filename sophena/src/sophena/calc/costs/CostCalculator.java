@@ -52,24 +52,25 @@ public class CostCalculator {
 		double staticCapitalCosts = capitalCostsOf(ii, 1.0);
 
 		// operation costs = operation + maintenance
-		double operationCosts = ii.operation() * settings.hourlyWage;
+		double operationBase = Investments.operationBaseOf(ii, settings.hourlyWage);
 		double maintenanceBase = Investments.maintenanceBaseOf(ii);
-		double operationRelatedCosts = dynamicYearly(operationCosts, settings.operationFactor)
+		double dynamicOperationCosts =
+			dynamicYearly(operationBase, settings.operationFactor)
 			+ dynamicYearly(maintenanceBase, settings.maintenanceFactor);
-		double staticOperationCosts = staticYearly(operationCosts)
-			+ staticYearly(maintenanceBase);
+		double staticOperationCosts =
+			staticYearly(operationBase) + staticYearly(maintenanceBase);
 
 		// demand-related costs
-		double demandRelatedCosts = 0;
+		double dynamicDemandCosts = 0;
 		double staticDemandCosts = 0;
 		if (ii.producer() != null) {
 			var demand = demandCostsOf(ii.producer());
-			demandRelatedCosts = demand.dynamic();
+			dynamicDemandCosts = demand.dynamic();
 			staticDemandCosts = demand.staticCosts();
 		}
 
 		var item = new CostResultItem(
-			ii, capitalCosts, demandRelatedCosts, operationRelatedCosts);
+			ii, capitalCosts, dynamicDemandCosts, dynamicOperationCosts);
 		return new ItemCosts(
 			item, staticCapitalCosts, staticDemandCosts, staticOperationCosts);
 	}
