@@ -52,7 +52,7 @@ public class InvestmentItemTest {
 		entry.costs.maintenance = 2;
 		entry.refurbishmentShare = 30d;
 		var item = InvestmentItem.of(entry);
-		assertEquals(300, Investments.maintenanceBase(item), 1e-10);
+		assertEquals(300, Investments.maintenanceBaseOf(item), 1e-10);
 	}
 
 	@Test

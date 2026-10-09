@@ -12,8 +12,7 @@ public final class Investments {
 	/// amount that is spent for a replacement, e.g. for the refurbishment of an
 	/// existing asset.
 	public static double capitalCosts(
-		InvestmentItem item,
-		int T,
+		InvestmentItem item, int T,
 		double interestRate,
 		double priceChange
 	) {
@@ -22,7 +21,7 @@ public final class Investments {
 		return capitalCosts(
 			item.initialInvestment(),
 			item.investment(),
-			item.duration(),
+			item.lifetime(),
 			T,
 			interestRate,
 			priceChange);
@@ -50,21 +49,13 @@ public final class Investments {
 			initial, replacement, Tu, T, q, priceChange);
 	}
 
-	/// The yearly maintenance and repair costs of the given item. These costs
-	/// are always applied to the full investment, also for refurbishments.
-	public static double maintenanceBase(InvestmentItem item) {
+	/// The maintenance and repair costs of the given item for the first year
+	/// (without applying interest rates and price changes).
+	public static double maintenanceBaseOf(InvestmentItem item) {
 		if (item == null)
 			return 0;
-		return maintenanceBase(
-			item.investment(),
-			item.repair(),
-			item.maintenance());
+		var share = (item.repair() + item.maintenance()) / 100;
+		return share * item.investment();
 	}
 
-	/// The yearly maintenance and repair costs for the given investment.
-	public static double maintenanceBase(
-		double investment, double repair, double maintenance
-	) {
-		return investment * (repair + maintenance) / 100;
-	}
 }

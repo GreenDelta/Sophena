@@ -32,7 +32,7 @@ import sophena.model.biogas.BiogasPlant;
 /// @param investment The total costs of the investment in EUR; while the
 ///     initial costs could be different, the total costs should be always
 ///     used when replacements, maintenance or repair costs are calculated.
-/// @param duration The usage duration of the asset in years.
+/// @param lifetime The lifetime of the asset in years, after which it is replaced.
 /// @param repair The fraction [%] of the total investment costs that is
 ///     used for repair.
 /// @param maintenance The fraction [%] of the total investment costs that
@@ -45,7 +45,7 @@ public record InvestmentItem(
 	@Nullable Producer producer,
 	double initialInvestment,
 	double investment,
-	int duration,
+	int lifetime,
 	double repair,
 	double maintenance,
 	double operation

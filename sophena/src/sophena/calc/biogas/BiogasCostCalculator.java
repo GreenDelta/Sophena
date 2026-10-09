@@ -123,7 +123,7 @@ public class BiogasCostCalculator {
 		// Maintenance/Repair: always applied to the full investment
 		double maintBase = 0;
 		for (var item : items) {
-			maintBase += Investments.maintenanceBase(item);
+			maintBase += Investments.maintenanceBaseOf(item);
 		}
 		double maintAnnuity = annuity(
 			maintBase, plant.settings.maintenanceFactor);

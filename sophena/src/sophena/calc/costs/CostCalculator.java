@@ -53,11 +53,11 @@ public class CostCalculator {
 
 		// operation costs = operation + maintenance
 		double operationCosts = ii.operation() * settings.hourlyWage;
-		double maintenanceCosts = Investments.maintenanceBase(ii);
+		double maintenanceBase = Investments.maintenanceBaseOf(ii);
 		double operationRelatedCosts = dynamicYearly(operationCosts, settings.operationFactor)
-			+ dynamicYearly(maintenanceCosts, settings.maintenanceFactor);
+			+ dynamicYearly(maintenanceBase, settings.maintenanceFactor);
 		double staticOperationCosts = staticYearly(operationCosts)
-			+ staticYearly(maintenanceCosts);
+			+ staticYearly(maintenanceBase);
 
 		// demand-related costs
 		double demandRelatedCosts = 0;
