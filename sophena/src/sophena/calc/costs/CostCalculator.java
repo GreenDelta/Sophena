@@ -1,7 +1,7 @@
 package sophena.calc.costs;
 
 import sophena.calc.ProjectResult;
-import sophena.calc.costs.CostResult.FieldSet;
+import sophena.calc.costs.CostResult.Summary;
 import sophena.calc.kpi.GeneratedElectricity;
 import sophena.model.CostSettings;
 import sophena.model.Producer;
@@ -182,7 +182,7 @@ public class CostCalculator {
 		r.staticTotal.revenuesHeat = staticYearly(heatRevenues);
 	}
 
-	private void calcTotals(FieldSet costs) {
+	private void calcTotals(Summary costs) {
 		costs.totalAnnualCosts = costs.capitalCosts
 			+ costs.consumptionCosts
 			+ costs.operationCosts

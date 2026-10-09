@@ -3,7 +3,6 @@ package sophena.calc.biogas;
 import java.util.List;
 
 import sophena.calc.costs.Annuity;
-import sophena.calc.costs.CostResult;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;
 import sophena.model.AnnualCostEntry;
@@ -29,8 +28,8 @@ public class BiogasCostCalculator {
 	}
 
 	/// Calculates the economic performance of the biogas plant.
-	public CostResult calculate() {
-		var r = new CostResult();
+	public BiogasCostResult calculate() {
+		var r = new BiogasCostResult();
 		if (plant == null)
 			return r;
 
@@ -72,7 +71,7 @@ public class BiogasCostCalculator {
 	}
 
 	/// Adds the computed costs of a single item to the result.
-	private void addItem(CostResult r, ItemCosts costs) {
+	private void addItem(BiogasCostResult r, ItemCosts costs) {
 
 		double investment = costs.item().initialInvestment();
 		r.dynamicTotal.investments += investment;
@@ -95,7 +94,7 @@ public class BiogasCostCalculator {
 	}
 
 	/// Reduces the capital costs by the investment funding.
-	private void finishCapitalCosts(CostResult r) {
+	private void finishCapitalCosts(BiogasCostResult r) {
 		double funding = plant.settings.funding;
 		if (funding <= 0)
 			return;
@@ -109,7 +108,7 @@ public class BiogasCostCalculator {
 
 	/// Adds the costs for the substrates and the electricity that is purchased
 	/// from the grid.
-	private void addConsumptionCosts(CostResult r) {
+	private void addConsumptionCosts(BiogasCostResult r) {
 
 		double substrateCosts = 0;
 		for (SubstrateProfile profile : plant.substrateProfiles) {
@@ -133,7 +132,7 @@ public class BiogasCostCalculator {
 	}
 
 	/// Adds the insurance and the other fixed annual costs.
-	private void addOtherCosts(CostResult r, List<InvestmentItem> items) {
+	private void addOtherCosts(BiogasCostResult r, List<InvestmentItem> items) {
 
 		// the insurance is a share of the full investment value
 		double insurance = totalInvestmentValue(items)
@@ -153,7 +152,7 @@ public class BiogasCostCalculator {
 	}
 
 	/// Adds the revenues from the electricity feed-in.
-	private void addRevenues(CostResult r) {
+	private void addRevenues(BiogasCostResult r) {
 
 		// net electrical power available for the feed-in
 		double netPower = Math.max(0,
@@ -204,7 +203,7 @@ public class BiogasCostCalculator {
 			priceChange);
 	}
 
-	private static void calcTotals(CostResult.FieldSet costs) {
+	private static void calcTotals(BiogasCostResult.Summary costs) {
 		costs.totalAnnualCosts = costs.capitalCosts
 			+ costs.consumptionCosts
 			+ costs.operationCosts

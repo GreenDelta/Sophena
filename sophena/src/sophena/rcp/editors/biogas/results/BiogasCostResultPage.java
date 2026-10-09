@@ -13,10 +13,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import sophena.calc.biogas.BiogasCostCalculator;
-import sophena.calc.costs.CostResult;
+import sophena.calc.biogas.BiogasCostResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -39,7 +38,7 @@ class BiogasCostResultPage extends FormPage {
 		var tk = mform.getToolkit();
 		var body = UI.formBody(form, tk);
 
-		if (plant != null && plant.settings != null) {
+		if (plant.settings != null) {
 			var costs = new BiogasCostCalculator(plant, result).calculate();
 			createCosts(body, tk, costs);
 		}
@@ -47,7 +46,7 @@ class BiogasCostResultPage extends FormPage {
 		form.reflow(true);
 	}
 
-	private void createCosts(Composite body, FormToolkit tk, CostResult r) {
+	private void createCosts(Composite body, FormToolkit tk, BiogasCostResult r) {
 		var comp = UI.formSection(body, tk, "Wirtschaftlichkeit");
 		TableViewer table = Tables.createViewer(comp, "", "dynamisch",
 				"statisch");
@@ -57,7 +56,7 @@ class BiogasCostResultPage extends FormPage {
 		table.setInput(itemsOf(r));
 	}
 
-	private static List<Item> itemsOf(CostResult r) {
+	private static List<Item> itemsOf(BiogasCostResult r) {
 		var dyn = r.dynamicTotal;
 		var stat = r.staticTotal;
 		List<Item> items = new ArrayList<>();

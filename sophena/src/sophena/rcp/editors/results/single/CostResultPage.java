@@ -23,7 +23,7 @@ import sophena.utils.Num;
 
 class CostResultPage extends FormPage {
 
-	private ProjectResult result;
+	private final ProjectResult result;
 
 	public CostResultPage(ResultEditor editor) {
 		super(editor, "sophena.CostResultPage", "Wirtschaftlichkeit");
@@ -62,8 +62,8 @@ class CostResultPage extends FormPage {
 	}
 
 	private List<Item> getItems(CostResult r, boolean withFunding) {
-		CostResult.FieldSet dyn = r.dynamicTotal;
-		CostResult.FieldSet stat = r.staticTotal;
+		var dyn = r.dynamicTotal;
+		var stat = r.staticTotal;
 		List<Item> items = new ArrayList<>();
 
 		// investment costs
@@ -139,14 +139,13 @@ class CostResultPage extends FormPage {
 
 	}
 
-	private class Label extends LabelProvider
+	private static class Label extends LabelProvider
 			implements ITableLabelProvider, ITableFontProvider {
 
 		@Override
 		public Font getFont(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item i))
 				return null;
-			Item i = (Item) obj;
 			if (i.bold)
 				return UI.boldFont();
 			return null;
@@ -159,19 +158,14 @@ class CostResultPage extends FormPage {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.label;
-			case 1:
-				return item.netto;
-			case 2:
-				return item.brutto;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.label;
+				case 1 -> item.netto;
+				case 2 -> item.brutto;
+				default -> null;
+			};
 		}
 	}
 }

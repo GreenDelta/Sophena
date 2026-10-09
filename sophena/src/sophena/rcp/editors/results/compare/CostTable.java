@@ -4,8 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
-import sophena.calc.costs.CostResult;
-import sophena.calc.costs.CostResult.FieldSet;
+import sophena.calc.costs.CostResult.Summary;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
@@ -39,7 +38,7 @@ class CostTable {
 			return Num.intStr(c) + " EUR";
 		});
 		t.boldRow("Finanzierungsbedarf", idx -> {
-			FieldSet costs = costs(idx);
+			Summary costs = costs(idx);
 			double cf = result.projects[idx].costSettings.connectionFees;
 			double s = costs.investments - costs.funding - cf;
 			return Num.intStr(s) + " EUR";
@@ -65,7 +64,7 @@ class CostTable {
 		t.row("Stromerlöse",
 				idx -> Num.intStr(costs(idx).revenuesElectricity) + " EUR/a");
 		t.boldRow("Gesamterlöse", idx -> {
-			FieldSet costs = costs(idx);
+			Summary costs = costs(idx);
 			double revs = costs.revenuesElectricity + costs.revenuesHeat;
 			return Num.intStr(revs) + " EUR/a";
 		});
@@ -77,9 +76,9 @@ class CostTable {
 				idx -> Num.intStr(costs(idx).heatGenerationCosts) + " EUR/MWh");
 	}
 
-	private CostResult.FieldSet costs(int idx) {
+	private Summary costs(int idx) {
 		if (idx >= result.results.length)
-			return new CostResult.FieldSet();
+			return new Summary();
 		return result.results[idx].costResultFunding.dynamicTotal;
 	}
 

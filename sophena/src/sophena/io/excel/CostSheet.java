@@ -12,6 +12,7 @@ import sophena.calc.costs.ProductAreaResult;
 import sophena.calc.ProjectResult;
 import sophena.model.ProductArea;
 import sophena.utils.Enums;
+
 import org.openlca.commons.Strings;
 
 class CostSheet {
@@ -36,91 +37,91 @@ class CostSheet {
 	}
 
 	private void overview(CostResult r, boolean withFunding) {
-		CostResult.FieldSet dyn = r.dynamicTotal;
-		CostResult.FieldSet stat = r.staticTotal;
+		var dyn = r.dynamicTotal;
+		var stat = r.staticTotal;
 
 		String suffix = withFunding ? "" : " - ohne Förderung";
 		w.boldStr("Wirtschaftlichkeit" + suffix)
-				.nextRow()
-				.nextCol()
-				.boldStr("Dynamisch")
-				.boldStr("Statisch")
-				.nextRow();
+			.nextRow()
+			.nextCol()
+			.boldStr("Dynamisch")
+			.boldStr("Statisch")
+			.nextRow();
 
 		w.str("Investitionskosten [EUR]")
-				.rint(dyn.investments)
-				.rint(stat.investments)
-				.nextRow();
+			.rint(dyn.investments)
+			.rint(stat.investments)
+			.nextRow();
 
 		if (withFunding) {
 			w.str("Investitionsförderung [EUR]")
-					.rint(dyn.funding)
-					.rint(stat.funding)
-					.nextRow();
+				.rint(dyn.funding)
+				.rint(stat.funding)
+				.nextRow();
 		}
 
 		double conFees = result.project.costSettings.connectionFees;
 		w.str("Anschlusskostenbeiträge [EUR]")
-				.rint(conFees)
-				.rint(conFees)
-				.nextRow();
+			.rint(conFees)
+			.rint(conFees)
+			.nextRow();
 
 		w.boldStr("Finanzierungsbedarf [EUR]")
-				.boldRint(dyn.investments - dyn.funding - conFees)
-				.boldRint(stat.investments - stat.funding - conFees)
-				.nextRow()
-				.nextRow();
+			.boldRint(dyn.investments - dyn.funding - conFees)
+			.boldRint(stat.investments - stat.funding - conFees)
+			.nextRow()
+			.nextRow();
 
 		w.str("Kapitalgebundene Kosten [EUR/a]")
-				.rint(dyn.capitalCosts)
-				.rint(stat.capitalCosts)
-				.nextRow();
+			.rint(dyn.capitalCosts)
+			.rint(stat.capitalCosts)
+			.nextRow();
 
 		w.str("Bedarfsgebundene Kosten [EUR/a]")
-				.rint(dyn.consumptionCosts)
-				.rint(stat.consumptionCosts)
-				.nextRow();
+			.rint(dyn.consumptionCosts)
+			.rint(stat.consumptionCosts)
+			.nextRow();
 
 		w.str("Betriebsgebundene Kosten [EUR/a]")
-				.rint(dyn.operationCosts)
-				.rint(stat.operationCosts)
-				.nextRow();
+			.rint(dyn.operationCosts)
+			.rint(stat.operationCosts)
+			.nextRow();
 
 		w.str("Sonstige Kosten [EUR/a]")
-				.rint(dyn.otherAnnualCosts)
-				.rint(stat.otherAnnualCosts)
-				.nextRow();
+			.rint(dyn.otherAnnualCosts)
+			.rint(stat.otherAnnualCosts)
+			.nextRow();
 
 		w.boldStr("Gesamtkosten [EUR/a]")
-				.boldRint(dyn.totalAnnualCosts)
-				.boldRint(stat.totalAnnualCosts)
-				.nextRow()
-				.nextRow();
+			.boldRint(dyn.totalAnnualCosts)
+			.boldRint(stat.totalAnnualCosts)
+			.nextRow()
+			.nextRow();
 
 		w.str("Wärmeerlöse [EUR/a]")
-				.rint(dyn.revenuesHeat)
-				.rint(stat.revenuesHeat)
-				.nextRow();
+			.rint(dyn.revenuesHeat)
+			.rint(stat.revenuesHeat)
+			.nextRow();
 
 		w.str("Stromerlöse [EUR/a]")
-				.rint(dyn.revenuesElectricity)
-				.rint(stat.revenuesElectricity)
-				.nextRow();
+			.rint(dyn.revenuesElectricity)
+			.rint(stat.revenuesElectricity)
+			.nextRow();
 
 		w.boldStr("Gesamterlöse [EUR/a]")
-				.boldRint(dyn.revenuesHeat + dyn.revenuesElectricity)
-				.boldRint(stat.revenuesHeat + stat.revenuesElectricity)
-				.nextRow()
-				.nextRow();
+			.boldRint(dyn.revenuesHeat + dyn.revenuesElectricity)
+			.boldRint(stat.revenuesHeat + stat.revenuesElectricity)
+			.nextRow()
+			.nextRow();
 
 		w.boldStr("Jahresüberschuss [EUR/a]")
-				.boldRint(dyn.annualSurplus)
-				.boldRint(stat.annualSurplus)
-				.nextRow();
+			.boldRint(dyn.annualSurplus)
+			.boldRint(stat.annualSurplus)
+			.nextRow();
 		w.boldStr("Wärmegestehungskosten [EUR/MWh]")
-				.boldRint(dyn.heatGenerationCosts)
-				.boldRint(stat.heatGenerationCosts)
-				.nextRow();
+			.boldRint(dyn.heatGenerationCosts)
+			.boldRint(stat.heatGenerationCosts)
+			.nextRow();
 	}
 
 	private void productAreas(CostResult r) {
@@ -130,52 +131,52 @@ class CostSheet {
 		List<ProductArea> selected = new ArrayList<>();
 		for (ProductArea area : ProductArea.values()) {
 			if (par.investmentCosts(area) == 0.0
-					&& par.capitalCosts(area) == 0.0
-					&& par.demandRelatedCosts(area) == 0.0
-					&& par.operationRelatedCosts(area) == 0.0)
+				&& par.capitalCosts(area) == 0.0
+				&& par.demandRelatedCosts(area) == 0.0
+				&& par.operationRelatedCosts(area) == 0.0)
 				continue;
 			selected.add(area);
 		}
 
 		w.boldStr("Kostenübersicht")
-				.nextRow()
-				.boldStr("Produktgebiet")
-				.boldStr("Investitionskosten [EUR]")
-				.boldStr("Kapitalgebundene Kosten [EUR/a]")
-				.boldStr("Bedarfsgebundene Kosten [EUR/a]")
-				.boldStr("Betriebsgebundene Kosten [EUR/a]")
-				.nextRow();
+			.nextRow()
+			.boldStr("Produktgebiet")
+			.boldStr("Investitionskosten [EUR]")
+			.boldStr("Kapitalgebundene Kosten [EUR/a]")
+			.boldStr("Bedarfsgebundene Kosten [EUR/a]")
+			.boldStr("Betriebsgebundene Kosten [EUR/a]")
+			.nextRow();
 
 		for (ProductArea a : selected) {
 			w.str(Labels.get(a))
-					.rint(par.investmentCosts(a))
-					.rint(par.capitalCosts(a))
-					.rint(par.demandRelatedCosts(a))
-					.rint(par.operationRelatedCosts(a))
-					.nextRow();
+				.rint(par.investmentCosts(a))
+				.rint(par.capitalCosts(a))
+				.rint(par.demandRelatedCosts(a))
+				.rint(par.operationRelatedCosts(a))
+				.nextRow();
 		}
 	}
 
 	private void details(CostResult r) {
 		w.boldStr("Kostendetails")
-				.nextRow()
-				.boldStr("Produktbereich")
-				.boldStr("Produkt")
-				.boldStr("Investitionskosten [EUR]")
-				.boldStr("Kapitalgebundene Kosten [EUR/a]")
-				.boldStr("Bedarfsgebundene Kosten [EUR/a]")
-				.boldStr("Betriebsgebundene Kosten [EUR/a]")
-				.nextRow();
+			.nextRow()
+			.boldStr("Produktbereich")
+			.boldStr("Produkt")
+			.boldStr("Investitionskosten [EUR]")
+			.boldStr("Kapitalgebundene Kosten [EUR/a]")
+			.boldStr("Bedarfsgebundene Kosten [EUR/a]")
+			.boldStr("Betriebsgebundene Kosten [EUR/a]")
+			.nextRow();
 
 		// sort the result items first by product type
 		// then by product name
 		r.items.sort((i1, i2) -> {
 			int c = Enums.compare(
-					i1.productType(), i2.productType());
+				i1.productType(), i2.productType());
 			if (c != 0)
 				return c;
 			return Strings.compareIgnoreCase(
-					i1.asset(), i2.asset());
+				i1.asset(), i2.asset());
 		});
 
 		String category = "";
@@ -192,11 +193,11 @@ class CostSheet {
 			}
 
 			w.str(i.asset())
-					.rint(i.initialInvestment())
-					.rint(i.capitalCosts())
-					.rint(i.demandRelatedCosts())
-					.rint(i.operationRelatedCosts())
-					.nextRow();
+				.rint(i.initialInvestment())
+				.rint(i.capitalCosts())
+				.rint(i.demandRelatedCosts())
+				.rint(i.operationRelatedCosts())
+				.nextRow();
 		}
 	}
 

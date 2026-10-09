@@ -8,7 +8,6 @@ import org.eclipse.swtchart.Chart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
-import sophena.calc.costs.CostResult.FieldSet;
 import sophena.rcp.colors.Colors;
 
 class CostsChart {
@@ -25,7 +24,7 @@ class CostsChart {
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		Chart chart = BarCharts.init(body, tk, "Kosten");
+		var chart = BarCharts.init(body, tk, "Kosten");
 		BarCharts.createAxes(chart, comparison, "EUR/a");
 		series(chart, OTHER_COSTS);
 		series(chart, OPERATIONS_COSTS);
@@ -36,52 +35,37 @@ class CostsChart {
 
 	private void series(Chart chart, int type) {
 		double[] data = Arrays.stream(comparison.results)
-				.mapToDouble(r -> {
-					FieldSet costs = r.costResultFunding.dynamicTotal;
-					switch (type) {
-					case CAPITAL_COSTS:
-						return costs.capitalCosts;
-					case CONSUMPTION_COSTS:
-						return costs.consumptionCosts;
-					case OPERATIONS_COSTS:
-						return costs.operationCosts;
-					case OTHER_COSTS:
-						return costs.otherAnnualCosts;
-					default:
-						return 0d;
-					}
-				}).toArray();
+			.mapToDouble(r -> {
+				var costs = r.costResultFunding.dynamicTotal;
+				return switch (type) {
+					case CAPITAL_COSTS -> costs.capitalCosts;
+					case CONSUMPTION_COSTS -> costs.consumptionCosts;
+					case OPERATIONS_COSTS -> costs.operationCosts;
+					case OTHER_COSTS -> costs.otherAnnualCosts;
+					default -> 0d;
+				};
+			}).toArray();
 		BarCharts.stackSeries(chart, label(type), color(type), data);
 	}
 
 	private String label(int type) {
-		switch (type) {
-		case CAPITAL_COSTS:
-			return "Kapitalgebundene Kosten";
-		case CONSUMPTION_COSTS:
-			return "Bedarfsgebundene Kosten";
-		case OPERATIONS_COSTS:
-			return "Betriebsgebundene Kosten";
-		case OTHER_COSTS:
-			return "Sonstige Kosten";
-		default:
-			return "?";
-		}
+		return switch (type) {
+			case CAPITAL_COSTS -> "Kapitalgebundene Kosten";
+			case CONSUMPTION_COSTS -> "Bedarfsgebundene Kosten";
+			case OPERATIONS_COSTS -> "Betriebsgebundene Kosten";
+			case OTHER_COSTS -> "Sonstige Kosten";
+			default -> "?";
+		};
 	}
 
 	private Color color(int type) {
-		switch (type) {
-		case CAPITAL_COSTS:
-			return Colors.of("#81c784");
-		case CONSUMPTION_COSTS:
-			return Colors.of("#4caf50");
-		case OPERATIONS_COSTS:
-			return Colors.of("#388e3c");
-		case OTHER_COSTS:
-			return Colors.of("#1b5e20");
-		default:
-			return Colors.getErrorColor();
-		}
+		return switch (type) {
+			case CAPITAL_COSTS -> Colors.of("#81c784");
+			case CONSUMPTION_COSTS -> Colors.of("#4caf50");
+			case OPERATIONS_COSTS -> Colors.of("#388e3c");
+			case OTHER_COSTS -> Colors.of("#1b5e20");
+			default -> Colors.getErrorColor();
+		};
 	}
 
 }

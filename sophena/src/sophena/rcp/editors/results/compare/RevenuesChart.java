@@ -7,7 +7,7 @@ import org.eclipse.swtchart.Chart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.Comparison;
-import sophena.calc.costs.CostResult.FieldSet;
+import sophena.calc.costs.CostResult.Summary;
 import sophena.rcp.colors.Colors;
 
 class RevenuesChart {
@@ -29,7 +29,7 @@ class RevenuesChart {
 	private void heatRevenues(Chart chart) {
 		double[] data = Arrays.stream(comparison.results)
 				.mapToDouble(r -> {
-					FieldSet costs = r.costResultFunding.dynamicTotal;
+					Summary costs = r.costResultFunding.dynamicTotal;
 					return costs.revenuesHeat;
 				}).toArray();
 		BarCharts.stackSeries(chart,
@@ -41,7 +41,7 @@ class RevenuesChart {
 	private void electricityRevenues(Chart chart) {
 		double[] data = Arrays.stream(comparison.results)
 				.mapToDouble(r -> {
-					FieldSet costs = r.costResultFunding.dynamicTotal;
+					Summary costs = r.costResultFunding.dynamicTotal;
 					return costs.revenuesElectricity;
 				}).toArray();
 		BarCharts.stackSeries(chart,

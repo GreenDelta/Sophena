@@ -40,7 +40,7 @@ class Page extends FormPage {
 	}
 
 	private void simpleCostsChart(String title, String unit,
-			ToDoubleFunction<CostResult.FieldSet> fn) {
+			ToDoubleFunction<CostResult.Summary> fn) {
 		SimpleBarChart.of(title, comparison)
 				.unit(unit)
 				.data(r -> fn.applyAsDouble(r.costResultFunding.dynamicTotal))

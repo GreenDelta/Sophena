@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import sophena.Labels;
 import sophena.calc.kpi.CO2Result;
 import sophena.calc.Comparison;
-import sophena.calc.costs.CostResult;
-import sophena.calc.costs.CostResult.FieldSet;
+import sophena.calc.costs.CostResult.Summary;
 import sophena.calc.costs.ProductAreaResult;
 import sophena.calc.ProjectResult;
 import sophena.calc.kpi.EfficiencyResult;
@@ -26,8 +25,8 @@ import sophena.model.ProductArea;
 
 public class ComparisonExport implements Runnable {
 
-	private Comparison comp;
-	private File file;
+	private final Comparison comp;
+	private final File file;
 
 	private SheetWriter w;
 
@@ -50,9 +49,8 @@ public class ComparisonExport implements Runnable {
 			keyFigures();
 			Excel.autoSize(w.sheet, 0, comp.projects.length);
 
-			try (FileOutputStream fos = new FileOutputStream(file);
-					BufferedOutputStream buffer = new BufferedOutputStream(
-							fos)) {
+			try (var fos = new FileOutputStream(file);
+					 var buffer = new BufferedOutputStream(fos)) {
 				wb.write(buffer);
 			}
 		} catch (Exception e) {
@@ -63,8 +61,8 @@ public class ComparisonExport implements Runnable {
 
 	private void overview() {
 		w.boldStr("Wirtschaftlichkeit")
-				.nextRow()
-				.nextCol();
+			.nextRow()
+			.nextCol();
 		each(r -> w.boldStr(r.project.name));
 		w.nextRow();
 
@@ -82,7 +80,7 @@ public class ComparisonExport implements Runnable {
 
 		w.boldStr("Finanzierungsbedarf [EUR]");
 		each(r -> {
-			FieldSet costs = costs(r);
+			var costs = costs(r);
 			double cf = r.project.costSettings.connectionFees;
 			w.boldRint(costs.investments - costs.funding - cf);
 		});
@@ -118,7 +116,7 @@ public class ComparisonExport implements Runnable {
 
 		w.boldStr("Gesamterlöse");
 		each(r -> {
-			FieldSet costs = costs(r);
+			var costs = costs(r);
 			w.boldRint(costs.revenuesElectricity + costs.revenuesHeat);
 		});
 		w.nextRow().nextRow();
@@ -133,10 +131,10 @@ public class ComparisonExport implements Runnable {
 	}
 
 	private void investments() {
-		ProductAreaResult[] pars = new ProductAreaResult[comp.results.length];
+		var pars = new ProductAreaResult[comp.results.length];
 		for (int i = 0; i < comp.results.length; i++) {
 			pars[i] = ProductAreaResult.calculate(
-					comp.results[i].costResultFunding);
+				comp.results[i].costResultFunding);
 		}
 
 		w.boldStr("Investitionskosten");
@@ -148,7 +146,7 @@ public class ComparisonExport implements Runnable {
 			if (allZero(pars, area))
 				continue;
 			w.str(Labels.get(area) + " [EUR]");
-			for (ProductAreaResult par : pars) {
+			for (var par : pars) {
 				w.rint(par.investmentCosts(area));
 			}
 			w.nextRow();
@@ -192,15 +190,15 @@ public class ComparisonExport implements Runnable {
 		each(r -> {
 			double length = r.project.heatNet.length;
 			double hl = length == 0
-					? 0
-					: UsedHeat.get(r) / (1000 * length);
+				? 0
+				: UsedHeat.get(r) / (1000 * length);
 			w.num(hl);
 		});
 		w.nextRow();
 
 		w.str("Netzverluste [%]");
 		each(r -> {
-			EfficiencyResult er = EfficiencyResult.calculate(r);
+			var er = EfficiencyResult.calculate(r);
 			double loss = 0;
 			if (er.producedHeat > 0) {
 				loss = 100 * er.distributionLoss / er.producedHeat;
@@ -227,7 +225,7 @@ public class ComparisonExport implements Runnable {
 		}
 	}
 
-	private CostResult.FieldSet costs(ProjectResult r) {
+	private Summary costs(ProjectResult r) {
 		return r.costResultFunding.dynamicTotal;
 	}
 
