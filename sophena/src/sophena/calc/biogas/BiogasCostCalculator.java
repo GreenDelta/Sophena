@@ -1,5 +1,7 @@
 package sophena.calc.biogas;
 
+import java.util.List;
+
 import sophena.calc.costs.Annuity;
 import sophena.calc.costs.CostResult;
 import sophena.calc.costs.InvestmentItem;
@@ -7,7 +9,6 @@ import sophena.calc.costs.Investments;
 import sophena.model.AnnualCostEntry;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
-import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.SubstrateProfile;
 
 /**
@@ -46,17 +47,19 @@ public class BiogasCostCalculator {
 			return fs;
 		}
 
+		var items = InvestmentItem.allOf(plant);
+
 		// Initial investment recorded for reference
-		fs.investments = BiogasPlants.totalInvestment(plant);
+		fs.investments = totalInvestment(items);
 
 		// 1. Capital Costs: The annual annuity of the investment
-		fs.capitalCosts = calculateCapitalCosts();
+		fs.capitalCosts = calculateCapitalCosts(items);
 
 		// 2. Consumption Costs: Biomass substrate costs and purchased grid electricity
 		fs.consumptionCosts = calculateConsumptionCosts();
 
 		// 3. Operation Costs: Labor (wages), maintenance/repair, and insurance
-		fs.operationCosts = calculateOperationCosts();
+		fs.operationCosts = calculateOperationCosts(items);
 
 		// 4. Other Annual Costs: Fixed costs like administration or laboratory fees
 		fs.otherAnnualCosts = calculateOtherAnnualCosts();
@@ -73,29 +76,16 @@ public class BiogasCostCalculator {
 		return fs;
 	}
 
-	/**
-	 * Calculates the capital cost annuity using the VDI 2067 methodology.
-	 * It assumes the observation period (T) is equal to the plant's duration.
-	 */
-	private double calculateCapitalCosts() {
+	/// Calculates the capital cost annuity of the given investments according to
+	/// VDI 2067. The observation period (T) is the duration of the plant.
+	private double calculateCapitalCosts(List<InvestmentItem> items) {
 		double sum = 0;
-		int T = plant.duration;
-		double ir = plant.settings.interestRate;
-		double factor = plant.settings.investmentFactor;
-		for (BiogasPlantBoiler entry : plant.boilers) {
-			if (entry == null || entry.costs == null)
-				continue;
+		for (var item : items) {
 			sum += Investments.capitalCosts(
-				entry.costs.investment,
-				entry.costs.investment,
-				entry.costs.duration,
-				T,
-				ir,
-				factor);
-		}
-		for (var entry : plant.investments) {
-			sum += Investments.capitalCosts(
-				InvestmentItem.of(entry), T, ir, factor);
+				item,
+				plant.duration,
+				plant.settings.interestRate,
+				plant.settings.investmentFactor);
 		}
 		return sum;
 	}
@@ -127,34 +117,24 @@ public class BiogasCostCalculator {
 		return bioAnnuity + elecAnnuity;
 	}
 
-	/**
-	 * Calculates operation-related costs including maintenance and labor.
-	 */
-	private double calculateOperationCosts() {
-		// Maintenance/Repair: sum of all block-specific maintenance shares
+	/// Calculates operation-related costs including maintenance and labor.
+	private double calculateOperationCosts(List<InvestmentItem> items) {
+
+		// Maintenance/Repair: always applied to the full investment
 		double maintBase = 0;
-		for (BiogasPlantBoiler entry : plant.boilers) {
-			if (entry == null || entry.costs == null)
-				continue;
-			maintBase += Investments.maintenanceBase(
-				entry.costs.investment,
-				entry.costs.repair,
-				entry.costs.maintenance);
+		for (var item : items) {
+			maintBase += Investments.maintenanceBase(item);
 		}
-		for (var entry : plant.investments) {
-			// maintenance and repair are applied to the full investment
-			maintBase += Investments.maintenanceBase(
-				InvestmentItem.of(entry));
-		}
-		double maintAnnuity = annuity(maintBase, plant.settings.maintenanceFactor);
+		double maintAnnuity = annuity(
+			maintBase, plant.settings.maintenanceFactor);
 
 		// Labor: operating hours times hourly wage
-		double operBase = BiogasPlants.totalOperationHours(plant) * plant.settings.hourlyWage;
+		double operBase = totalOperationHours(items) * plant.settings.hourlyWage;
 		double operAnnuity = annuity(operBase, plant.settings.operationFactor);
 
 		// Insurance: fixed percentage of the full investment value (assumed
 		// constant price level)
-		double insurance = BiogasPlants.totalInvestmentValue(plant)
+		double insurance = totalInvestmentValue(items)
 			* (plant.settings.insuranceCostsShare / 100);
 
 		return maintAnnuity + operAnnuity + insurance;
@@ -204,8 +184,38 @@ public class BiogasCostCalculator {
 		return annuity(hourlyRevenuesSum, plant.settings.electricityRevenuesFactor);
 	}
 
+	/// The total initial investment of the plant in EUR: for a refurbishment
+	/// only the share that is spent initially is counted.
+	private static double totalInvestment(List<InvestmentItem> items) {
+		double sum = 0;
+		for (var item : items) {
+			sum += item.initialInvestment();
+		}
+		return sum;
+	}
+
+	/// The total value of the plant investments in EUR. In contrast to
+	/// `totalInvestment` this ignores the refurbishment shares, e.g. for the
+	/// calculation of the insurance costs.
+	private static double totalInvestmentValue(List<InvestmentItem> items) {
+		double sum = 0;
+		for (var item : items) {
+			sum += item.investment();
+		}
+		return sum;
+	}
+
+	/// The total operation hours per year of the plant.
+	private static double totalOperationHours(List<InvestmentItem> items) {
+		double sum = 0;
+		for (var item : items) {
+			sum += item.operation();
+		}
+		return sum;
+	}
+
 	/// The annuity of the given first-year value for the observed duration of the
-	/// plant, see `Costs.annuity`.
+	/// plant, see `Annuity.ofYearlyCosts`.
 	private double annuity(double firstYearValue, double priceChangeFactor) {
 		return Annuity.ofYearlyCosts(
 			plant.duration,

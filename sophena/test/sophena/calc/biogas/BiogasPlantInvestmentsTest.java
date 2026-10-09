@@ -8,7 +8,6 @@ import org.junit.Test;
 import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
-import sophena.model.biogas.BiogasPlantBoiler;
 import sophena.model.biogas.BiogasPlantSettings;
 
 /// Tests the investment cost calculation and the cloning of the investment
@@ -17,45 +16,66 @@ public class BiogasPlantInvestmentsTest {
 
 	@Test
 	public void sumOfNewInvestments() {
-		var plant = new BiogasPlant();
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
 		plant.investments.add(investment(20_000));
 		plant.investments.add(investment(5_000));
-		assertEquals(25_000, BiogasPlants.totalInvestment(plant), 1e-10);
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = new BiogasCostCalculator(plant, result).calculate();
+		assertEquals(25_000, costs.investments, 1e-10);
 	}
 
 	@Test
 	public void refurbishmentUsesOnlyTheGivenShare() {
-		var plant = new BiogasPlant();
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
 		plant.investments.add(refurbishment(10_000, 30));
-		assertEquals(3_000, BiogasPlants.totalInvestment(plant), 1e-10);
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = new BiogasCostCalculator(plant, result).calculate();
+		assertEquals(3_000, costs.investments, 1e-10);
 	}
 
 	@Test
 	public void totalInvestmentCombinesBoilersAndEntries() {
-		var plant = new BiogasPlant();
-		var boiler = new BiogasPlantBoiler();
-		boiler.costs = costs(50_000);
-		plant.boilers.add(boiler);
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.boilers.get(0).costs = costs(50_000);
 		plant.investments.add(investment(20_000));
 		plant.investments.add(refurbishment(10_000, 25));
-		assertEquals(50_000 + 20_000 + 2_500,
-			BiogasPlants.totalInvestment(plant), 1e-10);
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = new BiogasCostCalculator(plant, result).calculate();
+		assertEquals(50_000 + 20_000 + 2_500, costs.investments, 1e-10);
 	}
 
 	@Test
-	public void totalOperationHoursIncludeEntries() {
-		var plant = new BiogasPlant();
-		var boiler = new BiogasPlantBoiler();
-		boiler.costs = costs(50_000);
-		boiler.costs.operation = 100;
-		plant.boilers.add(boiler);
+	public void operationHoursOfEntriesAreIncluded() {
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.interestRate = 0;
+		plant.settings.operationFactor = 1.0;
+		plant.settings.insuranceCostsShare = 0;
+
+		var boilerCosts = costs(50_000);
+		boilerCosts.operation = 100;
+		plant.boilers.get(0).costs = boilerCosts;
+
 		var newEntry = investment(20_000);
 		newEntry.costs.operation = 40;
 		plant.investments.add(newEntry);
 		var refurb = refurbishment(10_000, 25);
 		refurb.costs.operation = 10;
 		plant.investments.add(refurb);
-		assertEquals(150, BiogasPlants.totalOperationHours(plant), 1e-10);
+
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = new BiogasCostCalculator(plant, result).calculate();
+
+		// 150 operation hours * 25 EUR/h; with an operation factor of 1 and an
+		// interest rate of 0 the annuity equals the first-year value
+		assertEquals(3_750, costs.operationCosts, 1e-6);
 	}
 
 	@Test

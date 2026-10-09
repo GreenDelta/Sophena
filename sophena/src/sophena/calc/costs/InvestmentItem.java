@@ -115,6 +115,8 @@ public record InvestmentItem(
 			add(items, itemOf(e));
 		}
 		for (var b : plant.boilers) {
+			if (b == null)
+				continue;
 			add(items, itemOf(b.boiler, b.costs));
 		}
 		return items;

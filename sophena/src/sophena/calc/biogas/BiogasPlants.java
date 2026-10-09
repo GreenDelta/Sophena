@@ -1,10 +1,8 @@
 package sophena.calc.biogas;
 
-import sophena.calc.costs.InvestmentItem;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
-import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
 
 public final class BiogasPlants {
@@ -61,74 +59,6 @@ public final class BiogasPlants {
 				continue;
 			sum += entry.boiler.maxPowerElectric
 				/ entry.boiler.efficiencyRateElectric;
-		}
-		return sum;
-	}
-
-	/// The total initial investment of the plant in EUR: the investments of the
-	/// boilers plus the initial investments of the investment entries. For a
-	/// refurbishment only the share that is spent initially is counted, see
-	/// `BiogasInvestmentEntry#refurbishmentShare`.
-	public static double totalInvestment(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.investment;
-		}
-		for (var entry : plant.investments) {
-			sum += initialInvestmentOf(entry);
-		}
-		return sum;
-	}
-
-	/// The total value of the plant investments in EUR: the investments of the
-	/// boilers plus the full investments of the investment entries. In contrast
-	/// to `totalInvestment` this ignores the refurbishment shares, e.g. for the
-	/// calculation of the insurance costs.
-	public static double totalInvestmentValue(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.investment;
-		}
-		for (var entry : plant.investments) {
-			sum += investmentOf(entry);
-		}
-		return sum;
-	}
-
-	/// The full investment in EUR of the given entry. This is the amount that is
-	/// spent when the asset is replaced after its lifetime.
-	public static double investmentOf(BiogasInvestmentEntry entry) {
-		return InvestmentItem.of(entry).investment();
-	}
-
-	/// The amount in EUR that is spent initially for the given entry. For a
-	/// refurbishment or general overhaul of an existing asset only the defined
-	/// share is spent, see `BiogasInvestmentEntry#refurbishmentShare`.
-	public static double initialInvestmentOf(BiogasInvestmentEntry entry) {
-		return InvestmentItem.of(entry).initialInvestment();
-	}
-
-	public static double totalOperationHours(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.operation;
-		}
-		for (var entry : plant.investments) {
-			if (entry == null || entry.costs == null)
-				continue;
-			sum += entry.costs.operation;
 		}
 		return sum;
 	}
