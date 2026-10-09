@@ -20,8 +20,8 @@ public class BiogasCostResult {
 		/// The total initial investment sum in EUR.
 		public double investments;
 
-		/// The total funding in EUR.
-		public double funding;
+		/// The total investment funding in EUR.
+		public double investmentFunding;
 
 		/// Annuity of capital tied up in the investment.
 		/// @de Kapitalgebundene Kosten
@@ -42,6 +42,8 @@ public class BiogasCostResult {
 		/// The total annual costs which is just the sum of the capital costs,
 		/// consumption costs, operation costs, and other annual costs.
 		public double totalAnnualCosts;
+
+		public double annualFunding;
 
 		/// Revenues from generated electricity.
 		public double revenuesElectricity;

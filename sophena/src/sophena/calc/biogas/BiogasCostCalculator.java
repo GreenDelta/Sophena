@@ -42,6 +42,7 @@ public class BiogasCostCalculator {
 		addConsumptionCosts(r);
 		addOtherCosts(r, items);
 		addRevenues(r);
+		addAnnualFunding(r);
 
 		calcTotals(r.dynamicTotal);
 		calcTotals(r.staticTotal);
@@ -98,8 +99,8 @@ public class BiogasCostCalculator {
 		double funding = plant.settings.funding;
 		if (funding <= 0)
 			return;
-		r.dynamicTotal.funding = funding;
-		r.staticTotal.funding = funding;
+		r.dynamicTotal.investmentFunding = funding;
+		r.staticTotal.investmentFunding = funding;
 		double a = Annuity.factor(
 			plant.duration, plant.settings.interestRate);
 		r.dynamicTotal.capitalCosts -= (funding * a);
@@ -180,6 +181,18 @@ public class BiogasCostCalculator {
 		r.staticTotal.revenuesElectricity = staticYearly(revenues);
 	}
 
+	private void addAnnualFunding(BiogasCostResult r) {
+		double annualFunding = plant.settings.annualFunding;
+		if (annualFunding <= 0)
+			return;
+		// The annual funding is typically a constant value over the
+		// complete project time; so no price change is included here;
+		// also it is not something that reduces the capital costs
+		// but works more like revenues in the results
+		r.dynamicTotal.annualFunding = staticYearly(annualFunding);
+		r.staticTotal.annualFunding = staticYearly(annualFunding);
+	}
+
 	/// The total value of the plant investments in EUR. In contrast to the
 	/// initial investment this ignores the refurbishment shares, e.g. for the
 	/// calculation of the insurance costs.
@@ -208,7 +221,9 @@ public class BiogasCostCalculator {
 			+ costs.consumptionCosts
 			+ costs.operationCosts
 			+ costs.otherAnnualCosts;
-		costs.annualSurplus = costs.revenuesElectricity - costs.totalAnnualCosts;
+		costs.annualSurplus = costs.revenuesElectricity
+			+ costs.annualFunding
+			- costs.totalAnnualCosts;
 	}
 
 	/// The computed costs of a single investment item: the dynamic values for

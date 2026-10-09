@@ -134,8 +134,8 @@ public class CostCalculator {
 		double bonus = settings.connectionFees;
 		if (withFunding) {
 			double funding = Funding.get(project, r);
-			r.dynamicTotal.funding = funding;
-			r.staticTotal.funding = funding;
+			r.dynamicTotal.investmentFunding = funding;
+			r.staticTotal.investmentFunding = funding;
 			bonus += funding;
 		}
 		if (bonus <= 0)

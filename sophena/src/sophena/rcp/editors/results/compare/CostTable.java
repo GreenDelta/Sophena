@@ -32,7 +32,7 @@ class CostTable {
 		t.row("Investitionskosten",
 				idx -> Num.intStr(costs(idx).investments) + " EUR");
 		t.row("Investitionsförderung",
-				idx -> Num.intStr(costs(idx).funding) + " EUR");
+				idx -> Num.intStr(costs(idx).investmentFunding) + " EUR");
 		t.row("Anschlusskostenbeiträge", idx -> {
 			double c = result.projects[idx].costSettings.connectionFees;
 			return Num.intStr(c) + " EUR";
@@ -40,7 +40,7 @@ class CostTable {
 		t.boldRow("Finanzierungsbedarf", idx -> {
 			Summary costs = costs(idx);
 			double cf = result.projects[idx].costSettings.connectionFees;
-			double s = costs.investments - costs.funding - cf;
+			double s = costs.investments - costs.investmentFunding - cf;
 			return Num.intStr(s) + " EUR";
 		});
 		t.emptyRow();

@@ -97,7 +97,7 @@ public class BiogasPlantInvestmentsTest {
 
 		// with 0 % interest the annuity factor is 1 / T: the capital costs are
 		// 50_000 / 20 = 2_500 minus the funding 10_000 / 20 = 500 EUR/a
-		assertEquals(10_000, costs.dynamicTotal.funding, 1e-10);
+		assertEquals(10_000, costs.dynamicTotal.investmentFunding, 1e-10);
 		assertEquals(2_000, costs.dynamicTotal.capitalCosts, 1e-6);
 		assertEquals(2_000, costs.staticTotal.capitalCosts, 1e-6);
 	}

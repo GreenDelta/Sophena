@@ -71,13 +71,13 @@ class CostResultPage extends FormPage {
 				dyn.investments, stat.investments));
 		if (withFunding) {
 			items.add(new Item("Investitionsförderung", "EUR",
-					dyn.funding, stat.funding));
+					dyn.investmentFunding, stat.investmentFunding));
 		}
 		double conFees = result.project.costSettings.connectionFees;
 		items.add(new Item("Anschlusskostenbeiträge", "EUR", conFees, conFees));
 		Item invSum = new Item("Finanzierungsbedarf", "EUR",
-				dyn.investments - dyn.funding - conFees,
-				stat.investments - stat.funding - conFees);
+				dyn.investments - dyn.investmentFunding - conFees,
+				stat.investments - stat.investmentFunding - conFees);
 		invSum.bold = true;
 		items.add(invSum);
 		items.add(new Item());

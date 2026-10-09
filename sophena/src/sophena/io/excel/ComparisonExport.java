@@ -71,7 +71,7 @@ public class ComparisonExport implements Runnable {
 		w.nextRow();
 
 		w.str("Investitionsförderung [EUR]");
-		each(r -> w.rint(costs(r).funding));
+		each(r -> w.rint(costs(r).investmentFunding));
 		w.nextRow();
 
 		w.str("Anschlusskostenbeiträge [EUR]");
@@ -82,7 +82,7 @@ public class ComparisonExport implements Runnable {
 		each(r -> {
 			var costs = costs(r);
 			double cf = r.project.costSettings.connectionFees;
-			w.boldRint(costs.investments - costs.funding - cf);
+			w.boldRint(costs.investments - costs.investmentFunding - cf);
 		});
 		w.nextRow().nextRow();
 

@@ -15,8 +15,8 @@ public class CostResult {
 		/// The total initial investment sum in EUR.
 		public double investments;
 
-		/// The total funding in EUR.
-		public double funding;
+		/// The total investment funding in EUR.
+		public double investmentFunding;
 
 		/// Annuity of capital tied up in the investment.
 		/// @de Kapitalgebundene Kosten

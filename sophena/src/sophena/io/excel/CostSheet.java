@@ -55,8 +55,8 @@ class CostSheet {
 
 		if (withFunding) {
 			w.str("Investitionsförderung [EUR]")
-				.rint(dyn.funding)
-				.rint(stat.funding)
+				.rint(dyn.investmentFunding)
+				.rint(stat.investmentFunding)
 				.nextRow();
 		}
 
@@ -67,8 +67,8 @@ class CostSheet {
 			.nextRow();
 
 		w.boldStr("Finanzierungsbedarf [EUR]")
-			.boldRint(dyn.investments - dyn.funding - conFees)
-			.boldRint(stat.investments - stat.funding - conFees)
+			.boldRint(dyn.investments - dyn.investmentFunding - conFees)
+			.boldRint(stat.investments - stat.investmentFunding - conFees)
 			.nextRow()
 			.nextRow();
 
