@@ -33,7 +33,7 @@ public class CostCalculator {
 		var r = new CostResult();
 
 		for (var ii : InvestmentItem.allOf(project)) {
-			r.items.add(itemOf(r, ii));
+			addItem(r, costsOf(ii));
 		}
 
 		finishCapitalCosts(r);
@@ -45,31 +45,53 @@ public class CostCalculator {
 	}
 
 
-	private CostResultItem itemOf(CostResult r, InvestmentItem ii) {
+	private ItemCosts costsOf(InvestmentItem ii) {
 
-		r.dynamicTotal.investments += ii.initialInvestment();
-		r.staticTotal.investments += ii.initialInvestment();
-
-		// add capital costs
+		// capital costs
 		double capitalCosts = capitalCostsOf(ii, settings.investmentFactor);
-		r.dynamicTotal.capitalCosts += capitalCosts;
-		r.staticTotal.capitalCosts += capitalCostsOf(ii, 1.0);
+		double staticCapitalCosts = capitalCostsOf(ii, 1.0);
 
-		// add operation costs = operation + maintenance
+		// operation costs = operation + maintenance
 		double operationCosts = ii.operation() * settings.hourlyWage;
 		double maintenanceCosts = Investments.maintenanceBase(ii);
-		double operationRelatedCosts = annuityOf(operationCosts, settings.operationFactor)
-			+ annuityOf(maintenanceCosts, settings.maintenanceFactor);
-		r.dynamicTotal.operationCosts += operationRelatedCosts;
-		r.staticTotal.operationCosts += staticAnnuityOf(operationCosts)
-			+ staticAnnuityOf(maintenanceCosts);
+		double operationRelatedCosts = dynamicYearly(operationCosts, settings.operationFactor)
+			+ dynamicYearly(maintenanceCosts, settings.maintenanceFactor);
+		double staticOperationCosts = staticYearly(operationCosts)
+			+ staticYearly(maintenanceCosts);
 
-		double demandRelatedCosts = ii.producer() != null
-			? demandCostsOf(r, ii.producer())
-			: 0;
+		// demand-related costs
+		double demandRelatedCosts = 0;
+		double staticDemandCosts = 0;
+		if (ii.producer() != null) {
+			var demand = demandCostsOf(ii.producer());
+			demandRelatedCosts = demand.dynamic();
+			staticDemandCosts = demand.staticCosts();
+		}
 
-		return new CostResultItem(
+		var item = new CostResultItem(
 			ii, capitalCosts, demandRelatedCosts, operationRelatedCosts);
+		return new ItemCosts(
+			item, staticCapitalCosts, staticDemandCosts, staticOperationCosts);
+	}
+
+	/// Adds the computed costs of a single item to the result.
+	private void addItem(CostResult r, ItemCosts costs) {
+
+		var item = costs.item();
+		r.items.add(item);
+
+		double investment = item.initialInvestment();
+		r.dynamicTotal.investments += investment;
+		r.staticTotal.investments += investment;
+
+		r.dynamicTotal.capitalCosts += item.capitalCosts();
+		r.staticTotal.capitalCosts += costs.staticCapitalCosts();
+
+		r.dynamicTotal.consumptionCosts += item.demandRelatedCosts();
+		r.staticTotal.consumptionCosts += costs.staticDemandCosts();
+
+		r.dynamicTotal.operationCosts += item.operationRelatedCosts();
+		r.staticTotal.operationCosts += costs.staticOperationCosts();
 	}
 
 	/// The annual capital costs of the given item.
@@ -82,7 +104,9 @@ public class CostCalculator {
 	}
 
 
-	private double demandCostsOf(CostResult r, Producer p) {
+	/// The demand-related costs of a producer: the dynamic annuity that is also
+	/// shown for the item and the static annuity that is used for the totals.
+	private DemandCosts demandCostsOf(Producer p) {
 
 		var energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
@@ -93,16 +117,15 @@ public class CostCalculator {
 		double priceChangeFuel = FuelCosts.getPriceChangeFactor(p, settings);
 
 		// we assume the same price change factor for the ash costs as for the fuel
-		double demandCosts = annuityOf(fuelCosts, priceChangeFuel)
-			+ annuityOf(electricityCosts, settings.electricityFactor)
-			+ annuityOf(ashCosts, priceChangeFuel);
-		r.dynamicTotal.consumptionCosts += demandCosts;
+		double dynamic = dynamicYearly(fuelCosts, priceChangeFuel)
+			+ dynamicYearly(electricityCosts, settings.electricityFactor)
+			+ dynamicYearly(ashCosts, priceChangeFuel);
 
-		r.staticTotal.consumptionCosts += staticAnnuityOf(fuelCosts)
-			+ staticAnnuityOf(electricityCosts)
-			+ staticAnnuityOf(ashCosts);
+		double staticCosts = staticYearly(fuelCosts)
+			+ staticYearly(electricityCosts)
+			+ staticYearly(ashCosts);
 
-		return demandCosts;
+		return new DemandCosts(dynamic, staticCosts);
 	}
 
 	/// Reduce capital costs by fundings and connection fees.
@@ -116,7 +139,7 @@ public class CostCalculator {
 		}
 		if (bonus <= 0)
 			return;
-		double a = Costs.annuityFactor(project.duration, interestRate());
+		double a = Annuity.factor(project.duration, interestRate());
 		r.dynamicTotal.capitalCosts -= (bonus * a);
 		r.staticTotal.capitalCosts -= (bonus * a);
 	}
@@ -138,9 +161,9 @@ public class CostCalculator {
 			dynamicSum += annualCosts.value;
 		}
 
-		r.dynamicTotal.otherAnnualCosts = annuityOf(
+		r.dynamicTotal.otherAnnualCosts = dynamicYearly(
 			dynamicSum, settings.operationFactor);
-		r.staticTotal.otherAnnualCosts = staticAnnuityOf(staticSum);
+		r.staticTotal.otherAnnualCosts = staticYearly(staticSum);
 	}
 
 	/// Add revenues from generated electricity and heat.
@@ -148,14 +171,14 @@ public class CostCalculator {
 		double electricityRevenues =
 			GeneratedElectricity.getTotal(result) * settings.electricityRevenues;
 
-		r.dynamicTotal.revenuesElectricity = annuityOf(
+		r.dynamicTotal.revenuesElectricity = dynamicYearly(
 			electricityRevenues, settings.electricityRevenuesFactor);
-		r.staticTotal.revenuesElectricity = staticAnnuityOf(electricityRevenues);
+		r.staticTotal.revenuesElectricity = staticYearly(electricityRevenues);
 
-		double revenuesHeat = usedHeat() * settings.heatRevenues;
-		r.dynamicTotal.revenuesHeat = annuityOf(
-			revenuesHeat, settings.heatRevenuesFactor);
-		r.staticTotal.revenuesHeat = staticAnnuityOf(revenuesHeat);
+		double heatRevenues = usedHeat() * settings.heatRevenues;
+		r.dynamicTotal.revenuesHeat = dynamicYearly(
+			heatRevenues, settings.heatRevenuesFactor);
+		r.staticTotal.revenuesHeat = staticYearly(heatRevenues);
 	}
 
 	private void calcTotals(FieldSet costs) {
@@ -172,16 +195,16 @@ public class CostCalculator {
 			: 0;
 	}
 
-	private double staticAnnuityOf(double firstYearValue) {
-		return annuityOf(firstYearValue, 1.0);
+	private double staticYearly(double firstYearCosts) {
+		return dynamicYearly(firstYearCosts, 1.0);
 	}
 
-	private double annuityOf(double firstYearValue, double priceChangeFactor) {
-		return Costs.annuity(
+	private double dynamicYearly(double firstYearCosts, double priceChange) {
+		return Annuity.ofYearlyCosts(
 			project.duration,
-			firstYearValue,
+			firstYearCosts,
 			interestRate(),
-			priceChangeFactor
+			priceChange
 		);
 	}
 
@@ -201,6 +224,22 @@ public class CostCalculator {
 		return (energyResult.totalProducedHeat
 			- energyResult.heatNetLoss
 			- bufferLoss) / 1000d;
+	}
+
+	/// The computed costs of a single investment item. The [CostResultItem]
+	/// holds the dynamic values that are shown for the item; the static
+	/// annuities are only needed for the static totals.
+	private record ItemCosts(
+		CostResultItem item,
+		double staticCapitalCosts,
+		double staticDemandCosts,
+		double staticOperationCosts
+	) {
+	}
+
+	/// The demand-related costs of a producer: the dynamic annuity and the
+	/// static annuity.
+	private record DemandCosts(double dynamic, double staticCosts) {
 	}
 
 }

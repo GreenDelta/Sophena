@@ -7,7 +7,7 @@ public class AnnuityFactorTest {
 
 	@Test
 	public void testGetForDuration() {
-		double af = Costs.annuityFactor(20, 2);
+		double af = Annuity.factor(20, 2);
 		Assert.assertEquals(0.0611567181252903, af, 1e-10);
 	}
 

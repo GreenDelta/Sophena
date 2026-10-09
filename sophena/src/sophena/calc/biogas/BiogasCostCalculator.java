@@ -1,6 +1,6 @@
 package sophena.calc.biogas;
 
-import sophena.calc.costs.Costs;
+import sophena.calc.costs.Annuity;
 import sophena.calc.costs.CostResult;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;
@@ -207,7 +207,7 @@ public class BiogasCostCalculator {
 	/// The annuity of the given first-year value for the observed duration of the
 	/// plant, see `Costs.annuity`.
 	private double annuity(double firstYearValue, double priceChangeFactor) {
-		return Costs.annuity(
+		return Annuity.ofYearlyCosts(
 			plant.duration,
 			firstYearValue,
 			plant.settings.interestRate,
