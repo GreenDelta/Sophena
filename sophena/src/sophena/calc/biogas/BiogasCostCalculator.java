@@ -39,6 +39,7 @@ public class BiogasCostCalculator {
 			addItem(r, costsOf(item));
 		}
 
+		finishCapitalCosts(r);
 		addConsumptionCosts(r);
 		addOtherCosts(r, items);
 		addRevenues(r);
@@ -91,6 +92,19 @@ public class BiogasCostCalculator {
 			plant.duration,
 			plant.settings.interestRate,
 			priceChange);
+	}
+
+	/// Reduces the capital costs by the investment funding.
+	private void finishCapitalCosts(CostResult r) {
+		double funding = plant.settings.funding;
+		if (funding <= 0)
+			return;
+		r.dynamicTotal.funding = funding;
+		r.staticTotal.funding = funding;
+		double a = Annuity.factor(
+			plant.duration, plant.settings.interestRate);
+		r.dynamicTotal.capitalCosts -= (funding * a);
+		r.staticTotal.capitalCosts -= (funding * a);
 	}
 
 	/// Adds the costs for the substrates and the electricity that is purchased

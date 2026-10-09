@@ -36,6 +36,10 @@ class FinancingSection {
 			.onChanged(s -> settings.interestRate = Num.read(s));
 		UI.filler(comp, tk);
 
+		t(comp, tk, "Investitionsförderung absolut", "EUR", settings.funding)
+			.onChanged(s -> settings.funding = Num.read(s));
+		UI.filler(comp, tk);
+
 		createProfitExpectationRow(comp, tk);
 	}
 

@@ -80,6 +80,29 @@ public class BiogasPlantInvestmentsTest {
 	}
 
 	@Test
+	public void fundingReducesTheCapitalCosts() {
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.interestRate = 0;
+		plant.settings.investmentFactor = 1.0;
+		plant.settings.funding = 10_000;
+
+		var boilerCosts = costs(50_000);
+		boilerCosts.duration = 20;
+		plant.boilers.get(0).costs = boilerCosts;
+
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = new BiogasCostCalculator(plant, result).calculate();
+
+		// with 0 % interest the annuity factor is 1 / T: the capital costs are
+		// 50_000 / 20 = 2_500 minus the funding 10_000 / 20 = 500 EUR/a
+		assertEquals(10_000, costs.dynamicTotal.funding, 1e-10);
+		assertEquals(2_000, costs.dynamicTotal.capitalCosts, 1e-6);
+		assertEquals(2_000, costs.staticTotal.capitalCosts, 1e-6);
+	}
+
+	@Test
 	public void copyClonesEntries() {
 		var plant = new BiogasPlant();
 		plant.id = "plant-1";

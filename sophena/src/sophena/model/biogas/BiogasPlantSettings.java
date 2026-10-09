@@ -124,9 +124,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "expected_annual_surplus")
 	public double expectedAnnualSurplus;
 
-	/// General investment funding in EUR. This field is not shown in the user
-	/// interface yet. It is kept in the model and the database so that it can be
-	/// used in later extensions without requiring a database change.
+	/// General investment funding in EUR.
 	///
 	/// @de Investitionsförderung absolut
 	@Column(name = "funding")
