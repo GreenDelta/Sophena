@@ -26,7 +26,9 @@ import sophena.model.biogas.BiogasPlant;
 /// the calculation, see `BiogasPlants#effectiveGasStorageSizeOf(BiogasPlant)`.
 ///
 /// The ramp hours (1/8 of the power before and after a block) are not included
-/// in the run flags; they are added when the producer profile is created.
+/// in the run flags; they are added when the producer profile is created. The
+/// heat losses of the plant (`heatLoss`) are subtracted from the producer
+/// profile, so it contains the usable heat that is fed into the heat network.
 @NullMarked
 public record BiogasRuntimeResult(
 	BiogasPlant plant,
@@ -109,6 +111,10 @@ public record BiogasRuntimeResult(
 		if (power <= 0)
 			return profile;
 
+		double heatLoss = plant.settings != null
+			? plant.settings.heatLoss
+			: 0;
+
 		int n = runFlags.length;
 		for (int h = 0; h < n; h++) {
 			if (runFlags[h]) {
@@ -132,6 +138,18 @@ public record BiogasRuntimeResult(
 				// above, so do not join them in a single if-clause
 			}
 		}
+
+		// the heat losses that occur before the heat is fed into the heat
+		// network reduce the usable heat in the producer profile
+		if (heatLoss > 0) {
+			for (int h = 0; h < n; h++) {
+				if (profile.maxPower[h] <= 0)
+					continue;
+				profile.maxPower[h] = Math.max(
+					0, profile.maxPower[h] - heatLoss);
+			}
+		}
+
 		return profile;
 	}
 }

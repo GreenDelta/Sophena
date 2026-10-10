@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import sophena.calc.biogas.eblocks.EblockSearch;
 import sophena.model.Stats;
+import sophena.model.biogas.BiogasPlantSettings;
 
 /// Tests how the two algorithms are integrated into `BiogasRuntimeResult`.
 public class BiogasPlantResultTest {
@@ -118,6 +119,24 @@ public class BiogasPlantResultTest {
 		}
 		// the storage is filled up to its size at some point in the year
 		assertTrue("the storage must fill up", max > 0);
+	}
+
+	@Test
+	public void heatLossesAreSubtractedFromTheProducerProfile() {
+		var plant = TestPlant.of(1600, 4);
+		plant.boilers.getFirst().boiler.maxPower = 600;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+
+		plant.settings.heatLoss = 0;
+		var without = BiogasRuntimeResult.calculate(plant)
+			.orElseThrow().producerProfile();
+
+		plant.settings.heatLoss = 20;
+		var withLosses = BiogasRuntimeResult.calculate(plant)
+			.orElseThrow().producerProfile();
+
+		assertTrue(Stats.sum(without.maxPower)
+			> Stats.sum(withLosses.maxPower));
 	}
 
 	@Test

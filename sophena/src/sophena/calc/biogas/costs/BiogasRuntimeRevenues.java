@@ -32,7 +32,8 @@ import sophena.model.biogas.MarketPriceLimit;
 /// additionally subtracted in the full-load hours.
 ///
 /// The hourly funding and exchange revenues are in EUR, the fed-in electricity
-/// is in kWh, and the quarter hour values are operating quarter hours.
+/// and the generated heat are in kWh, and the quarter hour values are operating
+/// quarter hours.
 public record BiogasRuntimeRevenues(
 	double[] funding,
 	double fundingSum,
@@ -40,6 +41,7 @@ public record BiogasRuntimeRevenues(
 	double revenuesSum,
 	double directMarketerPayment,
 	double feedIn,
+	double totalGeneratedHeat,
 	double additionalRevenues,
 	double totalRevenues,
 	double quarterHoursBelowZero,
@@ -98,6 +100,11 @@ public record BiogasRuntimeRevenues(
 		/// The electricity that is fed into the grid in each hour in kWh.
 		private final double[] feedIn;
 
+		/// The usable heat of the plant in each hour in kWh. This is the power
+		/// profile of the producer; the heat losses are already subtracted
+		/// there (see `BiogasRuntimeResult`).
+		private final double[] heatPower;
+
 		Calculator(BiogasPlant plant, BiogasRuntimeResult result) {
 			this.plant = plant;
 			this.settings = plant.settings;
@@ -108,6 +115,7 @@ public record BiogasRuntimeRevenues(
 			this.power = BiogasPlants.totalElectricPower(plant);
 			this.rampUnits = new int[Stats.HOURS];
 			this.feedIn = new double[Stats.HOURS];
+			this.heatPower = result.producerProfile().maxPower;
 			buildProfiles();
 		}
 
@@ -158,6 +166,7 @@ public record BiogasRuntimeRevenues(
 				revenuesSum,
 				directMarketer,
 				Stats.sum(feedIn),
+				Stats.sum(heatPower),
 				additional,
 				total,
 				quarterHoursBelowZero(),

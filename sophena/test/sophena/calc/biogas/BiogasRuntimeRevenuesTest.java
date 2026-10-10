@@ -78,6 +78,18 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	@Test
+	public void totalGeneratedHeatIsTheSumOfTheProducerProfile() {
+		var plant = base();
+		plant.boilers.getFirst().boiler.maxPower = 600;
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
+
+		assertTrue(r.totalGeneratedHeat() > 0);
+		assertEquals(Stats.sum(result.producerProfile().maxPower),
+			r.totalGeneratedHeat(), 1e-6);
+	}
+
+	@Test
 	public void marketPremiumUsesTheValueToBeApplied() {
 		var plant = base();
 		plant.settings.isFixedRemuneration = false;
