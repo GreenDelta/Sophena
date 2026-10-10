@@ -341,7 +341,7 @@ public record BiogasRuntimeRevenues(
 			return switch (limit) {
 				case BELOW_ZERO -> price < 0;
 				case BELOW_TWO -> price <= 2;
-				case NONE -> false;
+				default -> false;
 			};
 		}
 

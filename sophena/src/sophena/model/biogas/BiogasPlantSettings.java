@@ -102,23 +102,23 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "interest_rate")
 	public double interestRate;
 
-	/// Indicates whether the expected profit is based on the expected rate of
-	/// return (`rateOfReturn`) or on the expected annual surplus
+	/// Indicates whether the expected profit is based on the total capital
+	/// return rate (`capitalReturnRate`) or on the expected annual surplus
 	/// (`expectedAnnualSurplus`).
 	///
-	/// @de Renditeerwartung | Jahresüberschusserwartung
-	@Column(name = "use_rate_of_return")
-	public boolean useRateOfReturn;
+	/// @de Gesamtkapitalrentabilität | Jahresüberschusserwartung
+	@Column(name = "use_capital_return_rate")
+	public boolean useCapitalReturnRate;
 
-	/// The expected rate of return in %. This is only used when
-	/// `useRateOfReturn` is `true`.
+	/// The total capital return rate in %. This is only used when
+	/// `useCapitalReturnRate` is `true`.
 	///
-	/// @de Renditeerwartung
-	@Column(name = "rate_of_return")
-	public double rateOfReturn;
+	/// @de Gesamtkapitalrentabilität
+	@Column(name = "capital_return_rate")
+	public double capitalReturnRate;
 
 	/// The expected annual surplus in EUR/a. This is only used when
-	/// `useRateOfReturn` is `false`.
+	/// `useCapitalReturnRate` is `false`.
 	///
 	/// @de Jahresüberschusserwartung
 	@Column(name = "expected_annual_surplus")
@@ -278,8 +278,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.methaneSlip = 1.8;
 		settings.heatLoss = 0.0;
 		settings.interestRate = 4.0;
-		settings.useRateOfReturn = true;
-		settings.rateOfReturn = 20.0;
+		settings.useCapitalReturnRate = true;
+		settings.capitalReturnRate = 20.0;
 		settings.expectedAnnualSurplus = 0.0;
 		settings.funding = 0.0;
 		settings.eligibleQuarterHours = 35040;
@@ -331,8 +331,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.methaneSlip = methaneSlip;
 		copy.heatLoss = heatLoss;
 		copy.interestRate = interestRate;
-		copy.useRateOfReturn = useRateOfReturn;
-		copy.rateOfReturn = rateOfReturn;
+		copy.useCapitalReturnRate = useCapitalReturnRate;
+		copy.capitalReturnRate = capitalReturnRate;
 		copy.expectedAnnualSurplus = expectedAnnualSurplus;
 		copy.funding = funding;
 		copy.maxRatedPower = maxRatedPower;

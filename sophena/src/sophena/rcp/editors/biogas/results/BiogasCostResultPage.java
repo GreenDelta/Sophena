@@ -14,7 +14,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.biogas.BiogasResult;
-import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -22,12 +21,10 @@ import sophena.utils.Num;
 /// Shows the dynamic and static cost result of a biogas plant.
 class BiogasCostResultPage extends FormPage {
 
-	private final BiogasPlantResultEditor editor;
 	private final BiogasResult result;
 
 	BiogasCostResultPage(BiogasPlantResultEditor editor) {
 		super(editor, "sophena.BiogasCostResultPage", "Wirtschaftlichkeit");
-		this.editor = editor;
 		this.result = editor.result();
 	}
 

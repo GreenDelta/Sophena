@@ -51,11 +51,12 @@ class FinancingSection {
 		UI.innerGrid(inner, 3);
 		UI.gridData(inner, true, false).horizontalSpan = 3;
 
-		var returnRadio = tk.createButton(inner, "Renditeerwartung", SWT.RADIO);
+		var returnRadio = tk.createButton(
+			inner, "Gesamtkapitalrentabilität", SWT.RADIO);
 		var returnBox = Texts.on(UI.formText(inner, tk, null))
 			.decimal()
-			.init(settings.rateOfReturn)
-			.onChanged(s -> settings.rateOfReturn = Num.read(s))
+			.init(settings.capitalReturnRate)
+			.onChanged(s -> settings.capitalReturnRate = Num.read(s))
 			.onChanged(_ -> editor.setDirty());
 		UI.formLabel(inner, tk, "%");
 
@@ -77,17 +78,17 @@ class FinancingSection {
 			}
 		};
 
-		returnRadio.setSelection(settings.useRateOfReturn);
-		surplusRadio.setSelection(!settings.useRateOfReturn);
+		returnRadio.setSelection(settings.useCapitalReturnRate);
+		surplusRadio.setSelection(!settings.useCapitalReturnRate);
 		updateState.run();
 
 		Controls.onSelect(returnRadio, _ -> {
-			settings.useRateOfReturn = true;
+			settings.useCapitalReturnRate = true;
 			updateState.run();
 			editor.setDirty();
 		});
 		Controls.onSelect(surplusRadio, _ -> {
-			settings.useRateOfReturn = false;
+			settings.useCapitalReturnRate = false;
 			updateState.run();
 			editor.setDirty();
 		});
