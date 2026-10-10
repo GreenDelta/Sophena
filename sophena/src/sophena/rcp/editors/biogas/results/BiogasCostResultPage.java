@@ -13,6 +13,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import sophena.calc.biogas.BiogasResult;
 import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -22,25 +23,24 @@ import sophena.utils.Num;
 class BiogasCostResultPage extends FormPage {
 
 	private final BiogasPlantResultEditor editor;
+	private final BiogasResult result;
 
 	BiogasCostResultPage(BiogasPlantResultEditor editor) {
 		super(editor, "sophena.BiogasCostResultPage", "Wirtschaftlichkeit");
 		this.editor = editor;
+		this.result = editor.result();
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
-		var result = editor.result();
 		var form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		var tk = mform.getToolkit();
 		var body = UI.formBody(form, tk);
-
-		createCosts(body, tk, result.costs());
-
+		createOverview(body, tk);
 		form.reflow(true);
 	}
 
-	private void createCosts(Composite body, FormToolkit tk, BiogasCostResult r) {
+	private void createOverview(Composite body, FormToolkit tk) {
 		var section = UI.section(body, tk, "Wirtschaftlichkeit");
 		UI.gridData(section, true, true);
 		var comp = UI.sectionClient(section, tk);
@@ -48,12 +48,12 @@ class BiogasCostResultPage extends FormPage {
 		Tables.bindColumnWidths(table, 0.6, 0.2, 0.2);
 		Tables.rightAlignColumns(table, 1, 2);
 		table.setLabelProvider(new Label());
-		table.setInput(itemsOf(r));
+		table.setInput(createOverviewItems());
 	}
 
-	private static List<Item> itemsOf(BiogasCostResult r) {
-		var dyn = r.dynamicTotal;
-		var stat = r.staticTotal;
+	private List<Item> createOverviewItems() {
+		var dyn = result.costs().dynamicTotal;
+		var stat = result.costs().staticTotal;
 		List<Item> items = new ArrayList<>();
 
 		// investment costs
@@ -81,6 +81,16 @@ class BiogasCostResultPage extends FormPage {
 
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
+		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
+			result.revenues().fundingSum(), result.revenues().fundingSum()));
+
+		double directMarketerShare = result.revenues().directMarketerPayment();
+		double spotMarketRevenues = result.revenues().revenuesSum()
+			- directMarketerShare;
+		items.add(new Item("Stromhandelserlöse", "EUR/a",
+			spotMarketRevenues, spotMarketRevenues));
+		items.add(new Item("Direktvermarkteranteil", "EUR/a",
+			directMarketerShare, directMarketerShare));
 
 		return items;
 	}

@@ -21,13 +21,17 @@ public class BiogasRuntimeRevenuesTest {
 	/// The electric power of the test plant under full load in kW.
 	private static final double POWER = 500;
 
+	/// The cable and transformer losses of the test plants in kW (the default
+	/// value of `BiogasPlantSettings#createDefault`).
+	private static final double LOSSES = 7.35;
+
 	@Test
 	public void fixedRemunerationPaysTheTariff() {
 		var plant = base();
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
-		double feedIn = expectedFeedIn(result.runFlags(), 30, false);
+		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		assertEquals(feedIn, r.feedIn(), 1e-6);
 		assertEquals(0.12 * feedIn, r.fundingSum(), 1e-6);
 		assertEquals(0.10 * feedIn, r.revenuesSum(), 1e-6);
@@ -44,7 +48,7 @@ public class BiogasRuntimeRevenuesTest {
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
-		double expected = expectedFeedIn(result.runFlags(), 30, true);
+		double expected = expectedFeedIn(result.runFlags(), 30, LOSSES, true);
 		assertEquals(expected, r.feedIn(), 1e-6);
 
 		var surplus = base();
@@ -55,6 +59,25 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	@Test
+	public void transmissionLossesReduceTheFeedIn() {
+		var noLosses = base();
+		noLosses.settings.transmissionLosses = 0;
+		var result = BiogasRuntimeResult.calculate(noLosses).orElseThrow();
+		var without = BiogasRuntimeRevenues.calculate(noLosses, result)
+			.orElseThrow();
+
+		var withLosses = base();
+		withLosses.settings.transmissionLosses = 20;
+		var with20 = BiogasRuntimeRevenues.calculate(withLosses, result)
+			.orElseThrow();
+
+		assertTrue(without.feedIn() > with20.feedIn());
+		assertEquals(
+			expectedFeedIn(result.runFlags(), 30, 20, false),
+			with20.feedIn(), 1e-6);
+	}
+
+	@Test
 	public void marketPremiumUsesTheValueToBeApplied() {
 		var plant = base();
 		plant.settings.isFixedRemuneration = false;
@@ -62,7 +85,7 @@ public class BiogasRuntimeRevenuesTest {
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
-		double feedIn = expectedFeedIn(result.runFlags(), 30, false);
+		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		// premium = 18 - 10 = 8 ct/kWh
 		assertEquals(0.08 * feedIn, r.fundingSum(), 1e-6);
 		// the monthly value equals the annual value here
@@ -78,7 +101,7 @@ public class BiogasRuntimeRevenuesTest {
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
-		double feedIn = expectedFeedIn(result.runFlags(), 30, false);
+		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		// premium = 18 - 5 = 13 ct/kWh
 		assertEquals(0.13 * feedIn, r.fundingSum(), 1e-6);
 		assertEquals(0.05 * feedIn, r.additionalRevenues(), 1e-6);
@@ -105,7 +128,7 @@ public class BiogasRuntimeRevenuesTest {
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
-		double feedIn = expectedFeedIn(result.runFlags(), 30, false);
+		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		// additional revenues = feedIn * (10 - 5) / 100; the monthly value is
 		// always used here, also when the annual value is selected
 		assertEquals(0.05 * feedIn, r.additionalRevenues(), 1e-6);
@@ -276,19 +299,30 @@ public class BiogasRuntimeRevenuesTest {
 
 	/// The expected fed-in electricity in kWh: the full-load hours contribute
 	/// the electric power (minus the internal demand in the surplus mode) and
-	/// each ramp contributes 1/8 of the power.
+	/// each ramp contributes 1/8 of the power. The cable and transformer losses
+	/// are subtracted from every hour that feeds in.
 	private static double expectedFeedIn(
-		boolean[] flags, double avgDemand, boolean fullFeedIn
+		boolean[] flags, double avgDemand, double losses, boolean fullFeedIn
 	) {
 		double sum = 0;
 		for (int h = 0; h < flags.length; h++) {
 			if (flags[h]) {
-				sum += fullFeedIn
+				double energy = fullFeedIn
 					? POWER
-					: Math.max(0, POWER - avgDemand);
+					: POWER - avgDemand;
+				sum += Math.max(0, energy - losses);
+				continue;
+			}
+			int ramps = 0;
+			if (h + 1 < flags.length && flags[h + 1])
+				ramps++;
+			if (h > 0 && flags[h - 1])
+				ramps++;
+			if (ramps > 0) {
+				sum += Math.max(0, ramps * POWER / 8.0 - losses);
 			}
 		}
-		return sum + countRampUnits(flags) * POWER / 8.0;
+		return sum;
 	}
 
 	private static double countRuns(boolean[] flags) {

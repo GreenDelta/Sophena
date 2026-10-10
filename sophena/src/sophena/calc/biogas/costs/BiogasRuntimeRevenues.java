@@ -26,9 +26,10 @@ import sophena.model.biogas.MarketPriceLimit;
 ///
 /// In both modes the revenues from the electricity exchange, the additional
 /// revenues (Mehrerlöse) and the share that is paid to the direct marketer are
-/// calculated. In the surplus feed-in mode the fed-in electricity is the
-/// generated electricity minus the internal power demand (`avgPowerDemand`) in
-/// the full-load hours.
+/// calculated. The fed-in electricity is the generated electricity minus the
+/// cable and transformer losses (`transmissionLosses`) in every operating hour;
+/// in the surplus feed-in mode the internal power demand (`avgPowerDemand`) is
+/// additionally subtracted in the full-load hours.
 ///
 /// The hourly funding and exchange revenues are in EUR, the fed-in electricity
 /// is in kWh, and the quarter hour values are operating quarter hours.
@@ -111,15 +112,18 @@ public record BiogasRuntimeRevenues(
 		}
 
 		/// Creates the fed-in electricity per hour from the run flags. Full-load
-		/// hours get the full electric power, ramp hours 1/8 of it per ramp. In
-		/// the surplus feed-in mode the internal power demand is subtracted in
-		/// the full-load hours.
+		/// hours get the full electric power, ramp hours 1/8 of it per ramp. The
+		/// cable and transformer losses are subtracted in every operating hour;
+		/// in the surplus feed-in mode the internal power demand is additionally
+		/// subtracted in the full-load hours.
 		private void buildProfiles() {
+			double losses = settings.transmissionLosses;
 			for (int h = 0; h < Stats.HOURS; h++) {
 				if (isFullLoad(h)) {
-					feedIn[h] = settings.isFullFeedIn
-						? Math.max(0, power)
-						: Math.max(0, power - settings.avgPowerDemand);
+					double energy = settings.isFullFeedIn
+						? power
+						: power - settings.avgPowerDemand;
+					feedIn[h] = Math.max(0, energy - losses);
 					continue;
 				}
 				int ramps = 0;
@@ -128,7 +132,9 @@ public record BiogasRuntimeRevenues(
 				if (h > 0 && isFullLoad(h - 1))
 					ramps++;
 				rampUnits[h] = ramps;
-				feedIn[h] = ramps * power / 8.0;
+				feedIn[h] = ramps <= 0
+					? 0
+					: Math.max(0, ramps * power / 8.0 - losses);
 			}
 		}
 
