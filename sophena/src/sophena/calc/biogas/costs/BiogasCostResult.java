@@ -54,6 +54,11 @@ public class BiogasCostResult {
 		/// The annual surplus in EUR: = revenues - costs
 		public double annualSurplus;
 
+		/// The suggested heat price in EUR/MWh that is needed so that the annual
+		/// surplus reaches the expected profit of the plant settings (the total
+		/// capital return rate or the expected annual surplus).
+		public double suggestedHeatPrice;
+
 	}
 
 }

@@ -55,6 +55,7 @@ public class BiogasCostCalculator {
 
 		calcTotals(r.dynamicTotal);
 		calcTotals(r.staticTotal);
+		addSuggestedHeatPrices(r);
 		return r;
 	}
 
@@ -214,6 +215,37 @@ public class BiogasCostCalculator {
 		costs.annualSurplus = costs.revenuesElectricity
 			+ costs.annualFunding
 			- costs.totalAnnualCosts;
+	}
+
+	/// Sets the suggested heat price of the dynamic and the static summary: the
+	/// price in EUR/MWh where the annual surplus reaches the expected profit of
+	/// the plant settings (the total capital return rate or the expected annual
+	/// surplus).
+	private void addSuggestedHeatPrices(BiogasCostResult r) {
+		double heat = revenues != null
+			? revenues.totalGeneratedHeat()
+			: 0;
+		r.dynamicTotal.suggestedHeatPrice =
+			suggestedHeatPrice(r.dynamicTotal, heat);
+		r.staticTotal.suggestedHeatPrice =
+			suggestedHeatPrice(r.staticTotal, heat);
+	}
+
+	/// The suggested heat price in EUR/MWh of the given summary. With
+	/// `WP = 1000 * WE / WM` and `WE = target - annualSurplus`, where the target
+	/// is `JGK * GKR / 100` in the capital return rate case and `JUB` in the
+	/// annual surplus case.
+	private double suggestedHeatPrice(
+		BiogasCostResult.Summary summary, double heat
+	) {
+		if (heat <= 0)
+			return 0;
+		var settings = plant.settings;
+		double target = settings.useCapitalReturnRate
+			? summary.totalAnnualCosts * settings.capitalReturnRate / 100.0
+			: settings.expectedAnnualSurplus;
+		double heatRevenue = target - summary.annualSurplus;
+		return 1000 * heatRevenue / heat;
 	}
 
 	/// The computed costs of a single investment item: the dynamic values for
