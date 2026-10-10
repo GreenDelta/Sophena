@@ -27,9 +27,22 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 	}
 
 	public static BiogasProfile of(BiogasPlant plant) {
-		return plant != null
-			? BiogasProfile.of(plant.substrateProfiles)
-			: empty();
+		if (plant == null)
+			return empty();
+		var profile = BiogasProfile.of(plant.substrateProfiles);
+
+		// The methane slip is the share of methane that is not captured or
+		// converted. It is applied as a direct reduction of the produced gas
+		// volume before the gas storage is simulated.
+		var settings = plant.settings;
+		if (settings != null && settings.methaneSlip > 0) {
+			double factor = Math.max(0, 1 - settings.methaneSlip / 100.0);
+			var volume = profile.volume();
+			for (int h = 0; h < volume.length; h++) {
+				volume[h] *= factor;
+			}
+		}
+		return profile;
 	}
 
 	public static BiogasProfile of(List<SubstrateProfile> substrates) {

@@ -43,7 +43,7 @@ public final class EhourSearch {
 	private EhourSearch(BiogasPlant plant) {
 		this.plant = plant;
 		minRunTime = Math.max(1, plant.minimumRuntime);
-		profile = BiogasProfile.of(plant.substrateProfiles);
+		profile = BiogasProfile.of(plant);
 		storage = BiogasStorage.of(plant);
 		priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
 	}
