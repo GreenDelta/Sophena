@@ -30,7 +30,7 @@ class BiogasPlantResultPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var result = editor.result();
+		var result = editor.result().runtime();
 		var form = UI.formHeader(mForm, "Ergebnisse: " + plantName(result));
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);

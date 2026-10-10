@@ -5,7 +5,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.openlca.commons.Strings;
 
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.BiogasResult;
 import sophena.rcp.app.App;
 import sophena.rcp.editors.Editor;
 import sophena.rcp.utils.Editors;
@@ -15,19 +15,21 @@ import sophena.rcp.utils.KeyEditorInput;
 /// editor through a key in the application cache, see `App#stash(Object)`.
 public class BiogasPlantResultEditor extends Editor {
 
-	private BiogasRuntimeResult result;
+	private BiogasResult result;
 
 	/// Opens the editor for the given calculation result. An already open
 	/// result editor for the same plant is closed first.
-	public static void open(BiogasRuntimeResult result) {
-		if (result == null || result.plant() == null)
+	public static void open(BiogasResult result) {
+		if (result == null || result.runtime() == null
+			|| result.runtime().plant() == null)
 			return;
-		var plant = result.plant();
+		var plant = result.runtime().plant();
 		Editors.closeIf(e -> e instanceof BiogasPlantResultEditor editor
 			&& editor.result != null
-			&& editor.result.plant() != null
+			&& editor.result.runtime() != null
+			&& editor.result.runtime().plant() != null
 			&& Strings.equalsIgnoreCase(
-				plant.id, editor.result.plant().id));
+				plant.id, editor.result.runtime().plant().id));
 
 		var name = Strings.isBlank(plant.name)
 			? "Biogasanlage"
@@ -37,7 +39,7 @@ public class BiogasPlantResultEditor extends Editor {
 		Editors.open(input, "sophena.BiogasPlantResultEditor");
 	}
 
-	BiogasRuntimeResult result() {
+	BiogasResult result() {
 		return result;
 	}
 

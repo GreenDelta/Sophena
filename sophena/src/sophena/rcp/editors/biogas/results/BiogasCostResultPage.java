@@ -13,7 +13,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.costs.BiogasCostCalculator;
 import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -32,15 +31,11 @@ class BiogasCostResultPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		var result = editor.result();
-		var plant = result.plant();
 		var form = UI.formHeader(mform, "Wirtschaftlichkeit");
 		var tk = mform.getToolkit();
 		var body = UI.formBody(form, tk);
 
-		if (plant.settings != null) {
-			var costs = new BiogasCostCalculator(plant, result).calculate();
-			createCosts(body, tk, costs);
-		}
+		createCosts(body, tk, result.costs());
 
 		form.reflow(true);
 	}

@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 import sophena.calc.biogas.costs.BiogasCostCalculator;
+import sophena.calc.biogas.costs.BiogasCostResult;
+import sophena.calc.biogas.costs.BiogasRuntimeRevenues;
 import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
@@ -23,7 +25,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(investment(20_000));
 		plant.investments.add(investment(5_000));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var costs = costResult(plant, result);
 		assertEquals(25_000, costs.dynamicTotal.investments, 1e-10);
 	}
 
@@ -34,7 +36,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.settings = BiogasPlantSettings.createDefault(null);
 		plant.investments.add(refurbishment(10_000, 30));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var costs = costResult(plant, result);
 		assertEquals(3_000, costs.dynamicTotal.investments, 1e-10);
 	}
 
@@ -47,7 +49,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(investment(20_000));
 		plant.investments.add(refurbishment(10_000, 25));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var costs = costResult(plant, result);
 		assertEquals(50_000 + 20_000 + 2_500,
 			costs.dynamicTotal.investments, 1e-10);
 	}
@@ -73,7 +75,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.investments.add(refurb);
 
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var costs = costResult(plant, result);
 
 		// 150 operation hours * 25 EUR/h; with an operation factor of 1 and an
 		// interest rate of 0 the annuity equals the first-year value
@@ -94,7 +96,7 @@ public class BiogasPlantInvestmentsTest {
 		plant.boilers.get(0).costs = boilerCosts;
 
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var costs = new BiogasCostCalculator(plant, result).calculate();
+		var costs = costResult(plant, result);
 
 		// with 0 % interest the annuity factor is 1 / T: the capital costs are
 		// 50_000 / 20 = 2_500 minus the funding 10_000 / 20 = 500 EUR/a
@@ -133,12 +135,12 @@ public class BiogasPlantInvestmentsTest {
 		plant.settings.investmentFactor = 1.0;
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 
-		var before = new BiogasCostCalculator(plant, result).calculate();
+		var before = costResult(plant, result);
 
 		var entry = investment(10_000);
 		entry.costs.duration = 20;
 		plant.investments.add(entry);
-		var after = new BiogasCostCalculator(plant, result).calculate();
+		var after = costResult(plant, result);
 
 		// a duration that equals the observation period gives A / T
 		assertEquals(500,
@@ -150,7 +152,7 @@ public class BiogasPlantInvestmentsTest {
 		var refurb = refurbishment(10_000, 25);
 		refurb.costs.duration = 20;
 		plant.investments.add(refurb);
-		var withRefurb = new BiogasCostCalculator(plant, result).calculate();
+		var withRefurb = costResult(plant, result);
 		assertEquals(125,
 			withRefurb.dynamicTotal.capitalCosts - after.dynamicTotal.capitalCosts, 1e-6);
 		assertEquals(2_500,
@@ -166,12 +168,12 @@ public class BiogasPlantInvestmentsTest {
 		plant.settings.investmentFactor = 1.0;
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 
-		var before = new BiogasCostCalculator(plant, result).calculate();
+		var before = costResult(plant, result);
 
 		var refurb = refurbishment(10_000, 30);
 		refurb.costs.duration = 10;
 		plant.investments.add(refurb);
-		var after = new BiogasCostCalculator(plant, result).calculate();
+		var after = costResult(plant, result);
 
 		// initial: 3_000 EUR (30 %); one replacement after 10 years: 10_000 EUR;
 		// spread over 20 years => (3_000 + 10_000) / 20 = 650 EUR/a
@@ -195,7 +197,7 @@ public class BiogasPlantInvestmentsTest {
 		normal.costs.maintenance = 2;
 		normal.costs.repair = 1;
 		plant.investments.add(normal);
-		var withNormal = new BiogasCostCalculator(plant, result).calculate();
+		var withNormal = costResult(plant, result);
 
 		plant.investments.clear();
 		var refurb = refurbishment(10_000, 30);
@@ -203,7 +205,7 @@ public class BiogasPlantInvestmentsTest {
 		refurb.costs.maintenance = 2;
 		refurb.costs.repair = 1;
 		plant.investments.add(refurb);
-		var withRefurb = new BiogasCostCalculator(plant, result).calculate();
+		var withRefurb = costResult(plant, result);
 
 		// maintenance and repair are applied to the full investment, so the
 		// operation costs are the same as for a normal investment
@@ -223,6 +225,14 @@ public class BiogasPlantInvestmentsTest {
 		var entry = investment(investment);
 		entry.refurbishmentShare = share;
 		return entry;
+	}
+
+	private static BiogasCostResult costResult(
+		BiogasPlant plant, BiogasRuntimeResult result
+	) {
+		var revenues = BiogasRuntimeRevenues.calculate(plant, result)
+			.orElseThrow();
+		return new BiogasCostCalculator(plant, result, revenues).calculate();
 	}
 
 	private ProductCosts costs(double investment) {

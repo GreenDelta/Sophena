@@ -2,7 +2,6 @@ package sophena.calc.biogas.costs;
 
 import java.util.List;
 
-import sophena.calc.biogas.BiogasPlants;
 import sophena.calc.biogas.BiogasRuntimeResult;
 import sophena.calc.costs.Annuity;
 import sophena.calc.costs.InvestmentItem;
@@ -22,11 +21,19 @@ public class BiogasCostCalculator {
 
 	private final BiogasPlant plant;
 	private final BiogasRuntimeResult result;
+	private final BiogasRuntimeRevenues revenues;
 
-	/// Creates a new calculator for the given plant and its energy result.
-	public BiogasCostCalculator(BiogasPlant plant, BiogasRuntimeResult result) {
+	/// Creates a new calculator for the given plant with its runtime result and
+	/// the revenues from the electricity feed-in. The revenues must be
+	/// calculated before the cost result is created.
+	public BiogasCostCalculator(
+		BiogasPlant plant,
+		BiogasRuntimeResult result,
+		BiogasRuntimeRevenues revenues
+	) {
 		this.plant = plant;
 		this.result = result;
+		this.revenues = revenues;
 	}
 
 	/// Calculates the economic performance of the biogas plant.
@@ -154,33 +161,14 @@ public class BiogasCostCalculator {
 		r.staticTotal.otherAnnualCosts = staticYearly(otherCosts);
 	}
 
-	/// Adds the revenues from the electricity feed-in.
+	/// Adds the revenues from the electricity feed-in. These are the total
+	/// revenues of the plant: the funding and the exchange revenues minus the
+	/// share of the direct marketer (see `BiogasRuntimeRevenues`).
 	private void addRevenues(BiogasCostResult r) {
-
-		// net electrical power available for the feed-in
-		double netPower = Math.max(0,
-			BiogasPlants.totalElectricPower(plant)
-				- plant.settings.transmissionLosses);
-		if (!plant.settings.isFullFeedIn) {
-			netPower = Math.max(0, netPower - plant.settings.avgPowerDemand);
-		}
-
-		double revenues = 0;
-		for (int h = 0; h < Stats.HOURS; h++) {
-			if (!result.runFlags()[h])
-				continue;
-			double price = 0;
-			if (plant.electricityPrices != null
-				&& plant.electricityPrices.values != null) {
-				// the values of the price curve are stored in ct/kWh
-				price = plant.electricityPrices.values[h] / 100.0;
-			}
-			revenues += netPower * price;
-		}
-
+		double amount = revenues.totalRevenues();
 		r.dynamicTotal.revenuesElectricity = dynamicYearly(
-			revenues, plant.settings.electricityRevenuesFactor);
-		r.staticTotal.revenuesElectricity = staticYearly(revenues);
+			amount, plant.settings.electricityRevenuesFactor);
+		r.staticTotal.revenuesElectricity = staticYearly(amount);
 	}
 
 	private void addAnnualFunding(BiogasCostResult r) {
