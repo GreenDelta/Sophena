@@ -1,5 +1,7 @@
 package sophena.calc.biogas;
 
+import org.openlca.commons.Res;
+
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -8,6 +10,17 @@ import sophena.model.biogas.BiogasPlant;
 public final class BiogasPlants {
 
 	private BiogasPlants() {
+	}
+
+	public static Res<Void> canCalculate(BiogasPlant plant) {
+		if (plant == null)
+			return Res.error("Es wurde keine Biogasanlage übergeben");
+		if (plant.electricityPrices == null)
+			return Res.error("Es wurden keine Spotmarktpreise definiert");
+
+		// TODO: add more checks for all things that are required to run a full
+		// calculation of the biogas plant.
+		return Res.ok();
 	}
 
 	public static boolean hasValidBoilers(BiogasPlant plant) {

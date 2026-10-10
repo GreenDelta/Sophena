@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.costs.BiogasCostCalculator;
 import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;

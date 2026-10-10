@@ -1,4 +1,4 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.costs;
 
 import java.util.ArrayList;
 import java.util.List;

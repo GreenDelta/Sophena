@@ -13,8 +13,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.BiogasCostCalculator;
-import sophena.calc.biogas.BiogasCostResult;
+import sophena.calc.biogas.costs.BiogasCostCalculator;
+import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
