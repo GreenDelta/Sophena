@@ -62,8 +62,8 @@ public class ElectricityChart {
 		zeroTrace.setTraceType(Trace.TraceType.STEP_VERTICALLY);
 	}
 
-	public void setInput(BiogasRuntimeResult r) {
-		var prices = pricesOf(r.plant());
+	public void setInput(BiogasPlant plant, BiogasRuntimeResult r) {
+		var prices = pricesOf(plant);
 		var max = Stats.max(prices);
 		if (max == 0) {
 			max = 50;
@@ -78,7 +78,7 @@ public class ElectricityChart {
 
 		for (int h = 0; h < Stats.HOURS; h++) {
 			boolean isRunning = r.runFlags()[h];
-			boolean isBreak = !BiogasPlants.isFeedInAllowed(r.plant(), h);
+			boolean isBreak = !BiogasPlants.isFeedInAllowed(plant, h);
 			double price = prices[h];
 
 			defaultVals[h] = !isRunning && !isBreak ? price : 0;

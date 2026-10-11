@@ -23,7 +23,7 @@ class CostResultPage extends FormPage {
 
 	private final BiogasResult result;
 
-	CostResultPage(BiogasPlantResultEditor editor) {
+	CostResultPage(BiogasResultEditor editor) {
 		super(editor, "sophena.CostResultPage", "Wirtschaftlichkeit");
 		this.result = editor.result();
 	}
@@ -98,11 +98,12 @@ class CostResultPage extends FormPage {
 		items.add(new Item());
 
 		// suggested heat price
-		if (result.runtime().plant().settings.useCapitalReturnRate) {
-			var rate = result.runtime().plant().settings.capitalReturnRate;
+		var settings = result.plant().settings;
+		if (settings.useCapitalReturnRate) {
+			var rate = settings.capitalReturnRate;
 			items.add(new Item("Gesamtkapitalrentabilität", "%", rate, rate));
 		} else {
-			var surplus = result.runtime().plant().settings.expectedAnnualSurplus;
+			var surplus = settings.expectedAnnualSurplus;
 			items.add(new Item("Jahresüberschuss", "EUR/a", surplus, surplus));
 		}
 		items.add(new Item("Vorgeschlagener Wärmepreis", "EUR/MWh",

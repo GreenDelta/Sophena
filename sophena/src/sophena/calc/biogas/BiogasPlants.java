@@ -106,7 +106,7 @@ public final class BiogasPlants {
 			&& project.heatNet.maxBufferLoadTemperature > 0
 			? project.heatNet.maxBufferLoadTemperature
 			: 95;
-		producer.profile = result.asProducerProfile(temperature);
+		producer.profile = result.asProducerProfile(plant, temperature);
 		double thermalPower = totalThermalPower(plant);
 		producer.profileMaxPower = thermalPower > 0
 			? thermalPower

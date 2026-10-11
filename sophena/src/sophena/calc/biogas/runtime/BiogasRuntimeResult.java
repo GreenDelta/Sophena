@@ -32,7 +32,6 @@ import sophena.model.biogas.BiogasPlant;
 /// profile, so it contains the usable heat that is fed into the heat network.
 @NullMarked
 public record BiogasRuntimeResult(
-	BiogasPlant plant,
 	BiogasProfile biogasProfile,
 	double gasStorageSize,
 	boolean[] runFlags,
@@ -70,7 +69,6 @@ public record BiogasRuntimeResult(
 		return flags.then(runFlags -> {
 			var profile = BiogasProfile.of(plant);
 			return Res.ok(new BiogasRuntimeResult(
-				plant,
 				profile,
 				BiogasPlants.effectiveGasStorageSizeOf(plant),
 				runFlags,
@@ -85,7 +83,6 @@ public record BiogasRuntimeResult(
 	public static BiogasRuntimeResult emptyOf(BiogasPlant plant) {
 		var runFlags = new boolean[Stats.HOURS];
 		return new BiogasRuntimeResult(
-			plant,
 			BiogasProfile.empty(),
 			0,
 			runFlags,
@@ -93,10 +90,12 @@ public record BiogasRuntimeResult(
 			new double[Stats.HOURS]);
 	}
 
-	/// Creates the producer profile of this result with the given temperature
-	/// in °C. The stored `producerProfile` was created with
-	/// `PRODUCER_TEMPERATURE`.
-	public ProducerProfile asProducerProfile(double temperature) {
+	/// Creates the producer profile of the given plant with the given
+	/// temperature in °C from the run flags of this result. The stored
+	/// `producerProfile` was created with `PRODUCER_TEMPERATURE`.
+	public ProducerProfile asProducerProfile(
+		BiogasPlant plant, double temperature
+	) {
 		return producerProfileOf(plant, runFlags, temperature);
 	}
 

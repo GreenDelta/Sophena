@@ -13,7 +13,7 @@ import sophena.rcp.utils.KeyEditorInput;
 
 /// Shows the results of a biogas plant calculation. The result is passed to the
 /// editor through a key in the application cache, see `App#stash(Object)`.
-public class BiogasPlantResultEditor extends Editor {
+public class BiogasResultEditor extends Editor {
 
 	private BiogasResult result;
 
@@ -22,11 +22,11 @@ public class BiogasPlantResultEditor extends Editor {
 	public static void open(BiogasResult result) {
 		if (result == null)
 			return;
-		var plant = result.runtime().plant();
-		Editors.closeIf(e -> e instanceof BiogasPlantResultEditor editor
+		var plant = result.plant();
+		Editors.closeIf(e -> e instanceof BiogasResultEditor editor
 			&& editor.result != null
 			&& Strings.equalsIgnoreCase(
-			plant.id, editor.result.runtime().plant().id)
+			plant.id, editor.result.plant().id)
 		);
 
 		var name = Strings.isBlank(plant.name)

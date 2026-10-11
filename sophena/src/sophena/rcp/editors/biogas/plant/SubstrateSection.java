@@ -51,7 +51,7 @@ class SubstrateSection {
 		var chartComp = UI.sectionClient(chartSection, tk);
 		UI.gridLayout(chartComp, 1);
 		var chart = new BiogasChart( chartComp);
-		editor.onResult(chart::setInput);
+		editor.onResult(r -> chart.setInput(editor.plant(), r));
 	}
 
 	private void addSubstrateActions(Section section) {

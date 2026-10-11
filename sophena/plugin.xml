@@ -292,7 +292,7 @@
 		</editor>
 
 		<editor
-			class="sophena.rcp.editors.biogas.results.BiogasPlantResultEditor"
+			class="sophena.rcp.editors.biogas.results.BiogasResultEditor"
 			default="false"
 			id="sophena.BiogasPlantResultEditor"
 			icon="icons/bar_chart_16.png"

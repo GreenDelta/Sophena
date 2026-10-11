@@ -23,7 +23,7 @@ public class BiogasResultTest {
 		assertNotNull(r.runtime());
 		assertNotNull(r.revenues());
 		assertNotNull(r.costs());
-		assertEquals(plant, r.runtime().plant());
+		assertEquals(plant, r.plant());
 	}
 
 	@Test

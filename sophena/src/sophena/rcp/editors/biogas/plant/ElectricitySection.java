@@ -39,7 +39,7 @@ class ElectricitySection {
 				.select(plant().electricityPrices);
 
 		var chart = new ElectricityChart(comp);
-		editor.onResult(chart::setInput);
+		editor.onResult(r -> chart.setInput(plant(), r));
 		combo.onSelect(c -> {
 			plant().electricityPrices = c;
 			editor.setDirty();

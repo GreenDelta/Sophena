@@ -12,7 +12,7 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
-import sophena.rcp.editors.biogas.results.BiogasPlantResultEditor;
+import sophena.rcp.editors.biogas.results.BiogasResultEditor;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Controls;
@@ -97,7 +97,7 @@ class BiogasPlantInfoPage extends FormPage {
 				MsgBox.error("Eine Berechnung ist nicht möglich.", res.error());
 				return;
 			}
-			BiogasPlantResultEditor.open(res.value());
+			BiogasResultEditor.open(res.value());
 		});
 
 	}

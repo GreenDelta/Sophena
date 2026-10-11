@@ -155,12 +155,12 @@ public class BiogasPlantResultTest {
 
 		// the stored profile was created with the default temperature
 		var expected = result.asProducerProfile(
-			BiogasRuntimeResult.PRODUCER_TEMPERATURE);
+			plant, BiogasRuntimeResult.PRODUCER_TEMPERATURE);
 		assertArrayEquals(expected.maxPower, stored.maxPower, 1e-9);
 		assertArrayEquals(expected.temperaturLevel, stored.temperaturLevel, 1e-9);
 
 		// a profile with another temperature can still be created
-		var other = result.asProducerProfile(90);
+		var other = result.asProducerProfile(plant, 90);
 		assertArrayEquals(stored.maxPower, other.maxPower, 1e-9);
 		int h = 0;
 		while (h < Stats.HOURS && !result.runFlags()[h]) {

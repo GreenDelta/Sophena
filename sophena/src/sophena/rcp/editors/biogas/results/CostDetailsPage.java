@@ -27,9 +27,9 @@ import sophena.utils.Num;
 /// editor (`sophena.rcp.editors.results.single.CostDetailsTable`).
 class CostDetailsPage extends FormPage {
 
-	private final BiogasPlantResultEditor editor;
+	private final BiogasResultEditor editor;
 
-	CostDetailsPage(BiogasPlantResultEditor editor) {
+	CostDetailsPage(BiogasResultEditor editor) {
 		super(editor, "sophena.CostDetailsPage", "Investitionsdetails");
 		this.editor = editor;
 	}

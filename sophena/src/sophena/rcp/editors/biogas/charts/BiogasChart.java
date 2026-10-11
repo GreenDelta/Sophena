@@ -10,6 +10,7 @@ import sophena.model.ProductType;
 import sophena.model.Stats;
 import sophena.calc.biogas.runtime.BiogasProfile;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
+import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.Colors;
@@ -33,11 +34,11 @@ public class BiogasChart {
 		Charts.areaTraceOf(graph, "methane", methaneColor, methaneData);
 	}
 
-	public void setInput(BiogasRuntimeResult r) {
+	public void setInput(BiogasPlant plant, BiogasRuntimeResult r) {
 		// the biogas production only depends on the substrates of the plant;
 		// the profile of the result is empty when the plant cannot be
 		// calculated for other reasons, so we compute it from the plant here
-		var profile = BiogasProfile.of(r.plant());
+		var profile = BiogasProfile.of(plant);
 
 		var vol = profile.volume();
 		biogasData.setCurrentYDataArray(vol);

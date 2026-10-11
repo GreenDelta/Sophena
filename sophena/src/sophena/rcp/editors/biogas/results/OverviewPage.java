@@ -21,9 +21,9 @@ import sophena.utils.Num;
 /// of the calculation. More details will be added later.
 class OverviewPage extends FormPage {
 
-	private final BiogasPlantResultEditor editor;
+	private final BiogasResultEditor editor;
 
-	OverviewPage(BiogasPlantResultEditor editor) {
+	OverviewPage(BiogasResultEditor editor) {
 		super(editor, "sophena.OverviewPage", "Ergebnisse");
 		this.editor = editor;
 	}
@@ -31,7 +31,8 @@ class OverviewPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
 		var result = editor.result().runtime();
-		var form = UI.formHeader(mForm, "Ergebnisse: " + result.plant().name);
+		var form = UI.formHeader(mForm,
+			"Ergebnisse: " + editor.result().plant().name);
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
@@ -43,7 +44,7 @@ class OverviewPage extends FormPage {
 	private void createOverview(
 		Composite body, FormToolkit tk, BiogasRuntimeResult result
 	) {
-		var plant = result.plant();
+		var plant = editor.result().plant();
 		var table = createTable(UI.formSection(body, tk, "Übersicht"));
 
 		var items = new ArrayList<Item>();

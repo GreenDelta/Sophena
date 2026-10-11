@@ -44,7 +44,7 @@ class ProducerProfileSection {
 	}
 
 	private void setInput(BiogasRuntimeResult r) {
-		var profile = r.asProducerProfile(90);
+		var profile = r.asProducerProfile(editor.plant(), 90);
 		double[] nums = profile.maxPower;
 		if (nums == null)
 			return;
