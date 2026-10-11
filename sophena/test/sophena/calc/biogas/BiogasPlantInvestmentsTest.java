@@ -1,6 +1,7 @@
 package sophena.calc.biogas;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
@@ -9,6 +10,7 @@ import sophena.calc.biogas.costs.BiogasCostCalculator;
 import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.calc.biogas.costs.BiogasRuntimeRevenues;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
+import sophena.calc.costs.CostResultItem;
 import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
@@ -28,6 +30,15 @@ public class BiogasPlantInvestmentsTest {
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var costs = costResult(plant, result);
 		assertEquals(25_000, costs.dynamicTotal.investments, 1e-10);
+
+		// the cost result contains an item for every investment and the sum of
+		// the item investments equals the total investment
+		assertFalse(costs.items.isEmpty());
+		assertEquals(costs.dynamicTotal.investments,
+			costs.items.stream()
+				.mapToDouble(CostResultItem::initialInvestment)
+				.sum(),
+			1e-10);
 	}
 
 	@Test

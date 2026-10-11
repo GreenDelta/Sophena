@@ -1,0 +1,166 @@
+package sophena.rcp.editors.biogas.results;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableFontProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.openlca.commons.Strings;
+
+import sophena.Labels;
+import sophena.calc.costs.CostResultItem;
+import sophena.model.ProductType;
+import sophena.rcp.colors.Colors;
+import sophena.rcp.utils.Tables;
+import sophena.rcp.utils.UI;
+import sophena.utils.Enums;
+import sophena.utils.Num;
+
+/// Shows the investment details of a biogas plant: one row per investment item
+/// with its initial investment and the annual capital, demand, and operation
+/// related costs. This mirrors the cost detail table of the project result
+/// editor (`sophena.rcp.editors.results.single.CostDetailsTable`).
+class CostDetailsPage extends FormPage {
+
+	private final BiogasPlantResultEditor editor;
+
+	CostDetailsPage(BiogasPlantResultEditor editor) {
+		super(editor, "sophena.CostDetailsPage", "Investitionsdetails");
+		this.editor = editor;
+	}
+
+	@Override
+	protected void createFormContent(IManagedForm mform) {
+		var form = UI.formHeader(mform, "Investitionsdetails");
+		FormToolkit tk = mform.getToolkit();
+		Composite body = UI.formBody(form, tk);
+		render(UI.formSection(body, tk, "Kostendetails"));
+		form.reflow(true);
+	}
+
+	private void render(Composite comp) {
+		TableViewer table = Tables.createViewer(comp,
+			"Produktbereich",
+			"Produkt",
+			"Investitionskosten",
+			"Kapitalgebundene Kosten",
+			"Bedarfsgebundene Kosten",
+			"Betriebsgebundene Kosten");
+		table.setLabelProvider(new Label());
+		table.setInput(createItems());
+		Tables.rightAlignColumns(table, 2, 3, 4, 5);
+		double w = 1d / 6d - 0.001;
+		Tables.bindColumnWidths(table, w, w, w, w, w, w);
+	}
+
+	private List<Item> createItems() {
+		List<Item> items = new ArrayList<>();
+		for (CostResultItem r : editor.result().costs().items) {
+			Item item = new Item();
+			item.type = r.productType();
+			item.category = Labels.getPlural(r.productType());
+			item.product = r.asset();
+			item.investment = r.initialInvestment();
+			item.capitalCosts = s(r.capitalCosts(), "EUR/a");
+			item.consumptionCosts = s(r.demandRelatedCosts(), "EUR/a");
+			item.operationCosts = s(r.operationRelatedCosts(), "EUR/a");
+			items.add(item);
+		}
+		sortAndRefine(items);
+		return items;
+	}
+
+	private void sortAndRefine(List<Item> items) {
+		items.sort((a, b) -> {
+			int c = Enums.compare(a.type, b.type);
+			if (c != 0)
+				return c;
+			return Strings.compareIgnoreCase(a.product, b.product);
+		});
+		String last = "";
+		for (Item item : items) {
+			if (Strings.equalsIgnoreCase(item.category, last)) {
+				item.displayCategory = false;
+			} else {
+				item.displayCategory = true;
+				last = item.category;
+			}
+		}
+	}
+
+	private String s(double value, String unit) {
+		long v = Math.round(value);
+		return Num.intStr(v) + " " + unit;
+	}
+
+	private static class Item {
+		ProductType type;
+		String category;
+		String product;
+		double investment;
+		String capitalCosts;
+		String consumptionCosts;
+		String operationCosts;
+		boolean displayCategory = true;
+	}
+
+	private class Label extends LabelProvider implements ITableLabelProvider,
+		ITableColorProvider, ITableFontProvider {
+
+		@Override
+		public Image getColumnImage(Object obj, int col) {
+			return null;
+		}
+
+		@Override
+		public Color getBackground(Object obj, int col) {
+			return null;
+		}
+
+		@Override
+		public Color getForeground(Object obj, int col) {
+			if (!(obj instanceof Item item))
+				return null;
+			if (col == 2 && item.investment == 0.0)
+				return Colors.getSystemColor(SWT.COLOR_RED);
+			return null;
+		}
+
+		@Override
+		public Font getFont(Object obj, int col) {
+			if (!(obj instanceof Item item))
+				return null;
+			if (col == 0 && item.displayCategory)
+				return UI.boldFont();
+			if (col == 2 && item.investment == 0.0)
+				return UI.boldFont();
+			return null;
+		}
+
+		@Override
+		public String getColumnText(Object obj, int col) {
+			if (!(obj instanceof Item item))
+				return null;
+			return switch (col) {
+				case 0 -> item.displayCategory ? item.category : null;
+				case 1 -> item.product;
+				case 2 -> s(item.investment, "EUR");
+				case 3 -> item.capitalCosts;
+				case 4 -> item.consumptionCosts;
+				case 5 -> item.operationCosts;
+				default -> null;
+			};
+		}
+	}
+}

@@ -20,16 +20,14 @@ public class BiogasPlantResultEditor extends Editor {
 	/// Opens the editor for the given calculation result. An already open
 	/// result editor for the same plant is closed first.
 	public static void open(BiogasResult result) {
-		if (result == null || result.runtime() == null
-			|| result.runtime().plant() == null)
+		if (result == null)
 			return;
 		var plant = result.runtime().plant();
 		Editors.closeIf(e -> e instanceof BiogasPlantResultEditor editor
 			&& editor.result != null
-			&& editor.result.runtime() != null
-			&& editor.result.runtime().plant() != null
 			&& Strings.equalsIgnoreCase(
-				plant.id, editor.result.runtime().plant().id));
+			plant.id, editor.result.runtime().plant().id)
+		);
 
 		var name = Strings.isBlank(plant.name)
 			? "Biogasanlage"
@@ -60,6 +58,7 @@ public class BiogasPlantResultEditor extends Editor {
 		try {
 			addPage(new BiogasPlantResultPage(this));
 			addPage(new BiogasCostResultPage(this));
+			addPage(new CostDetailsPage(this));
 		} catch (Exception e) {
 			log.error("failed to add the result page", e);
 		}

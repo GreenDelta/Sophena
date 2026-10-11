@@ -4,6 +4,7 @@ import java.util.List;
 
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.calc.costs.Annuity;
+import sophena.calc.costs.CostResultItem;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;
 import sophena.model.AnnualCostEntry;
@@ -84,14 +85,20 @@ public class BiogasCostCalculator {
 	/// Adds the computed costs of a single item to the result.
 	private void addItem(BiogasCostResult r, ItemCosts costs) {
 
-		double investment = costs.item().initialInvestment();
+		// biogas plants do not calculate demand related costs per item; these
+		// are added as aggregated consumption costs, see addConsumptionCosts
+		var item = new CostResultItem(
+			costs.item(), costs.capitalCosts(), 0, costs.operationCosts());
+		r.items.add(item);
+
+		double investment = item.initialInvestment();
 		r.dynamicTotal.investments += investment;
 		r.staticTotal.investments += investment;
 
-		r.dynamicTotal.capitalCosts += costs.capitalCosts();
+		r.dynamicTotal.capitalCosts += item.capitalCosts();
 		r.staticTotal.capitalCosts += costs.staticCapitalCosts();
 
-		r.dynamicTotal.operationCosts += costs.operationCosts();
+		r.dynamicTotal.operationCosts += item.operationRelatedCosts();
 		r.staticTotal.operationCosts += costs.staticOperationCosts();
 	}
 
