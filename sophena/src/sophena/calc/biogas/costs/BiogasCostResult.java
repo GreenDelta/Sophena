@@ -48,11 +48,14 @@ public class BiogasCostResult {
 		/// Revenues from generated electricity.
 		public double revenuesElectricity;
 
-		/// Revenues from generated heat.
+		/// Revenues from generated heat. These are calculated from the suggested
+		/// heat price and the generated heat.
 		public double revenuesHeat;
 
-		/// The annual surplus in EUR: = revenues - costs
-		public double annualSurplus;
+		/// The total annual revenues: the sum of the annual funding, the
+		/// electricity revenues (feed-in funding and exchange revenues), and the
+		/// heat revenues.
+		public double totalRevenues;
 
 		/// The suggested heat price in EUR/MWh that is needed so that the annual
 		/// surplus reaches the expected profit of the plant settings (the total

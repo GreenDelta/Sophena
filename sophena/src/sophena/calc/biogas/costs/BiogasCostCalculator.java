@@ -56,7 +56,7 @@ public class BiogasCostCalculator {
 
 		calcTotals(r.dynamicTotal);
 		calcTotals(r.staticTotal);
-		addSuggestedHeatPrices(r);
+		addRevenuesHeat(r);
 		return r;
 	}
 
@@ -219,23 +219,32 @@ public class BiogasCostCalculator {
 			+ costs.consumptionCosts
 			+ costs.operationCosts
 			+ costs.otherAnnualCosts;
-		costs.annualSurplus = costs.revenuesElectricity
-			+ costs.annualFunding
-			- costs.totalAnnualCosts;
 	}
 
-	/// Sets the suggested heat price of the dynamic and the static summary: the
-	/// price in EUR/MWh where the annual surplus reaches the expected profit of
-	/// the plant settings (the total capital return rate or the expected annual
-	/// surplus).
-	private void addSuggestedHeatPrices(BiogasCostResult r) {
+	/// Sets the heat revenues and the total revenues of the dynamic and the
+	/// static summary. The heat revenues are calculated from the suggested heat
+	/// price. The total revenues are the sum of the annual funding, the
+	/// electricity revenues (feed-in funding and exchange revenues), and the
+	/// heat revenues.
+	private void addRevenuesHeat(BiogasCostResult r) {
 		double heat = revenues != null
 			? revenues.totalGeneratedHeat()
 			: 0;
-		r.dynamicTotal.suggestedHeatPrice =
-			suggestedHeatPrice(r.dynamicTotal, heat);
-		r.staticTotal.suggestedHeatPrice =
-			suggestedHeatPrice(r.staticTotal, heat);
+		double electricity = revenues != null
+			? revenues.totalRevenues()
+			: 0;
+		setHeatRevenues(r.dynamicTotal, heat, electricity);
+		setHeatRevenues(r.staticTotal, heat, electricity);
+	}
+
+	private void setHeatRevenues(
+		BiogasCostResult.Summary s, double heat, double electricityRevenues
+	) {
+		s.suggestedHeatPrice = suggestedHeatPrice(s, heat);
+		s.revenuesHeat = s.suggestedHeatPrice * heat / 1000.0;
+		s.totalRevenues = s.annualFunding
+			+ electricityRevenues
+			+ s.revenuesHeat;
 	}
 
 	/// The suggested heat price in EUR/MWh of the given summary. With
@@ -251,7 +260,10 @@ public class BiogasCostCalculator {
 		double target = settings.useCapitalReturnRate
 			? summary.totalAnnualCosts * settings.capitalReturnRate / 100.0
 			: settings.expectedAnnualSurplus;
-		double heatRevenue = target - summary.annualSurplus;
+		double annualSurplus = summary.annualFunding
+			+ summary.revenuesElectricity
+			- summary.totalAnnualCosts;
+		double heatRevenue = target - annualSurplus;
 		return 1000 * heatRevenue / heat;
 	}
 

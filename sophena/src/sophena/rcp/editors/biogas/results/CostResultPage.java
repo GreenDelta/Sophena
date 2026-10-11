@@ -76,23 +76,37 @@ class CostResultPage extends FormPage {
 			dyn.totalAnnualCosts, stat.totalAnnualCosts).bold());
 		items.add(new Item());
 
-		// direct marketer share
-		double directMarketerShare = result.revenues().directMarketerPayment();
-		items.add(new Item("Direktvermarkteranteil", "EUR/a",
-			directMarketerShare, directMarketerShare));
+		// direct marketer payment
+		double dmp = result.revenues().directMarketerPayment();
+		if (dmp > 0) {
+			items.add(new Item("Direktvermarkterzahlungen", "EUR/a", dmp, dmp));
+			items.add(new Item());
+		}
 
 		// revenues
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
 		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
 			result.revenues().fundingSum(), result.revenues().fundingSum()));
-
-
-		double spotMarketRevenues = result.revenues().revenuesSum()
-			- directMarketerShare;
-		items.add(new Item("Stromhandelserlöse", "EUR/a",
+		double spotMarketRevenues = result.revenues().revenuesSum() - dmp;
+		items.add(new Item("Stromerlöse", "EUR/a",
 			spotMarketRevenues, spotMarketRevenues));
+		items.add(new Item("Wärmeerlöse", "EUR/a",
+			dyn.revenuesHeat, stat.revenuesHeat));
+		items.add(new Item("Gesamterlöse", "EUR/a",
+			dyn.totalRevenues, stat.totalRevenues).bold());
+		items.add(new Item());
 
+		// suggested heat price
+		if (result.runtime().plant().settings.useCapitalReturnRate) {
+			var rate = result.runtime().plant().settings.capitalReturnRate;
+			items.add(new Item("Gesamtkapitalrentabilität", "%", rate, rate));
+		} else {
+			var surplus = result.runtime().plant().settings.expectedAnnualSurplus;
+			items.add(new Item("Jahresüberschuss", "EUR/a", surplus, surplus));
+		}
+		items.add(new Item("Vorgeschlagener Wärmepreis", "EUR/MWh",
+			dyn.suggestedHeatPrice, stat.suggestedHeatPrice).bold());
 
 		return items;
 	}

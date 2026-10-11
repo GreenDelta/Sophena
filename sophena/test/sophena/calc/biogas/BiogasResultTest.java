@@ -51,8 +51,8 @@ public class BiogasResultTest {
 		plant.settings.capitalReturnRate = 20;
 
 		var r = BiogasResult.calculate(plant).orElseThrow();
-		assertCapitalReturnRate(r, r.costs().dynamicTotal, 20);
-		assertCapitalReturnRate(r, r.costs().staticTotal, 20);
+		assertCapitalReturnRate(r.costs().dynamicTotal, 20);
+		assertCapitalReturnRate(r.costs().staticTotal, 20);
 	}
 
 	@Test
@@ -62,8 +62,8 @@ public class BiogasResultTest {
 		plant.settings.expectedAnnualSurplus = 5000;
 
 		var r = BiogasResult.calculate(plant).orElseThrow();
-		assertAnnualSurplus(r, r.costs().dynamicTotal, 5000);
-		assertAnnualSurplus(r, r.costs().staticTotal, 5000);
+		assertAnnualSurplus(r.costs().dynamicTotal, 5000);
+		assertAnnualSurplus(r.costs().staticTotal, 5000);
 	}
 
 	@Test
@@ -85,19 +85,17 @@ public class BiogasResultTest {
 	}
 
 	private static void assertCapitalReturnRate(
-		BiogasResult r, BiogasCostResult.Summary s, double expected
+		BiogasCostResult.Summary s, double expected
 	) {
-		double achieved = 100 * (s.annualSurplus
-			+ s.suggestedHeatPrice * r.revenues().totalGeneratedHeat() / 1000)
+		double achieved = 100 * (s.totalRevenues - s.totalAnnualCosts)
 			/ s.totalAnnualCosts;
 		assertEquals(expected, achieved, 1e-6);
 	}
 
 	private static void assertAnnualSurplus(
-		BiogasResult r, BiogasCostResult.Summary s, double expected
+		BiogasCostResult.Summary s, double expected
 	) {
-		double achieved = s.annualSurplus
-			+ s.suggestedHeatPrice * r.revenues().totalGeneratedHeat() / 1000;
+		double achieved = s.totalRevenues - s.totalAnnualCosts;
 		assertEquals(expected, achieved, 1e-6);
 	}
 }
