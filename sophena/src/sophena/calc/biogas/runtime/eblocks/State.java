@@ -1,11 +1,11 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import sophena.calc.biogas.BiogasProfile;
-import sophena.calc.biogas.BiogasStorage;
-import sophena.calc.biogas.Demand;
+import sophena.calc.biogas.runtime.BiogasProfile;
+import sophena.calc.biogas.runtime.BiogasStorage;
+import sophena.calc.biogas.runtime.Demand;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

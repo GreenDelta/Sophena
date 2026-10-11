@@ -1,4 +1,4 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import sophena.calc.biogas.TestPlant;
+import sophena.calc.biogas.runtime.eblocks.PreCheck;
 
 public class PreCheckTest {
 

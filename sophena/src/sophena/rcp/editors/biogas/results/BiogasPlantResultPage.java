@@ -11,7 +11,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;

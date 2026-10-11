@@ -2,6 +2,8 @@ package sophena.calc.biogas;
 
 import org.openlca.commons.Res;
 
+import sophena.calc.biogas.runtime.BiogasProfile;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;

@@ -1,4 +1,4 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.runtime;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.runtime;
 
 import java.util.UUID;
 
@@ -6,8 +6,9 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
-import sophena.calc.biogas.eblocks.EblockSearch;
-import sophena.calc.biogas.ehours.EhourSearch;
+import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.runtime.eblocks.EblockSearch;
+import sophena.calc.biogas.runtime.ehours.EhourSearch;
 import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;

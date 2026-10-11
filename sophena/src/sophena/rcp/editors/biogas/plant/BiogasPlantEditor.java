@@ -9,7 +9,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
 import sophena.rcp.app.App;

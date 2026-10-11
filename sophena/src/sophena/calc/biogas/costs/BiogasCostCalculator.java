@@ -2,7 +2,7 @@ package sophena.calc.biogas.costs;
 
 import java.util.List;
 
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.calc.costs.Annuity;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;

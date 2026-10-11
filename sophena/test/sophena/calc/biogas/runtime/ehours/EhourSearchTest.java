@@ -1,4 +1,4 @@
-package sophena.calc.biogas.ehours;
+package sophena.calc.biogas.runtime.ehours;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import sophena.calc.biogas.TestPlant;
+import sophena.calc.biogas.runtime.ehours.EhourSearch;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

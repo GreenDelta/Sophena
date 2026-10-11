@@ -6,7 +6,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.widgets.Composite;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.charts.Charts;

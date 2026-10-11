@@ -13,7 +13,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sophena.calc.biogas.eblocks.EblockSearch;
+import sophena.calc.biogas.runtime.eblocks.EblockSearch;
+import sophena.calc.biogas.runtime.BiogasAlgorithm;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlantSettings;
 

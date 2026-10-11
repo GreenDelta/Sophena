@@ -1,10 +1,11 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.runtime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.TestPlant;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlantSettings;
 

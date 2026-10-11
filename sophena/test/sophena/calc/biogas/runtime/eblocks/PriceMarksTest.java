@@ -1,4 +1,4 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -1,4 +1,4 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;
 
 import java.util.Arrays;
 
@@ -7,8 +7,8 @@ import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.BiogasProfile;
-import sophena.calc.biogas.BiogasStorage;
+import sophena.calc.biogas.runtime.BiogasProfile;
+import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

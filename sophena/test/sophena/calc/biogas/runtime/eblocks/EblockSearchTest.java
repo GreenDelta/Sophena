@@ -1,4 +1,4 @@
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,6 +8,11 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import sophena.calc.biogas.TestPlant;
+import sophena.calc.biogas.runtime.eblocks.Block;
+import sophena.calc.biogas.runtime.eblocks.EblockSearch;
+import sophena.calc.biogas.runtime.eblocks.PriceMarks;
+import sophena.calc.biogas.runtime.eblocks.State;
+import sophena.calc.biogas.runtime.eblocks.Window;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

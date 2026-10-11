@@ -8,8 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import sophena.model.ProductType;
 import sophena.model.Stats;
-import sophena.calc.biogas.BiogasProfile;
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasProfile;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.Colors;

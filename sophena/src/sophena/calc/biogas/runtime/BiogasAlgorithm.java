@@ -1,4 +1,4 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.runtime;
 
 /// The algorithms that can calculate the run hours of a biogas plant.
 ///

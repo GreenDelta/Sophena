@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import sophena.calc.biogas.ehours.EhourSearch;
+import sophena.calc.biogas.runtime.ehours.EhourSearch;
 
 /// Tests the gas storage sizes that are derived from a biogas plant.
 public class BiogasPlantsTest {

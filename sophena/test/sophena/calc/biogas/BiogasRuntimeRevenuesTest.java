@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import sophena.calc.biogas.costs.BiogasRuntimeRevenues;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;

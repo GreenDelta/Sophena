@@ -1,12 +1,12 @@
-package sophena.calc.biogas.ehours;
+package sophena.calc.biogas.runtime.ehours;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.BiogasProfile;
-import sophena.calc.biogas.BiogasStorage;
+import sophena.calc.biogas.runtime.BiogasProfile;
+import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 

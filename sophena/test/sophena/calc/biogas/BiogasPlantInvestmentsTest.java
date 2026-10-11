@@ -8,6 +8,7 @@ import org.junit.Test;
 import sophena.calc.biogas.costs.BiogasCostCalculator;
 import sophena.calc.biogas.costs.BiogasCostResult;
 import sophena.calc.biogas.costs.BiogasRuntimeRevenues;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.ProductCosts;
 import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;

@@ -1,7 +1,8 @@
-package sophena.calc.biogas;
+package sophena.calc.biogas.runtime;
 
 import org.openlca.commons.Copyable;
 
+import sophena.calc.biogas.BiogasPlants;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
@@ -42,7 +43,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	/// the first hour in which the plant does not run. Gas that does not fit
 	/// into the storage is lost.
 	public static double[] annualProfileOf(
-		BiogasPlant plant, BiogasProfile profile, boolean[] runFlags
+            BiogasPlant plant, BiogasProfile profile, boolean[] runFlags
 	) {
 		var storageProfile = new double[Stats.HOURS];
 		if (plant == null || profile == null)

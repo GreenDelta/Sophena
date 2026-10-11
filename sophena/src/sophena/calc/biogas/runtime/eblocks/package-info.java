@@ -57,4 +57,4 @@
 /// of returning a wrong result. `PreCheck` rejects the plants for which the
 /// search cannot work, so an error of a search step is always a sign of a
 /// plant configuration that the search cannot calculate.
-package sophena.calc.biogas.eblocks;
+package sophena.calc.biogas.runtime.eblocks;

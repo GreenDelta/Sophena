@@ -3,7 +3,7 @@ package sophena.calc.biogas.costs;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.BiogasRuntimeResult;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
