@@ -3,25 +3,19 @@ package sophena.rcp.editors.biogas.results;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.openlca.commons.Strings;
 
 import sophena.Labels;
 import sophena.calc.costs.CostResultItem;
 import sophena.model.ProductType;
-import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Enums;
@@ -43,14 +37,17 @@ class CostDetailsPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		var form = UI.formHeader(mform, "Investitionsdetails");
-		FormToolkit tk = mform.getToolkit();
-		Composite body = UI.formBody(form, tk);
-		render(UI.formSection(body, tk, "Kostendetails"));
+		var tk = mform.getToolkit();
+		var body = UI.formBody(form, tk);
+		var section = UI.section(body, tk, "Kostendetails");
+		UI.gridData(section, true, true);
+		var comp = UI.sectionClient(section, tk);
+		createTable(comp);
 		form.reflow(true);
 	}
 
-	private void render(Composite comp) {
-		TableViewer table = Tables.createViewer(comp,
+	private void createTable(Composite comp) {
+		var table = Tables.createViewer(comp,
 			"Produktbereich",
 			"Produkt",
 			"Investitionskosten",
@@ -116,24 +113,10 @@ class CostDetailsPage extends FormPage {
 	}
 
 	private class Label extends LabelProvider implements ITableLabelProvider,
-		ITableColorProvider, ITableFontProvider {
+		ITableFontProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			return null;
-		}
-
-		@Override
-		public Color getBackground(Object obj, int col) {
-			return null;
-		}
-
-		@Override
-		public Color getForeground(Object obj, int col) {
-			if (!(obj instanceof Item item))
-				return null;
-			if (col == 2 && item.investment == 0.0)
-				return Colors.getSystemColor(SWT.COLOR_RED);
 			return null;
 		}
 
@@ -142,8 +125,6 @@ class CostDetailsPage extends FormPage {
 			if (!(obj instanceof Item item))
 				return null;
 			if (col == 0 && item.displayCategory)
-				return UI.boldFont();
-			if (col == 2 && item.investment == 0.0)
 				return UI.boldFont();
 			return null;
 		}

@@ -19,12 +19,12 @@ import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
 /// Shows the dynamic and static cost result of a biogas plant.
-class BiogasCostResultPage extends FormPage {
+class CostResultPage extends FormPage {
 
 	private final BiogasResult result;
 
-	BiogasCostResultPage(BiogasPlantResultEditor editor) {
-		super(editor, "sophena.BiogasCostResultPage", "Wirtschaftlichkeit");
+	CostResultPage(BiogasPlantResultEditor editor) {
+		super(editor, "sophena.CostResultPage", "Wirtschaftlichkeit");
 		this.result = editor.result();
 	}
 
@@ -76,18 +76,23 @@ class BiogasCostResultPage extends FormPage {
 			dyn.totalAnnualCosts, stat.totalAnnualCosts).bold());
 		items.add(new Item());
 
+		// direct marketer share
+		double directMarketerShare = result.revenues().directMarketerPayment();
+		items.add(new Item("Direktvermarkteranteil", "EUR/a",
+			directMarketerShare, directMarketerShare));
+
+		// revenues
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
 		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
 			result.revenues().fundingSum(), result.revenues().fundingSum()));
 
-		double directMarketerShare = result.revenues().directMarketerPayment();
+
 		double spotMarketRevenues = result.revenues().revenuesSum()
 			- directMarketerShare;
 		items.add(new Item("Stromhandelserlöse", "EUR/a",
 			spotMarketRevenues, spotMarketRevenues));
-		items.add(new Item("Direktvermarkteranteil", "EUR/a",
-			directMarketerShare, directMarketerShare));
+
 
 		return items;
 	}

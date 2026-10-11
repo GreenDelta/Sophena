@@ -19,19 +19,19 @@ import sophena.utils.Num;
 
 /// A simple result page of a biogas plant. It shows the most important figures
 /// of the calculation. More details will be added later.
-class BiogasPlantResultPage extends FormPage {
+class OverviewPage extends FormPage {
 
 	private final BiogasPlantResultEditor editor;
 
-	BiogasPlantResultPage(BiogasPlantResultEditor editor) {
-		super(editor, "sophena.BiogasPlantResultPage", "Ergebnisse");
+	OverviewPage(BiogasPlantResultEditor editor) {
+		super(editor, "sophena.OverviewPage", "Ergebnisse");
 		this.editor = editor;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
 		var result = editor.result().runtime();
-		var form = UI.formHeader(mForm, "Ergebnisse: " + plantName(result));
+		var form = UI.formHeader(mForm, "Ergebnisse: " + result.plant().name);
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
@@ -71,21 +71,12 @@ class BiogasPlantResultPage extends FormPage {
 
 	private static int runHours(BiogasRuntimeResult result) {
 		var flags = result.runFlags();
-		if (flags == null)
-			return 0;
 		int n = 0;
 		for (boolean flag : flags) {
 			if (flag)
 				n++;
 		}
 		return n;
-	}
-
-	private static String plantName(BiogasRuntimeResult result) {
-		var plant = result.plant();
-		return plant == null || plant.name == null
-			? "Biogasanlage"
-			: plant.name;
 	}
 
 	private record Item(String label, String value) {
@@ -95,15 +86,15 @@ class BiogasPlantResultPage extends FormPage {
 		implements ITableLabelProvider {
 
 		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
+		public Image getColumnImage(Object obj, int col) {
 			return null;
 		}
 
 		@Override
-		public String getColumnText(Object element, int columnIndex) {
-			if (!(element instanceof Item item))
+		public String getColumnText(Object obj, int col) {
+			if (!(obj instanceof Item(String label, String value)))
 				return null;
-			return columnIndex == 0 ? item.label() : item.value();
+			return col == 0 ? label : value;
 		}
 	}
 }
