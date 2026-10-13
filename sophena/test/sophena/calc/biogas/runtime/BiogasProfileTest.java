@@ -2,6 +2,7 @@ package sophena.calc.biogas.runtime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static sophena.calc.biogas.runtime.BiogasProfile.waterVaporCorrectionFactor;
 
 import org.junit.Test;
 
@@ -11,6 +12,19 @@ import sophena.model.biogas.BiogasPlantSettings;
 
 /// Tests how the methane slip is applied to the produced gas.
 public class BiogasProfileTest {
+
+	@Test
+	public void testWaterVaporCorrectionFactor() {
+		assertEquals(0.991,	waterVaporCorrectionFactor(5), 1e-3);
+		assertEquals(0.988, waterVaporCorrectionFactor(10), 1e-3);
+		assertEquals(0.984, waterVaporCorrectionFactor(15), 1e-3);
+		assertEquals(0.978, waterVaporCorrectionFactor(20), 1e-3);
+		assertEquals(0.971, waterVaporCorrectionFactor(25), 1e-3);
+		assertEquals(0.962, waterVaporCorrectionFactor(30), 1e-3);
+		assertEquals(0.951, waterVaporCorrectionFactor(35), 1e-3);
+		assertEquals(0.936, waterVaporCorrectionFactor(40), 1e-3);
+		assertEquals(0.919, waterVaporCorrectionFactor(45), 1e-3);
+	}
 
 	@Test
 	public void methaneSlipReducesTheProducedGasVolume() {

@@ -1,74 +1,91 @@
 package sophena.calc.biogas.runtime;
 
-import java.util.List;
-
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
-import sophena.model.biogas.SubstrateProfile;
 
 public record BiogasProfile(double[] volume, double[] methaneContent) {
 
 	public static BiogasProfile empty() {
 		return new BiogasProfile(
-				new double[Stats.HOURS],
-				new double[Stats.HOURS]);
-	}
-
-	public static BiogasProfile of(SubstrateProfile s) {
-		var p = empty();
-		var trace = Trace.of(s);
-		if (trace.isEmpty())
-			return p;
-		for (int h = 0; h < Stats.HOURS; h++) {
-			p.volume[h] = trace.volumeAt(h);
-			p.methaneContent[h] = trace.methaneContent();
-		}
-		return p;
+			new double[Stats.HOURS],
+			new double[Stats.HOURS]
+		);
 	}
 
 	public static BiogasProfile of(BiogasPlant plant) {
-		if (plant == null)
-			return empty();
-		var profile = BiogasProfile.of(plant.substrateProfiles);
-
-		// The methane slip is the share of methane that is not captured or
-		// converted. It is applied as a direct reduction of the produced gas
-		// volume before the gas storage is simulated.
-		var settings = plant.settings;
-		if (settings != null && settings.methaneSlip > 0) {
-			double factor = Math.max(0, 1 - settings.methaneSlip / 100.0);
-			var volume = profile.volume();
-			for (int h = 0; h < volume.length; h++) {
-				volume[h] *= factor;
-			}
-		}
-		return profile;
+		return plant == null || plant.substrateProfiles.isEmpty()
+			? empty()
+			: new Builder(plant).build();
 	}
 
-	public static BiogasProfile of(List<SubstrateProfile> substrates) {
-		if (substrates == null || substrates.isEmpty())
-			return empty();
+	private static class Builder {
 
-		var p = BiogasProfile.of(substrates.getFirst());
-		for (int i = 1; i < substrates.size(); i++) {
-			var trace = Trace.of(substrates.get(i));
-			if (trace.isEmpty())
-				continue;
+		private final BiogasPlant plant;
+		private final double volumeFactor;
 
-			for (int h = 0; h < Stats.HOURS; h++) {
-				var vol = p.volume[h];
-				var met = p.methaneContent[h];
+		Builder(BiogasPlant plant) {
+			this.plant = plant;
 
-				var traceVol = trace.volumeAt(h);
-				var traceMet = trace.methaneContent;
+			// we apply the methane-slip directly on the volume before it
+			// goes into the storage simulation;
+			// it is called methane-slip, but is applied on the total volume
+			// not only on the methane fraction
+			var settings = plant.settings;
+			double slipFactor = settings != null && settings.methaneSlip > 0
+				? Math.max(0, 1 - (settings.methaneSlip / 100.0))
+				: 1.0;
 
-				var nextVol = vol + traceVol;
-				var nextMet = (vol * met + traceVol * traceMet) / nextVol;
-				p.volume[h] = nextVol;
-				p.methaneContent[h] = nextMet;
-			}
+			// the volume calculated from the substrate properties
+			// is the normal volume based on 0°C, 1013.25 mbar;
+			// the volume is corrected regarding the temperature
+			// and pressure in the gas storage
+
+			// the higher the pressure, the smaller the volume
+			double pressureFactor = 1013.25
+				/ (1013.25 + plant.gasStorageOverpressure);
+
+			// the higher the temperature, the larger the volume
+			double temperatureFactor = (273.15 + plant.gasStorageTemperature)
+				/ 273.15;
+
+			this.volumeFactor = slipFactor
+				* pressureFactor
+				* temperatureFactor
+				* (1 / waterVaporCorrectionFactor(plant.gasStorageTemperature));
 		}
-		return p;
+
+		BiogasProfile build() {
+			double[] volume = new double[Stats.HOURS];
+			double[] methaneContent = new double[Stats.HOURS];
+			for (int h = 0; h < Stats.HOURS; h++) {
+				double vol = 0;
+				double met = 0;
+				for (var p : plant.substrateProfiles) {
+					var sub = p.substrate;
+					if (sub == null)
+						continue;
+					double tonnes = Stats.get(p.hourlyValues, h);
+					double vi = tonnes
+						* (sub.dryMatter / 100)
+						* (sub.organicDryMatter / 100)
+						* sub.biogasProduction;
+					if (vi == 0)
+						continue;
+					double mi = sub.methaneContent / 100;
+					if (vol == 0) {
+						vol = vi;
+						met = mi;
+					} else {
+						met = (vol * met + vi * mi) / (vol + vi);
+						vol = vol + vi;
+					}
+				}
+				volume[h] = volumeFactor * vol;
+				methaneContent[h] = met;
+			}
+			return new BiogasProfile(volume, methaneContent);
+		}
+
 	}
 
 	public double volumeAt(int h) {
@@ -79,29 +96,29 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 		return Stats.get(methaneContent, h);
 	}
 
-	private record Trace(
-			double methaneContent,
-			double volumeFactor,
-			double[] substrateMass,
-			boolean isEmpty
-	) {
+	static double waterVaporCorrectionFactor(double temperature) {
+		return switch ((int) temperature) {
 
-		static Trace of(SubstrateProfile p) {
-			if (p == null || p.substrate == null || p.hourlyValues == null)
-				return new Trace(0, 0, null, true);
-			var sub = p.substrate;
-			double f = (sub.dryMatter / 100)
-					* (sub.organicDryMatter / 100)
-					* sub.biogasProduction;
-			return f <= 0
-					? new Trace(0, 0, null, true)
-					: new Trace(sub.methaneContent / 100, f, p.hourlyValues, false);
-		}
+			// exact value for typical temperatures
+			case 5 -> 0.991;
+			case 10 -> 0.988;
+			case 15 -> 0.984;
+			case 20 -> 0.978;
+			case 25 -> 0.971;
+			case 30 -> 0.962;
+			case 35 -> 0.951;
+			case 40 -> 0.936;
+			case 45 -> 0.919;
 
-		double volumeAt(int h) {
-			if (isEmpty)
-				return 0;
-			return Stats.get(substrateMass, h) * volumeFactor;
-		}
+			// regression formula for other values
+			default -> 1.3037E-10 * Math.pow(temperature, 6)
+				- 0.000000018735 * Math.pow(temperature, 5)
+				+ 0.00000103601 * Math.pow(temperature, 4)
+				- 0.0000281476 * Math.pow(temperature, 3)
+				+ 0.000362466 * Math.pow(temperature, 2)
+				- 0.0027157 * temperature
+				+ 0.998444;
+		};
 	}
+
 }
