@@ -16,7 +16,7 @@ import sophena.model.biogas.MarketPriceLimit;
 /// that is defined in the settings of the plant:
 ///
 /// - In the fixed remuneration mode (`isFixedRemuneration`) every fed-in
-///   kilowatt hour is paid with the fixed feed-in tariff (`feedInTariff`).
+///   kilowatt-hour is paid with the fixed feed-in tariff (`feedInTariff`).
 /// - In the market premium model a market premium is paid which is the
 ///   difference between the value to be applied (`marketPremiumValue`) and the
 ///   reference market value of the selected `ElectricityMarketValue`. The
@@ -32,7 +32,7 @@ import sophena.model.biogas.MarketPriceLimit;
 /// additionally subtracted in the full-load hours.
 ///
 /// The hourly funding and exchange revenues are in EUR, the fed-in electricity
-/// and the generated heat are in kWh, and the quarter hour values are operating
+/// and the generated heat are in kWh, and the quarter-hour values are operating
 /// quarter hours.
 public record BiogasRuntimeRevenues(
 	double[] funding,

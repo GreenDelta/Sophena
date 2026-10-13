@@ -37,8 +37,8 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 
 			// the volume calculated from the substrate properties
 			// is the normal volume based on 0°C, 1013.25 mbar;
-			// the volume is corrected regarding the temperature
-			// and pressure in the gas storage
+			// the volume is corrected regarding the temperature,
+			// the pressure and the water vapor in the gas storage
 
 			// the higher the pressure, the smaller the volume
 			double pressureFactor = 1013.25
@@ -48,10 +48,13 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 			double temperatureFactor = (273.15 + plant.gasStorageTemperature)
 				/ 273.15;
 
+			// the water-vapor correction is normalized to the reference
+			// temperature of 0°C, so it is 1 when the gas storage is at the
+			// reference temperature and the produced normal volume is kept
 			this.volumeFactor = slipFactor
 				* pressureFactor
 				* temperatureFactor
-				* (1 / waterVaporCorrectionFactor(plant.gasStorageTemperature));
+				* waterVaporCorrectionFactor(plant.gasStorageTemperature);
 		}
 
 		BiogasProfile build() {
@@ -96,7 +99,11 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 		return Stats.get(methaneContent, h);
 	}
 
+
 	static double waterVaporCorrectionFactor(double temperature) {
+		if (temperature <= 0)
+			return 1.0;
+
 		return switch ((int) temperature) {
 
 			// exact value for typical temperatures
