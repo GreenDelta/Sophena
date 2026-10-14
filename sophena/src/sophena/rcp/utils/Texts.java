@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 import sophena.rcp.colors.Colors;
 import sophena.utils.Num;
+
 import org.openlca.commons.Strings;
 
 public final class Texts {
@@ -136,6 +137,10 @@ public final class Texts {
 
 		public final Text text;
 
+		/// The number of decimal places that is used when a number is set via
+		/// `init`. `null` means that the default number format is used.
+		private Integer decimalPlaces;
+
 		TextBox(Text text) {
 			this.text = text;
 		}
@@ -171,6 +176,13 @@ public final class Texts {
 			return this;
 		}
 
+		/// Like `decimal()` but values that are set via `init` are formatted
+		/// with the given number of decimal places.
+		public TextBox decimal(int decimalPlaces) {
+			this.decimalPlaces = decimalPlaces;
+			return decimal();
+		}
+
 		public TextBox decimal() {
 			if (text == null)
 				return this;
@@ -181,7 +193,7 @@ public final class Texts {
 					if (Character.isDigit(c))
 						continue;
 					if (c == '.' || c == ',' || c == '-' || c == '+'
-							|| c == 'e' || c == 'E')
+						|| c == 'e' || c == 'E')
 						continue;
 					e.doit = false;
 					return;
@@ -253,12 +265,20 @@ public final class Texts {
 		}
 
 		public TextBox init(double d) {
-			set(text, d);
+			if (decimalPlaces == null) {
+				set(text, d);
+			} else {
+				set(text, d, decimalPlaces);
+			}
 			return this;
 		}
 
 		public TextBox init(Double d) {
-			set(text, d);
+			if (decimalPlaces == null || d == null) {
+				set(text, d);
+				return this;
+			}
+			set(text, d, decimalPlaces);
 			return this;
 		}
 

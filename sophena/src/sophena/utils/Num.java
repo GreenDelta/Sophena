@@ -14,28 +14,25 @@ public class Num {
 	public static DecimalFormat getFormat() {
 		if (format == null) {
 			format = (DecimalFormat) DecimalFormat
-					.getInstance(Locale.GERMAN);
+				.getInstance(Locale.GERMAN);
 			format.applyLocalizedPattern("#.###.###.###.##0,##");
 		}
 		return format;
 	}
 
-	public static DecimalFormat getFormat(int decimalPlaces)
-	{		
-		StringBuilder pattern = new StringBuilder("#.###.###.###.##0,");
-		for (int i = 0; i < decimalPlaces; i++) {
-			pattern.append('0');
-		}
-		 DecimalFormat f = (DecimalFormat) DecimalFormat
-				.getInstance(Locale.GERMAN);
-		 f.applyLocalizedPattern(pattern.toString());
-		 return f;
+	public static DecimalFormat getFormat(int decimalPlaces) {
+		var pattern = "#.###.###.###.##0,"
+			+ "0".repeat(Math.max(0, decimalPlaces));
+		var f = (DecimalFormat) DecimalFormat
+			.getInstance(Locale.GERMAN);
+		f.applyLocalizedPattern(pattern);
+		return f;
 	}
-	
+
 	public static DecimalFormat getIntFormat() {
 		if (intFormat == null) {
 			intFormat = (DecimalFormat) DecimalFormat
-					.getInstance(Locale.GERMAN);
+				.getInstance(Locale.GERMAN);
 			intFormat.applyLocalizedPattern("#.###.###.###.###");
 		}
 		return intFormat;
@@ -50,7 +47,7 @@ public class Num {
 		Number n = readNumber(text);
 		return n == null ? 0 : n.doubleValue();
 	}
-	
+
 	public static int readInt(String text) {
 		Number n = readNumber(text);
 		return n == null ? 0 : n.intValue();
@@ -60,11 +57,10 @@ public class Num {
 		if (text == null || text.trim().isEmpty())
 			return null;
 		try {
-			Number n = getFormat().parse(text.trim());
-			return n;
+			return getFormat().parse(text.trim());
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(Num.class);
-			log.trace("invalid number " + text);
+			log.trace("invalid number {}", text);
 			return null;
 		}
 	}
@@ -73,15 +69,14 @@ public class Num {
 		if (text == null || text.trim().isEmpty())
 			return null;
 		try {
-			Number n = getFormat(decimalPlaces).parse(text.trim());
-			return n;
+			return getFormat(decimalPlaces).parse(text.trim());
 		} catch (Exception e) {
 			Logger log = LoggerFactory.getLogger(Num.class);
-			log.trace("invalid number " + text);
+			log.trace("invalid number {}", text);
 			return null;
 		}
 	}
-	
+
 	public static boolean isNumeric(String text) {
 		return readNumber(text) != null;
 	}
@@ -113,7 +108,7 @@ public class Num {
 	public static String str(double val, int decimalPlaces) {
 		if (decimalPlaces <= 0)
 			return intStr(val);
-		DecimalFormat f = getFormat(decimalPlaces);				
+		DecimalFormat f = getFormat(decimalPlaces);
 		return f.format(val);
 	}
 

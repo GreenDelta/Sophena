@@ -178,7 +178,7 @@ public class MarketValueEditor extends Editor {
 				return null;
 			return switch (col) {
 				case 0 -> value.name;
-				case 1 -> Num.str(value.value) + " ct/kWh";
+				case 1 -> Num.str(value.value, 3) + " ct/kWh";
 				case 2 -> monthlyRangeOf(value);
 				default -> null;
 			};
@@ -188,8 +188,8 @@ public class MarketValueEditor extends Editor {
 			double[] months = value.monthlyValues;
 			if (months == null || months.length == 0)
 				return "";
-			return Num.str(Stats.min(months)) + " bis "
-				+ Num.str(Stats.max(months)) + " ct/kWh";
+			return Num.str(Stats.min(months), 3) + " bis "
+				+ Num.str(Stats.max(months), 3) + " ct/kWh";
 		}
 	}
 }

@@ -204,7 +204,7 @@ class HeatNetSection {
 		UI.formLabel(comp, tk, "kW");
 		var reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
-		Controls.onSelect(reset, e -> {
+		Controls.onSelect(reset, _ -> {
 			net().maxLoad = null;
 			Texts.set(maxLoadText, calculateMaxLoad());
 			textsUpdated();
@@ -214,7 +214,7 @@ class HeatNetSection {
 	private void simultaneityFactorRow() {
 		Text t = UI.formText(comp, tk, "Gleichzeitigkeitsfaktor");
 		Texts.set(t, net().simultaneityFactor);
-		Texts.on(t).decimal().required().onChanged(s -> {
+		Texts.on(t).decimal().required().onChanged(_ -> {
 
 			if (net().smoothingFactor == null) {
 				// fix the old calculated smoothing factor
@@ -261,7 +261,7 @@ class HeatNetSection {
 		HelpLink.create(comp, tk, "Glättungsfaktor", H.SmoothingFactor);
 		var reset = tk.createButton(comp, "Standardwert", SWT.NONE);
 		reset.setToolTipText("Auf Standardwert zurücksetzen");
-		Controls.onSelect(reset, e -> {
+		Controls.onSelect(reset, _ -> {
 			// it is important to first set it to null so that
 			// the default factor is calculated in the getFactor method
 			net().smoothingFactor = null;

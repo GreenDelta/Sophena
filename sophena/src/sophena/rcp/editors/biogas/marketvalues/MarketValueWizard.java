@@ -100,9 +100,9 @@ public class MarketValueWizard extends Wizard {
 			UI.formLabel(comp, "Jahresmarktwert");
 			valueText = UI.formText(comp, null);
 			Texts.on(valueText)
+				.decimal(3)
 				.init(value.value)
 				.required()
-				.decimal()
 				.validate(this::validate);
 			UI.formLabel(comp, "ct/kWh");
 			UI.filler(comp);
@@ -130,9 +130,9 @@ public class MarketValueWizard extends Wizard {
 		private Text monthText(Composite comp, int idx) {
 			var text = UI.formText(comp, null);
 			Texts.on(text)
+				.decimal(3)
 				.init(value.monthlyValueOf(idx + 1))
 				.required()
-				.decimal()
 				.validate(this::validate);
 			return text;
 		}
