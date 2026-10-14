@@ -21,6 +21,7 @@ import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
+import sophena.utils.Lists;
 import sophena.utils.Num;
 
 class SubstrateSection {
@@ -94,18 +95,22 @@ class SubstrateSection {
 	}
 
 	private void onRemove() {
-		List<SubstrateProfile> list = Viewers.getAllSelected(table);
-		if (list == null || list.isEmpty())
+		List<SubstrateProfile> selected = Viewers.getAllSelected(table);
+		selected = Lists.findAll(selected, plant().substrateProfiles);
+		if (selected.isEmpty())
 			return;
-		plant().substrateProfiles.removeAll(list);
+		plant().substrateProfiles.removeAll(selected);
 		fireUpdate();
 	}
 
 	private void onEdit() {
-		SubstrateProfile profile = Viewers.getFirstSelected(table);
-		if (profile == null)
+		SubstrateProfile selected = Viewers.getFirstSelected(table);
+		// the elements in the viewer can be stale after the plant was updated
+		// in the database, so we resolve them against the plant list
+		selected = Lists.find(selected, plant().substrateProfiles);
+		if (selected == null)
 			return;
-		int code = SubstrateWizard.open(profile);
+		int code = SubstrateWizard.open(selected);
 		if (code == Window.OK) {
 			fireUpdate();
 		}
@@ -114,6 +119,7 @@ class SubstrateSection {
 	private void fireUpdate() {
 		var profiles = plant().substrateProfiles;
 		table.setInput(profiles);
+		table.refresh();
 		editor.setDirty();
 		editor.calculate();
 	}

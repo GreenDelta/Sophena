@@ -49,9 +49,45 @@ class OverviewPage extends FormPage {
 		Composite body, FormToolkit tk, BiogasRuntimeResult result
 	) {
 		var plant = editor.result().plant();
-		var table = createTable(UI.formSection(body, tk, "Übersicht"));
+		var table = createTable(UI.formSection(body, tk, "Biogas-Kennzahlen"));
+		var revs = editor.result().revenues();
 
 		var items = new ArrayList<Item>();
+
+		items.add(
+			Item.of("Betriebsviertelstunden bei < 0 ct/kWh",
+				Num.intStr(revs.quarterHoursBelowZero()), "BVh/a"));
+		items.add(
+			Item.of("Betriebsviertelstunden bei ≤ 2ct/kWh",
+				Num.intStr(revs.quarterHoursBelowTwo()), "BVh/a"));
+		items.add(
+			Item.of("Summe der Betriebsviertelstunden",
+				Num.intStr(revs.totalQuarterHours()), "BVh/a"));
+
+		if (!plant.settings.isFixedRemuneration) {
+			var item = revs.totalQuarterHours() < plant.settings.eligibleQuarterHours
+				? Item.of("Förderfähige Betriebsviertelstunden", "eingehalten", "")
+				: Item.errorOf("Förderfähige Betriebsviertelstunden", "nicht eingehalten", "");
+			items.add(item);
+		}
+
+		int above85 = (int) revs.quarterHoursAbove85();
+		items.add(
+			Item.of("Viertelstunden >= 85% Leistung",
+				Num.intStr(above85), "Vh/a"));
+		if (above85 >= 4000) {
+			items.add(
+				Item.of("Qualitätskriterium Flexiblitätsbetrieb",	"eingehalten", ""));
+		} else {
+			items.add(
+				Item.errorOf("Qualitätskriterium Flexiblitätsbetrieb",
+					"nicht eingehalten", ""));
+		}
+
+		items.add(
+			Item.of("Jährliche erzeugte Wärmemenge",
+				Num.intStr(revs.totalGeneratedHeat()), "kWh/a"));
+
 
 
 
