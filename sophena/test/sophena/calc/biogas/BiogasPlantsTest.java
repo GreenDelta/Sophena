@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import sophena.calc.biogas.runtime.ehours.EhourSearch;
+import sophena.calc.biogas.runtime.ehours.EHourSearch;
 
 /// Tests the gas storage sizes that are derived from a biogas plant.
 public class BiogasPlantsTest {
@@ -62,12 +62,12 @@ public class BiogasPlantsTest {
 		var plant = TestPlant.of(1600, 4);
 
 		plant.gasStorageFillingLevel = 100;
-		var full = EhourSearch.runFlags(plant).orElseThrow();
+		var full = EHourSearch.runFlags(plant).orElseThrow();
 
 		// 50 % of 1600 m3 is 800 m3, which cannot deliver the gas for a block
 		// of the minimum runtime of 4 hours, so the plant never runs
 		plant.gasStorageFillingLevel = 50;
-		var half = EhourSearch.runFlags(plant).orElseThrow();
+		var half = EHourSearch.runFlags(plant).orElseThrow();
 
 		assertFalse(Arrays.equals(full, half));
 	}

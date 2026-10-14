@@ -14,30 +14,6 @@ public final class BiogasPlants {
 	private BiogasPlants() {
 	}
 
-	public static Res<Void> canCalculate(BiogasPlant plant) {
-		if (plant == null)
-			return Res.error("Es wurde keine Biogasanlage übergeben");
-		if (plant.electricityPrices == null)
-			return Res.error("Es wurden keine Spotmarktpreise definiert");
-
-		// TODO: add more checks for all things that are required to run a full
-		// calculation of the biogas plant.
-		return Res.ok();
-	}
-
-	public static boolean hasValidBoilers(BiogasPlant plant) {
-		if (plant == null || plant.boilers.isEmpty())
-			return false;
-		for (var entry : plant.boilers) {
-			if (entry == null
-				|| entry.boiler == null
-				|| entry.boiler.maxPowerElectric <= 0
-				|| entry.boiler.efficiencyRateElectric <= 0)
-				return false;
-		}
-		return true;
-	}
-
 	public static double totalThermalPower(BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
@@ -62,7 +38,7 @@ public final class BiogasPlants {
 		return sum;
 	}
 
-	public static double fullLoadFuelPower(BiogasPlant plant) {
+	public static double fullLoadFuelDemand(BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
 			return sum;

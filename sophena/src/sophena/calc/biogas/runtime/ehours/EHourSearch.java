@@ -1,10 +1,9 @@
 package sophena.calc.biogas.runtime.ehours;
 
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
-import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.Validation;
 import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -28,7 +27,7 @@ import sophena.model.biogas.BiogasPlant;
 /// `sophena.calc.biogas.eblocks.EblockSearch`. This is the implementation of
 /// `BiogasAlgorithm.HOURS`.
 @NullMarked
-public final class EhourSearch {
+public final class EHourSearch {
 
 	private final int minRunTime;
 	private final BiogasStorage storage;
@@ -37,7 +36,7 @@ public final class EhourSearch {
 	private final boolean[] runFlags = new boolean[Stats.HOURS];
 	private int runTime = 0;
 
-	private EhourSearch(BiogasPlant plant) {
+	private EHourSearch(BiogasPlant plant) {
 		minRunTime = Math.max(1, plant.minimumRuntime);
 		storage = BiogasStorage.of(plant);
 		priceSchedule = ElectricityPriceSchedule.calculate(plant);
@@ -53,23 +52,10 @@ public final class EhourSearch {
 	/// Returns an error when the plant cannot be calculated, e.g. when it has
 	/// no valid boiler.
 	public static Res<boolean[]> runFlags(BiogasPlant plant) {
-		var check = check(plant);
-		if (check.isError())
-			return check.castError();
-		return Res.ok(new EhourSearch(plant).run());
-	}
-
-	private static Res<Void> check(@Nullable BiogasPlant plant) {
-		if (plant == null)
-			return Res.error("there is no biogas plant");
-		if (!BiogasPlants.hasValidBoilers(plant))
-			return Res.error("the plant has no boiler with an electric power"
-				+ " and an electric efficiency of more than 0");
-		if (BiogasPlants.effectiveGasStorageSizeOf(plant) <= 0)
-			return Res.error("the gas storage size must be greater than 0");
-		if (plant.substrateProfiles.isEmpty())
-			return Res.error("the plant has no substrate profiles");
-		return Res.ok();
+		var err = Validation.energetic(plant);
+		return err.isError()
+			? err.castError()
+			: Res.ok(new EHourSearch(plant).run());
 	}
 
 	private boolean[] run() {
@@ -137,7 +123,7 @@ public final class EhourSearch {
 			return false;
 		var s = storage.copy();
 		for (int h = startHour; h <= endHour; h++) {
-				s.add(h);
+			s.add(h);
 			double time = 1.0;
 			// start and end could be the same when minRunTime = 1
 			if (h == startHour) {

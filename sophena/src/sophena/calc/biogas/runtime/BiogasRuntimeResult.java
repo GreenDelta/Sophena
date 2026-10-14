@@ -8,7 +8,7 @@ import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
 import sophena.calc.biogas.runtime.eblocks.EblockSearch;
-import sophena.calc.biogas.runtime.ehours.EhourSearch;
+import sophena.calc.biogas.runtime.ehours.EHourSearch;
 import sophena.model.ProducerProfile;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -63,7 +63,7 @@ public record BiogasRuntimeResult(
 		if (algorithm == null)
 			return Res.error("no algorithm for the biogas plant given");
 		var flags = switch (algorithm) {
-			case HOURS -> EhourSearch.runFlags(plant);
+			case HOURS -> EHourSearch.runFlags(plant);
 			case BLOCKS -> EblockSearch.runFlags(plant);
 		};
 		return flags.then(runFlags -> {

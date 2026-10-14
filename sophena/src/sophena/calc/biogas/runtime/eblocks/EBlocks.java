@@ -10,9 +10,9 @@ import sophena.model.Stats;
 /// year. The blocks are ordered by their start hour, do not overlap, and each
 /// of them has at least the minimum runtime of the plant.
 @NullMarked
-record Eblocks(List<Block> blocks) {
+record EBlocks(List<Block> blocks) {
 
-	Eblocks {
+	EBlocks {
 		blocks = List.copyOf(blocks);
 	}
 

@@ -57,14 +57,14 @@ public final class EblockSearch {
 
 	/// Runs the block search. This is the same as `runFlags` but it returns the
 	/// blocks of the search, which is more useful for tests and charts.
-	static Res<Eblocks> run(BiogasPlant plant) {
+	static Res<EBlocks> run(BiogasPlant plant) {
 		var check = PreCheck.validate(plant);
 		if (check.isError())
 			return check.castError();
 		return new EblockSearch(plant).search();
 	}
 
-	private Res<Eblocks> search() {
+	private Res<EBlocks> search() {
 		var blocks = new ArrayList<Block>();
 		var state = State.initial(plant);
 
@@ -94,7 +94,7 @@ public final class EblockSearch {
 			state = next;
 		}
 
-		return Res.ok(new Eblocks(merge(blocks)));
+		return Res.ok(new EBlocks(merge(blocks)));
 	}
 
 	/// Searches the block with the minimum runtime of the plant that starts in

@@ -28,9 +28,9 @@ public record BiogasResult(
 	/// the failed calculation is returned. A result is only returned when all
 	/// sub-results could be calculated without an error.
 	public static Res<BiogasResult> calculate(BiogasPlant plant) {
-		var check = BiogasPlants.canCalculate(plant);
-		if (check.isError())
-			return check.castError();
+		var err = Validation.full(plant);
+		if (err.isError())
+			return err.castError();
 
 		try {
 			var runtimeRes = BiogasRuntimeResult.calculate(plant);

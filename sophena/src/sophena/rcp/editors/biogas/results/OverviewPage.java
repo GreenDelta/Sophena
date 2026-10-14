@@ -57,8 +57,6 @@ class OverviewPage extends FormPage {
 			Num.intStr(BiogasPlants.totalThermalPower(plant)) + " kW"));
 		items.add(new Item("Elektrische Leistung",
 			Num.intStr(BiogasPlants.totalElectricPower(plant)) + " kW"));
-		items.add(new Item("Brennstoffleistung",
-			Num.intStr(BiogasPlants.fullLoadFuelPower(plant)) + " kW"));
 		table.setInput(items);
 	}
 

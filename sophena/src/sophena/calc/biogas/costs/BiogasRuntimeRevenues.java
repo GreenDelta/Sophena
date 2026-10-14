@@ -55,22 +55,10 @@ public record BiogasRuntimeRevenues(
 	public static Res<BiogasRuntimeRevenues> calculate(
 		BiogasPlant plant, BiogasRuntimeResult result
 	) {
-		if (plant == null)
-			return Res.error("Es wurde keine Biogasanlage übergeben");
+		// When a result was provided, we can assume that the biogas plant
+		// was already checked for validity, so we do not need to do this here
 		if (result == null)
 			return Res.error("Es wurde kein Berechnungsergebnis übergeben");
-		var check = BiogasPlants.canCalculate(plant);
-		if (check.isError())
-			return Res.error(check.error());
-
-		var settings = plant.settings;
-		if (settings == null)
-			return Res.error(
-				"Es wurden keine Einstellungen für die Biogasanlage übergeben");
-		if (!settings.isFixedRemuneration && settings.marketValue == null)
-			return Res.error(
-				"Es wurde kein Marktwert für das Marktprämienmodell ausgewählt");
-
 		try {
 			return Res.ok(new Calculator(plant, result).calculate());
 		} catch (Exception e) {

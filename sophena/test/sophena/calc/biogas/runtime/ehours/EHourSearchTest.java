@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.Test;
 
 import sophena.calc.biogas.TestPlant;
-import sophena.calc.biogas.runtime.ehours.EhourSearch;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
@@ -28,7 +27,7 @@ import sophena.model.biogas.BiogasPlant;
 ///   the minimum runtime. Blocks that are shorter than the minimum runtime are
 ///   therefore normal in this algorithm, which is what the block based
 ///   algorithm (`sophena.calc.biogas.eblocks.EblockSearch`) fixes.
-public class EhourSearchTest {
+public class EHourSearchTest {
 
 	@Test
 	public void runsBlocksThatAreShorterThanTheMinimumRuntime() {
@@ -90,7 +89,7 @@ public class EhourSearchTest {
 
 	/// The run hours of the hour based algorithm.
 	private static boolean[] run(BiogasPlant plant) {
-		return EhourSearch.runFlags(plant).orElseThrow();
+		return EHourSearch.runFlags(plant).orElseThrow();
 	}
 
 	private static int count(boolean[] flags) {
