@@ -30,9 +30,9 @@ public class Validation {
 			return Res.error(
 				"Es wurden BHKW Blöcke mit ungültigen Leistungsdaten definiert.");
 
-		if (plant.minimumRuntime < 2 || plant.minimumRuntime > 12)
+		if (plant.minimumRuntime < 1 || plant.minimumRuntime > 12)
 			return Res.error("Die Mindestlaufzeit der Biogasanlage muss"
-				+ " zwischen 2 und 12 Stunden liegen.");
+				+ " zwischen 1 und 12 Stunden liegen.");
 
 		if (plant.electricityPrices == null
 			|| plant.electricityPrices.values == null)
@@ -47,10 +47,6 @@ public class Validation {
 		double storageSize = BiogasPlants.effectiveGasStorageSizeOf(plant);
 		if (storageSize <= 0)
 			return Res.error("Es wurde keine gültige Gasspeichergröße definiert.");
-
-		if (BiogasPlants.fullLoadFuelDemand(plant) <= 0)
-			return Res.error("Die Brennstoffleistung der Biogasanlage unter"
-				+ " Volllast ist 0.");
 
 		var profile = BiogasProfile.of(plant);
 		double maxVolume = Stats.max(profile.volume());

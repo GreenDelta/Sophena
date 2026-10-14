@@ -16,6 +16,8 @@ public class Boiler extends AbstractProduct {
 	@Column(name = "min_power")
 	public double minPower;
 
+	/// The thermal efficiency of the boiler as a fraction, `0..1` (the user
+	/// interface shows it in percent).
 	@Column(name = "efficiency_rate")
 	public double efficiencyRate;
 
@@ -28,6 +30,8 @@ public class Boiler extends AbstractProduct {
 	@Column(name = "min_power_electric")
 	public double minPowerElectric;
 
+	/// The electric efficiency of the power-generating part of the boiler as a
+	/// fraction, `0..1` (the user interface shows it in percent).
 	@Column(name = "efficiency_rate_electric")
 	public double efficiencyRateElectric;
 

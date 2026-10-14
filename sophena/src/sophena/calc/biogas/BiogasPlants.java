@@ -1,7 +1,6 @@
 package sophena.calc.biogas;
 
 import org.jspecify.annotations.Nullable;
-import org.openlca.commons.Res;
 
 import sophena.calc.biogas.runtime.BiogasProfile;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
@@ -35,22 +34,6 @@ public final class BiogasPlants {
 			if (entry == null || entry.boiler == null)
 				continue;
 			sum += entry.boiler.maxPowerElectric;
-		}
-		return sum;
-	}
-
-	public static double fullLoadFuelDemand(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null
-				|| entry.boiler == null
-				|| entry.boiler.maxPowerElectric <= 0
-				|| entry.boiler.efficiencyRateElectric <= 0)
-				continue;
-			sum += entry.boiler.maxPowerElectric
-				/ entry.boiler.efficiencyRateElectric;
 		}
 		return sum;
 	}
@@ -123,13 +106,10 @@ public final class BiogasPlants {
 
 	/// Calculates the default gas storage size in m³: the maximum volume of
 	/// biogas that is produced within 24 hours over the year.
-	public static double defaultGasStorageSizeOf(BiogasPlant plant) {
+	public static double defaultGasStorageSizeOf(@Nullable BiogasPlant plant) {
 		if (plant == null)
 			return 0;
 		var profile = BiogasProfile.of(plant).volume();
-		if (profile == null)
-			return 0;
-
 		double maxSize = 0;
 		double nextSize = 0;
 		for (int h = 0; h < Stats.HOURS; h++) {
@@ -137,7 +117,6 @@ public final class BiogasPlants {
 				nextSize += profile[h];
 				continue;
 			}
-
 			nextSize = nextSize + profile[h] - profile[h - 24];
 			maxSize = Math.max(maxSize, nextSize);
 		}
