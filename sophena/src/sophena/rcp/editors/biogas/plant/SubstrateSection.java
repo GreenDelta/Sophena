@@ -16,7 +16,7 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
 import sophena.rcp.M;
 import sophena.rcp.app.Icon;
-import sophena.rcp.editors.biogas.charts.BiogasChart;
+import sophena.rcp.editors.biogas.charts.BiogasProfileChart;
 import sophena.rcp.utils.Actions;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -50,7 +50,7 @@ class SubstrateSection {
 		var chartSection = UI.section(body, tk, "Erzeugtes Biogas & Methangehalt");
 		var chartComp = UI.sectionClient(chartSection, tk);
 		UI.gridLayout(chartComp, 1);
-		var chart = new BiogasChart( chartComp);
+		var chart = new BiogasProfileChart( chartComp);
 		editor.onResult(r -> chart.setInput(editor.plant(), r));
 	}
 

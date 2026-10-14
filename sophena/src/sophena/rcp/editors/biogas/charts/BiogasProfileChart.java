@@ -15,13 +15,13 @@ import sophena.rcp.charts.Charts;
 import sophena.rcp.colors.ColorConfig;
 import sophena.rcp.colors.Colors;
 
-public class BiogasChart {
+public class BiogasProfileChart {
 
 	private final XYGraph graph;
 	private final CircularBufferDataProvider biogasData;
 	private final CircularBufferDataProvider methaneData;
 
-	public BiogasChart(Composite parent) {
+	public BiogasProfileChart(Composite parent) {
 		graph = Charts.initHoursGraph(parent, 250);
 		graph.getPrimaryYAxis().setTitle("Biogas [m³]");
 		biogasData = Charts.dataProvider();

@@ -9,6 +9,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.biogas.charts.BiogasProfileChart;
+import sophena.rcp.editors.biogas.charts.BiogasStorageChart;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
@@ -16,14 +18,14 @@ import sophena.rcp.utils.UI;
 import sophena.utils.Num;
 
 /// The page for the gas storage of a biogas plant.
-class BiogasPlantGasStoragePage extends FormPage {
+class StoragePage extends FormPage {
 
 	private final BiogasPlantEditor editor;
 	private Text sizeText;
 	private boolean updating;
 
-	BiogasPlantGasStoragePage(BiogasPlantEditor editor) {
-		super(editor, "BiogasPlantGasStoragePage", "Gasspeicher");
+	StoragePage(BiogasPlantEditor editor) {
+		super(editor, "StoragePage", "Gasspeicher");
 		this.editor = editor;
 	}
 
@@ -39,7 +41,15 @@ class BiogasPlantGasStoragePage extends FormPage {
 
 		createStorageSection(body, tk);
 
-		editor.onResult(_ -> updateStorageSize());
+		var chartSection = UI.section(body, tk, "Gasspeicherfüllstand");
+		var chartComp = UI.sectionClient(chartSection, tk);
+		UI.gridLayout(chartComp, 1);
+		var chart = new BiogasStorageChart( chartComp);
+
+		editor.onResult(r -> {
+			updateStorageSize();
+			chart.setInput(plant(), r);
+		});
 		editor.calculate();
 		form.reflow(true);
 	}

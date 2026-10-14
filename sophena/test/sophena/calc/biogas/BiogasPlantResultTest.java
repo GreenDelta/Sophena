@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.runtime.BiogasStorageProfile;
 import sophena.calc.biogas.runtime.eblocks.EblockSearch;
 import sophena.calc.biogas.runtime.BiogasAlgorithm;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
@@ -108,7 +109,9 @@ public class BiogasPlantResultTest {
 			fail(res.error());
 		var result = res.value();
 
-		var storage = result.storageProfile();
+		var storage = BiogasStorageProfile
+			.of(plant, result.runFlags())
+			.orElseThrow();
 		assertEquals(Stats.HOURS, storage.length);
 		double size = result.gasStorageSize();
 		assertEquals(

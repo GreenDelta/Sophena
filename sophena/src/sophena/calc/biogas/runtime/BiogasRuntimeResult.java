@@ -35,8 +35,7 @@ public record BiogasRuntimeResult(
 	BiogasProfile biogasProfile,
 	double gasStorageSize,
 	boolean[] runFlags,
-	ProducerProfile producerProfile,
-	double[] storageProfile
+	ProducerProfile producerProfile
 ) {
 
 	/// The temperature in °C that is used for the `producerProfile` of a
@@ -72,8 +71,7 @@ public record BiogasRuntimeResult(
 				profile,
 				BiogasPlants.effectiveGasStorageSizeOf(plant),
 				runFlags,
-				producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE),
-				BiogasStorage.annualProfileOf(plant, profile, runFlags)));
+				producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE)));
 		});
 	}
 
@@ -86,8 +84,7 @@ public record BiogasRuntimeResult(
 			BiogasProfile.empty(),
 			0,
 			runFlags,
-			producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE),
-			new double[Stats.HOURS]);
+			producerProfileOf(plant, runFlags, PRODUCER_TEMPERATURE));
 	}
 
 	/// Creates the producer profile of the given plant with the given
