@@ -243,7 +243,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 	/// Indicates whether the annual value (`true`) or the monthly values
 	/// (`false`) of the selected market value are used in the calculation.
 	///
-	/// @de Jahreswert | Monatswert
+	/// @de Jahresmarktwert | Monatsmarktwert
 	@Column(name = "use_annual_market_value")
 	public boolean useAnnualMarketValue;
 

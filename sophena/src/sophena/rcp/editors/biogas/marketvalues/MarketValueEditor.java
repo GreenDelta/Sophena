@@ -78,8 +78,8 @@ public class MarketValueEditor extends Editor {
 			UI.gridLayout(comp, 1);
 			var table = Tables.createViewer(comp,
 				"Datensatz",
-				"Jahresdurchschnitt",
-				"Monatswerte");
+				"Jahresmarktwert",
+				"Monatsmarktwert");
 			table.setLabelProvider(new TableLabel());
 			table.setInput(values);
 			Tables.bindColumnWidths(table, 0.35, 0.25, 0.4);

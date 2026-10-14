@@ -138,8 +138,8 @@ class FundingSection {
 		UI.innerGrid(radioComp, 2);
 		UI.gridData(radioComp, true, false).horizontalSpan = 3;
 
-		annualRadio = tk.createButton(radioComp, "Jahreswert", SWT.RADIO);
-		monthlyRadio = tk.createButton(radioComp, "Monatswert", SWT.RADIO);
+		annualRadio = tk.createButton(radioComp, "Jahresmarktwert", SWT.RADIO);
+		monthlyRadio = tk.createButton(radioComp, "Monatsmarktwert", SWT.RADIO);
 		annualRadio.setSelection(settings.useAnnualMarketValue);
 		monthlyRadio.setSelection(!settings.useAnnualMarketValue);
 

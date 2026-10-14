@@ -97,7 +97,7 @@ public class MarketValueWizard extends Wizard {
 		}
 
 		private void createValueText(Composite comp) {
-			UI.formLabel(comp, "Jahresdurchschnitt");
+			UI.formLabel(comp, "Jahresmarktwert");
 			valueText = UI.formText(comp, null);
 			Texts.on(valueText)
 				.init(value.value)
@@ -116,7 +116,7 @@ public class MarketValueWizard extends Wizard {
 		}
 
 		private void createMonthTexts(Composite comp) {
-			var header = UI.formLabel(comp, "Monatswerte [ct/kWh]");
+			var header = UI.formLabel(comp, "Monatsmarktwert [ct/kWh]");
 			span(header, 4);
 			int half = MONTHS.length / 2;
 			for (int i = 0; i < half; i++) {
