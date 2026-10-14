@@ -34,6 +34,34 @@ import sophena.model.biogas.MarketPriceLimit;
 /// The hourly funding and exchange revenues are in EUR, the fed-in electricity
 /// and the generated heat are in kWh, and the quarter-hour values are operating
 /// quarter hours.
+///
+/// @param funding The funding for each hour of the year in EUR: the fed-in
+///   electricity multiplied with the fixed feed-in tariff or the market
+///   premium.
+/// @param fundingSum The total funding of the year in EUR.
+/// @param revenues The revenues from the electricity exchange for each hour of
+///   the year in EUR: the fed-in electricity multiplied with the spot market
+///   price.
+/// @param revenuesSum The total revenues from the electricity exchange of the
+///   year in EUR.
+/// @param directMarketerPayment The share of the additional revenues that is
+///   paid to the direct marketer in EUR (`directMarketerShare` in %).
+/// @param feedIn The total electricity that is fed into the grid in kWh.
+/// @param totalGeneratedHeat The usable heat that is fed into the heat network
+///   in kWh (the sum of the producer profile).
+/// @param additionalRevenues The additional revenues (Mehrerlöse) in EUR: the
+///   positive difference between the exchange revenues and the revenues at the
+///   monthly market value.
+/// @param totalRevenues The total revenues of the year in EUR
+///   (`fundingSum + revenuesSum - directMarketerPayment`).
+/// @param quarterHoursBelowZero The operating quarter hours in which the plant
+///   runs under full load at a spot price below 0 ct/kWh.
+/// @param quarterHoursBelowTwo The operating quarter hours in which the plant
+///   runs under full load at a spot price of at most 2 ct/kWh.
+/// @param totalQuarterHours The total operating quarter hours of the year (the
+///   full-load hours times 4 plus the ramp units).
+/// @param quarterHoursAbove85 The operating quarter hours in which the plant
+///   runs under full load, which is at least 85 % of its power.
 public record BiogasRuntimeRevenues(
 	double[] funding,
 	double fundingSum,

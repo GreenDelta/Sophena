@@ -2,9 +2,12 @@ package sophena.rcp.editors.biogas.results;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -13,6 +16,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.calc.biogas.BiogasPlants;
+import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -48,21 +52,24 @@ class OverviewPage extends FormPage {
 		var table = createTable(UI.formSection(body, tk, "Übersicht"));
 
 		var items = new ArrayList<Item>();
-		items.add(new Item("Laufzeit", Num.intStr(plant.duration) + " Jahre"));
-		items.add(new Item("Gasspeichergröße",
-			Num.intStr(result.gasStorageSize()) + " m³"));
-		items.add(new Item("Betriebsstunden",
-			Num.intStr(runHours(result)) + " h/a"));
-		items.add(new Item("Thermische Leistung",
-			Num.intStr(BiogasPlants.totalThermalPower(plant)) + " kW"));
-		items.add(new Item("Elektrische Leistung",
-			Num.intStr(BiogasPlants.totalElectricPower(plant)) + " kW"));
+
+
+
+		items.add(Item.of("Laufzeit", Num.intStr(plant.duration), "Jahre"));
+		items.add(Item.of("Gasspeichergröße",
+			Num.intStr(result.gasStorageSize()), "m³"));
+		items.add(Item.of("Betriebsstunden",
+			Num.intStr(runHours(result)), "h/a"));
+		items.add(Item.of("Thermische Leistung",
+			Num.intStr(BiogasPlants.totalThermalPower(plant)), "kW"));
+		items.add(Item.of("Elektrische Leistung",
+			Num.intStr(BiogasPlants.totalElectricPower(plant)), "kW"));
 		table.setInput(items);
 	}
 
 	private TableViewer createTable(Composite parent) {
-		var table = Tables.createViewer(parent, "Position", "Wert");
-		Tables.bindColumnWidths(table, 0.6, 0.4);
+		var table = Tables.createViewer(parent, "Name", "Wert", "Einheit");
+		Tables.bindColumnWidths(table, 0.5, 0.3, 0.2);
 		Tables.rightAlignColumns(table, 1);
 		table.setLabelProvider(new ItemLabel());
 		return table;
@@ -78,11 +85,21 @@ class OverviewPage extends FormPage {
 		return n;
 	}
 
-	private record Item(String label, String value) {
+	private record Item(
+		String name, String value, String unit, boolean isError
+	) {
+
+		static Item of(String name, String value, String unit) {
+			return new Item(name, value, unit, false);
+		}
+
+		static Item errorOf(String name, String value, String unit) {
+			return new Item(name, value, unit, true);
+		}
 	}
 
 	private static class ItemLabel extends LabelProvider
-		implements ITableLabelProvider {
+		implements ITableLabelProvider, ITableColorProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
@@ -90,10 +107,27 @@ class OverviewPage extends FormPage {
 		}
 
 		@Override
+		public Color getForeground(Object obj, int col) {
+			if (col == 1 && obj instanceof Item item && item.isError())
+				return Colors.getSystemColor(SWT.COLOR_RED);
+			return null;
+		}
+
+		@Override
+		public Color getBackground(Object obj, int col) {
+			return null;
+		}
+
+		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item(String label, String value)))
+			if (!(obj instanceof Item item))
 				return null;
-			return col == 0 ? label : value;
+			return switch (col) {
+				case 0 -> item.name();
+				case 1 -> item.value();
+				case 2 -> item.unit();
+				default -> null;
+			};
 		}
 	}
 }
