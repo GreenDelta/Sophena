@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.runtime.BiogasProfile;
 import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -24,9 +23,7 @@ record ElectricityPriceSchedule(boolean[] flags) {
 		return flags[hour];
 	}
 
-	static ElectricityPriceSchedule calculate(
-		BiogasPlant plant, BiogasProfile profile
-	) {
+	static ElectricityPriceSchedule calculate(BiogasPlant plant) {
 
 		var flags = new boolean[Stats.HOURS];
 		var schedule = new ElectricityPriceSchedule(flags);
@@ -35,16 +32,8 @@ record ElectricityPriceSchedule(boolean[] flags) {
 			|| plant.electricityPrices.values == null)
 			return schedule;
 
-		double storageSize = BiogasPlants.effectiveGasStorageSizeOf(plant);
-		if (storageSize <= 0)
-			return schedule;
-
-		double fuelPower = BiogasPlants.fullLoadFuelPower(plant);
-		if (fuelPower <= 0)
-			return schedule;
-
-		var storage = new BiogasStorage(storageSize, fuelPower);
-		if (storage.size() == 0)
+		var storage = BiogasStorage.of(plant);
+		if (storage.size() <= 0)
 			return schedule;
 
 		var prices = plant.electricityPrices.values;
@@ -58,7 +47,7 @@ record ElectricityPriceSchedule(boolean[] flags) {
 			storage.setEmpty();
 			sortSeq.clear();
 			for (int h = offset; h < end; h++) {
-				storage.add(profile, h);
+				storage.add(h);
 				// hours with a blocked feed-in get the penalty, so they are
 				// the last hours that are selected
 				double sortVal = BiogasPlants.isFeedInAllowed(plant, h)

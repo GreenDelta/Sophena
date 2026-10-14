@@ -66,7 +66,6 @@ public class BiogasProfileTest {
 		assertTrue(profile.volumeAt(0) > 0);
 	}
 
-
 	@Test
 	public void referenceConditionsGiveTheProducedGasVolume() {
 		// the test plant produces 200 m3 per hour at 0 °C and 1013.25 mbar,

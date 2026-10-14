@@ -80,10 +80,12 @@ final class PreCheck {
 		double minMethane = minMethane(profile);
 		double minGas = Math.max(minVolume, storageSize - maxVolume);
 
-		var storage = new BiogasStorage(storageSize, fuelPower);
+		var storage = BiogasStorage.of(
+			worstCaseProfile(minVolume, minMethane, profile.volumeFactor()),
+			storageSize,
+			fuelPower);
 		storage.add(minGas, minMethane);
-		var worstCase = new State(
-			0, false, storage, worstCaseProfile(minVolume, minMethane), null);
+		var worstCase = new State(0, false, storage, null);
 
 		if (worstCase.getBlock(plant.minimumRuntime) == null)
 			return Res.error("a gas storage of " + storageSize
@@ -119,11 +121,13 @@ final class PreCheck {
 	}
 
 	/// A profile in which every hour produces the minimum amount of gas.
-	private static BiogasProfile worstCaseProfile(double volume, double methane) {
+	private static BiogasProfile worstCaseProfile(
+		double volume, double methane, double volumeFactor
+	) {
 		var volumes = new double[Stats.HOURS];
 		var methaneContents = new double[Stats.HOURS];
 		Arrays.fill(volumes, volume);
 		Arrays.fill(methaneContents, methane);
-		return new BiogasProfile(volumes, methaneContents);
+		return new BiogasProfile(volumes, methaneContents, volumeFactor);
 	}
 }

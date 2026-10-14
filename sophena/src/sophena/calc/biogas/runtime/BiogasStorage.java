@@ -1,15 +1,23 @@
 package sophena.calc.biogas.runtime;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Copyable;
 
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
+@NullMarked
 public class BiogasStorage implements Copyable<BiogasStorage> {
 
 	/// The calorific value of biomethane in kWh/m3
 	private final double CAL = 9.97;
+
+	/// The profile of the plant that is simulated with this storage. The
+	/// storage reads the produced gas and the volume correction factor from
+	/// this profile (see `BiogasProfile#volumeFactor()`).
+	private final BiogasProfile profile;
 
 	/// The fuel power demand of the plant under full load in kW.
 	private final double fullLoadDemand;
@@ -17,19 +25,38 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	private double filled;
 	private double methaneContent;
 
-	/// Creates a new biogas storage of the given size in m3 that is used by
-	/// the biogas plant under full load.
-	public BiogasStorage(double size, double fullLoadDemand) {
+	/// Creates a new biogas storage for the given profile and the given size
+	/// in m3 that is used by the plant under full load.
+	private BiogasStorage(
+		BiogasProfile profile, double size, double fullLoadDemand
+	) {
+		this.profile = profile;
 		this.size = size;
 		this.fullLoadDemand = fullLoadDemand;
 	}
 
-	public static BiogasStorage of(BiogasPlant plant) {
-		var fullLoadDemand = BiogasPlants.fullLoadFuelPower(plant);
-		return plant != null
-			? new BiogasStorage(
-				BiogasPlants.effectiveGasStorageSizeOf(plant), fullLoadDemand)
-			: new BiogasStorage(0, 0);
+	/// A storage for the given plant with the profile that is built from it.
+	public static BiogasStorage of(@Nullable BiogasPlant plant) {
+		return plant == null
+			? new BiogasStorage(BiogasProfile.empty(), 0, 0)
+			: new BiogasStorage(
+				BiogasProfile.of(plant),
+				BiogasPlants.effectiveGasStorageSizeOf(plant),
+				BiogasPlants.fullLoadFuelPower(plant));
+	}
+
+	/// A storage for an explicit profile with the given size and fuel demand.
+	/// This is used where a synthetic profile is simulated, like the
+	/// worst-case profile in `PreCheck`.
+	public static BiogasStorage of(
+		BiogasProfile profile, double size, double fullLoadDemand
+	) {
+		return new BiogasStorage(profile, size, fullLoadDemand);
+	}
+
+	/// The profile that this storage reads its gas from.
+	public BiogasProfile profile() {
+		return profile;
 	}
 
 	/// Simulates the storage over one year with the given run flags and returns
@@ -43,19 +70,22 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	/// the first hour in which the plant does not run. Gas that does not fit
 	/// into the storage is lost.
 	public static double[] annualProfileOf(
-            BiogasPlant plant, BiogasProfile profile, boolean[] runFlags
+		@Nullable BiogasPlant plant,
+		@Nullable BiogasProfile profile,
+		@Nullable boolean[] runFlags
 	) {
 		var storageProfile = new double[Stats.HOURS];
-		if (plant == null || profile == null)
+		if (plant == null || profile == null || runFlags == null)
 			return storageProfile;
 
-		var storage = of(plant);
+		var storage = of(
+			profile,
+			BiogasPlants.effectiveGasStorageSizeOf(plant),
+			BiogasPlants.fullLoadFuelPower(plant));
 		boolean running = false;
 		for (int h = 0; h < Stats.HOURS; h++) {
-			storage.add(profile, h);
-			boolean runs = runFlags != null
-				&& h < runFlags.length
-				&& runFlags[h];
+			storage.add(h);
+			boolean runs = h < runFlags.length && runFlags[h];
 			if (runs) {
 				if (!running) {
 					storage.runHours(Demand.RAMP.factor());
@@ -108,16 +138,24 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		return 0;
 	}
 
-	public double add(BiogasProfile profile, int hour) {
+	public double add(int hour) {
 		if (hour >= Stats.HOURS)
 			return 0;
 		return add(profile.volumeAt(hour), profile.methaneContentAt(hour));
 	}
 
-	public boolean canAdd(BiogasProfile profile, int hour) {
+	public boolean canAdd(int hour) {
 		if (hour >= Stats.HOURS)
 			return false;
 		return (filled + profile.volumeAt(hour)) <= size;
+	}
+
+	/// The gas in the storage expressed as normal volume. The profile stores
+	/// the gas at the conditions of the gas storage, and the calorific value
+	/// `CAL` is defined per normal m3, so the stored volume is divided by the
+	/// volume correction factor of the profile.
+	private double normalVolume() {
+		return filled / profile.volumeFactor();
 	}
 
 	/// Returns the number of hours it takes to complete empty the storage when
@@ -125,7 +163,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	public double hoursToEmpty() {
 		if (fullLoadDemand <= 0)
 			return 0;
-		double q = filled * methaneContent * CAL;
+		double q = normalVolume() * methaneContent * CAL;
 		return q / fullLoadDemand;
 	}
 
@@ -140,7 +178,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 	public boolean canRunHours(double hours) {
 		if (fullLoadDemand <= 0)
 			return false;
-		double q = filled * methaneContent * CAL;
+		double q = normalVolume() * methaneContent * CAL;
 		return q >= (fullLoadDemand * hours);
 	}
 
@@ -148,24 +186,29 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		if (fullLoadDemand <= 0 || methaneContent <= 0) {
 			return;
 		}
-		double vol = (hours * fullLoadDemand) / (CAL * methaneContent);
+		// the demand is given as energy and converted to the volume at the
+		// conditions of the gas storage
+		double vol = (hours * fullLoadDemand) / (CAL * methaneContent)
+			* profile.volumeFactor();
 		filled = filled > vol ? filled - vol : 0;
 	}
 
-	public boolean canRun(BiogasProfile profile, int hour, Demand factor) {
-		if (profile == null || hour >= Stats.HOURS)
+	public boolean canRun(int hour, Demand factor) {
+		if (hour >= Stats.HOURS)
 			return false;
 		double demand = fullLoadDemand * Demand.factorOf(factor);
 		if (demand <= 0)
 			return false;
+		// the produced and stored gas is converted to normal volume for the
+		// energy calculation
 		double methane = filled * methaneContent
 			+ profile.volumeAt(hour) * profile.methaneContentAt(hour);
-		double provided = methane * CAL;
+		double provided = (methane / profile.volumeFactor()) * CAL;
 		return provided >= demand;
 	}
 
-	public void run(BiogasProfile profile, int hour, Demand factor) {
-		if (profile == null || hour >= Stats.HOURS)
+	public void run(int hour, Demand factor) {
+		if (hour >= Stats.HOURS)
 			return;
 		double demand = fullLoadDemand * Demand.factorOf(factor);
 		if (demand <= 0)
@@ -182,7 +225,10 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 		if (nextMethaneContent <= 0)
 			return;
 
-		double volNeeded =  demand / (CAL * nextMethaneContent);
+		// the demand is given as energy and converted to the volume at the
+		// conditions of the gas storage
+		double volNeeded = demand / (CAL * nextMethaneContent)
+			* profile.volumeFactor();
 		double remainingVol = totalVol - volNeeded;
 		if (remainingVol > size) {
 			filled = size;
@@ -201,7 +247,7 @@ public class BiogasStorage implements Copyable<BiogasStorage> {
 
 	@Override
 	public BiogasStorage copy() {
-		var copy = new BiogasStorage(size, fullLoadDemand);
+		var copy = new BiogasStorage(profile, size, fullLoadDemand);
 		copy.filled = filled;
 		copy.methaneContent = methaneContent;
 		return copy;

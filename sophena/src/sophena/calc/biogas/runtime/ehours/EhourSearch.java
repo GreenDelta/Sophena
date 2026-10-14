@@ -5,7 +5,6 @@ import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.BiogasPlants;
-import sophena.calc.biogas.runtime.BiogasProfile;
 import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -31,9 +30,7 @@ import sophena.model.biogas.BiogasPlant;
 @NullMarked
 public final class EhourSearch {
 
-	private final BiogasPlant plant;
 	private final int minRunTime;
-	private final BiogasProfile profile;
 	private final BiogasStorage storage;
 	private final ElectricityPriceSchedule priceSchedule;
 
@@ -41,11 +38,9 @@ public final class EhourSearch {
 	private int runTime = 0;
 
 	private EhourSearch(BiogasPlant plant) {
-		this.plant = plant;
 		minRunTime = Math.max(1, plant.minimumRuntime);
-		profile = BiogasProfile.of(plant);
 		storage = BiogasStorage.of(plant);
-		priceSchedule = ElectricityPriceSchedule.calculate(plant, profile);
+		priceSchedule = ElectricityPriceSchedule.calculate(plant);
 	}
 
 	/// Runs the algorithm and returns the hours of the year in which the plant
@@ -57,7 +52,7 @@ public final class EhourSearch {
 	///
 	/// Returns an error when the plant cannot be calculated, e.g. when it has
 	/// no valid boiler.
-	public static Res<boolean[]> runFlags(@Nullable BiogasPlant plant) {
+	public static Res<boolean[]> runFlags(BiogasPlant plant) {
 		var check = check(plant);
 		if (check.isError())
 			return check.castError();
@@ -80,7 +75,7 @@ public final class EhourSearch {
 	private boolean[] run() {
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 
-			storage.add(profile, hour);
+			storage.add(hour);
 
 			// the storage is empty
 			if (!storage.canRunOneHour()) {
@@ -89,7 +84,7 @@ public final class EhourSearch {
 			}
 
 			// the storage is full
-			if (hour < (Stats.HOURS - 1) && !storage.canAdd(profile, hour + 1)) {
+			if (hour < (Stats.HOURS - 1) && !storage.canAdd(hour + 1)) {
 				runAt(hour);
 				continue;
 			}
@@ -142,7 +137,7 @@ public final class EhourSearch {
 			return false;
 		var s = storage.copy();
 		for (int h = startHour; h <= endHour; h++) {
-			s.add(profile, h);
+				s.add(h);
 			double time = 1.0;
 			// start and end could be the same when minRunTime = 1
 			if (h == startHour) {

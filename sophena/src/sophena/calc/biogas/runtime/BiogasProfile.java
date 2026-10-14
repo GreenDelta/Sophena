@@ -1,18 +1,35 @@
 package sophena.calc.biogas.runtime;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
-public record BiogasProfile(double[] volume, double[] methaneContent) {
+/// The hourly biogas profile that is calculated from the substrate inputs of a
+/// biogas plant. The methane slip is directly applied on the profile. Also, a
+/// volume correction factor based on the temperature and pressure of the gas
+/// storage is directly applied.
+///
+/// @param volume The produced biogas volume for each hour of a year in m³.
+/// @param methaneContent The methane content of the biogas produced in the
+///   respective hour (between 0 and 1).
+/// @param volumeFactor The applied volume correction factor based on the
+///   temperature and pressure of the gas-storage.
+@NullMarked
+public record BiogasProfile(
+	double[] volume, double[] methaneContent, double volumeFactor
+) {
 
 	public static BiogasProfile empty() {
 		return new BiogasProfile(
 			new double[Stats.HOURS],
-			new double[Stats.HOURS]
+			new double[Stats.HOURS],
+			1.0
 		);
 	}
 
-	public static BiogasProfile of(BiogasPlant plant) {
+	public static BiogasProfile of(@Nullable BiogasPlant plant) {
 		return plant == null || plant.substrateProfiles.isEmpty()
 			? empty()
 			: new Builder(plant).build();
@@ -22,6 +39,7 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 
 		private final BiogasPlant plant;
 		private final double volumeFactor;
+		private final double slipFactor;
 
 		Builder(BiogasPlant plant) {
 			this.plant = plant;
@@ -31,7 +49,7 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 			// it is called methane-slip, but is applied on the total volume
 			// not only on the methane fraction
 			var settings = plant.settings;
-			double slipFactor = settings != null && settings.methaneSlip > 0
+			this.slipFactor = settings != null && settings.methaneSlip > 0
 				? Math.max(0, 1 - (settings.methaneSlip / 100.0))
 				: 1.0;
 
@@ -51,8 +69,7 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 			// the water-vapor correction is normalized to the reference
 			// temperature of 0°C, so it is 1 when the gas storage is at the
 			// reference temperature and the produced normal volume is kept
-			this.volumeFactor = slipFactor
-				* pressureFactor
+			this.volumeFactor = pressureFactor
 				* temperatureFactor
 				* waterVaporCorrectionFactor(plant.gasStorageTemperature);
 		}
@@ -83,10 +100,10 @@ public record BiogasProfile(double[] volume, double[] methaneContent) {
 						vol = vol + vi;
 					}
 				}
-				volume[h] = volumeFactor * vol;
+				volume[h] = volumeFactor * vol * slipFactor;
 				methaneContent[h] = met;
 			}
-			return new BiogasProfile(volume, methaneContent);
+			return new BiogasProfile(volume, methaneContent, volumeFactor);
 		}
 
 	}

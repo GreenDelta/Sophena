@@ -3,7 +3,6 @@ package sophena.calc.biogas.runtime.eblocks;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import sophena.calc.biogas.runtime.BiogasProfile;
 import sophena.calc.biogas.runtime.BiogasStorage;
 import sophena.calc.biogas.runtime.Demand;
 import sophena.model.Stats;
@@ -18,9 +17,9 @@ import sophena.model.biogas.BiogasPlant;
 ///   (`hour - 1`). This decides how much fuel the plant needs in `hour`: the
 ///   first hour of a block needs the ramp-up (`1.125` hours of fuel under full
 ///   load), every following hour needs `1.0`.
-/// - `storage`: the gas in the storage at the beginning of `hour`.
-/// - `profile`: the biogas production of the plant over the year. It is shared
-///   by all states and never modified.
+/// - `storage`: the gas in the storage at the beginning of `hour`. The
+///   storage also owns the biogas profile of the plant that it reads the
+///   produced gas from.
 /// - `previous`: the state before this state, `null` only for the initial
 ///   state. It allows walking back in the timeline, which is used when a block
 ///   is extended to the left.
@@ -33,46 +32,40 @@ record State(
 	int hour,
 	boolean isRunning,
 	BiogasStorage storage,
-	BiogasProfile profile,
 	@Nullable State previous
 ) {
 
 	/// The state at the beginning of the year: an empty storage and a stopped
 	/// plant.
 	static State initial(BiogasPlant plant) {
-		return new State(
-			0,
-			false,
-			BiogasStorage.of(plant),
-			BiogasProfile.of(plant),
-			null);
+		return new State(0, false, BiogasStorage.of(plant), null);
 	}
 
 	/// `true` when the plant can stay off in `hour` and the gas that is
 	/// produced in that hour completely fits into the storage.
 	boolean canFillNext() {
-		return hour < Stats.HOURS && storage.canAdd(profile, hour);
+		return hour < Stats.HOURS && storage.canAdd(hour);
 	}
 
 	/// The state after an hour in which the plant was off: the produced gas is
 	/// added to the storage.
 	State fillNext() {
 		var nextStorage = storage.copy();
-		nextStorage.add(profile, hour);
-		return new State(hour + 1, false, nextStorage, profile, this);
+		nextStorage.add(hour);
+		return new State(hour + 1, false, nextStorage, this);
 	}
 
 	/// `true` when the plant can run under full load in `hour`. The first hour
 	/// of a block additionally needs the ramp-up, see `isRunning()`.
 	boolean canRunNext() {
-		return hour < Stats.HOURS && storage.canRun(profile, hour, demand());
+		return hour < Stats.HOURS && storage.canRun(hour, demand());
 	}
 
 	/// The state after an hour in which the plant ran under full load.
 	State runNext() {
 		var nextStorage = storage.copy();
-		nextStorage.run(profile, hour, demand());
-		return new State(hour + 1, true, nextStorage, profile, this);
+		nextStorage.run(hour, demand());
+		return new State(hour + 1, true, nextStorage, this);
 	}
 
 	/// `true` when the storage still holds the fuel for the ramp-down
@@ -92,7 +85,7 @@ record State(
 	State stop() {
 		var nextStorage = storage.copy();
 		nextStorage.runHours(Demand.RAMP.factor());
-		return new State(hour, false, nextStorage, profile, this);
+		return new State(hour, false, nextStorage, this);
 	}
 
 	/// Tries to run the plant in the `hours` hours that follow this state and
