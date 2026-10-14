@@ -79,16 +79,18 @@ public class BiogasPlantResultTest {
 		var res = BiogasRuntimeResult.calculate(small, BiogasAlgorithm.BLOCKS);
 		assertTrue(res.isError());
 		assertTrue("unexpected message: " + res.error(),
-			res.error().contains("minimum runtime"));
+			res.error().contains("Mindestlaufzeit"));
 
-		// the hour based algorithm does not check the storage against the
-		// minimum runtime, it only needs a plant that can be calculated
-		assertTrue(BiogasRuntimeResult.calculate(small, BiogasAlgorithm.HOURS).isOk());
+		// the validation is shared by both algorithms, so the hour based
+		// algorithm also rejects a plant that cannot be calculated
+		assertTrue(
+			BiogasRuntimeResult.calculate(small, BiogasAlgorithm.HOURS).isError());
 
 		var noBoiler = TestPlant.of(1600, 4);
 		noBoiler.boilers.clear();
 		assertTrue(BiogasRuntimeResult.calculate(noBoiler).isError());
-		assertTrue(BiogasRuntimeResult.calculate(noBoiler, BiogasAlgorithm.BLOCKS).isError());
+		assertTrue(BiogasRuntimeResult
+			.calculate(noBoiler, BiogasAlgorithm.BLOCKS).isError());
 	}
 
 	@Test

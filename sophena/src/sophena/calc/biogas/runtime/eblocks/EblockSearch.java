@@ -7,6 +7,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
+import sophena.calc.biogas.Validation;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 
@@ -28,7 +29,7 @@ import sophena.model.biogas.BiogasPlant;
 ///
 /// Every step returns a `Res`, so the search stops with a message when it runs
 /// into a state that it cannot handle instead of returning a wrong result.
-/// `PreCheck` rejects the plants for which the search cannot work.
+/// `Validation` rejects the plants for which the search cannot work.
 ///
 /// The search ends at the end of the year, also when the remaining hours are
 /// not enough for a block of the minimum runtime. The gas that is produced in
@@ -55,10 +56,21 @@ public final class EblockSearch {
 		return run(plant).then(eblocks -> Res.ok(eblocks.runFlags()));
 	}
 
+	/// Checks whether the storage can hold a block of the minimum runtime of
+	/// the plant when it is filled from the initial (empty) state. A storage
+	/// that never fills within the year is not rejected: in that case the plant
+	/// can run with the gas that was accumulated. `Validation` uses this to
+	/// check the storage of a plant.
+	public static boolean canHoldMinimumBlock(BiogasPlant plant) {
+		var window = Window.of(State.initial(plant));
+		return window.fillHour() >= Stats.HOURS
+			|| window.maxRunHours() >= plant.minimumRuntime;
+	}
+
 	/// Runs the block search. This is the same as `runFlags` but it returns the
 	/// blocks of the search, which is more useful for tests and charts.
 	static Res<EBlocks> run(BiogasPlant plant) {
-		var check = PreCheck.validate(plant);
+		var check = Validation.energetic(plant);
 		if (check.isError())
 			return check.castError();
 		return new EblockSearch(plant).search();

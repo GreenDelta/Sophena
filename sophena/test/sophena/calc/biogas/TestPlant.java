@@ -7,6 +7,7 @@ import sophena.model.Boiler;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
+import sophena.model.biogas.BiogasPlantSettings;
 import sophena.model.biogas.ElectricityPriceCurve;
 import sophena.model.biogas.Substrate;
 import sophena.model.biogas.SubstrateProfile;
@@ -68,6 +69,9 @@ public final class TestPlant {
 		var boiler = new Boiler();
 		boiler.maxPowerElectric = 500;
 		boiler.efficiencyRateElectric = 0.4;
+		// a plant needs valid thermal data as well, see `Validation`
+		boiler.maxPower = 600;
+		boiler.efficiencyRate = 0.4;
 		var plantBoiler = new BiogasPlantBoiler();
 		plantBoiler.boiler = boiler;
 
@@ -90,6 +94,10 @@ public final class TestPlant {
 		plant.gasStorageSize = storageSize;
 		plant.gasStorageFillingLevel = 100;
 		plant.minimumRuntime = minimumRuntime;
+		// valid default settings, but without a methane slip so that the
+		// produced gas volume is exactly `GAS_PER_HOUR`
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.methaneSlip = 0;
 		return plant;
 	}
 }

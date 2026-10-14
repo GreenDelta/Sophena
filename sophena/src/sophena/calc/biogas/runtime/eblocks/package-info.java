@@ -54,7 +54,7 @@
 ///
 /// Every step of the search returns an `org.openlca.commons.Res`: if it runs
 /// into a state that it cannot handle, the search stops with a message instead
-/// of returning a wrong result. `PreCheck` rejects the plants for which the
+/// of returning a wrong result. `Validation` rejects the plants for which the
 /// search cannot work, so an error of a search step is always a sign of a
 /// plant configuration that the search cannot calculate.
 package sophena.calc.biogas.runtime.eblocks;

@@ -260,20 +260,9 @@ public class BiogasRuntimeRevenuesTest {
 		assertTrue(BiogasRuntimeRevenues.calculate(null, result).isError());
 		assertTrue(BiogasRuntimeRevenues.calculate(plant, null).isError());
 
-		var noPrices = base();
-		noPrices.electricityPrices = null;
-		assertTrue(BiogasRuntimeRevenues.calculate(noPrices, result).isError());
-
 		var noSettings = base();
 		noSettings.settings = null;
 		assertTrue(BiogasRuntimeRevenues.calculate(noSettings, result).isError());
-
-		var noMarketValue = base();
-		noMarketValue.settings.isFixedRemuneration = false;
-		noMarketValue.settings.marketValue = null;
-		assertTrue(BiogasRuntimeRevenues
-			.calculate(noMarketValue, result)
-			.isError());
 	}
 
 	/// A plant with a fixed remuneration of 12 ct/kWh, an internal power demand

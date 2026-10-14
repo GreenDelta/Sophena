@@ -56,6 +56,7 @@ public class FermenterHeatDemand {
 			|| project.weatherStation.data == null)
 			return Res.error("Es sind keine gültigen Wetterdaten vorhanden.");
 
+
 		if (plant == null || plant.boilers.isEmpty())
 			return Res.error("Es wurde noch kein BHKW definiert.");
 		double power = BiogasPlants.totalThermalPower(plant);

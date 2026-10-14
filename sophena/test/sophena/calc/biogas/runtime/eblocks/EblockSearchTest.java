@@ -165,7 +165,7 @@ public class EblockSearchTest {
 
 		assertTrue(res.isError());
 		assertTrue("unexpected message: " + res.error(),
-			res.error().contains("minimum runtime"));
+			res.error().contains("Mindestlaufzeit"));
 	}
 
 	@Test

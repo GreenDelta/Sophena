@@ -1,5 +1,6 @@
 package sophena.calc.biogas;
 
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.runtime.BiogasProfile;
@@ -14,7 +15,7 @@ public final class BiogasPlants {
 	private BiogasPlants() {
 	}
 
-	public static double totalThermalPower(BiogasPlant plant) {
+	public static double totalThermalPower(@Nullable BiogasPlant plant) {
 		double sum = 0;
 		if (plant == null)
 			return sum;
