@@ -169,14 +169,43 @@ public class BiogasCostCalculator {
 		r.staticTotal.otherAnnualCosts = staticYearly(otherCosts);
 	}
 
-	/// Adds the revenues from the electricity feed-in. These are the total
-	/// revenues of the plant: the funding and the exchange revenues minus the
-	/// share of the direct marketer (see `BiogasRuntimeRevenues`).
+	/// Adds the revenues from the electricity feed-in. These are the funding of
+	/// the feed-in, the revenues at the monthly market value, and the additional
+	/// revenues which are the difference between the exchange revenues and the
+	/// reference market revenues. The price change factor of the electricity
+	/// revenues is only applied to the additional revenues; the funding and the
+	/// reference market revenues are just adjusted with the interest rate. When
+	/// a share of the direct marketer is defined, the additional revenues are
+	/// reduced by the share of the marketer.
 	private void addRevenues(BiogasCostResult r) {
-		double amount = revenues.totalRevenues();
-		r.dynamicTotal.revenuesElectricity = dynamicYearly(
-			amount, plant.settings.electricityRevenuesFactor);
-		r.staticTotal.revenuesElectricity = staticYearly(amount);
+		double funding = revenues != null ? revenues.feedInFundingSum() : 0;
+		double reference = revenues != null ? revenues.marketRevenuesSum() : 0;
+		double spot = revenues != null ? revenues.spotMarketRevenuesSum() : 0;
+		double additional = spot - reference;
+		double share = plant.settings.directMarketerShare / 100.0;
+
+		var dyn = r.dynamicTotal;
+		dyn.feedInFundingRevenues = staticYearly(funding);
+		dyn.referenceMarketRevenues = staticYearly(reference);
+		dyn.additionalRevenues = dynamicYearly(
+			additional, plant.settings.electricityRevenuesFactor);
+		dyn.directMarketerPayment = Math.max(
+			0, share * dyn.additionalRevenues);
+		dyn.revenuesElectricity = dyn.feedInFundingRevenues
+			+ dyn.referenceMarketRevenues
+			+ dyn.additionalRevenues
+			- dyn.directMarketerPayment;
+
+		var stat = r.staticTotal;
+		stat.feedInFundingRevenues = staticYearly(funding);
+		stat.referenceMarketRevenues = staticYearly(reference);
+		stat.additionalRevenues = staticYearly(additional);
+		stat.directMarketerPayment = Math.max(
+			0, share * stat.additionalRevenues);
+		stat.revenuesElectricity = stat.feedInFundingRevenues
+			+ stat.referenceMarketRevenues
+			+ stat.additionalRevenues
+			- stat.directMarketerPayment;
 	}
 
 	private void addAnnualFunding(BiogasCostResult r) {
@@ -224,26 +253,20 @@ public class BiogasCostCalculator {
 	/// Sets the heat revenues and the total revenues of the dynamic and the
 	/// static summary. The heat revenues are calculated from the suggested heat
 	/// price. The total revenues are the sum of the annual funding, the
-	/// electricity revenues (feed-in funding and exchange revenues), and the
-	/// heat revenues.
+	/// electricity revenues, and the heat revenues.
 	private void addRevenuesHeat(BiogasCostResult r) {
 		double heat = revenues != null
 			? revenues.totalGeneratedHeat()
 			: 0;
-		double electricity = revenues != null
-			? revenues.totalRevenues()
-			: 0;
-		setHeatRevenues(r.dynamicTotal, heat, electricity);
-		setHeatRevenues(r.staticTotal, heat, electricity);
+		setHeatRevenues(r.dynamicTotal, heat);
+		setHeatRevenues(r.staticTotal, heat);
 	}
 
-	private void setHeatRevenues(
-		BiogasCostResult.Summary s, double heat, double electricityRevenues
-	) {
+	private void setHeatRevenues(BiogasCostResult.Summary s, double heat) {
 		s.suggestedHeatPrice = suggestedHeatPrice(s, heat);
 		s.revenuesHeat = s.suggestedHeatPrice * heat / 1000.0;
 		s.totalRevenues = s.annualFunding
-			+ electricityRevenues
+			+ s.revenuesElectricity
 			+ s.revenuesHeat;
 	}
 

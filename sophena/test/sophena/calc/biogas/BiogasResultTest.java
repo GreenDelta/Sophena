@@ -36,11 +36,24 @@ public class BiogasResultTest {
 		plant.settings = settings;
 
 		var r = BiogasResult.calculate(plant).orElseThrow();
+		var revenues = r.revenues();
+		var dyn = r.costs().dynamicTotal;
 
-		// with 0 % interest the annuity equals the first-year value
-		assertEquals(r.revenues().totalRevenues(),
-			r.costs().dynamicTotal.revenuesElectricity, 1e-6);
-		assertEquals(r.revenues().totalRevenues(),
+		// with 0 % interest and a price change factor of 1 the annuity equals
+		// the first-year value
+		double additional = revenues.spotMarketRevenuesSum()
+			- revenues.marketRevenuesSum();
+		assertEquals(revenues.feedInFundingSum(),
+			dyn.feedInFundingRevenues, 1e-6);
+		assertEquals(revenues.marketRevenuesSum(),
+			dyn.referenceMarketRevenues, 1e-6);
+		assertEquals(additional, dyn.additionalRevenues, 1e-6);
+		assertEquals(revenues.feedInFundingSum()
+			+ revenues.marketRevenuesSum()
+			+ additional
+			- dyn.directMarketerPayment,
+			dyn.revenuesElectricity, 1e-6);
+		assertEquals(dyn.revenuesElectricity,
 			r.costs().staticTotal.revenuesElectricity, 1e-6);
 	}
 

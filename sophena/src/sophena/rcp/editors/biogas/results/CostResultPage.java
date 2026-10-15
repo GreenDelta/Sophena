@@ -76,10 +76,9 @@ class CostResultPage extends FormPage {
 			dyn.totalAnnualCosts, stat.totalAnnualCosts).bold());
 		items.add(new Item());
 
-		// direct marketer payment
-		double dmp = result.revenues().directMarketerPayment();
-		if (dmp > 0) {
-			items.add(new Item("Direktvermarkterzahlungen", "EUR/a", dmp, dmp));
+		if (dyn.directMarketerPayment > 0 || stat.directMarketerPayment > 0) {
+			items.add(new Item("Direktvermarkterzahlungen", "EUR/a",
+				dyn.directMarketerPayment, stat.directMarketerPayment));
 			items.add(new Item());
 		}
 
@@ -87,10 +86,11 @@ class CostResultPage extends FormPage {
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
 		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
-			result.revenues().feedInFundingSum(), result.revenues().feedInFundingSum()));
-		double spotMarketRevenues = result.revenues().spotMarketRevenuesSum() - dmp;
-		items.add(new Item("Stromerlöse", "EUR/a",
-			spotMarketRevenues, spotMarketRevenues));
+			dyn.feedInFundingRevenues, stat.feedInFundingRevenues));
+		items.add(new Item("Stromerlöse - Referenzmarktwert", "EUR/a",
+			dyn.referenceMarketRevenues, stat.referenceMarketRevenues));
+		items.add(new Item("Stromerlöse - Mehrerlöse", "EUR/a",
+			dyn.additionalRevenues, stat.additionalRevenues));
 		items.add(new Item("Wärmeerlöse", "EUR/a",
 			dyn.revenuesHeat, stat.revenuesHeat));
 		items.add(new Item("Gesamterlöse", "EUR/a",

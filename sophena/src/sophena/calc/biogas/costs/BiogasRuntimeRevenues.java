@@ -17,17 +17,14 @@ import sophena.model.biogas.MarketPriceLimit;
 /// @param feedInFundingSum The total funding for electricity feed-in (EUR).
 /// @param spotMarketRevenues The revenues from the spot market for each hour (EUR).
 /// @param spotMarketRevenuesSum The total revenues from the spot market (EUR).
-/// @param directMarketerPayment The total payment to the direct marketer in
-///   EUR: the share of the additional revenues, but never negative.
+/// @param marketRevenuesSum The revenues at the monthly market value in EUR:
+///   the fed-in electricity multiplied with the monthly market value. This is
+///   the reference value for the additional revenues. When no market value is
+///   defined, this is the sum of the exchange revenues.
 /// @param feedInElectricity The total amount of electricity that was fed into
 ///   the grid (kWh).
 /// @param totalGeneratedHeat The usable heat that is fed into the heat network
 ///   in kWh (the sum of the producer profile).
-/// @param additionalRevenues The additional revenues (Mehrerlöse) in EUR: the
-///   exchange revenues minus the revenues at the monthly market value; this
-///   value can be negative.
-/// @param totalRevenues The total revenues of the year in EUR
-///   (`fundingSum + spotMarketRevenuesSum - directMarketerPayment`).
 /// @param quarterHoursBelowZero The operating quarter hours in which the plant
 ///   runs under full load at a spot price below 0 ct/kWh.
 /// @param quarterHoursBelowTwo The operating quarter hours in which the plant
@@ -41,11 +38,9 @@ public record BiogasRuntimeRevenues(
 	double feedInFundingSum,
 	double[] spotMarketRevenues,
 	double spotMarketRevenuesSum,
-	double directMarketerPayment,
+	double marketRevenuesSum,
 	double feedInElectricity,
 	double totalGeneratedHeat,
-	double additionalRevenues,
-	double totalRevenues,
 	double quarterHoursBelowZero,
 	double quarterHoursBelowTwo,
 	double totalQuarterHours,
@@ -144,21 +139,15 @@ public record BiogasRuntimeRevenues(
 
 			double fundingSum = Stats.sum(funding);
 			double revenuesSum = Stats.sum(revenues);
-			double additional = calcAdditionalRevenues(revenues);
-			double directMarketer = Math.max(
-				0, additional * settings.directMarketerShare / 100.0);
-			double total = fundingSum + revenuesSum - directMarketer;
 
 			return new BiogasRuntimeRevenues(
 				funding,
 				fundingSum,
 				revenues,
 				revenuesSum,
-				directMarketer,
+				calcMarketRevenuesSum(revenuesSum),
 				Stats.sum(feedIn),
 				Stats.sum(heatPower),
-				additional,
-				total,
 				quarterHoursBelowZero(),
 				quarterHoursBelowTwo(),
 				totalQuarterHours(),
@@ -245,23 +234,21 @@ public record BiogasRuntimeRevenues(
 			return revenues;
 		}
 
-		/// The additional revenues (Mehrerlöse) in EUR: the sum of the exchange
-		/// revenues minus the sum of the revenues at the monthly market value.
-		/// The per-hour differences are netted, so this value can be negative;
-		/// only the share of the direct marketer is never negative (see
-		/// `calculate`). The monthly market value is always used here, also
-		/// when the annual value is selected for the market premium.
-		private double calcAdditionalRevenues(double[] revenues) {
+		/// The revenues at the monthly market value in EUR: the fed-in electricity
+		/// multiplied with the monthly market value. This is the reference value
+		/// for the additional revenues. The monthly market value is always used
+		/// here, also when the annual value is selected for the market premium.
+		/// Without a market value there is no reference, so the exchange revenues
+		/// are used and no additional revenues are calculated.
+		private double calcMarketRevenuesSum(double exchangeRevenuesSum) {
 			var marketValue = settings.marketValue;
 			if (marketValue == null)
-				return 0;
+				return exchangeRevenuesSum;
 			double sum = 0;
 			for (int h = 0; h < Stats.HOURS; h++) {
 				if (skipHour(h))
 					continue;
-				double monthly =
-					feedIn[h] * marketValue.monthlyValueOfHour(h) / 100.0;
-				sum += revenues[h] - monthly;
+				sum += feedIn[h] * marketValue.monthlyValueOfHour(h) / 100.0;
 			}
 			return sum;
 		}

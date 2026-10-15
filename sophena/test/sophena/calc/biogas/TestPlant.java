@@ -64,6 +64,35 @@ public final class TestPlant {
 		plant.electricityPrices.feedInAllowed = allowed;
 	}
 
+	/// The fed-in electricity in each hour in kWh for the given run flags:
+	/// full-load hours contribute the electric power of the plant (minus the
+	/// internal power demand in the surplus feed-in mode), each ramp 1/8 of the
+	/// power, and the cable and transformer losses are subtracted from every
+	/// hour that feeds in.
+	public static double[] feedInProfile(BiogasPlant plant, boolean[] flags) {
+		double power = BiogasPlants.totalElectricPower(plant);
+		double demand = plant.settings.avgPowerDemand;
+		double losses = plant.settings.transmissionLosses;
+		boolean fullFeedIn = plant.settings.isFullFeedIn;
+		var feedIn = new double[flags.length];
+		for (int h = 0; h < flags.length; h++) {
+			if (flags[h]) {
+				double energy = fullFeedIn ? power : power - demand;
+				feedIn[h] = Math.max(0, energy - losses);
+				continue;
+			}
+			int ramps = 0;
+			if (h + 1 < flags.length && flags[h + 1])
+				ramps++;
+			if (h > 0 && flags[h - 1])
+				ramps++;
+			if (ramps > 0) {
+				feedIn[h] = Math.max(0, ramps * power / 8.0 - losses);
+			}
+		}
+		return feedIn;
+	}
+
 	private static BiogasPlant base(double storageSize, int minimumRuntime) {
 		// the fuel power under full load is 500 / 0.4 = 1250 kW
 		var boiler = new Boiler();
