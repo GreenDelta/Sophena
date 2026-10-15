@@ -14,6 +14,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import sophena.calc.biogas.BiogasResult;
 import sophena.model.Stats;
 import sophena.rcp.colors.Colors;
+import sophena.rcp.editors.biogas.charts.BiogasStorageChart;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -47,6 +48,14 @@ class OverviewPage extends FormPage {
 
 		var items = makeItems();
 		table.setInput(items);
+
+		// the fill level of the gas storage over the year
+		var chartSection = UI.section(body, tk, "Gasspeicherfüllstand");
+		var chartComp = UI.sectionClient(chartSection, tk);
+		UI.gridLayout(chartComp, 1);
+		var chart = new BiogasStorageChart(chartComp);
+		chart.setInput(editor.result().plant(), editor.result().runtime());
+
 		form.reflow(true);
 	}
 
