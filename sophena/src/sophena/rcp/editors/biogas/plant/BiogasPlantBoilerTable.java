@@ -65,7 +65,7 @@ class BiogasPlantBoilerTable {
 	private void add() {
 		var entry = new BiogasPlantBoiler();
 		entry.id = UUID.randomUUID().toString();
-		if (BiogasPlantBoilerWizard.open(entry, plant().productGroup) != Window.OK)
+		if (BoilerWizard.open(entry, plant().productGroup) != Window.OK)
 			return;
 		plant().boilers.add(entry);
 		refresh();
@@ -77,7 +77,7 @@ class BiogasPlantBoilerTable {
 		if (selected == null)
 			return;
 		var clone = selected.copy();
-		if (BiogasPlantBoilerWizard.open(clone, plant().productGroup) != Window.OK)
+		if (BoilerWizard.open(clone, plant().productGroup) != Window.OK)
 			return;
 		selected.boiler = clone.boiler;
 		selected.costs = clone.costs;

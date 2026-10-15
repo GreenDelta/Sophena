@@ -61,7 +61,6 @@ public class BiogasPlantWizard extends Wizard {
 		var wizard = new BiogasPlantWizard(plant);
 		wizard.setWindowTitle("Neue Biogasanlage");
 		var dialog = new WizardDialog(UI.shell(), wizard);
-		dialog.setPageSize(150, 450);
 
 		return dialog.open() == Window.OK
 			? Optional.of(wizard.plant)
@@ -79,7 +78,7 @@ public class BiogasPlantWizard extends Wizard {
 		plant.gasStorageTemperature = 30;
 		plant.gasStorageOverpressure = 5;
 
-		// select a default electricity price curver
+		// select a default electricity price curve
 		plant.electricityPrices = App.getDb().getAll(ElectricityPriceCurve.class)
 			.stream()
 			.sorted((i, j) -> Strings.compareNatural(j.name, i.name))
@@ -271,6 +270,7 @@ public class BiogasPlantWizard extends Wizard {
 			entry.investmentGroup = group;
 			entry.productGroup = g;
 			entry.costs = ProductCosts.createFrom(g);
+			entry.costs.operation = 0;
 			plant.investments.add(entry);
 			return entry;
 		}

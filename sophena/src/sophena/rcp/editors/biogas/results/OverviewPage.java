@@ -5,17 +5,14 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.biogas.runtime.BiogasRuntimeResult;
-import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.BiogasResult;
+import sophena.model.Stats;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -34,24 +31,28 @@ class OverviewPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var result = editor.result().runtime();
 		var form = UI.formHeader(mForm,
 			"Ergebnisse: " + editor.result().plant().name);
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
-		createOverview(body, tk, result);
+		var section = UI.section(body, tk, "Biogas-Kennzahlen");
+		var comp = UI.sectionClient(section, tk);
+		UI.gridData(section, true, true);
+		var table = Tables.createViewer(comp, "Name", "Wert", "Einheit");
+		UI.gridData(table.getControl(), true, true);
+		Tables.bindColumnWidths(table, 0.5, 0.3, 0.2);
+		Tables.rightAlignColumns(table, 1);
+		table.setLabelProvider(new ItemLabel());
 
+		var items = makeItems();
+		table.setInput(items);
 		form.reflow(true);
 	}
 
-	private void createOverview(
-		Composite body, FormToolkit tk, BiogasRuntimeResult result
-	) {
+	private ArrayList<Item> makeItems() {
 		var plant = editor.result().plant();
-		var table = createTable(UI.formSection(body, tk, "Biogas-Kennzahlen"));
 		var revs = editor.result().revenues();
-
 		var items = new ArrayList<Item>();
 
 		items.add(
@@ -67,7 +68,7 @@ class OverviewPage extends FormPage {
 		if (!plant.settings.isFixedRemuneration) {
 			var item = revs.totalQuarterHours() < plant.settings.eligibleQuarterHours
 				? Item.of("Förderfähige Betriebsviertelstunden", "eingehalten", "")
-				: Item.errorOf("Förderfähige Betriebsviertelstunden", "nicht eingehalten", "");
+				: Item.errorOf("Förderfähige Betriebsviertelstunden", "nicht eingehalten");
 			items.add(item);
 		}
 
@@ -77,48 +78,39 @@ class OverviewPage extends FormPage {
 				Num.intStr(above85), "Vh/a"));
 		if (above85 >= 4000) {
 			items.add(
-				Item.of("Qualitätskriterium Flexiblitätsbetrieb",	"eingehalten", ""));
+				Item.of("Qualitätskriterium Flexiblitätsbetrieb", "eingehalten", ""));
 		} else {
 			items.add(
 				Item.errorOf("Qualitätskriterium Flexiblitätsbetrieb",
-					"nicht eingehalten", ""));
+					"nicht eingehalten"));
 		}
 
-		items.add(
-			Item.of("Jährliche erzeugte Wärmemenge",
-				Num.intStr(revs.totalGeneratedHeat()), "kWh/a"));
+		items.add(Item.of("Börseneinnahmen",
+			Num.intStr(revs.spotMarketRevenuesSum()), "EUR/a"));
 
+		var netPlus = (100 - plant.settings.directMarketerShare)
+			* (revs.spotMarketRevenuesSum() - revs.marketRevenuesSum())
+			/ revs.feedInElectricity();
+		items.add(Item.of("Nettomehrerlöse", Num.str(netPlus, 1), "ct/kWh"));
 
+		var ratedPower = revs.feedInElectricity() / Stats.HOURS;
+		items.add(Item.of("Bemessungsleistung", Num.intStr(ratedPower), "kW"));
 
-
-		items.add(Item.of("Laufzeit", Num.intStr(plant.duration), "Jahre"));
-		items.add(Item.of("Gasspeichergröße",
-			Num.intStr(result.gasStorageSize()), "m³"));
-		items.add(Item.of("Betriebsstunden",
-			Num.intStr(runHours(result)), "h/a"));
-		items.add(Item.of("Thermische Leistung",
-			Num.intStr(BiogasPlants.totalThermalPower(plant)), "kW"));
-		items.add(Item.of("Elektrische Leistung",
-			Num.intStr(BiogasPlants.totalElectricPower(plant)), "kW"));
-		table.setInput(items);
-	}
-
-	private TableViewer createTable(Composite parent) {
-		var table = Tables.createViewer(parent, "Name", "Wert", "Einheit");
-		Tables.bindColumnWidths(table, 0.5, 0.3, 0.2);
-		Tables.rightAlignColumns(table, 1);
-		table.setLabelProvider(new ItemLabel());
-		return table;
-	}
-
-	private static int runHours(BiogasRuntimeResult result) {
-		var flags = result.runFlags();
-		int n = 0;
-		for (boolean flag : flags) {
-			if (flag)
-				n++;
+		if (plant.settings.maxRatedPower != null) {
+			var ratedItem = ratedPower > plant.settings.maxRatedPower
+				? Item.errorOf("Höchstbemessungsleistung", "überschritten")
+				: Item.of("Höchstbemessungsleistung", "eingehalten", "");
+			items.add(ratedItem);
 		}
-		return n;
+
+		var stats = RuntimeStats.of(editor.result());
+		items.add(Item.of("Tägliche BHKW-Start-Stops",
+			Num.str(stats.avgStartCount, 1), ""));
+		items.add(Item.of("Mindestdauerunterschreitungen",
+			Num.intStr(stats.tooShortCount), ""));
+		items.add(Item.of("Jährliche erzeugte Wärmemenge",
+			Num.intStr(revs.totalGeneratedHeat()), "kWh/a"));
+		return items;
 	}
 
 	private record Item(
@@ -129,8 +121,8 @@ class OverviewPage extends FormPage {
 			return new Item(name, value, unit, false);
 		}
 
-		static Item errorOf(String name, String value, String unit) {
-			return new Item(name, value, unit, true);
+		static Item errorOf(String name, String value) {
+			return new Item(name, value, "", true);
 		}
 	}
 
@@ -164,6 +156,36 @@ class OverviewPage extends FormPage {
 				case 2 -> item.unit();
 				default -> null;
 			};
+		}
+	}
+
+	private record RuntimeStats(double avgStartCount, int tooShortCount) {
+
+		static RuntimeStats of(BiogasResult r) {
+			if (r == null)
+				return new RuntimeStats(0, 0);
+			var minPhase = r.plant().minimumRuntime;
+
+			var before = false;
+			int starts = 0;
+			int phase = 0;
+			int tooShortCount = 0;
+			for (var next : r.runtime().runFlags()) {
+				if (next) {
+					if (!before) {
+						starts++;
+					}
+					phase++;
+				} else {
+					if (before && phase < minPhase) {
+						tooShortCount++;
+					}
+					phase = 0;
+				}
+				before = next;
+			}
+
+			return new RuntimeStats(((double) starts) / 365.0, tooShortCount);
 		}
 	}
 }

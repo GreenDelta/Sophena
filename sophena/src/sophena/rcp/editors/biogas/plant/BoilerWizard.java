@@ -19,7 +19,7 @@ import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.UI;
 import sophena.rcp.wizards.SimpleWizard;
 
-class BiogasPlantBoilerWizard extends SimpleWizard {
+class BoilerWizard extends SimpleWizard {
 
 	private final ProductGroup group;
 	private final BiogasPlantBoiler entry;
@@ -28,17 +28,22 @@ class BiogasPlantBoilerWizard extends SimpleWizard {
 	static int open(BiogasPlantBoiler entry, ProductGroup group) {
 		if (entry == null || group == null)
 			return Window.CANCEL;
-		var wizard = new BiogasPlantBoilerWizard(entry, group);
+		var wizard = new BoilerWizard(entry, group);
 		return wizard.open();
 	}
 
-	private BiogasPlantBoilerWizard(BiogasPlantBoiler entry, ProductGroup group) {
+	private BoilerWizard(BiogasPlantBoiler entry, ProductGroup group) {
 		super("BHKW-Block");
 		this.entry = entry;
 		this.group = group;
 		if (entry.costs == null) {
 			entry.costs = new ProductCosts();
 		}
+	}
+
+	@Override
+	protected int[] minimumSize() {
+		return new int[] { 420, 350 };
 	}
 
 	@Override
