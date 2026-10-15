@@ -258,12 +258,14 @@ public class BiogasCostCalculator {
 		double heat = revenues != null
 			? revenues.totalGeneratedHeat()
 			: 0;
-		setHeatRevenues(r.dynamicTotal, heat);
-		setHeatRevenues(r.staticTotal, heat);
+		setHeatRevenues(r.dynamicTotal, heat, true);
+		setHeatRevenues(r.staticTotal, heat, false);
 	}
 
-	private void setHeatRevenues(BiogasCostResult.Summary s, double heat) {
-		s.suggestedHeatPrice = suggestedHeatPrice(s, heat);
+	private void setHeatRevenues(
+		BiogasCostResult.Summary s, double heat, boolean dynamic
+	) {
+		s.suggestedHeatPrice = suggestedHeatPrice(s, heat, dynamic);
 		s.revenuesHeat = s.suggestedHeatPrice * heat / 1000.0;
 		s.totalRevenues = s.annualFunding
 			+ s.revenuesElectricity
@@ -272,22 +274,46 @@ public class BiogasCostCalculator {
 
 	/// The suggested heat price in EUR/MWh of the given summary. With
 	/// `WP = 1000 * WE / WM` and `WE = target - annualSurplus`, where the target
-	/// is `JGK * GKR / 100` in the capital return rate case and `JUB` in the
-	/// annual surplus case.
+	/// is the surplus that is needed to reach the total capital return rate
+	/// (`surplusForCapitalReturnRate`) in the capital return rate case and the
+	/// expected annual surplus in the annual surplus case.
 	private double suggestedHeatPrice(
-		BiogasCostResult.Summary summary, double heat
+		BiogasCostResult.Summary summary, double heat, boolean dynamic
 	) {
 		if (heat <= 0)
 			return 0;
 		var settings = plant.settings;
 		double target = settings.useCapitalReturnRate
-			? summary.totalAnnualCosts * settings.capitalReturnRate / 100.0
+			? surplusForCapitalReturnRate(summary, dynamic)
 			: settings.expectedAnnualSurplus;
 		double annualSurplus = summary.annualFunding
 			+ summary.revenuesElectricity
 			- summary.totalAnnualCosts;
 		double heatRevenue = target - annualSurplus;
 		return 1000 * heatRevenue / heat;
+	}
+
+	/// The annual surplus (Jahresüberschuss) that is needed so that the total
+	/// capital return rate (Gesamtkapitalrentabilität) of the given summary
+	/// reaches the expected value of the plant settings:
+	///
+	/// - static: `GKR = (JÜ + i * I) / I`
+	/// - dynamic: `GKR = (JÜ + 0,5 * i * I) / (I / 2)`
+	///
+	/// with `I = investments - investmentFunding` and `i = interestRate / 100`
+	/// (Kapital-Mischzinssatz). Resolved for the annual surplus this is
+	/// `I * (GKR - i)` for the static and `I / 2 * (GKR - i)` for the dynamic
+	/// calculation.
+	private double surplusForCapitalReturnRate(
+		BiogasCostResult.Summary summary, boolean dynamic
+	) {
+		double capital = summary.investments - summary.investmentFunding;
+		if (dynamic) {
+			capital /= 2.0;
+		}
+		double rate = plant.settings.capitalReturnRate / 100.0;
+		double interest = plant.settings.interestRate / 100.0;
+		return capital * (rate - interest);
 	}
 
 	/// The computed costs of a single investment item: the dynamic values for

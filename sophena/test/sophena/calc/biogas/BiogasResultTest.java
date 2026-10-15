@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import sophena.calc.biogas.costs.BiogasCostResult;
+import sophena.model.ProductCosts;
+import sophena.model.biogas.BiogasInvestmentEntry;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantSettings;
 
@@ -64,8 +66,8 @@ public class BiogasResultTest {
 		plant.settings.capitalReturnRate = 20;
 
 		var r = BiogasResult.calculate(plant).orElseThrow();
-		assertCapitalReturnRate(r.costs().dynamicTotal, 20);
-		assertCapitalReturnRate(r.costs().staticTotal, 20);
+		assertCapitalReturnRate(r, r.costs().dynamicTotal, true);
+		assertCapitalReturnRate(r, r.costs().staticTotal, false);
 	}
 
 	@Test
@@ -94,15 +96,36 @@ public class BiogasResultTest {
 		plant.duration = 20;
 		plant.boilers.getFirst().boiler.maxPower = 600;
 		plant.settings = BiogasPlantSettings.createDefault(null);
+
+		// the capital return rate is calculated from the investments, so the
+		// plant needs at least one investment entry
+		var entry = new BiogasInvestmentEntry();
+		entry.costs = new ProductCosts();
+		entry.costs.investment = 500_000;
+		plant.investments.add(entry);
 		return plant;
 	}
 
+	/// Checks that the total capital return rate (Gesamtkapitalrentabilität)
+	/// of the given summary reaches the expected value:
+	///
+	/// - static: `GKR = (JÜ + i * I) / I`
+	/// - dynamic: `GKR = (JÜ + 0,5 * i * I) / (I / 2)`
+	///
+	/// with `JÜ = totalRevenues - totalAnnualCosts`,
+	/// `I = investments - investmentFunding`, and `i = interestRate / 100`.
 	private static void assertCapitalReturnRate(
-		BiogasCostResult.Summary s, double expected
+		BiogasResult r, BiogasCostResult.Summary s, boolean dynamic
 	) {
-		double achieved = 100 * (s.totalRevenues - s.totalAnnualCosts)
-			/ s.totalAnnualCosts;
-		assertEquals(expected, achieved, 1e-6);
+		var settings = r.plant().settings;
+		double capital = s.investments - s.investmentFunding;
+		if (dynamic) {
+			capital /= 2.0;
+		}
+		double surplus = s.totalRevenues - s.totalAnnualCosts;
+		double interest = settings.interestRate / 100.0;
+		double achieved = 100 * (surplus + capital * interest) / capital;
+		assertEquals(settings.capitalReturnRate, achieved, 1e-6);
 	}
 
 	private static void assertAnnualSurplus(
