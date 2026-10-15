@@ -152,6 +152,69 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	@Test
+	public void additionalRevenuesNetTheNegativeDeviations() {
+		// the price is below the market value in the first month and above it
+		// afterwards; the additional revenues are the signed difference of the
+		// two sums and not the sum of the positive per-hour differences
+		var plant = TestPlant.of(1600, 4, h -> h < 744 ? 2 : 14);
+		plant.settings = settings();
+		plant.settings.isFixedRemuneration = false;
+		plant.settings.marketValue = marketValue(8, 8);
+		plant.settings.directMarketerShare = 20;
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
+
+		var feedIn = hourlyFeedIn(result.runFlags(), 30, LOSSES, false);
+		double referenceSum = 0;
+		double netted = 0;
+		double clamped = 0;
+		boolean below = false;
+		boolean above = false;
+		for (int h = 0; h < Stats.HOURS; h++) {
+			double reference = feedIn[h] * 8 / 100.0;
+			referenceSum += reference;
+			double diff = r.spotMarketRevenues()[h] - reference;
+			netted += diff;
+			clamped += Math.max(0, diff);
+			if (feedIn[h] > 0 && diff < 0)
+				below = true;
+			if (feedIn[h] > 0 && diff > 0)
+				above = true;
+		}
+		assertTrue("the plant must run below the market value", below);
+		assertTrue("the plant must run above the market value", above);
+		assertTrue(netted < clamped);
+
+		assertEquals(r.spotMarketRevenuesSum() - referenceSum,
+			r.additionalRevenues(), 1e-6);
+		assertEquals(netted, r.additionalRevenues(), 1e-6);
+		assertEquals(Math.max(0, 0.20 * netted),
+			r.directMarketerPayment(), 1e-6);
+	}
+
+	@Test
+	public void directMarketerPaymentIsNeverNegative() {
+		// the spot market price is always below the market value, so the
+		// additional revenues are negative and the payment is zero
+		var plant = TestPlant.of(1600, 4, h -> h < 4000 ? 2 : 5);
+		plant.settings = settings();
+		plant.settings.isFixedRemuneration = false;
+		plant.settings.marketValue = marketValue(8, 8);
+		plant.settings.directMarketerShare = 50;
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
+
+		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
+		assertTrue(feedIn > 0);
+		double expected = r.spotMarketRevenuesSum() - 0.08 * feedIn;
+		assertTrue("the additional revenues must be negative", expected < 0);
+		assertEquals(expected, r.additionalRevenues(), 1e-6);
+		assertEquals(0, r.directMarketerPayment(), 1e-9);
+		assertEquals(r.feedInFundingSum() + r.spotMarketRevenuesSum(),
+			r.totalRevenues(), 1e-6);
+	}
+
+	@Test
 	public void marketPriceLimitBlocksTheFunding() {
 		// all hours have a price of 1 ct/kWh
 		var plant = TestPlant.of(1600, 4, h -> 1);
@@ -325,6 +388,32 @@ public class BiogasRuntimeRevenuesTest {
 			}
 		}
 		return sum;
+	}
+
+	/// The fed-in electricity in each hour in kWh; this is the profile that
+	/// `expectedFeedIn` sums up.
+	private static double[] hourlyFeedIn(
+		boolean[] flags, double avgDemand, double losses, boolean fullFeedIn
+	) {
+		var feedIn = new double[flags.length];
+		for (int h = 0; h < flags.length; h++) {
+			if (flags[h]) {
+				double energy = fullFeedIn
+					? POWER
+					: POWER - avgDemand;
+				feedIn[h] = Math.max(0, energy - losses);
+				continue;
+			}
+			int ramps = 0;
+			if (h + 1 < flags.length && flags[h + 1])
+				ramps++;
+			if (h > 0 && flags[h - 1])
+				ramps++;
+			if (ramps > 0) {
+				feedIn[h] = Math.max(0, ramps * POWER / 8.0 - losses);
+			}
+		}
+		return feedIn;
 	}
 
 	private static double countRuns(boolean[] flags) {

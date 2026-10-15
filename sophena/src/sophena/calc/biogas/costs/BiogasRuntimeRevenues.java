@@ -17,14 +17,15 @@ import sophena.model.biogas.MarketPriceLimit;
 /// @param feedInFundingSum The total funding for electricity feed-in (EUR).
 /// @param spotMarketRevenues The revenues from the spot market for each hour (EUR).
 /// @param spotMarketRevenuesSum The total revenues from the spot market (EUR).
-/// @param directMarketerPayment The total payment to the direct marketer (EUR).
+/// @param directMarketerPayment The total payment to the direct marketer in
+///   EUR: the share of the additional revenues, but never negative.
 /// @param feedInElectricity The total amount of electricity that was fed into
 ///   the grid (kWh).
 /// @param totalGeneratedHeat The usable heat that is fed into the heat network
 ///   in kWh (the sum of the producer profile).
 /// @param additionalRevenues The additional revenues (Mehrerlöse) in EUR: the
-///   positive difference between the exchange revenues and the revenues at the
-///   monthly market value.
+///   exchange revenues minus the revenues at the monthly market value; this
+///   value can be negative.
 /// @param totalRevenues The total revenues of the year in EUR
 ///   (`fundingSum + spotMarketRevenuesSum - directMarketerPayment`).
 /// @param quarterHoursBelowZero The operating quarter hours in which the plant
@@ -144,8 +145,8 @@ public record BiogasRuntimeRevenues(
 			double fundingSum = Stats.sum(funding);
 			double revenuesSum = Stats.sum(revenues);
 			double additional = calcAdditionalRevenues(revenues);
-			double directMarketer =
-				additional * settings.directMarketerShare / 100.0;
+			double directMarketer = Math.max(
+				0, additional * settings.directMarketerShare / 100.0);
 			double total = fundingSum + revenuesSum - directMarketer;
 
 			return new BiogasRuntimeRevenues(
@@ -244,9 +245,11 @@ public record BiogasRuntimeRevenues(
 			return revenues;
 		}
 
-		/// The additional revenues (Mehrerlöse) in EUR: the difference between
-		/// the exchange revenues and the monthly market value revenues, but
-		/// never negative. The monthly market value is always used here, also
+		/// The additional revenues (Mehrerlöse) in EUR: the sum of the exchange
+		/// revenues minus the sum of the revenues at the monthly market value.
+		/// The per-hour differences are netted, so this value can be negative;
+		/// only the share of the direct marketer is never negative (see
+		/// `calculate`). The monthly market value is always used here, also
 		/// when the annual value is selected for the market premium.
 		private double calcAdditionalRevenues(double[] revenues) {
 			var marketValue = settings.marketValue;
@@ -254,11 +257,11 @@ public record BiogasRuntimeRevenues(
 				return 0;
 			double sum = 0;
 			for (int h = 0; h < Stats.HOURS; h++) {
-				if (skipHour(h) || feedIn[h] <= 0)
+				if (skipHour(h))
 					continue;
 				double monthly =
 					feedIn[h] * marketValue.monthlyValueOfHour(h) / 100.0;
-				sum += Math.max(0, revenues[h] - monthly);
+				sum += revenues[h] - monthly;
 			}
 			return sum;
 		}
