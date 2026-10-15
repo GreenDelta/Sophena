@@ -33,12 +33,12 @@ public class BiogasRuntimeRevenuesTest {
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
 		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
-		assertEquals(feedIn, r.feedIn(), 1e-6);
-		assertEquals(0.12 * feedIn, r.fundingSum(), 1e-6);
-		assertEquals(0.10 * feedIn, r.revenuesSum(), 1e-6);
+		assertEquals(feedIn, r.feedInElectricity(), 1e-6);
+		assertEquals(0.12 * feedIn, r.feedInFundingSum(), 1e-6);
+		assertEquals(0.10 * feedIn, r.spotMarketRevenuesSum(), 1e-6);
 		assertEquals(0, r.additionalRevenues(), 1e-9);
 		assertEquals(0, r.directMarketerPayment(), 1e-9);
-		assertEquals(r.fundingSum() + r.revenuesSum(),
+		assertEquals(r.feedInFundingSum() + r.spotMarketRevenuesSum(),
 			r.totalRevenues(), 1e-6);
 	}
 
@@ -50,13 +50,13 @@ public class BiogasRuntimeRevenuesTest {
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
 
 		double expected = expectedFeedIn(result.runFlags(), 30, LOSSES, true);
-		assertEquals(expected, r.feedIn(), 1e-6);
+		assertEquals(expected, r.feedInElectricity(), 1e-6);
 
 		var surplus = base();
 		var surplusResult = BiogasRuntimeResult.calculate(surplus).orElseThrow();
 		var r2 = BiogasRuntimeRevenues.calculate(surplus, surplusResult)
 			.orElseThrow();
-		assertTrue(r.feedIn() > r2.feedIn());
+		assertTrue(r.feedInElectricity() > r2.feedInElectricity());
 	}
 
 	@Test
@@ -72,10 +72,10 @@ public class BiogasRuntimeRevenuesTest {
 		var with20 = BiogasRuntimeRevenues.calculate(withLosses, result)
 			.orElseThrow();
 
-		assertTrue(without.feedIn() > with20.feedIn());
+		assertTrue(without.feedInElectricity() > with20.feedInElectricity());
 		assertEquals(
 			expectedFeedIn(result.runFlags(), 30, 20, false),
-			with20.feedIn(), 1e-6);
+			with20.feedInElectricity(), 1e-6);
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class BiogasRuntimeRevenuesTest {
 
 		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		// premium = 18 - 10 = 8 ct/kWh
-		assertEquals(0.08 * feedIn, r.fundingSum(), 1e-6);
+		assertEquals(0.08 * feedIn, r.feedInFundingSum(), 1e-6);
 		// the monthly value equals the annual value here
 		assertEquals(0, r.additionalRevenues(), 1e-9);
 	}
@@ -116,7 +116,7 @@ public class BiogasRuntimeRevenuesTest {
 
 		double feedIn = expectedFeedIn(result.runFlags(), 30, LOSSES, false);
 		// premium = 18 - 5 = 13 ct/kWh
-		assertEquals(0.13 * feedIn, r.fundingSum(), 1e-6);
+		assertEquals(0.13 * feedIn, r.feedInFundingSum(), 1e-6);
 		assertEquals(0.05 * feedIn, r.additionalRevenues(), 1e-6);
 	}
 
@@ -128,7 +128,7 @@ public class BiogasRuntimeRevenuesTest {
 		plant.settings.marketValue = marketValue(10, 10);
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
-		assertEquals(0, r.fundingSum(), 1e-9);
+		assertEquals(0, r.feedInFundingSum(), 1e-9);
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class BiogasRuntimeRevenuesTest {
 		assertEquals(0.05 * feedIn, r.additionalRevenues(), 1e-6);
 		assertEquals(0.20 * r.additionalRevenues(),
 			r.directMarketerPayment(), 1e-6);
-		assertEquals(r.fundingSum() + r.revenuesSum() - r.directMarketerPayment(),
+		assertEquals(r.feedInFundingSum() + r.spotMarketRevenuesSum() - r.directMarketerPayment(),
 			r.totalRevenues(), 1e-6);
 	}
 
@@ -164,14 +164,14 @@ public class BiogasRuntimeRevenuesTest {
 		plant.settings.marketPriceLimit = MarketPriceLimit.NONE;
 		var without = BiogasRuntimeRevenues.calculate(plant, result)
 			.orElseThrow();
-		assertTrue(without.fundingSum() > 0);
+		assertTrue(without.feedInFundingSum() > 0);
 
 		plant.settings.marketPriceLimit = MarketPriceLimit.BELOW_TWO;
 		var with = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
-		assertEquals(0, with.fundingSum(), 1e-9);
+		assertEquals(0, with.feedInFundingSum(), 1e-9);
 
 		// the price limit does not affect the exchange revenues
-		assertEquals(without.revenuesSum(), with.revenuesSum(), 1e-6);
+		assertEquals(without.spotMarketRevenuesSum(), with.spotMarketRevenuesSum(), 1e-6);
 	}
 
 	@Test
@@ -192,8 +192,8 @@ public class BiogasRuntimeRevenuesTest {
 		plant.electricityPrices.feedInAllowed = allowed;
 
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
-		assertEquals(0, r.funding()[hour], 1e-12);
-		assertEquals(0, r.revenues()[hour], 1e-12);
+		assertEquals(0, r.feedInFunding()[hour], 1e-12);
+		assertEquals(0, r.spotMarketRevenues()[hour], 1e-12);
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class BiogasRuntimeRevenuesTest {
 
 		// the budget of 4 quarter hours funds exactly one full-load hour
 		int funded = 0;
-		for (double f : r.funding()) {
+		for (double f : r.feedInFunding()) {
 			if (f > 0)
 				funded++;
 		}
@@ -220,7 +220,7 @@ public class BiogasRuntimeRevenuesTest {
 		plant.settings.eligibleQuarterHours = 0;
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
-		assertTrue(r.fundingSum() > 0);
+		assertTrue(r.feedInFundingSum() > 0);
 	}
 
 	@Test

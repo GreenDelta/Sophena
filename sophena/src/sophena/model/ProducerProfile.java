@@ -28,7 +28,7 @@ public class ProducerProfile extends AbstractEntity {
 	public double[] temperaturLevel;
 
 	public static ProducerProfile initEmpty() {
-		ProducerProfile p = new ProducerProfile();
+		var p = new ProducerProfile();
 		p.maxPower = new double[Stats.HOURS];
 		p.minPower = new double[Stats.HOURS];
 		p.temperaturLevel = new double[Stats.HOURS];

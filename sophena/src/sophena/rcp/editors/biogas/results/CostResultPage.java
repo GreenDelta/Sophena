@@ -87,8 +87,8 @@ class CostResultPage extends FormPage {
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
 		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
-			result.revenues().fundingSum(), result.revenues().fundingSum()));
-		double spotMarketRevenues = result.revenues().revenuesSum() - dmp;
+			result.revenues().feedInFundingSum(), result.revenues().feedInFundingSum()));
+		double spotMarketRevenues = result.revenues().spotMarketRevenuesSum() - dmp;
 		items.add(new Item("Stromerlöse", "EUR/a",
 			spotMarketRevenues, spotMarketRevenues));
 		items.add(new Item("Wärmeerlöse", "EUR/a",

@@ -10,50 +10,23 @@ import sophena.model.biogas.BiogasPlantSettings;
 import sophena.model.biogas.ElectricityMarketValue;
 import sophena.model.biogas.MarketPriceLimit;
 
-/// The annual revenues from the electricity feed-in of a biogas plant.
+/// The annual revenues from a biogas plant and some other indicators calculated
+/// from the runtime result of one year.
 ///
-/// The revenue calculation depends on the type of the electricity marketing
-/// that is defined in the settings of the plant:
-///
-/// - In the fixed remuneration mode (`isFixedRemuneration`) every fed-in
-///   kilowatt-hour is paid with the fixed feed-in tariff (`feedInTariff`).
-/// - In the market premium model a market premium is paid which is the
-///   difference between the value to be applied (`marketPremiumValue`) and the
-///   reference market value of the selected `ElectricityMarketValue`. The
-///   premium is never negative and can be limited to hours with a certain
-///   electricity price (`marketPriceLimit`) and to a maximum number of
-///   eligible operating quarter hours (`eligibleQuarterHours`).
-///
-/// In both modes the revenues from the electricity exchange, the additional
-/// revenues (Mehrerlöse) and the share that is paid to the direct marketer are
-/// calculated. The fed-in electricity is the generated electricity minus the
-/// cable and transformer losses (`transmissionLosses`) in every operating hour;
-/// in the surplus feed-in mode the internal power demand (`avgPowerDemand`) is
-/// additionally subtracted in the full-load hours.
-///
-/// The hourly funding and exchange revenues are in EUR, the fed-in electricity
-/// and the generated heat are in kWh, and the quarter-hour values are operating
-/// quarter hours.
-///
-/// @param funding The funding for each hour of the year in EUR: the fed-in
-///   electricity multiplied with the fixed feed-in tariff or the market
-///   premium.
-/// @param fundingSum The total funding of the year in EUR.
-/// @param revenues The revenues from the electricity exchange for each hour of
-///   the year in EUR: the fed-in electricity multiplied with the spot market
-///   price.
-/// @param revenuesSum The total revenues from the electricity exchange of the
-///   year in EUR.
-/// @param directMarketerPayment The share of the additional revenues that is
-///   paid to the direct marketer in EUR (`directMarketerShare` in %).
-/// @param feedIn The total electricity that is fed into the grid in kWh.
+/// @param feedInFunding The funding for electricity feed-in for each hour (EUR).
+/// @param feedInFundingSum The total funding for electricity feed-in (EUR).
+/// @param spotMarketRevenues The revenues from the spot market for each hour (EUR).
+/// @param spotMarketRevenuesSum The total revenues from the spot market (EUR).
+/// @param directMarketerPayment The total payment to the direct marketer (EUR).
+/// @param feedInElectricity The total amount of electricity that was fed into
+///   the grid (kWh).
 /// @param totalGeneratedHeat The usable heat that is fed into the heat network
 ///   in kWh (the sum of the producer profile).
 /// @param additionalRevenues The additional revenues (Mehrerlöse) in EUR: the
 ///   positive difference between the exchange revenues and the revenues at the
 ///   monthly market value.
 /// @param totalRevenues The total revenues of the year in EUR
-///   (`fundingSum + revenuesSum - directMarketerPayment`).
+///   (`fundingSum + spotMarketRevenuesSum - directMarketerPayment`).
 /// @param quarterHoursBelowZero The operating quarter hours in which the plant
 ///   runs under full load at a spot price below 0 ct/kWh.
 /// @param quarterHoursBelowTwo The operating quarter hours in which the plant
@@ -63,12 +36,12 @@ import sophena.model.biogas.MarketPriceLimit;
 /// @param quarterHoursAbove85 The operating quarter hours in which the plant
 ///   runs under full load, which is at least 85 % of its power.
 public record BiogasRuntimeRevenues(
-	double[] funding,
-	double fundingSum,
-	double[] revenues,
-	double revenuesSum,
+	double[] feedInFunding,
+	double feedInFundingSum,
+	double[] spotMarketRevenues,
+	double spotMarketRevenuesSum,
 	double directMarketerPayment,
-	double feedIn,
+	double feedInElectricity,
 	double totalGeneratedHeat,
 	double additionalRevenues,
 	double totalRevenues,
