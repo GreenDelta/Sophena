@@ -46,22 +46,18 @@ public final class BiogasPlants {
 		return hour < 0 || hour >= allowed.length || allowed[hour];
 	}
 
-	public static void syncProducerProfile(Project project, Producer producer) {
-		if (project == null || producer == null)
+	/// Applies the given runtime result of the biogas plant of the given
+	/// producer to that producer.
+	public static void applyResult(
+		Project project, Producer producer, BiogasRuntimeResult result
+	) {
+		if (project == null || producer == null || result == null)
 			return;
 		var plant = producer.biogasPlant;
 		if (plant == null)
 			return;
 
 		producer.productGroup = plant.productGroup;
-
-		// an edit of a plant must always be possible, so we use an empty result
-		// when the plant cannot be calculated; the plant editor shows the error
-		var res = BiogasRuntimeResult.calculate(plant);
-		var result = res.isError()
-			? BiogasRuntimeResult.emptyOf(plant)
-			: res.value();
-
 		double temperature = project.heatNet != null
 			&& project.heatNet.maxBufferLoadTemperature > 0
 			? project.heatNet.maxBufferLoadTemperature
@@ -72,6 +68,22 @@ public final class BiogasPlants {
 			? thermalPower
 			: Stats.max(producer.profile.maxPower);
 		producer.profileMaxPowerElectric = totalElectricPower(plant);
+	}
+
+	/// Calculates the runtime result of the biogas plant of the given producer
+	/// and applies it to the producer (see `applyResult`). When the calculation
+	/// fails, the producer profile is set to an empty profile.
+	public static void syncProducerProfile(Project project, Producer producer) {
+		if (project == null || producer == null)
+			return;
+		var plant = producer.biogasPlant;
+		if (plant == null)
+			return;
+		var res = BiogasRuntimeResult.calculate(plant);
+		var result = res.isError()
+			? BiogasRuntimeResult.emptyOf(plant)
+			: res.value();
+		applyResult(project, producer, result);
 	}
 
 	/// Returns the gas storage size in m³ that is used for the calculations of

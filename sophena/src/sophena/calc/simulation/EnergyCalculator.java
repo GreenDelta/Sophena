@@ -1,6 +1,5 @@
 package sophena.calc.simulation;
 
-import sophena.calc.biogas.BiogasPlants;
 import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
@@ -20,20 +19,11 @@ class EnergyCalculator {
 	}
 
 	EnergyResult calculate() {
-		syncBiogasProfiles();
 		for (int hour = 0; hour < Stats.HOURS; hour++) {
 			simulateHour(hour);
 		}
 		finalizeSimulation(r);
 		return r;
-	}
-
-	private void syncBiogasProfiles() {
-		for (var producer : project.producers) {
-			if (producer.biogasPlant != null) {
-				BiogasPlants.syncProducerProfile(project, producer);
-			}
-		}
 	}
 
 	private void simulateHour(int hour) {
