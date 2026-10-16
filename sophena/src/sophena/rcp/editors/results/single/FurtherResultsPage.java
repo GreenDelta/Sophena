@@ -11,7 +11,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.GeneratedHeat;
 import sophena.calc.kpi.PrimaryEnergyFactor;
@@ -39,7 +39,7 @@ class FurtherResultsPage extends FormPage {
 		Composite body = UI.formBody(form, tk);
 		Function<String, Composite> s = title -> UI.formSection(body, tk,
 				title);
-		CO2Result co2 = editor.result.co2Result;
+		EmissionResult co2 = editor.result.emissionResult;
 		EmissionTable.create(co2, s.apply("Treibhausgasemissionen"));
 		EmissionChart.create(co2, body, tk);
 		EfficiencyResult efficiency = EfficiencyResult.calculate(editor.result);

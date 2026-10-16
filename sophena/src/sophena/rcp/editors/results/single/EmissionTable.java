@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.model.Producer;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -20,13 +20,13 @@ import sophena.utils.Num;
 
 class EmissionTable {
 
-	private final CO2Result result;
+	private final EmissionResult result;
 
-	private EmissionTable(CO2Result result) {
+	private EmissionTable(EmissionResult result) {
 		this.result = result;
 	}
 
-	public static void create(CO2Result result, Composite comp) {
+	public static void create(EmissionResult result, Composite comp) {
 		new EmissionTable(result).render(comp);
 	}
 

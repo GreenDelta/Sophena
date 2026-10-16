@@ -3,7 +3,7 @@ package sophena.rcp.editors.results.compare;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.calc.Comparison;
 import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.PrimaryEnergyFactor;
@@ -76,7 +76,7 @@ class KeyFigureTable {
 	}
 
 	private String emissionSavings(int i) {
-		CO2Result co2 = result.results[i].co2Result;
+		EmissionResult co2 = result.results[i].emissionResult;
 		double savings = co2.variantNaturalGas - co2.total;
 		return Num.intStr(savings) + " kg CO2 eq./a";
 	}

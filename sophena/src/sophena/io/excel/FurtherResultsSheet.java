@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.calc.ProjectResult;
 import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.GeneratedHeat;
@@ -18,9 +18,9 @@ import sophena.utils.Num;
 
 class FurtherResultsSheet {
 
-	private Workbook wb;
-	private ProjectResult result;
-	private Project project;
+	private final Workbook wb;
+	private final ProjectResult result;
+	private final Project project;
 
 	public int row = 0;
 
@@ -44,7 +44,7 @@ class FurtherResultsSheet {
 	}
 
 	public void createEmissions(Sheet sheet, CellStyle style) {
-		CO2Result co2 = result.co2Result;
+		EmissionResult co2 = result.emissionResult;
 		if (co2 == null)
 			return;
 

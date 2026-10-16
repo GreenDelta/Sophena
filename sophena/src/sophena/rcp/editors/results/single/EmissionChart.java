@@ -11,7 +11,7 @@ import org.eclipse.swtchart.ISeriesSet;
 import org.eclipse.swtchart.Range;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.model.Stats;
 import sophena.rcp.charts.ImageExport;
 import sophena.rcp.colors.ColorConfig;
@@ -22,15 +22,15 @@ import sophena.rcp.utils.UI;
 
 class EmissionChart {
 
-	private final CO2Result result;
+	private final EmissionResult result;
 	private final ColorConfig colors = ColorConfig.get();
 	private Chart chart;
 
-	private EmissionChart(CO2Result result) {
+	private EmissionChart(EmissionResult result) {
 		this.result = result;
 	}
 
-	public static void create(CO2Result result, Composite body, FormToolkit tk) {
+	public static void create(EmissionResult result, Composite body, FormToolkit tk) {
 		new EmissionChart(result).render(body, tk);
 	}
 

@@ -15,14 +15,14 @@ public class FuelUsage {
 	private final HashMap<String, Double> inFuelUnits = new HashMap<>();
 
 	public static FuelUsage calculate(ProjectResult r) {
-		FuelUsage usage = new FuelUsage();
+		var usage = new FuelUsage();
 		if (r == null || r.project == null)
 			return usage;
 		if (r.energyResult == null)
 			return usage;
 		for (Producer p : r.project.producers) {
 			double inKWh = calcKWh(r, p);
-			double amount = calcAmount(r, p, inKWh);
+			double amount = calcAmount(p, inKWh);
 			usage.inKWh.put(p.id, inKWh);
 			usage.inFuelUnits.put(p.id, amount);
 		}
@@ -31,10 +31,9 @@ public class FuelUsage {
 
 	private static double calcKWh(ProjectResult r, Producer producer) {
 		double Qgen = r.energyResult.totalHeat(producer);
-		if(producer.heatPump != null)
-		{
+		if (producer.heatPump != null) {
 			var jaz = r.energyResult.jaz(producer);
-			if(jaz != 0)
+			if (jaz != 0)
 				return Qgen / jaz;
 			return 0;
 		}
@@ -42,24 +41,19 @@ public class FuelUsage {
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer, r.energyResult);
-			double val = ur == 0 ? 0 : Qgen / ur;
-			return val;
-
+			return ur == 0 ? 0 : Qgen / ur;
 		} else {
 			double tf = Producers.fullLoadHours(producer, Qgen);
 			double powerEl = Producers.electricPower(producer);
 			double Pf = powerEl / electricalEfficiency;
-			double val = Pf * tf;
-			return val;
+			return Pf * tf;
 		}
 	}
 
-	private static double calcAmount(ProjectResult r, Producer producer,
-			double inKWh) {
+	private static double calcAmount(Producer producer, double inKWh) {
 		FuelSpec spec = producer.fuelSpec;
 		double cv = CalorificValue.get(spec);
-		double amount = cv == 0 ? 0 : inKWh / cv;
-		return amount;
+		return cv == 0 ? 0 : inKWh / cv;
 	}
 
 	/**

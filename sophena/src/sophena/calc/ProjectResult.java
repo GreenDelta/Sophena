@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import sophena.calc.costs.CostCalculator;
 import sophena.calc.costs.CostResult;
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.calc.kpi.FuelUsage;
 import sophena.calc.load.ConsumerLoadCurve;
 import sophena.calc.load.ConsumerResult;
@@ -21,7 +21,7 @@ public class ProjectResult {
 
 	public EnergyResult energyResult;
 	public FuelUsage fuelUsage;
-	public CO2Result co2Result;
+	public EmissionResult emissionResult;
 	public CostResult costResult;
 	public CostResult costResultFunding;
 
@@ -43,7 +43,7 @@ public class ProjectResult {
 		consumers(project, r);
 
 		// needs to be done after calculating the consumer results
-		r.co2Result = CO2Result.calculate(r);
+		r.emissionResult = EmissionResult.calculate(r);
 		return r;
 	}
 

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sophena.Labels;
-import sophena.calc.kpi.CO2Result;
+import sophena.calc.kpi.EmissionResult;
 import sophena.calc.Comparison;
 import sophena.calc.costs.CostResult.Summary;
 import sophena.calc.costs.ProductAreaResult;
@@ -209,7 +209,7 @@ public class ComparisonExport implements Runnable {
 
 		w.str("CO2-Einsparung (gegen Erdgas dezentral) [kg CO2 eq./a]");
 		each(r -> {
-			CO2Result co2 = r.co2Result;
+			EmissionResult co2 = r.emissionResult;
 			w.rint(co2.variantNaturalGas - co2.total);
 		});
 		w.nextRow();
