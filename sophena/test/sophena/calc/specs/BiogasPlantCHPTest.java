@@ -3,7 +3,7 @@ package sophena.calc.specs;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EfficiencyRateTest {
+public class BiogasPlantCHPTest {
 
 	@Test
 	public void test() {

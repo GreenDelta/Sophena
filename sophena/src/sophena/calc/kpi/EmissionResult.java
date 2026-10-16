@@ -5,7 +5,7 @@ import java.util.Map;
 
 import sophena.Defaults;
 import sophena.calc.ProjectResult;
-import sophena.calc.biogas.BiogasEmissionResult;
+import sophena.calc.biogas.kpi.BiogasEmissionResult;
 import sophena.calc.simulation.EnergyResult;
 import sophena.model.Fuel;
 import sophena.model.Producer;
