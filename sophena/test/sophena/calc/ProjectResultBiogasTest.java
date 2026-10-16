@@ -30,7 +30,6 @@ public class ProjectResultBiogasTest {
 
 		var r = ProjectResult.calculate(project);
 
-		assertTrue(r.biogasErrors.isEmpty());
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
 		assertSame(producer.biogasPlant, biogasResult.plant());
@@ -57,9 +56,11 @@ public class ProjectResultBiogasTest {
 		var r = ProjectResult.calculate(project);
 
 		assertTrue(r.biogasResults.isEmpty());
-		assertNotNull(r.biogasErrors.get(producer));
 		assertNotNull(producer.profile);
 		assertEquals(0, Stats.max(producer.profile.maxPower), 1e-9);
+
+		// a plant that cannot be calculated does not contribute emissions
+		assertNull(r.emissionResult.producerEmissions.get(producer));
 	}
 
 	@Test
@@ -71,8 +72,35 @@ public class ProjectResultBiogasTest {
 		var r = ProjectResult.calculate(project);
 
 		assertTrue(r.biogasResults.isEmpty());
-		assertTrue(r.biogasErrors.isEmpty());
 		assertNull(producer.profile);
+	}
+
+	@Test
+	public void addsBiogasEmissionsToTheTotal() {
+		var project = project();
+		var producer = biogasProducer(project);
+		var profile = producer.biogasPlant.substrateProfiles.getFirst();
+		profile.annualMass = 10_000;
+		profile.substrate.co2Emissions = 100;
+
+		var r = ProjectResult.calculate(project);
+
+		// the emissions of the biogas plant are part of the producer emissions
+		var emissions = r.emissionResult;
+		assertNotNull(emissions);
+		var biogasEmissions = emissions.producerEmissions.get(producer);
+		assertNotNull(biogasEmissions);
+		assertTrue(biogasEmissions > 0);
+
+		// ... and they are part of the total emissions
+		double fromProducers = 0;
+		for (var value : emissions.producerEmissions.values()) {
+			fromProducers += value;
+		}
+		assertEquals(
+			emissions.electricityEmissions - emissions.electricityCredits
+				+ fromProducers,
+			emissions.total, 1e-9);
 	}
 
 	private static Project project() {

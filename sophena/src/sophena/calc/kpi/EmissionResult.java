@@ -5,6 +5,7 @@ import java.util.Map;
 
 import sophena.Defaults;
 import sophena.calc.ProjectResult;
+import sophena.calc.biogas.BiogasEmissionResult;
 import sophena.calc.simulation.EnergyResult;
 import sophena.model.Fuel;
 import sophena.model.Producer;
@@ -53,6 +54,15 @@ public class EmissionResult {
 
 			var r = new EmissionResult();
 			for (var p : energyResult.producers) {
+
+				var biogasResult = result.biogasResults.get(p);
+				if (biogasResult != null) {
+					var emissions = BiogasEmissionResult.getAllocatedToHeat(biogasResult);
+					r.producerEmissions.put(p, emissions);
+					total += emissions;
+					continue;
+				}
+
 				if (p.fuelSpec == null)
 					continue;
 				double fuelEnergy = result.fuelUsage.getInKWh(p);
@@ -72,7 +82,6 @@ public class EmissionResult {
 				* Defaults.EMISSION_FACTOR_OIL;
 			return r;
 		}
-
 
 		/// Collect the emission credits related to generated electricity.
 		private double electricityCredits() {
