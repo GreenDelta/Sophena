@@ -21,8 +21,8 @@ public class BiogasEmissionResult {
 			return 0;
 		// for heat under 150 °C used for heating of buildings
 		double carnotEfficiency = 0.3546;
-		return (totalEmissions / eta.heat)
-			* (carnotEfficiency * eta.heat / (eta.electric + carnotEfficiency * eta.heat));
+		double heatFactor = carnotEfficiency * eta.heat;
+		return totalEmissions * heatFactor / (eta.electric + heatFactor);
 	}
 
 	/// Calculates the fuel energy and the emission factor from the substrate
