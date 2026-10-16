@@ -195,7 +195,11 @@ public final class Labels {
 	}
 
 	public static String getFuelUnit(Producer producer) {
-		if (producer == null || producer.fuelSpec == null)
+		if (producer == null)
+			return "?";
+		if (producer.biogasPlant != null)
+			return "t/a";
+		if (producer.fuelSpec == null)
 			return "?";
 		FuelSpec spec = producer.fuelSpec;
 		if (spec.woodAmountType != null)
@@ -206,29 +210,33 @@ public final class Labels {
 	}
 
 	public static String getFuel(Producer producer) {
-		if (producer == null || producer.fuelSpec == null)
+		if (producer == null)
 			return "?";
-		FuelSpec spec = producer.fuelSpec;
+
+		// if it is a biogas plant, take the substrate name if
+		// it has only one input type, otherwise a generic label
+		if (producer.biogasPlant != null) {
+			var profiles = producer.biogasPlant.substrateProfiles;
+			if (profiles.size() == 1) {
+				var profile = profiles.getFirst();
+				if (profile.substrate != null)
+					return profile.substrate.name;
+			}
+			return "Substrate - Biogasanlage";
+		}
+
+		if (producer.fuelSpec == null)
+			return "?";
+		var spec = producer.fuelSpec;
 		return spec.fuel != null ? spec.fuel.name : "?";
 	}
 
-	public static String getRankText(ProducerFunction func, int rank)
-	{
-		String s = "";
-		switch(func)
-		{
-		case BASE_LOAD:
-			s = " - bis Ziel-Ladestand laden ";
-			break;
-		case MAX_LOAD:
-			s = " - möglichst viel laden ";
-			break;
-		case PEAK_LOAD:
-			s = " - möglichst wenig laden ";
-			break;
-		default:
-			break;
-		}
-		return rank + s;
+	public static String getRankText(ProducerFunction func, int rank) {
+		return switch (func) {
+			case BASE_LOAD -> " - bis Ziel-Ladestand laden ";
+			case MAX_LOAD -> " - möglichst viel laden ";
+			case PEAK_LOAD -> " - möglichst wenig laden ";
+			case null -> "";
+		};
 	}
 }

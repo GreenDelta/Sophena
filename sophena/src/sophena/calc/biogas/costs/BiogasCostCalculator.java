@@ -290,7 +290,9 @@ public class BiogasCostCalculator {
 			+ summary.revenuesElectricity
 			- summary.totalAnnualCosts;
 		double heatRevenue = target - annualSurplus;
-		return 1000 * heatRevenue / heat;
+		// a negative heat price would mean that the plant pays for the heat
+		// that it delivers, so we clamp it at 0
+		return Math.max(0, 1000 * heatRevenue / heat);
 	}
 
 	/// The annual surplus (Jahresüberschuss) that is needed so that the total

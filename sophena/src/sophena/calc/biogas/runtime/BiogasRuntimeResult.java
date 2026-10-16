@@ -6,6 +6,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
+import sophena.calc.biogas.BiogasPlantCHP;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.calc.biogas.runtime.eblocks.EblockSearch;
 import sophena.calc.biogas.runtime.ehours.EHourSearch;
@@ -104,7 +105,7 @@ public record BiogasRuntimeResult(
 		profile.minPower = new double[Stats.HOURS];
 		profile.maxPower = new double[Stats.HOURS];
 		profile.temperaturLevel = new double[Stats.HOURS];
-		double power = BiogasPlants.totalThermalPower(plant);
+		double power = BiogasPlantCHP.of(plant).thermalPower();
 		if (power <= 0)
 			return profile;
 

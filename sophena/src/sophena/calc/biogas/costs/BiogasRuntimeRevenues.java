@@ -2,6 +2,7 @@ package sophena.calc.biogas.costs;
 
 import org.openlca.commons.Res;
 
+import sophena.calc.biogas.BiogasPlantCHP;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Stats;
@@ -97,7 +98,7 @@ public record BiogasRuntimeRevenues(
 			this.prices = plant.electricityPrices != null
 				? plant.electricityPrices.values
 				: null;
-			this.power = BiogasPlants.totalElectricPower(plant);
+			this.power = BiogasPlantCHP.of(plant).electricPower();
 			this.rampUnits = new int[Stats.HOURS];
 			this.feedIn = new double[Stats.HOURS];
 			this.heatPower = result.producerProfile().maxPower;

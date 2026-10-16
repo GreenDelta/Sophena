@@ -55,14 +55,13 @@ public class FuelCosts {
 		// handle non-wood fuels
 		if (spec.fuel.group != FuelGroup.WOOD || spec.woodAmountType == null) {
 			// we assume that the fuel amount is given in tons
-			double val = fuelAmount * ashContent * spec.ashCosts;
-			return val;
+			return fuelAmount * ashContent * spec.ashCosts;
 		}
 
 		double w = spec.waterContent / 100d;
 
 		// handle wood fuels
-		double wetTons = 0d;
+		double wetTons;
 		if (spec.woodAmountType == WoodAmountType.MASS) {
 			wetTons = fuelAmount;
 		} else {
@@ -73,7 +72,6 @@ public class FuelCosts {
 
 		double dryTons = (1d - w) * wetTons;
 
-		double val = dryTons * ashContent * spec.ashCosts;
-		return val;
+		return dryTons * ashContent * spec.ashCosts;
 	}
 }

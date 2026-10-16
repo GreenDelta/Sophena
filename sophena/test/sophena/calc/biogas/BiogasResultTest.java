@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import sophena.calc.biogas.costs.BiogasCostResult;
@@ -82,6 +84,22 @@ public class BiogasResultTest {
 	}
 
 	@Test
+	public void suggestedHeatPriceIsNeverNegative() {
+		var plant = plantWithHeat();
+		// with a high feed-in tariff the plant already earns more from the
+		// electricity than it needs to reach its expected profit, so the heat
+		// price is clamped at 0
+		plant.settings.isFixedRemuneration = true;
+		plant.settings.feedInTariff = 500;
+
+		var r = BiogasResult.calculate(plant).orElseThrow();
+		assertEquals(0, r.costs().dynamicTotal.suggestedHeatPrice, 1e-10);
+		assertEquals(0, r.costs().staticTotal.suggestedHeatPrice, 1e-10);
+		assertEquals(0, r.costs().dynamicTotal.revenuesHeat, 1e-10);
+		assertEquals(0, r.costs().staticTotal.revenuesHeat, 1e-10);
+	}
+
+	@Test
 	public void returnsErrors() {
 		assertTrue(BiogasResult.calculate(null).isError());
 
@@ -96,6 +114,12 @@ public class BiogasResultTest {
 		plant.duration = 20;
 		plant.boilers.getFirst().boiler.maxPower = 600;
 		plant.settings = BiogasPlantSettings.createDefault(null);
+
+		// with the default prices the plant earns much more from the
+		// electricity than it needs, so the suggested heat price would be
+		// clamped at 0; we set the prices to 0 so that the plant depends on
+		// the revenues from the heat
+		Arrays.fill(plant.electricityPrices.values, 0);
 
 		// the capital return rate is calculated from the investments, so the
 		// plant needs at least one investment entry

@@ -3,6 +3,7 @@ package sophena.calc.kpi;
 import java.util.HashMap;
 
 import sophena.calc.ProjectResult;
+import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.specs.CalorificValue;
 import sophena.calc.specs.Producers;
 import sophena.calc.specs.UtilisationRate;
@@ -21,8 +22,18 @@ public class FuelUsage {
 		if (r.energyResult == null)
 			return usage;
 		for (Producer p : r.project.producers) {
-			double inKWh = calcKWh(r, p);
-			double amount = calcAmount(p, inKWh);
+			double inKWh;
+			double amount;
+			var biogas = r.biogasResults.get(p);
+			if (biogas != null) {
+				// the fuel of a biogas plant is the input of its substrates
+				var input = SubstrateInput.of(biogas.plant());
+				inKWh = input.fuelEnergy();
+				amount = input.mass();
+			} else {
+				inKWh = calcKWh(r, p);
+				amount = calcAmount(p, inKWh);
+			}
 			usage.inKWh.put(p.id, inKWh);
 			usage.inFuelUnits.put(p.id, amount);
 		}

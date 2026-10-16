@@ -11,7 +11,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.BiogasPlantCHP;
 import sophena.io.datapack.DataPack;
 import sophena.io.datapack.Export;
 import sophena.io.datapack.Import;
@@ -207,7 +207,7 @@ public class BiogasPlantManager extends Editor {
 		public String getColumnText(Object obj, int col) {
 			if (!(obj instanceof BiogasPlant p))
 				return null;
-			double ratedPower = BiogasPlants.totalElectricPower(p);
+			double ratedPower = BiogasPlantCHP.of(p).electricPower();
 			String powerLabel = Num.str(ratedPower) + " kW el.";
 			if (p.boilers.size() > 1) {
 				powerLabel += " (" + p.boilers.size() + " Blöcke)";

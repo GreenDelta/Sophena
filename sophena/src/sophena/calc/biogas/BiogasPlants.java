@@ -14,30 +14,6 @@ public final class BiogasPlants {
 	private BiogasPlants() {
 	}
 
-	public static double totalThermalPower(@Nullable BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null || entry.boiler == null)
-				continue;
-			sum += entry.boiler.maxPower;
-		}
-		return sum;
-	}
-
-	public static double totalElectricPower(BiogasPlant plant) {
-		double sum = 0;
-		if (plant == null)
-			return sum;
-		for (var entry : plant.boilers) {
-			if (entry == null || entry.boiler == null)
-				continue;
-			sum += entry.boiler.maxPowerElectric;
-		}
-		return sum;
-	}
-
 	public static boolean isFeedInAllowed(BiogasPlant plant, int hour) {
 		if (plant.electricityPrices == null
 			|| plant.electricityPrices.feedInAllowed == null)
@@ -46,8 +22,8 @@ public final class BiogasPlants {
 		return hour < 0 || hour >= allowed.length || allowed[hour];
 	}
 
-	/// Applies the given runtime result of the biogas plant of the given
-	/// producer to that producer.
+	/// Applies the given CHP performance and runtime result of the biogas plant
+	/// of the given producer to that producer.
 	public static void applyResult(
 		Project project, Producer producer, BiogasRuntimeResult result
 	) {
@@ -57,17 +33,17 @@ public final class BiogasPlants {
 		if (plant == null)
 			return;
 
+		var	chp = BiogasPlantCHP.of(plant);
 		producer.productGroup = plant.productGroup;
 		double temperature = project.heatNet != null
 			&& project.heatNet.maxBufferLoadTemperature > 0
 			? project.heatNet.maxBufferLoadTemperature
 			: 95;
 		producer.profile = result.asProducerProfile(plant, temperature);
-		double thermalPower = totalThermalPower(plant);
-		producer.profileMaxPower = thermalPower > 0
-			? thermalPower
+		producer.profileMaxPower = chp.thermalPower() > 0
+			? chp.thermalPower()
 			: Stats.max(producer.profile.maxPower);
-		producer.profileMaxPowerElectric = totalElectricPower(plant);
+		producer.profileMaxPowerElectric = chp.electricPower();
 	}
 
 	/// Calculates the runtime result of the biogas plant of the given producer

@@ -59,7 +59,7 @@ public class FermenterHeatDemand {
 
 		if (plant == null || plant.boilers.isEmpty())
 			return Res.error("Es wurde noch kein BHKW definiert.");
-		double power = BiogasPlants.totalThermalPower(plant);
+		double power = BiogasPlantCHP.of(plant).thermalPower();
 		var demand = new double[Stats.HOURS];
 
 		var tempData = project.weatherStation.data;

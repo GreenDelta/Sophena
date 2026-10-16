@@ -1,4 +1,4 @@
-package sophena.calc.biogas.kpi;
+package sophena.calc.biogas;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;

@@ -2,6 +2,7 @@ package sophena.calc.kpi;
 
 import sophena.Defaults;
 import sophena.calc.ProjectResult;
+import sophena.calc.biogas.SubstrateInput;
 import sophena.model.Fuel;
 import sophena.model.Producer;
 
@@ -23,7 +24,15 @@ public class PrimaryEnergyFactor {
 
 			// for consumed fuel
 			double fuelEnergy = r.fuelUsage.getInKWh(p);
-			sum += (fuelEnergy * factor(p));
+			var biogas = r.biogasResults.get(p);
+			if (biogas != null) {
+				// only the consumed heat of the biogas plant is considered
+				double f = SubstrateInput.of(biogas.plant()).primaryEnergyFactor();
+				sum += (fuelEnergy * f);
+				continue;
+			}
+			double fuelFactor = factor(p);
+			sum += (fuelEnergy * fuelFactor);
 
 			// for used electricity
 			double genHeat = r.energyResult.totalHeat(p);

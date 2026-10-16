@@ -70,7 +70,7 @@ public final class TestPlant {
 	/// power, and the cable and transformer losses are subtracted from every
 	/// hour that feeds in.
 	public static double[] feedInProfile(BiogasPlant plant, boolean[] flags) {
-		double power = BiogasPlants.totalElectricPower(plant);
+		double power = BiogasPlantCHP.of(plant).electricPower();
 		double demand = plant.settings.avgPowerDemand;
 		double losses = plant.settings.transmissionLosses;
 		boolean fullFeedIn = plant.settings.isFullFeedIn;

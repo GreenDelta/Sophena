@@ -9,16 +9,20 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
+import sophena.calc.costs.CostResultItem;
 import sophena.model.Consumer;
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;
 import sophena.model.LoadProfile;
 import sophena.model.Producer;
+import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.biogas.BiogasInvestmentEntry;
 
 /// Tests the integration of the biogas results into the project result.
 public class ProjectResultBiogasTest {
@@ -101,6 +105,71 @@ public class ProjectResultBiogasTest {
 			emissions.electricityEmissions - emissions.electricityCredits
 				+ fromProducers,
 			emissions.total, 1e-9);
+	}
+
+	@Test
+	public void usesTheSubstrateInputAsFuel() {
+		var project = project();
+		var producer = biogasProducer(project);
+		producer.biogasPlant.substrateProfiles.getFirst().annualMass = 10_000;
+
+		var r = ProjectResult.calculate(project);
+
+		// the fuel of a biogas plant is the input of its substrates; without
+		// this the fuel usage would be 0 because the plant has no fuel spec
+		double fuelEnergy = r.fuelUsage.getInKWh(producer);
+		assertTrue(fuelEnergy > 0);
+		assertEquals(SubstrateInput.of(producer.biogasPlant).fuelEnergy(),
+			fuelEnergy, 1e-6);
+		assertEquals(10_000, r.fuelUsage.getInFuelUnits(producer), 1e-9);
+	}
+
+	@Test
+	public void addsTheHeatPurchaseToTheProjectCosts() {
+		var project = project();
+		var producer = biogasProducer(project);
+		// the plant needs an investment so that it has a target profit and
+		// therefore a suggested heat price
+		var entry = new BiogasInvestmentEntry();
+		entry.costs = new ProductCosts();
+		entry.costs.investment = 5_000_000;
+		producer.biogasPlant.investments.add(entry);
+
+		var r = ProjectResult.calculate(project);
+
+		var biogasResult = r.biogasResults.get(producer);
+		assertNotNull(biogasResult);
+		double dynPrice = biogasResult.costs().dynamicTotal.suggestedHeatPrice;
+		double statPrice = biogasResult.costs().staticTotal.suggestedHeatPrice;
+		assertTrue(dynPrice > 0);
+		assertTrue(statPrice > 0);
+
+		// the network pays for the heat that is used from the producer
+		double heat = r.energyResult.totalHeat(producer) / 1000.0; // MWh
+		assertTrue(heat > 0);
+		assertClose(heat * dynPrice,
+			r.costResult.dynamicTotal.consumptionCosts);
+		assertClose(heat * statPrice,
+			r.costResult.staticTotal.consumptionCosts);
+
+		// the heat purchase is shown for the item of the producer
+		var item = itemOf(r, producer);
+		assertNotNull(item);
+		assertClose(heat * dynPrice, item.demandRelatedCosts());
+	}
+
+	/// Returns the cost item of the given producer.
+	private static CostResultItem itemOf(ProjectResult r, Producer p) {
+		for (var item : r.costResult.items) {
+			if (item.investment().producer() == p)
+				return item;
+		}
+		return null;
+	}
+
+	private static void assertClose(double expected, double actual) {
+		assertEquals(expected, actual,
+			Math.max(1e-6, Math.abs(expected) * 1e-9));
 	}
 
 	private static Project project() {

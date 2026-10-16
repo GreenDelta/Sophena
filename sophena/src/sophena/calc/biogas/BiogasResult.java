@@ -10,14 +10,12 @@ import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.biogas.BiogasPlant;
 
 /// The overall result of a biogas plant calculation. It bundles the plant with
-/// its runtime result, the revenues from the electricity feed-in and the cost
-/// result. More sub-results will be added later.
-///
-/// The runtime result is calculated first, then the revenues and finally the
-/// costs, because the revenues are part of the cost result.
+/// the performance of its CHP, the runtime result, the revenues from the
+/// electricity feed-in and the cost result.
 @NullMarked
 public record BiogasResult(
 	BiogasPlant plant,
+	BiogasPlantCHP chp,
 	BiogasRuntimeResult runtime,
 	BiogasRuntimeRevenues revenues,
 	BiogasCostResult costs
@@ -33,6 +31,7 @@ public record BiogasResult(
 			return err.castError();
 
 		try {
+			var chp = BiogasPlantCHP.of(plant);
 			var runtimeRes = BiogasRuntimeResult.calculate(plant);
 			if (runtimeRes.isError())
 				return runtimeRes.castError();
@@ -45,7 +44,8 @@ public record BiogasResult(
 
 			var costs = new BiogasCostCalculator(plant, runtime, revenues)
 				.calculate();
-			return Res.ok(new BiogasResult(plant, runtime, revenues, costs));
+			return Res.ok(
+				new BiogasResult(plant, chp, runtime, revenues, costs));
 		} catch (Exception e) {
 			return Res.error("Berechnung der Biogasanlage ist fehlgeschlagen", e);
 		}

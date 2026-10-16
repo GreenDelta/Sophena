@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sophena.calc.biogas.BiogasPlantCHP;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
@@ -136,7 +137,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			Tables.bindColumnWidths(table, 0.4, 0.4, 0.2);
 			table.setContentProvider(ArrayContentProvider.getInstance());
 			table.setLabelProvider(new TableLabel());
-			table.addSelectionChangedListener((e) -> {
+			table.addSelectionChangedListener(_ -> {
 				suggestName();
 				validate();
 			});
@@ -230,7 +231,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			return switch (col) {
 				case 0 -> plant.name;
 				case 1 -> blockLabelOf(plant);
-				case 2 -> Num.str(BiogasPlants.totalElectricPower(plant)) + " kW el.";
+				case 2 -> Num.str(BiogasPlantCHP.of(plant).electricPower()) + " kW el.";
 				default -> null;
 			};
 		}
