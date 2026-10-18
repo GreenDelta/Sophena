@@ -42,7 +42,7 @@ class InvestmentPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "Investitionen - " + editor.plant().name);
+		var form = UI.formHeader(mForm, "Investitionen");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 		for (var group : BiogasInvestmentGroup.values()) {

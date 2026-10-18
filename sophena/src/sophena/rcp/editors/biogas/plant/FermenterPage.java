@@ -30,7 +30,7 @@ class FermenterPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "Fermenter - " + editor.plant().name);
+		var form = UI.formHeader(mForm, "Fermenter");
 		tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 		createGeneralSection(body);

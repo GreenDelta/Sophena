@@ -9,7 +9,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.colors.Colors;
-import sophena.rcp.editors.biogas.charts.BiogasProfileChart;
 import sophena.rcp.editors.biogas.charts.BiogasStorageChart;
 import sophena.rcp.help.H;
 import sophena.rcp.help.HelpLink;
@@ -35,7 +34,7 @@ class StoragePage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "Gasspeicher - " + plant().name);
+		var form = UI.formHeader(mForm, "Gasspeicher");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
@@ -80,7 +79,7 @@ class StoragePage extends FormPage {
 				editor.calculate();
 			});
 		UI.formLabel(comp, tk, "m³");
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, "Gasspeichergröße",	H.GasStorageSizeInfo);
 
 		// filling level
 		var fillingText = UI.formText(comp, tk, "Gasspeicherbefüllungsanteil");

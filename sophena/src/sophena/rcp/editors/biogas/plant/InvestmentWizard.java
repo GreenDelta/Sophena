@@ -100,7 +100,7 @@ class InvestmentWizard extends SimpleWizard {
 		for (int i = 0; i < types.length; i++) {
 			items[i] = Labels.get(types[i]);
 		}
-		typeCombo = UI.formCombo(comp, "Produkttyp");
+		typeCombo = UI.formCombo(comp, "Produktbreich");
 		typeCombo.setItems(items);
 		typeCombo.select(indexOf(initialType()));
 		UI.filler(comp);

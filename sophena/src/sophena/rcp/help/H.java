@@ -20,6 +20,7 @@ public class H extends NLS {
 	public static String EligibleQuarterHoursInfo;
 	public static String FeedInModeInfo;
 	public static String GasStorageFillingLevelInfo;
+	public static String GasStorageSizeInfo;
 	public static String HeatLossInfo;
 	public static String HeatingLoad;
 	public static String HeatingNetConstruction;

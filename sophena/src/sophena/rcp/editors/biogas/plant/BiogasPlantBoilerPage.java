@@ -27,7 +27,7 @@ class BiogasPlantBoilerPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "BHKW - " + plant().name);
+		var form = UI.formHeader(mForm, "BHKW");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 
