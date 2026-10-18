@@ -85,7 +85,7 @@ public class BiogasPlantManager extends Editor {
 			UI.gridLayout(comp, 1);
 			table = Tables.createViewer(comp,
 					"Name",
-					"Bemessungsleistung"
+					"Installierte elektrische Leistung"
 			);
 			table.setLabelProvider(new TableLabel());
 			table.setInput(plants);
@@ -207,10 +207,10 @@ public class BiogasPlantManager extends Editor {
 		public String getColumnText(Object obj, int col) {
 			if (!(obj instanceof BiogasPlant p))
 				return null;
-			double ratedPower = BiogasPlantCHP.of(p).electricPower();
-			String powerLabel = Num.str(ratedPower) + " kW el.";
+			double electricPower = BiogasPlantCHP.of(p).electricPower();
+			var powerLabel = Num.str(electricPower) + " kW el.";
 			if (p.boilers.size() > 1) {
-				powerLabel += " (" + p.boilers.size() + " Blöcke)";
+				powerLabel += " (" + p.boilers.size() + " Aggregate)";
 			}
 			return switch (col) {
 				case 0 -> p.name;

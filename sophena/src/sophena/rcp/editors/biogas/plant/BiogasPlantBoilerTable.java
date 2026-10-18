@@ -10,7 +10,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.BiogasPlantBoiler;
@@ -41,8 +40,8 @@ class BiogasPlantBoilerTable {
 	}
 
 	void render(Composite body, FormToolkit tk) {
-		Section section = UI.section(body, tk, "BHKW-Blöcke");
-		Composite comp = UI.sectionClient(section, tk);
+		var section = UI.section(body, tk, "BHKW-Aggregate");
+		var comp = UI.sectionClient(section, tk);
 		table = Tables.createViewer(comp,
 				"Produkt",
 				"Hersteller",

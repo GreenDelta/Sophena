@@ -29,7 +29,7 @@ class ProducerProfileSection {
 	}
 
 	void create(Composite body, FormToolkit tk) {
-		var section = UI.section(body, tk, "Erzeugerlastgang");
+		var section = UI.section(body, tk, "Wärmeerzeugerlastgang");
 		var root = UI.sectionClient(section, tk);
 		UI.gridLayout(root, 1);
 

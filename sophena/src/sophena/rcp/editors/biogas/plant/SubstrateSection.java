@@ -48,7 +48,8 @@ class SubstrateSection {
 		table = createTable(comp);
 		addSubstrateActions(section);
 
-		var chartSection = UI.section(body, tk, "Erzeugtes Biogas & Methangehalt");
+		var chartSection = UI.section(body, tk,
+			"Erzeugtes Biogasvolumen & erzeugtes Methanvolumen");
 		var chartComp = UI.sectionClient(chartSection, tk);
 		UI.gridLayout(chartComp, 1);
 		var chart = new BiogasProfileChart( chartComp);

@@ -114,7 +114,7 @@ class InvestmentPage extends FormPage {
 					"Nutzungsdauer [a]",
 					"Instandsetzung [%]",
 					"Wartung und Inspektion [%]",
-					"Aufwand fürs Bedienen [h/a]"
+					"Aufwand für Bedienen [h/a]"
 				};
 			}
 			return new String[] {
@@ -124,7 +124,7 @@ class InvestmentPage extends FormPage {
 				"Nutzungsdauer [a]",
 				"Instandsetzung [%]",
 				"Wartung und Inspektion [%]",
-				"Aufwand fürs Bedienen [h/a]"
+				"Aufwand für Bedienen [h/a]"
 			};
 		}
 

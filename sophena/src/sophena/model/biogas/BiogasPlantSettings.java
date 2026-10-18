@@ -126,7 +126,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 
 	/// General investment funding in EUR.
 	///
-	/// @de Investitionsförderung absolut
+	/// @de Investitionsförderung
 	@Column(name = "funding")
 	public double funding;
 
