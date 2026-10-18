@@ -26,7 +26,7 @@ class BiogasPlantInfoPage extends FormPage {
 	private final BiogasPlantEditor editor;
 
 	BiogasPlantInfoPage(BiogasPlantEditor editor) {
-		super(editor, "BiogasPlantPage", "Biogasanlageninformtionen");
+		super(editor, "BiogasPlantPage", "Biogasanlageninformationen");
 		this.editor = editor;
 	}
 
@@ -36,7 +36,7 @@ class BiogasPlantInfoPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "Biogasanlageninformtionen");
+		var form = UI.formHeader(mForm, "Biogasanlageninformationen");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
 

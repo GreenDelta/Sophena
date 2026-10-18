@@ -25,7 +25,7 @@ public class SubstrateWizard extends Wizard {
 	public static int open(Substrate substrate) {
 		if (substrate == null)
 			return Window.CANCEL;
-		SubstrateWizard wiz = new SubstrateWizard();
+		var wiz = new SubstrateWizard();
 		wiz.setWindowTitle("Biogassubstrat");
 		wiz.substrate = substrate;
 		WizardDialog dialog = new WizardDialog(UI.shell(), wiz);

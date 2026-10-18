@@ -117,7 +117,7 @@ public class SubstrateEditor extends Editor {
 			s.biogasProduction = 400.0;
 			s.methaneContent = 55.0;
 			s.co2Emissions = 0.0;
-			s.primaryEnergyFactor = 0.2;
+			s.primaryEnergyFactor = 0.3;
 			s.minTemperature = 5.0;
 			s.maxTemperature = 20.0;
 			if (SubstrateWizard.open(s) != Window.OK)
