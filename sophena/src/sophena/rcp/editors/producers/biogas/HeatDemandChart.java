@@ -27,10 +27,12 @@ record HeatDemandChart(XYGraph graph, CircularBufferDataProvider buffer) {
 		return new HeatDemandChart(graph, buffer);
 	}
 
-	void update(Project project, BiogasPlant plant) {
+	/// Updates the chart and returns the annual heat demand in kWh.
+	double update(Project project, BiogasPlant plant) {
 		var data = FermenterHeatDemand.of(project, plant);
 		buffer.setCurrentYDataArray(data);
 		double top = Stats.nextStep(Stats.max(data));
 		graph.getPrimaryYAxis().setRange(0, top);
+		return Stats.sum(data);
 	}
 }

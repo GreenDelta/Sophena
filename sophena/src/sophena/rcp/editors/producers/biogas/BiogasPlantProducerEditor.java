@@ -19,6 +19,7 @@ import org.openlca.commons.Strings;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.model.Producer;
 import sophena.model.Project;
+import sophena.model.Stats;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.colors.Colors;
@@ -81,6 +82,8 @@ public class BiogasPlantProducerEditor extends Editor {
 		private Text electricPowText;
 		private ProducerChart producerChart;
 		private HeatDemandChart heatDemandChart;
+		private Text fermenterHeatText;
+		private Text fermenterShareText;
 
 		private Page() {
 			super(BiogasPlantProducerEditor.this, "BiogasPlantProducerPage",
@@ -118,7 +121,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			plantLink = tk.createImageHyperlink(comp, SWT.TOP);
 			plantLink.setImage(Icon.BOILER_16.img());
 			plantLink.setForeground(Colors.getLinkBlue());
-			Controls.onClick(plantLink, e -> openBiogasPlant());
+			Controls.onClick(plantLink, _ -> openBiogasPlant());
 			UI.filler(comp, tk);
 
 			thermalPowText = readOnlyText(comp, tk, "Thermische Nennleistung");
@@ -140,6 +143,16 @@ public class BiogasPlantProducerEditor extends Editor {
 			UI.gridData(section, true, false);
 			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
+
+			var info = tk.createComposite(comp);
+			UI.innerGrid(info, 3);
+			UI.gridData(info, true, false);
+			fermenterHeatText = readOnlyText(info, tk, "Jahresbedarf");
+			UI.formLabel(info, tk, "kWh/a");
+			fermenterShareText = readOnlyText(
+				info, tk, "Anteil an der erzeugten Wärme");
+			UI.formLabel(info, tk, "%");
+
 			heatDemandChart = HeatDemandChart.create(comp);
 		}
 
@@ -167,7 +180,20 @@ public class BiogasPlantProducerEditor extends Editor {
 			Texts.set(thermalPowText, Num.intStr(producer.profileMaxPower));
 			Texts.set(electricPowText, Num.intStr(producer.profileMaxPowerElectric));
 			producerChart.update(producer.profile);
-			heatDemandChart.update(project, producer.biogasPlant);
+
+			double fermenterHeat = heatDemandChart.update(project, plant);
+			double generatedHeat = producer.profile != null
+				&& producer.profile.maxPower != null
+					? Stats.sum(producer.profile.maxPower)
+					: 0;
+			Texts.set(fermenterHeatText, Num.intStr(fermenterHeat));
+			if (generatedHeat > 0) {
+				double share = 100 * fermenterHeat / generatedHeat;
+				Texts.set(fermenterShareText, Num.str(share, 1));
+			} else {
+				Texts.set(fermenterShareText, "–");
+			}
+
 			form.reflow(true);
 		}
 
