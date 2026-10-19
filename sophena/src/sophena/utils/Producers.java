@@ -26,6 +26,12 @@ public class Producers {
 	}
 
 	public static void initFuelAndCosts(Producer p, Project project) {
+		if (p == null)
+			return;
+		if (p.biogasPlant != null) {
+			p.costs = new ProductCosts();
+			return;
+		}
 		initFuelSpec(p, project);
 		initCosts(p);
 		initElectricity(p, project);

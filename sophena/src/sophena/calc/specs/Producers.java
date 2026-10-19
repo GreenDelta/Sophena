@@ -83,7 +83,8 @@ public class Producers {
 	 * plant. Otherwise, returns 0.
 	 */
 	public static double electricPower(Producer p) {
-		if (p == null || p.productGroup == null)
+		// biogas plants are not counted as electricity producer within a project
+		if (p == null || p.productGroup == null || p.biogasPlant != null)
 			return 0;
 		if (p.productGroup.type != ProductType.COGENERATION_PLANT)
 			return 0;
@@ -95,7 +96,7 @@ public class Producers {
 	}
 
 	public static boolean isCoGenPlant(Producer p) {
-		if (p == null)
+		if (p == null || p.biogasPlant != null)
 			return false;
 		if (p.boiler != null && p.boiler.isCoGenPlant)
 			return true;

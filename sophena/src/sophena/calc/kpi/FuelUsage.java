@@ -41,20 +41,20 @@ public class FuelUsage {
 	}
 
 	private static double calcKWh(ProjectResult r, Producer producer) {
-		double Qgen = r.energyResult.totalHeat(producer);
+		double generatedHeat = r.energyResult.totalHeat(producer);
 		if (producer.heatPump != null) {
 			var jaz = r.energyResult.jaz(producer);
 			if (jaz != 0)
-				return Qgen / jaz;
+				return generatedHeat / jaz;
 			return 0;
 		}
 
 		double electricalEfficiency = Producers.electricalEfficiency(producer);
 		if (electricalEfficiency <= 0) {
 			double ur = UtilisationRate.get(r.project, producer, r.energyResult);
-			return ur == 0 ? 0 : Qgen / ur;
+			return ur == 0 ? 0 : generatedHeat / ur;
 		} else {
-			double tf = Producers.fullLoadHours(producer, Qgen);
+			double tf = Producers.fullLoadHours(producer, generatedHeat);
 			double powerEl = Producers.electricPower(producer);
 			double Pf = powerEl / electricalEfficiency;
 			return Pf * tf;

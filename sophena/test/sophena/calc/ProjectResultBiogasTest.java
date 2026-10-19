@@ -2,6 +2,7 @@ package sophena.calc;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
 import sophena.calc.costs.CostResultItem;
+import sophena.calc.kpi.GeneratedElectricity;
+import sophena.calc.specs.Producers;
 import sophena.model.Consumer;
 import sophena.model.CostSettings;
 import sophena.model.HeatNet;
@@ -49,6 +52,12 @@ public class ProjectResultBiogasTest {
 		assertSame(producer.biogasPlant.productGroup, producer.productGroup);
 		assertEquals(600, producer.profileMaxPower, 1e-9);
 		assertEquals(500, producer.profileMaxPowerElectric, 1e-9);
+
+		// in the project context the biogas plant does not generate electricity
+		assertEquals(0, Producers.electricPower(producer), 1e-9);
+		assertFalse(Producers.isCoGenPlant(producer));
+		assertEquals(0, GeneratedElectricity.get(producer, r), 1e-9);
+		assertEquals(0, GeneratedElectricity.getTotal(r), 1e-9);
 	}
 
 	@Test
@@ -101,6 +110,8 @@ public class ProjectResultBiogasTest {
 		for (var value : emissions.producerEmissions.values()) {
 			fromProducers += value;
 		}
+		// biogas plant does not receive electricity credits in the project
+		assertEquals(0, emissions.electricityCredits, 1e-9);
 		assertEquals(
 			emissions.electricityEmissions - emissions.electricityCredits
 				+ fromProducers,
@@ -156,6 +167,10 @@ public class ProjectResultBiogasTest {
 		var item = itemOf(r, producer);
 		assertNotNull(item);
 		assertClose(heat * dynPrice, item.demandRelatedCosts());
+
+		// the project does not earn electricity revenues from the biogas plant
+		assertEquals(0, r.costResult.dynamicTotal.revenuesElectricity, 1e-9);
+		assertEquals(0, r.costResult.staticTotal.revenuesElectricity, 1e-9);
 	}
 
 	/// Returns the cost item of the given producer.

@@ -6,12 +6,15 @@ import sophena.model.Producer;
 
 public class GeneratedElectricity {
 
-	/**
-	 * Returns the generated electricity [kWh] for the given producer and
-	 * generated heat [kWh].
-	 */
+	/// Returns the generated electricity for the producer in the given project
+	/// result in kWh.
 	public static double get(Producer p, ProjectResult r) {
-		if (p == null || r == null || r.energyResult == null)
+		// the generated electricity of a biogas plant is *not* allocated to
+		// the project result.
+		if (p == null
+			|| r == null
+			|| r.energyResult == null
+			|| p.biogasPlant != null)
 			return 0;
 		double maxPower = Producers.electricPower(p);
 		if (maxPower <= 0)
@@ -20,9 +23,7 @@ public class GeneratedElectricity {
 		return hours * maxPower;
 	}
 
-	/**
-	 * Returns the total generated electricity of the given energy result.
-	 */
+	/// Returns the total generated electricity of the given result in kWh.
 	public static double getTotal(ProjectResult r) {
 		if (r == null || r.energyResult == null)
 			return 0;
@@ -32,5 +33,4 @@ public class GeneratedElectricity {
 		}
 		return total;
 	}
-
 }

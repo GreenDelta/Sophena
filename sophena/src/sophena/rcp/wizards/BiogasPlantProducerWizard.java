@@ -23,6 +23,7 @@ import sophena.calc.biogas.BiogasPlantCHP;
 import sophena.calc.biogas.BiogasPlants;
 import sophena.db.daos.ProjectDao;
 import sophena.model.Producer;
+import sophena.model.ProductCosts;
 import sophena.model.Project;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.descriptors.ProjectDescriptor;
@@ -36,7 +37,6 @@ import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.rcp.utils.Viewers;
 import sophena.utils.Num;
-import sophena.utils.Producers;
 import org.openlca.commons.Strings;
 
 public class BiogasPlantProducerWizard extends Wizard {
@@ -71,10 +71,10 @@ public class BiogasPlantProducerWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			Producer producer = new Producer();
+			var producer = new Producer();
 			producer.id = UUID.randomUUID().toString();
 			page.bindToModel(producer, project);
-			Producers.initFuelAndCosts(producer, project);
+			producer.costs = new ProductCosts();
 			var dao = new ProjectDao(App.getDb());
 			dao.update(project);
 			Navigator.refresh();

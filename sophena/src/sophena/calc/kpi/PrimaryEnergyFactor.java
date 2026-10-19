@@ -24,11 +24,13 @@ public class PrimaryEnergyFactor {
 
 			// for consumed fuel
 			double fuelEnergy = r.fuelUsage.getInKWh(p);
-			var biogas = r.biogasResults.get(p);
-			if (biogas != null) {
-				// only the consumed heat of the biogas plant is considered
-				double f = SubstrateInput.of(biogas.plant()).primaryEnergyFactor();
-				sum += (fuelEnergy * f);
+			if (p.biogasPlant != null) {
+				var biogas = r.biogasResults.get(p);
+				if (biogas != null) {
+					// only the consumed heat of the biogas plant is considered
+					double f = SubstrateInput.of(biogas.plant()).primaryEnergyFactor();
+					sum += (fuelEnergy * f);
+				}
 				continue;
 			}
 			double fuelFactor = factor(p);

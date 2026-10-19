@@ -169,6 +169,13 @@ public record InvestmentItem(
 			: producer.name;
 		var type = typeOf(producer);
 
+		if (producer.biogasPlant != null) {
+			// investments of a biogas plant are not allocated to a
+			// project result
+			return new InvestmentItem(
+				asset, type, producer, 0, 0, 0, 0, 0, 0);
+		}
+
 		var costs = producer.costs;
 		if (ProductCosts.isEmpty(costs))
 			return new InvestmentItem(

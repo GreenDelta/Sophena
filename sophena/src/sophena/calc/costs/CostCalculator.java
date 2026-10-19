@@ -117,8 +117,10 @@ public class CostCalculator {
 		// that is used in the network. Note that the plant calculates its
 		// revenues from the heat that it can offer, so the part of the offered
 		// heat that is not used needs to be cooled away.
-		var biogas = result.biogasResults.get(p);
-		if (biogas != null) {
+		if (p.biogasPlant != null) {
+			var biogas = result.biogasResults.get(p);
+			if (biogas == null)
+				return new DemandCosts(0, 0);
 			double heat = producedHeat / 1000.0; // MWh
 			// the suggested heat prices are already annual values related to
 			// the expected profit of the plant, so they are not annuitized here

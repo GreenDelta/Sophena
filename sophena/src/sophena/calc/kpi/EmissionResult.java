@@ -55,11 +55,13 @@ public class EmissionResult {
 			var r = new EmissionResult();
 			for (var p : energyResult.producers) {
 
-				var biogasResult = result.biogasResults.get(p);
-				if (biogasResult != null) {
-					var emissions = BiogasEmissionResult.getAllocatedToHeat(biogasResult);
-					r.producerEmissions.put(p, emissions);
-					total += emissions;
+				if (p.biogasPlant != null) {
+					var br = result.biogasResults.get(p);
+					if (br != null) {
+						var emissions = BiogasEmissionResult.getAllocatedToHeat(br);
+						r.producerEmissions.put(p, emissions);
+						total += emissions;
+					}
 					continue;
 				}
 
@@ -87,6 +89,8 @@ public class EmissionResult {
 		private double electricityCredits() {
 			double credits = 0;
 			for (var p : energyResult.producers) {
+				if (p.biogasPlant != null)
+					continue;
 				double generated = GeneratedElectricity.get(p, result);
 				if (generated <= 0)
 					continue;
