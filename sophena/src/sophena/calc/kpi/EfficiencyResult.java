@@ -16,6 +16,7 @@ public class EfficiencyResult {
 	public double bufferLoss;
 	public double distributionLoss;
 	public double fermenterHeatDemand;
+	public double cooledBiogasHeat;
 	public double usedHeat;
 	public double totalLoss;
 
@@ -50,11 +51,29 @@ public class EfficiencyResult {
 			res.distributionLoss = pr.energyResult.heatNetLoss;
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
 			res.fermenterHeatDemand = pr.energyResult.totalFermenterHeatDemand;
+			res.cooledBiogasHeat = cooledBiogasHeat();
 			res.usedHeat = res.producedHeat - res.distributionLoss
 				- res.bufferLoss - res.fermenterHeatDemand;
 			res.totalLoss = res.distributionLoss
 				+ res.bufferLoss + res.fermenterHeatDemand;
 			return res;
+		}
+
+		/// The heat that the biogas plants could have delivered but that was
+		/// cooled away because it could not be fed into the heat network. It is
+		/// the difference between the heat that a plant can offer (the sum of
+		/// its producer profile) and the heat that was actually fed into the
+		/// network.
+		private double cooledBiogasHeat() {
+			double heat = 0;
+			for (var entry : pr.biogasResults.entrySet()) {
+				double produced = entry.getValue()
+					.revenues()
+					.totalGeneratedHeat();
+				double fedIn = pr.energyResult.totalHeat(entry.getKey());
+				heat += Math.max(0, produced - fedIn);
+			}
+			return heat;
 		}
 
 		private double utilizationRateOf(Producer p) {

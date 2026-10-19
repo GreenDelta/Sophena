@@ -50,6 +50,7 @@ class EfficiencyTable {
 			r.producedHeat));
 		items.add(new Item("Verteilungsverluste", r.distributionLoss,
 			r.producedHeat));
+		items.add(new Item("Weggekühlte Biogaswärme", r.cooledBiogasHeat));
 		items.add(new Item("Fermenterwärmebedarf", r.fermenterHeatDemand,
 			r.producedHeat));
 		items.add(new Item("Genutzte Wärme", r.usedHeat));

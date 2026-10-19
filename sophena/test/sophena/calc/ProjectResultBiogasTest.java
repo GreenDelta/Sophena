@@ -16,6 +16,7 @@ import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
 import sophena.calc.biogas.fermentersim.TestWeatherStation;
 import sophena.calc.costs.CostResultItem;
+import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.GeneratedElectricity;
 import sophena.calc.specs.Producers;
 import sophena.model.Consumer;
@@ -214,6 +215,14 @@ public class ProjectResultBiogasTest {
 		double soldHeat = Math.max(0, producedHeat - fermenterHeat);
 		assertTrue(soldHeat > 0);
 		assertTrue(soldHeat < producedHeat);
+
+		// the heat that the plant can offer but that is not fed into the
+		// network is cooled away
+		var efficiency = EfficiencyResult.calculate(r);
+		double offeredHeat = biogasResult.revenues().totalGeneratedHeat();
+		double cooledHeat = Math.max(0, offeredHeat - producedHeat);
+		assertTrue(cooledHeat > 0);
+		assertClose(cooledHeat, efficiency.cooledBiogasHeat);
 
 		// the network only pays for the sold heat
 		double dynPrice = biogasResult.costs().dynamicTotal.suggestedHeatPrice;
