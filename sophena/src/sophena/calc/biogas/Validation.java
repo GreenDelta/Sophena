@@ -25,7 +25,7 @@ public class Validation {
 
 		// check the boilers
 		if (plant.boilers.isEmpty())
-			return Res.error("Es wurden keine BHKW Blöcke definiert.");
+			return Res.error("Es wurden keine BHKW Aggregate definiert.");
 		if (hasInvalidBoilers(plant))
 			return Res.error(
 				"Es wurden BHKW Blöcke mit ungültigen Leistungsdaten definiert.");

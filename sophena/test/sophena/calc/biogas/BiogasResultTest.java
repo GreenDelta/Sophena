@@ -84,6 +84,35 @@ public class BiogasResultTest {
 	}
 
 	@Test
+	public void heatSharesAndCoolingIncreaseTheSuggestedHeatPrice() {
+		var plant = plantWithHeat();
+		plant.settings.useCapitalReturnRate = false;
+		plant.settings.expectedAnnualSurplus = 5000;
+		plant.settings.interestRate = 0;
+		plant.settings.electricityFactor = 1.0;
+
+		var base = BiogasResult.calculate(plant).orElseThrow();
+		double basePrice = base.costs().staticTotal.suggestedHeatPrice;
+		double baseCosts = base.costs().staticTotal.totalAnnualCosts;
+
+		plant.settings.fermenterHeatShare = 10;
+		plant.settings.unusedHeatShare = 20;
+		var r = BiogasResult.calculate(plant).orElseThrow();
+
+		double generated = r.revenues().totalGeneratedHeat();
+		double sellable = generated * 0.7;
+		double coolingCosts = generated * 0.2 * 0.005
+			* plant.settings.electricityPrice;
+
+		var s = r.costs().staticTotal;
+		assertEquals(baseCosts + coolingCosts, s.totalAnnualCosts, 1e-6);
+		assertTrue(s.suggestedHeatPrice > basePrice);
+		assertEquals(s.suggestedHeatPrice * sellable / 1000.0,
+			s.revenuesHeat, 1e-6);
+		assertEquals(5000, s.totalRevenues - s.totalAnnualCosts, 1e-6);
+	}
+
+	@Test
 	public void suggestedHeatPriceIsNeverNegative() {
 		var plant = plantWithHeat();
 		// with a high feed-in tariff the plant already earns more from the

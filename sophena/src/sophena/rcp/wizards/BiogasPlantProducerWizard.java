@@ -240,7 +240,7 @@ public class BiogasPlantProducerWizard extends Wizard {
 			if (plant == null) return "";
 			var boilers = plant.boilers;
 			if (boilers.size() != 1)
-				return boilers.size() + " Blöcke";
+				return boilers.size() + " Aggregate";
 			var first = plant.boilers.getFirst();
 			return first != null && first.boiler != null
 				? first.boiler.name

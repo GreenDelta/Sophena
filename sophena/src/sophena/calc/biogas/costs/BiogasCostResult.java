@@ -73,7 +73,7 @@ public class BiogasCostResult {
 		public double revenuesElectricity;
 
 		/// Revenues from generated heat. These are calculated from the suggested
-		/// heat price and the generated heat.
+		/// heat price and the heat that can be sold to the heat network.
 		public double revenuesHeat;
 
 		/// The total annual revenues: the sum of the annual funding, the
