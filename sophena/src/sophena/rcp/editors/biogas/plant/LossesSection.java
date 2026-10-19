@@ -44,6 +44,17 @@ class LossesSection {
 		t(comp, tk, "Wärmeverluste", "kW", settings.heatLoss)
 			.onChanged(s -> settings.heatLoss = Num.read(s));
 		HelpLink.create(comp, tk, "Wärmeverluste", H.HeatLossInfo);
+
+		t(comp, tk, "Fermenterheizungswärme", "%",
+			settings.fermenterHeatShare)
+			.onChanged(s -> settings.fermenterHeatShare = Num.read(s));
+		HelpLink.create(comp, tk, "Fermenterheizungswärme",
+			H.FermenterHeatShareInfo);
+
+		t(comp, tk, "Ungenutzte Wärme", "%", settings.unusedHeatShare)
+			.onChanged(s -> settings.unusedHeatShare = Num.read(s));
+		HelpLink.create(comp, tk, "Ungenutzte Wärme",
+			H.UnusedHeatShareInfo);
 	}
 
 	private Texts.TextBox t(

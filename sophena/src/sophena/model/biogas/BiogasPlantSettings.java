@@ -96,6 +96,19 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "heat_loss")
 	public double heatLoss;
 
+	/// Share of the generated heat that is used to heat the fermenter, in %.
+	///
+	/// @de Fermenterheizungswärme
+	@Column(name = "fermenter_heat_share")
+	public double fermenterHeatShare;
+
+	/// Share of the generated heat that is not fed into the heat network and
+	/// that must be cooled away, in %.
+	///
+	/// @de Ungenutzte Wärme
+	@Column(name = "unused_heat_share")
+	public double unusedHeatShare;
+
 	/// Capital mixed interest rate in %.
 	///
 	/// @de Kapital-Mischzinssatz
@@ -277,6 +290,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.transmissionLosses = 7.35;
 		settings.methaneSlip = 1.8;
 		settings.heatLoss = 0.0;
+		settings.fermenterHeatShare = 0.0;
+		settings.unusedHeatShare = 0.0;
 		settings.interestRate = 4.0;
 		settings.useCapitalReturnRate = true;
 		settings.capitalReturnRate = 20.0;
@@ -330,6 +345,8 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.transmissionLosses = transmissionLosses;
 		copy.methaneSlip = methaneSlip;
 		copy.heatLoss = heatLoss;
+		copy.fermenterHeatShare = fermenterHeatShare;
+		copy.unusedHeatShare = unusedHeatShare;
 		copy.interestRate = interestRate;
 		copy.useCapitalReturnRate = useCapitalReturnRate;
 		copy.capitalReturnRate = capitalReturnRate;

@@ -19,6 +19,7 @@ public class H extends NLS {
 	public static String ElectricityRevenues;
 	public static String EligibleQuarterHoursInfo;
 	public static String FeedInModeInfo;
+	public static String FermenterHeatShareInfo;
 	public static String GasStorageFillingLevelInfo;
 	public static String GasStorageSizeInfo;
 	public static String HeatLossInfo;
@@ -50,6 +51,7 @@ public class H extends NLS {
 	public static String OperatingData;
 	public static String TargetChargeLevel;
 	public static String TransmissionLossesInfo;
+	public static String UnusedHeatShareInfo;
 	public static String UseHeatingCurve;
 	public static String LengthPowerLoss;
 	public static String PowerLoss;

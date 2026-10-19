@@ -45,6 +45,39 @@ public class BiogasPlantSettingsTest {
 	}
 
 	@Test
+	public void defaultHeatShares() {
+		var settings = BiogasPlantSettings.createDefault();
+		assertEquals(0.0, settings.fermenterHeatShare, 1e-16);
+		assertEquals(0.0, settings.unusedHeatShare, 1e-16);
+	}
+
+	@Test
+	public void copyKeepsTheHeatShares() {
+		var settings = BiogasPlantSettings.createDefault();
+		settings.fermenterHeatShare = 12.5;
+		settings.unusedHeatShare = 8.0;
+
+		var copy = settings.copy();
+
+		assertEquals(12.5, copy.fermenterHeatShare, 1e-16);
+		assertEquals(8.0, copy.unusedHeatShare, 1e-16);
+	}
+
+	@Test
+	public void persistsTheHeatShares() {
+		var settings = BiogasPlantSettings.createDefault();
+		settings.fermenterHeatShare = 12.5;
+		settings.unusedHeatShare = 8.0;
+
+		var stored = db.insert(settings);
+		var loaded = db.get(BiogasPlantSettings.class, stored.id);
+
+		assertEquals(12.5, loaded.fermenterHeatShare, 1e-16);
+		assertEquals(8.0, loaded.unusedHeatShare, 1e-16);
+		db.delete(loaded);
+	}
+
+	@Test
 	public void defaultFundingValues() {
 		var settings = BiogasPlantSettings.createDefault();
 		assertEquals(0.0, settings.annualFunding, 1e-16);

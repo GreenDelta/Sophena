@@ -117,6 +117,8 @@ CREATE TABLE tbl_biogas_plant_settings (
     transmission_losses         DOUBLE,
     methane_slip                DOUBLE,
     heat_loss                   DOUBLE,
+    fermenter_heat_share        DOUBLE,
+    unused_heat_share           DOUBLE,
     interest_rate               DOUBLE,
     use_capital_return_rate     BOOLEAN,
     capital_return_rate         DOUBLE,
