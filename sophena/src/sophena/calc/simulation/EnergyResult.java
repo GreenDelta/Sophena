@@ -34,8 +34,10 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	public double[] bufferCapacity;
 
 	HashMap<String, Double> totalHeats = new HashMap<>();
+	HashMap<String, Double> fermenterHeatDemands = new HashMap<>();
 	public double heatNetLoss;
-	public double fermenterHeatDemand;
+
+	public double totalFermenterHeatDemand;
 
 	private EnergyResult() {
 	}
@@ -58,6 +60,16 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		if (p == null || p.id == null)
 			return 0;
 		Double d = totalHeats.get(p.id);
+		return d == null ? 0 : d;
+	}
+
+	/// The heat that the fermenters of the biogas plant of the given producer
+	/// need in kWh. This heat is provided by the plant but is not sold to the
+	/// heat network.
+	public double fermenterHeatOf(Producer p) {
+		if (p == null || p.id == null)
+			return 0;
+		Double d = fermenterHeatDemands.get(p.id);
 		return d == null ? 0 : d;
 	}
 
@@ -180,7 +192,8 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		copy.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
 		copy.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
 		copy.heatNetLoss = heatNetLoss;
-		copy.fermenterHeatDemand = fermenterHeatDemand;
+		copy.totalFermenterHeatDemand = totalFermenterHeatDemand;
+		copy.fermenterHeatDemands = new HashMap<>(fermenterHeatDemands);
 		return copy;
 	}
 

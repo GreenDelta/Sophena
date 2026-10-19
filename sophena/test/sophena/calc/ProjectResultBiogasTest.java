@@ -8,10 +8,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
+import sophena.calc.biogas.fermentersim.TestWeatherStation;
 import sophena.calc.costs.CostResultItem;
 import sophena.calc.kpi.GeneratedElectricity;
 import sophena.calc.specs.Producers;
@@ -155,8 +158,11 @@ public class ProjectResultBiogasTest {
 		assertTrue(dynPrice > 0);
 		assertTrue(statPrice > 0);
 
-		// the network pays for the heat that is used from the producer
-		double heat = r.energyResult.totalHeat(producer) / 1000.0; // MWh
+		// the network pays for the heat that is used from the producer. The
+		// plant has no fermenter in this project, so the fermenter heat is 0.
+		assertEquals(0, r.energyResult.fermenterHeatOf(producer), 1e-9);
+		double heat = Math.max(0, r.energyResult.totalHeat(producer)
+			- r.energyResult.fermenterHeatOf(producer)) / 1000.0; // MWh
 		assertTrue(heat > 0);
 		assertClose(heat * dynPrice,
 			r.costResult.dynamicTotal.consumptionCosts);
@@ -171,6 +177,69 @@ public class ProjectResultBiogasTest {
 		// the project does not earn electricity revenues from the biogas plant
 		assertEquals(0, r.costResult.dynamicTotal.revenuesElectricity, 1e-9);
 		assertEquals(0, r.costResult.staticTotal.revenuesElectricity, 1e-9);
+	}
+
+	@Test
+	public void subtractsTheFermenterHeatFromTheHeatPurchase() {
+		var project = project();
+		var producer = biogasProducer(project);
+		project.weatherStation = TestWeatherStation.get();
+		producer.biogasPlant.fermenter = TestPlant.fermenter();
+		// a high-yield substrate reduces the fermenter heat demand while the
+		// gas production of the plant stays the same
+		var substrate = producer.biogasPlant.substrateProfiles.getFirst();
+		substrate.substrate.biogasProduction = 2000;
+		Arrays.fill(substrate.hourlyValues, 2.0);
+		project.costSettings.heatRevenues = 100;
+
+		// the plant needs an investment so that it has a target profit and
+		// therefore a suggested heat price
+		var entry = new BiogasInvestmentEntry();
+		entry.costs = new ProductCosts();
+		entry.costs.investment = 5_000_000;
+		producer.biogasPlant.investments.add(entry);
+
+		var r = ProjectResult.calculate(project);
+
+		var biogasResult = r.biogasResults.get(producer);
+		assertNotNull(biogasResult);
+
+		// the fermenter heat is calculated per producer and aggregated
+		double fermenterHeat = r.energyResult.fermenterHeatOf(producer);
+		assertTrue(fermenterHeat > 0);
+		assertEquals(r.energyResult.totalFermenterHeatDemand,
+			fermenterHeat, 1e-6);
+
+		double producedHeat = r.energyResult.totalHeat(producer);
+		double soldHeat = Math.max(0, producedHeat - fermenterHeat);
+		assertTrue(soldHeat > 0);
+		assertTrue(soldHeat < producedHeat);
+
+		// the network only pays for the sold heat
+		double dynPrice = biogasResult.costs().dynamicTotal.suggestedHeatPrice;
+		double statPrice = biogasResult.costs().staticTotal.suggestedHeatPrice;
+		assertClose(soldHeat / 1000.0 * dynPrice,
+			r.costResult.dynamicTotal.consumptionCosts);
+		assertClose(soldHeat / 1000.0 * statPrice,
+			r.costResult.staticTotal.consumptionCosts);
+
+		var item = itemOf(r, producer);
+		assertNotNull(item);
+		assertClose(soldHeat / 1000.0 * dynPrice, item.demandRelatedCosts());
+
+		// the used heat and the heat generation costs only consider the heat
+		// that is sold to the network
+		double bufferLoss = Stats.sum(r.energyResult.bufferLoss);
+		double usedHeat = (r.energyResult.totalProducedHeat
+			- r.energyResult.heatNetLoss
+			- bufferLoss
+			- fermenterHeat) / 1000.0;
+		assertTrue(usedHeat > 0);
+		var stat = r.costResult.staticTotal;
+		assertClose((stat.totalAnnualCosts - stat.revenuesElectricity) / usedHeat,
+			stat.heatGenerationCosts);
+		assertClose(usedHeat * project.costSettings.heatRevenues,
+			stat.revenuesHeat);
 	}
 
 	/// Returns the cost item of the given producer.

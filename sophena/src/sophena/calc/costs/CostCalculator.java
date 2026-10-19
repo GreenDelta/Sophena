@@ -112,16 +112,19 @@ public class CostCalculator {
 		var energyResult = result.energyResult;
 		double producedHeat = energyResult.totalHeat(p);
 
-		// the network buys the heat of a biogas plant for the heat price that
-		// the plant needs to reach its expected profit; it pays for the heat
-		// that is used in the network. Note that the plant calculates its
-		// revenues from the heat that it can offer, so the part of the offered
-		// heat that is not used needs to be cooled away.
+		// the network buys the heat of a biogas plant for the heat price that the
+		// biogas plant needs to reach its expected profit; it pays for the heat
+		// that is used in the network. The heat that is needed to heat the
+		// fermenters is provided by the plant but is not sold to the network. Note
+		// that the biogas plant calculates the suggested price from the heat that
+		// it can offer, with estimates for fermenter and unused heat.
 		if (p.biogasPlant != null) {
 			var biogas = result.biogasResults.get(p);
 			if (biogas == null)
 				return new DemandCosts(0, 0);
-			double heat = producedHeat / 1000.0; // MWh
+			double soldHeat = Math.max(
+				0, producedHeat - energyResult.fermenterHeatOf(p));
+			double heat = soldHeat / 1000.0; // MWh
 			// the suggested heat prices are already annual values related to
 			// the expected profit of the plant, so they are not annuitized here
 			return new DemandCosts(
@@ -235,13 +238,17 @@ public class CostCalculator {
 			: settings.interestRate;
 	}
 
-	/// Returns the used heat in MWh.
+	/// Returns the heat that is sold to the heat network in MWh. The heat that
+	/// is needed to heat the fermenters of the biogas plants is consumed
+	/// internally and is not sold.
 	private double usedHeat() {
 		var energyResult = result.energyResult;
 		double bufferLoss = Stats.sum(energyResult.bufferLoss);
-		return (energyResult.totalProducedHeat
+		double heat = energyResult.totalProducedHeat
 			- energyResult.heatNetLoss
-			- bufferLoss) / 1000d;
+			- bufferLoss
+			- energyResult.totalFermenterHeatDemand;
+		return Math.max(0, heat) / 1000d;
 	}
 
 	/// The computed costs of a single investment item. The [CostResultItem]

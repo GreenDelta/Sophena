@@ -166,12 +166,14 @@ class EnergyCalculator {
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
 		r.totalBufferLoss = Stats.sum(r.bufferLoss);
 
-		r.fermenterHeatDemand = 0;
+		r.totalFermenterHeatDemand = 0;
 		for (var p : r.producers) {
 			if (p.biogasPlant == null)
 				continue;
 			double[] demand = FermenterHeatDemand.of(project, p.biogasPlant);
-			r.fermenterHeatDemand += Stats.sum(demand);
+			double total = Stats.sum(demand);
+			r.fermenterHeatDemands.put(p.id, total);
+			r.totalFermenterHeatDemand += total;
 		}
 	}
 }

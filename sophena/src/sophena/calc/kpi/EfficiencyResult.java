@@ -49,7 +49,7 @@ public class EfficiencyResult {
 			res.producedHeat = pr.energyResult.totalProducedHeat;
 			res.distributionLoss = pr.energyResult.heatNetLoss;
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
-			res.fermenterHeatDemand = pr.energyResult.fermenterHeatDemand;
+			res.fermenterHeatDemand = pr.energyResult.totalFermenterHeatDemand;
 			res.usedHeat = res.producedHeat - res.distributionLoss
 				- res.bufferLoss - res.fermenterHeatDemand;
 			res.totalLoss = res.distributionLoss
