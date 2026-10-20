@@ -57,7 +57,7 @@ public class BiogasPlantInvestmentsTest {
 		var plant = TestPlant.of(1600, 4);
 		plant.duration = 20;
 		plant.settings = BiogasPlantSettings.createDefault(null);
-		plant.boilers.get(0).costs = costs(50_000);
+		plant.boilers.getFirst().costs = costs(50_000);
 		plant.investments.add(investment(20_000));
 		plant.investments.add(refurbishment(10_000, 25));
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
@@ -77,7 +77,7 @@ public class BiogasPlantInvestmentsTest {
 
 		var boilerCosts = costs(50_000);
 		boilerCosts.operation = 100;
-		plant.boilers.get(0).costs = boilerCosts;
+		plant.boilers.getFirst().costs = boilerCosts;
 
 		var newEntry = investment(20_000);
 		newEntry.costs.operation = 40;
@@ -105,7 +105,7 @@ public class BiogasPlantInvestmentsTest {
 
 		var boilerCosts = costs(50_000);
 		boilerCosts.duration = 20;
-		plant.boilers.get(0).costs = boilerCosts;
+		plant.boilers.getFirst().costs = boilerCosts;
 
 		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var costs = costResult(plant, result);
@@ -132,7 +132,7 @@ public class BiogasPlantInvestmentsTest {
 		assertNotEquals(plant.id, copy.id);
 		assertEquals("Plant", copy.name);
 		assertEquals(1, copy.investments.size());
-		var copied = copy.investments.get(0);
+		var copied = copy.investments.getFirst();
 		assertNotEquals(entry.id, copied.id);
 		assertEquals("Behälter", copied.name);
 		assertEquals(20_000, copied.costs.investment, 1e-10);
@@ -223,6 +223,30 @@ public class BiogasPlantInvestmentsTest {
 		// operation costs are the same as for a normal investment
 		assertEquals(withNormal.dynamicTotal.operationCosts,
 			withRefurb.dynamicTotal.operationCosts, 1e-6);
+	}
+
+	@Test
+	public void otherCostsUseTheSharesOfTheInvestment() {
+		var plant = TestPlant.of(1600, 4);
+		plant.duration = 20;
+		plant.settings = BiogasPlantSettings.createDefault(null);
+		plant.settings.interestRate = 0;
+		plant.settings.operationFactor = 1.0;
+		plant.settings.insuranceCostsShare = 0.5;
+		plant.settings.otherCostsShare = 1.5;
+
+		var boilerCosts = costs(50_000);
+		boilerCosts.duration = 20;
+		plant.boilers.get(0).costs = boilerCosts;
+		plant.investments.add(investment(20_000));
+
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var costs = costResult(plant, result);
+
+		// 2 % of 70_000 EUR; with 0 % interest and an operation factor of 1
+		// the annuity equals the first-year value
+		assertEquals(1_400, costs.dynamicTotal.otherAnnualCosts, 1e-6);
+		assertEquals(1_400, costs.staticTotal.otherAnnualCosts, 1e-6);
 	}
 
 	private BiogasInvestmentEntry investment(double investment) {

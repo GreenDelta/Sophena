@@ -7,7 +7,6 @@ import sophena.calc.costs.Annuity;
 import sophena.calc.costs.CostResultItem;
 import sophena.calc.costs.InvestmentItem;
 import sophena.calc.costs.Investments;
-import sophena.model.AnnualCostEntry;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.SubstrateProfile;
@@ -158,24 +157,25 @@ public class BiogasCostCalculator {
 			+ staticYearly(coolingCosts);
 	}
 
-	/// Adds the insurance and the other fixed annual costs.
+	/// Adds the insurance, the other charges, and the other fixed annual costs.
 	private void addOtherCosts(BiogasCostResult r, List<InvestmentItem> items) {
 
-		// the insurance is a share of the full investment value
-		double insurance = totalInvestmentValue(items)
-			* (plant.settings.insuranceCostsShare / 100);
+		// the insurance and the other charges are shares of the full
+		// investment value
+		double share = (
+			plant.settings.insuranceCostsShare + plant.settings.otherCostsShare
+		) / 100;
+		double costs = totalInvestmentValue(items) * share;
 
-		double entries = 0;
 		if (plant.otherAnnualCosts != null) {
-			for (AnnualCostEntry entry : plant.otherAnnualCosts) {
-				entries += entry.value;
+			for (var entry : plant.otherAnnualCosts) {
+				costs += entry.value;
 			}
 		}
 
-		double otherCosts = insurance + entries;
 		r.dynamicTotal.otherAnnualCosts = dynamicYearly(
-			otherCosts, plant.settings.operationFactor);
-		r.staticTotal.otherAnnualCosts = staticYearly(otherCosts);
+			costs, plant.settings.operationFactor);
+		r.staticTotal.otherAnnualCosts = staticYearly(costs);
 	}
 
 	/// Adds the revenues from the electricity feed-in. These are the funding of
