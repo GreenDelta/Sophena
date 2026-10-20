@@ -45,6 +45,34 @@ public class BiogasPlantSettingsTest {
 	}
 
 	@Test
+	public void defaultTransmissionLosses() {
+		var settings = BiogasPlantSettings.createDefault();
+		assertEquals(0.7, settings.transmissionLosses, 1e-16);
+	}
+
+	@Test
+	public void copyKeepsTheTransmissionLosses() {
+		var settings = BiogasPlantSettings.createDefault();
+		settings.transmissionLosses = 1.5;
+
+		var copy = settings.copy();
+
+		assertEquals(1.5, copy.transmissionLosses, 1e-16);
+	}
+
+	@Test
+	public void persistsTheTransmissionLosses() {
+		var settings = BiogasPlantSettings.createDefault();
+		settings.transmissionLosses = 1.5;
+
+		var stored = db.insert(settings);
+		var loaded = db.get(BiogasPlantSettings.class, stored.id);
+
+		assertEquals(1.5, loaded.transmissionLosses, 1e-16);
+		db.delete(loaded);
+	}
+
+	@Test
 	public void defaultHeatShares() {
 		var settings = BiogasPlantSettings.createDefault();
 		assertEquals(0.0, settings.fermenterHeatShare, 1e-16);

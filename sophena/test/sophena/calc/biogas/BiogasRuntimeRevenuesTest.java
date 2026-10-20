@@ -22,9 +22,9 @@ public class BiogasRuntimeRevenuesTest {
 	/// The electric power of the test plant under full load in kW.
 	private static final double POWER = 500;
 
-	/// The cable and transformer losses of the test plants in kW (the default
+	/// The cable and transformer losses of the test plants in % (the default
 	/// value of `BiogasPlantSettings#createDefault`).
-	private static final double LOSSES = 7.35;
+	private static final double LOSSES = 0.7;
 
 	@Test
 	public void fixedRemunerationPaysTheTariff() {
@@ -75,6 +75,11 @@ public class BiogasRuntimeRevenuesTest {
 		assertEquals(
 			expectedFeedIn(result.runFlags(), 30, 20, false),
 			with20.feedInElectricity(), 1e-6);
+		// the losses are a share of the generated electricity, not a fixed
+		// amount per operating hour
+		double generated = expectedFeedIn(result.runFlags(), 30, 0, true);
+		assertEquals(0.2 * generated,
+			without.feedInElectricity() - with20.feedInElectricity(), 1e-6);
 	}
 
 	@Test
@@ -320,17 +325,19 @@ public class BiogasRuntimeRevenuesTest {
 	/// The expected fed-in electricity in kWh: the full-load hours contribute
 	/// the electric power (minus the internal demand in the surplus mode) and
 	/// each ramp contributes 1/8 of the power. The cable and transformer losses
-	/// are subtracted from every hour that feeds in.
+	/// are subtracted as a share of the generated electricity from every hour
+	/// that feeds in.
 	private static double expectedFeedIn(
 		boolean[] flags, double avgDemand, double losses, boolean fullFeedIn
 	) {
+		double lossFactor = 1.0 - losses / 100.0;
 		double sum = 0;
 		for (int h = 0; h < flags.length; h++) {
 			if (flags[h]) {
-				double energy = fullFeedIn
-					? POWER
-					: POWER - avgDemand;
-				sum += Math.max(0, energy - losses);
+				double energy = POWER * lossFactor;
+				if (!fullFeedIn)
+					energy -= avgDemand;
+				sum += Math.max(0, energy);
 				continue;
 			}
 			int ramps = 0;
@@ -339,7 +346,7 @@ public class BiogasRuntimeRevenuesTest {
 			if (h > 0 && flags[h - 1])
 				ramps++;
 			if (ramps > 0) {
-				sum += Math.max(0, ramps * POWER / 8.0 - losses);
+				sum += Math.max(0, ramps * POWER / 8.0 * lossFactor);
 			}
 		}
 		return sum;

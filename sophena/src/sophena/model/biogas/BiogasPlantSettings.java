@@ -73,10 +73,10 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "avg_power_demand")
 	public double avgPowerDemand;
 
-	/// Cable and transformer losses in kW. Transformer losses are typically
-	/// 0.7 % of the electricity production; cable losses depend on the voltage,
-	/// the power and the cable length. At medium voltage, losses are hardly
-	/// relevant.
+	/// Cable and transformer losses in % of the electricity production.
+	/// Transformer losses are typically 0.7 % of the electricity production;
+	/// cable losses depend on the voltage, the power and the cable length. At
+	/// medium voltage, losses are hardly relevant.
 	///
 	/// @de Kabel- und Trafoverluste
 	@Column(name = "transmission_losses")
@@ -287,7 +287,7 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.manureBiomethanePrice = 0.12;
 		settings.nonManureBiomethanePrice = 0.08;
 		settings.avgPowerDemand = 30.0;
-		settings.transmissionLosses = 7.35;
+		settings.transmissionLosses = 0.7;
 		settings.methaneSlip = 1.8;
 		settings.heatLoss = 0.0;
 		settings.fermenterHeatShare = 0.0;

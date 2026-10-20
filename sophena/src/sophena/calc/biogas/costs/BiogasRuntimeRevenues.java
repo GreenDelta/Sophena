@@ -107,28 +107,32 @@ public record BiogasRuntimeRevenues(
 
 		/// Creates the fed-in electricity per hour from the run flags. Full-load
 		/// hours get the full electric power, ramp hours 1/8 of it per ramp. The
-		/// cable and transformer losses are subtracted in every operating hour;
-		/// in the surplus feed-in mode the internal power demand is additionally
-		/// subtracted in the full-load hours.
+		/// cable and transformer losses are subtracted as a share of the generated
+		/// electricity in every operating hour; in the surplus feed-in mode the
+		/// internal power demand is additionally subtracted in the full-load hours.
 		private void buildProfiles() {
-			double losses = settings.transmissionLosses;
+			double lossFactor = 1.0 - (settings.transmissionLosses / 100.0);
 			for (int h = 0; h < Stats.HOURS; h++) {
 				if (isFullLoad(h)) {
-					double energy = settings.isFullFeedIn
-						? power
-						: power - settings.avgPowerDemand;
-					feedIn[h] = Math.max(0, energy - losses);
+					double energy = power * lossFactor;
+					if (!settings.isFullFeedIn) {
+						energy -= settings.avgPowerDemand;
+					}
+					feedIn[h] = Math.max(0, energy);
 					continue;
 				}
+
 				int ramps = 0;
-				if (isFullLoad(h + 1))
+				if (isFullLoad(h + 1)) {
 					ramps++;
-				if (h > 0 && isFullLoad(h - 1))
+				}
+				if (h > 0 && isFullLoad(h - 1)) {
 					ramps++;
+				}
 				rampUnits[h] = ramps;
 				feedIn[h] = ramps <= 0
 					? 0
-					: Math.max(0, ramps * power / 8.0 - losses);
+					: Math.max(0, ramps * (power / 8.0) * lossFactor);
 			}
 		}
 

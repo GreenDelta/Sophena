@@ -32,7 +32,7 @@ class LossesSection {
 		UI.gridLayout(comp, 4);
 		var settings = plant().settings;
 
-		t(comp, tk, "Kabel- und Trafoverluste", "kW", settings.transmissionLosses)
+		t(comp, tk, "Kabel- und Trafoverluste", "%", settings.transmissionLosses)
 			.onChanged(s -> settings.transmissionLosses = Num.read(s));
 		HelpLink.create(comp, tk, "Kabel- und Trafoverluste",
 			H.TransmissionLossesInfo);
