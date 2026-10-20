@@ -85,11 +85,11 @@ class CostResultPage extends FormPage {
 		// revenues
 		items.add(new Item("Jährliche Förderung", "EUR/a",
 			dyn.annualFunding, stat.annualFunding));
-		items.add(new Item("Einspeiseabhängige Förderung", "EUR/a",
+		items.add(new Item("Marktprämie / Einspeisevergütung", "EUR/a",
 			dyn.feedInFundingRevenues, stat.feedInFundingRevenues));
-		items.add(new Item("Stromerlöse - Referenzmarktwert", "EUR/a",
+		items.add(new Item("Marktwert", "EUR/a",
 			dyn.referenceMarketRevenues, stat.referenceMarketRevenues));
-		items.add(new Item("Stromerlöse - Mehrerlöse", "EUR/a",
+		items.add(new Item("Strommehrerlöse", "EUR/a",
 			dyn.additionalRevenues, stat.additionalRevenues));
 		items.add(new Item("Wärmeerlöse", "EUR/a",
 			dyn.revenuesHeat, stat.revenuesHeat));
