@@ -93,8 +93,8 @@ bf6f4a6d-3465-41db-8b22-b69b26a355e2 ; 11     ; BIOGAS_TECHNOLOGY         ; BHKW
 82cc1f59-1d10-4dc7-8cb6-475d750e1dd3 ; 12     ; BIOGAS_TECHNOLOGY         ; Technik Rest wenig komplex                                     ;              ; 15        ; 2       ; 1            ;
 efdd11d8-5fe9-41ac-8304-c19b9eadc00f ; 13     ; BIOGAS_TECHNOLOGY         ; Technik Rest komplex                                           ;              ; 8         ; 4       ; 3            ;
 ae190d50-1614-473d-acd1-08e33ec09901 ; 14     ; BIOGAS_TECHNOLOGY         ; Sonstiges                                                      ;              ;           ;         ;              ;
-4bbe26fe-4acd-4193-8dde-4bda518a7afa ; 0      ; ELECTRICITY_TRANSFER      ; Stromnetzanschluss                                             ;              ; 20        ; 0.5     ; 0.5          ;
-135a739a-8a8d-43a2-9272-be0c2dcb6d10 ; 1      ; ELECTRICITY_TRANSFER      ; Trafo                                                          ;              ; 20        ; 0.5     ; 0.5          ;
-b4333ca6-d296-4bbe-a68e-81adf802a81b ; 2      ; ELECTRICITY_TRANSFER      ; Stromübergabestation                                           ;              ; 20        ; 0.5     ; 0.5          ;
-143e0084-a323-4098-ac42-6a746b03f852 ; 3      ; ELECTRICITY_TRANSFER      ; Kommunikationseinrichtung                                      ;              ; 10        ; 2.0     ; 1.0          ;
-f1b424a4-dc57-4684-a923-efacb1e62aec ; 4      ; ELECTRICITY_TRANSFER      ; Sonstiges                                                      ;              ;           ;         ;              ;
+4bbe26fe-4acd-4193-8dde-4bda518a7afa ; 0      ; BIOGAS_ELECTRICITY_TRANSFER      ; Stromnetzanschluss                                             ;              ; 20        ; 0.5     ; 0.5          ;
+135a739a-8a8d-43a2-9272-be0c2dcb6d10 ; 1      ; BIOGAS_ELECTRICITY_TRANSFER      ; Trafo                                                          ;              ; 20        ; 0.5     ; 0.5          ;
+b4333ca6-d296-4bbe-a68e-81adf802a81b ; 2      ; BIOGAS_ELECTRICITY_TRANSFER      ; Stromübergabestation                                           ;              ; 20        ; 0.5     ; 0.5          ;
+143e0084-a323-4098-ac42-6a746b03f852 ; 3      ; BIOGAS_ELECTRICITY_TRANSFER      ; Kommunikationseinrichtung                                      ;              ; 10        ; 2.0     ; 1.0          ;
+f1b424a4-dc57-4684-a923-efacb1e62aec ; 4      ; BIOGAS_ELECTRICITY_TRANSFER      ; Sonstiges                                                      ;              ;           ;         ;              ;

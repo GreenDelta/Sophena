@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import org.openlca.commons.Strings;
 
-/**
- * All products in Sophena have exactly one of the following types. The order in
- * this enum is equal to the display order in the user interface.
- */
+/// All products in Sophena have exactly one of the following types. The order in
+/// this enum is equal to the display order in the user interface.
+///
+/// @de Produktbereich
 public enum ProductType {
 
 	BIOMASS_BOILER(ProductArea.TECHNOLOGY),
@@ -49,11 +49,14 @@ public enum ProductType {
 
 	PLANNING(ProductArea.PLANNING),
 
+	/// @de Biogasbauwerk
 	BIOGAS_STRUCTURE(ProductArea.BIOGAS),
 
+	/// @de Biogastechnik
 	BIOGAS_TECHNOLOGY(ProductArea.BIOGAS),
 
-	ELECTRICITY_TRANSFER(ProductArea.BIOGAS);
+	/// @de Stromübergabe
+	BIOGAS_ELECTRICITY_TRANSFER(ProductArea.BIOGAS);
 
 	public final ProductArea productArea;
 

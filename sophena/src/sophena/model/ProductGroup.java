@@ -8,6 +8,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
+/// In Sophena, each product has a product group. A product group is used to
+/// organize products and contains the default cost parameters.
+///
+/// @de Produktgruppe
 @Entity
 @Table(name = "tbl_product_groups")
 public class ProductGroup extends BaseDataEntity {

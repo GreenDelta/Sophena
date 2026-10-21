@@ -113,7 +113,7 @@ public final class Labels {
 			case TRANSFER_STATION -> "Wärmeübergabe";
 			case BIOGAS_STRUCTURE -> "Biogasbauwerk";
 			case BIOGAS_TECHNOLOGY -> "Biogastechnik";
-			case ELECTRICITY_TRANSFER -> "Stromübergabe";
+			case BIOGAS_ELECTRICITY_TRANSFER -> "Stromübergabe";
 		};
 	}
 
@@ -190,7 +190,7 @@ public final class Labels {
 			case TRANSFER_STATION -> "Wärmeübergabe";
 			case BIOGAS_STRUCTURE -> "Biogasbauwerke";
 			case BIOGAS_TECHNOLOGY -> "Biogastechnik";
-			case ELECTRICITY_TRANSFER -> "Stromübergabe";
+			case BIOGAS_ELECTRICITY_TRANSFER -> "Stromübergabe";
 		};
 	}
 
