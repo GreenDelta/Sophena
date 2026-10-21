@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.openlca.commons.Strings;
@@ -16,9 +15,7 @@ import sophena.model.ProductCosts;
 import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.biogas.BiogasInvestmentEntry;
-import sophena.model.biogas.BiogasInvestmentGroup;
 import sophena.rcp.app.App;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.EntityCombo;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Texts;
@@ -27,15 +24,20 @@ import sophena.rcp.wizards.SimpleWizard;
 import sophena.utils.Num;
 
 /// Wizard for creating and editing the investment entries of a biogas plant.
-/// The refurbishment field is only available for entries of the
-/// `BiogasInvestmentGroup#OLD` group.
+/// The product type of an entry is defined by the section in which it is
+/// edited, so only product groups of this type can be selected. For entries in
+/// the area of refurbishments the share of the investment that is spent for
+/// the refurbishment can be edited.
 class InvestmentWizard extends SimpleWizard {
 
-	private final BiogasInvestmentEntry entry;
-	private final BiogasInvestmentGroup group;
+	/// The default share [%] of an investment that is spent for a
+	/// refurbishment.
+	private static final double DEFAULT_SHARE = 0;
 
-	private ProductType[] types;
-	private Combo typeCombo;
+	private final BiogasInvestmentEntry entry;
+	private final ProductType type;
+	private final boolean refurbishment;
+
 	private EntityCombo<ProductGroup> groupCombo;
 
 	private Text investmentText;
@@ -44,19 +46,24 @@ class InvestmentWizard extends SimpleWizard {
 	private Text maintenanceText;
 	private Text operationText;
 
-	static int open(BiogasInvestmentEntry entry, BiogasInvestmentGroup group) {
-		if (entry == null || group == null)
+	static int open(
+		BiogasInvestmentEntry entry, ProductType type, boolean refurbishment) {
+		if (entry == null || type == null)
 			return Window.CANCEL;
-		return new InvestmentWizard(entry, group).open();
+		return new InvestmentWizard(entry, type, refurbishment).open();
 	}
 
 	private InvestmentWizard(
-		BiogasInvestmentEntry entry, BiogasInvestmentGroup group) {
-		super(Labels.get(group));
+		BiogasInvestmentEntry entry, ProductType type, boolean refurbishment) {
+		super(Labels.getPlural(type));
 		this.entry = entry;
-		this.group = group;
+		this.type = type;
+		this.refurbishment = refurbishment;
 		if (entry.costs == null) {
 			entry.costs = new ProductCosts();
+		}
+		if (refurbishment && entry.refurbishmentShare == null) {
+			entry.refurbishmentShare = DEFAULT_SHARE;
 		}
 	}
 
@@ -67,26 +74,25 @@ class InvestmentWizard extends SimpleWizard {
 
 	@Override
 	protected boolean onFinish() {
-		return entry.productGroup != null;
+		if (entry.productGroup == null)
+			return false;
+		if (refurbishment) {
+			double share = entry.refurbishmentShare != null
+				? entry.refurbishmentShare
+				: DEFAULT_SHARE;
+			entry.refurbishmentShare = Math.clamp(share, 0, 100);
+		}
+		return true;
 	}
 
 	@Override
 	protected void create(Composite comp) {
 		UI.gridLayout(comp, 3);
-		createTypeCombo(comp);
 		createGroupCombo(comp);
 		createNameText(comp);
 		createCostFields(comp);
 		createSpacer(comp);
 
-		// The listeners are only added after the initial selection, so that
-		// the initial setup does not overwrite the values of the entry.
-		Controls.onSelect(typeCombo, _ -> {
-			int i = typeCombo.getSelectionIndex();
-			var type = i < 0 ? null : types[i];
-			entry.productGroup = null;
-			groupCombo.setInput(groupsOf(type));
-		});
 		groupCombo.onSelect(pg -> {
 			entry.productGroup = pg;
 			ProductCosts.copy(pg, entry.costs);
@@ -94,40 +100,14 @@ class InvestmentWizard extends SimpleWizard {
 		});
 	}
 
-	private void createTypeCombo(Composite comp) {
-		types = ProductType.values();
-		var items = new String[types.length];
-		for (int i = 0; i < types.length; i++) {
-			items[i] = Labels.get(types[i]);
-		}
-		typeCombo = UI.formCombo(comp, "Produktbreich");
-		typeCombo.setItems(items);
-		typeCombo.select(indexOf(initialType()));
-		UI.filler(comp);
-	}
-
 	private void createGroupCombo(Composite comp) {
 		groupCombo = new EntityCombo<>();
 		groupCombo.create("Produktgruppe", comp);
-		groupCombo.setInput(groupsOf(initialType()));
+		groupCombo.setInput(groupsOf(type));
 		if (entry.productGroup != null) {
 			groupCombo.select(entry.productGroup);
 		}
 		UI.filler(comp);
-	}
-
-	private ProductType initialType() {
-		if (entry.productGroup != null && entry.productGroup.type != null)
-			return entry.productGroup.type;
-		return types.length > 0 ? types[0] : null;
-	}
-
-	private int indexOf(ProductType type) {
-		for (int i = 0; i < types.length; i++) {
-			if (types[i] == type)
-				return i;
-		}
-		return 0;
 	}
 
 	private List<ProductGroup> groupsOf(ProductType type) {
@@ -163,13 +143,14 @@ class InvestmentWizard extends SimpleWizard {
 			.onChanged(s -> entry.costs.investment = Num.read(s));
 		UI.formLabel(comp, "EUR");
 
-		if (group == BiogasInvestmentGroup.OLD) {
+		if (refurbishment) {
 			var text = UI.formText(comp, "Generalüberholungsbedarf");
 			Texts.set(text, entry.refurbishmentShare);
 			Texts.on(text)
 				.decimal()
-				.onChanged(s -> entry.refurbishmentShare =
-					Strings.isBlank(s) ? null : Num.read(s));
+				.onChanged(s -> entry.refurbishmentShare = Strings.isBlank(s)
+					? DEFAULT_SHARE
+					: Num.read(s));
 			UI.formLabel(comp, "%");
 		}
 

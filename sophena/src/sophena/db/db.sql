@@ -398,7 +398,6 @@ CREATE TABLE tbl_biogas_investment_entries (
     f_biogas_plant CHAR(36),
     f_product_group CHAR(36),
 
-    investment_group VARCHAR(255),
     name VARCHAR(255),
 
     investment DOUBLE,

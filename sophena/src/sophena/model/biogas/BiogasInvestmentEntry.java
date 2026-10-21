@@ -5,8 +5,6 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -24,10 +22,6 @@ public class BiogasInvestmentEntry extends AbstractEntity {
 	@OneToOne
 	@JoinColumn(name = "f_product_group")
 	public ProductGroup productGroup;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "investment_group")
-	public BiogasInvestmentGroup investmentGroup;
 
 	/// A product name the users can enter.
 	@Column(name = "name")
@@ -47,7 +41,6 @@ public class BiogasInvestmentEntry extends AbstractEntity {
 		var clone = new BiogasInvestmentEntry();
 		clone.id = UUID.randomUUID().toString();
 		clone.productGroup = productGroup;
-		clone.investmentGroup = investmentGroup;
 		clone.name = name;
 		clone.costs = costs != null ? costs.copy() : new ProductCosts();
 		clone.refurbishmentShare = refurbishmentShare;

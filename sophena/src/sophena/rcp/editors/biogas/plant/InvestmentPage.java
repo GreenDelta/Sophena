@@ -14,10 +14,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.Labels;
+import sophena.model.ProductArea;
+import sophena.model.ProductType;
 import sophena.model.biogas.BiogasInvestmentEntry;
-import sophena.model.biogas.BiogasInvestmentGroup;
 import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.M;
 import sophena.rcp.app.Icon;
@@ -28,12 +31,15 @@ import sophena.rcp.utils.Viewers;
 import sophena.utils.Lists;
 import sophena.utils.Num;
 
-/// The page for editing the investments of a biogas plant. For each investment
-/// group a separate section is created, in the order that is defined in
-/// `BiogasInvestmentGroup`.
+/// The page for editing the investments of a biogas plant. The page contains
+/// two areas: one for new investments and one for refurbishments of existing
+/// assets. In each area a section is created for each product type of the
+/// biogas product area.
 class InvestmentPage extends FormPage {
 
 	private final BiogasPlantEditor editor;
+	private final List<InvestmentArea> areas = new ArrayList<>();
+	private ScrolledForm form;
 
 	InvestmentPage(BiogasPlantEditor editor) {
 		super(editor, "InvestmentPage", "Investitionen");
@@ -42,33 +48,109 @@ class InvestmentPage extends FormPage {
 
 	@Override
 	protected void createFormContent(IManagedForm mForm) {
-		var form = UI.formHeader(mForm, "Investitionen");
+		form = UI.formHeader(mForm, "Investitionen");
 		var tk = mForm.getToolkit();
 		var body = UI.formBody(form, tk);
-		for (var group : BiogasInvestmentGroup.values()) {
-			InvestmentSection.of(editor, group).create(body, tk);
-		}
+		createArea(body, tk, "Neuinvestitionen", false);
+		createArea(body, tk, "Zurückliegende Investitionen", true);
 		editor.calculate();
 		form.reflow(true);
 	}
 
-	/// A section that shows and edits the investment entries of a biogas plant
-	/// that belong to a specific `BiogasInvestmentGroup`.
-	private static class InvestmentSection {
+	private void createArea(
+		Composite body, FormToolkit tk, String label, boolean refurbishment
+	) {
+		var section = UI.section(body, tk, label);
+		var comp = UI.sectionClient(section, tk);
+		UI.gridLayout(comp, 1);
+		var area = new InvestmentArea(section);
+		for (var type : biogasTypes()) {
+			var s = new InvestmentSection(this, editor, type, refurbishment);
+			s.create(comp, tk);
+			area.sections.add(s);
+		}
+		area.empty = area.isEmpty();
+		section.setExpanded(!area.empty);
+		areas.add(area);
+	}
 
-		private final BiogasPlantEditor editor;
-		private final BiogasInvestmentGroup group;
-		private TableViewer table;
+	private static List<ProductType> biogasTypes() {
+		var types = new ArrayList<ProductType>();
+		for (var type : ProductType.values()) {
+			if (type.productArea == ProductArea.BIOGAS) {
+				types.add(type);
+			}
+		}
+		return types;
+	}
 
-		private InvestmentSection(BiogasPlantEditor editor,
-			BiogasInvestmentGroup group) {
-			this.editor = editor;
-			this.group = group;
+	/// Refreshes all sections of this page after the investments of the plant
+	/// changed. An entry can move to another section when its refurbishment
+	/// share changes.
+	private void refreshAll() {
+		for (var area : areas) {
+			for (var s : area.sections) {
+				s.refresh();
+			}
+			boolean empty = area.isEmpty();
+			if (empty != area.empty) {
+				area.empty = empty;
+				area.section.setExpanded(!empty);
+				area.section.layout();
+			}
+		}
+		editor.setDirty();
+		editor.calculate();
+		if (form != null) {
+			form.reflow(true);
+		}
+	}
+
+	/// An area with the sections of the product types of the biogas product
+	/// area.
+	private static class InvestmentArea {
+
+		private final Section section;
+		private final List<InvestmentSection> sections = new ArrayList<>();
+		private boolean empty;
+
+		private InvestmentArea(Section section) {
+			this.section = section;
 		}
 
-		static InvestmentSection of(
-			BiogasPlantEditor editor, BiogasInvestmentGroup group) {
-			return new InvestmentSection(editor, group);
+		private boolean isEmpty() {
+			for (var s : sections) {
+				if (!s.entries.isEmpty())
+					return false;
+			}
+			return true;
+		}
+	}
+
+	/// A section that shows and edits the investment entries of a biogas plant
+	/// that belong to a specific product type.
+	private static class InvestmentSection {
+
+		private final InvestmentPage page;
+		private final BiogasPlantEditor editor;
+		private final ProductType type;
+		private final boolean refurbishment;
+
+		private final List<BiogasInvestmentEntry> entries = new ArrayList<>();
+
+		private Section section;
+		private TableViewer table;
+		private boolean empty;
+
+		private InvestmentSection(
+			InvestmentPage page,
+			BiogasPlantEditor editor,
+			ProductType type,
+			boolean refurbishment) {
+			this.page = page;
+			this.editor = editor;
+			this.type = type;
+			this.refurbishment = refurbishment;
 		}
 
 		private BiogasPlant plant() {
@@ -76,10 +158,11 @@ class InvestmentPage extends FormPage {
 		}
 
 		void create(Composite body, FormToolkit tk) {
-			var entries = entries();
-			var section = entries.isEmpty()
-				? UI.collapsedSection(body, tk, Labels.get(group))
-				: UI.section(body, tk, Labels.get(group));
+			fillEntries();
+			empty = entries.isEmpty();
+			section = empty
+				? UI.collapsedSection(body, tk, Labels.getPlural(type))
+				: UI.section(body, tk, Labels.getPlural(type));
 			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);
 			table = createTable(comp);
@@ -100,12 +183,13 @@ class InvestmentPage extends FormPage {
 			var widths = new double[columns.length];
 			Arrays.fill(widths, 1d / columns.length);
 			Tables.bindColumnWidths(table, widths);
-			table.setLabelProvider(new InvestmentPage.InvestmentLabel(group));
+			table.setLabelProvider(
+				new InvestmentPage.InvestmentLabel(refurbishment));
 			return table;
 		}
 
 		private String[] columns() {
-			if (group == BiogasInvestmentGroup.OLD) {
+			if (refurbishment) {
 				return new String[] {
 					"Produktgruppe",
 					"Bezeichnung",
@@ -128,24 +212,42 @@ class InvestmentPage extends FormPage {
 			};
 		}
 
-		private List<BiogasInvestmentEntry> entries() {
-			var list = new ArrayList<BiogasInvestmentEntry>();
+		/// Fills the entries of this section from the investments of the plant.
+		private void fillEntries() {
+			entries.clear();
 			for (var entry : plant().investments) {
-				if (entry != null && entry.investmentGroup == group) {
-					list.add(entry);
+				if (entry == null || entry.productGroup == null)
+					continue;
+				if (entry.productGroup.type != type)
+					continue;
+				if ((entry.refurbishmentShare != null) == refurbishment) {
+					entries.add(entry);
 				}
 			}
-			return list;
+		}
+
+		/// Reloads the entries from the plant.
+		private void refresh() {
+			fillEntries();
+			if (table != null) {
+				table.setInput(entries);
+			}
+			boolean nowEmpty = entries.isEmpty();
+			if (nowEmpty != empty) {
+				empty = nowEmpty;
+				section.setExpanded(!nowEmpty);
+				section.layout();
+			}
 		}
 
 		private void add() {
 			var entry = new BiogasInvestmentEntry();
 			entry.id = UUID.randomUUID().toString();
-			entry.investmentGroup = group;
-			if (InvestmentWizard.open(entry, group) != Window.OK)
+			entry.refurbishmentShare = refurbishment ? 0d : null;
+			if (InvestmentWizard.open(entry, type, refurbishment) != Window.OK)
 				return;
 			plant().investments.add(entry);
-			refresh();
+			page.refreshAll();
 		}
 
 		private void edit() {
@@ -154,13 +256,13 @@ class InvestmentPage extends FormPage {
 			if (selected == null)
 				return;
 			var clone = selected.copy();
-			if (InvestmentWizard.open(clone, group) != Window.OK)
+			if (InvestmentWizard.open(clone, type, refurbishment) != Window.OK)
 				return;
 			selected.productGroup = clone.productGroup;
 			selected.name = clone.name;
 			selected.costs = clone.costs;
 			selected.refurbishmentShare = clone.refurbishmentShare;
-			refresh();
+			page.refreshAll();
 		}
 
 		private void remove() {
@@ -169,23 +271,17 @@ class InvestmentPage extends FormPage {
 			if (selected.isEmpty())
 				return;
 			plant().investments.removeAll(selected);
-			refresh();
-		}
-
-		private void refresh() {
-			table.setInput(entries());
-			editor.setDirty();
-			editor.calculate();
+			page.refreshAll();
 		}
 	}
 
 	private static class InvestmentLabel extends LabelProvider
 		implements ITableLabelProvider {
 
-		private final BiogasInvestmentGroup group;
+		private final boolean refurbishment;
 
-		InvestmentLabel(BiogasInvestmentGroup group) {
-			this.group = group;
+		InvestmentLabel(boolean refurbishment) {
+			this.refurbishment = refurbishment;
 		}
 
 		@Override
@@ -199,7 +295,7 @@ class InvestmentPage extends FormPage {
 				return null;
 			var costs = entry.costs;
 
-			if (group == BiogasInvestmentGroup.OLD) {
+			if (refurbishment) {
 				return switch (col) {
 					case 0 -> groupOf(entry);
 					case 1 -> entry.name;
