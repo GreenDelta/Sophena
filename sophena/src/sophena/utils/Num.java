@@ -3,6 +3,7 @@ package sophena.utils;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import org.openlca.commons.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class Num {
 	}
 
 	public static Number readNumber(String text) {
-		if (text == null || text.trim().isEmpty())
+		if (Strings.isBlank(text))
 			return null;
 		try {
 			return getFormat().parse(text.trim());

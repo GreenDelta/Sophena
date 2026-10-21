@@ -15,6 +15,7 @@ import org.junit.Test;
 import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
 import sophena.calc.biogas.fermentersim.TestWeatherStation;
+import sophena.calc.costs.Annuity;
 import sophena.calc.costs.CostResultItem;
 import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.GeneratedElectricity;
@@ -154,10 +155,9 @@ public class ProjectResultBiogasTest {
 
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
-		double dynPrice = biogasResult.costs().dynamicTotal.suggestedHeatPrice;
-		double statPrice = biogasResult.costs().staticTotal.suggestedHeatPrice;
-		assertTrue(dynPrice > 0);
-		assertTrue(statPrice > 0);
+		double price = biogasResult.getEffectiveHeatPrice(
+			producer.biogasHeatPrice);
+		assertTrue(price > 0);
 
 		// the network pays for the heat that is used from the producer. The
 		// plant has no fermenter in this project, so the fermenter heat is 0.
@@ -165,15 +165,16 @@ public class ProjectResultBiogasTest {
 		double heat = Math.max(0, r.energyResult.totalHeat(producer)
 			- r.energyResult.fermenterHeatOf(producer)) / 1000.0; // MWh
 		assertTrue(heat > 0);
-		assertClose(heat * dynPrice,
+		double dynamicCosts = dynamicHeatCosts(project, heat, price);
+		assertClose(dynamicCosts,
 			r.costResult.dynamicTotal.consumptionCosts);
-		assertClose(heat * statPrice,
+		assertClose(staticHeatCosts(project, heat, price),
 			r.costResult.staticTotal.consumptionCosts);
 
 		// the heat purchase is shown for the item of the producer
 		var item = itemOf(r, producer);
 		assertNotNull(item);
-		assertClose(heat * dynPrice, item.demandRelatedCosts());
+		assertClose(dynamicCosts, item.demandRelatedCosts());
 
 		// the project does not earn electricity revenues from the biogas plant
 		assertEquals(0, r.costResult.dynamicTotal.revenuesElectricity, 1e-9);
@@ -225,16 +226,18 @@ public class ProjectResultBiogasTest {
 		assertClose(cooledHeat, efficiency.cooledBiogasHeat);
 
 		// the network only pays for the sold heat
-		double dynPrice = biogasResult.costs().dynamicTotal.suggestedHeatPrice;
-		double statPrice = biogasResult.costs().staticTotal.suggestedHeatPrice;
-		assertClose(soldHeat / 1000.0 * dynPrice,
+		double price = biogasResult.getEffectiveHeatPrice(
+			producer.biogasHeatPrice);
+		double dynamicCosts = dynamicHeatCosts(
+			project, soldHeat / 1000.0, price);
+		assertClose(dynamicCosts,
 			r.costResult.dynamicTotal.consumptionCosts);
-		assertClose(soldHeat / 1000.0 * statPrice,
+		assertClose(staticHeatCosts(project, soldHeat / 1000.0, price),
 			r.costResult.staticTotal.consumptionCosts);
 
 		var item = itemOf(r, producer);
 		assertNotNull(item);
-		assertClose(soldHeat / 1000.0 * dynPrice, item.demandRelatedCosts());
+		assertClose(dynamicCosts, item.demandRelatedCosts());
 
 		// the used heat and the heat generation costs only consider the heat
 		// that is sold to the network
@@ -249,6 +252,78 @@ public class ProjectResultBiogasTest {
 			stat.heatGenerationCosts);
 		assertClose(usedHeat * project.costSettings.heatRevenues,
 			stat.revenuesHeat);
+	}
+
+	@Test
+	public void usesTheHeatPriceOfTheProducer() {
+		var project = project();
+		var producer = biogasProducer(project);
+		producer.biogasHeatPrice = 42.0;
+		var entry = new BiogasInvestmentEntry();
+		entry.costs = new ProductCosts();
+		entry.costs.investment = 5_000_000;
+		producer.biogasPlant.investments.add(entry);
+
+		var r = ProjectResult.calculate(project);
+
+		double heat = Math.max(0, r.energyResult.totalHeat(producer)
+			- r.energyResult.fermenterHeatOf(producer)) / 1000.0;
+		assertTrue(heat > 0);
+		assertClose(dynamicHeatCosts(project, heat, 42.0),
+			r.costResult.dynamicTotal.consumptionCosts);
+		assertClose(staticHeatCosts(project, heat, 42.0),
+			r.costResult.staticTotal.consumptionCosts);
+	}
+
+	@Test
+	public void appliesTheHeatPriceChangeFactor() {
+		var project = project();
+		project.costSettings.interestRate = 4.0;
+		project.costSettings.heatRevenuesFactor = 1.02;
+		var producer = biogasProducer(project);
+		var entry = new BiogasInvestmentEntry();
+		entry.costs = new ProductCosts();
+		entry.costs.investment = 5_000_000;
+		producer.biogasPlant.investments.add(entry);
+
+		var r = ProjectResult.calculate(project);
+
+		var biogasResult = r.biogasResults.get(producer);
+		assertNotNull(biogasResult);
+		double price = biogasResult.getEffectiveHeatPrice(null);
+		double heat = Math.max(0, r.energyResult.totalHeat(producer)
+			- r.energyResult.fermenterHeatOf(producer)) / 1000.0;
+		assertTrue(heat > 0);
+
+		double dynamicCosts = dynamicHeatCosts(project, heat, price);
+		double staticCosts = staticHeatCosts(project, heat, price);
+		assertClose(dynamicCosts,
+			r.costResult.dynamicTotal.consumptionCosts);
+		assertClose(staticCosts,
+			r.costResult.staticTotal.consumptionCosts);
+		assertTrue(dynamicCosts > staticCosts);
+	}
+
+	/// The static annuity of the heat purchase for the given heat in MWh.
+	private static double staticHeatCosts(
+		Project project, double heat, double price
+	) {
+		return Annuity.ofYearlyCosts(
+			project.duration,
+			heat * price,
+			project.costSettings.interestRate,
+			1.0);
+	}
+
+	/// The dynamic annuity of the heat purchase for the given heat in MWh.
+	private static double dynamicHeatCosts(
+		Project project, double heat, double price
+	) {
+		return Annuity.ofYearlyCosts(
+			project.duration,
+			heat * price,
+			project.costSettings.interestRate,
+			project.costSettings.heatRevenuesFactor);
 	}
 
 	/// Returns the cost item of the given producer.
@@ -270,6 +345,8 @@ public class ProjectResultBiogasTest {
 		project.duration = 20;
 		project.heatNet = new HeatNet();
 		project.costSettings = new CostSettings();
+		// the heat purchase is annuitized with this factor
+		project.costSettings.heatRevenuesFactor = 1.0;
 
 		var consumer = new Consumer();
 		consumer.id = "consumer";

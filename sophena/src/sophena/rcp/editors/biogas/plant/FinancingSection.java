@@ -1,12 +1,10 @@
 package sophena.rcp.editors.biogas.plant;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
-import sophena.rcp.utils.Controls;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -40,58 +38,15 @@ class FinancingSection {
 			.onChanged(s -> settings.funding = Num.read(s));
 		UI.filler(comp, tk);
 
-		createProfitExpectationRow(comp, tk);
-	}
+		t(comp, tk, "Gesamtkapitalrentabilität", "%",
+			settings.capitalReturnRate)
+			.onChanged(s -> settings.capitalReturnRate = Num.read(s));
+		UI.filler(comp, tk);
 
-	private void createProfitExpectationRow(Composite comp, FormToolkit tk) {
-		var settings = plant().settings;
-
-		UI.formLabel(comp, tk, "Gewinnerwartung");
-		var inner = tk.createComposite(comp);
-		UI.innerGrid(inner, 3);
-		UI.gridData(inner, true, false).horizontalSpan = 3;
-
-		var returnRadio = tk.createButton(
-			inner, "Gesamtkapitalrentabilität", SWT.RADIO);
-		var returnBox = Texts.on(UI.formText(inner, tk, null))
-			.decimal()
-			.init(settings.capitalReturnRate)
-			.onChanged(s -> settings.capitalReturnRate = Num.read(s))
-			.onChanged(_ -> editor.setDirty());
-		UI.formLabel(inner, tk, "%");
-
-		var surplusRadio = tk.createButton(inner, "Jahresüberschuss", SWT.RADIO);
-		var surplusBox = Texts.on(UI.formText(inner, tk, null))
-			.decimal()
-			.init(settings.expectedAnnualSurplus)
-			.onChanged(s -> settings.expectedAnnualSurplus = Num.read(s))
-			.onChanged(_ -> editor.setDirty());
-		UI.formLabel(inner, tk, "EUR/a");
-
-		Runnable updateState = () -> {
-			if (returnRadio.getSelection()) {
-				returnBox.enable();
-				surplusBox.disable();
-			} else {
-				returnBox.disable();
-				surplusBox.enable();
-			}
-		};
-
-		returnRadio.setSelection(settings.useCapitalReturnRate);
-		surplusRadio.setSelection(!settings.useCapitalReturnRate);
-		updateState.run();
-
-		Controls.onSelect(returnRadio, _ -> {
-			settings.useCapitalReturnRate = true;
-			updateState.run();
-			editor.setDirty();
-		});
-		Controls.onSelect(surplusRadio, _ -> {
-			settings.useCapitalReturnRate = false;
-			updateState.run();
-			editor.setDirty();
-		});
+		t(comp, tk, "Jahresüberschuss", "EUR/a",
+			settings.expectedAnnualSurplus)
+			.onChanged(s -> settings.expectedAnnualSurplus = Num.read(s));
+		UI.filler(comp, tk);
 	}
 
 	private Texts.TextBox t(

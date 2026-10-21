@@ -1,7 +1,7 @@
 CREATE TABLE sophena_version (
     version SMALLINT
 );
-INSERT INTO sophena_version (version) VALUES (5);
+INSERT INTO sophena_version (version) VALUES (6);
 
 
 CREATE TABLE tbl_weather_stations (
@@ -120,7 +120,6 @@ CREATE TABLE tbl_biogas_plant_settings (
     fermenter_heat_share        DOUBLE,
     unused_heat_share           DOUBLE,
     interest_rate               DOUBLE,
-    use_capital_return_rate     BOOLEAN,
     capital_return_rate         DOUBLE,
     expected_annual_surplus     DOUBLE,
     funding                     DOUBLE,
@@ -750,6 +749,7 @@ CREATE TABLE tbl_producers (
     f_product_group               CHAR(36),
     f_boiler                      CHAR(36),
     f_biogas_plant                CHAR(36),
+    biogas_heat_price             DOUBLE,
     f_profile                     CHAR(36),
     profile_max_power             DOUBLE,
     profile_max_power_electric    DOUBLE,

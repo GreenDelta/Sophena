@@ -97,17 +97,13 @@ class CostResultPage extends FormPage {
 			dyn.totalRevenues, stat.totalRevenues).bold());
 		items.add(new Item());
 
-		// suggested heat price
-		var settings = result.plant().settings;
-		if (settings.useCapitalReturnRate) {
-			var rate = settings.capitalReturnRate;
-			items.add(new Item("Gesamtkapitalrentabilität", "%", rate, rate));
-		} else {
-			var surplus = settings.expectedAnnualSurplus;
-			items.add(new Item("Jahresüberschuss", "EUR/a", surplus, surplus));
-		}
-		items.add(new Item("Vorgeschlagener Wärmepreis", "EUR/MWh",
-			dyn.suggestedHeatPrice, stat.suggestedHeatPrice).bold());
+		// heat prices
+		items.add(new Item("Wärmepreis - Gesamtkapitalrentabilität", "EUR/MWh",
+			dyn.heatPriceCapitalReturnRate, stat.heatPriceCapitalReturnRate, 1)
+			.bold());
+		items.add(new Item("Wärmepreis - Jahresüberschuss", "EUR/MWh",
+			dyn.heatPriceAnnualSurplus, stat.heatPriceAnnualSurplus, 1)
+			.bold());
 
 		return items;
 	}
@@ -126,6 +122,14 @@ class CostResultPage extends FormPage {
 			this.label = label;
 			this.dynamic = Num.intStr(Math.round(dynamic)) + " " + unit;
 			this.steady = Num.intStr(Math.round(steady)) + " " + unit;
+		}
+
+		Item(String label, String unit, double dynamic, double steady,
+			int decimalPlaces
+		) {
+			this.label = label;
+			this.dynamic = Num.str(dynamic, decimalPlaces) + " " + unit;
+			this.steady = Num.str(steady, decimalPlaces) + " " + unit;
 		}
 
 		Item bold() {

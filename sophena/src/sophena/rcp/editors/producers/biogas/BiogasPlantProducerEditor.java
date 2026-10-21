@@ -17,6 +17,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.openlca.commons.Strings;
 
 import sophena.calc.biogas.BiogasPlants;
+import sophena.calc.biogas.BiogasResult;
 import sophena.model.Producer;
 import sophena.model.Project;
 import sophena.model.Stats;
@@ -37,6 +38,7 @@ public class BiogasPlantProducerEditor extends Editor {
 
 	private Project project;
 	private Producer producer;
+	private BiogasResult biogasResult;
 	private Page page;
 
 	@Override
@@ -48,7 +50,7 @@ public class BiogasPlantProducerEditor extends Editor {
 		producer = input.producer();
 		Objects.requireNonNull(producer.biogasPlant);
 		setPartName(producer.name);
-		BiogasPlants.syncProducerProfile(project, producer);
+		updateResult();
 		Runnable reload = this::reload;
 		App.events().subscribe(producer.biogasPlant, reload);
 		onClosed(() -> App.events().unsubscribe(reload));
@@ -57,10 +59,25 @@ public class BiogasPlantProducerEditor extends Editor {
 	private void reload() {
 		project = App.getDb().get(Project.class, project.id);
 		producer = Producers.findById(project, producer.id);
-		if (producer == null) return;
-		BiogasPlants.syncProducerProfile(project, producer);
+		if (producer == null)
+			return;
+		updateResult();
 		if (page != null) {
 			page.refresh();
+		}
+	}
+
+	/// Calculates the overall result of the plant and applies the runtime result
+	/// to the producer. When the plant cannot be calculated, the producer
+	/// profile is reset and no default heat price is available.
+	private void updateResult() {
+		var res = BiogasResult.calculate(producer.biogasPlant);
+		if (res.isError()) {
+			biogasResult = null;
+			BiogasPlants.syncProducerProfile(project, producer);
+		} else {
+			biogasResult = res.value();
+			BiogasPlants.applyResult(project, producer, biogasResult.runtime());
 		}
 	}
 
@@ -84,6 +101,8 @@ public class BiogasPlantProducerEditor extends Editor {
 		private HeatDemandChart heatDemandChart;
 		private Text fermenterHeatText;
 		private Text fermenterShareText;
+		private Text heatPriceText;
+		private boolean updatingHeatPrice;
 
 		private Page() {
 			super(BiogasPlantProducerEditor.this, "BiogasPlantProducerPage",
@@ -128,6 +147,58 @@ public class BiogasPlantProducerEditor extends Editor {
 			UI.formLabel(comp, tk, "kW");
 			electricPowText = readOnlyText(comp, tk, "Elektrische Nennleistung");
 			UI.formLabel(comp, tk, "kW");
+
+			createHeatPriceRow(comp, tk);
+		}
+
+		private void createHeatPriceRow(Composite comp, FormToolkit tk) {
+			heatPriceText = UI.formText(comp, tk, "Wärmepreis");
+			Texts.on(heatPriceText)
+				.decimal(1)
+				.init(producer.biogasHeatPrice)
+				.onChanged(s -> {
+					if (updatingHeatPrice)
+						return;
+					var n = Num.readNumber(s);
+					if (n == null) {
+						producer.biogasHeatPrice = null;
+					} else {
+						double value = n.doubleValue();
+						var def = defaultHeatPrice();
+						producer.biogasHeatPrice = def != null && Num.equal(value, def)
+								? null
+								: value;
+					}
+					setDirty();
+					updateHeatPriceText();
+				});
+			UI.formLabel(comp, tk, "EUR/MWh");
+		}
+
+		/// The default heat price of the plant if it is available.
+		private Double defaultHeatPrice() {
+			return biogasResult != null
+				? biogasResult.defaultHeatPrice()
+				: null;
+		}
+
+		/// Shows the heat price that is used in the project calculation: the value
+		/// that was entered by the user or the default price of the plant when no
+		/// value is defined.
+		private void updateHeatPriceText() {
+			if (heatPriceText == null || heatPriceText.isDisposed())
+				return;
+			if (producer.biogasHeatPrice == null) {
+				var def = defaultHeatPrice();
+				updatingHeatPrice = true;
+				Texts.set(heatPriceText, def != null
+					? Num.str(def, 1)
+					: "–");
+				updatingHeatPrice = false;
+			}
+			heatPriceText.setBackground(producer.biogasHeatPrice == null
+				? Colors.forRequiredField()
+				: Colors.forModifiedDefault());
 		}
 
 		private void createProfileSection(Composite body, FormToolkit tk) {
@@ -193,6 +264,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			} else {
 				Texts.set(fermenterShareText, "–");
 			}
+			updateHeatPriceText();
 
 			form.reflow(true);
 		}
@@ -212,6 +284,7 @@ public class BiogasPlantProducerEditor extends Editor {
 			if (syncedProducer == null)
 				return;
 			syncedProducer.name = producer.name;
+			syncedProducer.biogasHeatPrice = producer.biogasHeatPrice;
 			project = App.getDb().update(project);
 			producer = Producers.findById(project, producer.id);
 			setPartName(producer.name);

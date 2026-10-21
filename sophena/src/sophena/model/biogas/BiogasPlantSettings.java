@@ -115,23 +115,13 @@ public class BiogasPlantSettings extends AbstractEntity {
 	@Column(name = "interest_rate")
 	public double interestRate;
 
-	/// Indicates whether the expected profit is based on the total capital
-	/// return rate (`capitalReturnRate`) or on the expected annual surplus
-	/// (`expectedAnnualSurplus`).
-	///
-	/// @de Gesamtkapitalrentabilität | Jahresüberschusserwartung
-	@Column(name = "use_capital_return_rate")
-	public boolean useCapitalReturnRate;
-
-	/// The total capital return rate in %. This is only used when
-	/// `useCapitalReturnRate` is `true`.
+	/// The total capital return rate in % that the plant should reach.
 	///
 	/// @de Gesamtkapitalrentabilität
 	@Column(name = "capital_return_rate")
 	public double capitalReturnRate;
 
-	/// The expected annual surplus in EUR/a. This is only used when
-	/// `useCapitalReturnRate` is `false`.
+	/// The expected annual surplus in EUR/a that the plant should reach.
 	///
 	/// @de Jahresüberschusserwartung
 	@Column(name = "expected_annual_surplus")
@@ -293,7 +283,6 @@ public class BiogasPlantSettings extends AbstractEntity {
 		settings.fermenterHeatShare = 0.0;
 		settings.unusedHeatShare = 0.0;
 		settings.interestRate = 4.0;
-		settings.useCapitalReturnRate = true;
 		settings.capitalReturnRate = 20.0;
 		settings.expectedAnnualSurplus = 0.0;
 		settings.funding = 0.0;
@@ -348,7 +337,6 @@ public class BiogasPlantSettings extends AbstractEntity {
 		copy.fermenterHeatShare = fermenterHeatShare;
 		copy.unusedHeatShare = unusedHeatShare;
 		copy.interestRate = interestRate;
-		copy.useCapitalReturnRate = useCapitalReturnRate;
 		copy.capitalReturnRate = capitalReturnRate;
 		copy.expectedAnnualSurplus = expectedAnnualSurplus;
 		copy.funding = funding;

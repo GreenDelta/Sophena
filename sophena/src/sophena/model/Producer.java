@@ -47,6 +47,16 @@ public class Producer extends RootEntity {
 	@JoinColumn(name = "f_biogas_plant")
 	public BiogasPlant biogasPlant;
 
+	/// The heat price in EUR/MWh that is used in the project cost calculation
+	/// for the heat that this producer delivers into the heat network. A `null`
+	/// value means that the default price of the biogas plant is used, see
+	/// `BiogasResult#getEffectiveHeatPrice(Double)`. This field is only used when
+	/// the producer is linked to a biogas plant.
+	///
+	/// @de Wärmepreis
+	@Column(name = "biogas_heat_price")
+	public Double biogasHeatPrice;
+
 	/**
 	 * This field is only relevant for producers with a producer profile (so
 	 * without a boiler) and contains the maximum power of the producer. It is
@@ -159,6 +169,7 @@ public class Producer extends RootEntity {
 		clone.productGroup = productGroup;
 		clone.boiler = boiler;
 		clone.biogasPlant = biogasPlant;
+		clone.biogasHeatPrice = biogasHeatPrice;
 		clone.function = function;
 		clone.rank = rank;
 		clone.solarCollector = solarCollector;

@@ -113,23 +113,22 @@ public class CostCalculator {
 		double producedHeat = energyResult.totalHeat(p);
 
 		// the network buys the heat of a biogas plant for the heat price that the
-		// biogas plant needs to reach its expected profit; it pays for the heat
-		// that is used in the network. The heat that is needed to heat the
-		// fermenters is provided by the plant but is not sold to the network. Note
-		// that the biogas plant calculates the suggested price from the heat that
-		// it can offer, with estimates for fermenter and unused heat.
+		// producer defines or, when no price is defined, for the default price of
+		// the plant; it pays for the heat that is used in the network. The heat
+		// that is needed to heat the fermenters is provided by the plant but is
+		// not sold to the network.
 		if (p.biogasPlant != null) {
-			var biogas = result.biogasResults.get(p);
-			if (biogas == null)
+			var biogasResult = result.biogasResults.get(p);
+			if (biogasResult == null)
 				return new DemandCosts(0, 0);
 			double soldHeat = Math.max(
 				0, producedHeat - energyResult.fermenterHeatOf(p));
 			double heat = soldHeat / 1000.0; // MWh
-			// the suggested heat prices are already annual values related to
-			// the expected profit of the plant, so they are not annuitized here
+			double price = biogasResult.getEffectiveHeatPrice(p.biogasHeatPrice);
+			double heatCosts = heat * price;
 			return new DemandCosts(
-				heat * biogas.costs().dynamicTotal.suggestedHeatPrice,
-				heat * biogas.costs().staticTotal.suggestedHeatPrice
+				dynamicYearly(heatCosts, settings.heatRevenuesFactor),
+				staticYearly(heatCosts)
 			);
 		}
 

@@ -80,10 +80,17 @@ public class BiogasCostResult {
 		/// electricity revenues, and the heat revenues.
 		public double totalRevenues;
 
-		/// The suggested heat price in EUR/MWh that is needed so that the annual
-		/// surplus reaches the expected profit of the plant settings (the total
-		/// capital return rate or the expected annual surplus).
-		public double suggestedHeatPrice;
+		/// The heat price in EUR/MWh that is needed so that the total capital
+		/// return rate of the plant reaches the expected value of the settings.
+		///
+		/// @de Wärmepreis - Gesamtkapitalrentabilität
+		public double heatPriceCapitalReturnRate;
+
+		/// The heat price in EUR/MWh that is needed so that the annual surplus
+		/// of the plant reaches the expected value of the settings.
+		///
+		/// @de Wärmepreis - Jahresüberschuss
+		public double heatPriceAnnualSurplus;
 
 	}
 

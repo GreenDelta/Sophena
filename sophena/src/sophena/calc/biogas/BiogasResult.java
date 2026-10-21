@@ -1,6 +1,7 @@
 package sophena.calc.biogas;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.costs.BiogasCostCalculator;
@@ -20,6 +21,22 @@ public record BiogasResult(
 	BiogasRuntimeRevenues revenues,
 	BiogasCostResult costs
 ) {
+
+	/// The default heat price of the plant in EUR/MWh: the larger of the two
+	/// heat prices that are needed to reach the expected total capital return
+	/// rate and the expected annual surplus in the static calculation.
+	public double defaultHeatPrice() {
+		return Math.max(
+			costs.staticTotal.heatPriceCapitalReturnRate,
+			costs.staticTotal.heatPriceAnnualSurplus);
+	}
+
+	/// The heat price in EUR/MWh that is used in the project cost calculation:
+	/// the price that was entered by the user or the default heat price of the
+	/// plant when no price is defined.
+	public double getEffectiveHeatPrice(@Nullable Double userPrice) {
+		return userPrice != null ? userPrice : defaultHeatPrice();
+	}
 
 	/// Calculates the overall result of the given plant. When the plant cannot
 	/// be calculated or when a sub-result fails, an error with the message of

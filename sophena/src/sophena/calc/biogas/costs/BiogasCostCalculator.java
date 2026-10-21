@@ -284,11 +284,11 @@ public class BiogasCostCalculator {
 		return Math.clamp(share, 0, 100) / 100.0;
 	}
 
-	/// Sets the heat revenues and the total revenues of the dynamic and the
-	/// static summary. The heat revenues are calculated from the suggested heat
-	/// price and the heat that can be sold to the heat network. The total
-	/// revenues are the sum of the annual funding, the electricity revenues, and
-	/// the heat revenues.
+	/// Sets the heat prices, the heat revenues, and the total revenues of the
+	/// dynamic and the static summary. The heat revenues are calculated from the
+	/// larger of the two heat prices and the heat that can be sold to the heat
+	/// network. The total revenues are the sum of the annual funding, the
+	/// electricity revenues, and the heat revenues.
 	private void addRevenuesHeat(BiogasCostResult r) {
 		double soldHeat = sellableHeat();
 		setHeatRevenues(r.dynamicTotal, soldHeat, true);
@@ -298,26 +298,34 @@ public class BiogasCostCalculator {
 	private void setHeatRevenues(
 		BiogasCostResult.Summary s, double soldHeat, boolean dynamic
 	) {
-		s.suggestedHeatPrice = suggestedHeatPrice(s, soldHeat, dynamic);
-		s.revenuesHeat = s.suggestedHeatPrice * soldHeat / 1000.0;
+		s.heatPriceCapitalReturnRate = heatPrice(
+			s, soldHeat, dynamic, true);
+		s.heatPriceAnnualSurplus = heatPrice(
+			s, soldHeat, dynamic, false);
+		s.revenuesHeat = Math.max(
+			s.heatPriceCapitalReturnRate,
+			s.heatPriceAnnualSurplus) * soldHeat / 1000.0;
 		s.totalRevenues = s.annualFunding
 			+ s.revenuesElectricity
 			+ s.revenuesHeat;
 	}
 
-	/// The suggested heat price in EUR/MWh of the given summary. With
-	/// `WP = 1000 * WE / WM` and `WE = target - annualSurplus`, where `WM` is
-	/// the heat that can be sold to the heat network and the target is the
-	/// surplus that is needed to reach the total capital return rate
-	/// (`surplusForCapitalReturnRate`) in the capital return rate case and the
-	/// expected annual surplus in the annual surplus case.
-	private double suggestedHeatPrice(
-		BiogasCostResult.Summary summary, double soldHeat, boolean dynamic
+	/// The heat price in EUR/MWh of the given summary that is needed to reach
+	/// the given target. With `WP = 1000 * WE / WM` and
+	/// `WE = target - annualSurplus`, where `WM` is the heat that can be sold to
+	/// the heat network and the target is either the surplus that is needed to
+	/// reach the total capital return rate
+	/// (`surplusForCapitalReturnRate`) or the expected annual surplus.
+	private double heatPrice(
+		BiogasCostResult.Summary summary,
+		double soldHeat,
+		boolean dynamic,
+		boolean capitalReturnRate
 	) {
 		if (soldHeat <= 0)
 			return 0;
 		var settings = plant.settings;
-		double target = settings.useCapitalReturnRate
+		double target = capitalReturnRate
 			? surplusForCapitalReturnRate(summary, dynamic)
 			: settings.expectedAnnualSurplus;
 		double annualSurplus = summary.annualFunding
