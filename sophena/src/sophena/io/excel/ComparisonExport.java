@@ -131,9 +131,9 @@ public class ComparisonExport implements Runnable {
 	}
 
 	private void investments() {
-		var pars = new ProductAreaResult[comp.results.length];
+		var areaResults = new ProductAreaResult[comp.results.length];
 		for (int i = 0; i < comp.results.length; i++) {
-			pars[i] = ProductAreaResult.calculate(
+			areaResults[i] = ProductAreaResult.calculate(
 				comp.results[i].costResultFunding);
 		}
 
@@ -142,18 +142,18 @@ public class ComparisonExport implements Runnable {
 		each(r -> w.boldStr(r.project.name));
 		w.nextRow();
 
-		for (ProductArea area : ProductArea.values()) {
-			if (allZero(pars, area))
+		for (var area : ProductArea.values()) {
+			if (allZero(areaResults, area))
 				continue;
 			w.str(Labels.get(area) + " [EUR]");
-			for (var par : pars) {
+			for (var par : areaResults) {
 				w.rint(par.investmentCosts(area));
 			}
 			w.nextRow();
 		}
 
 		w.boldStr("Investitionssumme [EUR]");
-		for (ProductAreaResult par : pars) {
+		for (ProductAreaResult par : areaResults) {
 			w.rint(par.totalInvestmentCosts);
 		}
 		w.nextRow();
@@ -229,9 +229,9 @@ public class ComparisonExport implements Runnable {
 		return r.costResultFunding.dynamicTotal;
 	}
 
-	private boolean allZero(ProductAreaResult[] r, ProductArea area) {
-		for (ProductAreaResult par : r) {
-			if (par.investmentCosts(area) != 0)
+	private boolean allZero(ProductAreaResult[] areaResults, ProductArea area) {
+		for (var r : areaResults) {
+			if (r.investmentCosts(area) != 0)
 				return false;
 		}
 		return true;

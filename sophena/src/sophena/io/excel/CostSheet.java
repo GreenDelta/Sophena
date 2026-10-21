@@ -1,19 +1,17 @@
 package sophena.io.excel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.openlca.commons.Strings;
 
 import sophena.Labels;
+import sophena.calc.ProjectResult;
 import sophena.calc.costs.CostResult;
 import sophena.calc.costs.CostResultItem;
 import sophena.calc.costs.ProductAreaResult;
-import sophena.calc.ProjectResult;
 import sophena.model.ProductArea;
 import sophena.utils.Enums;
-
-import org.openlca.commons.Strings;
 
 class CostSheet {
 
@@ -125,15 +123,15 @@ class CostSheet {
 	}
 
 	private void productAreas(CostResult r) {
-		ProductAreaResult par = ProductAreaResult.calculate(r);
+		var areaResult = ProductAreaResult.calculate(r);
 
 		// select only the product areas that have a result
-		List<ProductArea> selected = new ArrayList<>();
-		for (ProductArea area : ProductArea.values()) {
-			if (par.investmentCosts(area) == 0.0
-				&& par.capitalCosts(area) == 0.0
-				&& par.demandRelatedCosts(area) == 0.0
-				&& par.operationRelatedCosts(area) == 0.0)
+		var selected = new ArrayList<ProductArea>();
+		for (var area : ProductArea.values()) {
+			if (areaResult.investmentCosts(area) == 0.0
+				&& areaResult.capitalCosts(area) == 0.0
+				&& areaResult.demandRelatedCosts(area) == 0.0
+				&& areaResult.operationRelatedCosts(area) == 0.0)
 				continue;
 			selected.add(area);
 		}
@@ -149,10 +147,10 @@ class CostSheet {
 
 		for (ProductArea a : selected) {
 			w.str(Labels.get(a))
-				.rint(par.investmentCosts(a))
-				.rint(par.capitalCosts(a))
-				.rint(par.demandRelatedCosts(a))
-				.rint(par.operationRelatedCosts(a))
+				.rint(areaResult.investmentCosts(a))
+				.rint(areaResult.capitalCosts(a))
+				.rint(areaResult.demandRelatedCosts(a))
+				.rint(areaResult.operationRelatedCosts(a))
 				.nextRow();
 		}
 	}

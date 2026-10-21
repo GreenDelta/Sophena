@@ -38,7 +38,7 @@ import sophena.utils.Num;
 class InvestmentPage extends FormPage {
 
 	private final BiogasPlantEditor editor;
-	private final List<InvestmentArea> areas = new ArrayList<>();
+	private final List<InvestmentSection> sections = new ArrayList<>();
 	private ScrolledForm form;
 
 	InvestmentPage(BiogasPlantEditor editor) {
@@ -63,15 +63,11 @@ class InvestmentPage extends FormPage {
 		var section = UI.section(body, tk, label);
 		var comp = UI.sectionClient(section, tk);
 		UI.gridLayout(comp, 1);
-		var area = new InvestmentArea(section);
 		for (var type : biogasTypes()) {
 			var s = new InvestmentSection(this, editor, type, refurbishment);
 			s.create(comp, tk);
-			area.sections.add(s);
+			sections.add(s);
 		}
-		area.empty = area.isEmpty();
-		section.setExpanded(!area.empty);
-		areas.add(area);
 	}
 
 	private static List<ProductType> biogasTypes() {
@@ -88,42 +84,13 @@ class InvestmentPage extends FormPage {
 	/// changed. An entry can move to another section when its refurbishment
 	/// share changes.
 	private void refreshAll() {
-		for (var area : areas) {
-			for (var s : area.sections) {
-				s.refresh();
-			}
-			boolean empty = area.isEmpty();
-			if (empty != area.empty) {
-				area.empty = empty;
-				area.section.setExpanded(!empty);
-				area.section.layout();
-			}
+		for (var s : sections) {
+			s.refresh();
 		}
 		editor.setDirty();
 		editor.calculate();
 		if (form != null) {
 			form.reflow(true);
-		}
-	}
-
-	/// An area with the sections of the product types of the biogas product
-	/// area.
-	private static class InvestmentArea {
-
-		private final Section section;
-		private final List<InvestmentSection> sections = new ArrayList<>();
-		private boolean empty;
-
-		private InvestmentArea(Section section) {
-			this.section = section;
-		}
-
-		private boolean isEmpty() {
-			for (var s : sections) {
-				if (!s.entries.isEmpty())
-					return false;
-			}
-			return true;
 		}
 	}
 

@@ -16,6 +16,7 @@ import sophena.model.FlueGasCleaningEntry;
 import sophena.model.HeatNet;
 import sophena.model.HeatNetPipe;
 import sophena.model.Producer;
+import sophena.model.ProductArea;
 import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.rcp.editors.consumers.ConsumerEditor;
@@ -48,6 +49,9 @@ class OverviewPage extends FormPage {
 		var body = UI.formBody(form, tk);
 
 		for (var type : ProductType.values()) {
+			// the biogas product types are only used in the biogas plants
+			if (type.productArea == ProductArea.BIOGAS)
+				continue;
 			switch (type) {
 				case BIOMASS_BOILER:
 				case FOSSIL_FUEL_BOILER:

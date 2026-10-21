@@ -33,7 +33,7 @@ class InvestmentsTable {
 
 	private void createItems(Table table) {
 		ProductAreaResult[] details = results();
-		for (ProductArea area : ProductArea.values()) {
+		for (var area : ProductArea.values()) {
 			if (allZero(details, area))
 				continue;
 			table.row(Labels.get(area), i -> {

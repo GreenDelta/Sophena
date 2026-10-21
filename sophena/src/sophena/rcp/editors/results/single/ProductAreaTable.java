@@ -31,11 +31,11 @@ class ProductAreaTable {
 
 	private void render(Composite comp) {
 		TableViewer table = Tables.createViewer(comp,
-				"Produktgebiet",
-				"Investitionskosten",
-				"Kapitalgebundene Kosten",
-				"Bedarfsgebundene Kosten",
-				"Betriebsgebundene Kosten");
+			"Produktgebiet",
+			"Investitionskosten",
+			"Kapitalgebundene Kosten",
+			"Bedarfsgebundene Kosten",
+			"Betriebsgebundene Kosten");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2, 3, 4);
@@ -51,13 +51,13 @@ class ProductAreaTable {
 			Item item = new Item();
 			item.productArea = Labels.get(area);
 			item.investmentCosts = Num.intStr(
-					result.investmentCosts(area)) + " EUR";
+				result.investmentCosts(area)) + " EUR";
 			item.capitalCosts = Num.intStr(
-					result.capitalCosts(area)) + " EUR/a";
+				result.capitalCosts(area)) + " EUR/a";
 			item.demandRelatedCosts = Num.intStr(
-					result.demandRelatedCosts(area)) + " EUR/a";
+				result.demandRelatedCosts(area)) + " EUR/a";
 			item.operationRelatedCosts = Num.intStr(
-					result.operationRelatedCosts(area)) + " EUR/a";
+				result.operationRelatedCosts(area)) + " EUR/a";
 			items.add(item);
 		}
 		return items;
@@ -65,9 +65,9 @@ class ProductAreaTable {
 
 	private boolean allZero(ProductArea area) {
 		return result.investmentCosts(area) == 0.0
-				&& result.capitalCosts(area) == 0.0
-				&& result.demandRelatedCosts(area) == 0.0
-				&& result.operationRelatedCosts(area) == 0.0;
+			&& result.capitalCosts(area) == 0.0
+			&& result.demandRelatedCosts(area) == 0.0
+			&& result.operationRelatedCosts(area) == 0.0;
 	}
 
 	private static class Item {
@@ -78,7 +78,7 @@ class ProductAreaTable {
 		String operationRelatedCosts;
 	}
 
-	private class Label extends LabelProvider implements ITableLabelProvider {
+	private static class Label extends LabelProvider implements ITableLabelProvider {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
@@ -87,23 +87,16 @@ class ProductAreaTable {
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof Item))
+			if (!(obj instanceof Item item))
 				return null;
-			Item item = (Item) obj;
-			switch (col) {
-			case 0:
-				return item.productArea;
-			case 1:
-				return item.investmentCosts;
-			case 2:
-				return item.capitalCosts;
-			case 3:
-				return item.demandRelatedCosts;
-			case 4:
-				return item.operationRelatedCosts;
-			default:
-				return null;
-			}
+			return switch (col) {
+				case 0 -> item.productArea;
+				case 1 -> item.investmentCosts;
+				case 2 -> item.capitalCosts;
+				case 3 -> item.demandRelatedCosts;
+				case 4 -> item.operationRelatedCosts;
+				default -> null;
+			};
 		}
 	}
 }
