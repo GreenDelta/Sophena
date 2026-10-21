@@ -5,3 +5,5 @@
 /libs-test/
 derby.log
 /.settings/
+
+platform_win64.target
