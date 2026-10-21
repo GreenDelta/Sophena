@@ -102,7 +102,6 @@ public class BiogasPlantProducerEditor extends Editor {
 		private Text fermenterHeatText;
 		private Text fermenterShareText;
 		private Text heatPriceText;
-		private boolean updatingHeatPrice;
 
 		private Page() {
 			super(BiogasPlantProducerEditor.this, "BiogasPlantProducerPage",
@@ -147,7 +146,6 @@ public class BiogasPlantProducerEditor extends Editor {
 			UI.formLabel(comp, tk, "kW");
 			electricPowText = readOnlyText(comp, tk, "Elektrische Nennleistung");
 			UI.formLabel(comp, tk, "kW");
-
 			createHeatPriceRow(comp, tk);
 		}
 
@@ -157,8 +155,6 @@ public class BiogasPlantProducerEditor extends Editor {
 				.decimal(1)
 				.init(producer.biogasHeatPrice)
 				.onChanged(s -> {
-					if (updatingHeatPrice)
-						return;
 					var n = Num.readNumber(s);
 					if (n == null) {
 						producer.biogasHeatPrice = null;
@@ -169,8 +165,10 @@ public class BiogasPlantProducerEditor extends Editor {
 								? null
 								: value;
 					}
+					heatPriceText.setBackground(producer.biogasHeatPrice == null
+						? Colors.forRequiredField()
+						: Colors.forModifiedDefault());
 					setDirty();
-					updateHeatPriceText();
 				});
 			UI.formLabel(comp, tk, "EUR/MWh");
 		}
@@ -190,11 +188,9 @@ public class BiogasPlantProducerEditor extends Editor {
 				return;
 			if (producer.biogasHeatPrice == null) {
 				var def = defaultHeatPrice();
-				updatingHeatPrice = true;
 				Texts.set(heatPriceText, def != null
 					? Num.str(def, 1)
 					: "–");
-				updatingHeatPrice = false;
 			}
 			heatPriceText.setBackground(producer.biogasHeatPrice == null
 				? Colors.forRequiredField()
