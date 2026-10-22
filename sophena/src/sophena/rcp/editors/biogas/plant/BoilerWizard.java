@@ -33,7 +33,7 @@ class BoilerWizard extends SimpleWizard {
 	}
 
 	private BoilerWizard(BiogasPlantBoiler entry, ProductGroup group) {
-		super("BHKW-Block");
+		super("BHKW-Aggregat");
 		this.entry = entry;
 		this.group = group;
 		if (entry.costs == null) {
