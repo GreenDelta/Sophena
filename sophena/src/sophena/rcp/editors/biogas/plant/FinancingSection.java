@@ -5,6 +5,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import sophena.model.biogas.BiogasPlant;
+import sophena.rcp.help.H;
+import sophena.rcp.help.HelpLink;
 import sophena.rcp.utils.Texts;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
@@ -41,7 +43,8 @@ class FinancingSection {
 		t(comp, tk, "Gesamtkapitalrentabilität", "%",
 			settings.capitalReturnRate)
 			.onChanged(s -> settings.capitalReturnRate = Num.read(s));
-		UI.filler(comp, tk);
+		HelpLink.create(comp, tk, "Gesamtkapitalrentabilität",
+			H.CapitalReturnRateInfo);
 
 		t(comp, tk, "Jahresüberschuss", "EUR/a",
 			settings.expectedAnnualSurplus)

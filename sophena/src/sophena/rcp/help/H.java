@@ -11,6 +11,7 @@ public class H extends NLS {
 	public static String BoilerHouseTechnology;
 	public static String BufferLambda;
 	public static String Buildings;
+	public static String CapitalReturnRateInfo;
 	public static String CoGenPlants;
 	public static String DemandElectricityMixInfo;
 	public static String DirectMarketerShareInfo;

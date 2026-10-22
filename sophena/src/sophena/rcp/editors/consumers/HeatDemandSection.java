@@ -37,7 +37,7 @@ class HeatDemandSection {
 	void updateBuildingState(BuildingState state) {
 		if (state == null)
 			return;
-		Consumer c = consumer();
+		var c = consumer();
 		c.heatingLimit = state.heatingLimit;
 		c.waterFraction = state.waterFraction;
 		c.loadHours = state.loadHours;
@@ -48,7 +48,7 @@ class HeatDemandSection {
 	}
 
 	HeatDemandSection create(Composite body, FormToolkit tk) {
-		Composite composite = UI.formSection(body, tk, M.HeatDemand);
+		var composite = UI.formSection(body, tk, M.HeatDemand);
 		UI.gridLayout(composite, 7);
 		createHeatingLoadText(composite, tk);
 		if (!consumer().hasProfile()) {
@@ -76,11 +76,10 @@ class HeatDemandSection {
 		Texts.on(t).calculated();
 		if (consumer().hasProfile()) {
 			// when a new profile was loaded we just need to update the text
-			editor.onCalculated((profile, totals, total) -> {
-				Texts.set(t, Num.intStr(consumer().heatingLoad));
-			});
+			editor.onCalculated((_, _, _)
+				-> Texts.set(t, Num.intStr(consumer().heatingLoad)));
 		} else {
-			editor.onCalculated((profile, totals, total) -> {
+			editor.onCalculated((_, _, total) -> {
 				double heatingLoad = total / consumer().loadHours;
 				consumer().heatingLoad = heatingLoad;
 				Texts.set(t, Num.intStr(heatingLoad));
@@ -92,7 +91,7 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, "Warmwasseranteil");
 		Texts.set(t, consumer().waterFraction);
 		UI.formLabel(composite, tk, "%");
-		t.addModifyListener(e -> {
+		t.addModifyListener(_ -> {
 			consumer().waterFraction = Num.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
@@ -104,7 +103,7 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, "Heizgrenze");
 		Texts.set(t, consumer().heatingLimit);
 		UI.formLabel(composite, tk, "°C");
-		t.addModifyListener(e -> {
+		t.addModifyListener(_ -> {
 			consumer().heatingLimit = Num.read(t.getText());
 			editor.calculate();
 			editor.setDirty();
@@ -128,9 +127,7 @@ class HeatDemandSection {
 		Text t = UI.formText(composite, tk, M.HeatDemand);
 		UI.formLabel(composite, tk, "kWh");
 		Texts.on(t).calculated();
-		editor.onCalculated((profile, totals, total) -> {
-			t.setText(Num.intStr(total));
-		});
+		editor.onCalculated((_, _, total) -> t.setText(Num.intStr(total)));
 	}
 
 }

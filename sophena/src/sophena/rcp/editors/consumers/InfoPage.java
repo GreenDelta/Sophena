@@ -39,8 +39,7 @@ class InfoPage extends FormPage {
 		loadCurve.setSorted(!consumer().hasProfile());
 		loadCurve.render(body, tk);
 		new TransferStationSection(editor).create(body, tk);
-		editor.onCalculated(
-				(profile, totals, total) -> loadCurve.setData(profile));
+		editor.onCalculated((profile, _, _) -> loadCurve.setData(profile));
 		form.reflow(true);
 		editor.calculate();
 	}

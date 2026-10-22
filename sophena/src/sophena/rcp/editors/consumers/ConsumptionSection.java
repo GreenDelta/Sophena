@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import sophena.calc.specs.EfficiencyRate;
 import sophena.model.Consumer;
 import sophena.model.Fuel;
 import sophena.model.FuelConsumption;
@@ -64,7 +63,7 @@ class ConsumptionSection {
 		Tables.bindColumnWidths(table, 0.4, 0.3, 0.3);
 		table.setLabelProvider(new Label());
 		table.setInput(consumer().fuelConsumptions);
-		Tables.onDoubleClick(table, (e) -> onEdit());
+		Tables.onDoubleClick(table, _ -> onEdit());
 		return table;
 	}
 
@@ -102,7 +101,7 @@ class ConsumptionSection {
 		editor.setDirty();
 	}
 
-	private class Label extends LabelProvider
+	private static class Label extends LabelProvider
 			implements ITableLabelProvider {
 
 		@Override
@@ -142,8 +141,7 @@ class ConsumptionSection {
 			if (c == null)
 				return null;
 			var heat = Num.intStr(c.getUsedHeat()) + " kWh";
-			double eta = EfficiencyRate.get(c.utilisationRate, consumer().loadHours);
-			return heat + " (η=" + Num.str(eta) + "%)";
+			return heat + " (η=" + Num.str(c.utilisationRate) + "%)";
 		}
 	}
 }
