@@ -12,7 +12,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
 import sophena.calc.biogas.BiogasResult;
-import sophena.model.Stats;
 import sophena.rcp.colors.Colors;
 import sophena.rcp.editors.biogas.charts.BiogasStorageChart;
 import sophena.rcp.utils.Tables;
@@ -102,7 +101,7 @@ class OverviewPage extends FormPage {
 			/ revs.feedInElectricity();
 		items.add(Item.of("Nettomehrerlöse", Num.str(netPlus, 1), "ct/kWh"));
 
-		var ratedPower = revs.feedInElectricity() / Stats.HOURS;
+		var ratedPower = revs.ratedPower();
 		items.add(Item.of("Bemessungsleistung", Num.intStr(ratedPower), "kW"));
 
 		if (plant.settings.maxRatedPower != null) {

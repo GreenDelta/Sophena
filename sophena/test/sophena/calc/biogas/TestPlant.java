@@ -114,7 +114,10 @@ public final class TestPlant {
 			if (h > 0 && flags[h - 1])
 				ramps++;
 			if (ramps > 0) {
-				feedIn[h] = Math.max(0, ramps * power / 8.0 * lossFactor);
+				double energy = ramps * power / 8.0 * lossFactor;
+				if (!fullFeedIn)
+					energy -= demand;
+				feedIn[h] = Math.max(0, energy);
 			}
 		}
 		return feedIn;

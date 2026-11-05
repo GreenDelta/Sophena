@@ -83,6 +83,48 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	@Test
+	public void ratedPowerIsBasedOnTheGeneratedElectricity() {
+		var surplus = base();
+		surplus.settings.transmissionLosses = 5;
+		var result = BiogasRuntimeResult.calculate(surplus).orElseThrow();
+		var r = BiogasRuntimeRevenues.calculate(surplus, result).orElseThrow();
+
+		double generated = expectedFeedIn(result.runFlags(), 0, 0, true);
+		assertEquals(generated, r.generatedElectricity(), 1e-6);
+		assertEquals(generated / Stats.HOURS, r.ratedPower(), 1e-9);
+		assertTrue(r.feedInElectricity() < r.generatedElectricity());
+
+		// the rated power does not depend on the feed-in mode
+		var full = base();
+		full.settings.transmissionLosses = 5;
+		full.settings.isFullFeedIn = true;
+		var r2 = BiogasRuntimeRevenues.calculate(full, result).orElseThrow();
+		assertEquals(r.ratedPower(), r2.ratedPower(), 1e-9);
+	}
+
+	@Test
+	public void surplusModeSubtractsTheDemandInRampHours() {
+		var plant = base();
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
+
+		var flags = result.runFlags();
+		var feedIn = TestPlant.feedInProfile(plant, flags);
+		double lossFactor = 1.0 - LOSSES / 100.0;
+		boolean found = false;
+		for (int h = 1; h < flags.length - 1; h++) {
+			if (flags[h] || !(flags[h - 1] ^ flags[h + 1]))
+				continue;
+			// a single ramp: P/8 minus losses minus the internal demand
+			assertEquals(POWER / 8.0 * lossFactor - 30, feedIn[h], 1e-9);
+			found = true;
+			break;
+		}
+		assertTrue("the plant must have a ramp hour", found);
+		assertEquals(Stats.sum(feedIn), r.feedInElectricity(), 1e-6);
+	}
+
+	@Test
 	public void totalGeneratedHeatIsTheSumOfTheProducerProfile() {
 		var plant = base();
 		plant.boilers.getFirst().boiler.maxPower = 600;
@@ -177,7 +219,7 @@ public class BiogasRuntimeRevenuesTest {
 	@Test
 	public void marketPriceLimitBlocksTheFunding() {
 		// all hours have a price of 1 ct/kWh
-		var plant = TestPlant.of(1600, 4, h -> 1);
+		var plant = TestPlant.of(1600, 4, _ -> 1);
 		plant.settings = settings();
 		plant.settings.isFixedRemuneration = false;
 		plant.settings.marketValue = marketValue(10, 10);
@@ -323,10 +365,10 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	/// The expected fed-in electricity in kWh: the full-load hours contribute
-	/// the electric power (minus the internal demand in the surplus mode) and
-	/// each ramp contributes 1/8 of the power. The cable and transformer losses
-	/// are subtracted as a share of the generated electricity from every hour
-	/// that feeds in.
+	/// the electric power and each ramp contributes 1/8 of the power. The cable
+	/// and transformer losses are subtracted as a share of the generated
+	/// electricity and, in the surplus mode, the internal demand from every
+	/// operating hour.
 	private static double expectedFeedIn(
 		boolean[] flags, double avgDemand, double losses, boolean fullFeedIn
 	) {
@@ -346,7 +388,10 @@ public class BiogasRuntimeRevenuesTest {
 			if (h > 0 && flags[h - 1])
 				ramps++;
 			if (ramps > 0) {
-				sum += Math.max(0, ramps * POWER / 8.0 * lossFactor);
+				double energy = ramps * POWER / 8.0 * lossFactor;
+				if (!fullFeedIn)
+					energy -= avgDemand;
+				sum += Math.max(0, energy);
 			}
 		}
 		return sum;
