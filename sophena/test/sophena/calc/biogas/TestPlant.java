@@ -89,6 +89,20 @@ public final class TestPlant {
 		plant.electricityPrices.feedInAllowed = allowed;
 	}
 
+	/// Counts the hours in which the CHP is operating: the full-load hours and
+	/// the ramp hours directly before or after a full-load hour. An hour
+	/// between two blocks counts once.
+	public static int operatingHours(boolean[] flags) {
+		int n = 0;
+		for (int h = 0; h < flags.length; h++) {
+			boolean prevRuns = h > 0 && flags[h - 1];
+			boolean nextRuns = h + 1 < flags.length && flags[h + 1];
+			if (flags[h] || prevRuns || nextRuns)
+				n++;
+		}
+		return n;
+	}
+
 	/// The fed-in electricity in each hour in kWh for the given run flags:
 	/// full-load hours contribute the electric power of the plant (minus the
 	/// internal power demand in the surplus feed-in mode), each ramp 1/8 of the

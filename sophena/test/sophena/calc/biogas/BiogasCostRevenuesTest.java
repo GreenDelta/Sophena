@@ -25,9 +25,9 @@ public class BiogasCostRevenuesTest {
 
 	@Test
 	public void priceChangeOnlyAffectsTheAdditionalRevenues() {
-		var withFactor1 = plant(h -> 10);
+		var withFactor1 = plant(_ -> 10);
 		withFactor1.settings.electricityRevenuesFactor = 1.0;
-		var withFactor15 = plant(h -> 10);
+		var withFactor15 = plant(_ -> 10);
 		withFactor15.settings.electricityRevenuesFactor = 1.5;
 
 		var a = costsOf(withFactor1);
@@ -84,7 +84,7 @@ public class BiogasCostRevenuesTest {
 
 	@Test
 	public void directMarketerPaymentIsTheShareOfTheAdditionalRevenues() {
-		var plant = plant(h -> 14);
+		var plant = plant(_ -> 14);
 		plant.settings.directMarketerShare = 20;
 		var runtime = BiogasRuntimeResult.calculate(plant).orElseThrow();
 		var revenues = BiogasRuntimeRevenues.calculate(plant, runtime)
@@ -135,6 +135,43 @@ public class BiogasCostRevenuesTest {
 		assertEquals(revenues.feedInFundingSum()
 			+ revenues.spotMarketRevenuesSum(),
 			costs.dynamicTotal.revenuesElectricity, 1e-6);
+	}
+
+	@Test
+	public void fullFeedInBuysTheDemandInEveryHour() {
+		var plant = plant(_ -> 10);
+		plant.settings.isFullFeedIn = true;
+		double costs = demandCostsOf(plant);
+		assertEquals(Stats.HOURS * 30 * plant.settings.electricityPrice,
+			costs, 1e-6);
+	}
+
+	@Test
+	public void surplusFeedInBuysTheDemandWhenTheChpIsNotOperating() {
+		var plant = plant(_ -> 10);
+		plant.settings.isFullFeedIn = false;
+		var runtime = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		double costs = demandCostsOf(plant);
+
+		// in the full-load and in the ramp hours, the plant covers its
+		// internal demand itself
+		int gridHours = Stats.HOURS
+			- TestPlant.operatingHours(runtime.runFlags());
+		assertTrue(gridHours < Stats.HOURS);
+		assertEquals(gridHours * 30 * plant.settings.electricityPrice,
+			costs, 1e-6);
+	}
+
+	/// The costs for the internal power demand of the given plant: the
+	/// consumption costs with the internal demand of the plant minus the
+	/// consumption costs without internal demand.
+	private static double demandCostsOf(BiogasPlant plant) {
+		double with = costsOf(plant).staticTotal.consumptionCosts;
+		double demand = plant.settings.avgPowerDemand;
+		plant.settings.avgPowerDemand = 0;
+		double without = costsOf(plant).staticTotal.consumptionCosts;
+		plant.settings.avgPowerDemand = demand;
+		return with - without;
 	}
 
 	/// A plant with a market premium of 18 ct/kWh, a monthly market value of

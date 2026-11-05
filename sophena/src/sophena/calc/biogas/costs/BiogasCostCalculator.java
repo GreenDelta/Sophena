@@ -135,14 +135,23 @@ public class BiogasCostCalculator {
 			substrateCosts += profile.annualMass * profile.substrateCosts;
 		}
 
-		double electricityCosts = 0;
-		for (int h = 0; h < Stats.HOURS; h++) {
-			// grid power is needed in full feed-in mode or when the plant is idle
-			if (plant.settings.isFullFeedIn || !result.runFlags()[h]) {
-				electricityCosts += plant.settings.avgPowerDemand
-					* plant.settings.electricityPrice;
+		// the plant runs permanently with its internal power demand; in the surplus
+		// mode it covers this demand itself while the CHP is operating (full-load
+		// and ramp hours), otherwise it is purchased from the grid
+		double gridHours;
+		if (plant.settings.isFullFeedIn) {
+			gridHours = Stats.HOURS;
+		} else {
+			gridHours = 0;
+			for (int h = 0; h < Stats.HOURS; h++) {
+				if (!result.isOperating(h)) {
+					gridHours++;
+				}
 			}
 		}
+		double electricityCosts = gridHours
+			* plant.settings.avgPowerDemand
+			* plant.settings.electricityPrice;
 
 		// the heat that is not used and must be cooled away in kWh/a
 		double unusedHeat = generatedHeat()

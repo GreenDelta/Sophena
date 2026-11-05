@@ -69,6 +69,10 @@ public record BiogasRuntimeRevenues(
 		private final BiogasPlant plant;
 		private final BiogasPlantSettings settings;
 
+		/// The runtime result of the plant with the full-load hours (run flags)
+		/// and the ramps.
+		private final BiogasRuntimeResult result;
+
 		/// The run flags of the plant: a `true` value means that the plant runs
 		/// under full load in that hour.
 		private final boolean[] runFlags;
@@ -78,10 +82,6 @@ public record BiogasRuntimeRevenues(
 
 		/// The electric power of the plant under full load in kW.
 		private final double power;
-
-		/// The number of ramp units in an hour: 0 = the plant is off, 1 = one
-		/// ramp (up or down), 2 = two ramps (the hour is between two blocks).
-		private final int[] rampUnits;
 
 		/// The electricity that is fed into the grid in each hour in kWh.
 		private final double[] feedIn;
@@ -94,12 +94,12 @@ public record BiogasRuntimeRevenues(
 		Calculator(BiogasPlant plant, BiogasRuntimeResult result) {
 			this.plant = plant;
 			this.settings = plant.settings;
+			this.result = result;
 			this.runFlags = result.runFlags();
 			this.prices = plant.electricityPrices != null
 				? plant.electricityPrices.values
 				: null;
 			this.power = BiogasPlantCHP.of(plant).electricPower();
-			this.rampUnits = new int[Stats.HOURS];
 			this.feedIn = new double[Stats.HOURS];
 			this.heatPower = result.producerProfile().maxPower;
 			buildProfiles();
@@ -107,7 +107,7 @@ public record BiogasRuntimeRevenues(
 
 		/// Creates the fed-in electricity per hour from the run flags. Full-load
 		/// hours generate the full electric power, ramp hours 1/8 of it per ramp
-		/// (see also `BiogasRuntimeResult#generatedElectricity`). The cable and
+		/// (see `BiogasRuntimeResult#rampsAt(int)`). The cable and
 		/// transformer losses are subtracted as a share of the generated
 		/// electricity in every operating hour; in the surplus feed-in mode the
 		/// internal power demand is additionally subtracted in every operating hour
@@ -115,20 +115,9 @@ public record BiogasRuntimeRevenues(
 		private void buildProfiles() {
 			double lossFactor = 1.0 - (settings.transmissionLosses / 100.0);
 			for (int h = 0; h < Stats.HOURS; h++) {
-				double gen;
-				if (isFullLoad(h)) {
-					gen = power;
-				} else {
-					int ramps = 0;
-					if (isFullLoad(h + 1)) {
-						ramps++;
-					}
-					if (isFullLoad(h - 1)) {
-						ramps++;
-					}
-					rampUnits[h] = ramps;
-					gen = ramps * (power / 8.0);
-				}
+				double gen = isFullLoad(h)
+					? power
+					: result.rampsAt(h) * (power / 8.0);
 				if (gen <= 0)
 					continue;
 
@@ -205,7 +194,7 @@ public record BiogasRuntimeRevenues(
 
 			// then the ramp hours while there is budget left
 			for (int h = 0; h < Stats.HOURS && budget > 0; h++) {
-				int ramps = rampUnits[h];
+				int ramps = result.rampsAt(h);
 				if (ramps <= 0 || !isFundable(h))
 					continue;
 				double premium = marketPremium(h, marketValue);
@@ -292,7 +281,7 @@ public record BiogasRuntimeRevenues(
 		private double totalQuarterHours() {
 			double hours = 0;
 			for (int h = 0; h < Stats.HOURS; h++) {
-				hours += isFullLoad(h) ? 4 : rampUnits[h];
+				hours += isFullLoad(h) ? 4 : result.rampsAt(h);
 			}
 			return hours;
 		}
