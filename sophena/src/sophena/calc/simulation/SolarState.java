@@ -166,7 +166,8 @@ class SolarState {
 		double radiation = ETA0 * EWF * SDIK + ETA0 * KDF * SDFK;
 
 		// Wh
-		QS_i = (radiation - A1 * (TK_i_minus_one - TL_i) - A2 * sqr(TK_i_minus_one - TL_i)) * A * 1;
+		double dT = TK_i_minus_one - TL_i;
+		QS_i = (radiation - A1 * dT - A2 * dT * dT) * A * 1;
 
 		operationMode = operationMode(project.heatNet, hour, radiation); //TODO
 
@@ -406,7 +407,7 @@ class SolarState {
 					: OperationMode.PRE_HEATING;
 			case AUTO_SEASON:
 				int[] interval = HoursTrace.getHourInterval(heatNet.intervalSummer);
-				if (isHourInInterval(hour, interval))
+				if (hour >= interval[0] && hour <= interval[1])
 					return OperationMode.TARGET_TEMPERATURE;
 				else
 					return OperationMode.PRE_HEATING;
@@ -417,10 +418,6 @@ class SolarState {
 			default:
 				throw new UnsupportedOperationException();
 		}
-	}
-
-	private static double sqr(double x) {
-		return x * x;
 	}
 
 	/// Get the incidence angle modifier for east-west.
@@ -480,10 +477,6 @@ class SolarState {
 	/// Linear interpolation between two angles.
 	private static double lerp(double a, double b, double t) {
 		return (1 - t) * a + t * b;
-	}
-
-	private boolean isHourInInterval(int hour, int[] interval) {
-		return hour >= interval[0] && hour <= interval[1];
 	}
 
 	double getAvailablePowerInKWh() {

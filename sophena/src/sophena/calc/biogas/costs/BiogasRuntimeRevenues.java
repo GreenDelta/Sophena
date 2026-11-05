@@ -238,7 +238,8 @@ public record BiogasRuntimeRevenues(
 			for (int h = 0; h < Stats.HOURS; h++) {
 				if (skipHour(h))
 					continue;
-				revenues[h] = feedIn[h] * spotPrice(h);
+				// the spot price is given in ct/kWh
+				revenues[h] = feedIn[h] * spotPriceCents(h) / 100.0;
 			}
 			return revenues;
 		}
@@ -340,11 +341,6 @@ public record BiogasRuntimeRevenues(
 				case BELOW_TWO -> price <= 2;
 				default -> false;
 			};
-		}
-
-		/// The spot market price of the given hour in EUR/kWh.
-		private double spotPrice(int hour) {
-			return spotPriceCents(hour) / 100.0;
 		}
 
 		/// The spot market price of the given hour in ct/kWh.

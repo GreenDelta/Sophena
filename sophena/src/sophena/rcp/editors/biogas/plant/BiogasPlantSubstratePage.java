@@ -3,7 +3,6 @@ package sophena.rcp.editors.biogas.plant;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
-import sophena.model.biogas.BiogasPlant;
 import sophena.rcp.utils.UI;
 
 class BiogasPlantSubstratePage extends FormPage {
@@ -13,10 +12,6 @@ class BiogasPlantSubstratePage extends FormPage {
 	BiogasPlantSubstratePage(BiogasPlantEditor editor) {
 		super(editor, "BiogasPlantSubstratePage", "Substrate");
 		this.editor = editor;
-	}
-
-	private BiogasPlant plant() {
-		return editor.plant();
 	}
 
 	@Override

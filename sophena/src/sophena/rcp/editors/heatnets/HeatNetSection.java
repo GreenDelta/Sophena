@@ -50,10 +50,6 @@ class HeatNetSection {
 		return editor.heatNet;
 	}
 
-	private Project project() {
-		return editor.project;
-	}
-
 	void create(Composite body, FormToolkit tk) {
 		this.tk = tk;
 		comp = UI.formSection(body, tk, M.HeatingNetwork);
@@ -281,7 +277,7 @@ class HeatNetSection {
 	private double calculateMaxLoad() {
 		try {
 			// net load from the net-specification on this page
-			double load = ProjectLoad.getMaxNetLoad(project());
+			double load = ProjectLoad.getMaxNetLoad(editor.project);
 			// add consumer loads from the consumers in the database
 			// we load them freshly from the database because the may changed
 			// in other editors

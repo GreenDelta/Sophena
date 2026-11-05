@@ -144,7 +144,10 @@ public class BiogasCostCalculator {
 			}
 		}
 
-		double coolingCosts = unusedHeat()
+		// the heat that is not used and must be cooled away in kWh/a
+		double unusedHeat = generatedHeat()
+			* heatShare(plant.settings.unusedHeatShare);
+		double coolingCosts = unusedHeat
 			* COOLING_ELECTRICITY_SHARE
 			* plant.settings.electricityPrice;
 
@@ -272,11 +275,6 @@ public class BiogasCostCalculator {
 			heatShare(plant.settings.fermenterHeatShare)
 				+ heatShare(plant.settings.unusedHeatShare));
 		return generatedHeat() * (1 - share);
-	}
-
-	/// The heat that is not used and must be cooled away in kWh/a.
-	private double unusedHeat() {
-		return generatedHeat() * heatShare(plant.settings.unusedHeatShare);
 	}
 
 	/// Converts a percentage value to a fraction and clamps it to 0..100 %.
