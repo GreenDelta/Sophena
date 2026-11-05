@@ -24,7 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.apache.felix.scr,
  org.eclipse.e4.ui.css.swt
 Eclipse-BundleShape: dir
-Bundle-ClassPath: .,
+Bundle-ClassPath: sophena.jar,
  libs/commons-codec-1.20.0.jar,
  libs/commons-collections4-4.5.0.jar,
  libs/commons-compress-1.28.0.jar,
