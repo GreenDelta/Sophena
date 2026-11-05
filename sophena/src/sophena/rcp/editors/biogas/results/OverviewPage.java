@@ -101,7 +101,7 @@ class OverviewPage extends FormPage {
 			/ revs.feedInElectricity();
 		items.add(Item.of("Nettomehrerlöse", Num.str(netPlus, 1), "ct/kWh"));
 
-		var ratedPower = revs.ratedPower();
+		var ratedPower = editor.result().runtime().ratedPower();
 		items.add(Item.of("Bemessungsleistung", Num.intStr(ratedPower), "kW"));
 
 		if (plant.settings.maxRatedPower != null) {

@@ -27,6 +27,7 @@ final class DoubleMembraneRoofSolver {
 
 	static DoubleMembraneResult solve(
 		BiogasPlant plant,
+		double ratedPowerKW,
 		RoofGeometry roofGeo,
 		StepInput in,
 		double qSolarAbsRoofWm2,
@@ -35,18 +36,18 @@ final class DoubleMembraneRoofSolver {
 	) {
 
 		var f = plant.fermenter;
-		double bhkwMeanElectricPowerKW = Utils.meanElectricPowerOf(plant);
 		double bhkwElectricEfficiency = Utils.electricEfficiencyOf(plant);
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tSkyC = tSkyK - Const.k0C;
 		double tAmbientK = in.tAirC() + Const.k0C;
 
-		double biogasFlowNm3h = bhkwMeanElectricPowerKW / (
+		// the mean biogas flow of the year from the rated power of the plant
+		double biogasFlowNm3h = ratedPowerKW / (
 			bhkwElectricEfficiency * Const.methaneHeatingValue * in.methaneContent()
 		);
 		double supportAirExchangeFlowM3h = biogasFlowNm3h * (f.targetTemperature + Const.k0C) / Const.normalTemperatureK;
-		double supportAirVelocity = 0.5 * supportAirExchangeFlowM3h / (3600.0 * roofGeo.channelAreaM2());
+		double supportAirVelocity = supportAirExchangeFlowM3h / (3600.0 * roofGeo.channelAreaM2());
 		double supportAirPrandtl = Const.uEtaPas * Const.uCpJkgK / Const.uLambdaWmK;
 
 		double hGapInnerWK = computeGapConvection(supportAirVelocity, roofGeo.innerFlowLengthM(), supportAirPrandtl) * roofGeo.innerMembraneAreaM2();

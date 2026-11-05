@@ -33,18 +33,6 @@ final class Utils {
 			.toArray();
 	}
 
-	/// Mean electric power of the CHP unit in kW as the sum over all boiler
-	/// blocks of the mean of their min and max electric power.
-	static double meanElectricPowerOf(BiogasPlant plant) {
-		double power = 0;
-		for (var b : plant.boilers) {
-			if (b == null || b.boiler == null)
-				continue;
-			power += meanBlockPower(b.boiler);
-		}
-		return power;
-	}
-
 	/// Electric efficiency of the CHP unit as the weighted average of the
 	/// efficiency rates of all boiler blocks, weighted by their electric power.
 	static double electricEfficiencyOf(BiogasPlant plant) {

@@ -83,45 +83,24 @@ public class BiogasRuntimeRevenuesTest {
 	}
 
 	@Test
-	public void ratedPowerIsBasedOnTheGeneratedElectricity() {
+	public void surplusModeSubtractsTheDemandInEveryOperatingHour() {
 		var surplus = base();
-		surplus.settings.transmissionLosses = 5;
 		var result = BiogasRuntimeResult.calculate(surplus).orElseThrow();
-		var r = BiogasRuntimeRevenues.calculate(surplus, result).orElseThrow();
+		var withDemand = BiogasRuntimeRevenues.calculate(surplus, result)
+			.orElseThrow();
 
-		double generated = expectedFeedIn(result.runFlags(), 0, 0, true);
-		assertEquals(generated, r.generatedElectricity(), 1e-6);
-		assertEquals(generated / Stats.HOURS, r.ratedPower(), 1e-9);
-		assertTrue(r.feedInElectricity() < r.generatedElectricity());
-
-		// the rated power does not depend on the feed-in mode
 		var full = base();
-		full.settings.transmissionLosses = 5;
 		full.settings.isFullFeedIn = true;
-		var r2 = BiogasRuntimeRevenues.calculate(full, result).orElseThrow();
-		assertEquals(r.ratedPower(), r2.ratedPower(), 1e-9);
-	}
+		var withoutDemand = BiogasRuntimeRevenues.calculate(full, result)
+			.orElseThrow();
 
-	@Test
-	public void surplusModeSubtractsTheDemandInRampHours() {
-		var plant = base();
-		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
-		var r = BiogasRuntimeRevenues.calculate(plant, result).orElseThrow();
-
-		var flags = result.runFlags();
-		var feedIn = TestPlant.feedInProfile(plant, flags);
-		double lossFactor = 1.0 - LOSSES / 100.0;
-		boolean found = false;
-		for (int h = 1; h < flags.length - 1; h++) {
-			if (flags[h] || !(flags[h - 1] ^ flags[h + 1]))
-				continue;
-			// a single ramp: P/8 minus losses minus the internal demand
-			assertEquals(POWER / 8.0 * lossFactor - 30, feedIn[h], 1e-9);
-			found = true;
-			break;
-		}
-		assertTrue("the plant must have a ramp hour", found);
-		assertEquals(Stats.sum(feedIn), r.feedInElectricity(), 1e-6);
+		// the internal demand of 30 kW is subtracted in the full-load hours
+		// and in the ramp hours
+		double hours = countRuns(result.runFlags())
+			+ countRampHours(result.runFlags());
+		assertEquals(30 * hours,
+			withoutDemand.feedInElectricity() - withDemand.feedInElectricity(),
+			1e-6);
 	}
 
 	@Test
@@ -416,6 +395,21 @@ public class BiogasRuntimeRevenuesTest {
 			if (h + 1 < flags.length && flags[h + 1])
 				n++;
 			if (h > 0 && flags[h - 1])
+				n++;
+		}
+		return n;
+	}
+
+	/// Counts the ramp hours: the off hours directly before or after a run
+	/// hour. Unlike the ramp units, an hour between two blocks counts once.
+	private static double countRampHours(boolean[] flags) {
+		double n = 0;
+		for (int h = 0; h < flags.length; h++) {
+			if (flags[h])
+				continue;
+			boolean nextRuns = h + 1 < flags.length && flags[h + 1];
+			boolean prevRuns = h > 0 && flags[h - 1];
+			if (nextRuns || prevRuns)
 				n++;
 		}
 		return n;

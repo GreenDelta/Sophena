@@ -57,6 +57,12 @@ class InputValidation {
 		return Res.ok();
 	}
 
+	static Res<Void> ofRatedPower(double ratedPowerKW) {
+		return !Double.isFinite(ratedPowerKW) || ratedPowerKW <= 0
+			? Res.error("Die Bemessungsleistung der Biogasanlage ist ungültig.")
+			: Res.ok();
+	}
+
 	private static boolean invalid(double[] values) {
 		return values == null || values.length < Stats.HOURS;
 	}

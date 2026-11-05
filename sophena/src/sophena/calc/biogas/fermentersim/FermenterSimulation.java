@@ -19,15 +19,24 @@ public final class FermenterSimulation {
 	private final BiogasPlant plant;
 	private final WeatherStation station;
 	private final Fermenter f;
+	private final double ratedPowerKW;
 
-	private FermenterSimulation(BiogasPlant plant, WeatherStation station) {
+	private FermenterSimulation(
+		BiogasPlant plant, WeatherStation station, double ratedPowerKW
+	) {
 		this.plant = plant;
 		this.station = station;
 		this.f = plant.fermenter;
+		this.ratedPowerKW = ratedPowerKW;
 	}
 
+	/// Creates a simulation for the given plant and weather station. The rated
+	/// power (Bemessungsleistung) of the plant in kW is the mean electric power
+	/// of the CHP over the year, see `BiogasRuntimeResult#ratedPower()`. It
+	/// determines the mean biogas flow and with this the support air flow of a
+	/// double membrane roof.
 	public static Res<FermenterSimulation> of(
-		BiogasPlant plant, WeatherStation station
+		BiogasPlant plant, WeatherStation station, double ratedPowerKW
 	) {
 		var res = InputValidation.of(station);
 		if (res.isError())
@@ -37,7 +46,11 @@ public final class FermenterSimulation {
 		if (res.isError())
 			return res.castError();
 
-		var sim = new FermenterSimulation(plant, station);
+		res = InputValidation.ofRatedPower(ratedPowerKW);
+		if (res.isError())
+			return res.castError();
+
+		var sim = new FermenterSimulation(plant, station, ratedPowerKW);
 		return Res.ok(sim);
 	}
 
@@ -163,7 +176,7 @@ public final class FermenterSimulation {
 			var res = FixedRoofSolver.solve(f, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(plant, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(plant, ratedPowerKW, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

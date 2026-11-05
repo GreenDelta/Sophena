@@ -176,6 +176,30 @@ public class BiogasPlantResultTest {
 		assertEquals(600, other.maxPower[h], 1e-9);
 	}
 
+	@Test
+	public void generatedElectricityAndRatedPower() {
+		var plant = TestPlant.of(1600, 4);
+		var result = BiogasRuntimeResult.calculate(plant).orElseThrow();
+		var blocks = blocksOf(result.runFlags());
+		assertFalse("the plant must run at some hour", blocks.isEmpty());
+
+		// each block generates 500 kW in its hours and 500 / 8 kWh in the
+		// ramp hours before and after the block (if they are in the year)
+		double expected = 0;
+		for (var block : blocks) {
+			expected += block.length() * 500.0;
+			if (block.start() > 0)
+				expected += 500.0 / 8;
+			if (block.start() + block.length() < Stats.HOURS)
+				expected += 500.0 / 8;
+		}
+		assertEquals(expected, result.generatedElectricity(), 1e-6);
+		assertEquals(expected / Stats.HOURS, result.ratedPower(), 1e-9);
+
+		var empty = BiogasRuntimeResult.emptyOf(plant);
+		assertEquals(0, empty.ratedPower(), 1e-9);
+	}
+
 	/// The blocks of consecutive hours in which the plant runs.
 	private static List<TestBlock> blocksOf(boolean[] flags) {
 		var blocks = new ArrayList<TestBlock>();

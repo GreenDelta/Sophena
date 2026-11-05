@@ -3,6 +3,7 @@ package sophena.calc.biogas;
 import org.openlca.commons.Res;
 
 import sophena.calc.biogas.fermentersim.FermenterSimulation;
+import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Project;
 import sophena.model.Stats;
 import sophena.model.biogas.BiogasPlant;
@@ -29,7 +30,15 @@ public class FermenterHeatDemand {
 		if (project == null)
 			return Res.error("Es sind keine gültigen Wetterdaten vorhanden.");
 
-		var sim = FermenterSimulation.of(plant, project.weatherStation);
+		// the rated power depends on the run hours of the plant; when the
+		// plant cannot be calculated, there is no fermenter heat demand
+		var runtime = BiogasRuntimeResult.calculate(plant);
+		if (runtime.isError())
+			return runtime.castError();
+		double ratedPower = runtime.value().ratedPower();
+
+		var sim = FermenterSimulation.of(
+			plant, project.weatherStation, ratedPower);
 		if (sim.isError())
 			return sim.castError();
 		var res = sim.value().run();
