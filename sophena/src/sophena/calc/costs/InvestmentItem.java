@@ -129,6 +129,13 @@ public record InvestmentItem(
 		}
 	}
 
+	/// Returns the investment item of the given investment entry of a biogas
+	/// plant or `null` when the entry has no costs.
+	@Nullable
+	public static InvestmentItem of(BiogasInvestmentEntry entry) {
+		return itemOf(entry);
+	}
+
 	@Nullable
 	private static InvestmentItem itemOf(BiogasInvestmentEntry entry) {
 		if (entry == null || entry.costs == null)

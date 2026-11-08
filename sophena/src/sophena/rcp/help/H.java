@@ -57,6 +57,12 @@ public class H extends NLS {
 	public static String LengthPowerLoss;
 	public static String PowerLoss;
 	public static String PlantDurationInfo;
+	public static String BiomethaneFullLoadHoursInfo;
+	public static String BiomethaneSpecificInvestmentInfo;
+	public static String BiomethaneRunningCostsInfo;
+	public static String BiomethaneMethaneLossInfo;
+	public static String BiomethaneGridConnectionInfo;
+	public static String BiomethanePowerDemandInfo;
 
 	static {
 		NLS.initializeMessages("sophena.rcp.help.messages", H.class);

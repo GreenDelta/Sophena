@@ -59,6 +59,7 @@ public class BiogasResultEditor extends Editor {
 			addPage(new OverviewPage(this));
 			addPage(new CostResultPage(this));
 			addPage(new CostDetailsPage(this));
+			addPage(new BiomethanePage(this));
 		} catch (Exception e) {
 			log.error("failed to add the result page", e);
 		}
