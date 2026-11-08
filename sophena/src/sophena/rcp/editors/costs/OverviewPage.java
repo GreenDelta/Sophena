@@ -187,7 +187,9 @@ class OverviewPage extends FormPage {
 	private List<Producer> getProducers(ProductType type) {
 		var list = new ArrayList<Producer>();
 		for (var p : project().producers) {
-			if (p.disabled) continue;
+			// the costs of a biogas plant are only included via its heat price
+			if (p.disabled || p.biogasPlant != null)
+				continue;
 			Boiler b = p.boiler;
 			if (b != null) {
 				if (b.type == type) {
