@@ -156,7 +156,7 @@ class InvestmentWizard extends SimpleWizard {
 
 		durationText = UI.formText(comp, "Nutzungsdauer");
 		Texts.on(durationText)
-			.integer()
+			.positiveInteger()
 			.init(entry.costs.duration)
 			.onChanged(s -> entry.costs.duration = Num.readInt(s));
 		UI.formLabel(comp, "Jahre");

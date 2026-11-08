@@ -58,7 +58,7 @@ public class ProductCostSection {
 		investmentText = t("Investitionskosten", "EUR", costs().investment)
 				.onChanged((s) -> costs().investment = Num.read(s)).text;
 
-		durationText = t("Nutzungsdauer", "Jahre", costs().duration)
+		durationText = makeDurationText()
 				.onChanged((s) -> costs().duration = Num.readInt(s)).text;
 
 		repairText = t("Instandsetzung", "%", costs().repair)
@@ -77,18 +77,20 @@ public class ProductCostSection {
 		UI.formLabel(composite, toolkit, unit);
 		TextBox disp = Texts.on(t).init(initial).decimal();
 		if (editor != null) {
-			disp.onChanged(s -> editor.setDirty());
+			disp.onChanged(_ -> editor.setDirty());
 		}
 		fillers();
 		return disp;
 	}
 
-	private TextBox t(String label, String unit, int initial) {
-		Text t = UI.formText(composite, toolkit, label);
-		UI.formLabel(composite, toolkit, unit);
-		TextBox disp = Texts.on(t).init(initial).integer();
+	private TextBox makeDurationText() {
+		var text = UI.formText(composite, toolkit, "Nutzungsdauer");
+		UI.formLabel(composite, toolkit, "Jahre");
+		TextBox disp = Texts.on(text)
+			.init(costs().duration)
+			.positiveInteger();
 		if (editor != null) {
-			disp.onChanged(s -> editor.setDirty());
+			disp.onChanged(_ -> editor.setDirty());
 		}
 		fillers();
 		return disp;

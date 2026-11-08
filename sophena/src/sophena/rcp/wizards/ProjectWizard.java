@@ -118,14 +118,14 @@ public class ProjectWizard extends Wizard {
 			descriptionText = UI.formMultiText(composite, M.Description);
 			UI.filler(composite);
 			timeText = UI.formText(composite, M.ProjectDurationYears);
-			Texts.on(timeText).required().integer().validate(data::validate);
+			Texts.on(timeText).required().positiveInteger().validate(data::validate);
 			UI.filler(composite);
 			stationCombo = new EntityCombo<>();
 			stationCombo.create("Wetterstation", composite);
-			stationCombo.onSelect(d -> data.validate());
+			stationCombo.onSelect(_ -> data.validate());
 			ImageHyperlink link = new ImageHyperlink(composite, SWT.NONE);
 			link.setImage(Icon.SEARCH_16.img());
-			Controls.onClick(link, e -> openMap());
+			Controls.onClick(link, _ -> openMap());
 			data.bindToUI();
 		}
 
@@ -175,7 +175,7 @@ public class ProjectWizard extends Wizard {
 				Sorters.byName(list);
 				stationCombo.setInput(list);
 				if (!list.isEmpty())
-					stationCombo.select(list.get(0));
+					stationCombo.select(list.getFirst());
 				else
 					setPageComplete(false);
 			}

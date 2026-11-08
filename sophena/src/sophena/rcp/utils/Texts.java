@@ -140,6 +140,7 @@ public final class Texts {
 		/// The number of decimal places that is used when a number is set via
 		/// `init`. `null` means that the default number format is used.
 		private Integer decimalPlaces;
+		private boolean isRequired;
 
 		TextBox(Text text) {
 			this.text = text;
@@ -158,6 +159,7 @@ public final class Texts {
 		public TextBox required() {
 			if (text == null)
 				return this;
+			isRequired = true;
 			text.setBackground(Colors.forRequiredField());
 			text.addModifyListener((e) -> {
 				if (Strings.isBlank(text.getText()))
@@ -218,6 +220,43 @@ public final class Texts {
 					return;
 				}
 			});
+			return this;
+		}
+
+		/// Allows only digits and marks values < 1 as error. For required fields,
+		/// `required()` must be called before this method.
+		public TextBox positiveInteger() {
+			if (text == null)
+				return this;
+			text.addListener(SWT.Verify, (e) -> {
+				if (e.text == null)
+					return;
+				for (char c : e.text.toCharArray()) {
+					if (!Character.isDigit(c)) {
+						e.doit = false;
+						return;
+					}
+				}
+			});
+			Runnable check = () -> {
+				var s = text.getText();
+				if (Strings.isBlank(s)) {
+					text.setBackground(isRequired
+						? Colors.getErrorColor()
+						: Colors.getWhite());
+					text.setToolTipText(null);
+				} else if (Num.readInt(s) < 1) {
+					text.setBackground(Colors.getErrorColor());
+					text.setToolTipText("Es muss eine ganze Zahl ≥ 1 angegeben werden.");
+				} else {
+					text.setBackground(isRequired
+						? Colors.forRequiredField()
+						: Colors.getWhite());
+					text.setToolTipText(null);
+				}
+			};
+			text.addModifyListener(_ -> check.run());
+			check.run();
 			return this;
 		}
 

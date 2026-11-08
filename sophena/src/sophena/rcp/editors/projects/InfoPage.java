@@ -89,7 +89,7 @@ class InfoPage extends FormPage {
 		Texts.on(t)
 			.init(project().duration)
 			.required()
-			.integer()
+			.positiveInteger()
 			.onChanged(_ -> {
 				project().duration = Texts.getInt(t);
 				editor.setDirty();

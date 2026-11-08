@@ -168,7 +168,7 @@ public class BiogasPlantWizard extends Wizard {
 
 			durationText = UI.formText(comp, "Laufzeit (Jahre)");
 			Texts.set(durationText, plant.duration);
-			Texts.on(durationText).required().integer().validate(this::validate);
+			Texts.on(durationText).required().positiveInteger().validate(this::validate);
 
 			descriptionText = UI.formMultiText(comp, M.Description);
 			UI.gridData(descriptionText, true, false).heightHint = 150;

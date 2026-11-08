@@ -70,7 +70,7 @@ class BiogasPlantInfoPage extends FormPage {
 		Texts.on(UI.formText(comp, tk, "Laufzeit (Jahre)"))
 			.required()
 			.init(plant().duration)
-			.integer()
+			.positiveInteger()
 			.onChanged(s -> {
 				plant().duration = Num.readInt(s);
 				editor.setDirty();
