@@ -58,7 +58,12 @@ public class EmissionResult {
 				if (p.biogasPlant != null) {
 					var br = result.biogasResults.get(p);
 					if (br != null) {
-						var emissions = BiogasEmissionResult.getAllocatedToHeat(br);
+						// only the heat that is used in the heat network is
+						// useful heat; the heat for the fermenters is not
+						double usefulHeat = Math.max(0,
+							energyResult.totalHeat(p) - energyResult.fermenterHeatOf(p));
+						var emissions = BiogasEmissionResult.getAllocatedToHeat(
+							br, usefulHeat);
 						r.producerEmissions.put(p, emissions);
 						total += emissions;
 					}
