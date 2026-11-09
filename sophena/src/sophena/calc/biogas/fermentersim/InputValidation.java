@@ -5,6 +5,7 @@ import org.openlca.commons.Res;
 import sophena.model.Stats;
 import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
+import sophena.model.biogas.RoofType;
 
 class InputValidation {
 
@@ -43,8 +44,8 @@ class InputValidation {
 			return Res.error("Es wurde keine gültige Biogasanlage angegeben.");
 		}
 
-		if (plant.fermenter == null) {
-			return Res.error("Die Angaben zum Fermenter fehlen.");
+		if (plant.fermenters.isEmpty()) {
+			return Res.error("Es wurde kein Fermenter definiert.");
 		}
 
 		if (plant.substrateProfiles.isEmpty())
@@ -57,10 +58,20 @@ class InputValidation {
 		return Res.ok();
 	}
 
-	static Res<Void> ofRatedPower(double ratedPowerKW) {
-		return !Double.isFinite(ratedPowerKW) || ratedPowerKW <= 0
-			? Res.error("Die Bemessungsleistung der Biogasanlage ist ungültig.")
-			: Res.ok();
+	/// Checks the rated power of the plant. It is only required when there is a
+	/// fermenter with a double membrane roof, as it determines the support air
+	/// flow of the roof.
+	static Res<Void> ofRatedPower(BiogasPlant plant, double ratedPowerKW) {
+		if (!Double.isFinite(ratedPowerKW) || ratedPowerKW < 0)
+			return Res.error("Die Bemessungsleistung der Biogasanlage ist ungültig.");
+		if (ratedPowerKW > 0)
+			return Res.ok();
+		for (var f : plant.fermenters) {
+			if (f != null && f.roofType == RoofType.DOUBLE_MEMBRANE)
+				return Res.error("Für ein Doppelmembrandach ist eine "
+					+ "Bemessungsleistung der Biogasanlage erforderlich.");
+		}
+		return Res.ok();
 	}
 
 	private static boolean invalid(double[] values) {

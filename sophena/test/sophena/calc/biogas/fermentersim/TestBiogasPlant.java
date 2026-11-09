@@ -19,7 +19,7 @@ class TestBiogasPlant {
 
 	static BiogasPlant get(WeatherStation station) {
 		var plant = new BiogasPlant();
-		plant.fermenter = makeFermenter();
+		plant.fermenters.add(makeFermenter());
 		plant.boilers.add(makeBoiler());
 
 		var profile = new SubstrateProfile();

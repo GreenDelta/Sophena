@@ -206,7 +206,7 @@ public class BiogasPlantProducerEditor extends Editor {
 		}
 
 		private void createHeatDemandSection(Composite body, FormToolkit tk) {
-			var section = UI.section(body, tk, "Wärmebedarf des Fermenters");
+			var section = UI.section(body, tk, "Fermenterwärmebedarf");
 			UI.gridData(section, true, false);
 			var comp = UI.sectionClient(section, tk);
 			UI.gridLayout(comp, 1);

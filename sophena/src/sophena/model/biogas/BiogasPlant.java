@@ -1,6 +1,7 @@
 package sophena.model.biogas;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,9 +79,11 @@ public class BiogasPlant extends RootEntity {
 	@Column(name = "minimum_runtime")
 	public int minimumRuntime;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "f_fermenter")
-	public Fermenter fermenter;
+	/// The fermenters of the plant. How the substrate flows through the
+	/// fermenters is defined by their `successorId`.
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "f_biogas_plant")
+	public final List<Fermenter> fermenters = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "f_biogas_plant")
@@ -120,7 +123,7 @@ public class BiogasPlant extends RootEntity {
 		copy.gasStorageTemperature = gasStorageTemperature;
 		copy.gasStorageOverpressure = gasStorageOverpressure;
 		copy.minimumRuntime = minimumRuntime;
-		copy.fermenter = fermenter != null ? fermenter.copy() : null;
+		copyFermentersTo(copy);
 		for (var boiler : boilers) {
 			if (boiler != null) {
 				copy.boilers.add(boiler.copy());
@@ -145,4 +148,21 @@ public class BiogasPlant extends RootEntity {
 		return copy;
 	}
 
+	/// Copies the fermenters into the given plant and maps the successor IDs
+	/// to the IDs of the copied fermenters.
+	private void copyFermentersTo(BiogasPlant copy) {
+		var ids = new HashMap<String, String>();
+		for (var f : fermenters) {
+			if (f == null)
+				continue;
+			var clone = f.copy();
+			ids.put(f.id, clone.id);
+			copy.fermenters.add(clone);
+		}
+		for (var clone : copy.fermenters) {
+			if (clone.successorId != null) {
+				clone.successorId = ids.get(clone.successorId);
+			}
+		}
+	}
 }

@@ -31,6 +31,14 @@ record StepInput(
 	double substrateHeatCapacity
 ) {
 
+	/// Returns a copy of this input with the given substrate feed mass in kg/h
+	/// and feed temperature in °C.
+	StepInput withFeed(double feedKgH, double feedTemperature) {
+		return new StepInput(
+			hour, doy, hod, tAirC, feedTemperature, bHorWm2, dHorWm2, windMps,
+			feedKgH, methaneContent, substrateHeatCapacity);
+	}
+
 	static StepInput of(
 		BiogasPlant plant, WeatherScale scale, int hour
 	) {

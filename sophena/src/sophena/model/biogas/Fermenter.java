@@ -16,6 +16,18 @@ import sophena.model.AbstractEntity;
 @Table(name = "tbl_fermenters")
 public class Fermenter extends AbstractEntity {
 
+	/// The name of the fermenter, e.g. "Hauptfermenter" or "Nachgärer".
+	@Column(name = "name")
+	public String name;
+
+	/// The ID of the fermenter into which the substrate flows from this
+	/// fermenter, or `null` when there is no such fermenter. Fermenters into
+	/// which no other fermenter flows receive the substrate input of the plant.
+	/// It is stored as a plain ID and not as an entity reference so that the
+	/// fermenters can be serialized as a flat list.
+	@Column(name = "successor_id")
+	public String successorId;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "roof_type")
 	public RoofType roofType;
@@ -108,27 +120,75 @@ public class Fermenter extends AbstractEntity {
 		return wallOuterRadius - wallStructuralThickness - wallInsulationThickness;
 	}
 
+	/// Creates a new fermenter with a new ID, the given name, and default
+	/// values for a typical main fermenter with a double membrane roof.
+	public static Fermenter createDefault(String name) {
+		var f = new Fermenter();
+		f.id = UUID.randomUUID().toString();
+		f.name = name;
+		f.roofType = RoofType.DOUBLE_MEMBRANE;
+		f.targetTemperature = 38.0;
+		f.wallOuterRadius = 12.32;
+		f.wallStructuralThickness = 0.10;
+		f.wallInsulationThickness = 0.10;
+		f.wallTotalHeight = 10.0;
+		f.wallBuriedFraction = 0.50;
+		f.roofFixedLayerThickness = 0.01;
+		f.roofInsulationThickness = 0.10;
+		f.roofMembraneHeight = 4.0;
+		f.floorSlabThickness = 0.20;
+		f.floorInsulationThickness = 0.10;
+		f.wallShadingFraction = 0.50;
+		f.roofShadingFraction = 0.50;
+		f.mixerPowerDensity = 16.0;
+		f.mixerRuntime = 15.0;
+		f.mixerHeatFraction = 1.0;
+		return f;
+	}
+
+	/// The inner volume of the fermenter in m³, calculated from the inner
+	/// radius and the total wall height.
+	public double volume() {
+		double r = wallInnerRadius();
+		return r > 0 && wallTotalHeight > 0
+			? Math.PI * r * r * wallTotalHeight
+			: 0;
+	}
+
+	/// Creates a copy with a new ID. Note that the `successorId` is copied as
+	/// it is and needs to be mapped to the copied successor when the fermenters
+	/// of a plant are copied.
 	@Override
 	public Fermenter copy() {
 		var clone = new Fermenter();
 		clone.id = UUID.randomUUID().toString();
-		clone.roofType = roofType;
-		clone.targetTemperature = targetTemperature;
-		clone.wallOuterRadius = wallOuterRadius;
-		clone.wallStructuralThickness = wallStructuralThickness;
-		clone.wallInsulationThickness = wallInsulationThickness;
-		clone.wallTotalHeight = wallTotalHeight;
-		clone.wallBuriedFraction = wallBuriedFraction;
-		clone.roofFixedLayerThickness = roofFixedLayerThickness;
-		clone.roofInsulationThickness = roofInsulationThickness;
-		clone.roofMembraneHeight = roofMembraneHeight;
-		clone.floorSlabThickness = floorSlabThickness;
-		clone.floorInsulationThickness = floorInsulationThickness;
-		clone.wallShadingFraction = wallShadingFraction;
-		clone.roofShadingFraction = roofShadingFraction;
-		clone.mixerPowerDensity = mixerPowerDensity;
-		clone.mixerRuntime = mixerRuntime;
-		clone.mixerHeatFraction = mixerHeatFraction;
+		clone.setValuesOf(this);
 		return clone;
+	}
+
+	/// Sets all values of this fermenter, except the ID, to the values of the
+	/// given fermenter.
+	public void setValuesOf(Fermenter other) {
+		if (other == null)
+			return;
+		name = other.name;
+		successorId = other.successorId;
+		roofType = other.roofType;
+		targetTemperature = other.targetTemperature;
+		wallOuterRadius = other.wallOuterRadius;
+		wallStructuralThickness = other.wallStructuralThickness;
+		wallInsulationThickness = other.wallInsulationThickness;
+		wallTotalHeight = other.wallTotalHeight;
+		wallBuriedFraction = other.wallBuriedFraction;
+		roofFixedLayerThickness = other.roofFixedLayerThickness;
+		roofInsulationThickness = other.roofInsulationThickness;
+		roofMembraneHeight = other.roofMembraneHeight;
+		floorSlabThickness = other.floorSlabThickness;
+		floorInsulationThickness = other.floorInsulationThickness;
+		wallShadingFraction = other.wallShadingFraction;
+		roofShadingFraction = other.roofShadingFraction;
+		mixerPowerDensity = other.mixerPowerDensity;
+		mixerRuntime = other.mixerRuntime;
+		mixerHeatFraction = other.mixerHeatFraction;
 	}
 }

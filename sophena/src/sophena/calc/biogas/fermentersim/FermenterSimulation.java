@@ -11,22 +11,25 @@ import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.Fermenter;
 import sophena.model.biogas.RoofType;
 
-/**
- * Main simulation runner executing the quasi-stationary fermenter heat demand model.
- */
+/// Main simulation runner executing the quasi-stationary fermenter heat demand
+/// model. The heat demand of each fermenter of the plant is simulated
+/// separately with the substrate flow and feed temperature of the fermenter in
+/// the fermenter network (see `FermenterNetwork`). The heat demand of the plant
+/// is the sum of the heat demands of its fermenters.
 public final class FermenterSimulation {
 
 	private final BiogasPlant plant;
 	private final WeatherStation station;
-	private final Fermenter f;
+	private final FermenterNetwork network;
 	private final double ratedPowerKW;
 
 	private FermenterSimulation(
-		BiogasPlant plant, WeatherStation station, double ratedPowerKW
+		BiogasPlant plant, WeatherStation station, FermenterNetwork network,
+		double ratedPowerKW
 	) {
 		this.plant = plant;
 		this.station = station;
-		this.f = plant.fermenter;
+		this.network = network;
 		this.ratedPowerKW = ratedPowerKW;
 	}
 
@@ -34,7 +37,8 @@ public final class FermenterSimulation {
 	/// power (Bemessungsleistung) of the plant in kW is the mean electric power
 	/// of the CHP over the year, see `BiogasRuntimeResult#ratedPower()`. It
 	/// determines the mean biogas flow and with this the support air flow of a
-	/// double membrane roof.
+	/// double membrane roof; it is only required when there is a fermenter
+	/// with a double membrane roof.
 	public static Res<FermenterSimulation> of(
 		BiogasPlant plant, WeatherStation station, double ratedPowerKW
 	) {
@@ -46,11 +50,16 @@ public final class FermenterSimulation {
 		if (res.isError())
 			return res.castError();
 
-		res = InputValidation.ofRatedPower(ratedPowerKW);
+		res = InputValidation.ofRatedPower(plant, ratedPowerKW);
 		if (res.isError())
 			return res.castError();
 
-		var sim = new FermenterSimulation(plant, station, ratedPowerKW);
+		var network = FermenterNetwork.of(plant);
+		if (network.isError())
+			return network.castError();
+
+		var sim = new FermenterSimulation(
+			plant, station, network.value(), ratedPowerKW);
 		return Res.ok(sim);
 	}
 
@@ -66,7 +75,34 @@ public final class FermenterSimulation {
 	}
 
 	private SimulationResult internalRun() {
+		// the hourly input values of the plant; these are adapted to the
+		// substrate flow of each fermenter
+		var scale = WeatherScale.of(station);
+		var inputs = new StepInput[Stats.HOURS];
+		for (int k = 0; k < Stats.HOURS; k++) {
+			inputs[k] = StepInput.of(plant, scale, k);
+		}
 
+		var results = new ArrayList<FermenterResult>();
+		var demand = new double[Stats.HOURS];
+		for (var node : network.nodes()) {
+			var r = runFermenter(node, inputs);
+			results.add(r);
+			for (var step : r.steps()) {
+				demand[step.hour()] += step.qHeatKW();
+			}
+		}
+
+		double totalEnergyMWh = Stats.sum(demand) / 1000.0;
+		double peakKw = Stats.max(demand);
+		return new SimulationResult(results, demand, totalEnergyMWh, peakKw);
+	}
+
+	private FermenterResult runFermenter(
+		FermenterNetwork.Node node, StepInput[] inputs
+	) {
+		var f = node.fermenter();
+		double fermenterRatedPowerKW = ratedPowerKW * node.gasShare();
 		var groundTemps = SoilTemperatureCalculator.calculate(station, f);
 		var roofGeo = (f.roofType == RoofType.FIXED)
 			? RoofGeometry.createFixed(f)
@@ -99,9 +135,8 @@ public final class FermenterSimulation {
 		double peakKw = 0.0;
 
 		double[] prevMembraneTempsC = new double[3];
-		var scale = WeatherScale.of(station);
 		for (int k = 0; k < Stats.HOURS; k++) {
-			var stepInput = StepInput.of(plant, scale, k);
+			var stepInput = feedOf(node, inputs[k]);
 			var solar = SolarCalculator.computeStepSolar(station, f, roofGeo, stepInput);
 
 			if (k == 0) {
@@ -110,7 +145,8 @@ public final class FermenterSimulation {
 				prevMembraneTempsC[2] = stepInput.tAirC() + 1.0;
 			}
 
-			var roofEval = evaluateRoof(f, roofGeo, stepInput, solar, prevMembraneTempsC);
+			var roofEval = evaluateRoof(
+				f, fermenterRatedPowerKW, roofGeo, stepInput, solar, prevMembraneTempsC);
 
 			if (f.roofType == RoofType.DOUBLE_MEMBRANE) {
 				prevMembraneTempsC[0] = roofEval.tsInnerMembraneC();
@@ -155,7 +191,16 @@ public final class FermenterSimulation {
 		}
 
 		double totalEnergyMWh = totalHeatKwSum / 1000.0;
-		return new SimulationResult(steps, totalEnergyMWh, peakKw);
+		return new FermenterResult(f, steps, totalEnergyMWh, peakKw);
+	}
+
+	/// Adapts the hourly input of the plant to the substrate flow of the given
+	/// fermenter.
+	private static StepInput feedOf(FermenterNetwork.Node node, StepInput in) {
+		double feedTemperature = node.isInput()
+			? in.feedTemperature()
+			: node.feedTemperature();
+		return in.withFeed(in.feedKgH() * node.massShare(), feedTemperature);
 	}
 
 	private record RoofEval(
@@ -169,14 +214,14 @@ public final class FermenterSimulation {
 	}
 
 	private RoofEval evaluateRoof(
-		Fermenter f, RoofGeometry roofGeo,
+		Fermenter f, double fermenterRatedPowerKW, RoofGeometry roofGeo,
 		StepInput in, SolarCalculator.StepSolar solar, double[] prevTempsC
 	) {
 		if (f.roofType == RoofType.FIXED) {
 			var res = FixedRoofSolver.solve(f, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2());
 			return new RoofEval(res.tsRoofC(), 0.0, 0.0, res.qRoofW(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		} else {
-			var res = DoubleMembraneRoofSolver.solve(plant, ratedPowerKW, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
+			var res = DoubleMembraneRoofSolver.solve(plant, f, fermenterRatedPowerKW, roofGeo, in, solar.qSolarAbsRoofWm2(), solar.lDownWm2(), prevTempsC);
 			return new RoofEval(
 				res.tsRoofC(), res.tsInnerMembraneC(), res.tsSupportAirC(), res.qRoofW(),
 				res.qInnerConvectionW(), res.qInnerRadiationW(), res.qGapInnerConvectionW(),

@@ -164,7 +164,6 @@ CREATE TABLE tbl_biogas_plants (
     gas_storage_temperature     DOUBLE,
     gas_storage_overpressure    DOUBLE,
     minimum_runtime             INTEGER,
-    f_fermenter                 CHAR(36),
 
     PRIMARY KEY (id)
 );
@@ -173,6 +172,9 @@ CREATE TABLE tbl_biogas_plants (
 CREATE TABLE tbl_fermenters (
 
     id                          CHAR(36),
+    f_biogas_plant              CHAR(36),
+    name                        VARCHAR(255),
+    successor_id                CHAR(36),
     roof_type                   VARCHAR(255),
 
     target_temperature          DOUBLE,

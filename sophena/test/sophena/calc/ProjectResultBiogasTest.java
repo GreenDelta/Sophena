@@ -186,7 +186,7 @@ public class ProjectResultBiogasTest {
 		var project = project();
 		var producer = biogasProducer(project);
 		project.weatherStation = TestWeatherStation.get();
-		producer.biogasPlant.fermenter = TestPlant.fermenter();
+		producer.biogasPlant.fermenters.add(TestPlant.fermenter());
 		// a high-yield substrate reduces the fermenter heat demand while the
 		// gas production of the plant stays the same
 		var substrate = producer.biogasPlant.substrateProfiles.getFirst();

@@ -27,6 +27,7 @@ final class DoubleMembraneRoofSolver {
 
 	static DoubleMembraneResult solve(
 		BiogasPlant plant,
+		Fermenter f,
 		double ratedPowerKW,
 		RoofGeometry roofGeo,
 		StepInput in,
@@ -35,14 +36,15 @@ final class DoubleMembraneRoofSolver {
 		double[] prevTempsC
 	) {
 
-		var f = plant.fermenter;
 		double bhkwElectricEfficiency = Utils.electricEfficiencyOf(plant);
 
 		double tSkyK = Math.pow(lDownWm2 / Const.sigma, 0.25);
 		double tSkyC = tSkyK - Const.k0C;
 		double tAmbientK = in.tAirC() + Const.k0C;
 
-		// the mean biogas flow of the year from the rated power of the plant
+		// the mean biogas flow of the year from the rated power of the plant;
+		// for a plant with multiple fermenters, this is the share of the
+		// fermenter on the rated power of the plant
 		double biogasFlowNm3h = ratedPowerKW / (
 			bhkwElectricEfficiency * Const.methaneHeatingValue * in.methaneContent()
 		);

@@ -6,6 +6,7 @@ import sophena.calc.biogas.fermentersim.FermenterSimulation;
 import sophena.calc.biogas.runtime.BiogasRuntimeResult;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.WeatherStation;
 import sophena.model.biogas.BiogasPlant;
 
 public class FermenterHeatDemand {
@@ -36,25 +37,25 @@ public class FermenterHeatDemand {
 		if (runtime.isError())
 			return runtime.castError();
 		double ratedPower = runtime.value().ratedPower();
+		return of(project.weatherStation, plant, ratedPower);
+	}
 
-		var sim = FermenterSimulation.of(
-			plant, project.weatherStation, ratedPower);
+	/// Calculates the hourly heat demand of the fermenters of the given plant
+	/// in kW with the weather data of the given station. The rated power
+	/// (Bemessungsleistung) of the plant in kW is only required when there is a
+	/// fermenter with a double membrane roof (see `FermenterSimulation`).
+	/// Returns an error when the plant has no fermenters or substrates or when
+	/// the simulation fails.
+	public static Res<double[]> of(
+		WeatherStation station, BiogasPlant plant, double ratedPower
+	) {
+		var sim = FermenterSimulation.of(plant, station, ratedPower);
 		if (sim.isError())
 			return sim.castError();
 		var res = sim.value().run();
 		if (res.isError())
 			return res.castError();
-
-		var demand = new double[Stats.HOURS];
-		int i = 0;
-		for (var step : res.value().steps()) {
-			demand[i] = step.qHeatKW();
-			i++;
-			if (i >= Stats.HOURS)
-				break;
-		}
-
-		return Res.ok(demand);
+		return Res.ok(res.value().heatDemand());
 	}
 
 	private static Res<double[]> fromSimpleInterpolation(
