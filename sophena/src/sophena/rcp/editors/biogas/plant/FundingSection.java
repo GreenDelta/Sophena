@@ -118,7 +118,7 @@ class FundingSection {
 
 		var values = new ArrayList<>(
 			App.getDb().getAll(ElectricityMarketValue.class));
-		values.sort((a, b) -> Strings.compareIgnoreCase(b.name, a.name));
+		values.sort((a, b) -> Strings.compareNatural(b.name, a.name));
 		marketValueCombo.setInput(values);
 		marketValueCombo.select(settings.marketValue);
 		marketValueCombo.onSelect(v -> {

@@ -2,6 +2,7 @@ package sophena.rcp.editors.biogas.plant;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.openlca.commons.Strings;
 
 import sophena.model.biogas.BiogasPlant;
 import sophena.model.biogas.ElectricityPriceCurve;
@@ -33,9 +34,12 @@ class ElectricitySection {
 
 		var comboComp = tk.createComposite(comp);
 		UI.innerGrid(comboComp, 2).horizontalSpacing = 10;
+		var curves = App.getDb().getAll(ElectricityPriceCurve.class);
+		curves.sort((ci, cj) -> Strings.compareNatural(cj.name, ci.name));
+
 		var combo = new EntityCombo<ElectricityPriceCurve>()
 				.create("Strompreise", comboComp, tk)
-				.setInput(App.getDb().getAll(ElectricityPriceCurve.class))
+				.setInput(curves)
 				.select(plant().electricityPrices);
 
 		var chart = new ElectricityChart(comp);

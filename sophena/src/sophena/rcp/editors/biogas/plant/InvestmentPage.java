@@ -211,6 +211,7 @@ class InvestmentPage extends FormPage {
 			var entry = new BiogasInvestmentEntry();
 			entry.id = UUID.randomUUID().toString();
 			entry.refurbishmentShare = refurbishment ? 0d : null;
+			entry.costs.duration = plant().duration;
 			if (InvestmentWizard.open(entry, type, refurbishment) != Window.OK)
 				return;
 			plant().investments.add(entry);

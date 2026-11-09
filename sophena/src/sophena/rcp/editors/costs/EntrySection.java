@@ -121,6 +121,7 @@ class EntrySection {
 		var e = new ProductEntry();
 		e.id = UUID.randomUUID().toString();
 		e.costs = new ProductCosts();
+		e.costs.duration = project().duration;
 		e.count = 1;
 		if (EntryWizard.open(e, type, project().duration) != Window.OK) {
 			return;
@@ -141,6 +142,7 @@ class EntrySection {
 		var e = new ProductEntry();
 		e.id = UUID.randomUUID().toString();
 		e.costs = new ProductCosts();
+		e.costs.duration = project().duration;
 		e.count = 1;
 		e.product = p;
 		if (EntryWizard.open(e, type, project().duration) != Window.OK) {

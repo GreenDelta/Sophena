@@ -115,7 +115,7 @@ class InvestmentWizard extends SimpleWizard {
 		if (type != null) {
 			groups.addAll(new ProductGroupDao(App.getDb()).getAll(type));
 		}
-		Sorters.productGroups(groups);
+		Sorters.byName(groups);
 		return groups;
 	}
 
