@@ -66,8 +66,7 @@ public class ProjectLoad {
 			Stats.add(profile.dynamicData, dynamicData);
 			Stats.add(profile.staticData, staticData);
 		}
-		double[] data = Smoothing.on(dynamicData,
-			Smoothing.getCount(project));
+		double[] data = Smoothing.on(project, dynamicData);
 		Stats.add(staticData, data);
 		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
@@ -87,8 +86,7 @@ public class ProjectLoad {
 				consumer, project.weatherStation);
 			Stats.add(profile.dynamicData, dynamicData);
 		}
-		double[] data = Smoothing.on(dynamicData,
-			Smoothing.getCount(project));
+		double[] data = Smoothing.on(project, dynamicData);
 		double[] netLoad = getNetLoadCurve(project);
 		Arrays.setAll(data, i -> data[i] + netLoad[i]);
 		applyInterruption(data, project.heatNet);

@@ -41,7 +41,7 @@ public class Smoothing {
 	 * Returns the number of items that should be included in the moving average
 	 * calculation based on the projects' simultaneity factor.
 	 */
-	public static int getCount(Project project) {
+	static int getCount(Project project) {
 		if (project == null || project.heatNet == null)
 			return 0;
 		HeatNet net = project.heatNet;
@@ -52,12 +52,19 @@ public class Smoothing {
 		return (int) Math.round(20 * sm * (1 - si) * Math.pow(2, (10 * (1 - si))));
 	}
 
+	/// Smoothes the given curve (the dynamic part of the project load curve)
+	/// with the moving average of the project, see `getCount`. Returns a new
+	/// array and leaves the given curve unchanged.
+	public static double[] on(Project project, double[] curve) {
+		return on(curve, getCount(project));
+	}
+
 	/**
 	 * Smoothes the given curve (from a load profile) by calculating the moving
 	 * average with the given number of elements for each element in the curve (see
 	 * also https://en.wikipedia.org/wiki/Moving_average).
 	 */
-	public static double[] on(double[] curve, int n) {
+	static double[] on(double[] curve, int n) {
 		if (curve == null)
 			return null;
 		int len = curve.length;
@@ -110,7 +117,7 @@ public class Smoothing {
 		return smoothCurve;
 	}
 
-	public static int circularIndexOf(int value, int length) {
+	static int circularIndexOf(int value, int length) {
 		return Math.floorMod(value, length);
 	}
 

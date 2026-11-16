@@ -26,19 +26,34 @@ public class SmoothingTest {
 
 	@Test
 	public void testCalculateFactor() {
+		// the max. load of the un-smoothed curve is 500 and thus above
+		// 0.9 * 524 = 471.6:
+		// fsiEstimated   = 0.9 * 524 * 0.8 / 500 = 0.75456
+		// countEstimated = round(20 * 10 * 0.24544 * 2^2.4544) = 269
+		// factor         = 269 / (20 * 0.2 * 2^2) = 16.8125
+		var project = projectWithRawMax(500);
+		assertEquals(16.8125, Smoothing.getFactor(project), 1e-4);
+	}
+
+	@Test
+	public void testNoDefaultFactorBelowMaxLoad() {
+		// the max. load of the un-smoothed curve is 430 and thus below
+		// 0.9 * 524 = 471.6: no smoothing by default
+		var project = projectWithRawMax(430);
+		assertEquals(0, Smoothing.getFactor(project), 1e-10);
+		assertEquals(0, Smoothing.getCount(project));
+	}
+
+	private Project projectWithRawMax(double rawMax) {
 		var project = new Project();
 		project.heatNet = new HeatNet();
 		project.heatNet.maxLoad = 524.0;
 		project.heatNet.simultaneityFactor = 0.8;
-
-		// add a customer so that the max. load
-		// of the un-smoothed curve is 430
 		var consumer = new Consumer();
 		consumer.profile = LoadProfile.initEmpty();
-		consumer.profile.dynamicData[0] = 430;
+		consumer.profile.dynamicData[0] = rawMax;
 		project.consumers.add(consumer);
-
-		assertEquals(3.5625, Smoothing.getFactor(project), 1e-4);
+		return project;
 	}
 
 	@Test
