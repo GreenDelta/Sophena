@@ -24,15 +24,19 @@ public final class CalculationCheck {
 	public static boolean canCalculate(Project p) {
 		if (p == null)
 			return false;
+		if (p.heatNet == null) {
+			MsgBox.error("Plausibilitätsfehler",
+				"Das Projekt " + p.name + " hat kein Wärmenetz.");
+			return false;
+		}
 		for (Producer producer : p.producers) {
 			if (producer.disabled)
 				continue;
 			Double ur = producer.utilisationRate;
 			if (ur != null && ur <= 0) {
 				MsgBox.error("Plausibilitätsfehler",
-						"Der Nutzungsgrad eines"
-								+ " Wärmeerzeugers (" + producer.name
-								+ ") ist \u2264 0.");
+					"Der Nutzungsgrad eines Wärmeerzeugers ("
+						+ producer.name + ") ist ≤ 0.");
 				return false;
 			}
 		}

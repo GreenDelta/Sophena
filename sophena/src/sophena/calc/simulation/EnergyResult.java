@@ -67,7 +67,14 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		bufferCapacity = new double[Stats.HOURS];
 	}
 
+	/// Runs the energy simulation for the given project. The project must have
+	/// a heat net, which is always the case for projects that are created in
+	/// the application (see `HeatNet.addDefaultTo`); otherwise an
+	/// `IllegalArgumentException` is thrown.
 	public static EnergyResult calculate(Project project) {
+		if (project == null || project.heatNet == null)
+			throw new IllegalArgumentException(
+				"Das Projekt hat kein Wärmenetz.");
 		return new EnergyCalculator(project).calculate();
 	}
 

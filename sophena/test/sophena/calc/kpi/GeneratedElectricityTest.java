@@ -6,6 +6,7 @@ import org.junit.Test;
 import sophena.calc.ProjectResult;
 import sophena.model.Boiler;
 import sophena.model.Consumer;
+import sophena.model.HeatNet;
 import sophena.model.LoadProfile;
 import sophena.model.Producer;
 import sophena.model.ProducerProfile;
@@ -19,6 +20,7 @@ public class GeneratedElectricityTest {
 	@Test
 	public void testProducer() {
 		Project project = new Project();
+		HeatNet.addDefaultTo(project);
 
 		Producer p = new Producer();
 		p.id = "p1";
@@ -48,6 +50,7 @@ public class GeneratedElectricityTest {
 	@Test
 	public void testProducerProfile() {
 		Project project = new Project();
+		HeatNet.addDefaultTo(project);
 
 		Producer p = new Producer();
 		project.producers.add(p);
