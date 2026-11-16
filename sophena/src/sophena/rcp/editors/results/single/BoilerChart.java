@@ -144,10 +144,8 @@ class BoilerChart {
 		double[] uncovered = new double[Stats.HOURS];
 		boolean addUncovered = false;
 		for (int i = 0; i < Stats.HOURS; i++) {
-			double load = r.loadCurve[i];
-			double supplied = r.suppliedPower[i];
-			if ((load - supplied) > 1) {
-				uncovered[i] = load;
+			if (r.uncoveredLoadAt(i) > 1) {
+				uncovered[i] = r.loadCurve[i];
 				addUncovered = true;
 			}
 		}

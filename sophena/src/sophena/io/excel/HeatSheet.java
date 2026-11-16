@@ -1,6 +1,7 @@
 package sophena.io.excel;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -12,7 +13,6 @@ import sophena.calc.specs.Producers;
 import sophena.calc.specs.UtilisationRate;
 import sophena.model.BufferTank;
 import sophena.model.Producer;
-import sophena.model.Stats;
 import sophena.utils.Num;
 
 class HeatSheet {
@@ -32,14 +32,16 @@ class HeatSheet {
 		header();
 		int row = 1;
 		Arrays.sort(result.energyResult.producers,
-				(r1, r2) -> Integer.compare(r1.rank, r2.rank));
+			Comparator.comparingInt(r -> r.rank));
 		for (Producer p : result.energyResult.producers) {
 			double heat = result.energyResult.totalHeat(p);
 			w.str(row, 0, p.name);
 			w.str(Labels.getRankText(p.function, p.rank));
-			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null ? result.energyResult.maxPeakPower(p) : Producers.maxPower(p);
+			double maxPower = p.solarCollector != null & p.solarCollectorSpec != null
+				? result.energyResult.maxPeakPower(p)
+				: Producers.maxPower(p);
 			w.rint(maxPower);
-			w.str(getFuelUse(p, heat));
+			w.str(getFuelUse(p));
 			w.rint(heat);
 			w.rint(GeneratedHeat.share(heat, result.energyResult));
 			w.rint(maxPower == 0 ? 0 : (int) Math.ceil(heat / maxPower));
@@ -93,14 +95,14 @@ class HeatSheet {
 			w.boldStr("JAZ");
 	}
 
-	private String getFuelUse(Producer pr, double heat) {
+	private String getFuelUse(Producer pr) {
 		return Labels.getFuel(pr) + ": "
 				+ (int) result.fuelUsage.getInFuelUnits(pr)
 				+ " " + Labels.getFuelUnit(pr);
 	}
 
 	private void diffAndBuffer(int row, Producer[] producers) {
-		double diff = calculateDiff(producers);
+		double diff = calculateDiff();
 		double powerDiff = Producers.powerDifference(
 				producers, ProjectLoad.getSimultaneousMax(result.project));
 		if (diff >= 0.5 || powerDiff < 0) {
@@ -124,15 +126,8 @@ class HeatSheet {
 				result.energyResult.totalBufferedHeat, result.energyResult));
 	}
 
-	private double calculateDiff(Producer[] producers) {
-		double diff = 0;
-		for (int i = 0; i < Stats.HOURS; i++) {
-			double supplied = result.energyResult.suppliedPower[i];
-			double load = result.energyResult.loadCurve[i];
-			if (supplied < load)
-				diff += (load - supplied);
-		}
-		return diff;
+	private double calculateDiff() {
+		return result.energyResult.totalUncoveredLoad();
 	}
 
 }

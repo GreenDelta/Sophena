@@ -32,6 +32,7 @@ class EnergyResultSorter {
 		var s = r.copy();
 		sort(hours, r.loadCurve, s.loadCurve);
 		sort(hours, r.suppliedPower, s.suppliedPower);
+		sort(hours, r.deliveredPower, s.deliveredPower);
 		for (int i = 0; i < r.producers.length; i++) {
 			sort(hours, r.producerResults[i], s.producerResults[i]);
 		}

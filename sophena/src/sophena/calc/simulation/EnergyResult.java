@@ -19,7 +19,19 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	public double[] loadCurve;
 	public double totalLoad;
 
+	/// The power in kW that all sources supply in each hour: the power of the
+	/// producers, including the power with which they load the buffer tank, plus
+	/// the power that is unloaded from the buffer tank. Thus, in hours in which
+	/// the buffer is loaded, this is larger than the load and its annual sum
+	/// counts the heat that goes through the buffer twice. It is not the power
+	/// that is delivered to the heat net, see `deliveredPower`.
 	public double[] suppliedPower;
+
+	/// The power in kW that is delivered to the heat net in each hour: the power
+	/// from the producers that goes directly into the net plus the power that is
+	/// unloaded from the buffer tank. If it is smaller than the load, the
+	/// difference is the uncovered load.
+	public double[] deliveredPower;
 
 	public Producer[] producers;
 	public double[][] producerResults;
@@ -45,6 +57,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	EnergyResult(Project project) {
 		loadCurve = ProjectLoad.getSmoothedCurve(project);
 		suppliedPower = new double[Stats.HOURS];
+		deliveredPower = new double[Stats.HOURS];
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferLoss = new double[Stats.HOURS];
@@ -171,6 +184,22 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		return max;
 	}
 
+	/// The load in kW that is not covered by the producers and the buffer tank
+	/// in the given hour.
+	public double uncoveredLoadAt(int hour) {
+		return Math.max(0, loadCurve[hour] - deliveredPower[hour]);
+	}
+
+	/// The total heat in kWh of the load that is not covered by the producers
+	/// and the buffer tank.
+	public double totalUncoveredLoad() {
+		double sum = 0;
+		for (int hour = 0; hour < Stats.HOURS; hour++) {
+			sum += uncoveredLoadAt(hour);
+		}
+		return sum;
+	}
+
 	public EnergyResult sortedCopy() {
 		return EnergyResultSorter.sort(this);
 	}
@@ -180,6 +209,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		var copy = new EnergyResult();
 		copy.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);
 		copy.suppliedPower = Arrays.copyOf(suppliedPower, Stats.HOURS);
+		copy.deliveredPower = Arrays.copyOf(deliveredPower, Stats.HOURS);
 		copy.producers = Arrays.copyOf(producers, producers.length);
 		copy.producerResults = new double[producers.length][];
 		for (int i = 0; i < producers.length; i++) {

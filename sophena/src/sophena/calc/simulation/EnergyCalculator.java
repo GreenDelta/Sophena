@@ -126,8 +126,10 @@ class EnergyCalculator {
 
 			double bufferPower = requiredLoad - remainingRequiredLoad;
 			totalSuppliedPower += bufferPower;
+			heatNetSuppliedPower += bufferPower;
 			r.suppliedBufferHeat[hour] += bufferPower;
 		}
+		r.deliveredPower[hour] = heatNetSuppliedPower;
 
 		// buffer capacity with buffer loss
 		r.bufferLoss[hour] = bufferState.applyLoss(hour);

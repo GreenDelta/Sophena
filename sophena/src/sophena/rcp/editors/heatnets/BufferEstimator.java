@@ -12,7 +12,6 @@ import sophena.db.Database;
 import sophena.model.BufferTank;
 import sophena.model.ProductCosts;
 import sophena.model.Project;
-import sophena.model.Stats;
 import sophena.rcp.app.App;
 import sophena.rcp.utils.MsgBox;
 
@@ -106,16 +105,9 @@ class BufferEstimator {
 	}
 
 	private double uncoveredHeat(ProjectResult result) {
-		if (result == null || result.energyResult == null)
-			return 0;
-		var energy = result.energyResult;
-		double uncovered = 0;
-		for (int hour = 0; hour < Stats.HOURS; hour++) {
-			double load = Stats.get(energy.loadCurve, hour);
-			double supplied = Stats.get(energy.suppliedPower, hour);
-			uncovered += Math.max(0, load - supplied);
-		}
-		return uncovered;
+		return result != null && result.energyResult != null
+			? result.energyResult.totalUncoveredLoad()
+			: 0;
 	}
 
 }

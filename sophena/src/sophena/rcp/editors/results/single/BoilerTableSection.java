@@ -20,7 +20,6 @@ import sophena.calc.specs.Producers;
 import sophena.calc.specs.UtilisationRate;
 import sophena.model.Producer;
 import sophena.model.Project;
-import sophena.model.Stats;
 import sophena.rcp.M;
 import sophena.rcp.colors.ColorKey;
 import sophena.rcp.colors.ResultColors;
@@ -52,9 +51,12 @@ class BoilerTableSection {
 		UI.gridLayout(comp, 1);
 		List<Item> items = getItems();
 		boolean showStagnationDays = false;
-		for(int i = 0; i < items.size(); i++)
-			if(items.get(i).showStagnationDays)
+		for (var item : items) {
+			if (item.showStagnationDays) {
 				showStagnationDays = true;
+				break;
+			}
+		}
 
 		boolean showJAZ = false;
 		for(Producer p : result.producers)
@@ -64,7 +66,7 @@ class BoilerTableSection {
 				break;
 			}
 
-		List<String> properties = new ArrayList<String>();
+		var properties = new ArrayList<String>();
 		properties.add(M.HeatProducer);
 		properties.add("Rang");
 		properties.add("Nennleistung");
@@ -163,13 +165,7 @@ class BoilerTableSection {
 	}
 
 	private void addDiffItem(List<Item> items, double powerDiff) {
-		double diff = 0;
-		for (int i = 0; i < Stats.HOURS; i++) {
-			double supplied = result.suppliedPower[i];
-			double load = result.loadCurve[i];
-			if (supplied < load)
-				diff += (load - supplied);
-		}
+		double diff = result.totalUncoveredLoad();
 		if (diff < 0.5 && powerDiff >= 0)
 			return;
 

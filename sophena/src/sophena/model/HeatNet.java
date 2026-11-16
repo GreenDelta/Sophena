@@ -74,6 +74,10 @@ public class HeatNet extends AbstractEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	public final List<HeatNetPipe> pipes = new ArrayList<>();
 
+	/// The maximum power in kW with which the buffer tank can be unloaded in an
+	/// hour ("maximale Entladeleistung"). Meaningful values are `> 0`, the UI
+	/// requires this when the net has a buffer tank. A value `<= 0` (e.g. when
+	/// it was not set) means that the unloading is not limited.
 	@Column(name = "maximum_performance")
 	public double maximumPerformance;
 

@@ -197,7 +197,7 @@ class BufferState {
 		if(loadType == BufferLoadType.HIGH_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
-			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
+			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
 			QP_HT = QP_HT - Qunloaded;
 
 			qUnloadedHTInHour += Qunloaded;
@@ -205,7 +205,7 @@ class BufferState {
 		else if(loadType == BufferLoadType.FLOW_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
-			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
+			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
 			QP_VT = QP_VT - Qunloaded;
 
 			qUnloadedVTInHour += Qunloaded;
@@ -213,7 +213,7 @@ class BufferState {
 		else
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
-			Qunloaded = Math.min(Qunloaded, project.heatNet.maximumPerformance);
+			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
 			QP_NT = QP_NT - Qunloaded;
 
 			qUnloadedNTInHour += Qunloaded;
@@ -276,19 +276,27 @@ class BufferState {
 		);
 	}
 
+	/// The maximum power with which the buffer can be unloaded in an hour. If
+	/// this is not set (`<= 0`), the unloading is not limited; otherwise the
+	/// buffer could never be unloaded.
+	private double maxUnloadPower() {
+		double max = project.heatNet.maximumPerformance;
+		return max > 0 ? max : Double.POSITIVE_INFINITY;
+	}
+
 	public double totalUnloadableHTPower()
 	{
-		return Math.min(QP_HT, project.heatNet.maximumPerformance);
+		return Math.min(QP_HT, maxUnloadPower());
 	}
 
 	public double totalUnloadableVTPower()
 	{
-		return Math.min(QP_VT, project.heatNet.maximumPerformance);
+		return Math.min(QP_VT, maxUnloadPower());
 	}
 
 	public double totalUnloadableNTPower()
 	{
-		return Math.min(QP_NT, project.heatNet.maximumPerformance);
+		return Math.min(QP_NT, maxUnloadPower());
 	}
 
 	public double getLoadFactor(boolean useMaxTargetLoadFactor)
