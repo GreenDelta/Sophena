@@ -343,7 +343,7 @@ public class ProjectResultBiogasTest {
 	private static Project project() {
 		var project = new Project();
 		project.duration = 20;
-		project.heatNet = new HeatNet();
+		HeatNet.addDefaultTo(project);
 		project.costSettings = new CostSettings();
 		// the heat purchase is annuitized with this factor
 		project.costSettings.heatRevenuesFactor = 1.0;

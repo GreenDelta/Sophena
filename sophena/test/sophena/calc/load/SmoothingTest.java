@@ -2,7 +2,7 @@ package sophena.calc.load;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static sophena.calc.load.Smoothing.circularIndex;
+import static sophena.calc.load.Smoothing.circularIndexOf;
 import static sophena.calc.load.Smoothing.on;
 
 import org.junit.Test;
@@ -52,25 +52,45 @@ public class SmoothingTest {
 	}
 
 	@Test
+	public void testWindowLargerThanCurve() {
+		// a window that covers the whole curve results in the mean
+		var curve = new double[] { 1, 2, 3, 2, 1, 0 };
+		assertArrayEquals(new double[] { 1.5, 1.5, 1.5, 1.5, 1.5, 1.5 },
+				on(curve, 7), 1e-10);
+		assertArrayEquals(new double[] { 1.5, 1.5, 1.5, 1.5, 1.5, 1.5 },
+				on(curve, 204_800), 1e-10);
+	}
+
+	@Test
+	public void testZerosStayZero() {
+		var curve = new double[] { 0.1, 0.2, 0.3, 0, 0, 0, 0, 0, 0.7, 0.3 };
+		var smoothed = on(curve, 3);
+		assertEquals(0.1, smoothed[3], 1e-10);
+		assertEquals(0.0, smoothed[4], 0.0);
+		assertEquals(0.0, smoothed[5], 0.0);
+		assertEquals(0.0, smoothed[6], 0.0);
+	}
+
+	@Test
 	public void testCircularIndex() {
 		// index in range(0, 8760)
-		assertEquals(0, circularIndex(0, 8760));
-		assertEquals(42, circularIndex(42, 8760));
-		assertEquals(8759, circularIndex(8759, 8760));
+		assertEquals(0, circularIndexOf(0, 8760));
+		assertEquals(42, circularIndexOf(42, 8760));
+		assertEquals(8759, circularIndexOf(8759, 8760));
 
 		// positive overflow
-		assertEquals(0, circularIndex(8760, 8760));
-		assertEquals(1, circularIndex(8761, 8760));
-		assertEquals(42, circularIndex(8802, 8760));
-		assertEquals(8759, circularIndex(2 * 8760 - 1, 8760));
-		assertEquals(0, circularIndex(2 * 8760, 8760));
+		assertEquals(0, circularIndexOf(8760, 8760));
+		assertEquals(1, circularIndexOf(8761, 8760));
+		assertEquals(42, circularIndexOf(8802, 8760));
+		assertEquals(8759, circularIndexOf(2 * 8760 - 1, 8760));
+		assertEquals(0, circularIndexOf(2 * 8760, 8760));
 
 		// negative overflow
-		assertEquals(8759, circularIndex(-1, 8760));
-		assertEquals(8718, circularIndex(-42, 8760));
-		assertEquals(42, circularIndex(-8718, 8760));
-		assertEquals(0, circularIndex(-8760, 8760));
-		assertEquals(0, circularIndex(-2 * 8760, 8760));
+		assertEquals(8759, circularIndexOf(-1, 8760));
+		assertEquals(8718, circularIndexOf(-42, 8760));
+		assertEquals(42, circularIndexOf(-8718, 8760));
+		assertEquals(0, circularIndexOf(-8760, 8760));
+		assertEquals(0, circularIndexOf(-2 * 8760, 8760));
 	}
 
 }

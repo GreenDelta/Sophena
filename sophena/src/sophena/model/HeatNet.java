@@ -27,9 +27,19 @@ public class HeatNet extends AbstractEntity {
 	@Column(name = "return_temperature")
 	public double returnTemperature;
 
+	/// The simultaneity factor: the ratio of the maximum load that is actually
+	/// required in the net to the sum of the heating loads of the consumers.
+	/// Meaningful values are in the range 0.5 and 1. A value of 1 means that all
+	/// consumers have their peak load at the same time and the load curve is not
+	/// smoothed.
 	@Column(name = "simultaneity_factor")
 	public double simultaneityFactor;
 
+	/// Scales the smoothing of the dynamic part of the project load curve when
+	/// the simultaneity factor is `< 1`. It only changes the shape of the load
+	/// curve but not the total heat demand. Meaningful values are `>= 0`, where 0
+	/// means no smoothing. If it is `null`, a default factor is calculated from
+	/// the project data.
 	@Column(name = "smoothing_factor")
 	public Double smoothingFactor;
 

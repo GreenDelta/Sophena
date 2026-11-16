@@ -30,7 +30,7 @@ public class ProfileTest {
 
 		Project project = new Project();
 		project.id = "p";
-		project.heatNet = new HeatNet();
+		HeatNet.addDefaultTo(project);
 
 		Consumer consumer = new Consumer();
 		project.consumers.add(consumer);
