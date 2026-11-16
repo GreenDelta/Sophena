@@ -6,7 +6,6 @@ import java.util.Comparator;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import sophena.Labels;
-import sophena.calc.load.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.calc.kpi.GeneratedHeat;
 import sophena.calc.specs.Producers;
@@ -104,7 +103,7 @@ class HeatSheet {
 	private void diffAndBuffer(int row, Producer[] producers) {
 		double diff = calculateDiff();
 		double powerDiff = Producers.powerDifference(
-				producers, ProjectLoad.getSimultaneousMax(result.project));
+				producers, result.energyResult.load.simultaneousMax());
 		if (diff >= 0.5 || powerDiff < 0) {
 			w.str(row, 0, "Ungedeckte Leistung");
 			w.rint(2, -powerDiff);

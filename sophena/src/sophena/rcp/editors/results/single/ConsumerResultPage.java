@@ -17,7 +17,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import sophena.calc.load.ConsumerResult;
-import sophena.calc.load.ProjectLoad;
 import sophena.calc.ProjectResult;
 import sophena.calc.simulation.EnergyResult;
 import sophena.rcp.utils.Actions;
@@ -25,6 +24,7 @@ import sophena.rcp.utils.TableClipboard;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
 import sophena.utils.Num;
+
 import org.openlca.commons.Strings;
 
 class ConsumerResultPage extends FormPage {
@@ -45,7 +45,7 @@ class ConsumerResultPage extends FormPage {
 		UI.gridData(section, true, true);
 		Composite comp = UI.sectionClient(section, tk);
 		TableViewer table = Tables.createViewer(comp, "Name", "Heizlast",
-				"Wärmebedarf");
+			"Wärmebedarf");
 		table.setLabelProvider(new Label());
 		table.setInput(createItems());
 		Tables.rightAlignColumns(table, 1, 2);
@@ -98,8 +98,8 @@ class ConsumerResultPage extends FormPage {
 			item.label = "Netzverluste";
 			if (r.energyResult == null || r.project == null)
 				return item;
-			item.demand = f(r.energyResult.heatNetLoss, "kWh");
-			item.load = f(ProjectLoad.getMaxNetLoad(r.project), "kW");
+			item.demand = f(r.energyResult.load.heatNetLoss(), "kWh");
+			item.load = f(r.energyResult.load.maxNetLoss(), "kW");
 			return item;
 		}
 
@@ -116,11 +116,9 @@ class ConsumerResultPage extends FormPage {
 				}
 			}
 			if (r.energyResult != null) {
-				demand += r.energyResult.heatNetLoss;
+				demand += r.energyResult.load.heatNetLoss();
 				demand += r.energyResult.totalBufferLoss;
-			}
-			if (r.project != null) {
-				load += ProjectLoad.getMaxNetLoad(r.project);
+				load += r.energyResult.load.maxNetLoss();
 			}
 			item.demand = f(demand, "kWh");
 			item.load = f(load, "kW");
@@ -134,7 +132,7 @@ class ConsumerResultPage extends FormPage {
 	}
 
 	private static class Label extends LabelProvider implements ITableLabelProvider,
-			IFontProvider {
+		IFontProvider {
 
 		@Override
 		public Font getFont(Object obj) {

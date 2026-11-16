@@ -5,10 +5,8 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import sophena.calc.load.ProjectLoad;
 import sophena.calc.simulation.EnergyResult;
 import sophena.model.LoadProfile;
-import sophena.model.Project;
 import sophena.rcp.M;
 import sophena.rcp.colors.ResultColors;
 import sophena.rcp.editors.LoadCurveSection;
@@ -26,8 +24,7 @@ class EnergyResultPage extends FormPage {
 		this.editor = editor;
 		this.colors = editor.colors;
 		this.result = editor.result.energyResult;
-		Project p = editor.project;
-		maxLoad = ProjectLoad.getSimultaneousMax(p);
+		maxLoad = result.load.simultaneousMax();
 	}
 
 	@Override
@@ -52,8 +49,8 @@ class EnergyResultPage extends FormPage {
 		section.setTitle("Jahresdauerlinie - Netzlast");
 		section.setSorted(true);
 		var profile = new LoadProfile();
-		profile.dynamicData = ProjectLoad.getDynamicCurve(editor.project);
-		profile.staticData = ProjectLoad.getStaticCurve(editor.project);
+		profile.dynamicData = result.load.dynamicCurve();
+		profile.staticData = result.load.staticCurve();
 		section.setData(profile);
 		section.render(body, tk);
 	}

@@ -213,7 +213,7 @@ public class ProjectResultBiogasTest {
 		// the fermenter heat is calculated per producer and aggregated
 		double fermenterHeat = r.energyResult.fermenterHeatOf(producer);
 		assertTrue(fermenterHeat > 0);
-		assertEquals(r.energyResult.totalFermenterHeatDemand,
+		assertEquals(r.energyResult.load.totalFermenterHeat(),
 			fermenterHeat, 1e-6);
 
 		double producedHeat = r.energyResult.totalHeat(producer);
@@ -247,7 +247,7 @@ public class ProjectResultBiogasTest {
 		// that is sold to the network
 		double bufferLoss = Stats.sum(r.energyResult.bufferLoss);
 		double usedHeat = (r.energyResult.totalProducedHeat
-			- r.energyResult.heatNetLoss
+			- r.energyResult.load.heatNetLoss()
 			- bufferLoss
 			- fermenterHeat) / 1000.0;
 		assertTrue(usedHeat > 0);
@@ -329,19 +329,19 @@ public class ProjectResultBiogasTest {
 		for (var c : r.consumerResults) {
 			consumerLoad += c.heatDemand;
 		}
-		double fermenterInLoad = energy.totalLoad
-			- consumerLoad - energy.heatNetLoss;
+		double fermenterInLoad = energy.load.totalLoad()
+			- consumerLoad - energy.load.heatNetLoss();
 		double fermenterHeat = energy.fermenterHeatOf(producer);
 		assertTrue(fermenterHeat > 0);
 		assertEquals(fermenterInLoad, fermenterHeat, 1e-6);
-		assertEquals(fermenterHeat, energy.totalFermenterHeatDemand, 1e-6);
+		assertEquals(fermenterHeat, energy.load.totalFermenterHeat(), 1e-6);
 
 		// it is smaller than the demand of the full year
 		var fullYear = Stats.sum(
 			FermenterHeatDemand.of(project, producer.biogasPlant));
 		assertTrue(fermenterHeat < fullYear);
-		assertEquals(fermenterHeat, Stats.sum(
-			ProjectLoad.getFermenterHeatDemand(project, producer)), 1e-6);
+		assertEquals(fermenterHeat,
+			ProjectLoad.of(project).fermenterHeatOf(producer), 1e-6);
 	}
 
 	@Test
@@ -353,20 +353,19 @@ public class ProjectResultBiogasTest {
 
 		// the dynamic part of the load curve that is shown in the results
 		// ("Jahresdauerlinie - Netzlast") contains the fermenter heat
-		double fermenterHeat = Stats.sum(
-			ProjectLoad.getFermenterHeatDemand(project, producer));
+		var load = ProjectLoad.of(project);
+		double fermenterHeat = load.fermenterHeatOf(producer);
 		assertTrue(fermenterHeat > 0);
 		double consumerLoad = Stats.sum(
 			project.consumers.getFirst().profile.dynamicData);
-		double netLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
-		assertEquals(consumerLoad + netLoss + fermenterHeat,
-			Stats.sum(ProjectLoad.getDynamicCurve(project)), 1e-6);
+		assertEquals(consumerLoad + load.heatNetLoss() + fermenterHeat,
+			Stats.sum(load.dynamicCurve()), 1e-6);
 
-		// and the result of the simulation as well
+		// the load curve of the simulation is the sum of both curves
 		var r = ProjectResult.calculate(project);
-		assertEquals(r.energyResult.totalLoad,
-			Stats.sum(ProjectLoad.getDynamicCurve(project))
-				+ Stats.sum(ProjectLoad.getStaticCurve(project)), 1e-6);
+		assertArrayEquals(load.totalCurve(), r.energyResult.loadCurve, 1e-9);
+		assertEquals(Stats.sum(load.dynamicCurve())
+			+ Stats.sum(load.staticCurve()), r.energyResult.load.totalLoad(), 1e-6);
 	}
 
 	@Test
@@ -378,15 +377,14 @@ public class ProjectResultBiogasTest {
 		project.heatNet.simultaneityFactor = 0.8;
 
 		// without fermenters: max. load * simultaneity factor
-		assertEquals(400, ProjectLoad.getSimultaneousMax(project), 1e-9);
+		assertEquals(400, ProjectLoad.of(project).simultaneousMax(), 1e-9);
 
 		// with fermenters: plus the maximum fermenter demand
 		producer.biogasPlant.fermenters.add(TestPlant.fermenter());
-		double fermenterMax = Stats.max(
-			ProjectLoad.getFermenterHeatDemand(project, producer));
+		var load = ProjectLoad.of(project);
+		double fermenterMax = Stats.max(load.fermenterDemands().get(producer.id));
 		assertTrue(fermenterMax > 0);
-		assertEquals(Math.ceil(400 + fermenterMax),
-			ProjectLoad.getSimultaneousMax(project), 1e-9);
+		assertEquals(Math.ceil(400 + fermenterMax), load.simultaneousMax(), 1e-9);
 	}
 
 	/// The static annuity of the heat purchase for the given heat in MWh.

@@ -12,7 +12,7 @@ public class UsedHeat {
 			return 0;
 		var r = result.energyResult;
 		return r.totalProducedHeat
-				- r.heatNetLoss
+				- r.load.heatNetLoss()
 				- r.totalBufferLoss;
 	}
 }

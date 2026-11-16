@@ -15,11 +15,11 @@ public class GeneratedHeat {
 	public static int share(double heat, EnergyResult r) {
 		if (heat == 0 || r == null)
 			return 0;
-		double total = r.totalLoad + r.totalBufferLoss;
+		double total = r.load.totalLoad() + r.totalBufferLoss;
 		if (total <= 0)
 			return 0;
 		int share = (int) Math.round(100 * heat / total);
-		return share > 100 ? 100 : share;
+		return Math.min(share, 100);
 	}
 
 }

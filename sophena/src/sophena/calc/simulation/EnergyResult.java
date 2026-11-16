@@ -16,8 +16,14 @@ import sophena.model.Stats;
 
 public class EnergyResult implements Copyable<EnergyResult> {
 
+	/// The load of the project with which the simulation was done. It is
+	/// shared between copies of this result and must not be modified.
+	public ProjectLoad load;
+
+	/// The hourly load curve of the simulation in kW (`load.totalCurve()`). It
+	/// is a separate array, as it is sorted together with the other hourly
+	/// results in a sorted copy of this result.
 	public double[] loadCurve;
-	public double totalLoad;
 
 	/// The power in kW that all sources supply in each hour: the power of the
 	/// producers, including the power with which they load the buffer tank, plus
@@ -46,31 +52,19 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	public double[] bufferCapacity;
 
 	HashMap<String, Double> totalHeats = new HashMap<>();
-	HashMap<String, Double> fermenterHeatDemands = new HashMap<>();
-	public double heatNetLoss;
-
-	public double totalFermenterHeatDemand;
 
 	private EnergyResult() {
 	}
 
 	EnergyResult(Project project) {
-		loadCurve = ProjectLoad.getSmoothedCurve(project);
-		for (var p : project.producers) {
-			var demand = ProjectLoad.getFermenterHeatDemand(project, p);
-			if (demand == null)
-				continue;
-			double heat = Stats.sum(demand);
-			fermenterHeatDemands.put(p.id, heat);
-			totalFermenterHeatDemand += heat;
-		}
+		load = ProjectLoad.of(project);
+		loadCurve = load.totalCurve();
 		suppliedPower = new double[Stats.HOURS];
 		deliveredPower = new double[Stats.HOURS];
 		initProducerData(project);
 		suppliedBufferHeat = new double[Stats.HOURS];
 		bufferLoss = new double[Stats.HOURS];
 		bufferCapacity = new double[Stats.HOURS];
-		heatNetLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
 	}
 
 	public static EnergyResult calculate(Project project) {
@@ -96,10 +90,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	/// which is intended: the heat of the biogas plant that is sold to the net
 	/// is its produced heat minus the demand of its fermenters (at least 0).
 	public double fermenterHeatOf(Producer p) {
-		if (p == null || p.id == null)
-			return 0;
-		Double d = fermenterHeatDemands.get(p.id);
-		return d == null ? 0 : d;
+		return load.fermenterHeatOf(p);
 	}
 
 	public int numberOfStarts(Producer p) {
@@ -223,6 +214,7 @@ public class EnergyResult implements Copyable<EnergyResult> {
 	@Override
 	public EnergyResult copy() {
 		var copy = new EnergyResult();
+		copy.load = load;
 		copy.loadCurve = Arrays.copyOf(loadCurve, Stats.HOURS);
 		copy.suppliedPower = Arrays.copyOf(suppliedPower, Stats.HOURS);
 		copy.deliveredPower = Arrays.copyOf(deliveredPower, Stats.HOURS);
@@ -237,9 +229,6 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		copy.suppliedBufferHeat = Arrays.copyOf(suppliedBufferHeat, Stats.HOURS);
 		copy.bufferLoss = Arrays.copyOf(bufferLoss, Stats.HOURS);
 		copy.bufferCapacity = Arrays.copyOf(bufferCapacity, Stats.HOURS);
-		copy.heatNetLoss = heatNetLoss;
-		copy.totalFermenterHeatDemand = totalFermenterHeatDemand;
-		copy.fermenterHeatDemands = new HashMap<>(fermenterHeatDemands);
 		return copy;
 	}
 

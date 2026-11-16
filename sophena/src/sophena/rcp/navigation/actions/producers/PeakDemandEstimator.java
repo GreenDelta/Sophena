@@ -21,14 +21,15 @@ class PeakDemandEstimator {
 	}
 
 	private double estimate() {
-		var curve = ProjectLoad.getSmoothedCurve(project);
+		var projectLoad = ProjectLoad.of(project);
+		var curve = projectLoad.totalCurve();
 
 		// The maximum of the hourly load curve is typically lower than
 		// the required peak load with simultaneity factor. We therefore
 		// add this gap as a constant correction to each hourly load
 		// before comparing it with the available producer power.
 		double c = Math.max(0,
-			ProjectLoad.getSimultaneousMax(project) - Stats.max(curve));
+			projectLoad.simultaneousMax() - Stats.max(curve));
 
 		double maxDiff = 0;
 		for (int hour = 0; hour < Stats.HOURS; hour++) {

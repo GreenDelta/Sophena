@@ -48,9 +48,9 @@ public class EfficiencyResult {
 				res.producedElectricity += GeneratedElectricity.get(p, pr);
 			}
 			res.producedHeat = pr.energyResult.totalProducedHeat;
-			res.distributionLoss = pr.energyResult.heatNetLoss;
+			res.distributionLoss = pr.energyResult.load.heatNetLoss();
 			res.bufferLoss = Stats.sum(pr.energyResult.bufferLoss);
-			res.fermenterHeatDemand = pr.energyResult.totalFermenterHeatDemand;
+			res.fermenterHeatDemand = pr.energyResult.load.totalFermenterHeat();
 			res.cooledBiogasHeat = cooledBiogasHeat();
 			res.usedHeat = res.producedHeat - res.distributionLoss
 				- res.bufferLoss - res.fermenterHeatDemand;

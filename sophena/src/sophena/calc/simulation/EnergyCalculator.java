@@ -158,7 +158,6 @@ class EnergyCalculator {
 	private void finalizeSimulation(EnergyResult r) {
 		state.collectResultsInto(r);
 		state.writeSolarLog();
-		r.totalLoad = Stats.sum(r.loadCurve);
 		for (int i = 0; i < r.producers.length; i++) {
 			Producer p = r.producers[i];
 			double total = Stats.sum(r.producerResults[i]);

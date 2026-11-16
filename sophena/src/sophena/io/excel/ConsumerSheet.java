@@ -4,16 +4,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.openlca.commons.Strings;
 
 import sophena.calc.load.ConsumerResult;
-import sophena.calc.load.ProjectLoad;
 import sophena.calc.ProjectResult;
-import sophena.model.Project;
 
 class ConsumerSheet {
 
 	private final ProjectResult result;
 	private final SheetWriter w;
 
-	ConsumerSheet(Workbook wb, ProjectResult result, Project project) {
+	ConsumerSheet(Workbook wb, ProjectResult result) {
 		this.result = result;
 		w = new SheetWriter(wb, "Abnehmer");
 	}
@@ -21,9 +19,9 @@ class ConsumerSheet {
 	void write() {
 
 		w.boldStr("Abnehmer")
-				.boldStr("Heizlast [kW]")
-				.boldStr("Wärmebedarf [kWh]")
-				.nextRow();
+			.boldStr("Heizlast [kW]")
+			.boldStr("Wärmebedarf [kWh]")
+			.nextRow();
 
 		// init totals
 		double load = 0;
@@ -37,32 +35,32 @@ class ConsumerSheet {
 			demand += cr.heatDemand;
 			load += cr.consumer.heatingLoad;
 			w.str(cr.consumer.name)
-					.rint(cr.consumer.heatingLoad)
-					.rint(cr.heatDemand)
-					.nextRow();
+				.rint(cr.consumer.heatingLoad)
+				.rint(cr.heatDemand)
+				.nextRow();
 		}
 
 		// net result
-		double netLoad = ProjectLoad.getMaxNetLoad(
-				result.project);
+		double netLoad = result.energyResult.load.maxNetLoss();
+		double netLoss = result.energyResult.load.heatNetLoss();
 		load += netLoad;
-		demand += result.energyResult.heatNetLoss;
+		demand += netLoss;
 		w.str("Netzverluste")
-				.rint(netLoad)
-				.rint(result.energyResult.heatNetLoss)
-				.nextRow();
+			.rint(netLoad)
+			.rint(netLoss)
+			.nextRow();
 
 		// buffer loss
 		demand += result.energyResult.totalBufferLoss;
 		w.str("Pufferspeicherverluste")
-				.nextCol()
-				.rint(result.energyResult.totalBufferLoss)
-				.nextRow();
+			.nextCol()
+			.rint(result.energyResult.totalBufferLoss)
+			.nextRow();
 
 		// totals
 		w.boldStr("Summe")
-				.boldRint(load)
-				.boldRint(demand);
+			.boldRint(load)
+			.boldRint(demand);
 
 		Excel.autoSize(w.sheet, 0, 2);
 	}

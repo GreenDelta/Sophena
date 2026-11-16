@@ -42,7 +42,7 @@ public class ExcelExport implements Runnable {
 			log.trace("Write further results");
 			new FurtherResultsSheet(wb, result, project).write();
 			log.trace("Write consumers");
-			new ConsumerSheet(wb, result, project).write();
+			new ConsumerSheet(wb, result).write();
 			log.trace("Write simulation results");
 			new SimulationSheet(wb, result.energyResult).write();
 

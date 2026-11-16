@@ -244,9 +244,9 @@ public class CostCalculator {
 		var energyResult = result.energyResult;
 		double bufferLoss = Stats.sum(energyResult.bufferLoss);
 		double heat = energyResult.totalProducedHeat
-			- energyResult.heatNetLoss
+			- energyResult.load.heatNetLoss()
 			- bufferLoss
-			- energyResult.totalFermenterHeatDemand;
+			- energyResult.load.totalFermenterHeat();
 		return Math.max(0, heat) / 1000d;
 	}
 
