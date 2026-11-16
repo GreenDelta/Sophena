@@ -67,7 +67,10 @@ class EnergyCalculator {
 			double unloadableNTPower = Math.min(bufferNTUnloadLimit, bufferState.totalUnloadableNTPower());
 
 			if (producer.solarCollector == null) {
-				double unloadablePower = bufferState.totalUnloadableHTPower() + bufferState.totalUnloadableVTPower() + (hasHighTempProducer ? unloadableNTPower : 0);
+				// the maximum unload power limits the sum of all zones
+				double unloadablePower = Math.min(
+					bufferState.remainingUnloadPower(),
+					bufferState.totalUnloadableHTPower() + bufferState.totalUnloadableVTPower() + (hasHighTempProducer ? unloadableNTPower : 0));
 				// Don't use expensive peek load producer if the buffer has enough HT, VT and NT power left to satisfy the heatnet
 				if ((unloadablePower > requiredLoad) && producer.function == ProducerFunction.PEAK_LOAD)
 					continue;

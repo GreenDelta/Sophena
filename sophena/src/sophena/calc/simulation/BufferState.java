@@ -197,7 +197,7 @@ class BufferState {
 		if(loadType == BufferLoadType.HIGH_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
-			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
+			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_HT = QP_HT - Qunloaded;
 
 			qUnloadedHTInHour += Qunloaded;
@@ -205,7 +205,7 @@ class BufferState {
 		else if(loadType == BufferLoadType.FLOW_TEMP)
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
-			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
+			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_VT = QP_VT - Qunloaded;
 
 			qUnloadedVTInHour += Qunloaded;
@@ -213,7 +213,7 @@ class BufferState {
 		else
 		{
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
-			Qunloaded = Math.min(Qunloaded, maxUnloadPower());
+			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_NT = QP_NT - Qunloaded;
 
 			qUnloadedNTInHour += Qunloaded;
@@ -284,19 +284,27 @@ class BufferState {
 		return max > 0 ? max : Double.POSITIVE_INFINITY;
 	}
 
+	/// The power that can still be unloaded from the buffer in the current
+	/// hour. The maximum unload power is a limit for the sum of all zones
+	/// (HT, VT, NT) in an hour, and not for each zone separately.
+	public double remainingUnloadPower() {
+		double unloaded = qUnloadedHTInHour + qUnloadedVTInHour + qUnloadedNTInHour;
+		return Math.max(0, maxUnloadPower() - unloaded);
+	}
+
 	public double totalUnloadableHTPower()
 	{
-		return Math.min(QP_HT, maxUnloadPower());
+		return Math.min(QP_HT, remainingUnloadPower());
 	}
 
 	public double totalUnloadableVTPower()
 	{
-		return Math.min(QP_VT, maxUnloadPower());
+		return Math.min(QP_VT, remainingUnloadPower());
 	}
 
 	public double totalUnloadableNTPower()
 	{
-		return Math.min(QP_NT, maxUnloadPower());
+		return Math.min(QP_NT, remainingUnloadPower());
 	}
 
 	public double getLoadFactor(boolean useMaxTargetLoadFactor)
