@@ -59,6 +59,16 @@ public class HeatNetEditor extends Editor {
 		}
 	}
 
+	/// Returns a copy of the project with the current consumers and producers
+	/// from the database, as they may have been changed in other editors, and
+	/// with a copy of the (possibly unsaved) heat net of this editor. It can be
+	/// used for calculations, e.g. of the maximum load.
+	Project currentProject() {
+		var p = new ProjectDao(App.getDb()).get(project.id).copy();
+		p.heatNet = heatNet.copy();
+		return p;
+	}
+
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		if (!valid())
@@ -72,7 +82,7 @@ public class HeatNetEditor extends Editor {
 			heatNet = project.heatNet;
 			setSaved();
 		} catch (Exception e) {
-			log.error("failed to update heat net in project " + project, e);
+			log.error("failed to update heat net in project {}", project, e);
 		}
 	}
 
@@ -100,7 +110,7 @@ public class HeatNetEditor extends Editor {
 			return false;
 		}
 		*/
-				
+
 		if (heatNet.simultaneityFactor < 0 || heatNet.simultaneityFactor > 1) {
 			MsgBox.error(M.PlausibilityErrors,
 					"Der Gleichzeitigkeitsfaktor muss zwischen 0 und 1 liegen.");
@@ -126,19 +136,19 @@ public class HeatNetEditor extends Editor {
 				MsgBox.error(M.PlausibilityErrors,
 						M.StartSummerError);
 				return false;
-			}	
+			}
 			if((intervalSummer.end != null) && (intervalWinter.start != null) && MonthDay.parse(intervalSummer.end).compareTo(MonthDay.parse(intervalWinter.start)) > 0)
 			{
 				MsgBox.error(M.PlausibilityErrors,
 						M.EndSummerError);
 				return false;
-			}	
+			}
 			if(heatNet.flowTemperatureSummer % 5 != 0 || heatNet.flowTemperatureWinter % 5 != 0)
 			{
 				MsgBox.error(M.PlausibilityErrors,
 						"Saisonale Fahrweise: Die Vorlauftemperatur kann nur auf 5 °C genau angegeben werden.");
 				return false;
-			}			
+			}
 			if(heatNet.returnTemperatureSummer % 5 != 0 || heatNet.returnTemperatureWinter % 5 != 0)
 			{
 				MsgBox.error(M.PlausibilityErrors,
@@ -170,7 +180,7 @@ public class HeatNetEditor extends Editor {
 				MsgBox.error(M.PlausibilityErrors,
 						"Die Vorlauftemperatur kann nur auf 5 °C genau angegeben werden.");
 				return false;
-			}			
+			}
 			if(heatNet.returnTemperature % 5 != 0)
 			{
 				MsgBox.error("Plausibilitätsfehler",

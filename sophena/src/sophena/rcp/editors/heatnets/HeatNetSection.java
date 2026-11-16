@@ -268,10 +268,11 @@ class HeatNetSection {
 	}
 
 	private double calculateMaxSimLoad() {
-		HeatNet net = net();
-		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
-		double sim = net.simultaneityFactor * max;
-		return Math.ceil(sim);
+		try {
+			return ProjectLoad.of(editor.currentProject()).simultaneousMax();
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	private double calculateMaxLoad() {

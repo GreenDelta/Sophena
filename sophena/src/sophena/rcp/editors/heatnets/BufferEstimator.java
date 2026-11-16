@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.openlca.commons.Res;
 
 import sophena.calc.ProjectResult;
+import sophena.calc.load.ProjectLoad;
 import sophena.db.Database;
 import sophena.model.BufferTank;
 import sophena.model.ProductCosts;
@@ -25,6 +26,9 @@ class BufferEstimator {
 		this.buffers = buffers;
 	}
 
+	/// Calculates the project with each buffer tank from the database that has
+	/// a purchase price and lets the user select one. The given project should
+	/// be the current project, see `HeatNetEditor.currentProject`.
 	static Optional<BufferTank> run(Project project, Database db) {
 		if (project == null || db == null)
 			return Optional.empty();
@@ -86,9 +90,13 @@ class BufferEstimator {
 			}
 		}
 
+		// variants that cover the load come first; the uncovered heat is
+		// rounded to whole kWh, so that rounding errors do not matter; then
+		// the variants are sorted by their heat generation costs, which can be
+		// lower when a part of the load is not covered
 		results.sort(Comparator
-			.comparingDouble(BufferCosts::costs)
-			.thenComparingDouble(BufferCosts::uncoveredHeat));
+			.comparingLong((BufferCosts bc) -> Math.round(bc.uncoveredHeat()))
+			.thenComparingDouble(BufferCosts::costs));
 		return Res.ok(results);
 	}
 
@@ -102,6 +110,9 @@ class BufferEstimator {
 		if (buffer.purchasePrice != null) {
 			net.bufferTankCosts.investment = buffer.purchasePrice;
 		}
+		// the same maximum unload power as when the buffer tank is selected
+		// in the editor, see `BufferTankSection.applyBufferTank`
+		net.maximumPerformance = ProjectLoad.of(variant).simultaneousMax();
 	}
 
 	private double uncoveredHeat(ProjectResult result) {

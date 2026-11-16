@@ -7,12 +7,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import sophena.calc.load.ProjectLoad;
-import sophena.db.daos.ProjectDao;
 import sophena.model.BufferTank;
-import sophena.model.Consumer;
 import sophena.model.HeatNet;
 import sophena.model.ProductCosts;
-import sophena.model.Project;
 import sophena.rcp.M;
 import sophena.rcp.ProductLabel;
 import sophena.rcp.SearchDialog;
@@ -43,10 +40,6 @@ class BufferTankSection {
 
 	private HeatNet net() {
 		return editor.heatNet;
-	}
-
-	private Project project() {
-		return editor.project;
 	}
 
 	void create(Composite body, FormToolkit tk) {
@@ -165,7 +158,7 @@ class BufferTankSection {
 
 		var btn = tk.createButton(comp, "Abschätzen", SWT.PUSH);
 		Controls.onSelect(btn, _ -> BufferEstimator
-			.run(project(), App.getDb())
+			.run(editor.currentProject(), App.getDb())
 			.ifPresent(buffer -> applyBufferTank(link, buffer)));
 		UI.filler(comp, tk);
 	}
@@ -204,27 +197,12 @@ class BufferTankSection {
 		}
 	}
 
+	/// The default value of the maximum unload power of the buffer tank, see
+	/// `ProjectLoad.simultaneousMax`. The buffer estimation uses the same value,
+	/// see `BufferEstimator`.
 	private double calculateMaxSimLoad() {
-		HeatNet net = net();
-		double max = net.maxLoad == null ? calculateMaxLoad() : net.maxLoad;
-		double sim = net.simultaneityFactor * max;
-		return Math.ceil(sim);
-	}
-
-	private double calculateMaxLoad() {
 		try {
-			// net load from the net-specification on this page
-			double load = ProjectLoad.getMaxNetLoad(project());
-			// add consumer loads from the consumers in the database
-			// we load them freshly from the database because the may changed
-			// in other editors
-			ProjectDao dao = new ProjectDao(App.getDb());
-			Project p = dao.get(editor.project.id);
-			for (Consumer c : p.consumers) {
-				if (c.disabled) continue;
-				load += c.heatingLoad;
-			}
-			return Math.ceil(load);
+			return ProjectLoad.of(editor.currentProject()).simultaneousMax();
 		} catch (Exception e) {
 			return 0;
 		}

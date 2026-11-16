@@ -126,6 +126,11 @@ public record ProjectLoad(
 	/// with their full thermal power on the side of the installed power, the
 	/// heat demand of their fermenters must be added to the demand side. The
 	/// simultaneity factor is not applied to the fermenter demand.
+	///
+	/// This value is shown as the "maximal benötigte Leistung" in the heat net
+	/// editor and in the results, and it is the default value of the maximum
+	/// unload power of the buffer tank, as the buffer tank also has to deliver
+	/// the heat for the fermenters.
 	private static double simultaneousMaxOf(
 		Project project, Map<String, double[]> fermenterDemands
 	) {
