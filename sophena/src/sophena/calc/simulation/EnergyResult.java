@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.openlca.commons.Copyable;
+import org.openlca.commons.Res;
 
 import sophena.calc.load.ProjectLoad;
 import sophena.model.Producer;
@@ -69,13 +70,18 @@ public class EnergyResult implements Copyable<EnergyResult> {
 
 	/// Runs the energy simulation for the given project. The project must have
 	/// a heat net, which is always the case for projects that are created in
-	/// the application (see `HeatNet.addDefaultTo`); otherwise an
-	/// `IllegalArgumentException` is thrown.
-	public static EnergyResult calculate(Project project) {
-		if (project == null || project.heatNet == null)
-			throw new IllegalArgumentException(
-				"Das Projekt hat kein Wärmenetz.");
-		return new EnergyCalculator(project).calculate();
+	/// the application (see `HeatNet.addDefaultTo`). Returns an error when this
+	/// is not the case or when the simulation fails.
+	public static Res<EnergyResult> calculate(Project project) {
+		if (project == null)
+			return Res.error("Es wurde kein Projekt angegeben.");
+		if (project.heatNet == null)
+			return Res.error("Das Projekt hat kein Wärmenetz.");
+		try {
+			return Res.ok(new EnergyCalculator(project).calculate());
+		} catch (Exception e) {
+			return Res.error("Die Energiesimulation ist fehlgeschlagen.", e);
+		}
 	}
 
 	public double totalHeat(Producer p) {

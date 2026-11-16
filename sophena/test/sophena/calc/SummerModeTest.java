@@ -61,11 +61,8 @@ public class SummerModeTest {
 		buff.volume = 10000;
 		net.bufferTank = buff;
 
-		ProjectResult r = ProjectResult.calculate(project);
+		ProjectResult r = ProjectResult.calculate(project).orElseThrow();
 		assertTrue((r.energyResult.totalProducedHeat > (Stats.HOURS * 25.0)));
-		// ExcelExport exp = new ExcelExport(project, r,
-		// new File("target/summer_mode.xlsx"));
-		// exp.run();
 	}
 
 }

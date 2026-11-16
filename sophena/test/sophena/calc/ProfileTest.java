@@ -71,7 +71,7 @@ public class ProfileTest {
 		spec.pricePerUnit = 0.4; // EUR/m3
 		producer.fuelSpec = spec;
 
-		result = ProjectResult.calculate(project);
+		result = ProjectResult.calculate(project).orElseThrow();
 	}
 
 	@Test

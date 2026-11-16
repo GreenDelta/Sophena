@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.openlca.commons.Res;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,25 +45,38 @@ public class ProjectResult {
 		this.project = Objects.requireNonNull(project);
 	}
 
-	public static ProjectResult calculate(Project project) {
-		var r = new ProjectResult(project);
+	/// Calculates the results of the given project. Returns an error when the
+	/// project cannot be calculated, e.g. when it has no heat net, or when a
+	/// calculation fails.
+	public static Res<ProjectResult> calculate(Project project) {
+		if (project == null)
+			return Res.error("Es wurde kein Projekt angegeben.");
+		try {
+			var r = new ProjectResult(project);
 
-		// the biogas plants must be calculated first, they are used
-		// in the later calculations
-		r.calculateBiogasResults();
+			// the biogas plants must be calculated first, they are used
+			// in the later calculations
+			r.calculateBiogasResults();
 
-		r.energyResult = EnergyResult.calculate(project);
-		r.fuelUsage = FuelUsage.calculate(r);
-		var costCalc = new CostCalculator(r);
-		costCalc.withFunding(false);
-		r.costResult = costCalc.calculate();
-		costCalc.withFunding(true);
-		r.costResultFunding = costCalc.calculate();
-		consumers(project, r);
+			var energy = EnergyResult.calculate(project);
+			if (energy.isError())
+				return energy.castError();
+			r.energyResult = energy.value();
 
-		// needs to be done after calculating the consumer results
-		r.emissionResult = EmissionResult.calculate(r);
-		return r;
+			r.fuelUsage = FuelUsage.calculate(r);
+			var costCalc = new CostCalculator(r);
+			costCalc.withFunding(false);
+			r.costResult = costCalc.calculate();
+			costCalc.withFunding(true);
+			r.costResultFunding = costCalc.calculate();
+			consumers(project, r);
+
+			// needs to be done after calculating the consumer results
+			r.emissionResult = EmissionResult.calculate(r);
+			return Res.ok(r);
+		} catch (Exception e) {
+			return Res.error("Die Berechnung des Projekts ist fehlgeschlagen.", e);
+		}
 	}
 
 	private void calculateBiogasResults() {

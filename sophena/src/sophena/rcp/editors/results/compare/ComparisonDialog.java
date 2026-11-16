@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.openlca.commons.Res;
 
 import sophena.calc.Comparison;
 import sophena.db.daos.ProjectDao;
@@ -28,6 +29,7 @@ import sophena.model.descriptors.ProjectDescriptor;
 import sophena.rcp.app.App;
 import sophena.rcp.app.Icon;
 import sophena.rcp.editors.results.CalculationCheck;
+import sophena.rcp.utils.MsgBox;
 import sophena.rcp.utils.Sorters;
 import sophena.rcp.utils.Tables;
 import sophena.rcp.utils.UI;
@@ -40,15 +42,12 @@ import sophena.utils.Ref;
 public class ComparisonDialog extends FormDialog {
 
 	private TableViewer table;
-	private Map<String, Boolean> selected = new HashMap<>();
+	private final Map<String, Boolean> selected = new HashMap<>();
 	private List<ProjectDescriptor> descriptors;
 
 	public static void open(Optional<ProjectDescriptor> initial) {
 		ComparisonDialog dialog = new ComparisonDialog();
-		if (initial.isPresent()) {
-			ProjectDescriptor d = initial.get();
-			dialog.selected.put(d.id, Boolean.TRUE);
-		}
+		initial.ifPresent(d -> dialog.selected.put(d.id, Boolean.TRUE));
 		dialog.open();
 	}
 
@@ -59,9 +58,9 @@ public class ComparisonDialog extends FormDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, false).setEnabled(false);
+			IDialogConstants.OK_LABEL, false).setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, true);
+			IDialogConstants.CANCEL_LABEL, true);
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class ComparisonDialog extends FormDialog {
 		if (d == null)
 			return;
 		Boolean b = selected.get(d.id);
-		if (b == null || !b.booleanValue())
+		if (b == null || !b)
 			selected.put(d.id, Boolean.TRUE);
 		else
 			selected.put(d.id, Boolean.FALSE);
@@ -114,10 +113,17 @@ public class ComparisonDialog extends FormDialog {
 		}
 		if (!CalculationCheck.canCalculate(list))
 			return;
-		Ref<Comparison> ref = new Ref<>();
+		Ref<Res<Comparison>> ref = new Ref<>();
 		App.run("Vergleiche Projekte",
-				() -> ref.set(Comparison.calculate(list)),
-				() -> ComparisonView.open(ref.get()));
+			() -> ref.set(Comparison.calculate(list)),
+			() -> {
+				var res = ref.get();
+				if (res.isError()) {
+					MsgBox.error("Fehler im Projektvergleich", res.error());
+					return;
+				}
+				ComparisonView.open(res.value());
+			});
 		close();
 	}
 
@@ -153,21 +159,19 @@ public class ComparisonDialog extends FormDialog {
 
 		@Override
 		public Image getColumnImage(Object obj, int col) {
-			if (!(obj instanceof ProjectDescriptor))
+			if (!(obj instanceof ProjectDescriptor d))
 				return null;
-			ProjectDescriptor d = (ProjectDescriptor) obj;
 			Boolean entry = selected.get(d.id);
-			return entry != null && entry.booleanValue()
-					? Icon.CHECKBOX_CHECKED_16.img()
-					: Icon.CHECKBOX_UNCHECKED_16.img();
+			return entry != null && entry
+				? Icon.CHECKBOX_CHECKED_16.img()
+				: Icon.CHECKBOX_UNCHECKED_16.img();
 		}
 
 		@Override
 		public String getColumnText(Object obj, int col) {
-			if (!(obj instanceof ProjectDescriptor))
-				return null;
-			ProjectDescriptor d = (ProjectDescriptor) obj;
-			return d.name;
+			return obj instanceof ProjectDescriptor d
+				? d.name
+				: null;
 		}
 
 	}

@@ -60,6 +60,8 @@ class BufferEstimator {
 
 		var estimator = new BufferEstimator(project.copy(), buffers);
 		var costs = App.exec("Berechne Varianten", estimator::estimate);
+		if (costs == null) // an error message was already shown
+			return Optional.empty();
 		if (costs.isError()) {
 			MsgBox.error("Fehler in der Projektberechnung", costs.error());
 			return Optional.empty();
@@ -74,20 +76,18 @@ class BufferEstimator {
 
 		var results = new ArrayList<BufferCosts>();
 		for (var buffer : buffers) {
-			try {
-				var variant = project.copy();
-				prepare(variant, buffer);
-				var result = ProjectResult.calculate(variant);
-				double costs = result.costResultFunding.dynamicTotal.heatGenerationCosts;
-				double uncoveredHeat = uncoveredHeat(result);
-				results.add(new BufferCosts(buffer, costs, uncoveredHeat));
-			} catch (Exception e) {
-				var name = buffer != null && buffer.name != null
-					? buffer.name
-					: "(ohne Namen)";
-				return Res.error("Die Berechnung für den Pufferspeicher \""
-					+ name + "\" ist fehlgeschlagen.", e);
+			var variant = project.copy();
+			prepare(variant, buffer);
+			var res = ProjectResult.calculate(variant);
+			if (res.isError()) {
+				var name = buffer.name != null ? buffer.name : "(ohne Namen)";
+				return res.wrapError("Die Berechnung für den Pufferspeicher \""
+					+ name + "\" ist fehlgeschlagen.");
 			}
+			var result = res.value();
+			double costs = result.costResultFunding.dynamicTotal.heatGenerationCosts;
+			results.add(new BufferCosts(
+				buffer, costs, result.energyResult.totalUncoveredLoad()));
 		}
 
 		// variants that cover the load come first; the uncovered heat is
@@ -114,11 +114,4 @@ class BufferEstimator {
 		// in the editor, see `BufferTankSection.applyBufferTank`
 		net.maximumPerformance = ProjectLoad.of(variant).simultaneousMax();
 	}
-
-	private double uncoveredHeat(ProjectResult result) {
-		return result != null && result.energyResult != null
-			? result.energyResult.totalUncoveredLoad()
-			: 0;
-	}
-
 }

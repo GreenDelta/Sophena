@@ -41,7 +41,7 @@ public class GeneratedElectricityTest {
 		}
 		project.consumers.add(c);
 
-		ProjectResult r = ProjectResult.calculate(project);
+		ProjectResult r = ProjectResult.calculate(project).orElseThrow();
 
 		double e = GeneratedElectricity.get(p, r);
 		Assert.assertEquals(200_000, e, 1e-16);
@@ -74,7 +74,7 @@ public class GeneratedElectricityTest {
 			c.profile.dynamicData[i] = 125;
 		}
 
-		ProjectResult r = ProjectResult.calculate(project);
+		ProjectResult r = ProjectResult.calculate(project).orElseThrow();
 		double e = GeneratedElectricity.get(p, r);
 		Assert.assertEquals(200_000, e, 1e-16);
 

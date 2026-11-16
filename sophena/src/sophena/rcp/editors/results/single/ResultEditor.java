@@ -20,6 +20,7 @@ import sophena.rcp.editors.Editor;
 import sophena.rcp.editors.results.CalculationCheck;
 import sophena.rcp.utils.Editors;
 import sophena.rcp.utils.KeyEditorInput;
+import sophena.rcp.utils.MsgBox;
 
 public class ResultEditor extends Editor {
 
@@ -40,7 +41,12 @@ public class ResultEditor extends Editor {
 			return;
 
 		App.runInUI("Berechne...", () -> {
-			var result = ProjectResult.calculate(p);
+			var res = ProjectResult.calculate(p);
+			if (res.isError()) {
+				MsgBox.error("Fehler in der Projektberechnung", res.error());
+				return;
+			}
+			var result = res.value();
 			var key = App.stash(new Object[]{p, result});
 			var input = new KeyEditorInput(key, p.name);
 			Editors.open(input, "sophena.ResultEditor");

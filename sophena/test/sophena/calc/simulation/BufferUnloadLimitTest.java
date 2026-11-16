@@ -30,7 +30,7 @@ public class BufferUnloadLimitTest {
 
 	@Test
 	public void testLimitAppliesToTheSumOfAllZones() {
-		var r = EnergyResult.calculate(project());
+		var r = EnergyResult.calculate(project()).orElseThrow();
 
 		// in the first 4 hours, the producers cover the load and fill the
 		// flow-temperature (VT) and high-temperature (HT) zone of the buffer

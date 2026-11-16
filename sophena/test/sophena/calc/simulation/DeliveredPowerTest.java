@@ -32,7 +32,7 @@ public class DeliveredPowerTest {
 
 	@Test
 	public void testUncoveredLoadWithLowTempProducer() {
-		var r = EnergyResult.calculate(project());
+		var r = EnergyResult.calculate(project()).orElseThrow();
 
 		boolean hasLoadingWithUncoveredLoad = false;
 		double expectedUncovered = 0;

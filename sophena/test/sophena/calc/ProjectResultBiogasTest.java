@@ -44,7 +44,7 @@ public class ProjectResultBiogasTest {
 		var project = project();
 		var producer = biogasProducer(project);
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
@@ -75,7 +75,7 @@ public class ProjectResultBiogasTest {
 		var producer = biogasProducer(project);
 		producer.biogasPlant.electricityPrices = null;
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		assertTrue(r.biogasResults.isEmpty());
 		assertNotNull(producer.profile);
@@ -91,7 +91,7 @@ public class ProjectResultBiogasTest {
 		var producer = biogasProducer(project);
 		producer.disabled = true;
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		assertTrue(r.biogasResults.isEmpty());
 		assertNull(producer.profile);
@@ -105,7 +105,7 @@ public class ProjectResultBiogasTest {
 		profile.annualMass = 10_000;
 		profile.substrate.co2Emissions = 100;
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		// the emissions of the biogas plant are part of the producer emissions
 		var emissions = r.emissionResult;
@@ -133,7 +133,7 @@ public class ProjectResultBiogasTest {
 		var producer = biogasProducer(project);
 		producer.biogasPlant.substrateProfiles.getFirst().annualMass = 10_000;
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		// the fuel of a biogas plant is the input of its substrates; without
 		// this the fuel usage would be 0 because the plant has no fuel spec
@@ -155,7 +155,7 @@ public class ProjectResultBiogasTest {
 		entry.costs.investment = 5_000_000;
 		producer.biogasPlant.investments.add(entry);
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
@@ -205,7 +205,7 @@ public class ProjectResultBiogasTest {
 		entry.costs.investment = 5_000_000;
 		producer.biogasPlant.investments.add(entry);
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
@@ -268,7 +268,7 @@ public class ProjectResultBiogasTest {
 		entry.costs.investment = 5_000_000;
 		producer.biogasPlant.investments.add(entry);
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		double heat = Math.max(0, r.energyResult.totalHeat(producer)
 			- r.energyResult.fermenterHeatOf(producer)) / 1000.0;
@@ -290,7 +290,7 @@ public class ProjectResultBiogasTest {
 		entry.costs.investment = 5_000_000;
 		producer.biogasPlant.investments.add(entry);
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 
 		var biogasResult = r.biogasResults.get(producer);
 		assertNotNull(biogasResult);
@@ -319,7 +319,7 @@ public class ProjectResultBiogasTest {
 		interruption.end = MonthDay.of(9, 30).toString();
 		project.heatNet.interruption = interruption;
 
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 		var energy = r.energyResult;
 
 		// the fermenter heat that is subtracted from the heat of the biogas
@@ -362,7 +362,7 @@ public class ProjectResultBiogasTest {
 			Stats.sum(load.dynamicCurve()), 1e-6);
 
 		// the load curve of the simulation is the sum of both curves
-		var r = ProjectResult.calculate(project);
+		var r = ProjectResult.calculate(project).orElseThrow();
 		assertArrayEquals(load.totalCurve(), r.energyResult.loadCurve, 1e-9);
 		assertEquals(Stats.sum(load.dynamicCurve())
 			+ Stats.sum(load.staticCurve()), r.energyResult.load.totalLoad(), 1e-6);
