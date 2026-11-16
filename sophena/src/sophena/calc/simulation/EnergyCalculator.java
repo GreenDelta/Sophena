@@ -1,6 +1,5 @@
 package sophena.calc.simulation;
 
-import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.model.Producer;
 import sophena.model.ProducerFunction;
 import sophena.model.Project;
@@ -8,12 +7,10 @@ import sophena.model.Stats;
 
 class EnergyCalculator {
 
-	private final Project project;
 	private final SimulationState state;
 	private final EnergyResult r;
 
 	EnergyCalculator(Project project) {
-		this.project = project;
 		this.r = new EnergyResult(project);
 		this.state = new SimulationState(project);
 	}
@@ -170,15 +167,5 @@ class EnergyCalculator {
 		}
 		r.totalBufferedHeat = Stats.sum(r.suppliedBufferHeat);
 		r.totalBufferLoss = Stats.sum(r.bufferLoss);
-
-		r.totalFermenterHeatDemand = 0;
-		for (var p : r.producers) {
-			if (p.biogasPlant == null)
-				continue;
-			double[] demand = FermenterHeatDemand.of(project, p.biogasPlant);
-			double total = Stats.sum(demand);
-			r.fermenterHeatDemands.put(p.id, total);
-			r.totalFermenterHeatDemand += total;
-		}
 	}
 }

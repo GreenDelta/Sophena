@@ -22,7 +22,7 @@ public class Smoothing {
 			return 0;
 
 		var maxLoad = ProjectLoad.getMax(project);
-		var rawCurve = ProjectLoad.getRawCurve(project);
+		var rawCurve = rawLoadOf(project);
 		var rawMax = Stats.max(rawCurve);
 		if (maxLoad == 0 || rawMax == 0 || rawMax < (0.9 * maxLoad))
 			return 0;
@@ -35,6 +35,34 @@ public class Smoothing {
 		return factor < 0 || !Double.isFinite(factor)
 				? 0
 				: factor;
+	}
+
+	/// Calculates the un-smoothed load curve in kW that is used to calculate
+	/// the default smoothing factor: the dynamic and static load of the
+	/// consumers plus the heat losses of the heat net, with the interruption of
+	/// the heat net applied. This is not the load curve of the project.
+	///
+	/// The maximum of this curve is compared with `ProjectLoad.getMax`, so both
+	/// must contain the same parts of the load. In particular, the heat demand
+	/// of the fermenters is not included: the simultaneity factor and the
+	/// smoothing only apply to the load of the consumers, and the fermenter
+	/// demand is added after the smoothing. If it was included here, the
+	/// dynamic load of the consumers would be smoothed more to compensate a
+	/// load that is not smoothed at all.
+	private static double[] rawLoadOf(Project project) {
+		var data = new double[Stats.HOURS];
+		for (var consumer : project.consumers) {
+			if (consumer.disabled)
+				continue;
+			var profile = ConsumerLoadCurve.calculate(
+				consumer, project.weatherStation);
+			Stats.add(profile.dynamicData, data);
+			Stats.add(profile.staticData, data);
+		}
+		double[] netLoad = ProjectLoad.getNetLoadCurve(project);
+		Arrays.setAll(data, i -> data[i] + netLoad[i]);
+		ProjectLoad.applyInterruption(data, project.heatNet);
+		return data;
 	}
 
 	/**

@@ -8,10 +8,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.time.MonthDay;
 import java.util.Arrays;
 
 import org.junit.Test;
 
+import sophena.calc.biogas.FermenterHeatDemand;
 import sophena.calc.biogas.SubstrateInput;
 import sophena.calc.biogas.TestPlant;
 import sophena.calc.biogas.fermentersim.TestWeatherStation;
@@ -19,6 +21,7 @@ import sophena.calc.costs.Annuity;
 import sophena.calc.costs.CostResultItem;
 import sophena.calc.kpi.EfficiencyResult;
 import sophena.calc.kpi.GeneratedElectricity;
+import sophena.calc.load.ProjectLoad;
 import sophena.calc.specs.Producers;
 import sophena.model.Consumer;
 import sophena.model.CostSettings;
@@ -30,6 +33,7 @@ import sophena.model.ProductGroup;
 import sophena.model.ProductType;
 import sophena.model.Project;
 import sophena.model.Stats;
+import sophena.model.TimeInterval;
 import sophena.model.biogas.BiogasInvestmentEntry;
 
 /// Tests the integration of the biogas results into the project result.
@@ -302,6 +306,87 @@ public class ProjectResultBiogasTest {
 		assertClose(staticCosts,
 			r.costResult.staticTotal.consumptionCosts);
 		assertTrue(dynamicCosts > staticCosts);
+	}
+
+	@Test
+	public void appliesTheNetInterruptionToTheFermenterHeat() {
+		var project = project();
+		var producer = biogasProducer(project);
+		project.weatherStation = TestWeatherStation.get();
+		producer.biogasPlant.fermenters.add(TestPlant.fermenter());
+		var interruption = new TimeInterval();
+		interruption.start = MonthDay.of(5, 1).toString();
+		interruption.end = MonthDay.of(9, 30).toString();
+		project.heatNet.interruption = interruption;
+
+		var r = ProjectResult.calculate(project);
+		var energy = r.energyResult;
+
+		// the fermenter heat that is subtracted from the heat of the biogas
+		// plant must be the fermenter heat in the load curve; before, the
+		// subtracted heat was the demand of the full year
+		double consumerLoad = 0;
+		for (var c : r.consumerResults) {
+			consumerLoad += c.heatDemand;
+		}
+		double fermenterInLoad = energy.totalLoad
+			- consumerLoad - energy.heatNetLoss;
+		double fermenterHeat = energy.fermenterHeatOf(producer);
+		assertTrue(fermenterHeat > 0);
+		assertEquals(fermenterInLoad, fermenterHeat, 1e-6);
+		assertEquals(fermenterHeat, energy.totalFermenterHeatDemand, 1e-6);
+
+		// it is smaller than the demand of the full year
+		var fullYear = Stats.sum(
+			FermenterHeatDemand.of(project, producer.biogasPlant));
+		assertTrue(fermenterHeat < fullYear);
+		assertEquals(fermenterHeat, Stats.sum(
+			ProjectLoad.getFermenterHeatDemand(project, producer)), 1e-6);
+	}
+
+	@Test
+	public void showsTheFermenterHeatInTheNetLoad() {
+		var project = project();
+		var producer = biogasProducer(project);
+		project.weatherStation = TestWeatherStation.get();
+		producer.biogasPlant.fermenters.add(TestPlant.fermenter());
+
+		// the dynamic part of the load curve that is shown in the results
+		// ("Jahresdauerlinie - Netzlast") contains the fermenter heat
+		double fermenterHeat = Stats.sum(
+			ProjectLoad.getFermenterHeatDemand(project, producer));
+		assertTrue(fermenterHeat > 0);
+		double consumerLoad = Stats.sum(
+			project.consumers.getFirst().profile.dynamicData);
+		double netLoss = Stats.sum(ProjectLoad.getNetLoadCurve(project));
+		assertEquals(consumerLoad + netLoss + fermenterHeat,
+			Stats.sum(ProjectLoad.getDynamicCurve(project)), 1e-6);
+
+		// and the result of the simulation as well
+		var r = ProjectResult.calculate(project);
+		assertEquals(r.energyResult.totalLoad,
+			Stats.sum(ProjectLoad.getDynamicCurve(project))
+				+ Stats.sum(ProjectLoad.getStaticCurve(project)), 1e-6);
+	}
+
+	@Test
+	public void addsTheFermenterHeatToTheRequiredPower() {
+		var project = project();
+		var producer = biogasProducer(project);
+		project.weatherStation = TestWeatherStation.get();
+		project.heatNet.maxLoad = 500.0;
+		project.heatNet.simultaneityFactor = 0.8;
+
+		// without fermenters: max. load * simultaneity factor
+		assertEquals(400, ProjectLoad.getSimultaneousMax(project), 1e-9);
+
+		// with fermenters: plus the maximum fermenter demand
+		producer.biogasPlant.fermenters.add(TestPlant.fermenter());
+		double fermenterMax = Stats.max(
+			ProjectLoad.getFermenterHeatDemand(project, producer));
+		assertTrue(fermenterMax > 0);
+		assertEquals(Math.ceil(400 + fermenterMax),
+			ProjectLoad.getSimultaneousMax(project), 1e-9);
 	}
 
 	/// The static annuity of the heat purchase for the given heat in MWh.

@@ -115,8 +115,8 @@ public class CostCalculator {
 		// the network buys the heat of a biogas plant for the heat price that the
 		// producer defines or, when no price is defined, for the default price of
 		// the plant; it pays for the heat that is used in the network. The heat
-		// that is needed to heat the fermenters is provided by the plant but is
-		// not sold to the network.
+		// that is needed to heat the fermenters is attributed to the biogas plant
+		// and is not sold to the network.
 		if (p.biogasPlant != null) {
 			var biogasResult = result.biogasResults.get(p);
 			if (biogasResult == null)

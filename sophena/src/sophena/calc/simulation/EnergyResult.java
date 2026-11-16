@@ -56,6 +56,14 @@ public class EnergyResult implements Copyable<EnergyResult> {
 
 	EnergyResult(Project project) {
 		loadCurve = ProjectLoad.getSmoothedCurve(project);
+		for (var p : project.producers) {
+			var demand = ProjectLoad.getFermenterHeatDemand(project, p);
+			if (demand == null)
+				continue;
+			double heat = Stats.sum(demand);
+			fermenterHeatDemands.put(p.id, heat);
+			totalFermenterHeatDemand += heat;
+		}
 		suppliedPower = new double[Stats.HOURS];
 		deliveredPower = new double[Stats.HOURS];
 		initProducerData(project);
@@ -76,9 +84,17 @@ public class EnergyResult implements Copyable<EnergyResult> {
 		return d == null ? 0 : d;
 	}
 
-	/// The heat that the fermenters of the biogas plant of the given producer
-	/// need in kWh. This heat is provided by the plant but is not sold to the
-	/// heat network.
+	/// The heat in kWh that the fermenters of the biogas plant of the given
+	/// producer need while the heat net is in operation. This heat is not sold to
+	/// the heat network and is thus subtracted from the heat of the biogas plant
+	/// in the cost, emission, and efficiency results.
+	///
+	/// Note that in the energy simulation, the fermenter demand is a part of
+	/// the load curve like any other load and can also be covered by other
+	/// producers, e.g. by a peak load boiler when the biogas plant is not
+	/// running. However, it is always fully attributed to the biogas plant,
+	/// which is intended: the heat of the biogas plant that is sold to the net
+	/// is its produced heat minus the demand of its fermenters (at least 0).
 	public double fermenterHeatOf(Producer p) {
 		if (p == null || p.id == null)
 			return 0;
