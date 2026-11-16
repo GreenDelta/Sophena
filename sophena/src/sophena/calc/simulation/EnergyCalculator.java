@@ -84,7 +84,7 @@ class EnergyCalculator {
 			if (power <= maxLoadAbs) {
 				if (loadType == BufferLoadType.HIGH_TEMP && producer.function == ProducerFunction.PEAK_LOAD && bufferState.totalUnloadableNTPower() > 0) {
 					double p = Math.min(unloadableNTPower, power - state.minPower(producer, hour));
-					bufferState.unload(hour, p, BufferLoadType.LOW_TEMP);
+					bufferState.unload(p, BufferLoadType.LOW_TEMP);
 					totalSuppliedPower += p;
 					heatNetSuppliedPower += p;
 					power -= p;
@@ -97,7 +97,7 @@ class EnergyCalculator {
 					double surplus = power - reducedLoad;
 					heatNetSuppliedPower += surplus > 0 ? power - surplus : power;
 					if (surplus > 0)
-						power -= bufferState.load(hour, surplus, loadType, false, loadFactor);
+						power -= bufferState.load(surplus, loadType, false, loadFactor);
 				} else
 					power = 0;
 
@@ -117,14 +117,14 @@ class EnergyCalculator {
 
 			double bufferNTUnloadLimit = Math.max(0, r.loadCurve[hour] * bufferState.getNTLoadFactor() - heatNetSuppliedPower);
 
-			double remainingRequiredLoad = bufferState.unload(hour, requiredLoad, BufferLoadType.HIGH_TEMP);
+			double remainingRequiredLoad = bufferState.unload(requiredLoad, BufferLoadType.HIGH_TEMP);
 
 			if (remainingRequiredLoad > 0)
-				remainingRequiredLoad = bufferState.unload(hour, remainingRequiredLoad, BufferLoadType.FLOW_TEMP);
+				remainingRequiredLoad = bufferState.unload(remainingRequiredLoad, BufferLoadType.FLOW_TEMP);
 
 			if (remainingRequiredLoad > 0 && hasHighTempProducer) {
 				double p = remainingRequiredLoad - Math.min(bufferNTUnloadLimit, remainingRequiredLoad);
-				remainingRequiredLoad = bufferState.unload(hour, Math.min(bufferNTUnloadLimit, remainingRequiredLoad), BufferLoadType.LOW_TEMP) + p;
+				remainingRequiredLoad = bufferState.unload(Math.min(bufferNTUnloadLimit, remainingRequiredLoad), BufferLoadType.LOW_TEMP) + p;
 			}
 
 			double bufferPower = requiredLoad - remainingRequiredLoad;
@@ -135,7 +135,7 @@ class EnergyCalculator {
 		r.deliveredPower[hour] = heatNetSuppliedPower;
 
 		// buffer capacity with buffer loss
-		r.bufferLoss[hour] = bufferState.applyLoss(hour);
+		r.bufferLoss[hour] = bufferState.applyLoss();
 
 		r.suppliedPower[hour] = totalSuppliedPower;
 

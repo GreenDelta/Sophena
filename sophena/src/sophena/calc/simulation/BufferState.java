@@ -76,8 +76,7 @@ class BufferState {
 
 	private final double maxConsumerHeatingLimit;
 
-	public BufferState(Project project, SolarLog log)
-	{
+	public BufferState(Project project, SolarLog log) {
 		this.project = project;
 		this.log = log;
 
@@ -97,8 +96,7 @@ class BufferState {
 		bufferLossFactor = lossFactor(project.heatNet);
 	}
 
-	public void updateBefore(int hour)
-	{
+	public void updateBefore(int hour) {
 		double temperature = Temperature.of(project, hour);
 		SeasonalItem seasonalItem = SeasonalItem.calc(project.heatNet, hour, minWeatherStationTemperature, maxConsumerHeatingLimit, temperature);
 
@@ -112,19 +110,18 @@ class BufferState {
 
 		int jt = 1 + hour / 24;
 		int ts = 1 + hour % 24;
-		if(ts == 1)
-		{
+		if (ts == 1) {
 			log.beginProducer(null);
 			log.beginDay(jt, ts, "QP_MAX [kWh]", "QP_100 [kWh]", "QP_HT [kWh]", "QP_VT [kWh]", "QP_NT [kWh]", "QP100_NT [kWH]", "TV [°C]", "TR [°C]", "FG", "TE [°C]", "TMAX [°C]",
-					"qLoadedHT [kWh]",
-					"qLoadedNT [kWh]",
-					"qLoadedVT [kWh]",
-					"qUnloadedHT [kWh]",
-					"qUnloadedNT [kWh]",
-					"qUnloadedVT [kWh]",
-					"qLostHT [kWh]",
-					"qLostNT [kWh]",
-					"qLostVT [kWh]"
+				"qLoadedHT [kWh]",
+				"qLoadedNT [kWh]",
+				"qLoadedVT [kWh]",
+				"qUnloadedHT [kWh]",
+				"qUnloadedNT [kWh]",
+				"qUnloadedVT [kWh]",
+				"qLostHT [kWh]",
+				"qLostNT [kWh]",
+				"qLostVT [kWh]"
 			);
 		}
 
@@ -139,37 +136,28 @@ class BufferState {
 		qLostVTInHour = 0;
 	}
 
-	public double load(int hour, double qToLoad, BufferLoadType loadType, boolean useMaxTargetLoadFactor, double loadFactorTK_i)
-	{
+	public double load(double qToLoad, BufferLoadType loadType, boolean useMaxTargetLoadFactor, double loadFactorTK_i) {
 		// Prevent QP_NT from becoming more and more negative due to loss and only loading high temperature.
 
-		if(loadType != BufferLoadType.LOW_TEMP && QP_NT < 0)
-		{
+		if (loadType != BufferLoadType.LOW_TEMP && QP_NT < 0) {
 			loadType = BufferLoadType.LOW_TEMP;
-		}
-		else if(loadType == BufferLoadType.HIGH_TEMP && QP_VT < 0)
-		{
+		} else if (loadType == BufferLoadType.HIGH_TEMP && QP_VT < 0) {
 			loadType = BufferLoadType.FLOW_TEMP;
 		}
 
 		double Qloaded;
-		if(loadType == BufferLoadType.HIGH_TEMP)
-		{
+		if (loadType == BufferLoadType.HIGH_TEMP) {
 			Qloaded = Math.min(qToLoad, calcHTCapacity(useMaxTargetLoadFactor));
 			QP_HT = QP_HT + Qloaded;
 
 			qLoadedHTInHour += Qloaded;
-		}
-		else if(loadType == BufferLoadType.FLOW_TEMP)
-		{
+		} else if (loadType == BufferLoadType.FLOW_TEMP) {
 			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
 			QP_VT = QP_VT + Qloaded;
 
 			qLoadedVTInHour += Qloaded;
-		}
-		else
-		{
-			Qloaded = Math.min(qToLoad,CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
+		} else {
+			Qloaded = Math.min(qToLoad, CalcNTCapacity(useMaxTargetLoadFactor, loadFactorTK_i));
 			QP_NT = QP_NT + Qloaded;
 
 			qLoadedNTInHour += Qloaded;
@@ -182,36 +170,29 @@ class BufferState {
 		return qToLoadRemaining;
 	}
 
-	public boolean getMaxTargetLoadStillReachedAfterPartialUnload(double requiredLoad)
-	{
-       double denominator = QP_MAX;
-       if(denominator == 0)
-    	   return false;
+	public boolean getMaxTargetLoadStillReachedAfterPartialUnload(double requiredLoad) {
+		double denominator = QP_MAX;
+		if (denominator == 0)
+			return false;
 
-       return maxTargetLoadFactor < ((QP_HT + QP_VT + QP_NT - requiredLoad) / denominator);
+		return maxTargetLoadFactor < ((QP_HT + QP_VT + QP_NT - requiredLoad) / denominator);
 	}
 
-	public double unload(int hour, double qToUnload, BufferLoadType loadType)
-	{
+	public double unload(double qToUnload, BufferLoadType loadType) {
 		double Qunloaded;
-		if(loadType == BufferLoadType.HIGH_TEMP)
-		{
+		if (loadType == BufferLoadType.HIGH_TEMP) {
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_HT));
 			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_HT = QP_HT - Qunloaded;
 
 			qUnloadedHTInHour += Qunloaded;
-		}
-		else if(loadType == BufferLoadType.FLOW_TEMP)
-		{
+		} else if (loadType == BufferLoadType.FLOW_TEMP) {
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_VT));
 			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_VT = QP_VT - Qunloaded;
 
 			qUnloadedVTInHour += Qunloaded;
-		}
-		else
-		{
+		} else {
 			Qunloaded = Math.max(0, Math.min(qToUnload, QP_NT));
 			Qunloaded = Math.min(Qunloaded, remainingUnloadPower());
 			QP_NT = QP_NT - Qunloaded;
@@ -227,8 +208,7 @@ class BufferState {
 		return qToUnloadRemaining;
 	}
 
-	public double applyLoss(int hour)
-	{
+	public double applyLoss() {
 		double qLoss = calcLoss(project.heatNet, bufferLossFactor);
 
 		double Qlost = Math.min(qLoss, QP_HT);
@@ -238,8 +218,7 @@ class BufferState {
 
 		double qLossRemaining = qLoss - Qlost;
 
-		if(qLossRemaining > 0)
-		{
+		if (qLossRemaining > 0) {
 			Qlost = Math.min(qLossRemaining, QP_VT);
 			QP_VT -= Qlost;
 
@@ -247,8 +226,7 @@ class BufferState {
 			qLossRemaining -= Qlost;
 		}
 
-		if(qLossRemaining > 0)
-		{
+		if (qLossRemaining > 0) {
 			Qlost = qLossRemaining;
 			QP_NT -= Qlost;
 
@@ -260,19 +238,18 @@ class BufferState {
 		return Qlost;
 	}
 
-	public void postStep(int hour)
-	{
+	public void postStep(int hour) {
 		log.beginProducer(null);
 		log.hourValues(hour, true, QP_MAX, QP_100, QP_HT, QP_VT, QP_NT, QP100_NT(), TV, TR, FG, TE, TMAX,
-				qLoadedHTInHour,
-				qLoadedNTInHour,
-				qLoadedVTInHour,
-				qUnloadedHTInHour,
-				qUnloadedNTInHour,
-				qUnloadedVTInHour,
-				qLostHTInHour,
-				qLostNTInHour,
-				qLostVTInHour
+			qLoadedHTInHour,
+			qLoadedNTInHour,
+			qLoadedVTInHour,
+			qUnloadedHTInHour,
+			qUnloadedNTInHour,
+			qUnloadedVTInHour,
+			qLostHTInHour,
+			qLostNTInHour,
+			qLostVTInHour
 		);
 	}
 
@@ -292,35 +269,20 @@ class BufferState {
 		return Math.max(0, maxUnloadPower() - unloaded);
 	}
 
-	public double totalUnloadableHTPower()
-	{
+	public double totalUnloadableHTPower() {
 		return Math.min(QP_HT, remainingUnloadPower());
 	}
 
-	public double totalUnloadableVTPower()
-	{
+	public double totalUnloadableVTPower() {
 		return Math.min(QP_VT, remainingUnloadPower());
 	}
 
-	public double totalUnloadableNTPower()
-	{
+	public double totalUnloadableNTPower() {
 		return Math.min(QP_NT, remainingUnloadPower());
 	}
 
-	public double getLoadFactor(boolean useMaxTargetLoadFactor)
-	{
-		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
-
-		double denominator = QP_MAX * loadFactor;
-		if(denominator == 0)
-			return 0;
-
-		return (QP_HT + QP_VT + QP_NT) / denominator;
-	}
-
-	public double getNTLoadFactor()
-	{
-		double loadFactor =  1.0;
+	public double getNTLoadFactor() {
+		double loadFactor = 1.0;
 		double denominator = Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT());
 		if (denominator == 0)
 			return 0;
@@ -328,57 +290,46 @@ class BufferState {
 	}
 
 
-	public double calcHTCapacity(boolean useMaxTargetLoadFactor)
-	{
+	public double calcHTCapacity(boolean useMaxTargetLoadFactor) {
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
 		return loadFactor == 0 ? 0 : Math.max(0, QP_MAX * loadFactor - QP_HT - QP_NT - QP_VT);
 	}
 
-	public double CalcNTCapacity(boolean useMaxTargetLoadFactor, double loadFactorTK_i)
-	{
+	public double CalcNTCapacity(boolean useMaxTargetLoadFactor, double loadFactorTK_i) {
 		double loadFactor = useMaxTargetLoadFactor ? maxTargetLoadFactor : 1.0;
 
 		return loadFactor == 0 ? 0 : Math.max(0, loadFactorTK_i * Math.min(QP_MAX * loadFactor - QP_HT, QP100_NT()) - QP_NT - QP_VT);
 	}
 
 
-	private void UpdateFGAndTE()
-	{
-		if (project.heatNet != null && project.heatNet.bufferTank == null)
-		{
+	private void UpdateFGAndTE() {
+		if (project.heatNet != null && project.heatNet.bufferTank == null) {
 			TE = TV;
 			return;
 		}
 
 		FG = (QP_VT + QP_NT) / QP100_NT();
 
-		if(FG < 0.8)
-		{
+		if (FG < 0.8) {
 			TE = TR + 5.0 / 12.0 * (TV - TR) * FG;
-		}
-		else if(FG < 1.0)
-		{
+		} else if (FG < 1.0) {
 			TE = TR + 1.0 / 3.0 * (TV - TR) * (10.0 * FG - 7.0);
-		}
-		else
-		{
+		} else {
 			TE = TMAX;
 		}
 
-		TE = Math.max(TE,TR);
+		TE = Math.max(TE, TR);
 	}
 
-	public double averageTemperature()
-	{
-		if(QP_MAX == 0)
+	public double averageTemperature() {
+		if (QP_MAX == 0)
 			return TR;
 		return TR + (TMAX - TR) * (QP_HT + QP_NT + QP_VT) / QP_MAX;
 	}
 
-	public double QP100_NT()
-	{
-		if(QP_100 == 0)
+	public double QP100_NT() {
+		if (QP_100 == 0)
 			return 0;
 		return (1 - QP_HT / QP_MAX) * QP_100;
 	}
@@ -434,8 +385,8 @@ class BufferState {
 			return 0;
 		double maxTemp = net.maxBufferLoadTemperature;
 		double minTemp = net.lowerBufferLoadTemperature != null
-				? net.lowerBufferLoadTemperature
-				: net.supplyTemperature;
+			? net.lowerBufferLoadTemperature
+			: net.supplyTemperature;
 		double deltaTemp = (minTemp + fillRate * (maxTemp - minTemp)) - 20.0;
 		return lossFactor * deltaTemp / 1000.0;
 	}
@@ -452,8 +403,19 @@ class BufferState {
 		return lossFactor * Math.max(0, avgBufferTemp - averageRoomTemp) / 1000.0;
 	}
 
-	public double getTE() { return TE; }
-	public double getTV() { return TV; }
-	public double getTR() { return TR; }
-	public double getTMAX() { return TMAX; }
+	public double getTE() {
+		return TE;
+	}
+
+	public double getTV() {
+		return TV;
+	}
+
+	public double getTR() {
+		return TR;
+	}
+
+	public double getTMAX() {
+		return TMAX;
+	}
 }
